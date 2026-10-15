@@ -15,12 +15,12 @@
 import PermutationModule
 import XCTest
 
-/// `Span`は`~Escapable`なので`XCTAssertNil`等へ直接渡せない。次の並びがあったかだけを返す。
+/// Because `Span` is `~Escapable`, it cannot be passed directly to `XCTAssertNil` or similar APIs. Returns only whether a next permutation existed.
 private func advance<Element: Comparable>(_ iterator: inout BorrowedNextPermutations<Element>) -> Bool {
   iterator.next() != nil
 }
 
-/// 各`Span`を次の`next()`より前に配列へ写して、列挙結果を集める。
+/// Copies each `Span` into an array before the next call to `next()` and collects the enumeration results.
 private func collect<Element: Comparable>(
   _ iterator: inout BorrowedNextPermutations<Element>
 ) -> [[Element]] {

@@ -1,8 +1,8 @@
 import ElementBufferModule
 import XCTest
 
-/// 公開initializer: `init(repeating:...)`は全要素を同じ値で埋め、closure版は返り値をstorageへ順に格納する。
-/// zero次元は許され、そのときclosureは呼ばれない。
+/// Public initializers: `init(repeating:...)` fills all elements with one value, while the closure variant stores returned values in storage order.
+/// Zero-sized dimensions are allowed, and the closure is not called in that case.
 final class BareArray_1_InitializationTests: XCTestCase {
 
   // MARK: - init(repeating:)

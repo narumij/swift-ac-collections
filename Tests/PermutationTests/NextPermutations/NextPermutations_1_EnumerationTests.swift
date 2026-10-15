@@ -19,7 +19,7 @@
 import PermutationModule
 import XCTest
 
-/// 各Viewを、次の`next()`を呼ぶ前に所有する配列へ写して集める。
+/// Copies each view into an owning array before the next call to `next()` and collects the results.
 private func orders<C: Collection>(_ source: C) -> [[C.Element]] where C.Element: Comparable {
   var permutations = source.nextPermutations()
   var result: [[C.Element]] = []

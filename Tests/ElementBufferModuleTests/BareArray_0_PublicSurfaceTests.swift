@@ -1,7 +1,7 @@
 import ElementBufferModule
 import XCTest
 
-/// 公開適合: 所有型1D〜4Dは、`Element: Sendable`のとき`Sendable`である。
+/// Public conformance: the owned 1D through 4D types are `Sendable` when `Element: Sendable`.
 final class BareArray_0_PublicSurfaceTests: XCTestCase {
 
   // MARK: - Sendable

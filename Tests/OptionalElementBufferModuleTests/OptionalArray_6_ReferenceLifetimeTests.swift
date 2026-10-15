@@ -29,8 +29,8 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
     XCTAssertEqual(deinitCount, 3, "removeAllで保持中の要素がdeinitされること")
   }
 
-  /// `OptionalElementBuffer2D`/`3D`/`4D`自身の`removeAll()`/`deinit`は、1Dとは別のコード
-  /// (同じ`capacity`回ループする構築)のため、参照型要素での検証を個別に行う。
+  /// The `removeAll()` and `deinit` implementations of `OptionalElementBuffer2D`, `3D`, and `4D` use code separate from 1D
+  /// (although each loops `capacity` times), so test them separately with reference-type elements.
   func testOptionalArray2DRemoveAllDeinitializesReferenceElements() {
     final class Box {
       let onDeinit: () -> Void
@@ -100,8 +100,8 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
     XCTAssertEqual(deinitCount, 2, "スコープを抜けてarrayがdeinitされると、未removeAllの要素も解放されること")
   }
 
-  /// `removeAll()`後のスロットが再利用でき、再設定した要素は所有配列のdeinitで
-  /// 1回だけ解放されること(`removeAll`で解放済みの要素は二重解放されないこと)を検証する。
+  /// Verifies that slots can be reused after `removeAll()` and that a newly set element is released exactly once by the owning array's deinitializer,
+  /// without double-releasing elements already released by `removeAll()`.
   func testOptionalArray3DRemoveAllReleasesReferenceElementsAndSlotsAreReusable() {
     final class Box {
       let onDeinit: () -> Void

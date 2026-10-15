@@ -1,8 +1,8 @@
 import ElementBufferModule
 import XCTest
 
-/// 所有1D〜4D型の座標value accessは、Viewを生成せずに同じ連続storageを読み書きする。
-/// 非対称shapeで全座標を確認し、軸順とstrideの取り違えを検出する。
+/// Coordinate value access for the owned 1D through 4D types reads and writes the same contiguous storage without creating a view.
+/// Checks every coordinate in an asymmetric shape to detect swapped axis order or stride.
 final class BareArray_6_CoordinateValueAccessTests: XCTestCase {
 
   func testElementAtReachesEveryPosition() {

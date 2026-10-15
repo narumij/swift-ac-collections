@@ -2,7 +2,7 @@
   import ElementBufferModule
   import Testing
 
-  /// 座標value accessは、各軸について負値と上限値を通常のSwift precondition trapで拒否する。
+  /// Coordinate value access rejects negative and upper-bound coordinates on every axis with a normal Swift precondition trap.
   struct BareArray_97_CoordinateValueAccessDeathTests {
 
     @Test func elementAtRejectsInvalidCoordinates1D() async {

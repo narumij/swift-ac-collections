@@ -3,9 +3,9 @@ import Foundation
 
 extension Collection where Index == Int {
 
-  /// 単に辞書順の操作をするだけのもの
+  /// Performs only lexicographic permutation operations.
   ///
-  /// C++のnext_permutationの挙動をmapやfilterで使う場合はこちら。
+  /// Use this variant to apply C++ `next_permutation` behavior with `map` or `filter`.
   @inlinable
   @inline(__always)
   public __consuming func nextPermutations() -> Permutations<Self>.Nexts
@@ -13,9 +13,9 @@ extension Collection where Index == Int {
     .init(safe: self)
   }
 
-  /// 単に辞書順の操作をするだけのもの
+  /// Performs only lexicographic permutation operations.
   ///
-  /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
+  /// This variant can also apply C++ `next_permutation` behavior in a `for` loop.
   @inlinable
   @inline(__always)
   public __consuming func unsafeNextPermutations() -> Permutations<Self>.Nexts
@@ -23,7 +23,7 @@ extension Collection where Index == Int {
     .init(unsafe: self)
   }
 
-  /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
+  /// Enumerates every permutation without performing copy-on-write.
   @inlinable
   @inline(__always)
   public __consuming func unsafePermutations() -> Permutations<Self>.All {

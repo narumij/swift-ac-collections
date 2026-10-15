@@ -1,8 +1,8 @@
 import ElementBufferModule
 import XCTest
 
-/// 要素の寿命: 所有型は要素を所有し、上書きで古い要素を、破棄で全要素をちょうど1回解放する。
-/// 座標accessによる上書きも、所有者のstorage上の古い要素を解放する。
+/// Element lifetime: an owned type owns its elements, releasing an old element on overwrite and every element exactly once on destruction.
+/// Overwriting through coordinate access also releases the old element in the owner's storage.
 final class BareArray_5_ReferenceLifetimeTests: XCTestCase {
 
   private final class Box {

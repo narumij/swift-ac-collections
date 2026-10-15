@@ -1,7 +1,7 @@
 import ElementBufferModule
 import XCTest
 
-/// Swift 6.4以降の借用参照はownerのstorageへ直接到達し、ownerの寿命へ依存する。
+/// On Swift 6.4 and later, a borrowed reference accesses the owner's storage directly and depends on the owner's lifetime.
 @available(macOS 27.0, *)
 final class BareArray_7_BorrowedReferenceTests: XCTestCase {
 

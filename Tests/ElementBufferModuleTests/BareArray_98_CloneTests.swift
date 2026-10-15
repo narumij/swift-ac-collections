@@ -2,8 +2,8 @@
   @testable import ElementBufferModule
   import XCTest
 
-  /// 実装test: `clone()`は公開宣言ではなく`internal`で、`@testable import`が使えるDEBUG構成だけで検証する。
-  /// cloneは新しいstorageへ要素をcopy初期化し、元配列と独立に要素を保持する。
+  /// Implementation test: `clone()` is `internal`, not public, and is tested only in DEBUG configurations where `@testable import` is available.
+  /// A clone copy-initializes elements into new storage and owns them independently of the original array.
   final class BareArray_98_CloneTests: XCTestCase {
 
     func testBareArrayCloneCreatesIndependentStorage() {
@@ -76,8 +76,8 @@
       XCTAssertEqual(deinitCount, 8)
     }
 
-    /// `clone()`は次元ごとに別実装のため、3D以外の1D/2D/4Dでも、cloneが元配列と
-    /// 独立に参照要素を保持し、両方の破棄で全要素がちょうど1回解放されることを検証する。
+    /// Because `clone()` has a separate implementation for each dimension, verify for 1D, 2D, and 4D as well as 3D that the clone
+    /// owns reference elements independently and that destroying both arrays releases every element exactly once.
     func testBareArrayClonesOwnReferenceElementsIndependently() {
       final class Box {
         let onDeinit: () -> Void

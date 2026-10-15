@@ -5,7 +5,7 @@
 
   import ElementBufferModule
 
-  /// 公開initializerの次元が非負で、その積を`Int`で表現できるというtrap契約を検証する。
+  /// Verifies the trapping contract that public initializer dimensions are nonnegative and their product is representable as an `Int`.
   struct BareArray_99_DeathTests {
 
     // MARK: - Initializer dimensions (BARE-015)

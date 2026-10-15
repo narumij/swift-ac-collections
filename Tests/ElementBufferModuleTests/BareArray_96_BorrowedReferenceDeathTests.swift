@@ -2,7 +2,7 @@
   import ElementBufferModule
   import Testing
 
-  /// Swift 6.4以降の借用参照生成は、各軸の範囲外座標をSwift precondition trapで拒否する。
+  /// On Swift 6.4 and later, creating a borrowed reference rejects out-of-bounds coordinates on every axis with a Swift precondition trap.
   struct BareArray_96_BorrowedReferenceDeathTests {
 
     @Test func referenceRejectsInvalidCoordinates1D() async {

@@ -14,25 +14,25 @@
 
 // TODO: コピペでAtCoder提出可能なこと
 
-/// 競技プログラミング用1次元配列
+/// A one-dimensional array for competitive programming.
 ///
-/// ヒープ領域に確保される軽量な配列です。
-/// 動的計画法などで利用する大きな配列を簡潔に記述できます。
+/// A lightweight array allocated on the heap.
+/// Use this type to express large arrays for dynamic programming and similar tasks concisely.
 ///
-/// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
-/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// この型はnoncopyableであり、暗黙に複製できません。
+/// Elements are stored in contiguous memory, providing access performance similar to a C array.
+/// This type owns its elements and destroys all of them when the array is destroyed.
+/// This type is noncopyable and cannot be duplicated implicitly.
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct ElementBuffer<Element>: ~Copyable {
 
-  /// `count`個の要素を`value`で初期化します。
+  /// Initializes `count` elements to `value`.
   ///
   /// - Parameters:
-  ///   - value: 各位置へ格納する値。
-  ///   - count: 要素数。
-  /// - Precondition: `count`は0以上でなければなりません。
+  ///   - value: The value to store at each position.
+  ///   - count: The number of elements.
+  /// - Precondition: `count` must be nonnegative.
   /// - Complexity: O(`count`)
   @inlinable
   public init(repeating value: Element, count: Int) {
@@ -43,14 +43,14 @@
     self.count = count
   }
 
-  /// `value`を`count`回呼び、その返り値を添字順に格納します。
+  /// Calls `value` `count` times and stores the results in index order.
   ///
-  /// `count`が0のとき、`value`は呼ばれません。
+  /// Does not call `value` when `count` is zero.
   ///
   /// - Parameters:
-  ///   - count: 要素数。
-  ///   - value: 各要素を添字順に生成するクロージャ。
-  /// - Precondition: `count`は0以上でなければなりません。
+  ///   - count: The number of elements.
+  ///   - value: A closure that produces each element in index order.
+  /// - Precondition: `count` must be nonnegative.
   /// - Complexity: O(`count`)
   @inlinable
   public init(count: Int, _ value: () -> Element) {
@@ -87,7 +87,7 @@
 
 extension ElementBuffer {
 
-  /// 有効な要素位置である`0..<count`を返します。
+  /// Returns `0..<count`, the valid element positions.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -96,29 +96,29 @@ extension ElementBuffer {
 
 extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 
-/// 競技プログラミング用多次元配列
+/// A multidimensional array for competitive programming.
 ///
-/// ヒープ領域に確保される軽量な多次元配列です。
-/// 動的計画法などで利用する大きな配列を簡潔に記述できます。
+/// A lightweight multidimensional array allocated on the heap.
+/// Use this type to express large arrays for dynamic programming and similar tasks concisely.
 ///
-/// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
-/// 座標accessでは`width`が最内軸、`height`が最外軸です。
-/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// この型はnoncopyableであり、暗黙に複製できません。
+/// Elements are stored in contiguous memory, providing access performance similar to a C array.
+/// For coordinate access, `width` is the innermost axis and `height` is the outermost axis.
+/// This type owns its elements and destroys all of them when the array is destroyed.
+/// This type is noncopyable and cannot be duplicated implicitly.
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct ElementBuffer2D<Element>: ~Copyable {
 
-  /// `width * height`個の要素を`value`で初期化します。
+  /// Initializes `width * height` elements to `value`.
   ///
-  /// いずれかの次元が0なら空のstorageを作ります。
+  /// Creates empty storage if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - value: 各位置へ格納する値。
-  ///   - width: 最内軸の要素数。
-  ///   - height: 最外軸の要素数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - value: The value to store at each position.
+  ///   - width: The number of elements along the innermost axis.
+  ///   - height: The number of elements along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height`)
   @inlinable
   public init(repeating value: Element, width: Int, height: Int) {
@@ -132,15 +132,15 @@ extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
     self.height = height
   }
 
-  /// `f`を`width * height`回呼び、その返り値を連続するstorageへ順に格納します。
+  /// Calls `f` `width * height` times and stores the results sequentially in contiguous storage.
   ///
-  /// いずれかの次元が0なら`f`は呼ばれません。
+  /// Does not call `f` if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - width: 最内軸の要素数。
-  ///   - height: 最外軸の要素数。
-  ///   - f: 各要素をstorage順に生成するクロージャ。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - width: The number of elements along the innermost axis.
+  ///   - height: The number of elements along the outermost axis.
+  ///   - f: A closure that produces each element in storage order.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height`)
   @inlinable
   public init(width: Int, height: Int, _ f: () -> Element) {
@@ -184,7 +184,7 @@ extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 
 extension ElementBuffer2D {
 
-  /// 外側の軸に有効な位置である`0..<height`を返します。
+  /// Returns `0..<height`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -193,30 +193,30 @@ extension ElementBuffer2D {
 
 extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
-/// 競技プログラミング用多次元配列
+/// A multidimensional array for competitive programming.
 ///
-/// ヒープ領域に確保される軽量な多次元配列です。
-/// 動的計画法などで利用する大きな配列を簡潔に記述できます。
+/// A lightweight multidimensional array allocated on the heap.
+/// Use this type to express large arrays for dynamic programming and similar tasks concisely.
 ///
-/// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
-/// 座標accessでは`width`が最内軸、`depth`が最外軸です。
-/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// この型はnoncopyableであり、暗黙に複製できません。
+/// Elements are stored in contiguous memory, providing access performance similar to a C array.
+/// For coordinate access, `width` is the innermost axis and `depth` is the outermost axis.
+/// This type owns its elements and destroys all of them when the array is destroyed.
+/// This type is noncopyable and cannot be duplicated implicitly.
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct ElementBuffer3D<Element>: ~Copyable {
 
-  /// `width * height * depth`個の要素を`value`で初期化します。
+  /// Initializes `width * height * depth` elements to `value`.
   ///
-  /// いずれかの次元が0なら空のstorageを作ります。
+  /// Creates empty storage if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - value: 各位置へ格納する値。
-  ///   - width: 最内軸の要素数。
-  ///   - height: 中間軸の要素数。
-  ///   - depth: 最外軸の要素数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - value: The value to store at each position.
+  ///   - width: The number of elements along the innermost axis.
+  ///   - height: The number of elements along the middle axis.
+  ///   - depth: The number of elements along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(repeating value: Element, width: Int, height: Int, depth: Int) {
@@ -236,16 +236,16 @@ extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
     self.depth = depth
   }
 
-  /// `f`を要素数と同じ回数呼び、その返り値を連続するstorageへ順に格納します。
+  /// Calls `f` once for each element and stores the results sequentially in contiguous storage.
   ///
-  /// いずれかの次元が0なら`f`は呼ばれません。
+  /// Does not call `f` if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - width: 最内軸の要素数。
-  ///   - height: 中間軸の要素数。
-  ///   - depth: 最外軸の要素数。
-  ///   - f: 各要素をstorage順に生成するクロージャ。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - width: The number of elements along the innermost axis.
+  ///   - height: The number of elements along the middle axis.
+  ///   - depth: The number of elements along the outermost axis.
+  ///   - f: A closure that produces each element in storage order.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(width: Int, height: Int, depth: Int, _ f: () -> Element) {
@@ -299,7 +299,7 @@ extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
 extension ElementBuffer3D {
 
-  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  /// Returns `0..<depth`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -308,28 +308,28 @@ extension ElementBuffer3D {
 
 extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 
-/// 連続したメモリ領域に要素を所有する4次元配列です。
+/// A four-dimensional array that owns elements in contiguous memory.
 ///
-/// 座標accessでは`size0`が最内軸、`size3`が最外軸で、
-/// storage上では`size0`の軸が最も速く進みます。
-/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// この型はnoncopyableであり、暗黙に複製できません。
+/// For coordinate access, `size0` is the innermost axis and `size3` is the outermost axis;
+/// the `size0` axis advances fastest in storage.
+/// This type owns its elements and destroys all of them when the array is destroyed.
+/// This type is noncopyable and cannot be duplicated implicitly.
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct ElementBuffer4D<Element>: ~Copyable {
 
-  /// 全要素を`value`で初期化します。
+  /// Initializes every element to `value`.
   ///
-  /// いずれかの次元が0なら空のstorageを作ります。
+  /// Creates empty storage if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - value: 各位置へ格納する値。
-  ///   - size0: 最内軸の要素数。
-  ///   - size1: 内側から2番目の軸の要素数。
-  ///   - size2: 内側から3番目の軸の要素数。
-  ///   - size3: 最外軸の要素数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - value: The value to store at each position.
+  ///   - size0: The number of elements along the innermost axis.
+  ///   - size1: The number of elements along the second-innermost axis.
+  ///   - size2: The number of elements along the third-innermost axis.
+  ///   - size3: The number of elements along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(repeating value: Element, size0: Int, size1: Int, size2: Int, size3: Int) {
@@ -351,17 +351,17 @@ extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
     self.size3 = size3
   }
 
-  /// `f`を要素数と同じ回数呼び、その返り値を連続するstorageへ順に格納します。
+  /// Calls `f` once for each element and stores the results sequentially in contiguous storage.
   ///
-  /// いずれかの次元が0なら`f`は呼ばれません。
+  /// Does not call `f` if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - size0: 最内軸の要素数。
-  ///   - size1: 内側から2番目の軸の要素数。
-  ///   - size2: 内側から3番目の軸の要素数。
-  ///   - size3: 最外軸の要素数。
-  ///   - f: 各要素をstorage順に生成するクロージャ。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - size0: The number of elements along the innermost axis.
+  ///   - size1: The number of elements along the second-innermost axis.
+  ///   - size2: The number of elements along the third-innermost axis.
+  ///   - size3: The number of elements along the outermost axis.
+  ///   - f: A closure that produces each element in storage order.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int, _ f: () -> Element) {
@@ -419,7 +419,7 @@ extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 
 extension ElementBuffer4D {
 
-  /// 外側の軸に有効な位置である`0..<size3`を返します。
+  /// Returns `0..<size3`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -433,15 +433,15 @@ extension ElementBuffer4D: @unchecked Sendable where Element: Sendable {}
 extension ElementBuffer {
 
   #if swift(>=6.4)
-    /// `position`の要素を借用して読み書きする参照を返します。
+    /// Returns a borrowed reference for reading and writing the element at `position`.
     ///
-    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
-    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
-    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    /// The returned [MutableRef](https://developer.apple.com/documentation/swift/mutableref)
+    /// does not own this buffer's storage, and its lifetime depends on the mutable borrow of `self`.
+    /// Do not access this buffer elsewhere until you finish using the reference.
     ///
-    /// - Parameter position: 参照する要素の位置。
-    /// - Returns: 指定した要素への可変参照。
-    /// - Precondition: `position`は`indices`に含まれなければなりません。
+    /// - Parameter position: The position of the element to reference.
+    /// - Returns: A mutable reference to the specified element.
+    /// - Precondition: `position` must be contained in `indices`.
     /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
@@ -454,10 +454,10 @@ extension ElementBuffer {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
-  /// `position`の要素を返します。
+  /// Returns the element at `position`.
   ///
-  /// - Parameter position: 読み取る要素の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Parameter position: The position of the element to read.
+  /// - Precondition: `position` must be contained in `indices`.
   /// - Complexity: O(1)
   @inlinable
   public func element(at position: Int) -> Element {
@@ -467,15 +467,15 @@ extension ElementBuffer {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
-  /// `position`の要素を`newValue`で置き換えます。
+  /// Replaces the element at `position` with `newValue`.
   ///
-  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
-  /// 更新できます。
+  /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
+  /// stored in a `let` binding.
   ///
   /// - Parameters:
-  ///   - newValue: 指定した位置へ格納する値。
-  ///   - position: 更新する要素の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  ///   - newValue: The value to store at the specified position.
+  ///   - position: The position of the element to update.
+  /// - Precondition: `position` must be contained in `indices`.
   /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at position: Int) {
@@ -488,11 +488,11 @@ extension ElementBuffer {
 extension ElementBuffer2D {
 
   #if swift(>=6.4)
-    /// 座標`(x, y)`の要素を借用して読み書きする参照を返します。
+    /// Returns a borrowed reference for reading and writing the element at coordinates `(x, y)`.
     ///
-    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
-    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
-    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    /// The returned [MutableRef](https://developer.apple.com/documentation/swift/mutableref)
+    /// does not own this buffer's storage, and its lifetime depends on the mutable borrow of `self`.
+    /// Do not access this buffer elsewhere until you finish using the reference.
     ///
     /// ```swift
     /// if #available(macOS 27.0, iOS 27.0, tvOS 27.0, watchOS 27.0, visionOS 27.0, *) {
@@ -507,10 +507,10 @@ extension ElementBuffer2D {
     /// ```
     ///
     /// - Parameters:
-    ///   - x: 最内軸の位置。
-    ///   - y: 最外軸の位置。
-    /// - Returns: 指定した要素への可変参照。
-    /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+    ///   - x: The position along the innermost axis.
+    ///   - y: The position along the outermost axis.
+    /// - Returns: A mutable reference to the specified element.
+    /// - Precondition: `x` must be in `0..<width`, and `y` must be in `0..<height`.
     /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
@@ -524,12 +524,12 @@ extension ElementBuffer2D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
-  /// 座標`(x, y)`の要素を返します。
+  /// Returns the element at coordinates `(x, y)`.
   ///
   /// - Parameters:
-  ///   - x: 最内軸の位置。
-  ///   - y: 最外軸の位置。
-  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+  ///   - x: The position along the innermost axis.
+  ///   - y: The position along the outermost axis.
+  /// - Precondition: `x` must be in `0..<width`, and `y` must be in `0..<height`.
   /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int) -> Element {
@@ -540,16 +540,16 @@ extension ElementBuffer2D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
-  /// 座標`(x, y)`の要素を`newValue`で置き換えます。
+  /// Replaces the element at coordinates `(x, y)` with `newValue`.
   ///
-  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
-  /// 更新できます。
+  /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
+  /// stored in a `let` binding.
   ///
   /// - Parameters:
-  ///   - newValue: 指定した位置へ格納する値。
-  ///   - x: 最内軸の位置。
-  ///   - y: 最外軸の位置。
-  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+  ///   - newValue: The value to store at the specified position.
+  ///   - x: The position along the innermost axis.
+  ///   - y: The position along the outermost axis.
+  /// - Precondition: `x` must be in `0..<width`, and `y` must be in `0..<height`.
   /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
@@ -563,18 +563,18 @@ extension ElementBuffer2D {
 extension ElementBuffer3D {
 
   #if swift(>=6.4)
-    /// 座標`(x, y, z)`の要素を借用して読み書きする参照を返します。
+    /// Returns a borrowed reference for reading and writing the element at coordinates `(x, y, z)`.
     ///
-    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
-    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
-    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    /// The returned [MutableRef](https://developer.apple.com/documentation/swift/mutableref)
+    /// does not own this buffer's storage, and its lifetime depends on the mutable borrow of `self`.
+    /// Do not access this buffer elsewhere until you finish using the reference.
     ///
     /// - Parameters:
-    ///   - x: 最内軸の位置。
-    ///   - y: 中間軸の位置。
-    ///   - z: 最外軸の位置。
-    /// - Returns: 指定した要素への可変参照。
-    /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+    ///   - x: The position along the innermost axis.
+    ///   - y: The position along the middle axis.
+    ///   - z: The position along the outermost axis.
+    /// - Returns: A mutable reference to the specified element.
+    /// - Precondition: `x`, `y`, and `z` must be in `0..<width`, `0..<height`, and `0..<depth`, respectively.
     /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
@@ -589,13 +589,13 @@ extension ElementBuffer3D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
-  /// 座標`(x, y, z)`の要素を返します。
+  /// Returns the element at coordinates `(x, y, z)`.
   ///
   /// - Parameters:
-  ///   - x: 最内軸の位置。
-  ///   - y: 中間軸の位置。
-  ///   - z: 最外軸の位置。
-  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+  ///   - x: The position along the innermost axis.
+  ///   - y: The position along the middle axis.
+  ///   - z: The position along the outermost axis.
+  /// - Precondition: `x`, `y`, and `z` must be in `0..<width`, `0..<height`, and `0..<depth`, respectively.
   /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
@@ -607,17 +607,17 @@ extension ElementBuffer3D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
-  /// 座標`(x, y, z)`の要素を`newValue`で置き換えます。
+  /// Replaces the element at coordinates `(x, y, z)` with `newValue`.
   ///
-  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
-  /// 更新できます。
+  /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
+  /// stored in a `let` binding.
   ///
   /// - Parameters:
-  ///   - newValue: 指定した位置へ格納する値。
-  ///   - x: 最内軸の位置。
-  ///   - y: 中間軸の位置。
-  ///   - z: 最外軸の位置。
-  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+  ///   - newValue: The value to store at the specified position.
+  ///   - x: The position along the innermost axis.
+  ///   - y: The position along the middle axis.
+  ///   - z: The position along the outermost axis.
+  /// - Precondition: `x`, `y`, and `z` must be in `0..<width`, `0..<height`, and `0..<depth`, respectively.
   /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
@@ -632,19 +632,19 @@ extension ElementBuffer3D {
 extension ElementBuffer4D {
 
   #if swift(>=6.4)
-    /// 座標`(x, y, z, w)`の要素を借用して読み書きする参照を返します。
+    /// Returns a borrowed reference for reading and writing the element at coordinates `(x, y, z, w)`.
     ///
-    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
-    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
-    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    /// The returned [MutableRef](https://developer.apple.com/documentation/swift/mutableref)
+    /// does not own this buffer's storage, and its lifetime depends on the mutable borrow of `self`.
+    /// Do not access this buffer elsewhere until you finish using the reference.
     ///
     /// - Parameters:
-    ///   - x: `size0`軸の位置。
-    ///   - y: `size1`軸の位置。
-    ///   - z: `size2`軸の位置。
-    ///   - w: `size3`軸の位置。
-    /// - Returns: 指定した要素への可変参照。
-    /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+    ///   - x: The position along the `size0` axis.
+    ///   - y: The position along the `size1` axis.
+    ///   - z: The position along the `size2` axis.
+    ///   - w: The position along the `size3` axis.
+    /// - Returns: A mutable reference to the specified element.
+    /// - Precondition: Each coordinate must be in its corresponding `0..<sizeN` range.
     /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
@@ -663,14 +663,14 @@ extension ElementBuffer4D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
-  /// 座標`(x, y, z, w)`の要素を返します。
+  /// Returns the element at coordinates `(x, y, z, w)`.
   ///
   /// - Parameters:
-  ///   - x: `size0`軸の位置。
-  ///   - y: `size1`軸の位置。
-  ///   - z: `size2`軸の位置。
-  ///   - w: `size3`軸の位置。
-  /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+  ///   - x: The position along the `size0` axis.
+  ///   - y: The position along the `size1` axis.
+  ///   - z: The position along the `size2` axis.
+  ///   - w: The position along the `size3` axis.
+  /// - Precondition: Each coordinate must be in its corresponding `0..<sizeN` range.
   /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
@@ -683,18 +683,18 @@ extension ElementBuffer4D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
-  /// 座標`(x, y, z, w)`の要素を`newValue`で置き換えます。
+  /// Replaces the element at coordinates `(x, y, z, w)` with `newValue`.
   ///
-  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
-  /// 更新できます。
+  /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
+  /// stored in a `let` binding.
   ///
   /// - Parameters:
-  ///   - newValue: 指定した位置へ格納する値。
-  ///   - x: `size0`軸の位置。
-  ///   - y: `size1`軸の位置。
-  ///   - z: `size2`軸の位置。
-  ///   - w: `size3`軸の位置。
-  /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+  ///   - newValue: The value to store at the specified position.
+  ///   - x: The position along the `size0` axis.
+  ///   - y: The position along the `size1` axis.
+  ///   - z: The position along the `size2` axis.
+  ///   - w: The position along the `size3` axis.
+  /// - Precondition: Each coordinate must be in its corresponding `0..<sizeN` range.
   /// - Complexity: O(1)
   @inlinable
   public func setElement(

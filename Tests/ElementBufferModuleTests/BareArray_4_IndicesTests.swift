@@ -1,7 +1,7 @@
 import ElementBufferModule
 import XCTest
 
-/// `indices`: 各所有型の`indices`は、最外軸の`0..<長さ`である。
+/// `indices`: for each owned type, `indices` is `0..<length` along the outermost axis.
 final class BareArray_4_IndicesTests: XCTestCase {
 
   // MARK: - Owned arrays

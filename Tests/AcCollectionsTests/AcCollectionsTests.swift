@@ -5,9 +5,9 @@ import XCTest
   @testable import RedBlackTreeCollections
 #endif
 
-/// `AcCollections`は`@_exported import`だけで構成されるfacadeで、専用ターゲットから
-/// 一度も`import AcCollections`されていなかった(2026-10-03発見)。再公開が壊れても
-/// 他のテストでは検出できないため、最小限の到達確認をここで行う。
+/// `AcCollections` is a facade consisting only of `@_exported import` declarations, and its dedicated target had
+/// never imported `AcCollections` (discovered 2026-10-03). If re-exporting broke,
+/// other tests could not detect it, so this file performs minimal reachability checks.
 final class AcCollectionsTests: XCTestCase {
 
   override func setUpWithError() throws {

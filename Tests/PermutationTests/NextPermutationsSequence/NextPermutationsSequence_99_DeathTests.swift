@@ -10,10 +10,10 @@
 
   import PermutationModule
 
-  /// 公開`NextPermutationsSequence.Permutation[position]`(旧`Permutations.SubSequenceN`)は範囲チェックを持たず、範囲外の添字で
-  /// 不定値を返す、あるいはSIGSEGVになっていた(2026-10-03調査)。
-  /// このファイルは、`endIndex`・`-1`・`endIndex + 1`・`Int.min`・`Int.max`への読み取りが、通常の
-  /// precondition失敗(SIGTRAP)として停止することを検証する。
+  /// Public `NextPermutationsSequence.Permutation[position]` (formerly `Permutations.SubSequenceN`) had no bounds check and, for an out-of-bounds index,
+  /// returned an indeterminate value or raised SIGSEGV (investigated 2026-10-03).
+  /// This file verifies that reads at `endIndex`, `-1`, `endIndex + 1`, `Int.min`, and `Int.max` stop with a normal
+  /// precondition failure (SIGTRAP).
   struct NextPermutationsSequence_99_DeathTests {
 
     @Test func endIndexRead_traps() async throws {

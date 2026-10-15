@@ -20,6 +20,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `OPS-042` | `DONE` | Claude / Codex（受入・記録） | [EXECUTION] テストダッシュボードの完了記録・旧handoffのアーカイブ | 2026-10-15、ユーザーが古くなった`Tests/TESTING.md`の記載をアーカイブするようClaudeへ依頼。Claudeが完了済みの作業記録・旧handoff・旧監査手順を原文のまま履歴へ移し、現行側を現在の状態と有効な方針へ整理した。成果は`3d5fc0cd`で保存され、`ed3fd951`で現配置へ移動済み。Codexが現行側から履歴への参照、履歴索引、両commitと現存ファイルを照合して受入。採番待ち`CP-20261015-006`の正式統合が当時漏れたため、同日のユーザー指摘を受けて遡及記録した | `Tests/TESTING.md` / `Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md` / `Maintanance/Archived/TestDashboard/README.md` |
 | `OPS-041` | `DONE` | Claude / Codex（受入・記録） | [EXECUTION] CLAUDE_TASK受入済み節の履歴圧縮 | 2026-10-15、ユーザーが`CLAUDE_TASK.md`の受入済み節を履歴へ移す常設委任を追加し、Codexへ初回実行の発注記録と姫への依頼を指示。Claudeが受入済み・中止済みの7節を新規履歴へ原文のまま移し、本体へ参照を追加。Codexが圧縮前原文との完全一致、参照先の実在、対象外文書が未変更であることを確認して受入。固定ID、Returnとの対応、返却文面の訂正経緯、Archived索引の登録漏れをユーザー指摘後に修復し、履歴ファイルと受入・Registry記録を同じcommitへ保存して完了 | `Maintanance/CLAUDE_TASK.md` / `Maintanance/Archived/CLAUDE_TASK_HISTORY_2026-10-15.md` / `Maintanance/Archived/README.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 

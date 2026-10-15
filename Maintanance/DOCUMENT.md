@@ -18,6 +18,9 @@
 | [進捗の入口](ProgressV2/PROGRESS_OVERVIEW_V2.md) | 現在の依頼から関係するtaskへ進む |
 | [Task Registry](ProgressV2/TASK_REGISTRY_V2.md) | 状態・担当・依存・再開条件と詳細正本 |
 | [現行資料の索引](Current/README.md) | 横断的な正本・運用資料への案内 |
+| [スニペット候補アンケート](UserDocuments/SnippetSurvey/README.md) | DOC-030に紐付く利用者文書の準備資料。過去の候補を現行APIへ照合して使う |
+| [赤黒木4型アウトライン通読所見](UserDocuments/RedBlackTreeCollections/Head/Outlines/ASTRA_OUTLINE_READING_NOTES_2026-10-16.md) | DOC-030の参考資料。本文作成前の構成確認と照合点（Astra） |
+| [赤黒木4型アウトライン調整プラン](UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md) | DOC-030の準備資料。横断比較・契約照合・例示・構成調整から本文へ渡す計画案（Astra） |
 | [テスト整備](../Tests/TESTING.md) | Claude（姫）が担うAI向けのテスト整備文書 |
 | [RedBlackTree設計資料](../Sources/RedBlackTreeCollections/Documentation/) | 赤黒木の設計・API・品質に関する資料。他moduleは対象taskの詳細正本から辿る |
 | [圧縮・アーカイブ手順](ProgressV2/TASK_REGISTRY_ARCHIVE.md) | 原文を保存し、現行から履歴へ辿れるようにする手順 |

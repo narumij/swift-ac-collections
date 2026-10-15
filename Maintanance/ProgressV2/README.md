@@ -19,6 +19,14 @@
 | [AGENT_TASK_FIT_INTERVIEW.md](AGENT_TASK_FIT_INTERVIEW.md) | 担当適性と委任範囲を検討するための観測資料。割当の根拠そのものにはしない |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 
+## 恒久taskとの関係
+
+Task Registry運用の恒久taskは `OPS-044`。入口、Registry、制度・採番、圧縮手順、索引メンテナンス手順、本書を維持文書として紐付ける。配置維持の対象は `TASK_RULES_V2.md` の表で確認する。個別taskの完了だけでは、これらの文書を履歴へ移さない。
+
+索引の試作メモは規則の由来・限界を調べる補助資料として紐付ける。`Utilities/Maintenance/TaskHistoryIndex.py` は関連する実装、`Maintanance/TaskHistoryIndex/` は再生成可能な索引の置き場であり、維持文書と区別する。担当適性資料と個別調査資料は、その用途と関係taskで扱い、このfolderにあることだけで恒久保存・配置固定とはしない。
+
+常設nodeの登録は、定期作業の自動開始、現在の読み手への任命、ユーザー判断の代行を意味しない。状態・委任の正本はRegistryに置き、本書に状態表を複製しない。
+
 ## 作成の基準
 
 - 元ファイル：`Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`（V2作成時は`Maintanance/PROGRESS_OVERVIEW.md`）

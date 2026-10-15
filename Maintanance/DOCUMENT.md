@@ -59,10 +59,10 @@
 
 | ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
 | --- | --- | --- |
-| [Fixtures.md](../Tests/RedBlackTreeFixture/Fixtures.md) | AIがテストを整備するためのfixtureの説明 | テスト整備に関連。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
-| [Tests/TESTING.md](../Tests/TESTING.md) | Claude（姫）が担う、AI向けのテスト継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | テスト整備の恒久系の中心文書。専用の恒久taskは未登録。`DOC-030`では文書の参照関係を扱う |
+| [Fixtures.md](../Tests/RedBlackTreeFixture/Fixtures.md) | AIがテストを整備するためのfixtureの説明 | `TEST-005`の関連維持文書。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
+| [Tests/TESTING.md](../Tests/TESTING.md) | Claude（姫）が担う、AI向けのテスト継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | `TEST-005`の中心文書（Claude担当）。`DOC-030`では文書の参照関係を扱う |
 | [AGENTS.md](../AGENTS.md)、[CLAUDE.md](../CLAUDE.md) | 協働の規則。各文書の変更権限に従う | `DOC-030`では参照関係を把握する。本文の変更権限は得ない |
-| [Tests/CLAUDE.md](../Tests/CLAUDE.md) | AIがテスト作業を行う際の規則 | テスト整備に関連。`DOC-030`では参照関係を把握し、内容更新は現在の依頼と変更権限に従う |
+| [Tests/CLAUDE.md](../Tests/CLAUDE.md) | AIがテスト作業を行う際の規則 | `TEST-005`の関連維持文書。`DOC-030`では参照関係を把握し、内容更新は現在の依頼と変更権限に従う |
 
 一覧は文書・作業資料への入口であり、ソースコード・全生成物のファイル台帳ではない。資料を追加したときは、その用途に応じてこの入口または関係taskの詳細正本から辿れるようにする。現時点で個別の紐付けが未確認の資料は、掲載だけで確認済みとしない。
 

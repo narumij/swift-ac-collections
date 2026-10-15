@@ -67,14 +67,14 @@ pool再利用、bucket chain、capacityの仕様は`UnsafeTreeV2`またはRawBuf
 ### `RedBlackTreeFixture`
 
 > **注記(2026-10-03)**: `RedBlackTreeFixture`という名前は現在2つの別物を指す。
-> - 本項が説明する protocol(`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`)
+> - 本項が説明する protocol(`Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`)
 > - 新設の独立ターゲット`RedBlackTreeFixture`(`Tests/RedBlackTreeFixture/`、ターゲット横断で共有するFixtureの置き場)
 >
 > 同名だが別スコープ(別SwiftPMターゲット)のため衝突はしない。新規追加時は混同しないこと。
 
 場所:
 
-`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
 
 4つの公開コレクション型を共通に扱うための軽量な Fixture protocol。
 
@@ -103,7 +103,7 @@ pool再利用、bucket chain、capacityの仕様は`UnsafeTreeV2`またはRawBuf
 
 場所:
 
-`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
 
 DEBUG ビルドで、4つの公開コレクションを現行の `UnsafeTreeV2` 実装へ接続する内部向け Fixture protocol。
 
@@ -138,7 +138,7 @@ DEBUG ビルドで、4つの公開コレクションを現行の `UnsafeTreeV2` 
 
 例:
 
-`RedBlackTreeInternal/Base/RedBlackTreeInternal_SetBaseTests.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_SetBaseTests.swift`
 
 ```swift
 typealias Fixture = RedBlackTreeSet<Int>
@@ -158,7 +158,7 @@ typealias SUT = Fixture.Base
 
 場所:
 
-`UnsafeTreeV2/Base/UnsafeTreeBasicTests.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Base/UnsafeTreeBasicTests.swift`
 
 テスト専用の `Base` trait を用意し、実際の `UnsafeTreeV2<Base>` を生成する。
 
@@ -186,7 +186,7 @@ typealias SUT = Fixture.Base
 
 場所:
 
-`UnsafeTreeV2/Instance/BufferHeaderTests.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift`
 
 ```swift
 typealias Fixture = UnsafeTreeV2BufferHeader
@@ -211,7 +211,7 @@ production type を直接 Fixture として使用する。
 
 場所:
 
-`UnsafeTreeV2/Synthetic/UnsafeNodeFreshPoolTests.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Synthetic/UnsafeNodeFreshPoolTests.swift`
 
 準拠:
 
@@ -231,7 +231,7 @@ Fresh Pool のロジックを実際の木から切り離して検査するため
 
 場所:
 
-`UnsafeTreeV2/Synthetic/RecyclePoolTests.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Synthetic/RecyclePoolTests.swift`
 
 準拠:
 
@@ -247,7 +247,7 @@ Recycle Pool を木全体から切り離して検査する Fixture。
 
 場所:
 
-`UnsafeTreeV2/Synthetic/UnsafeNodeTests.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Synthetic/UnsafeNodeTests.swift`
 
 準拠:
 
@@ -268,7 +268,7 @@ Recycle Pool を木全体から切り離して検査する Fixture。
 
 場所:
 
-`RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_98_CoverageTests.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_98_CoverageTests.swift`
 
 `_BaseNode_KeyProtocol` の最小実装。
 
@@ -278,7 +278,7 @@ protocol default implementation の coverage 用。
 
 場所:
 
-`RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_98_CoverageTests.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_98_CoverageTests.swift`
 
 `_PairBasePayloadValue_MappedValueProtocol` の最小実装。
 
@@ -288,7 +288,7 @@ mapped value の default implementation の coverage 用。
 
 場所:
 
-`RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_KeyValueComparerTests.swift`
+`Tests/RedBlackTreeTests/RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_KeyValueComparerTests.swift`
 
 TestCase 自身が
 
@@ -312,7 +312,7 @@ TestCase 自身が
 
 場所:
 
-`UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift`
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift`
 
 空の木を構築する。
 

@@ -25,25 +25,29 @@
 
 ## 準備作業
 
+- [ ] mainからリリース用ブランチを作成し、専用の作業領域で以下の整理を行う（整理した変更はmainへ戻さない）
 - [ ] AGENTS.mdを残す
 - [ ] 互換コードの削除
 - [ ] ユーザードキュメント以外の書類の削除
-- [ ] Benchmarkリザルトの削除
+- [ ] Benchmarkリザルトの削除（候補試験に必要なbenchmark実行資材、Tests、DocC入力は残す）
 - [ ] プッシュ
 - [ ] CIを実行
 - [ ] CIが全てグリーン
 
 ## 候補確定作業
 
-- [ ] candidate-<VersionNumber> Tagを付与
-- [ ] candidate-<VersionNumber> Tagをプッシュ
-- [ ] リリースCI実行確認
-- [ ] リリースCIグリーン確認
+- [ ] リリース用ブランチからmain向けに確認用PRを作成（Draft可。mergeはしない）
+- [ ] PRへ `/test release` と新規コメントする（候補タグの作成・pushは不要）
+- [ ] リリースCIの起動と、受付jobが固定した対象SHAが確定したい候補と一致することを確認
+- [ ] PRへ返る結果で、対象SHAと各試験の成功（PASS）を確認。結果が返らなければActionsを確認
+- [ ] 追加変更があればpush後に再度 `/test release` を新規コメントし、新しい対象SHAで成功を確認
 - [ ] リリース判断
 
 ## 最終作業
 
 - [ ] AGENTS.mdを削除
 - [ ] AGENTS.md削除後はAI作業へ戻らず、残る最終作業だけをユーザーが行う
-- [ ] <VersionNumber> Tagを付与
+- [ ] AGENTS.mdの削除をcommitし、検証済み候補からの差分がその削除だけであることを確認
+- [ ] その最終commitへ<VersionNumber> Tagを付与
 - [ ] <VersionNumber> Tagをプッシュ
+- [ ] 確認用PRをmergeせずに閉じる

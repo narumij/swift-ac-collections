@@ -195,6 +195,7 @@ let package = Package(
       dependencies: [
         "RedBlackTreeCollections",
         "RedBlackTreeModule",
+        "NextPermutationModule",
         "PermutationModule",
         .target(
           name: "OptionalElementBufferModule",
@@ -334,7 +335,7 @@ let package = Package(
     ),
 
     .target(
-      name: "PermutationModule",
+      name: "NextPermutationModule",
       dependencies: [],
       exclude: [
         "Documentation"
@@ -344,10 +345,19 @@ let package = Package(
         .strictMemorySafety()
       ]
     ),
+    .target(
+      name: "PermutationModule",
+      dependencies: ["NextPermutationModule"],
+      path: "Sources/_PermutationModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
+    ),
     .testTarget(
       name: "PermutationTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
+        "NextPermutationModule",
         "PermutationModule"
       ],
       swiftSettings: _settings + [

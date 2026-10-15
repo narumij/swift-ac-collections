@@ -13,7 +13,7 @@
 // 型が`~Copyable`で`Sequence`に適合しないことは、compile結果として返却記録に残す。
 
 #if compiler(>=6.4)
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 /// Because `Span` is `~Escapable`, it cannot be passed directly to `XCTAssertNil` or similar APIs. Returns only whether a next permutation existed.

@@ -12,7 +12,7 @@
 // Viewは次の`next()`まで有効なので、各testは`next()`の後にViewを使わない。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class NextPermutations_3_PermutationCollectionTests: XCTestCase {

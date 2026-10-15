@@ -20,7 +20,7 @@
 
 #if !COMPATIBLE_ATCODER_2025
 #if false
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class NextPermutationsSequence_0_PublicSurfaceTests: XCTestCase {

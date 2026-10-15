@@ -1,4 +1,4 @@
-# ``PermutationModule``
+# ``NextPermutationModule``
 
 Generate the current order and its lexicographic successor permutations one at a time.
 

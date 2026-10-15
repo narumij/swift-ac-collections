@@ -9,7 +9,7 @@
 // - 列挙の途中で破棄しても、列挙を終えてから破棄しても同じ
 
 #if compiler(>=6.4)
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 /// Because `Span` is `~Escapable`, it cannot be passed directly to `XCTAssertNil` or similar APIs. Returns only whether a next permutation existed.

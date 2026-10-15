@@ -1,4 +1,4 @@
-import PermutationModule
+import NextPermutationModule
 
 // 期待: compile error。ownerは`~Copyable`なので、代入はmoveになり元の変数は使えない。
 func copyOwner() {

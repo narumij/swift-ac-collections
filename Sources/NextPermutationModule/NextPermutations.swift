@@ -63,10 +63,10 @@ extension Collection where Element: Comparable {
 /// Advancing by one step mutates the owned buffer in place. It performs no per-result allocation or
 /// full-buffer copy.
 @safe
-public struct NextPermutations<Value: Comparable>: ~Copyable {
+public struct NextPermutations<Element: Comparable>: ~Copyable {
 
   @usableFromInline
-  let elements: UnsafeMutablePointer<Value>
+  let elements: UnsafeMutablePointer<Element>
 
   @usableFromInline
   let count: Int
@@ -81,7 +81,7 @@ public struct NextPermutations<Value: Comparable>: ~Copyable {
   var finished = false
 
   @inlinable
-  init<Base: Collection>(copying source: Base) where Base.Element == Value {
+  init<Base: Collection>(copying source: Base) where Base.Element == Element {
     count = source.count
     unsafe elements = .allocate(capacity: Swift.max(count, 1))
     gateKeeper = GateKeeper.create()
@@ -184,7 +184,6 @@ extension NextPermutations {
   /// `Array` while it is valid.
   @safe
   public struct Permutation: RandomAccessCollection {
-    public typealias Element = Value
     public typealias Index = Int
 
     @usableFromInline

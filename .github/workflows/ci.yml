@@ -83,6 +83,7 @@ jobs:
         target:
           - AcCollections
           - RedBlackTreeModule
+          - NextPermutationModule
           - PermutationModule
           - OptionalElementBufferModule
           - ElementBufferModule

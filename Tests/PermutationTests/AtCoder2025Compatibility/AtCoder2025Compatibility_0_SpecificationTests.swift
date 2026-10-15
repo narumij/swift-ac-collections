@@ -1,5 +1,5 @@
 #if COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 // `release/AtCoder/2025`で公開していたPermutation APIのTest as Specification。

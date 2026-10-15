@@ -16,7 +16,7 @@
 // View自体を保持して後で比べることはしない。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 /// Copies each view into an owning array before the next call to `next()` and collects the results.

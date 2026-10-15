@@ -1,14 +1,14 @@
-# PermutationModule モジュール品質プロファイル
+# NextPermutationModule モジュール品質プロファイル
 
 ## 目的と適用範囲
 
-この文書は、リポジトリ全体の上位品質要求をPermutationModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
+この文書は、リポジトリ全体の上位品質要求をNextPermutationModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
 
 この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/Current/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
 
 ## 文書の位置づけ
 
-この文書は、PermutationModule固有の品質プロファイルであり、次を行う。
+この文書は、NextPermutationModule固有の品質プロファイルであり、次を行う。
 
 - 上位品質要求がこのモジュールで何を意味するかを説明する。
 - 要求、公開契約、Test as Specification、およびその他の証拠を分離する。
@@ -35,11 +35,11 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 
 採用名は`NextPermutationModule`と、通常版一時Viewの`NextPermutations.Permutation`である。
 名称・理由・互換方針の正本は`Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`とする。
-本書の`PermutationModule`およびsource pathは改名前の現行実装を指す。名称決定だけで改名済みとは扱わない。
+実装と主入口は`NextPermutationModule`にあり、旧`PermutationModule`は同じ宣言を再公開する互換入口である。
 
 改名時はQR-04・QR-05・QR-06に対応して、moduleの導入・import、`AcCollections`からの再公開、
 公開型の名前解決、DocCの入口・symbol link、使用例、および関連する検証経路の整合を確認する。
-旧module名の互換targetを残すかは未決であり、実装前に名称決定正本で確定する。
+旧module名の互換targetは維持する。具体構成と検証工程は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md`、今回の受入範囲は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
 
 通常版一時Viewはnested名`Permutation`を維持する。名前だけで寿命契約を伝えたとは扱わず、
 型の冒頭説明・使用例・失効時の診断で、一時Viewであること、次の`next()`やowner破棄で失効すること、
@@ -48,7 +48,7 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 
 ## 上位品質要求との接続
 
-| 上位要求 | PermutationModuleでの主な意味 | 主な仕様・証拠の接続先 |
+| 上位要求 | NextPermutationModuleでの主な意味 | 主な仕様・証拠の接続先 |
 | --- | --- | --- |
 | QR-01 正確性 | 入力自身を含む後続順列を契約どおり列挙し、境界、重複要素、終了、および有効なViewの要素順が正しい | runtime-check契約に対応するTest as Specification、件数・checksum検査 |
 | QR-02 性能効率性 | 入力bufferの準備、in-placeの1 step、runtime-check付きViewのアクセス、allocation、および列挙全体の特性が目的に適する | sourceの計算量契約、`PermutationBenchmarks.swift`、benchmark library、CI performance job、外部比較記録 |
@@ -212,7 +212,7 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 通常版の観察可能な仕様 | `Tests/PermutationTests/NextPermutations/`のruntime Test as Specificationと`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`のcompiler fixture。分類、受入境界、実行証拠は`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
-| 公開APIとdocumentation comment | `Sources/PermutationModule/NextPermutations.swift`および互換modeのsource |
+| 公開APIとdocumentation comment | `Sources/NextPermutationModule/NextPermutations.swift`および互換modeのsource |
 | 性能測定対象 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift` |
 | 継続測定の対象と構成 | `Benchmarks/Libraries/*.json`およびGitHub Actions |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |

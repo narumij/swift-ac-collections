@@ -4,14 +4,14 @@
 //
 
 // 共存のTest as Specification（runtime-check版`NextPermutations`、PERM-056 G5）。
-// - `PermutationModule`とswift-algorithmsを同時にimportしても、修飾なしの呼び出しが曖昧にならない
+// - `NextPermutationModule`とswift-algorithmsを同時にimportしても、修飾なしの呼び出しが曖昧にならない
 // - `nextPermutations()`は現在の並びと辞書順の後続だけを返し、`permutations()`は位置の並びを全て返す
 // 衝突すれば、このfileはcompileできない。
 // `AcCollections`からの再公開は`Tests/AcCollectionsTests/AcCollections_NextPermutationsReexportTests.swift`で扱う。
 
 #if !COMPATIBLE_ATCODER_2025
 import Algorithms
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class NextPermutations_4_CoexistenceTests: XCTestCase {

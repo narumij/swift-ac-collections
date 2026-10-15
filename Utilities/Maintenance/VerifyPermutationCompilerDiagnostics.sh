@@ -16,6 +16,12 @@ trap 'rm -f "$diagnostics"' EXIT
 
 swift build --disable-sandbox --scratch-path "$scratch" --package-path "$fixture" \
   --target PermutationSurfaceValid
+swift build --disable-sandbox --scratch-path "$scratch" --package-path "$fixture" \
+  --target PermutationLegacyImportValid
+swift build --disable-sandbox --scratch-path "$scratch" --package-path "$fixture" \
+  --target PermutationFacadeImportValid
+swift build --disable-sandbox --scratch-path "$scratch" --package-path "$fixture" \
+  --target PermutationDualImportValid
 
 expect_failure() {
   target=$1
@@ -34,10 +40,10 @@ expect_failure() {
 }
 
 expect_failure PermutationDirectInit \
-  "PermutationDirectInit.swift:[0-9]+:[0-9]+: error: 'NextPermutations<Value>' initializer is inaccessible due to 'internal' protection level"
+  "PermutationDirectInit.swift:[0-9]+:[0-9]+: error: 'NextPermutations<Element>' initializer is inaccessible due to 'internal' protection level"
 expect_failure PermutationCopy \
   "PermutationCopy.swift:[0-9]+:[0-9]+: error: 'original' used after consume"
 expect_failure PermutationSequence \
   "PermutationSequence.swift:[0-9]+:[0-9]+: error: for-in loop requires 'NextPermutations<Int>' to conform to 'Sequence'"
 
-echo "verified 1 NextPermutations compile-pass and 3 compile-fail diagnostics (direct init, copy, Sequence)"
+echo "verified 4 NextPermutations compile-pass entries and 3 compile-fail diagnostics (direct init, copy, Sequence)"

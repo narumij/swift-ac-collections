@@ -1,4 +1,4 @@
-import PermutationModule
+import NextPermutationModule
 
 // 期待: buildが通る。公開入口から作り、手動の`next()`で各Viewを使い終えてから進める。
 func enumerateWithPublicEntryPoint() -> Int {

@@ -8,7 +8,7 @@
     import Glibc
   #endif
 
-  import PermutationModule
+  import NextPermutationModule
 
   /// Public `NextPermutationsSequence.Permutation[position]` (formerly `Permutations.SubSequenceN`) had no bounds check and, for an out-of-bounds index,
   /// returned an indeterminate value or raised SIGSEGV (investigated 2026-10-03).

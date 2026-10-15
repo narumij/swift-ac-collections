@@ -12,7 +12,7 @@
 // - 元のCollectionは変更しない
 
 #if compiler(>=6.4)
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 /// Because `Span` is `~Escapable`, it cannot be passed directly to `XCTAssertNil` or similar APIs. Returns only whether a next permutation existed.

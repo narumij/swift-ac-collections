@@ -27,6 +27,7 @@
 | `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` |
 | `OPS-045` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 圧縮後のタスク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、task ID・状態・依存・採番・恒久文書の紐付け・履歴への経路と未完了条件の保存を読み取り検査し、根拠付きの指摘と未確認範囲を返す。登録・凍結解除・受入判断・本文修正はしない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
 | `DOC-031` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 文書リンク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、現行の管理文書とDOCUMENT.md掲載の外部文書を対象にローカル参照・見出し・移動先・外部URLの確認範囲を区別して検査する。今回移動した履歴と原文への経路も確認する。問題・根拠・修正候補・未確認を返すだけとし、資料の移動・本文修正・CIや重い生成処理は行わない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
+| `DOC-032` | `USER_ONLY` | User | [DISCOVERY] ドキュメントValidation計画ドラフトのレビュー | ユーザーが計画の目的・対象・試行方法・判定境界をレビューし、指摘または修正不要の結果を残すことで完了する。計画の受け入れ・試行開始・既存taskの凍結解除とは分ける。AIは本体の着手・代行・委任・催促を行わず、明示依頼された補助だけを行う | `Maintanance/Current/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md` |
 
 ### 公開とリリース
 

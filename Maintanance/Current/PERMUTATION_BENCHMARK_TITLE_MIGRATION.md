@@ -10,7 +10,9 @@
 
 benchmark sourceに残る旧内部型名を含む4 titleと、CI libraryの登録2件を、現行の名称決定と整合する表示名へ移行する。具体的な移行先は実行前に照合・確定し、旧計画のNextPermutationsSequence.Permutationを無条件に用いない。
 
-先行するPERM-063のworkflow互換処理がmainへmergeされ、remote performance CIがgreenとなるまで、title変更は開始しない。PERM-063自身の凍結は今回解除していない。PERM-064の再開指示を重ねて求める必要はないが、依存条件の充足とは区別する。
+2026-10-16、ユーザー指示でPERM-063を独立taskとして除外し、必要な互換工程を本taskへ統合した。旧taskの再開や完了は要求しない。実行時に現行workflowの互換対応を確認し、必要な入力変換・結果名正規化を先行して整える。その変更がmainへmergeされ、remote performance CIがgreenになるまでtitle変更は開始しない。既に成立する互換処理は重複実装せず、証拠を接続する。
+
+この二段階は一つのtask内の工程として追跡し、互換処理とtitle変更のcommit・merge境界を保つ。今回の整理は実装・CI起動・mergeの実行ではない。[統合前記録](../Archived/PERM-063_EXCLUDED_2026-10-16.md)を保存した。
 
 変更後はtask列挙、base/currentの測定・比較、remote performance CIのgreenを確認して受け入れる。workload、測定範囲、反復数、閾値は変更しない。公開契約等の新しい判断が必要になった場合は分離して返す。
 

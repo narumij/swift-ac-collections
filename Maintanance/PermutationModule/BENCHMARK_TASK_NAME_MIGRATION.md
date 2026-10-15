@@ -1,5 +1,10 @@
 # Permutation benchmark task名の現行型名への移行
 
+## 工程統合 2026-10-16
+
+ユーザー指示によりPERM-063はEXCLUDED。必要なworkflow互換処理はPERM-064内の先行工程へ統合した。以下のPERM-063凍結・再開待ちの記述は過去の整理であり、現行条件ではない。[現行正本](../Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md)に従う。二段階のmerge・検証境界は維持する。
+
+
 ## 現行の扱い 2026-10-16
 
 Astra整理。これは完了済みmodule移行のmain到達確認とは別の、後段に延期したbenchmark表示名整理である。現行sourceの4 titleとCI登録2件には`Permutations.SubSequenceN`が残る。今回の照合で完了とは扱わず、PERM-063の凍結を維持する。PERM-064は同日、ユーザーの追加指示でACTIVEへ復帰した。先行依存を保ち、[現行正本](../Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md)に従う。

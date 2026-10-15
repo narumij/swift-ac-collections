@@ -2,14 +2,11 @@
 
 凍結した仕事と判断を、ユーザーが見返すためのフォルダ。Archivedとは異なり現行の記録を置く。状態・担当・依存関係・再開条件の正本は[Task Registry](../../ProgressV2/TASK_REGISTRY_V2.md)。フォルダへの出し入れだけでは状態を変えない。
 
-2026-10-16時点の凍結4件を収録。並行初期化保証以外の3件は、Registryの記載と既存資料への参照を置いた最小限の正本であり、新たな判断や調査結果ではない。既存の共有正本は移動せず、仕様・品質判断の正本性も維持する。
+2026-10-16時点の凍結1件を収録。現在残るのは並行初期化保証の意図的な凍結判断。既存の共有正本は移動せず、仕様・品質判断の正本性も維持する。
 
 | ID | 正本 |
 | --- | --- |
-| RBT-004 | [残存するDebug限定Comparable群・Balanced群](RBT-004_FROZEN_TASK.md) |
-| RBT-005 | [Memoize群の公開終了／正式API化](RBT-005_FROZEN_TASK.md) |
 | RBT-008 | [`lazyDetach`等の並行初期化保証](LAZY_INITIALIZATION_FREEZE_DECISION.md) |
-| PERM-063 | [[EXECUTION] Permutation benchmark task名移行互換の先行導入](PERM-063_FROZEN_TASK.md) |
 
 [今回の棚卸し結果](../FROZEN_TASK_RECONCILIATION_2026-10-16.md)も参照できる。
 
@@ -30,3 +27,9 @@ RBT-035は[ユーザー専任の実施判断](../RED_BLACK_TREE_TUNING_RESEARCH_
 RELEASE-080はユーザーの解決確認と追跡不要の指示によりEXCLUDED。[解決記録](../../Archived/RELEASE-080_RESOLVED_2026-10-16.md)。
 
 リリース開始ゲート2件は版別正本へ集約してEXCLUDED、SPI実行2件は依存条件で待つACTIVEへ変更。[マイルストーン管理](../../MILESTONES.md)を参照。
+
+PERM-063はEXCLUDEDとし、必要な互換工程をPERM-064へ統合。[記録](../../Archived/PERM-063_EXCLUDED_2026-10-16.md)。
+
+RBT-004は[ユーザー専任の判断](../RED_BLACK_TREE_COMPARISON_USER_DECISION.md)へ変更した。
+
+RBT-005は[Memoize群のユーザー判断](../MEMOIZE_USER_DECISION.md)へ変更した。

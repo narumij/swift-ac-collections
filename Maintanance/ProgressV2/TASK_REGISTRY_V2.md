@@ -62,8 +62,8 @@
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `RBT-035` | `USER_ONLY` | User | [DECISION] RedBlackTreeチューニング再探索の実施判断 | 2026-10-16、ユーザー指示により判断課題へ整理。過去のチューニングの取りこぼしを調査するか、実施する場合の目的・範囲をユーザーが判断して記録する。AIは判断の代行・委任・催促をせず、明示依頼された材料整理のみ補助する。調査開始・旧担当への再委任は含まない | `Maintanance/Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md` |
 | `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。RBT-014の現行API照合を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |
-| `RBT-004` | `FROZEN` | Codex | 残存するDebug限定Comparable群・Balanced群 | Debug限定`Result: Comparable`はユーザー介入で削除済み。`RBT-011`でIndexの`Comparable`採否が確定した後、残る`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の比較宣言とBalanced群について、ユーザーがこのtaskを明示的に再開 | `Maintanance/Current/Frozen/RBT-004_FROZEN_TASK.md`。既存資料：`Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
-| `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後、ユーザーがこのtaskを明示的に再開。consumer移行だけでは自動再開しない | `Maintanance/Current/Frozen/RBT-005_FROZEN_TASK.md`。既存資料：`Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-004` | `USER_ONLY` | User | [DECISION] 残存する比較宣言・Balanced群の扱い | 2026-10-16、ユーザー指示で専任判断へ変更。RBT-011のIndex Comparable採否を入力に、残存比較宣言・Balanced群の扱いをユーザーが決めて範囲を記録する。AIは判断・実装・削除・委任・催促を行わず、明示依頼された資料整理のみ補助する。Result: Comparable削除済みという既存記録は維持 | `Maintanance/Current/RED_BLACK_TREE_COMPARISON_USER_DECISION.md` |
+| `RBT-005` | `USER_ONLY` | User | [DECISION] Memoize群の扱い | 2026-10-16、ユーザー指示により専任判断へ変更。Memoize群の論点・扱い・対象範囲をユーザーが判断して記録する。旧記録の外部consumer 2件の移行は実行前提として保持し、充足した扱いにしない。AIは判断・変更・委任・催促をせず、明示依頼された相談・資料整理のみ補助する | `Maintanance/Current/MEMOIZE_USER_DECISION.md` |
 | `RBT-007` | `ACTIVE` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | 2026-10-15、ユーザー指示により有効化。現行readiness、対象範囲、必要な検証を照合して進める。状態変更だけでは実装操作を開始しない | `Maintanance/Current/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | 性能と所有構造への影響から、ユーザー判断で最後の最後まで凍結。所有構造・生成コスト・アクセス性能を評価できる段階で、ユーザーの明示的な再開指示があった場合のみ再検討する。1.0必須ゲートや自動再開条件にはしない | `Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md` |
 | `RBT-009` | `ACTIVE` | User / Codex | [DECISION] runtime-check実装の再審査 | 2026-10-16のユーザー棚卸し指示で1.0前の判断ゲートとして有効化。Design-RuntimeChecksの再審査材料を揃え、現行実装を1.0へ受け入れるかユーザーが一つ判断する。検査の変更・弱化は今回行わず、現行防御を維持する。資料収集や測定は対象・範囲を具体化してから実施する。 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
@@ -79,8 +79,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `PERM-070` | `DONE` | User | [DECISION] PermutationModule公開API名の最終決定 | 2026-10-15、ユーザーが通常入口`nextPermutations()`、通常owner`NextPermutations`、borrowed入口`borrowedNextPermutations()`、borrowed owner`BorrowedNextPermutations`、通常ownerのgeneric parameter`Element`を暫定確定。`PERM-069`の三者採点・Round 4統合と`PERM-072`の最終提案への三者回答を確認後、module名`NextPermutationModule`と通常一時view名`NextPermutations.Permutation`維持を正式採用し、先の暫定確定を含む名称family全体を名称決定正本へ記録して完了した。`Element`は実sourceのcompile・DocC確認をrename実装時の受入条件とする。旧module名`PermutationModule`を残すかを含む移行方式は、名称の採否ではなく後続の移行プランで扱う。正式採用だけでrename、実装変更を開始しない | `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_REVIEW.md` / `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND1_REPORT.md` / `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND2_REPORT.md` / `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND3_REPORT.md` / `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND4_REPORT.md` / `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md` / `Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md` |
 | `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | `Maintanance/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/PermutationModule/UserDocumentationDraft.md` |
-| `PERM-063` | `FROZEN` | Codex | [EXECUTION] Permutation benchmark task名移行互換の先行導入 | 後段のbenchmark名整理として凍結を維持。ユーザーが時期・対象・移行先表示名を確定して明示再開した後、旧名baselineと新名HEADを比較できる入力変換・結果名正規化を先行導入し、mainへのmergeとremote performance CIのgreenを確認する。完了済みmodule移行のmergeとは別工程であり、旧型名を移行先へ自動採用しない | `Maintanance/Current/Frozen/PERM-063_FROZEN_TASK.md`。既存資料：`Maintanance/PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md` / `Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md` / `.github/workflows/ci.yml` |
-| `PERM-064` | `ACTIVE` | Codex | [EXECUTION] Permutation benchmark表示名の現行型名への移行 | 2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、PERM-063の先行main merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。先行依存は未解消、実装は未着手 | `Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md` |
+| `PERM-064` | `ACTIVE` | Codex | [EXECUTION] Permutation benchmark表示名の現行型名への移行 | 2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手 | `Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md` |
 | `PERM-065` | `DONE` | Codex | [EXECUTION] runtime-check版Permutationコメントドック回復 | 2026-10-15のユーザー指示により登録・実施。`9ff515c9`で喪失した公開APIコメントを過去差分から回収し、現行runtime-check契約へ照合して、後続順列、所有buffer、手動反復、一時Viewの失効・保存方法、index境界、複雑度を復元した。borrowed Span固有の寿命説明は持ち込んでいない。source診断0件、Xcode build成功、現行`NextPermutations` 44 test成功、`PermutationModule` DocCを`--warnings-as-errors`で生成成功 | `Maintanance/DOCUMENT.md` / `Maintanance/PermutationModule/UserDocumentationDraft.md` / `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `Sources/PermutationModule/NextPermutations.swift` |
 | `PERM-060` | `ACTIVE` | Codex（調査・整理） | [DISCOVERY] Sequenceによる失効View収集バグの再現と修正範囲整理 | 2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施 | `Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md` |
 
@@ -130,7 +129,6 @@
 | `QUALITY-001` | `DOC-026` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、0.9.xをSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する |
 | `QUALITY-001` | `DOC-027` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
-| `PERM-064` | `PERM-063` | `SEQUENCE` | 旧名baselineと新名HEADを対応付けるworkflowを先にmergeしてgreenを確認してから、benchmark titleを変更する |
 | `PERM-062` | `PERM-065` | `SEQUENCE` | 公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する |
 | `RELEASE-078` | `QUALITY-004` | `SEQUENCE` | 現行提供区分に照らした品質課題と証拠の棚卸しを揃えてから、0.6.0開始条件と対象候補を再照合する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
@@ -192,6 +190,12 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
 
 ## 過去の記録への入口
+
+- [RBT-005の整理前記録](../Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md)：Memoize群の扱いをユーザー専任の判断へ変更。
+
+- [RBT-004の整理前記録](../Archived/RBT-004_BEFORE_USER_DECISION_2026-10-16.md)：ユーザー専任の判断へ変更。既存依存は維持。
+
+- [PERM-063除外・工程統合記録](../Archived/PERM-063_EXCLUDED_2026-10-16.md)：独立taskをEXCLUDEDとし、必要な互換工程をPERM-064へ統合。
 
 - [マイルストーン整理前の記録](../Archived/MILESTONE_REORGANIZATION_2026-10-16.md)：RELEASE-007・079はEXCLUDED、DOC-026・027は依存待ちのACTIVEへ整理。
 

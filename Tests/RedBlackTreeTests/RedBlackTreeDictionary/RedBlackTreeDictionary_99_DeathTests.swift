@@ -379,3 +379,63 @@
     #endif
   }
 #endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import Testing
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
+
+  struct RedBlackTreeDictionaryRangePredicatePropagationTests {
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRange() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        let hi = receiver.endIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..<hi, where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRangeExpression() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..., where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+  }
+#endif

@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `RBT-042-HIME` — returned; scope released. Partial acceptance under Astra review; range-erase predicate-error issue remains unresolved. Prior OPT-074 and PERM-078 assignments are DONE.**
+**Current assignment: `RBT-042-HIME` — returned; scope released. Astra has implemented the authorized four-container range-erase fix; final verification is recorded in the review document. Prior OPT-074 and PERM-078 assignments are DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -146,3 +146,7 @@ Claude returned B–D and released the scope in the linked request. Astra indepe
 Return and scope release confirmed. The original return is preserved. Independent Debug checks passed (944 XCTest and 125 Swift Testing cases). S1/S3/S4 and the filter/full-set erase part of S2 are checked; the IndexRange/IndexRangeExpression issue remains open. No overall DONE, production edit, or commit. See `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` for evidence and the proposed bounded correction.
 
 Independent Release verification also passed: native build, debug-info disabled, 747 XCTest and 112 Swift Testing cases. Completed portions are accepted within this verified scope; the range-erase issue remains open.
+
+#### Astra follow-up correction (`RBT-042`, 2026-10-15)
+
+The user authorized the production fix after checkpoint `7ed1cc6b`. Astra reproduced all eight failing range/type combinations and corrected the wrappers. The original return and earlier verification remain historical evidence. Current fix and validation results are in `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, section 範囲eraseのpredicateエラー伝播修正. No further work is assigned to Claude by this note.

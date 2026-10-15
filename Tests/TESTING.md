@@ -68,8 +68,9 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が数件ある（`RedBlackTreeInternal_ComparatorsTests.swift`など）。仕様には影響しない。
 - RBT-042 S1〜S4：Setのヒント付きinsert/updateの参照identity、throwするpredicate（filter・erase(where:)）、
-  form系集合演算の共有元・相手の不変、削除済みIndex Death Testのsetup分離を追加した。範囲版`erase(_:where:)`は
-  predicateのエラーをrethrowせずtrapする（未修正・停止）。結果は`Maintanance/CLAUDE_TASK.md`のRBT-042返却欄。
+  form系集合演算の共有元・相手の不変、削除済みIndex Death Testのsetup分離を追加した。範囲版`erase(_:where:)`の
+  predicateエラーがtrapになる問題はAstraが4型で修正し、修正前失敗・修正後成功の回帰テスト8件を追加。
+  修正と検証の記録は`Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`末尾。Claude返却原文は`Maintanance/CLAUDE_TASK.md`。
 
 最終更新: 2026-10-15 23:40 JST / Claude Opus 5.5
 

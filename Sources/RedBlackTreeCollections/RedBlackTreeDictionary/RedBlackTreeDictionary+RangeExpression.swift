@@ -222,13 +222,13 @@
       rethrows
     {
       assert(__tree_.count == 0 || __tree_.isUnique())
-      do {
-        _ = try __tree_.___erase_validate_range_if(range) {
-          try shouldBeRemoved(Base.__element_($0))
-        }
-        .get()
-      } catch {
-        fatalError("\(error)")
+      // Predicate errors propagate; only invalid ranges terminate the operation.
+      let result = try __tree_.___erase_validate_range_if(range) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+      switch result {
+      case .success: break
+      case .failure(let error): fatalError("\(error)")
       }
     }
   }

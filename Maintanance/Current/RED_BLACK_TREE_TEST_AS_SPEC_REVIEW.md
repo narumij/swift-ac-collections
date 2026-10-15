@@ -270,3 +270,18 @@ Astra独立実行：Apple Swift 6.4 (swiftlang-6.4.0.34.1)、macOS arm64。通�
 Release独立確認：`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`はexit 0。XCTest 747件・Swift Testing 112件/7 suite成功。Debug情報を生成しない構成であり、Claudeの通常Release成功報告とは区別する。完成部分はこの範囲で受け入れるが、範囲erase問題が残るため全体完了とはしない。
 
 2026-10-15、ユーザーの「修正前に一度コミット」指示により、Claudeのテスト追加・返却とAstraの部分受入・問題調査記録を保存する。範囲eraseの製品コードは未修正で、RBT-042全体のDONEを意味しない。
+
+
+### 範囲eraseのpredicateエラー伝播修正（RBT-042、2026-10-15、Astra）
+
+ユーザーが「バグの修正」を明示的に委任。基準HEAD `7ed1cc6b`。4型の`+RangeExpression.swift`で内部`___erase_validate_range_if`の呼出しをcatch-allから外し、返されたResultのfailureだけをfatalErrorへ変換した。predicateのthrowは呼出元へ伝播する。範囲検査・削除アルゴリズム・Bound/View経路・公開シグネチャは変更していない。
+
+各型の既存`_99_DeathTests.swift`へ`RangePredicatePropagationTests`を追加し、IndexRangeとIndexRangeExpressionの計8ケースを検査。子プロセスで一度削除した後に固有エラーを投げ、期待エラーをcatchし呼出回数と共有元の個数を確認した場合だけexit 0とする。エラーを握り潰す通常復帰や別のエラーは非ゼロで失敗する。子プロセスを使うのは修正前のtrapでテストランナーを終了させないため。全巻戻しは要求せず、子プロセスのexitを参照寿命の検証とは扱わない。
+
+独立実行（Apple Swift 6.4、macOS arm64）：修正前`swift test --disable-sandbox --build-system native --filter RangePredicatePropagationTests`は8件すべて期待exit 0に対しSIGTRAPで失敗。修正後は8件すべて成功。これにより他3型も静的疑いから実行再現済みへ更新する。続く同構成`--filter RedBlackTreeTests`も成功。通常の寿命検査を無効化するtraitは使用していない。既存の不正範囲停止検査を含めて検証した。
+
+S2のIndex範囲erase停止原因を修正した。M4/D2/MM2に挙げた他のthrowing API・参照寿命・全構成の補完まで完了したとは扱わない。互換モードでは変更した通常APIと新規testが条件付きで除外される。Linux・Swift 6.2・ASan・互換構成の実行は今回行っていない。Claudeの返却原文は保持し、今回の修正と検証の記録はこの節へ置く。
+
+最終検証：DebugはXCTest 944件＋Swift Testing 133件、Releaseは`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`でXCTest 747件＋Swift Testing 120件、いずれもexit 0。既存の不正範囲Death Testを維持した。修正・検証完了、RBT-042はコミット許可待ちのWAITING_USER。
+
+2026-10-15、ユーザーのコミット許可により4型の範囲erase修正・回帰テスト・検証記録を保存し、RBT-042をDONEとする。

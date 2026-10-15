@@ -52,3 +52,21 @@ B〜Dを`PERM-078`の未発注候補として[依頼案](PERMUTATION_TEST_AS_SPE
 ## 発注記録（2026-10-15、Astra）
 
 ユーザーから「先に渡して、次に閉じる」と指示を受け、OPT-074の正式返却・残作業なし・占有返却を確認してPERM-078を有効化し、CLAUDE_TASK.mdへ固定ID付きで依頼を掲載した。上の未発注記録は準備時点の経緯であり、現在は発注済み（着手報告は未確認）。B〜Dの範囲は変更していない。A／PERM-051は引き続き対象外。
+
+## PERM-078返却のAstra受入（2026-10-15）
+
+基準HEAD `904baa02`、Claude返却の未コミット差分を独立確認。変更は指定したtest 3ファイル・Tests/TESTING.mdのhandoff・本人の返却欄に限定され、production・manifest・凍結PERM-051に変更なし。正式返却に残件なし・占有返却がある。
+
+B：終端setupの失敗はexitCode 86へ分岐し、期待するSwift trap signalとは一致しない。通常の終端nil確認も追加されている。C：一時sourceのみから作った未開始ownerの保持とconsume後の解放数を検査する。D：生成後のsource変更と初期順序・後続列挙の独立をIntで確認する。既存契約の範囲内として受け入れる。
+
+Astra独立実行（macOS arm64 / Apple Swift 6.4）：
+- `swift test --filter PermutationTests`：環境のsandbox権限制限でbuild失敗。成功の証拠に含めない。
+- `swift test --disable-sandbox --filter PermutationTests`：終了0。XCTest 63 + 7件、Swift Testing 18件・3 suites成功。新規の借用2ケースと終端失効ケースが実際に実行されたことを確認。
+- `swift test --disable-sandbox -c release --filter PermutationTests`：関連外RedBlackTreeTreeTestsのdSYM生成でOperation not permitted、build失敗。
+- `swift test --disable-sandbox -c release -debug-info-format none --filter PermutationTests`：終了0。同じ件数で成功。Release最適化は維持、debug情報生成だけ省略。
+- `git diff --check`：問題なし。
+
+互換構成とBの旧版／新版negative controlはClaudeの返却証拠と差分を照合した。Astraはそれらを再実行していない。Linux、Swift 6.2、ASan、互換Release、全targetの実行保証へ広げない。
+受け入れ完了。今回のコミット許可は先行する赤黒木レビュー記録に適用済みのため、Permutation反映と受入記録はWAITING_USER（コミット許可待ち）とする。
+
+2026-10-15、ユーザーがPermutation反映と受入記録のコミットを許可。PERM-078をDONEとし、変更と本記録を同じコミットへ保存する。

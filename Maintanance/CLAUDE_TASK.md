@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `PERM-078-HIME` — ACTIVE (issued; execution start not confirmed). `OPT-074` has been returned and accepted; the user authorized committing its closure record as DONE.**
+**No active assignment. `PERM-078-HIME` has been returned and accepted by Astra; DONE, with user authorization to commit the changes and acceptance record. `OPT-074` is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -49,7 +49,7 @@ Current assignments must follow the current request and explicit delegation, not
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
-## Active assignment
+## Returned assignment — PERM-078 accepted, DONE
 
 ### PERM-078-HIME — Permutation Test as Specification findings B–D
 
@@ -84,3 +84,7 @@ specification questions, or production defects. Assigned scope released. Details
 #### Astra acceptance (`OPT-074`, 2026-10-15)
 
 Claude’s completion and scope release are confirmed in the return above, saved in `92b65db8`. Tests and compiler fixtures have no changes since independently verified `427b155a`. Acceptance is complete; the user authorized committing the closure record on 2026-10-15. Registry status is DONE, saved with this record. See the review document’s latest Astra confirmation.
+
+#### Astra acceptance (`PERM-078`, 2026-10-15)
+
+Claude returned B–D and released the scope in the linked request. Astra independently reviewed the diff and passed the affected Debug and Release (without debug-info generation) tests. Acceptance is complete; the user authorized committing the changes and acceptance record on 2026-10-15. Details: `Current/PERMUTATION_TEST_AS_SPEC_REVIEW.md`. Original request and Claude return are preserved.

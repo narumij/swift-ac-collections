@@ -10,6 +10,7 @@
 // - 空、単一要素、全要素が等しい並び、後続のない並びは、現在の並びを1回だけ返す
 // - 最後の並びの後は`nil`を返し、以後も`nil`を返し続ける
 // - 元のCollectionは変更しない
+// - 生成後に元のCollectionを変更しても、生成時の並びから列挙する
 
 #if compiler(>=6.4)
 import NextPermutationModule
@@ -119,6 +120,15 @@ final class BorrowedNextPermutations_1_EnumerationTests: XCTestCase {
     var iterator = source.borrowedNextPermutations()
     _ = collect(&iterator)
     XCTAssertEqual(source, [2, 1, 3])
+  }
+
+  func testLaterSourceChangesDoNotAlterTheEnumeration() throws {
+    var source = [2, 1, 3]
+    var iterator = source.borrowedNextPermutations()
+    source[0] = 99
+    source.append(100)
+    XCTAssertEqual(collect(&iterator), [[2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+    XCTAssertEqual(source, [99, 1, 3, 100])
   }
 }
 

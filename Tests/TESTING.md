@@ -67,8 +67,10 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 - ElementBuffer系の仕様testのファイル名は改名前の`BareArray_*`・`OptionalArray_*`のまま。監査の正本がこの名前を
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が数件ある（`RedBlackTreeInternal_ComparatorsTests.swift`など）。仕様には影響しない。
+- PERM-078 B〜D：通常版の終端失効Death Test 2件はsetup不成立を終了status 86で区別し、終端`nil`を通常testでも確認する。
+  借用版に未開始ownerの解放と生成後の元配列変更からの独立を追加した。結果は`Maintanance/Current/PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md`の返却欄。
 
-最終更新: 2026-10-15 06:10 JST / Claude Opus 5.5
+最終更新: 2026-10-15 22:55 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

@@ -32,4 +32,36 @@ List changed files and group changes by purpose. No commit or push authorization
 
 ## Return — reserved for Claude after dispatch
 
-No return received. Execution start has not been confirmed.
+Returned 2026-10-15 22:55 JST by Claude (Opus 5.5, `claude-opus-5-5`). Baseline HEAD `c98a0908`; changes are uncommitted in the working tree. Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64.
+
+### Changed files by purpose
+
+- B — `Tests/PermutationTests/NextPermutations/NextPermutations_99_ViewInvalidationDeathTests.swift`: the two terminal-nil cases no longer use `precondition`/`next()!` for setup inside the child process. Setup is a `guard` that calls `exit(setupFailedExitStatus)` (86, a normal exit) when the first `next()` is nil or the terminal `next()` is not nil, so only the access to the invalidated view can produce the expected signal. The expected signal stays `.signal(expectedSwiftTrapSignal)`. Added `terminalNextReturnsNilForTheSetupsBelow`, which checks the same setups' terminal nil as ordinary expectations outside a child process. Imports Darwin/Glibc for `exit`.
+- C — `Tests/PermutationTests/BorrowedNextPermutations/BorrowedNextPermutations_98_InternalTests.swift`: `testDestroyingNeverStartedIteratorReleasesEachElementOnce`. The source array is a temporary inside the expression, so no reference outlives the owner; it checks 0 releases before destruction and 3 after `consume`. File header updated.
+- D — `Tests/PermutationTests/BorrowedNextPermutations/BorrowedNextPermutations_1_EnumerationTests.swift`: `testLaterSourceChangesDoNotAlterTheEnumeration`. After construction it replaces `source[0]` and appends an element; the enumeration is still `[[2,1,3],[2,3,1],[3,1,2],[3,2,1]]` (first span = construction order, then its successors), and the source shows the change. Int elements only; no deep-copy demand. File header updated.
+- Handoff — `Tests/TESTING.md`: one handoff item and timestamp.
+
+### Validation
+
+| Command | Result |
+| --- | --- |
+| `swift test --filter 'TerminalNext\|NeverStarted\|LaterSourceChanges'` | exit 0; XCTest 4 (new C, D and the two normal-version counterparts), Swift Testing 2 terminal Death Tests passed |
+| `swift test --filter 'terminalNextReturnsNilForTheSetupsBelow\|NextPermutations_99_ViewInvalidation'` | exit 0; 11 tests in the suite, including the new positive control |
+| `swift test -c debug --filter PermutationTests` | exit 0; XCTest 63 + 7, Swift Testing 18 tests in 3 suites, 0 failures |
+| `swift test -c release --filter PermutationTests` | exit 0; same counts, 0 failures |
+| Compatibility: temporary copy of the repository under `mktemp -d` (no `.build`/`.git`), `COMPATIBLE_ATCODER_2025` uncommented only in the copy's `Package.swift`, `swift test --filter 'BorrowedNextPermutations\|AtCoder2025'` | exit 0; Borrowed_1 13 tests and Borrowed_98 5 tests (both including the new cases), 31 XCTest total, 0 failures. Copy removed |
+
+Negative control for B (temporary, restored by copying the saved original back; the diff afterwards matched the pre-control diff):
+
+1. New form, setup broken by changing `[7]` to `[1, 7]` in `subscriptTrapsAfterTerminalNextReturnsNil` so the terminal `next()` returns a view: the test **failed** with `expected exit status ".signal(SIGTRAP)", but ".exitCode(86)" was reported instead`.
+2. Old form (`next()!` + `precondition(terminal == nil)`) with the same broken setup: the test **passed**, reproducing the false positive described in finding B.
+
+### Not executed
+
+Linux (SIGILL path and opt-in Death Tests), Swift 6.2, ASan, full-suite `swift test`, and compatibility-mode Release. In compatibility mode the normal-version Death Test file is excluded by `!COMPATIBLE_ATCODER_2025`, so B has no compatibility-mode run by design.
+
+### Concerns, completion, release
+
+- No production defect or unresolved contract was found. Finding A / PERM-051 was not touched.
+- One process note: during validation I briefly redirected build output to a stray file in the system temporary directory outside a `mktemp -d` directory; it was deleted immediately and contained only build progress.
+- B–D complete. I release the assigned scope (the three test files, the `Tests/TESTING.md` handoff item, and this Return section). No commit or push was made.

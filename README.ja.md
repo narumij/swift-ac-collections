@@ -109,20 +109,7 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 生成済みのAPIドキュメントは
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
 
-Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
-
-```console
-swift package -c release generate-documentation \
-  --target RedBlackTreeCollections \
-  --warnings-as-errors
-```
-
-ブラウザでローカルプレビューするには、次を実行します。
-
-```console
-swift package -c release --disable-sandbox preview-documentation \
-  --target RedBlackTreeCollections
-```
+生成・検証・ローカルプレビューの方法は、[文書整備の手引き](Maintanance/DOCUMENT.md#swift-doccの確認)を参照してください。
 
 ## アンダースコア付き宣言について
 

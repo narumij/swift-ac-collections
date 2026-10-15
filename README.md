@@ -105,21 +105,7 @@ Use range-based removal APIs for consecutive deletions.
 The generated API documentation is available on
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
 
-Build the API documentation, including validation of documentation comments,
-with Swift-DocC:
-
-```console
-swift package -c release generate-documentation \
-  --target RedBlackTreeCollections \
-  --warnings-as-errors
-```
-
-To preview it locally in a browser, run:
-
-```console
-swift package -c release --disable-sandbox preview-documentation \
-  --target RedBlackTreeCollections
-```
+For generation, validation, and local preview instructions, see the [documentation maintenance guide](Maintanance/DOCUMENT.md#swift-doccの確認) (in Japanese).
 
 ## Underscored Declarations
 

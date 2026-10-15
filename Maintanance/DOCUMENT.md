@@ -108,6 +108,41 @@ swift package -c release --allow-writing-to-directory .build/documentation \
 
 候補CIの実際の構成は[候補workflow](../.github/workflows/candidate.yml)で確認する。上の例はローカル生成用で、CIの静的ホスティング向け変換・公開パス指定は含まない。確認結果には対象target・構成・実行結果を残し、他moduleや他構成まで検証済みとしない。
 
+### Astraによる自走プレビュー
+
+DocCのレビューを依頼されたときは、Astra自身で対象を生成し、ローカルサーバーを起動して、アプリ内ブラウザから表示と導線を確認できる。ユーザーによる事前起動は不要。上の生成検証と、ここでの画面確認を区別する。
+
+1. repository直下で対象targetとSwift toolchainを確認する。既存のプレビューやビルドを邪魔しないよう、空いているportと専用の出力先を選ぶ。下記の8087と出力先は例であり、使用中なら別のものを使う。
+2. 実行環境に必要な書込み権限と、ローカルサーバーを起動する通信権限があることを確認する。制限されている場合は環境の権限申請を使う。`--disable-sandbox`はSwiftPM pluginのサンドボックス設定であり、実行環境側の制限を解除するものではない。
+3. Release構成、警告をエラーにする指定でプレビューを起動する。プロセスの実行セッションを保持しておく。
+
+```bash
+swift package --disable-sandbox -c release \
+  --allow-writing-to-directory .build/astra-docc-preview \
+  preview-documentation \
+  --target ElementBufferModule \
+  --output-path .build/astra-docc-preview \
+  --port 8087 \
+  --warnings-as-errors
+```
+
+4. 起動ログのURLをアプリ内ブラウザで開く。上の例では `http://localhost:8087/documentation/elementbuffermodule/`。起動メッセージだけで成功とせず、実際に本文が表示されることを確認する。
+5. ブラウザ操作ツール（`cua_repl`）で本文を読み、画面でもコード例・表・レイアウトを確認する。対象のTopicsや型・memberリンクをクリックし、意図したページへ移れることを確かめる。アクセシビリティの読み取りだけではコードブロックの内容が抜ける場合があるので、空のコード例と断定せず画面と照合する。
+6. Swiftソースのコメントや宣言を変更した場合は、プレビューを停止して再起動し、symbol graphから更新する。カタログの監視だけでSwiftソースも再生成されたと見なさない。
+7. 確認後は、自分が起動したセッションへCtrl-Cを送り、`Stopped preview server`を確認する。ユーザーに継続閲覧を渡す場合だけ起動したままURLと停止方法を伝える。他の人が起動したサーバーは止めない。
+
+#### 起動時に詰まった場合
+
+- 既定のビルド方式で補助ツールの`GenerateDSYMFile`が`Operation not permitted`になった場合、2026-10-16の環境では`swift package`のオプションに`--build-system native`を追加して起動できた。このオプションは非推奨警告が出るため、恒久的な必須設定にはせず、その環境で必要な回避策として扱う。
+- `Can't start the preview server`の場合は、portの競合と実行環境の通信権限を確認する。今回の試行では通信権限を得た後、同じportで起動できた。
+- ビルド失敗・DocCの診断・サーバー起動失敗・ブラウザの表示失敗を分けて扱う。表示できないことだけで文書の不備と判定しない。
+
+#### 方法の確認記録
+
+2026-10-16、AstraがApple Swift 6.4の環境でElementBufferModuleをRelease構成・`--warnings-as-errors`付きで生成し、上記のnative方式と通信権限を用いて8087番portで起動した。アプリ内ブラウザでmodule本文・コード例の表示、ElementBuffer2Dへのリンク遷移と型ページの表示を確認し、Ctrl-Cによる停止まで確認した。SwiftPMのユーザーキャッシュへの書込み警告とnative方式の非推奨警告は出たが、DocCの警告・エラーは出なかった。
+
+この記録は自走プレビュー方法の疎通確認であり、ElementBuffer全体の内容レビュー、全リンク、他target、他toolchainの検証完了を意味しない。実際のレビューでは対象・構成・表示を確認したページ・生成診断・残る未確認を、その作業の記録へ残す。
+
 ## コメント・API Matrix・CHANGELOG
 
 - コメントドックは動作説明に加え、境界、失敗条件、計算量、Index無効化を必要に応じて記す。

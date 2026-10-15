@@ -81,6 +81,47 @@
       }
     }
 
+    // BARE-046 D: empty storage has no valid coordinate, even when `indices` is not empty.
+    @Test func referenceRejectsCoordinateZeroInEmptyStorage() async {
+      guard #available(macOS 27.0, *) else { return }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        Self.referenceInEmpty1D()
+      }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        Self.referenceInEmpty2D()
+      }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        Self.referenceInEmpty3D()
+      }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        Self.referenceInEmpty4D()
+      }
+    }
+
+    @available(macOS 27.0, *)
+    private static func referenceInEmpty1D() {
+      var array = ElementBuffer<Int>(repeating: 0, count: 0)
+      _ = array.reference(at: 0)
+    }
+
+    @available(macOS 27.0, *)
+    private static func referenceInEmpty2D() {
+      var array = ElementBuffer2D<Int>(repeating: 0, width: 0, height: 3)
+      _ = array.reference(at: 0, 0)
+    }
+
+    @available(macOS 27.0, *)
+    private static func referenceInEmpty3D() {
+      var array = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 0, depth: 3)
+      _ = array.reference(at: 0, 0, 0)
+    }
+
+    @available(macOS 27.0, *)
+    private static func referenceInEmpty4D() {
+      var array = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 0, size3: 3)
+      _ = array.reference(at: 0, 0, 0, 0)
+    }
+
     @available(macOS 27.0, *)
     private static func reference1D(_ position: Int) {
       var array = ElementBuffer<Int>(repeating: 0, count: 3)

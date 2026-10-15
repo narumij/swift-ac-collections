@@ -162,4 +162,50 @@ final class BareArray_1_InitializationTests: XCTestCase {
     XCTAssertTrue(four.indices.isEmpty)
     XCTAssertEqual(calls, 0)
   }
+
+  // BARE-046 D: a zero on any single axis, for both the repeating and the closure initializer.
+  // The closure is never called, and `indices` remains the outermost axis even when an inner axis is zero.
+
+  func testEveryZeroAxisCreatesEmptyStorageForBothInitializers() {
+    var calls = 0
+    func make() -> Int {
+      calls += 1
+      return 0
+    }
+
+    XCTAssertTrue(ElementBuffer<Int>(repeating: 1, count: 0).indices.isEmpty)
+    XCTAssertTrue(ElementBuffer<Int>(count: 0, make).indices.isEmpty)
+
+    for (width, height) in [(0, 3), (2, 0)] {
+      XCTAssertEqual(
+        ElementBuffer2D<Int>(repeating: 1, width: width, height: height).indices, 0..<height,
+        "(\(width), \(height))")
+      XCTAssertEqual(
+        ElementBuffer2D<Int>(width: width, height: height, make).indices, 0..<height,
+        "(\(width), \(height))")
+    }
+
+    for (width, height, depth) in [(0, 3, 4), (2, 0, 4), (2, 3, 0)] {
+      XCTAssertEqual(
+        ElementBuffer3D<Int>(repeating: 1, width: width, height: height, depth: depth).indices,
+        0..<depth, "(\(width), \(height), \(depth))")
+      XCTAssertEqual(
+        ElementBuffer3D<Int>(width: width, height: height, depth: depth, make).indices,
+        0..<depth, "(\(width), \(height), \(depth))")
+    }
+
+    for size in [[0, 3, 4, 5], [2, 0, 4, 5], [2, 3, 0, 5], [2, 3, 4, 0]] {
+      XCTAssertEqual(
+        ElementBuffer4D<Int>(
+          repeating: 1, size0: size[0], size1: size[1], size2: size[2], size3: size[3]
+        ).indices,
+        0..<size[3], "\(size)")
+      XCTAssertEqual(
+        ElementBuffer4D<Int>(size0: size[0], size1: size[1], size2: size[2], size3: size[3], make)
+          .indices,
+        0..<size[3], "\(size)")
+    }
+
+    XCTAssertEqual(calls, 0, "the initializer closure must not be called for empty storage")
+  }
 }

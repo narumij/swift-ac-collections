@@ -97,4 +97,61 @@ production実装・公開API・性能基準・供用方針・Registryは実施�
 
 ## 返却欄（Claudeが記入）
 
-返却待ち。A〜Eの対応、変更ファイル、実行環境と結果、残る判断点を記入する。
+2026-10-15 17:19 JST / Claude Opus 5.5（姫）。production・公開API・品質文書・DocC・Registryは変更していない。commitしていない。
+
+### A〜Eの対応
+
+| 項目 | 対応 | 内容と検出する仕様違反 |
+| --- | --- | --- |
+| A | 追加 | compiler fixtureに`BareArrayMutableRefConflict` targetを追加。1D〜4Dそれぞれで、借用参照の生存中に所有者へのread（`element(at:)`）、set（`setElement`）、二つ目の`reference(at:)`、`consume`、置換代入を行う20関数。各関数が参照生成位置で`overlapping accesses to 'array', but modification requires exclusive access`を1件ずつ出し、他のerrorが0件であることを検証scriptで確認する。正常例として同じ20操作を参照の最終使用後に行う関数を`BareArrayMutableRefValid`へ追加し、compileできることを確認する。参照が所有者への排他借用を保たなくなる変更を検出する |
+| B | 追加 | `BareArray_7`に1D〜4Dの全座標試験を4件追加。非対称寸法（2×3×4×5まで）と座標ごとに異なる初期値（storage順の値）を使い、参照で全座標の初期値を読み、各座標への書込みが`element(at:)`という別経路で当該要素だけに反映されることを、毎回全要素について確認する。期待値は座標から独立に計算し、自己比較を避けた。参照の座標→位置の写像の誤りを検出する |
+| C | 追加 | `BareArray_99`に、各軸だけを負にして他を正にした初期化をrepeating版・closure版で6関数18ケース（2D 2+2、3D 3+3、4D 4+4）、ゼロ軸と負軸の共存を2D〜4Dで3関数追加。いずれもSwift precondition trapのsignal（`expectedSwiftTrapSignal`）を要求し、allocation失敗など別の失敗を成功に数えない。単一軸の非負検査漏れと、空領域の早期処理による検査の迂回を検出する |
+| D | 追加 | `BareArray_1`に、各軸を一つずつゼロにした場合をrepeating版・closure版で確認する試験を追加（closureが呼ばれないこと、`indices`が最外軸の範囲であること）。`BareArray_4`に内側ゼロでも`indices`が最外軸を保つ試験を追加。`BareArray_97`に空領域の座標0へのread／setの拒否（1D〜4D）、`BareArray_96`に参照取得の拒否（1D〜4D）を追加。既存の「途中積がoverflowしてもゼロ次元なら空」の例は保持した |
+| E | 追加 | `BareArray_5`に3件追加。`element(at:)`で得た参照がbuffer破棄後も生き、最後の参照で一度だけ破棄されること。外部参照があるとslotの上書きでは破棄されないこと。repeating初期化の全slotが同一オブジェクトを保持し、最後の参照を手放したときに一度だけ破棄されること。観測点は`withExtendedLifetime`で固定した |
+
+### 変更ファイル
+
+- `Tests/ElementBufferModuleTests/BareArray_1_InitializationTests.swift`（D）
+- `Tests/ElementBufferModuleTests/BareArray_4_IndicesTests.swift`（D）
+- `Tests/ElementBufferModuleTests/BareArray_5_ReferenceLifetimeTests.swift`（E）
+- `Tests/ElementBufferModuleTests/BareArray_7_BorrowedReferenceTests.swift`（B）
+- `Tests/ElementBufferModuleTests/BareArray_96_BorrowedReferenceDeathTests.swift`（D）
+- `Tests/ElementBufferModuleTests/BareArray_97_CoordinateValueAccessDeathTests.swift`（D）
+- `Tests/ElementBufferModuleTests/BareArray_99_DeathTests.swift`（C）
+- `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/Package.swift`（A、target追加）
+- `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/Sources/BareArrayMutableRefConflict/BareArrayMutableRefConflict.swift`（A、新規）
+- `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/Sources/BareArrayMutableRefValid/BareArrayMutableRefValid.swift`（A、正常例20関数を追加）
+- `Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`（A、下記の既存不具合の修正と新target検証）
+
+### 既存の検証scriptの不具合（発見・修正）
+
+作業前の`VerifyBareArrayCompilerDiagnostics.sh`は、この環境で「expected 4 … found 0」で失敗していた。compilerが出力を
+redirectしても色付き診断（ANSI escape）を出し、`error: lifetime-dependent …`の文字列照合が一致しないためで、escape fixture自体は
+期待どおり4件の診断を出していた。照合前にANSI escapeとterminal hyperlinkを除くよう修正し、あわせて期待件数以外のerrorが
+出た場合も失敗にした（偶然の別エラーを成功に数えない）。
+
+### 実行環境と結果
+
+- toolchain: Apple Swift version 6.4 (swiftlang-6.4.0.34.1)。OS: macOS 27.0.1 (26A434)、arm64。Swift 6.2 toolchainでは実行していない（6.2の成功として扱わない）。
+- `sh Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`: 成功。compile-pass 1 target（21関数）、escape診断4件、borrow-conflict診断20件、他のerror 0件。
+  試験として1関数を正常な順序へ変えると「found 19 of 19」で失敗することを確認し、元へ戻した。
+- `swift test --filter ElementBufferModuleTests`（Debug）: XCTest 43件、Swift Testing 38件（Death Test）すべて成功。追加した各testの実行をログの名前で確認した。
+- `swift test -c release --filter ElementBufferModuleTests`: XCTest 36件、Swift Testing 38件すべて成功。
+- `swift test`（Debug、全体）: exit 0。XCTest 1267件（作業前1258件、+9）、Swift Testing 209件（同197件、+12）、失敗0件。
+- 検出力の確認（repositoryの一時copyで実施、copyは削除済み）: 2D初期化のheight検査を外すと、追加した`negativeSingleAxis_traps_2DRepeating`は
+  SIGABRT（allocation失敗）を検出して失敗し、`zeroAndNegativeAxes_traps_2D`は正常終了を検出して失敗した。両軸同時に負の既存testは通過した。
+  3D参照の位置計算のy・zを入れ替えると、追加した`testReference3DReachesEveryPositionAndUpdatesOnlyThatElement`が失敗した。
+
+### 未実施・残る判断点
+
+- D・Eの検出力（mutationでの確認）は未実施。Linuxでの実行は未実施（Death TestはLinuxではopt-in）。
+- 契約上の判断待ちはなし。期待値を弱めた箇所、production変更はない。
+- 作業時点で`Sources/ElementBufferModule/ElementBuffer.swift`ほかに他者の未commit変更（ドキュメントコメントのみ）があった。触れておらず、test結果はその状態での結果である。
+
+## Codex受入
+
+2026-10-15、返却差分とA〜Eの対応を照合し、production変更がないことを確認した。
+`VerifyBareArrayCompilerDiagnostics.sh`を独立に再実行し、正常例21関数、escape診断4件、borrow-conflict診断20件、その他のerror 0件で成功した。
+Xcodeのactive test plan `swift-ac-collections`から`ElementBufferModuleTests` 81件を指定して再実行し、81件成功、失敗0件、skip 0件、未実行0件を確認した。
+直接の`swift test --filter ElementBufferModuleTests`は実行環境の`sandbox-exec: sandbox_apply: Operation not permitted`で開始できなかったため、その失敗をtest failureとは扱わず、Xcode実行結果を受入証拠とした。
+未実施として返却されたD・Eのmutation検査、Linux、Swift 6.2 toolchainは受入範囲外のまま残す。A〜Eの既存契約を検出するtest補強として受け入れ、1.0品質全体の受入とは扱わない。

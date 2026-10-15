@@ -27,5 +27,14 @@ let package = Package(
         .enableExperimentalFeature("Lifetimes")
       ]
     ),
+    .target(
+      name: "BareArrayMutableRefConflict",
+      dependencies: [
+        .product(name: "AcCollections", package: "swift-ac-collections")
+      ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes")
+      ]
+    ),
   ]
 )

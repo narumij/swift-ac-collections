@@ -5,6 +5,10 @@
 //  Created by narumij on 2026/02/14.
 //
 
+// Debug専用の観察（test supportの`isValid`と内部のcopy count）は元の条件のまま残し、
+// 公開結果だけで確かめられるBoundの動作は下の`RedBlackTreeDictionaryBoundPublicBehaviorTests`で
+// Releaseでも実行する。公開側ではkeyに加えて対応するvalueも確かめる（RBT-044 D5）。
+
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
   import RedBlackTreeCollections
@@ -15,78 +19,26 @@
 
     func testAfter() throws {
       XCTAssertTrue(a.isValid(start()))
-      XCTAssertEqual(a[start()]?.key, 0)
-
       XCTAssertTrue(a.isValid(start().after))
-      XCTAssertEqual(a[start().after]?.key, 1)
-
       XCTAssertTrue(a.isValid(start().after.after))
-      XCTAssertEqual(a[start().after.after]?.key, 2)
-
       XCTAssertFalse(a.isValid(start().after.after.after))
-      XCTAssertNil(a[start().after.after.after])
     }
 
     func testEndIsInvalid() throws {
       XCTAssertFalse(a.isValid(end()))
-      XCTAssertNil(a[end()])
     }
 
-    func testLowerUpperBoundFind() throws {
-      XCTAssertEqual(a[lowerBound(-1)]?.key, 0)
-      XCTAssertEqual(a[lowerBound(0)]?.key, 0)
-      XCTAssertEqual(a[lowerBound(1)]?.key, 1)
-      XCTAssertEqual(a[lowerBound(2)]?.key, 2)
-      XCTAssertEqual(a[lowerBound(3)]?.key, nil)
-
-      XCTAssertEqual(a[upperBound(-1)]?.key, 0)
-      XCTAssertEqual(a[upperBound(0)]?.key, 1)
-      XCTAssertEqual(a[upperBound(1)]?.key, 2)
-      XCTAssertEqual(a[upperBound(2)]?.key, nil)
-
-      XCTAssertEqual(a[find(1)]?.key, 1)
-      XCTAssertEqual(a[find(5)]?.key, nil)
-
+    func testLastIsValid() throws {
       XCTAssertTrue(a.isValid(.last))
-      XCTAssertEqual(a[.last]?.key, 2)
     }
 
-    func testViewCount() throws {
-      XCTAssertEqual(a[lowerBound(0)..<upperBound(2)].count, 3)
-    }
-
-    func testEraseBound() throws {
-      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
-      let removed = b.erase(find(1))
-      XCTAssertEqual(removed?.key, 1)
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 2])
-    }
-
-    func testEraseBounds() throws {
-      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
-      b.erase(lowerBound(1)..<upperBound(3))
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
-    }
-
-    /// 下端が上端より後ろにある逆向きの範囲は空の範囲として扱い、何も削除しないこと。
-    func testEraseReversedBoundsRemovesNothing() throws {
-      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
-      b.erase(upperBound(10)..<lowerBound(-10))
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
-      b.erase(lowerBound(3)..<lowerBound(1))
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
-    }
-
-    /// 逆向きの範囲では、条件クロージャを一度も呼ばず、何も削除しないこと。
-    func testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate() throws {
-      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
-      var calls = 0
-      b.erase(lowerBound(3)..<lowerBound(1)) { _ in
-        calls += 1
-        return true
+    func testLessThanAllKeysIsValid() throws {
+      let cases: [(key: Int, valid: Bool)] = [
+        (-1, false), (0, false), (1, true), (2, true), (3, true), (4, true),
+      ]
+      for (key, valid) in cases {
+        XCTAssertEqual(a.isValid(.lessThan(key)), valid, "key=\(key)")
       }
-      XCTAssertEqual(calls, 0)
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
     }
 
     /// 空のDictionaryに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
@@ -120,73 +72,156 @@
       XCTAssertTrue(b.isEmpty)
     }
 
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import XCTest
+  import RedBlackTreeCollections
+
+  /// Boundの公開動作。公開APIの結果だけで確かめるので、Releaseでも実行する（RBT-044 D5）。
+  final class RedBlackTreeDictionaryBoundPublicBehaviorTests: RedBlackTreeTestCase {
+
+    let a: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+
+    private func pairs<S: Sequence>(_ elements: S) -> [String] where S.Element == (key: Int, value: String) {
+      elements.map { "\($0.key):\($0.value)" }
+    }
+
+    /// 解決できる`after`は要素を返し、末尾を越えた`after`は解決できず`nil`になること。
+    func testAfterResolvesUntilTheEnd() throws {
+      XCTAssertEqual(a[start()]?.key, 0)
+      XCTAssertEqual(a[start()]?.value, "a")
+      XCTAssertEqual(a[start().after]?.key, 1)
+      XCTAssertEqual(a[start().after]?.value, "b")
+      XCTAssertEqual(a[start().after.after]?.key, 2)
+      XCTAssertEqual(a[start().after.after]?.value, "c")
+      XCTAssertNil(a[start().after.after.after])
+    }
+
+    func testEndResolvesToNoElement() throws {
+      XCTAssertNil(a[end()])
+    }
+
+    func testLowerUpperBoundFind() throws {
+      XCTAssertEqual(a[lowerBound(-1)]?.value, "a")
+      XCTAssertEqual(a[lowerBound(0)]?.value, "a")
+      XCTAssertEqual(a[lowerBound(1)]?.value, "b")
+      XCTAssertEqual(a[lowerBound(2)]?.key, 2)
+      XCTAssertEqual(a[lowerBound(2)]?.value, "c")
+      XCTAssertNil(a[lowerBound(3)])
+
+      XCTAssertEqual(a[upperBound(-1)]?.value, "a")
+      XCTAssertEqual(a[upperBound(0)]?.value, "b")
+      XCTAssertEqual(a[upperBound(1)]?.value, "c")
+      XCTAssertNil(a[upperBound(2)])
+
+      XCTAssertEqual(a[find(1)]?.key, 1)
+      XCTAssertEqual(a[find(1)]?.value, "b")
+      XCTAssertNil(a[find(5)])
+
+      XCTAssertEqual(a[.last]?.key, 2)
+      XCTAssertEqual(a[.last]?.value, "c")
+    }
+
+    func testViewCount() throws {
+      XCTAssertEqual(a[lowerBound(0)..<upperBound(2)].count, 3)
+    }
+
+    func testEraseBound() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+      let removed = b.erase(find(1))
+      XCTAssertEqual(removed?.key, 1)
+      XCTAssertEqual(removed?.value, "b")
+      XCTAssertEqual(pairs(b), ["0:a", "2:c"])
+    }
+
+    func testEraseBounds() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      b.erase(lowerBound(1)..<upperBound(3))
+      XCTAssertEqual(pairs(b), ["0:a", "4:e"])
+    }
+
+    /// 下端が上端より後ろにある逆向きの範囲は空の範囲として扱い、何も削除しないこと。
+    func testEraseReversedBoundsRemovesNothing() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      b.erase(upperBound(10)..<lowerBound(-10))
+      XCTAssertEqual(pairs(b), ["0:a", "1:b", "2:c", "3:d", "4:e"])
+      b.erase(lowerBound(3)..<lowerBound(1))
+      XCTAssertEqual(pairs(b), ["0:a", "1:b", "2:c", "3:d", "4:e"])
+    }
+
+    /// 逆向きの範囲では、条件クロージャを一度も呼ばず、何も削除しないこと。
+    func testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      var calls = 0
+      b.erase(lowerBound(3)..<lowerBound(1)) { _ in
+        calls += 1
+        return true
+      }
+      XCTAssertEqual(calls, 0)
+      XCTAssertEqual(pairs(b), ["0:a", "1:b", "2:c", "3:d", "4:e"])
+    }
+
     func testSubscriptBoundsView() throws {
-      let view = a[lowerBound(0)..<upperBound(2)]
-      XCTAssertEqual(Array(view).map { $0.key }, [0, 1, 2])
+      XCTAssertEqual(pairs(a[lowerBound(0)..<upperBound(2)]), ["0:a", "1:b", "2:c"])
     }
 
     func testSubscriptBoundsModifyPopFirst() throws {
       var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
       let removed = b[lowerBound(0)..<upperBound(2)].popFirst()
       XCTAssertEqual(removed?.key, 0)
-      XCTAssertEqual(Array(b).map { $0.key }, [1, 2, 3])
+      XCTAssertEqual(removed?.value, "a")
+      XCTAssertEqual(pairs(b), ["1:b", "2:c", "3:d"])
     }
 
     func testRemoveBoundsWhere() throws {
       var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
       b.erase(lowerBound(0)..<upperBound(4)) { $0.key % 2 == 0 }
-      XCTAssertEqual(Array(b).map { $0.key }, [1, 3])
+      XCTAssertEqual(pairs(b), ["1:b", "3:d"])
     }
 
     func testLessThanAllKeys() throws {
-      let cases: [(key: Int, expected: Int?)] = [
+      let cases: [(key: Int, expected: String?)] = [
         (-1, nil),
         (0, nil),
-        (1, 0),
-        (2, 1),
-        (3, 2),
-        (4, 2),
+        (1, "a"),
+        (2, "b"),
+        (3, "c"),
+        (4, "c"),
       ]
 
       for (key, expected) in cases {
-        XCTAssertEqual(a[.lessThan(key)]?.key, expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
+        XCTAssertEqual(a[.lessThan(key)]?.value, expected, "key=\(key)")
       }
     }
 
     func testLessGreaterHelpers() throws {
-      XCTAssertEqual(a[.lessThan(1)]?.key, 0)
-      XCTAssertEqual(a[.greaterThan(1)]?.key, 2)
-      XCTAssertEqual(a[.lessThanOrEqual(1)]?.key, 1)
-      XCTAssertEqual(a[.greaterThanOrEqual(1)]?.key, 1)
+      XCTAssertEqual(a[.lessThan(1)]?.value, "a")
+      XCTAssertEqual(a[.greaterThan(1)]?.value, "c")
+      XCTAssertEqual(a[.lessThanOrEqual(1)]?.value, "b")
+      XCTAssertEqual(a[.greaterThanOrEqual(1)]?.value, "b")
     }
 
     func testBoundRangeOperators() throws {
-      let view1 = a[lowerBound(0)..<upperBound(2)]
-      XCTAssertEqual(Array(view1).map { $0.key }, [0, 1, 2])
-
-      let view2 = a[lowerBound(0)...lowerBound(1)]
-      XCTAssertEqual(Array(view2).map { $0.key }, [0, 1])
-
-      let view3 = a[..<upperBound(1)]
-      XCTAssertEqual(Array(view3).map { $0.key }, [0, 1])
-
-      let view4 = a[...upperBound(1)]
-      XCTAssertEqual(Array(view4).map { $0.key }, [0, 1, 2])
-
-      let view5 = a[lowerBound(1)...]
-      XCTAssertEqual(Array(view5).map { $0.key }, [1, 2])
+      XCTAssertEqual(pairs(a[lowerBound(0)..<upperBound(2)]), ["0:a", "1:b", "2:c"])
+      XCTAssertEqual(pairs(a[lowerBound(0)...lowerBound(1)]), ["0:a", "1:b"])
+      XCTAssertEqual(pairs(a[..<upperBound(1)]), ["0:a", "1:b"])
+      XCTAssertEqual(pairs(a[...upperBound(1)]), ["0:a", "1:b", "2:c"])
+      XCTAssertEqual(pairs(a[lowerBound(1)...]), ["1:b", "2:c"])
     }
 
     func testEqualRange() throws {
-      let view = a[equalRange(1)]
-      XCTAssertEqual(Array(view).map { $0.key }, [1])
+      XCTAssertEqual(pairs(a[equalRange(1)]), ["1:b"])
     }
 
-    func testIsValidBoundsInvalidDoesNotCrash() throws {
-      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+    /// 逆向きのBound範囲のviewは空になり、列挙しても要素を返さないこと。
+    func testReversedBoundsViewIsEmpty() throws {
       XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)
-      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]).map { $0.key }, [])
+      XCTAssertEqual(pairs(a[upperBound(10)..<lowerBound(-10)]), [])
     }
   }
 #endif

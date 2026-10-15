@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043 has been accepted by Astra; RBT-044 is now eligible. RBT-045 still requires RBT-044 acceptance. RBT-042 is DONE.**
+**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043 and RBT-044 have been accepted by Astra; RBT-045 is now eligible. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -56,8 +56,8 @@ Author: Astra. The user requested preparation and issuance of all three stages t
 | Stage | Start gate (Astra updates) |
 | --- | --- |
 | RBT-043 | Accepted by Astra on 2026-10-16; scope released; user authorized commit; DONE |
-| RBT-044 | Open: RBT-043 formally returned, scope released, and independently accepted by Astra on 2026-10-16. Proceed with D1–D6 below after checking current files. |
-| RBT-045 | Closed: RBT-044 return, scope release and independent acceptance required |
+| RBT-044 | Accepted by Astra on 2026-10-16; scope released; user authorized commit; DONE |
+| RBT-045 | Open: RBT-044 formally returned, scope released, and independently accepted by Astra on 2026-10-16. Proceed with MM1–MM4 below after checking current files. |
 
 
 ### RBT-043-HIME — MultiSet Test as Specification follow-up M1–M5
@@ -129,7 +129,44 @@ Registry ID `RBT-044`; registered before issuance. Start only after the RBT-043 
 
 #### Return (`RBT-044`) — reserved for Claude
 
-No return received.
+Returned 2026-10-16 00:35 JST by Claude (Opus 5.5). HEAD `2d32f71c`; the RBT-043 gate was open when I started. Changes are uncommitted and confined to `Tests/RedBlackTreeTests/RedBlackTreeDictionary/`, plus `Tests/TESTING.md`. Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. No shared fixtures were changed; each test defines a local `Box`, `WeakBox` and error type.
+
+**D1** — `_5_InsertionTests.swift` (both modes):
+- `test_defaultSubscript_evaluatesDefaultOnlyWhenNeeded`: a counting default factory is not evaluated for existing-key reads or mutation. An absent-key read evaluates it once and does not insert (count stays 1). The first absent-key mutation evaluates it once and inserts. Later mutation does not evaluate it again.
+- `test_defaultSubscript_mutationLeavesSharedOriginalUnchanged`: separate shared copies mutate an existing key and an absent key through `[k, default: []]`. Each copy's keys and values are as expected, and the original stays `[1: ["a"]]`.
+
+No rotation cases or copy counts added.
+
+**D2** — throwing closures:
+- `_0_InitializationTests.swift`, `testInitUniquingKeysRethrowsCombineErrorAndReleasesPartialValues` (both modes). Four values under one key; combine throws on its 2nd call. Checks the exact error, the combine arguments `(0,1),(1,2)` (no 3rd call), and that weak observers of all four reference values are `nil` afterwards.
+- `_0`, `testInitGroupingRethrowsKeyErrorAndReleasesPartialGroups` (both modes): key function throws on the 3rd element. Checks exact error, visits `[0,1,2]`, and that the partial groups' elements are released.
+- `_5`, `test_merge_rethrowsCombineErrorAndKeepsSharedOriginalAndOther` (both modes). Sequence `merge` and Dictionary `merge` into shared copies: exact error and one combine call each. The shared original keeps its key and identity, `other` keeps its keys and identity, and the incoming reference value is released after scope. No receiver state is asserted.
+- `_5`, `test_merging_rethrowsCombineErrorAndKeepsBothInputs` (both modes): Dictionary and Sequence `merging` give the exact error, and both inputs' keys and values are unchanged.
+- `_7_UtilityTests.swift`, `test_transformations_rethrowClosureErrorWithoutKeepingPartialResults` (both modes). `mapValues` and `compactMapValues` throw on the 2nd value: visits `[10,20]`, and the two produced reference values are released. `filter` over reference values throws on key 2: visits `[1,2]`, source keys and identities unchanged, all values released once the source scope ends. Source key/values unchanged.
+- `_6_RemovalTests.swift`, `test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal` (normal only): exact error and visits `[1,2,3]`; the shared original's keys and values are unchanged. For the receiver it only checks sorted keys, each pair taken from the original. No rollback assumed.
+- Path notes, static reading: Sequence `merge`/`init(_:uniquingKeysWith:)` and Dictionary `merge` use different `___insert_range_unique` overloads; both are covered. In both, a node is constructed before `combine` runs and is not `destroy`ed if `combine` throws. Before writing the tests I probed this in a disposable copy (RedBlackTreeTestCase with weak observers). The incoming values are released and the Debug lifetime counters balance, so there is no leak in this configuration; the committed tests keep that observation. Range-erase predicate propagation is already covered by the `31aa2f07` subprocess regressions and was not duplicated.
+
+**D3** — `_5`, `test_optionalValue_distinguishesAbsentKeyStoredNilAndStoredValue` (both modes). With `RedBlackTreeDictionary<Int, Int?>`, a local `Slot` enum classifies the outer Optional pattern as absent / stored nil / stored value. Assigning `.some(nil)` keeps the entry (count and keys checked). Outer `nil` deletes it. `[1, default: 7]` returns `Int?.none` for a stored nil and `7` for an absent key.
+
+**D4** — `_6`, `test_sharedReferenceValuesSurviveReplacementAndRemovalUntilTheLastOwner` (both modes). After `updateValue` and `removeValue`, the returned old values are `===` the originals, and the shared copy still holds both originals. After the shared copy is cleared, both stay alive through the returned old values. Each is released exactly when its returned reference is set to `nil`. The construction scope is controlled so that test locals do not extend lifetimes.
+
+**D5** — `_16_BoundExpressionTests.swift` is split as in M3. The `DEBUG && !COMPATIBLE_ATCODER_2025` class keeps only test-support `isValid` assertions (including a `lessThan` validity table) and both `_copyCount` tests; its guard is unchanged. The new `!COMPATIBLE_ATCODER_2025` class `RedBlackTreeDictionaryBoundPublicBehaviorTests` (16 tests) holds the public assertions and now checks values as well as keys: after/end resolution, lower/upper/find/`.last`, erase results (`removed?.value`, remaining `key:value` pairs), reversed-range no-op with 0 predicate calls, views/operators/`equalRange` as `key:value` lists, and lessThan/greaterThan values. It executed 16 tests in **Release**.
+
+**D6** — `_0`: the empty `testInitWithDuplicateKeysShouldCauseFatalError` is replaced by a comment. The comment points to `_99_DeathTests.swift` `duplicateKeysInUniqueKeysInitializer_terminateProcess` and states when it runs: `DEATH_TEST`, which is the macOS default and requires the `ENABLE_DEATH_TESTS` trait on Linux, and it compiles in both modes. No new trap test.
+
+**Validation**
+
+| Command | Result |
+| --- | --- |
+| `swift test -c debug --filter 'RedBlackTreeDictionary(Initialization\|Insertion\|Removal\|Utility\|BoundExpression\|BoundPublicBehavior)Tests'` | exit 0; 80 XCTest; all 10 new cases listed as passed |
+| same, `-c release` | exit 0; 73 XCTest; `RedBlackTreeDictionaryBoundPublicBehaviorTests` executed 16; the Debug-only class is absent |
+| `swift test -c debug --filter RedBlackTreeTests` | exit 0; XCTest 968, Swift Testing 133 in 17 suites (includes Death Tests), 0 failures |
+| `swift test -c release --filter RedBlackTreeTests` | exit 0; XCTest 794, Swift Testing 120 in 11 suites, 0 failures |
+| Compatibility: disposable copy, `COMPATIBLE_ATCODER_2025` enabled only in the copy, the 4 affected numbered suites | exit 0; 9 of the 9 compat-compiled new cases passed (`eraseWhere` is normal-only) |
+
+Normal lifetime-balance checks were on. Not run: Linux, Swift 6.2, ASan, the full `swift test` suite, compatibility-mode Release, and mutation checks.
+
+**Completion and release** — D1–D6 complete. No unresolved item, production defect or open contract question found. I release the RBT-044 scope: the five Dictionary test files above, the `Tests/TESTING.md` handoff item (which merges the RBT-043 item to stay within five), and this Return. RBT-045 waits for its gate. No commit or push.
 
 ### RBT-045-HIME — MultiMap follow-up MM1–MM4
 

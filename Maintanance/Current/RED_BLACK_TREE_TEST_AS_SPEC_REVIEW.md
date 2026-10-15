@@ -324,3 +324,20 @@ Astra独立実行（Apple Swift 6.4、macOS arm64、通常寿命検査有効、A
 RBT-043は受入済み・commit許可待ちのWAITING_USER。RBT-044の着手ゲートを開いた。RBT-045および最終横断のゲートは維持する。
 
 2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-043をDONEとして保存する。RBT-044は着手可能、RBT-045は引き続きゲート待ち。
+
+
+### Dictionary補完の独立受入（RBT-044、2026-10-16、Astra）
+
+Claudeの正式返却・占有返却を確認し、5試験ファイルの差分をD1〜D6へ照合した。default評価回数と値型CoW、throw伝播・途中生成物の寿命、Optionalの三状態、共有参照と返却値の寿命、Release Bound公開動作、空testの実Death Testへの参照化が依頼に対応する。Debug内部検査を保持し、未決の巻戻し保証を要求していない。追加修正を要する点は見つからず受入。
+
+独立検証はApple Swift 6.4/macOS arm64、通常寿命検査有効、ASanなし。
+
+- `swift test --disable-sandbox --build-system native --filter RedBlackTreeDictionary`: exit 0、179 XCTest＋29 Swift Testing成功。
+- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0、794 XCTest＋120 Swift Testing成功。Dictionary公開Bound 16件も実行。
+- 両方で`CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`を使用。ログは`/tmp/astra-dictionary-accept-debug.log`と`/tmp/astra-dictionary-accept-release.log`。
+- Claude報告のDebug全体968＋133、互換9新規ケース成功は返却証拠であり、Astraの再実行とは区別する。Linux、Swift 6.2、ASan、互換Release、mutation検査は今回未確認。
+- throw時のnode破棄についてClaudeが記した静的懸念は、今回の参照解放・寿命検査の成功範囲を超えて一般的な安全性証明にはしない。
+
+RBT-044は受入済み・commit許可待ちのWAITING_USER。RBT-045の着手ゲートを開放。最終横断RBT-041はMultiMapの返却・独立受入まで開始しない。原Returnは変更していない。
+
+2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-044をDONEとして保存する。MultiMapの続行依頼はユーザー意向により3:00 JST以降まで待機し、自動起動はしない。

@@ -45,7 +45,69 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(dictionary.map(\.key), [1, 3])
     }
+
+    /// erase(where:)は述語のエラーをそのまま投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元の辞書のkey/valueは変わらないこと。変更側の途中状態は、元の要素だけを
+    /// キー順に持つことだけを確かめる（RBT-044 D2）
+    func test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d"]
+      var dictionary = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try dictionary.erase { element in
+          visited.append(element.key)
+          if element.key == 3 { throw StopError() }
+          return element.key == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
   #endif
+
+  /// 共有コピーを残して参照Valueを置換・削除しても、共有元は元の参照を保ち、
+  /// 戻り値として取り出した旧値は保持している間は生存し、最後の保持を解いたときに解放されること（RBT-044 D4）
+  func test_sharedReferenceValuesSurviveReplacementAndRemovalUntilTheLastOwner() {
+    final class Box { let id: Int; init(_ id: Int) { self.id = id } }
+    weak var weakFirst: Box?
+    weak var weakSecond: Box?
+    var dictionary: RedBlackTreeDictionary<Int, Box>
+    do {
+      let first = Box(1)
+      let second = Box(2)
+      weakFirst = first
+      weakSecond = second
+      dictionary = [1: first, 2: second]
+    }
+    var shared = dictionary
+
+    var oldFirst = dictionary.updateValue(Box(10), forKey: 1)
+    var oldSecond = dictionary.removeValue(forKey: 2)
+    XCTAssertTrue(oldFirst === weakFirst)
+    XCTAssertTrue(oldSecond === weakSecond)
+    XCTAssertEqual(dictionary.map(\.key), [1])
+    XCTAssertEqual(dictionary[1]?.id, 10)
+    XCTAssertEqual(shared.map(\.key), [1, 2])
+    XCTAssertTrue(shared[1] === weakFirst, "共有元は元の参照を保つこと")
+    XCTAssertTrue(shared[2] === weakSecond)
+
+    shared = [:]
+    XCTAssertNotNil(weakFirst, "取り出した旧値を保持している間は生存すること")
+    XCTAssertNotNil(weakSecond)
+
+    oldFirst = nil
+    XCTAssertNil(weakFirst, "最後の保持を解いたときに解放されること")
+    XCTAssertNotNil(weakSecond)
+    oldSecond = nil
+    XCTAssertNil(weakSecond)
+  }
 
   func test_popFirst_returnsNilOrRemovesLowestKey() {
     var empty = RedBlackTreeDictionary<Int, String>()

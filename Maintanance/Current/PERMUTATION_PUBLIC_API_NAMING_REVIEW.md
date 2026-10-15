@@ -79,6 +79,7 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 
 ## 根拠
 
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATE_FORM.md`
 - `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`
 - `Sources/PermutationModule/PermutationModule.docc/PermutationModule.md`

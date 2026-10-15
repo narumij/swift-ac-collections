@@ -26,6 +26,7 @@ let package = Package(
     //        url: "https://github.com/narumij/swift-ac-collections",
     //        branch: "release/AtCoder/2025"),
     .package(url: "https://github.com/apple/swift-collections-benchmark", from: "0.0.4"),
+    .package(url: "https://github.com/iShape-Swift/iTree", from: "0.5.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -37,6 +38,7 @@ let package = Package(
         .product(name: "BasicContainers", package: "swift-collections"),
         .product(name: "SortedCollections", package: "swift-collections"),
         .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "iTree", package: "iTree"),
         "CppBenchmarks",
       ],
       swiftSettings: [

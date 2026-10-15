@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の旧Round 4依頼は開始前に中止。新しいjobなし。**
+**`PERM-069`の作り直した姫Round 4採点を依頼中。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -26,6 +26,36 @@ For the authority of historical records, including these Return records and the 
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
+
+### PERM-069-HIME-R4B — PermutationModule公開API名称 Round 4採点・自由記述
+
+#### Objective
+
+Round 3と同じ4候補を同じ尺度で再採点し、点数だけでは残らない理由・懸念を候補ごとの自由記述欄へ補う。
+候補の採用、不採用、順位、一つへの絞り込みは行わない。
+
+#### Inputs
+
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_ROUND4_INPUT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND4.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND3_REPORT.md`
+
+#### Work and boundaries
+
+- 姫用Round 4表の4候補へ`1`〜`9`の点を記入する。
+- 各候補について、点数の理由、反証への反応、残る懸念、判断に必要な補足があれば同じ行の自由記述欄へ記す。
+- User・V3のRound 4表は完了まで読まない。
+- 候補集合、Candidate ID、シンボル、Round 3欄、表形式を変更しない。
+- 採用、不採用、順位、一候補への絞り込み、新候補の追加を行わない。
+- 他者表、共通入力、production、test、DocC、Registry、名称決定正本を変更しない。
+- commitしない。
+- 完了後、この節のReturnへ完了時刻、変更ファイル、未採点行、追加論点、独立性への影響を記録する。
+
+#### Return
+
+返却待ち: `PERM-069-HIME-R4B`
+
+### Canceled Round 4 assignment
 
 ### Canceled assignment: PERM-069-HIME-R4 — PermutationModule公開API名称 Round 4自由記述
 

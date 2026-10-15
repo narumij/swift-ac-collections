@@ -9,10 +9,10 @@ Round 3の採点形式を保ち、候補ごとの自由記述欄を追加した�
 
 | 対象surface | 候補シンボル | Candidate ID | Round 3 | Round 4（1〜9） | 自由記述 |
 | --- | --- | --- | --- | --- | --- |
-| Module名 | `PermutationModule` | `MN-01` | 2 |  |  |
-| Module名 | `NextPermutationModule` | `MN-03` | 5 |  |  |
-| 通常版一時view | `Permutation` | `NV-01` | 5 |  |  |
-| 通常版一時view | `CurrentPermutation` | `NV-03` | 5 |  |  |
+| Module名 | `PermutationModule` | `MN-01` | 2 | 2 |  |
+| Module名 | `NextPermutationModule` | `MN-03` | 5 | 5 |  |
+| 通常版一時view | `Permutation` | `NV-01` | 5 | 5 |  |
+| 通常版一時view | `CurrentPermutation` | `NV-03` | 5 | 4 |  |
 
 ## 完了確認
 

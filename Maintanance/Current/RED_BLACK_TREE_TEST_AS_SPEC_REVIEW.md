@@ -253,3 +253,20 @@ testのsuffixは、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeDic
 反映時は関連Debug/Releaseケースを確認し、不具合や未決仕様はproductionを変更せず返す。今回test修正・採番・発注は行っていない。レビュー記録は完了し、RBT-040をコミット許可待ちのWAITING_USERとする。最終横断ではM/D/MMの共通課題を照合し、別型の証拠で代替できる範囲と固有入口の確認を整理する。
 
 2026-10-15、ユーザーがMultiMapレビュー記録のコミットを許可。RBT-040をDONEとして保存する。MM1〜MM4の補完作業は未発注。
+
+
+### Set返却の独立確認と範囲eraseの問題（RBT-042、2026-10-15、Astra）
+
+基準HEAD `f029ab36`。ClaudeのReturnと明示的な占有返却を確認。返却原文・5つのSet test・Tests/TESTING.mdは書き換えていない。S1の参照identity、S2のfilter/全体erase、S3の共有元とrhs、S4のsetup終了code拒否と正常controlを差分で照合した。S4は`.failure`だけで86を成功にしない構成である。negative controlと互換構成はClaudeの報告であり、Astraによる再実行ではない。
+
+Astra独立実行：Apple Swift 6.4 (swiftlang-6.4.0.34.1)、macOS arm64。通常の寿命検査を有効のまま、`swift test --disable-sandbox --build-system native --filter '<4追加XCTest名>|removed index'`でXCTest 4件・Swift Testing 2件成功。続く`swift test --disable-sandbox --build-system native --filter RedBlackTreeTests`でXCTest 944件・Swift Testing 125件/13 suite成功。最初の通常実行はmanifest sandbox権限で失敗し、disable-sandboxのみの再試行も既定ビルド方式の作業directory権限で失敗したためnativeへ切り替えた。これはテスト失敗とは区別する。
+
+**残る問題**：Claudeは有効なIndexRange/IndexRangeExpressionによるSet.eraseでpredicateの独自エラーがSIGTRAPになることを別コピーで再現した。Astraは4型の`+RangeExpression.swift`と内部`UnsafeTreeV2+Erase.swift`を読み、同じcatch-all経路を確認した。内部`___erase_validate_range_if`は範囲エラーを`Result<UnsafeIndexV3, SealError>`へ、predicateエラーをthrowへ分けるが、公開wrapperが呼出しと`.get()`を同じdo/catchへ入れて両方をfatalErrorにしている。他3型の実行再現、およびAstra自身のクラッシュ再現は未実施。
+
+修正案：内部呼出しの`try`をcatch-allの外で行い、返されたResultのfailureだけを既存の範囲不正停止へ変換する。エラーの型名だけでcatchを振り分けず、発生経路を分ける。predicateのエラーはそのまま伝播させ、無効範囲の停止契約は維持する。4型の有効なIndexRangeとIndexRangeExpressionについて固有エラーの伝播を回帰検査し、既存の無効範囲Death Testも維持する。Bound版とView版を一律に書き換えない。
+
+依頼のproduction変更禁止に従い、今回は製品コードを修正していない。完成部分をS1/S3/S4とS2のfilter/全体eraseへ限定し、範囲eraseは未完了として残す。RBT-042全体をDONEにせず、修正範囲の確認待ちとする。新規採番・追加発注・commitは行っていない。
+
+Release独立確認：`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`はexit 0。XCTest 747件・Swift Testing 112件/7 suite成功。Debug情報を生成しない構成であり、Claudeの通常Release成功報告とは区別する。完成部分はこの範囲で受け入れるが、範囲erase問題が残るため全体完了とはしない。
+
+2026-10-15、ユーザーの「修正前に一度コミット」指示により、Claudeのテスト追加・返却とAstraの部分受入・問題調査記録を保存する。範囲eraseの製品コードは未修正で、RBT-042全体のDONEを意味しない。

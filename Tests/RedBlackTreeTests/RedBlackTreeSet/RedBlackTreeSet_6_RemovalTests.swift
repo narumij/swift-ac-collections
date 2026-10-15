@@ -338,6 +338,30 @@ extension RedBlackTreeSetRemoveTests {
 
       XCTAssertEqual(set.sorted(), [1, 3, 5])
     }
+
+    /// erase(where:) は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 変更前に共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、
+    /// 元の要素だけを昇順で持つ集合であることだけを確かめる（RBT-042 S2）
+    func test_erase_where_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original = RedBlackTreeSet([1, 2, 3, 4, 5])
+      var set = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set.erase { element in
+          visited.append(element)
+          if element == 3 { throw StopError() }
+          return element % 2 == 0
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
   #endif
 
   /// remove後にindexが無効化されること

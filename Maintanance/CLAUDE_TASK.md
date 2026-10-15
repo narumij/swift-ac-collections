@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `RBT-042-HIME` — ACTIVE (issued; execution start not confirmed). Prior OPT-074 and PERM-078 assignments are DONE.**
+**Current assignment: `RBT-042-HIME` — returned; scope released. Partial acceptance under Astra review; range-erase predicate-error issue remains unresolved. Prior OPT-074 and PERM-078 assignments are DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -66,7 +66,40 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 #### Return (`RBT-042`) — reserved for Claude
 
-No return received.
+Returned 2026-10-15 23:35 JST by Claude (Opus 5.5). Work started at HEAD `c98a0908`; HEAD is now `7e9960d8` after other agents' commits. My changes are uncommitted. Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. The working tree also has concurrent changes I did not make (`Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, `ProgressV2/TASK_REGISTRY_V2.md`); I left them alone.
+
+**S1** — `RedBlackTreeSet_5_InsertionTests.swift`, `test_hintedInsertKeepsAndHintedUpdateReplacesEquivalentReference` (normal mode only). Uses the file's existing `ComparableReference`. Hinted `insert` of an equivalent duplicate keeps the stored object (`===`) with a poor hint (`startIndex` for key 30) and with `endIndex`. Hinted `update` with the same hints returns the old object, and the stored object becomes the new one. Checks keys and order, and that a copy shared before the change still holds the original objects. Sensitivity check, run in a disposable repository copy only: I removed the payload replacement in `update(_:hint:)`. The new test fails (lines 264–265), while the existing Int-only `test_update_withHint` still passes.
+
+**S2** — partially done. One path is stopped because of a suspected production defect.
+- `RedBlackTreeSet_1_SequenceTests.swift`, `test_filterRethrowsPredicateErrorWithoutKeepingPartialResult` (normal only): the predicate accepts 1 and 2, then throws `StopError(value: 3)`. The test checks the exact error, the visited elements `[1, 2, 3]` (no call after the throw), and that the source is unchanged. Weak observers show that every element is released once the source is dropped, so the partial result holds nothing. The XCTest base's Debug lifetime counters also run.
+- `RedBlackTreeSet_6_RemovalTests.swift`, `test_erase_where_rethrowsPredicateErrorAndKeepsSharedOriginal` (normal only): checks the exact error, visited `[1, 2, 3]`, and that the shared original is unchanged. For the receiver it only checks that it is still sorted and a subset of the original; no rollback or particular partial state is assumed.
+- Range paths, probed in a disposable copy with temporary Swift Testing exit tests (child process exits 0 only when it catches the predicate's own error). `erase(where:)`, `filter`, `erase(lowerBound(0)..<upperBound(4), where:)` (BoundRangeExpression), and `set[lo..<hi].erase(where:)` (view) rethrow correctly. **`erase(lo..<hi, where:)` (IndexRange) and `erase(lo..., where:)` (IndexRangeExpression) stop with `.signal(SIGTRAP)` instead of rethrowing.** Cause, from reading the source: `RedBlackTreeSet+RangeExpression.swift`, `erase(_safeRange:where:)` (around lines 222–235) wraps `try ___erase_validate_range_if(range, shouldBeRemoved).get()` in `do { … } catch { fatalError("\(error)") }`, so a predicate error is caught as if it were a range-validation `SealError`. The same wrapper pattern appears in the other three containers' `+RangeExpression.swift` files; that is static only, not run. Per the stop rule I made no production change and added no failing test. This path is left for review: decide whether a predicate error must propagate here, and the fix.
+
+  Reproducer:
+  ```swift
+  var s = RedBlackTreeSet(0..<5)
+  let lo = s.startIndex, hi = s.endIndex
+  try s.erase(lo..<hi, where: { _ in throw ProbeError() })  // traps: Fatal error from catch-all fatalError
+  ```
+
+**S3** — `RedBlackTreeSet_10_SetAlgebraTests.swift`, `testFormOperationsChangeOnlyTheReceiver`, inside the existing normal-only `RedBlackTreeSetDifferenceTests` because `formDifference` is normal-only. For formUnion, formIntersection, formSymmetricDifference and formDifference, it uses lhs `[1,2,3,4]` and rhs `[3,4,5]`; every operation changes the receiver. Right after each operation it checks the receiver's expected contents, the shared original `[1,2,3,4]`, and the rhs `[3,4,5]`. Existing model and stress tests are unchanged, and there is no copy-count assertion.
+
+**S4** — `RedBlackTreeSet_99_AdditionalDeathTests.swift`, `removed index cannot be subscripted`. Child-process setup now uses `guard` for `firstIndex(of: 2)` and for the post-removal contents `[1, 3]`, and exits with a file-scope `setupFailedExitStatus` (86) when setup fails. Because `.failure` would accept that exit, the new `expectSetupReached(result)` explicitly rejects `.exitCode(86)`. `processExitsWith: .failure` and `expectNoInvalidMemoryAccess` (SIGSEGV/SIGBUS/ASan exclusions) are unchanged. Added `removed index setup reaches the removed state`, which runs the same setup in-process. Negative control, temporary in the repository file and restored from a saved copy afterwards (`firstIndex(of: 20)`):
+- new form: **failed** (`Expectation failed: result.exitStatus != .exitCode(setupFailedExitStatus)`);
+- old form (force unwrap, no rejection): **passed**, which reproduces the false positive.
+
+**Validation**
+
+| Command | Result |
+| --- | --- |
+| `swift test --filter '<the 4 new XCTest names>\|removed index'` | exit 0; XCTest 4, Swift Testing 2 |
+| `swift test -c debug --filter RedBlackTreeTests` | exit 0; XCTest 944, Swift Testing 125 in 13 suites (includes Set Death Tests), 0 failures |
+| `swift test -c release --filter RedBlackTreeTests` | exit 0; XCTest 747, Swift Testing 112 in 7 suites, 0 failures (smaller counts come from existing Debug-only gating) |
+| Compatibility: disposable copy, `COMPATIBLE_ATCODER_2025` enabled only in the copy, filter on the 5 affected Set suites | exit 0; XCTest 75 (1 skipped; an existing test, since all new XCTest cases are compiled out in this mode), Swift Testing 6, including both S4 tests |
+
+Normal lifetime-balance checks were on; no SKIP traits were used. Not run: Linux (SIGILL path and opt-in Death Tests), Swift 6.2, ASan, the full `swift test` suite, compatibility-mode Release. The multi-container wrapper pattern was checked by reading the source only.
+
+**Concerns, completion, release** — S1, S3, S4 and the filter/erase(where:) part of S2 are complete. The IndexRange/IndexRangeExpression `erase(_:where:)` path of S2 is stopped and needs a contract or fix decision. Process note: an earlier task-owned temporary copy printed its path once; every copy was removed. I release the assigned scope: the five Set test files, the `Tests/TESTING.md` handoff item (which replaced the now-stale PERM-078 item), and this Return. No commit or push.
 
 ## Returned assignment — PERM-078 accepted, DONE
 
@@ -107,3 +140,9 @@ Claude’s completion and scope release are confirmed in the return above, saved
 #### Astra acceptance (`PERM-078`, 2026-10-15)
 
 Claude returned B–D and released the scope in the linked request. Astra independently reviewed the diff and passed the affected Debug and Release (without debug-info generation) tests. Acceptance is complete; the user authorized committing the changes and acceptance record on 2026-10-15. Details: `Current/PERMUTATION_TEST_AS_SPEC_REVIEW.md`. Original request and Claude return are preserved.
+
+#### Astra verification (`RBT-042`, 2026-10-15)
+
+Return and scope release confirmed. The original return is preserved. Independent Debug checks passed (944 XCTest and 125 Swift Testing cases). S1/S3/S4 and the filter/full-set erase part of S2 are checked; the IndexRange/IndexRangeExpression issue remains open. No overall DONE, production edit, or commit. See `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` for evidence and the proposed bounded correction.
+
+Independent Release verification also passed: native build, debug-info disabled, 747 XCTest and 112 Swift Testing cases. Completed portions are accepted within this verified scope; the range-erase issue remains open.

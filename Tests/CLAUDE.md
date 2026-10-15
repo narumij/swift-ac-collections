@@ -14,7 +14,7 @@ Before changing files:
 2. Read `Maintanance/CLAUDE_TASK.md`. If it contains an active assignment,
    treat it as the current task. Codex-to-Claude work requests in that file
    must be written in English.
-3. Read only the task-relevant portions of `Tests/TESTING.md`.
+3. Read only the task-relevant portions of `Maintanance/Testing/TESTING.md`.
 4. Search `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md` only when the current task requires
    historical context or a detailed legacy procedure. Do not read it from
    beginning to end by default.
@@ -31,8 +31,8 @@ When instructions compete, use this order:
 1. The user's current request
 2. An active assignment in `Maintanance/CLAUDE_TASK.md`
 3. The latest user-written priorities and stop conditions in
-   `Tests/TESTING.md`
-4. The current handoff in `Tests/TESTING.md`
+   `Maintanance/Testing/TESTING.md`
+4. The current handoff in `Maintanance/Testing/TESTING.md`
 5. Opportunistic test maintenance
 
 Do not silently resolve an open design question. Record the evidence and ask
@@ -54,7 +54,7 @@ removal of existing coverage is unclear.
   `API-Matrix.md`, `API-Matrix-View.md`, and
   `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` when working
   on RedBlackTree public APIs or views.
-- Consult `Tests/RedBlackTreeFixture/Fixtures.md` before adding or changing
+- Consult `Maintanance/Testing/Fixtures.md` before adding or changing
   RedBlackTree fixtures, and update it when fixture behavior changes.
 - Debug builds track RedBlackTree allocation, node, and payload lifetimes in
   process-global counters. An XCTest that creates RedBlackTree collections must
@@ -82,7 +82,7 @@ removal of existing coverage is unclear.
   `ABC`, `convenience`, `memoize`, and `EtcTests.swift` unless the user
   explicitly says otherwise.
 - Do not guess how internal layers should be classified. Follow the current
-  terminology and boundaries in `Tests/TESTING.md`.
+  terminology and boundaries in `Maintanance/Testing/TESTING.md`.
 - Compatibility-mode validation may be deferred while accumulating a series of
   small changes, but run it before completing work whose behavior depends on
   compatibility mode.
@@ -126,14 +126,14 @@ Before ending a work session:
   version control.
 - Do not delete user-written requests or completed-request entries without the
   user's confirmation. Add completion status instead.
-- Keep `Tests/TESTING.md` as a current-state dashboard. Replace stale status
+- Keep `Maintanance/Testing/TESTING.md` as a current-state dashboard. Replace stale status
   instead of appending a chronological narrative, and keep its recent handoff
   to no more than five concise items.
 - Timestamp dashboard updates with date, time, and time zone, and record the
   model name and version used for the work.
 - Do not declare the overall test-maintenance effort complete until the
   independent Codex and Claude reviews and the user's confirmation required by
-  `Tests/TESTING.md` have all occurred.
+  `Maintanance/Testing/TESTING.md` have all occurred.
 
 For a task managed through `Maintanance/CLAUDE_TASK.md`, do not send the user the
 above handoff, progress narration, or a completion summary. If a final chat response

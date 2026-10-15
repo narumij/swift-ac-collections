@@ -74,9 +74,10 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 - ElementBuffer系の仕様testのファイル名は改名前の`BareArray_*`・`OptionalArray_*`のまま。監査の正本がこの名前を
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が2件ある（`RedBlackTreeInternal_ComparatorsTests.swift:178`・`:219`、2026-10-16確認）。仕様には影響しない。
-- `Tests/RedBlackTreeFixture/Fixtures.md`の「場所」をリポジトリ直下からのパスにそろえた（DOC-031の指摘）。
+- 2026-10-16、ユーザー指示で本書と`Fixtures.md`を`Tests/`から`Maintanance/Testing/`へ移した。`Tests/CLAUDE.md`は、Claude Codeが
+  作業folderから自動で読むため`Tests/`に残す。`DOCUMENT.md`・配置維持例外の表・Registryの参照更新はAstra・Codex待ち（`CP-20261016-002`）。
 
-最終更新: 2026-10-16 08:40 JST / Claude Opus 5.5
+最終更新: 2026-10-16 09:10 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

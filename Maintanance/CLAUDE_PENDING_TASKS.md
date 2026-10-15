@@ -60,6 +60,39 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - パレット検証scriptはNode.jsがないため実行していない。理由と代わりの措置は`EVIDENCE.md`の6.に書いた。
   - commitしていない。`DOCUMENT.md`や`MILESTONES.md`など入口からのリンクは張っていない（Codex・Astraの判断）。
 - Codex reconciliation: 未処理
+- 追記（同日）: ユーザーとの会話で、置き場所は`HIST-001`の正本と並べて`History/`系にまとめる案が出た（採番がHISTなら`History/`、とユーザー）。
+  移動は未実施。採番時に`HIST`の番号と置き場所をあわせて決めてもらう想定。
+
+### `CP-20261016-002` — `Maintanance/Testing/`の新設とテスト整備文書の移動
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-16 09時頃の会話。ユーザーが「Testingほって、md移動するのは可。採番待ちで記録しておいて」と指示した。
+  前段として、`Maintanance/`外のmdを減らしたい、見て楽しむ記録は`Misc`や`History`に分けたい、という方針が示されている。
+- 種別候補: `EXECUTION`
+- 対象範囲: `Tests/TESTING.md`と`Tests/RedBlackTreeFixture/Fixtures.md`を`Maintanance/Testing/`へ`git mv`する。
+  移動に伴い、`Package.swift`の`RedBlackTreeFixture` targetにあった`exclude: ["Fixtures.md"]`を削除する。
+  次の参照も更新する。
+  - `Tests/CLAUDE.md`（7か所）
+  - `Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_EmptySingletonTests.swift`のコメント1か所
+  - `Maintanance/TestRebuild2026/README.md`のリンク
+  - 移した`TESTING.md`の引き継ぎ1項目
+- 対象外（未更新・Astra・Codexへ渡す）: 次の参照は旧パスのまま残している。
+  - `Maintanance/ProgressV2/TASK_RULES_V2.md`の配置維持例外の表（161行付近）
+  - `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`の`TEST-005`行
+  - `Maintanance/DOCUMENT.md`の24・65・66行のリンク
+  - `Maintanance/Current/AI_TECHNICAL_ORIENTATION.md`の26・391行
+  - `Maintanance/Quality/Profiles/RedBlackTreeCollections.md`の159行
+- 対象外（触らない）: 過去の返却・監査・面談記録にある当時のパス。
+- 残すもの: `Tests/CLAUDE.md`は移さない。Claude Codeは作業中のfolderの`CLAUDE.md`を自動で読むので、`Tests/`配下で規則が効く状態を保つため。
+- 完了条件: 2文書が`Maintanance/Testing/`にあり、build・testに影響がなく、上記の対象外の参照が受入担当によって更新される。
+- 前提・既存task候補: 恒久task `TEST-005`（維持文書の配置）、`DOC-030`（参照の保守）、`OPS-044`（規則とRegistry）。
+- 担当候補・受入担当: 姫（Claude）移動 / Astra・Codex（規則・Registry・`DOCUMENT.md`の更新と受入）。
+- 停止条件: 移動でbuildやtestの発見に影響が出たら止めて報告する。
+- 成果・検証: 2026-10-16 / Claude Opus 5.5。
+  - 移動と上記の参照更新を実施した。
+  - `swift build --build-tests`は警告なしで完了した（`Fixtures.md`の除外指定がなくなっても、未処理resourceの警告は出なかった）。
+  - commitしていない。
+- Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。
 

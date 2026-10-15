@@ -248,9 +248,6 @@ let package = Package(
       name: "RedBlackTreeFixture",
       dependencies: ["RedBlackTreeCollections"],
       path: "Tests/RedBlackTreeFixture",
-      exclude: [
-        "Fixtures.md"
-      ],
       swiftSettings: _settings
     ),
 

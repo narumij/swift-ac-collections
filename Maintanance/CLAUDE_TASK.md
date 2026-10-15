@@ -45,7 +45,35 @@ Author: Astra. Registry ID: `RBT-046`.
 
 #### Return (`RBT-046`) — reserved for Claude
 
-Not returned.
+Returned 2026-10-16 04:05 JST by Claude (Opus 5.5). Baseline/HEAD `48a71417`, working tree clean before editing. Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. No native build or debug-info workaround was needed.
+
+**X1** — `Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_16_BoundExpressionTests.swift`.
+- The `DEBUG && !COMPATIBLE_ATCODER_2025` class `RedBlackTreeSetBoundExpressionTests` keeps every internal observation under its original guard: test-support `isValid`, `_withSealed`, `_error`, `_isEqual`, `.debug(.null)`, both `_copyCount` tests, and the nested `#if DEBUG` cross-tree case. Public-result lines were removed from the mixed tests testAfter, testBefore, testLast, testIsValidBoundsInvalidDoesNotCrash, and the lessThan/lessThanOrEqual/find tables, which now assert validity only.
+- A new `!COMPATIBLE_ATCODER_2025` class, `RedBlackTreeSetBoundPublicBehaviorTests` (14 tests), holds:
+  - 10 existing public tests, moved unchanged: view count with bound erase, popFirst through a bound view, `erase(bounds)`, `erase(bounds, where:)`, **reversed-bounds erase with unchanged contents**, **reversed-bounds `erase(where:)` with 0 predicate calls and unchanged contents**, less/greater helpers, range operators, `equalRange`, single-bound subscript.
+  - 4 tests collecting the public lines split off above: after/end/last resolution, the three tables' values, and the reversed-bounds view being empty.
+- Executed 14 tests in **Release** (and in Debug). No new API contract was added.
+
+**X2** — one focused test per wrapper, in the existing numbered files:
+- `RedBlackTreeView_2_KeyOnlyRangeViewTests.swift`, `test_eraseWhere_onPartialViewRethrowsPredicateErrorAndKeepsSharedOriginal`: Set `[1…6]`, view `[2..<6)`. The predicate removes 2 and throws a distinct `StopError` on 4.
+- `RedBlackTreeView_1_KeyValueRangeViewTests.swift`, same name: Dictionary with 5 entries, view over keys 2–4. It records `key:value`, removes 2, throws on 3.
+- `RedBlackTreeView_0_MappedValuesViewTests.swift`, `test_subrangeValuesEraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal`: the same dictionary through `dictionary[lower..<upper].values.erase(where:)`. It records values, removes `"b"`, throws on `"c"`.
+- Each checks the exact error and the visit sequence (range start first, nothing outside the range, no call after the throw). It checks the shared original unchanged, keys and values for both Map variants, and that the out-of-range first and last entries are kept with their values. For the receiver it only checks sorted keys and that every pair comes from the original; no rollback and no partial state inside the range is asserted.
+- Normal `RedBlackTreeTestCase` lifetime checks apply. All three pass, which also shows the subscript `_modify` path restores the receiver after the throw. No defect found.
+
+**Validation**
+
+| Command | Result |
+| --- | --- |
+| `swift test -c debug --filter 'RedBlackTreeSetBound\|RedBlackTreeKeyOnlyRangeViewTests\|RedBlackTreeKeyValueRangeViewTests\|RedBlackTreeMappedValuesViewTests'` | exit 0; all suites passed |
+| same, `-c release` | exit 0; `RedBlackTreeSetBoundPublicBehaviorTests` executed 14; the Debug-only class is absent |
+| `swift test -c debug --filter RedBlackTreeTests` | exit 0; XCTest 986, Swift Testing 133 in 17 suites (includes Death Tests), 0 failures |
+| `swift test -c release --filter RedBlackTreeTests` | exit 0; XCTest 834 (= 817 + 14 + 3), Swift Testing 120 in 11 suites, 0 failures |
+| Compatibility: disposable `mktemp -d` copy with `COMPATIBLE_ATCODER_2025` enabled only there, `swift build --build-tests` | Build complete. All changed and new cases are inside `!COMPATIBLE_ATCODER_2025`, so they are compiled out there; nothing was executed in that mode |
+
+Not run: Linux, Swift 6.2, ASan, the full `swift test` suite, mutation checks.
+
+Changed paths: the Set `_16` file, the three View `_0`/`_1`/`_2` files, and `Tests/TESTING.md` (handoff item and timestamp). X1 and X2 are complete with no unresolved item. Scope released. Commit: the user directly asked in chat to commit after completion, so I committed these paths, contrary to this request's "No commit" line.
 
 
 Inspections `OPS-045` and `DOC-031` were returned and accepted by Astra on 2026-10-16; the user authorized committing the closure and both are DONE. No new Claude assignment is issued by this status.

@@ -59,6 +59,34 @@ import XCTest
       XCTAssertEqual(Array(set), [1, 3])
     }
 
+    /// 部分範囲のViewの`erase(where:)`は、述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、
+    /// 範囲外の要素に触れないこと。共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、
+    /// 範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-046 X2）
+    func test_eraseWhere_onPartialViewRethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      var set: RedBlackTreeSet = [1, 2, 3, 4, 5, 6]
+      let lower = set.index(after: set.startIndex)
+      let upper = set.index(set.startIndex, offsetBy: 5)
+      let original = set
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set[lower..<upper].erase(where: { element in
+          visited.append(element)
+          if element == 4 { throw StopError() }
+          return element == 2
+        })
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4], "範囲内の先頭から順に呼ばれ、エラーの後は呼ばれないこと")
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5, 6])
+      XCTAssertTrue(set.contains(1), "範囲より前の要素は残ること")
+      XCTAssertTrue(set.contains(6), "範囲より後の要素は残ること")
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
     func test_isElementAndIsEnd_describeIndexValidity() {
       let set: RedBlackTreeSet = [1, 2, 3]
       let view = set[...]

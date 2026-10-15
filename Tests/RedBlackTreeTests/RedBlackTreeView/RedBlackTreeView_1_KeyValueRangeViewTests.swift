@@ -85,6 +85,37 @@ import XCTest
       XCTAssertEqual(dictionary.map(\.key), [1, 3])
     }
 
+    /// 部分範囲のViewの`erase(where:)`は、述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、
+    /// 範囲外のkey/valueに触れないこと。共有していた元の辞書のkey/valueは変わらないこと。変更側の途中状態は
+    /// 契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-046 X2）
+    func test_eraseWhere_onPartialViewRethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      var dictionary: RedBlackTreeDictionary<Int, String> = [
+        1: "outside-before", 2: "b", 3: "c", 4: "d", 5: "outside-after",
+      ]
+      let lower = dictionary.index(after: dictionary.startIndex)
+      let upper = dictionary.index(dictionary.startIndex, offsetBy: 4)
+      let original = dictionary
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try dictionary[lower..<upper].erase(where: { element in
+          visited.append("\(element.key):\(element.value)")
+          if element.key == 3 { throw StopError() }
+          return element.key == 2
+        })
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["2:b", "3:c"], "範囲内の先頭から順に呼ばれ、エラーの後は呼ばれないこと")
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertEqual(original.map(\.value), ["outside-before", "b", "c", "d", "outside-after"])
+      XCTAssertEqual(dictionary[1], "outside-before", "範囲より前のエントリは残ること")
+      XCTAssertEqual(dictionary[5], "outside-after", "範囲より後のエントリは残ること")
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
+
     func test_elementsEqual_trueForSameKeyValuePairsInKeyOrder() {
       let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
       let b: RedBlackTreeDictionary = [2: "b", 1: "a"]

@@ -5,6 +5,10 @@
 //  Created by narumij on 2026/02/08.
 //
 
+// Debug専用の観察（test supportの`isValid`、内部の`_withSealed`・`_error`・`_isEqual`・`.debug`、copy count）は
+// 元の条件のまま残し、公開結果だけで確かめられるBoundの動作は下の`RedBlackTreeSetBoundPublicBehaviorTests`で
+// Releaseでも実行する（RBT-046 X1）。
+
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
   import RedBlackTreeCollections
@@ -25,16 +29,12 @@
 
     func testAfter() throws {
       XCTAssertTrue(a.isValid(start()))
-      XCTAssertEqual(a[start()], 0)
 
       XCTAssertTrue(a.isValid(start().after))
-      XCTAssertEqual(a[start().after], 1)
 
       XCTAssertTrue(a.isValid(start().after.after))
-      XCTAssertEqual(a[start().after.after], 2)
 
       XCTAssertFalse(a.isValid(start().after.after.after))
-      XCTAssertEqual(a[start().after.after.after], nil)
 
       a._withSealed(start().after.after.after, end()) { a, b in
         // 終端となる
@@ -44,7 +44,6 @@
       }
 
       XCTAssertFalse(a.isValid(start().after.after.after.after))
-      XCTAssertEqual(a[start().after.after.after.after], nil)
 
       a._withSealed(start().after.after.after.after, end()) { a, b in
         // 終端の次はnull相当
@@ -57,7 +56,6 @@
     func testBefore() throws {
 
       XCTAssertFalse(a.isValid(end()))
-      XCTAssertNil(a[end()])
 
       XCTAssertTrue(a.isValid(end().before))
       XCTAssertTrue(a.isValid(end().before.before))
@@ -243,7 +241,150 @@
 
     func testLast() throws {
       XCTAssertTrue(a._isEqual(.last, end().before))
+    }
+
+    /// 空のSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させないこと。
+    func testEraseBoundsOnEmptySetDoesNotCopy() throws {
+      var b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      b.erase(lowerBound(0)..<upperBound(10))
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
+    /// 空のSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
+    func testEraseIndexRangeOnEmptySetDoesNotCopy() throws {
+      var b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      let range: RedBlackTreeIndexRange = b.equalRange(0)
+      XCTAssertEqual(b.erase(range), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(range) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(b.startIndex..<b.endIndex) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(...), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+    }
+
+    func testLessThanAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, nil),
+        (1, 0),
+        (2, 1),
+        (3, 2),
+        (4, 2),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
+      }
+    }
+
+    func testLessThanOrEqualAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 2),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a.isValid(.lessThanOrEqual(key)), expected != nil, "key=\(key)")
+      }
+    }
+
+    /// `.find(_:)`は等しい要素がある場合だけ有効な位置になること（解決した値はPublicBehavior側）
+    func testFindAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, nil),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a.isValid(.find(key)), expected != nil, "key=\(key)")
+      }
+    }
+
+    #if DEBUG
+      /// 別の木由来のindexを内包したBoundExpressionが、ALLOW_CROSS_TREE_INDEXの設定通りに解決されること
+      func testBoundExpressionFromAnotherTreeResolvesAccordingToCrossTreeIndexTrait() throws {
+        let other = RedBlackTreeSet<Int>(0..<3)
+
+        for i in 0..<3 {
+          let otherBound = RedBlackTreeBoundExpression<Int>.index(
+            other.index(other.startIndex, offsetBy: i))
+
+          #if ALLOW_CROSS_TREE_INDEX
+            XCTAssertNotNil(a[otherBound])
+          #else
+            XCTAssertNil(a[otherBound])
+          #endif
+        }
+      }
+    #endif
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import XCTest
+  import RedBlackTreeCollections
+
+  /// Boundの公開動作。公開APIの結果だけで確かめるので、Releaseでも実行する（RBT-046 X1）。
+  final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
+
+    let a = RedBlackTreeSet<Int>(0..<3)
+
+    /// 解決できる`after`は要素を返し、末尾以降の`after`は解決できず`nil`になること。
+    func testAfterResolvesUntilTheEnd() throws {
+      XCTAssertEqual(a[start()], 0)
+      XCTAssertEqual(a[start().after], 1)
+      XCTAssertEqual(a[start().after.after], 2)
+      XCTAssertNil(a[start().after.after.after])
+      XCTAssertNil(a[start().after.after.after.after])
+    }
+
+    func testEndAndLastResolve() throws {
+      XCTAssertNil(a[end()])
       XCTAssertEqual(a[last()], 2)
+    }
+
+    /// `lessThan`・`lessThanOrEqual`・`find`は、各keyで対応する要素を返し、無ければ`nil`になること。
+    func testLessThanLessThanOrEqualAndFindAllKeys() throws {
+      let lessThan: [(key: Int, expected: Int?)] = [(-1, nil), (0, nil), (1, 0), (2, 1), (3, 2), (4, 2)]
+      for (key, expected) in lessThan {
+        XCTAssertEqual(a[.lessThan(key)], expected, "lessThan key=\(key)")
+      }
+      let lessThanOrEqual: [(key: Int, expected: Int?)] = [(-1, nil), (0, 0), (1, 1), (2, 2), (3, 2)]
+      for (key, expected) in lessThanOrEqual {
+        XCTAssertEqual(a[.lessThanOrEqual(key)], expected, "lessThanOrEqual key=\(key)")
+      }
+      let find: [(key: Int, expected: Int?)] = [(-1, nil), (0, 0), (1, 1), (2, 2), (3, nil)]
+      for (key, expected) in find {
+        XCTAssertEqual(a[.find(key)], expected, "find key=\(key)")
+      }
+    }
+
+    /// 逆向きのBound範囲のviewは空になり、列挙しても要素を返さないこと。
+    func testReversedBoundsViewIsEmpty() throws {
+      XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)
+      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
     }
 
     func testViewCountAndEraseBound() throws {
@@ -295,90 +436,6 @@
       XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
     }
 
-    /// 空のSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
-    /// バッファからの退避)を発生させないこと。
-    func testEraseBoundsOnEmptySetDoesNotCopy() throws {
-      var b = RedBlackTreeSet<Int>()
-      XCTAssertEqual(b._copyCount, 0)
-      b.erase(lowerBound(0)..<upperBound(10))
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertTrue(b.isEmpty)
-    }
-
-    /// 空のSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
-    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
-    func testEraseIndexRangeOnEmptySetDoesNotCopy() throws {
-      var b = RedBlackTreeSet<Int>()
-      XCTAssertEqual(b._copyCount, 0)
-      let range: RedBlackTreeIndexRange = b.equalRange(0)
-      XCTAssertEqual(b.erase(range), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(range) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(b.startIndex..<b.endIndex) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertEqual(b.erase(...), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertTrue(b.isEmpty)
-    }
-
-    func testIsValidBoundsInvalidDoesNotCrash() throws {
-      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
-      XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)
-      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
-    }
-
-    func testLessThanAllKeys() throws {
-      let cases: [(key: Int, expected: Int?)] = [
-        (-1, nil),
-        (0, nil),
-        (1, 0),
-        (2, 1),
-        (3, 2),
-        (4, 2),
-      ]
-
-      for (key, expected) in cases {
-        XCTAssertEqual(a[.lessThan(key)], expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
-      }
-    }
-
-    func testLessThanOrEqualAllKeys() throws {
-      let cases: [(key: Int, expected: Int?)] = [
-        (-1, nil),
-        (0, 0),
-        (1, 1),
-        (2, 2),
-        (3, 2),
-      ]
-
-      for (key, expected) in cases {
-        XCTAssertEqual(a[.lessThanOrEqual(key)], expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(.lessThanOrEqual(key)), expected != nil, "key=\(key)")
-      }
-    }
-
-    /// `.find(_:)`は等しい要素を指し、等しい要素が無ければendを指すこと
-    func testFindAllKeys() throws {
-      let cases: [(key: Int, expected: Int?)] = [
-        (-1, nil),
-        (0, 0),
-        (1, 1),
-        (2, 2),
-        (3, nil),
-      ]
-
-      for (key, expected) in cases {
-        XCTAssertEqual(a[.find(key)], expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(.find(key)), expected != nil, "key=\(key)")
-      }
-    }
-
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[.lessThan(1)], 0)
       XCTAssertEqual(a[.greaterThan(1)], 2)
@@ -419,23 +476,6 @@
       XCTAssertNil(multiplesOfFive[.end])
     }
 
-    #if DEBUG
-      /// 別の木由来のindexを内包したBoundExpressionが、ALLOW_CROSS_TREE_INDEXの設定通りに解決されること
-      func testBoundExpressionFromAnotherTreeResolvesAccordingToCrossTreeIndexTrait() throws {
-        let other = RedBlackTreeSet<Int>(0..<3)
-
-        for i in 0..<3 {
-          let otherBound = RedBlackTreeBoundExpression<Int>.index(
-            other.index(other.startIndex, offsetBy: i))
-
-          #if ALLOW_CROSS_TREE_INDEX
-            XCTAssertNotNil(a[otherBound])
-          #else
-            XCTAssertNil(a[otherBound])
-          #endif
-        }
-      }
-    #endif
   }
 #endif
 

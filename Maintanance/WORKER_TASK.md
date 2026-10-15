@@ -16,15 +16,27 @@
 
 手放した占有権は、相手へ丸ごと移るわけではない。固定されて誰も一方的には変更できない部分と、次の担当が変更できる部分を区別する。依頼後に依頼書を作り足すことや、返却物を受け取っただけで書き換えることはしない。
 
-Status: no active assignment.
+Status: three investigation assignments prepared; worker startup has not been observed.
 
 Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
 
 この固定パスは、調整役Codexが限定した依頼と返却先を記録し、ユーザーが別のXcode会話へ渡すために保持する。
-現在、Worker Codexへ委任された仕事はない。過去のassignmentや未採用bootstrap候補を、この文書が空いていることを理由に再開しない。
+現在の依頼は下記3件。各フレッシュ会話には一つだけ割り当てる。過去のassignmentや未採用bootstrap候補は再開しない。
 
 新しい依頼を記録するときは、目的、許可範囲、対象外、入力、受入条件、検証、停止条件、返却先をこの文書内で完結させる。
 Workerは記録された範囲だけを実施し、調整役Codexが証拠を独立に確認して受入・統合する。
 
 過去のBareArray本文レビューと、除外したbootstrap候補は
 [`Archived/Worker/`](Archived/Worker/)に履歴として保存している。
+
+## 現在の調査割当（2026-10-15、Astra）
+
+立案完了、調査フェーズ。3件を3体で並行調査する。依頼書は個別に完結し、返却先も分離している。
+
+| ワーカー | 固定ID | 担当 | 依頼書 |
+| --- | --- | --- | --- |
+| 1 | `PERM-073` | 構成・互換入口 | [ワーカー1依頼書](Current/PERMUTATION_MIGRATION_WORKER_1.md) |
+| 2 | `PERM-074` | 性能CI・benchmark | [ワーカー2依頼書](Current/PERMUTATION_MIGRATION_WORKER_2.md) |
+| 3 | `PERM-075` | 文書・導入経路 | [ワーカー3依頼書](Current/PERMUTATION_MIGRATION_WORKER_3.md) |
+
+全件の返却をAstraが照合・統合し、ユーザーと計画を相談する。調査3件は相互の必須前提を持たない。

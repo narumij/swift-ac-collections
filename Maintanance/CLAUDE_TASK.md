@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**No active assignment. `PERM-078-HIME` has been returned and accepted by Astra; DONE, with user authorization to commit the changes and acceptance record. `OPT-074` is DONE.**
+**Current assignment: `RBT-042-HIME` — ACTIVE (issued; execution start not confirmed). Prior OPT-074 and PERM-078 assignments are DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -48,6 +48,25 @@ Current assignments must follow the current request and explicit delegation, not
 
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
+
+## Active assignment
+
+### RBT-042-HIME — Set Test as Specification follow-up S1–S4
+
+- Registry ID: `RBT-042`, registered before this request. Assigned by Astra under the user's 2026-10-15 direction to dispatch before committing.
+- Input: `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, section “Set仕様レビュー”, findings S1–S4 and their acceptance criteria. That input is fixed. Later reviews of other types are not part of this assignment.
+- S1: Use the existing comparable reference fixture to distinguish hinted insert retaining an existing object from hinted update replacing it and returning the old object. Include valid poor-position/end hints and preservation of a shared original. Do not create new invalid-hint policy.
+- S2: Add focused throwing-predicate cases for normal-mode Set.filter and Set.erase(where:). Verify the specific error, no calls after the throw, unchanged filter input / unchanged shared original for erase, and relevant temporary-reference cleanup. Inspect range-erase paths and cover only additional paths that need it. Do not assume rollback or a particular partially mutated receiver state without an existing contract.
+- S3: For formUnion/formIntersection/formSymmetricDifference/formDifference, retain a shared original and rhs, choose inputs that change the receiver, and directly verify all three contents immediately after the operation. Preserve existing model/stress checks; do not add a copy-count contract.
+- S4: Separate setup failure from the expected failure in `removed index cannot be subscripted` in Set AdditionalDeathTests. Preserve the deliberately broad fatal-failure contract and SIGSEGV/SIGBUS/ASan exclusions. With `.failure`, exit(86) alone is insufficient: explicitly reject setup failure or otherwise distinguish it. Demonstrate failure with a temporary broken-setup negative control, then restore it.
+- Editable scope: the existing Set numbered tests under `Tests/RedBlackTreeTests/RedBlackTreeSet/` required for S1–S4; this assignment's Return below; a concise task handoff in `Tests/TESTING.md`. Read `Tests/CLAUDE.md`, task-relevant TESTING.md and `Tests/RedBlackTreeFixture/Fixtures.md`. Reuse fixtures without modifying shared fixtures. No production, manifest, CI, other-container tests, Registry, numbering, review-input edits, or frozen-work restart.
+- Check current baseline and concurrent changes first. If existing coverage already meets a requested item, report the exact evidence instead of duplicating tests. If a production defect or unresolved contract is found, preserve evidence and stop the affected item; do not weaken tests or change production.
+- Validate narrow affected cases, then the affected RedBlackTreeTests target in Debug and Release, including actual Death Test execution. Use the normal lifetime-balance checks. Check compatibility only for changed cases compiled in that mode; keep normal-only cases gated. Record commands, toolchain, actual cases/counts, failures, skipped and unexecuted configurations. Distinguish static evidence from runs.
+- Group changes by S1–S4 in the return. No commit or push authorization. State completion, remaining concerns and explicit release of the assigned scope. Astra will independently verify and update Registry.
+
+#### Return (`RBT-042`) — reserved for Claude
+
+No return received.
 
 ## Returned assignment — PERM-078 accepted, DONE
 

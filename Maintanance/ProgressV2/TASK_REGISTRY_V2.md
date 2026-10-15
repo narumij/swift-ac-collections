@@ -41,7 +41,8 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RBT-036` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の初回横断 | 2026-10-15、Astraが4型を静的に概観し、Death Test判定・Map系value観測・共有寿命の対応・旧空testの説明の4課題候補、型別見取り図と未確認範囲を正本へ記録。実行検証・型別詳細レビュー・修正・発注なし。ユーザーのコミット許可により今回の記録を保存してDONE。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
-| `RBT-037` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeSet | RBT-036のレビュー記録がそろってから着手。初回横断を入力に、Setの公開契約とtestを照合し、不足・偽陽性・境界条件を根拠付きで記録する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-037` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeSet | 2026-10-15、AstraがSetの静的仕様レビューを行い、hint付き参照置換・throwing predicate・集合演算CoWの元コピー観測・Death Test setup分離の4補完候補と受入条件を正本に記録。既存検証で足りる点と未検証範囲も明記。実行検証・修正なし。ユーザーが後続RBT-042発注とレビュー記録のコミットを許可したためDONE。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-042` | `ACTIVE` | Claude / Astra（受入） | [EXECUTION] Set Test as SpecレビューS1〜S4反映 | 2026-10-15ユーザー指示により登録・CLAUDE_TASKから発注。hint付き参照置換、throwing predicate、集合演算CoW、Death Test setup分離を既存契約内で補完。production変更・他型への展開なし。正式返却・占有返却と独立検証後に受入。着手報告は未確認 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
 | `RBT-038` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiSet | RBT-037のレビュー記録がそろってから着手。Setレビューの共通論点を引き継ぎ、MultiSet固有の重複・順序・操作契約とtestを照合する。Setの結果をそのまま保証として転用しない。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-039` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeDictionary | RBT-038のレビュー記録がそろってから着手。先行レビューを入力に、Dictionaryのkey/value・更新・Viewを含む現行公開契約とtestを照合する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-040` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiMap | RBT-039のレビュー記録がそろってから着手。先行レビューを入力に、MultiMapの重複keyとvalue・更新・Viewを含む現行公開契約とtestを照合する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
@@ -112,6 +113,7 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `RBT-042` | `RBT-037` | `SEQUENCE` | SetレビューS1〜S4の固定した指摘と受入条件を入力にする |
 | `RBT-037` | `RBT-036` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-038` | `RBT-037` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-039` | `RBT-038` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |

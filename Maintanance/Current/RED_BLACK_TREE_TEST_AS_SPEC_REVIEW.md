@@ -61,3 +61,52 @@ MappedValuesの範囲所属検査はAPI-Matrix-Viewの現行事前条件と既�
 初回横断の到達点である見取り図・課題候補・未確認範囲の記録は完了。型別詳細レビュー・修正は未着手。コミット許可待ちとしてRBT-036をWAITING_USERとする。
 
 2026-10-15、ユーザーがコミットを許可。初回横断の記録を保存し、RBT-036をDONEとする。型別レビューは未着手。
+
+### Set仕様レビュー（RBT-037、2026-10-15、Astra）
+
+基準HEAD：`eb1d5d69`、開始時作業ツリーはclean。今回も課題出しのみで、production/test変更・test実行・mutation試験・Claudeへの発注はしていない。型別レビューは公開仕様と検査内容の静的照合であり、全構成の合格認定ではない。
+
+確認範囲：Setの番号付きtest一覧を確認し、Insertion、Removal、Search、RangeView、ValueSemantics、SetAlgebra、Codable、DeathTests/AdditionalDeathTestsの本文、および内部SetAlgebraStress/Fuzzを照合した。公開Set本体・Combining・SetAlgebra・SequenceとAPI-Matrixを契約の根拠とした。Index/Bound/走査/protocol群はテスト配置・既存ケースの確認を中心とし、全assertionや全trait組合せの網羅検証はしていない。
+
+#### S1：ヒント付き挿入・置換を、等価だが別の参照で区別する（優先）
+
+根拠：`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_5_InsertionTests.swift`の`test_insert_withHint`（202行目）、`test_update_withHint`（222行目）はIntだけを使用する。`Sources/RedBlackTreeCollections/RedBlackTreeSet/RedBlackTreeSet.swift`の268〜318行付近はinsertが既存要素を返し、updateが置換して旧要素を返す契約。ヒントなしにはComparableReferenceを用いたidentity検査がある。
+
+不足：ヒント付きupdateが旧要素を返すだけで置換を省略しても、同じIntのままなので当該testは通る。insertが既存参照を同キーの新参照へ置き換えても当該testは区別しない。
+
+反映候補：既存ComparableReferenceを使い、insertの重複では既存参照保持、updateでは旧参照返却と格納参照の置換を`===`で確認する。有効だが位置の悪いhintとendIndexも扱い、共有コピーを残した場合に元の格納参照が変わらないことを確認する。新規fixture/APIや不正hint契約は作らない。
+受入：置換を省略する誤実装を検出できるassertion、要素数・順序・戻り値、Debug/Releaseの実行証拠。
+
+#### S2：throwするpredicateの失敗経路（優先）
+
+根拠：Setの`filter`（`RedBlackTreeSet+Sequence.swift`）と`erase(where:)`、IndexRange/Bound範囲のeraseはthrowing closureを受ける。Set/View testをthrow・XCTAssertThrowsError等で検索した範囲では、実際に独自エラーを投げて伝播を検証するケースを確認できなかった（コメント化されたtrap検査とXCTSkipは別）。
+
+反映候補：通常構成のSet.filterとSet.erase(where:)を最小対象に、固有エラーを投げ、そのエラーが呼出元へ届くこと、投げた後にpredicateを継続しないことを検査する。filterは元Set不変を確認し、一時生成された保持参照の解放も検査対象にする。eraseはコピーを残し、非変更側の内容保持を検査する。失敗した変更側に未規定の全巻戻しや特定の途中状態を要求しない。範囲版は同じ経路で担保されるかを反映時に確認し、異なる経路の必要分だけ補う。
+受入：正常controlとthrowケース、期待したエラー識別、適用できる寿命検査、Debug/Release。製品不具合や例外保証の判断が必要なら再現を残して止める。
+
+#### S3：集合演算のCoWで非変更側のコピーを直接観測する（中）
+
+根拠：`RedBlackTreeSet_98_SetAlgebraStressTests.swift`の`testFormOperationsMutateReceiverOnly`（57行目）はlhsから各変更用コピーを作り、結果とrhsを照合するが、各操作直後の元lhsを参照モデルsLと直接比較していない。`assertEquiv(rhs, rhs)`は自己比較であり、その後のsR比較とは証拠として区別する。番号付き`_10_SetAlgebraTests.swift`には内容検査があるが、form系で共有元を明示的に保持した独立性のケースは見当たらなかった。
+
+反映候補：formUnion/formIntersection/formSymmetricDifference/formDifferenceの各操作で変更用コピー・元の共有コピー・rhsを保持し、操作直後に三者の期待内容を比較する。各演算が実際に内容を変える入力を使う。既存stress全体の増量やcopy回数の新規契約は不要。
+受入：結果だけでなく元コピーとrhsの保持を直接検査、Debug/Release。既存の集合演算の参照モデル比較・代数法則testは残す。
+
+#### S4：削除済みIndexのDeath Testでsetup失敗を分離する（中）
+
+根拠：`RedBlackTreeSet_99_AdditionalDeathTests.swift`の`removed index cannot be subscripted`（66行目）は子process内で`firstIndex(of: 2)!`を使う。検索がnilなら、目的の削除済みIndex参照に到達せずSwift trapとなり、`.failure`とメモリエラー除外を満たし得る。これは静的な検出経路の指摘で、negative controlは未実行。
+
+反映候補：このケースのsetupを親側の正常controlなどで区別し、検索失敗・削除未成立を目的の停止の成功として数えない。`.failure`を維持するなら「exit(86)にするだけ」では同じく成功してしまうので不可。setupの特定終了codeを明示的に拒否する等、既存の広い停止契約を保った区別を行う。壊したsetupを使う一時negative controlが失敗することを確認し、復元する。
+受入：通常ケース成功、setup故障時の確実なtest失敗、既存SIGSEGV/SIGBUS/ASan除外を保持。実装側のsignal契約を変更しない。
+
+#### 今回追加課題にしないもの
+
+- 初回候補の「広いDeath Test終了判定」は意図された契約がある。Tests/CLAUDE.mdとAdditionalDeathTestsの説明に従い、全件を特定signalへ統一しない。SetのstaleIndexケースには理由文字列の検査もある。
+- Setの共有参照寿命は`_15_ValueSemanticsTests.swift`に具体的な検査がある。同じ内容を再追加しない。
+- closure内で双方に同じinsertを行うケースは戻り値insertedも検査し、単純な共有破壊なら後段がfalseとなる。これを無効な検査とはしない。
+- 集合演算は内容比較・固定seedの参照モデル・代数法則、基本変異はFuzzで補完されている。弱いsmoke testだけを根拠に「集合演算の検証がない」としない。
+- 空のremoveFirst/LastテストはDeath Testへの明示参照があり、不足を重複計上しない。
+- Indexの外部要件、MappedValues契約、性能再評価、凍結task、公開API変更は今回の反映候補に含めない。
+
+S1〜S4はtest補完の依頼を具体化できる範囲として記録するが、まだ実装taskの採番・委任はしていない。担当者は現行差分と契約を再確認し、不具合ならproductionを修正せず返す。レビュー記録は完了し、RBT-037はコミット許可待ち。MultiSet以降は未実施。
+
+2026-10-15、ユーザーがS1〜S4の発注後のコミットを許可。RBT-042を登録してCLAUDE_TASK.mdへ依頼を掲載した。RBT-037はDONEとして保存する。S1〜S4の依頼入力を固定し、今後の別型レビューは別節へ追記する。

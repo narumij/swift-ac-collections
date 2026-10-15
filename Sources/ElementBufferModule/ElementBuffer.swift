@@ -429,6 +429,15 @@ extension ElementBuffer4D: @unchecked Sendable where Element: Sendable {}
 extension ElementBuffer {
 
   #if swift(>=6.4)
+    /// `position`の要素を借用して読み書きする参照を返します。
+    ///
+    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    ///
+    /// - Parameter position: 参照する要素の位置。
+    /// - Returns: 指定した要素への可変参照。
+    /// - Precondition: `position`は`indices`に含まれなければなりません。
+    /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
     @_lifetime(&self)
@@ -440,6 +449,11 @@ extension ElementBuffer {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
+  /// `position`の要素を返します。
+  ///
+  /// - Parameter position: 読み取る要素の位置。
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func element(at position: Int) -> Element {
     precondition(0 <= position && position < count)
@@ -448,6 +462,16 @@ extension ElementBuffer {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// `position`の要素を`newValue`で置き換えます。
+  ///
+  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
+  /// 更新できます。
+  ///
+  /// - Parameters:
+  ///   - newValue: 指定した位置へ格納する値。
+  ///   - position: 更新する要素の位置。
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at position: Int) {
     precondition(0 <= position && position < count)
@@ -459,6 +483,17 @@ extension ElementBuffer {
 extension ElementBuffer2D {
 
   #if swift(>=6.4)
+    /// 座標`(x, y)`の要素を借用して読み書きする参照を返します。
+    ///
+    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    ///
+    /// - Parameters:
+    ///   - x: 最内軸の位置。
+    ///   - y: 最外軸の位置。
+    /// - Returns: 指定した要素への可変参照。
+    /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+    /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
     @_lifetime(&self)
@@ -471,6 +506,13 @@ extension ElementBuffer2D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
+  /// 座標`(x, y)`の要素を返します。
+  ///
+  /// - Parameters:
+  ///   - x: 最内軸の位置。
+  ///   - y: 最外軸の位置。
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int) -> Element {
     precondition(0 <= x && x < width)
@@ -480,6 +522,17 @@ extension ElementBuffer2D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// 座標`(x, y)`の要素を`newValue`で置き換えます。
+  ///
+  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
+  /// 更新できます。
+  ///
+  /// - Parameters:
+  ///   - newValue: 指定した位置へ格納する値。
+  ///   - x: 最内軸の位置。
+  ///   - y: 最外軸の位置。
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
     precondition(0 <= x && x < width)
@@ -492,6 +545,18 @@ extension ElementBuffer2D {
 extension ElementBuffer3D {
 
   #if swift(>=6.4)
+    /// 座標`(x, y, z)`の要素を借用して読み書きする参照を返します。
+    ///
+    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    ///
+    /// - Parameters:
+    ///   - x: 最内軸の位置。
+    ///   - y: 中間軸の位置。
+    ///   - z: 最外軸の位置。
+    /// - Returns: 指定した要素への可変参照。
+    /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+    /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
     @_lifetime(&self)
@@ -505,6 +570,14 @@ extension ElementBuffer3D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
+  /// 座標`(x, y, z)`の要素を返します。
+  ///
+  /// - Parameters:
+  ///   - x: 最内軸の位置。
+  ///   - y: 中間軸の位置。
+  ///   - z: 最外軸の位置。
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
     precondition(0 <= x && x < width)
@@ -515,6 +588,18 @@ extension ElementBuffer3D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// 座標`(x, y, z)`の要素を`newValue`で置き換えます。
+  ///
+  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
+  /// 更新できます。
+  ///
+  /// - Parameters:
+  ///   - newValue: 指定した位置へ格納する値。
+  ///   - x: 最内軸の位置。
+  ///   - y: 中間軸の位置。
+  ///   - z: 最外軸の位置。
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
     precondition(0 <= x && x < width)
@@ -528,6 +613,19 @@ extension ElementBuffer3D {
 extension ElementBuffer4D {
 
   #if swift(>=6.4)
+    /// 座標`(x, y, z, w)`の要素を借用して読み書きする参照を返します。
+    ///
+    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    ///
+    /// - Parameters:
+    ///   - x: `size0`軸の位置。
+    ///   - y: `size1`軸の位置。
+    ///   - z: `size2`軸の位置。
+    ///   - w: `size3`軸の位置。
+    /// - Returns: 指定した要素への可変参照。
+    /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+    /// - Complexity: O(1)
     @available(anyAppleOS 27.0, *)
     @inlinable
     @_lifetime(&self)
@@ -545,6 +643,15 @@ extension ElementBuffer4D {
 
   // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
   //  #if swift(<6.4)
+  /// 座標`(x, y, z, w)`の要素を返します。
+  ///
+  /// - Parameters:
+  ///   - x: `size0`軸の位置。
+  ///   - y: `size1`軸の位置。
+  ///   - z: `size2`軸の位置。
+  ///   - w: `size3`軸の位置。
+  /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
     precondition(0 <= x && x < size0)
@@ -556,6 +663,19 @@ extension ElementBuffer4D {
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// 座標`(x, y, z, w)`の要素を`newValue`で置き換えます。
+  ///
+  /// 以前の要素は破棄されます。このmethodはnonmutatingなので、`let`で保持したbufferも
+  /// 更新できます。
+  ///
+  /// - Parameters:
+  ///   - newValue: 指定した位置へ格納する値。
+  ///   - x: `size0`軸の位置。
+  ///   - y: `size1`軸の位置。
+  ///   - z: `size2`軸の位置。
+  ///   - w: `size3`軸の位置。
+  /// - Precondition: 各座標は対応する`0..<sizeN`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public func setElement(
     _ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int, _ w: Int

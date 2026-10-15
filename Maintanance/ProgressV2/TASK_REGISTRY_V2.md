@@ -30,7 +30,7 @@
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] ElementBufferの定性的性能表現の再検討 | 2026-10-09に確認した`[[Element]]`との比較意図は、当時の連鎖subscript・非所有Viewを含む設計の履歴である。その公開面は削除され、現行は単一連続storageの座標value accessと借用参照であるため、旧根拠から現行文言を確定しない。ユーザーの明示再開後、現在の操作、比較対象、測定証拠に照らして「C言語の配列に近いアクセス性能」を維持できるか再検討する | `Maintanance/Archived/Canonical/RELEASE_0_5_2.md` / `Maintanance/ElementBufferModule/ElementBufferAudit.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` |
-| `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 0.9.x release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package page、互換性表示、module別DocC build結果を確認する | `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
+| `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 0.9.x release後、`QUALITY-005`で対象版の登録可が判断され、ユーザーが明示的に再開してから、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package page、互換性表示、module別DocC build結果を確認する | `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
 | `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` / `README.md` |
 | `DOC-028` | `DONE` | Codex | [EXECUTION] 三対象の利用者向け本文ドラフトのレビュー・反映 | 2026-10-15、ユーザー依頼でPermutation・OptionalElementBuffer・ElementBufferの内部本文ドラフトをレビュー・修正し、反映完了後のDONE登録指示を受領。`a31f23fd`時点のsourceと追記コメント、公開契約、現行提供方針へ照合し、両Bufferの更新方式・一般供用の境界、Permutationの列挙・View寿命・borrowed版の位置づけ、導入例を修正した。未実施のTODOは現行仕様と区別。Apple Swift 6.4 / macOS 27で対象moduleを現行sourceから構築し、本文の使用例9件のcompile・実行・期待値を確認（compiler診断0件）。参照先20件の実在と差分の書式も確認。内部ドラフトのレビュー・反映完了であり、公開初版の完成や利用理解Validationの完了は含まない | `Maintanance/PermutationModule/UserDocumentationDraft.md` / `Maintanance/OptionalElementBufferModule/UserDocumentationDraft.md` / `Maintanance/ElementBufferModule/UserDocumentationDraft.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | `RELEASE-078`で、0.5.3後の公開面、現行品質区分、文書の完成状態、および旧開始条件の差を判断材料として揃えた後、ユーザーが0.6.0へ含める到達範囲とrelease工程へ進むかを一つに決定する。調査完了だけでは凍結を解除しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` |
@@ -57,6 +57,7 @@
 | `QUALITY-002` | `FROZEN` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 1.0品質ゲートの再開後、Ubuntu 24.04 LTS / x86_64のGitHub-hosted runnerで合意済みの品質試験を実行し、commit、workflow run、runner image、kernel、architecture、CPU、Swift、依存解決、選択試験、完全log、終了statusを証拠として残す。変動するrunner上の絶対性能は判定対象に含めない | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` |
 | `QUALITY-003` | `FROZEN` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 1.0品質ゲートの再開後、対象Apple platformごとの最低deployment versionをmanifestへ反映し、64-bitのplatform別build・導入経路を確認する。macOS 27 / arm64以外はbuild証拠と実行品質を区別する | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` |
 | `QUALITY-004` | `PROPOSED` | Codex | [DISCOVERY] 品質評価棚卸し | 四対象の評価・証拠・現行提供区分と既存taskを照合し、残る品質課題、記録不整合、既存taskで扱う範囲と未充当部分を整理する。初期抽出結果は詳細正本へ保存済み。開始時に対象版・範囲・完了条件・必須依存を確認して有効化する。個別課題の解消、公開契約・提供方針の採用、凍結解除は含めない | `Maintanance/Current/QUALITY_ASSESSMENT_INVENTORY.md` |
+| `QUALITY-005` | `FROZEN` | User / Codex | [DECISION] SPI登録前の公開準備判定 | ユーザーの明示再開後、対象版の公開情報と品質証拠を照合し、初見の利用者が採用・利用を判断できる状態としてSPIへ登録してよいかをユーザーが一つ判断する。対象版・根拠・残る不足・判断を詳細正本に記録して完了。登録可の判断なしに登録へ進めない | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |
 
 ### Permutation
 
@@ -83,6 +84,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `BARE-044` | `DONE` | Codex | [EXECUTION] ElementBuffer座標accessコメントドック回復 | 2026-10-15のユーザー指示により登録・実施。`4b023333`のaccess性能探索で追加され、旧連鎖subscript削除後に主要表面となった1D〜4Dの`element(at:)`・`setElement(_:at:)`・`reference(at:)`計12本へ、旧subscriptの契約記述と現行本文ドラフトを照合して、座標、事前条件、所有・寿命、nonmutating更新、計算量を復元した。`DOC-010`で凍結中の定性的性能表現は変更していない。source診断0件、Xcode build成功、ElementBuffer 60 test成功、`ElementBufferModule` DocCを`--warnings-as-errors`で生成成功 | `Maintanance/MAINTENANCE.md` / `Maintanance/ElementBufferModule/UserDocumentationDraft.md` / `Maintanance/ElementBufferModule/ElementBufferAudit.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Sources/ElementBufferModule/ElementBuffer.swift` |
 | `BARE-035` | `FROZEN` | Codex | [DISCOVERY] ElementBuffer提供停止の実施境界整理 | 1.0提供対象外という現行区分だけからpackage上の提供停止を導かない。ユーザーが提供停止の検討を明示的に再開した場合に限り、package、facade、文書、移行、release、既存利用への影響を現在の公開面へ再照合し、局所的な後続taskへ分解する | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` |
 
 ### 移行史
@@ -113,6 +115,7 @@
 | `RELEASE-078` | `QUALITY-004` | `SEQUENCE` | 現行提供区分に照らした品質課題と証拠の棚卸しを揃えてから、0.6.0開始条件と対象候補を再照合する |
 | `RELEASE-007` | `RELEASE-078` | `SEQUENCE` | 0.5.3後の公開面、現行提供区分、文書状態、および旧0.6.0開始条件の差を判断材料として揃えてから、0.6.0の範囲とrelease開始を決定する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
+| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.9.x release後・明示再開の条件も維持する |
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 「AまたはB」の条件はANDの辺二本に変えず、task行に残す。例えば`RBT-004`の再開条件はORである。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。
@@ -143,7 +146,7 @@
   成立しているか判断可能な状態にする。
 - RedBlackTreeのユーザードキュメント作業後、汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
-- 0.9.x release後、Swift Package Indexへpackageを登録し、module別DocCの生成と互換性表示を確認する。登録後に
+- SPI登録前ゲートで公開準備を判定し、登録可となった対象版について、0.9.x release後、Swift Package Indexへpackageを登録し、module別DocCの生成と互換性表示を確認する。登録後に
   SPIが提供するbadgeとmodule別API referenceへの導線をREADMEまたはPagesへ接続し、結果を1.0品質gateへ渡す。
 - 保留中の運用playbookをユーザー指示で再開した後、このrepositoryで得たtask運用知見を、
   別projectでもCodexが同程度の管理品質を再現できる移植可能な形へ整理する。

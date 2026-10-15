@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `RBT-042-HIME` — returned; scope released. Astra has implemented the authorized four-container range-erase fix; final verification is recorded in the review document. Prior OPT-074 and PERM-078 assignments are DONE.**
+**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. Only RBT-043 is initially eligible; subsequent stages require the preceding acceptance gate. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -49,7 +49,74 @@ Current assignments must follow the current request and explicit delegation, not
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
-## Active assignment
+## Active assignment batch
+
+Author: Astra. The user requested preparation and issuance of all three stages together. Execute serially: MultiSet, Dictionary, then MultiMap. This changes dispatch timing, not the acceptance gates. After each stage, return evidence and release its scope; wait for Astra's independent acceptance recorded in the gate below before starting the next. Do not infer acceptance from your own tests, a review-complete status, or issuance of this batch. If interrupted, resume from the recorded gate and return, not memory. No new request document is needed for the next stage once its gate is cleared.
+
+| Stage | Start gate (Astra updates) |
+| --- | --- |
+| RBT-043 | Open: Set accepted; range-erase fix saved in 31aa2f07 |
+| RBT-044 | Closed: RBT-043 return, scope release and independent acceptance required |
+| RBT-045 | Closed: RBT-044 return, scope release and independent acceptance required |
+
+
+### RBT-043-HIME — MultiSet Test as Specification follow-up M1–M5
+
+- Registry ID: `RBT-043`, registered before this request. Author: Astra. Authorized by the user's request to dispatch the next vertical stage. Baseline: `31aa2f07`; verify current files and concurrent changes before editing.
+- Fixed input: `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, “MultiSet仕様レビュー”, M1–M5. Apply the following current-baseline clarification: RBT-042 already fixed range-erase predicate propagation in all four types and added two MultiSet subprocess regression cases. Preserve those tests; do not duplicate them or treat the old bug as still open.
+- M1: Verify that update at a deleted index returns nil and preserves the surviving equivalent members and count. Establish index invalidity first. Do not invent foreign-index policy or rejected-operation copy-count guarantees.
+- M2: With distinct reference instances equal by key, verify remove(at:) removes and returns the selected middle instance, and erase returns the correct following instance/index while preserving the others. Reuse existing fixtures where possible. Do not specify which instance eraseUnique(key) must select.
+- M3: Make focused public Bound behavior tests executable in Release: unresolved Bound, duplicate range results, reversed-range no-op and no predicate calls. Separate public assertions from DEBUG-only validity/internal copy observations; do not remove DEBUG guards wholesale.
+- M4: Add focused throwing filter/full-set erase tests with equivalent members, exact error propagation, no calls after the throw, source/shared-original preservation, and relevant temporary-reference cleanup. Existing range subprocess regressions already cover propagation; assess only genuinely additional paths or lifetime observations. Do not require rollback or a specific partially mutated receiver state.
+- M5: Verify formUnion/formIntersection/formDifference/formSymmetricDifference preserve shared original and rhs while producing expected multiplicities. Add a small same-reference/multiple-occurrence lifetime case with a shared copy: surviving occurrences/copies retain the object until the last owner releases it. Do not require deep copy or new copy-count contracts. Existing meld/melding preservation checks need no duplication.
+- Editable scope: required existing numbered tests under `Tests/RedBlackTreeTests/RedBlackTreeMultiSet/`; this assignment's Return below; a concise handoff in `Tests/TESTING.md`. Read `Tests/CLAUDE.md`, relevant TESTING.md, and `Tests/RedBlackTreeFixture/Fixtures.md`. Do not change shared fixtures, production, manifest, CI, other types, Registry, numbering, or fixed review input. Dictionary and MultiMap are assigned separately below, with closed start gates.
+- If current tests already satisfy an item, cite precise evidence instead of duplicating it. If a defect or unresolved contract appears, preserve the reproducer and stop only the affected item. Do not weaken assertions or repair production under this assignment.
+- Run narrow cases first, then the affected RedBlackTreeTests target in Debug and Release including actual Death Test execution. Keep normal lifetime-balance checks enabled. Check compatibility only where changed cases compile in that mode; retain appropriate normal-only guards. Report toolchain, commands, actual cases/counts, failures, skips and unexecuted configurations. Separate static inspection from execution.
+- Return changes and evidence grouped by M1–M5. Explicitly state completion, unresolved items and release of the assigned scope. Astra independently verifies and updates Registry. No commit or push authorization.
+
+#### Return (`RBT-043`) — reserved for Claude
+
+No return received.
+
+### Shared constraints for RBT-044 and RBT-045
+
+- Fixed input: the corresponding Dictionary D1–D6 or MultiMap MM1–MM4 section in `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, read together with the completed range-erase fix in `31aa2f07`. Check the current diff and prior-stage evidence when the gate opens. Do not duplicate existing range-predicate subprocess regression tests.
+- Editable scope: only required existing numbered tests in the assigned type directory under `Tests/RedBlackTreeTests/`, the stage's Return below, and a concise `Tests/TESTING.md` handoff. No production, shared-fixture, manifest, CI, other-type, Registry, numbering or fixed-input edits. Preserve previous returns and tests.
+- Read `Tests/CLAUDE.md`, relevant TESTING.md and `Tests/RedBlackTreeFixture/Fixtures.md`. Reuse existing fixtures. If already covered, cite evidence rather than add tests. A production defect or unresolved contract stops the affected item: preserve a reproducer and return it, without weakening assertions or changing production. Do not proceed through a closed gate.
+- Run narrow cases, then affected RedBlackTreeTests in Debug and Release, including actual Death Tests. Keep normal lifetime checks. Check compatibility where changed cases compile; preserve normal-only guards. Return commands, toolchain, counts, failures, skips, unexecuted configurations and limits. Separate static evidence from execution. No commit or push authorization.
+- Return by finding ID, identify completed and unresolved items, and explicitly release the stage's editable scope. Astra verifies acceptance independently. Do not claim overall completion from partial results.
+
+### RBT-044-HIME — Dictionary follow-up D1–D6
+
+Registry ID `RBT-044`; registered before issuance. Start only after the RBT-043 gate opens.
+
+- D1: Test default-subscript lazy evaluation with a counting default factory: existing keys do not evaluate it; absent-key reads evaluate without inserting; initial mutation inserts once. Retain a shared original and verify key/value independence for existing and absent keys with value-type values. Do not add rotation tests already present or require reference deep-copy/copy counts.
+- D2: Cover throwing duplicate combination and value transformations first: exact error, no calls after throw, unchanged nonmutating inputs/shared original, and cleanup of partially constructed reference values. Inspect Sequence/dictionary merge overloads, grouping and filter/erase paths for necessary additional coverage. No rollback guarantee for a partially changed receiver; no exhaustive cross-product.
+- D3: With Optional Value, distinguish absent key, stored nil and stored non-nil by outer Optional pattern and key/count. Verify .some(nil) keeps an entry, outer nil deletes it, and default lookup does not mistake stored nil for absence.
+- D4: Retain shared copies and returned old reference values across replacement/removal. Verify identity, survival while retained and release after the last owner. Control test-local ownership; do not require deep copy.
+- D5: Separate public Bound assertions from Debug-only internal checks so focused unresolved/reversed-range behavior also runs in Release. Observe associated values as well as keys. Preserve internal guards.
+- D6: Replace the misleading empty duplicate-key initializer test with an accurate reference to the existing Death Test and its enablement conditions. Do not add a duplicate trap test.
+- Type directory: `Tests/RedBlackTreeTests/RedBlackTreeDictionary/`. Existing Utility/MappedValuesView CoW, noncommutative merging, and reference-model Fuzz are evidence to preserve, not duplicate.
+
+#### Return (`RBT-044`) — reserved for Claude
+
+No return received.
+
+### RBT-045-HIME — MultiMap follow-up MM1–MM4
+
+Registry ID `RBT-045`; registered before issuance. Start only after the RBT-044 gate opens.
+
+- MM1: Delete the middle entry among equal keys with distinct values, establish saved-index invalidity, then verify updateValue returns nil and preserves surviving key/value pairs. Do not extrapolate foreign-index or compatibility contracts.
+- MM2: Cover throwing value transformations and predicates with distinguishable values under duplicate keys. Verify original error, no later calls, unchanged nonmutating inputs/shared original and relevant temporary-reference cleanup. Use preceding evidence to avoid duplication; do not require rollback.
+- MM3: Store one reference in multiple entries and retain a shared copy. Observe partial deletion/replacement, returned old-value retention, survival until the last owner and final release. Do not replace existing position-sensitive String tests or impose deep copy/copy counts.
+- MM4: Expose focused public Bound assertions to Release while retaining Debug-only internal checks. Verify duplicate-key value sequences and counts, reversed-range no-op and no predicate calls. Preserve existing IndexRange/equalRange/distance coverage.
+- Type directory: `Tests/RedBlackTreeTests/RedBlackTreeMultiMap/`. Existing insertion-order, hinted insertion, middle removal, value-swap CoW, transforming/combining and melding input preservation tests need no duplication.
+
+#### Return (`RBT-045`) — reserved for Claude
+
+No return received.
+
+## Returned assignment — RBT-042 accepted, DONE
 
 ### RBT-042-HIME — Set Test as Specification follow-up S1–S4
 

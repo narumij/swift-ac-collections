@@ -1,7 +1,7 @@
 # RedBlackTree Test as Spec 仕様レビュー
 
 作成者：Astra。2026-10-15。ユーザー指定の「4型をざっと横断 → 型順 → 最後に再横断」を記録する詳細正本。
-状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断の課題候補を以下に記録。型別レビューと最終横断は未実施。
+状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断と4型の仕様レビューを記録済み。型別補完はSetまで受入済みで、MultiSet以降と最終横断は未完了。
 
 ## 目的と境界
 
@@ -285,3 +285,26 @@ S2のIndex範囲erase停止原因を修正した。M4/D2/MM2に挙げた他のth
 最終検証：DebugはXCTest 944件＋Swift Testing 133件、Releaseは`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`でXCTest 747件＋Swift Testing 120件、いずれもexit 0。既存の不正範囲Death Testを維持した。修正・検証完了、RBT-042はコミット許可待ちのWAITING_USER。
 
 2026-10-15、ユーザーのコミット許可により4型の範囲erase修正・回帰テスト・検証記録を保存し、RBT-042をDONEとする。
+
+
+### 型別補完の継続とMultiSet発注（2026-10-15、Astra）
+
+ユーザー確認により、型別のテスト補完・受入をSet → MultiSet → Dictionary → MultiMapの順で進め、その後に最終横断を行う。レビューの先行完了を型別補完完了と取り違えない。SetはRBT-042で受入済み。MultiSetのM1〜M5をRBT-043として登録しCLAUDE_TASK.mdへ発注した。Dictionary/MultiMap補完は未発注。
+
+M4のうちIndexRange/IndexRangeExpressionのエラー伝播は31aa2f07の修正・回帰で確認済み。新依頼はこれを維持し、残るfilter/全体erase、参照保持などを補う。M1〜M5の原レビュー本文と新依頼を固定入力とする。今回コミット許可は受けていない。
+
+
+### 型別補完の直列ゲート（2026-10-15、ユーザー指示）
+
+Set補完RBT-042 → MultiSet補完RBT-043 → Dictionary補完RBT-044 → MultiMap補完RBT-045 → 最終横断RBT-041。
+
+各型のゲートは正式返却・占有返却・独立検証・受入記録で確認する。単なるレビュー完了や担当者の「終わった」という報告だけでは通過しない。未解決事項が完了条件に影響するなら、処置が確定するまで次型を発注しない。commitは別途ユーザー許可を要する操作として区別する。
+
+DictionaryはD1〜D6、MultiMapはMM1〜MM4を対象とし、前段受入後に現行差分と既存証拠へ照合して依頼を具体化する。範囲eraseの修正済み回帰を重複追加しない。production・公開契約の変更は各補完依頼に含めない。不具合は証拠を残して返す。Debug/Releaseの対象検証と構成差・未検証範囲を返却しAstraが独立確認する。登録時点では両型とも未発注。ACTIVEは有効な後続仕事を表し、ゲート通過や作業開始を意味しない。
+
+最終横断の到達点は、補完後の4型を再照合し、解消済み・残課題・共通証拠の適用範囲を記録すること。今回の登録はMultiSetへの固定済み依頼を変更しない。
+
+
+### 一括発注への変更（2026-10-15、ユーザー指示）
+
+RBT-043〜045をCLAUDE_TASK.mdの一つの依頼セットへ準備・掲載した。Dictionary D1〜D6、MultiMap MM1〜MM4も具体的な範囲・検証・返却欄を用意済み。前節の「未発注」「次型を発注」はこれ以後、それぞれ「一括発注済み・着手ゲート待ち」「次型を開始」と読み替える。直列の受入ゲートは維持し、Astraが前型の正式返却・占有返却・独立検証・受入を確認してCLAUDE_TASKのゲートを開く。発注文を毎回作る必要はない。MultiSetのM1〜M5の作業内容は変えない。最終横断は引き続き4型の受入後。

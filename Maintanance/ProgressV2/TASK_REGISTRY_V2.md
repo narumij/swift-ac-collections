@@ -44,9 +44,12 @@
 | `RBT-037` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeSet | 2026-10-15、AstraがSetの静的仕様レビューを行い、hint付き参照置換・throwing predicate・集合演算CoWの元コピー観測・Death Test setup分離の4補完候補と受入条件を正本に記録。既存検証で足りる点と未検証範囲も明記。実行検証・修正なし。ユーザーが後続RBT-042発注とレビュー記録のコミットを許可したためDONE。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-042` | `DONE` | Astra（修正・検証） | [EXECUTION] Set Test as SpecレビューS1〜S4反映・範囲erase修正 | ユーザー許可により4型の範囲eraseを修正。回帰8件の修正前SIGTRAP・修正後成功を確認。Debug 944＋133件、Release（debug情報なし）747＋120件成功。不正範囲停止を維持。2026-10-15ユーザーのコミット許可により修正・受入記録を保存しDONE。先行成果は7ed1cc6b | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
 | `RBT-038` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiSet | 仕様観点の静的レビューを完了し、補完候補M1〜M5を詳細正本へ記録。2026-10-15、ユーザーがコミットを許可したためレビュー記録を保存してDONE。test実行・契約/実装/test修正・補完作業の発注は未実施 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-043` | `ACTIVE` | Claude / Astra（受入） | [EXECUTION] MultiSet Test as SpecレビューM1〜M5反映 | ユーザーの依頼指示により登録・CLAUDE_TASKへ掲載。31aa2f07の範囲erase修正と回帰を前提に、重複のidentity・無効Index更新・Release Bound・throw・共有寿命を補完する。production変更なし。返却と独立検証後に受入。起動は未確認 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
 | `RBT-039` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeDictionary | 静的仕様レビューを完了し、D1〜D6の補完候補と既存検査による初回懸念の解消を詳細正本へ記録。2026-10-15ユーザーのコミット許可により記録を保存してDONE。test実行・契約/実装/test修正・発注は未実施 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-040` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiMap | 静的仕様レビューを完了し、MM1〜MM4の補完候補と既存検査で足りる点を詳細正本へ記録。2026-10-15ユーザーのコミット許可により記録を保存してDONE。test実行・契約/実装/test修正・発注は未実施 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
-| `RBT-041` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | RBT-040のレビュー記録がそろってから着手。4型の個別結果を再照合し、型間の不整合・共通実装の未検証・重複指摘・個別レビューの見落としを整理し、修正候補と判断待ちを分ける。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-044` | `ACTIVE` | Claude / Astra（受入） | [EXECUTION] Dictionary Test as SpecレビューD1〜D6反映 | 一括発注済み・着手ゲート待ち。RBT-043の正式返却・占有返却・独立検証・受入記録を確認後、固定済みCLAUDE_TASKのD1〜D6依頼を現行差分へ照合し、Astraがゲート通過を記録してから着手。反映とDebug/Release検証を受入条件とする。production変更は含めず不具合・未決仕様は返却する | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
+| `RBT-045` | `ACTIVE` | Claude / Astra（受入） | [EXECUTION] MultiMap Test as SpecレビューMM1〜MM4反映 | 一括発注済み・着手ゲート待ち。RBT-044の正式返却・占有返却・独立検証・受入記録を確認後、固定済みCLAUDE_TASKのMM1〜MM4依頼を現行差分へ照合し、Astraがゲート通過を記録してから着手。反映とDebug/Release検証を受入条件とする。production変更は含めず不具合・未決仕様は返却する | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
+| `RBT-041` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | ゲート待ち。RBT-042→RBT-043→RBT-044→RBT-045の型別補完・正式返却・独立検証・受入記録を確認してから着手。レビュー完了だけでは通過しない。4型の最終成果で型間不整合・共通実装の未検証・重複指摘・見落としを整理する。契約・実装・test修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-014` | `WAITING_USER` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalElementBuffer、ElementBufferの利用者向け文書作業による方式習熟は完了済み。赤黒木の利用者向け文書作業へ進めるというユーザー指示を待ち、その後、workflowと4公開型のoutlineを現在のAPI、test、設計資料へ再照合し、本文作成へ渡せる状態を確認する。状態変更だけでは実作業を開始しない | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -113,12 +116,19 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `RBT-044` | `RBT-043` | `SEQUENCE` | MultiSet補完の正式返却・独立検証・受入完了が着手ゲート（一括発注済み） |
+| `RBT-044` | `RBT-039` | `SEQUENCE` | DictionaryレビューD1〜D6を入力とする |
+| `RBT-045` | `RBT-044` | `SEQUENCE` | Dictionary補完の正式返却・独立検証・受入完了が着手ゲート（一括発注済み） |
+| `RBT-045` | `RBT-040` | `SEQUENCE` | MultiMapレビューMM1〜MM4を入力とする |
+| `RBT-041` | `RBT-045` | `SEQUENCE` | 型別補完の直列ゲートを通り、4型の受入記録がそろってから最終横断 |
+| `RBT-043` | `RBT-038` | `SEQUENCE` | MultiSetレビューM1〜M5を入力とする |
+| `RBT-043` | `RBT-042` | `SEQUENCE` | Set補完の受入と4型の範囲erase修正後に進む |
 | `RBT-042` | `RBT-037` | `SEQUENCE` | SetレビューS1〜S4の固定した指摘と受入条件を入力にする |
 | `RBT-037` | `RBT-036` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-038` | `RBT-037` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-039` | `RBT-038` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-040` | `RBT-039` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
-| `RBT-041` | `RBT-040` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
+| `RBT-041` | `RBT-040` | `SEQUENCE` | 個別レビューを入力とする。これだけでは着手せず、RBT-045までの補完受入ゲートも必要 |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `RBT-004` | `RBT-011` | `SEQUENCE` | IndexのComparable採否を確定してから、残存するDebug限定比較宣言とBalanced群の処遇を扱う |
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |

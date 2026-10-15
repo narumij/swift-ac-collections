@@ -47,6 +47,9 @@ dependencies: [
 import AcCollections
 ```
 
+通常の入口は`AcCollections`で、Permutation APIも再公開します。moduleを直接利用する場合の
+主入口は`NextPermutationModule`です。旧名`PermutationModule`は同じ宣言を再公開する互換入口として残します。
+
 ### OptionalElementBufferを有効にする
 
 `OptionalElementBuffer`は既定では`AcCollections`から公開されません。実験的な低レベル部品として

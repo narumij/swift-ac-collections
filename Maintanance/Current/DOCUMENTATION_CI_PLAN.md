@@ -37,6 +37,8 @@ rendered contentの完全性、利用者による理解、および将来のwarn
 既存の`RedBlackTreeCollections` documentation jobとGitHub Pages公開は、利用者向け公開物を生成する別責務である。
 この計画によって公開target、hosting base path、Pages更新元、またはrelease時の公開判断を変更しない。
 
+2026-10-15、module移行の作業差分では`NextPermutationModule`を主入口として追加し、旧`PermutationModule`は互換入口として維持する。DocC matrixは上記5 targetに新名を加えた6 targetとする。これは今回の変更であり、2026-10-13の取得済み証拠は旧名5 targetのまま保持する。今回のremote成功は未確認。
+
 ## 公開構成
 
 公開moduleのAPI referenceは、Swift Package Indexが生成するtarget別DocCを正本の公開先とする。

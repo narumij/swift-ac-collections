@@ -7,7 +7,7 @@
 
 ## 概要
 
-PermutationModuleは、要素が`Comparable`に適合する`Collection`の現在の並びから始めて、
+NextPermutationModuleは、要素が`Comparable`に適合する`Collection`の現在の並びから始めて、
 辞書順で後続する順列を一つずつ生成する。
 
 `nextPermutations()`が返す`NextPermutations`は、要素を格納する一つの可変bufferを所有する。
@@ -127,10 +127,10 @@ borrowed版とAtCoder 2025互換modeは、公開表面、寿命契約、build条
 
 ## 根拠
 
-- 公開実装: `Sources/PermutationModule/NextPermutations.swift`
-- borrowed版の公開実装・利用例: `Sources/PermutationModule/BorrowedNextPermutations.swift`
+- 公開実装: `Sources/NextPermutationModule/NextPermutations.swift`
+- borrowed版の公開実装・利用例: `Sources/NextPermutationModule/BorrowedNextPermutations.swift`
 - 現行Test as Specification: `Tests/PermutationTests/NextPermutations/`
 - compiler表面: `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`
-- 品質プロファイル: `Sources/PermutationModule/Documentation/Quality-Profile.md`
+- 品質プロファイル: `Sources/NextPermutationModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/PermutationModule/CurrentQualityAssessment.md`
 - 再構成と検収記録: `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`

@@ -45,6 +45,10 @@ Import it in your source code:
 import AcCollections
 ```
 
+`AcCollections` is the usual entry point and re-exports the permutation APIs. Direct users should
+import `NextPermutationModule`; the former `PermutationModule` name remains as a compatibility entry
+point that re-exports the same declarations.
+
 ### Enabling OptionalElementBuffer
 
 `OptionalElementBuffer` isn't exposed through `AcCollections` by default. To explicitly use this

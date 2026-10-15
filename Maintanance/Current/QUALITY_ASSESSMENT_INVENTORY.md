@@ -23,7 +23,7 @@
 | 対象 | 現行の提供区分 | 評価の起点 |
 | --- | --- | --- |
 | RedBlackTreeCollections | 1.0提供対象 | [現行品質評価](../RedBlackTreeModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| PermutationModule | Swift 6.4以降の1.0提供対象 | [現行品質評価](../PermutationModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
+| NextPermutationModule（旧PermutationModule互換入口あり） | Swift 6.4以降の1.0提供対象 | [現行品質評価](../PermutationModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/NextPermutationModule/Documentation/Quality-Profile.md) |
 | OptionalElementBufferModule | traitで明示的に有効化する、留保付きの実験的提供 | [現行品質評価](../OptionalElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
 | ElementBufferModule | 1.0提供対象。Swift 6.2は1.0競技供用、Swift 6.4は1.0一般供用（2026-10-15ユーザー訂正） | [現行品質評価](../ElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
 

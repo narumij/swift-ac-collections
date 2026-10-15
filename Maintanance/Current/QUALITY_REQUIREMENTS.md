@@ -51,13 +51,13 @@ Swift利用者が期待する言語特性や安全性を
 | モジュール | 位置づけ |
 |---|---|
 | RedBlackTreeCollections | 1.0提供対象として品質成立を目指す。 |
-| NextPermutationModule（現行実装名：PermutationModule） | Swift 6.4以降の1.0提供対象として品質成立を目指す。 |
+| NextPermutationModule | Swift 6.4以降の1.0提供対象として品質成立を目指す。旧`PermutationModule`は互換入口として維持する。 |
 | OptionalElementBufferModule | 明示的なpackage traitで有効化する実験的データ構造として、留保付きで1.0の対象に残す。安定APIと同じ保証を既成事実とせず、実験提供に必要な品質境界を別途成立させる。 |
 | ElementBufferModule | 1.0提供対象。Swift 6.2では「1.0競技供用」、Swift 6.4では「1.0一般供用」として品質成立を目指す。言語バージョンごとの用途・アクセス方式を区別して評価する。 |
 
 2026-10-15、Permutationの採用module名を`NextPermutationModule`、通常版一時View名を
 `NextPermutations.Permutation`とした。名称決定の正本は[`PUBLIC_API_NAMING_DECISIONS.md`](PUBLIC_API_NAMING_DECISIONS.md)。
-現行実装・配置は`PermutationModule`であり、改名の実装・検証は未完了。旧module名の互換方針は未決である。
+実装と主入口は`NextPermutationModule`に置き、旧`PermutationModule`は同じ宣言を再公開する互換入口として維持する。
 名称の決定によって提供範囲や品質達成状況は変わらない。
 
 2026-10-15のユーザー訂正に基づき、ElementBufferをモジュール全体で「1.0提供対象外」とした記録を訂正した。
@@ -275,7 +275,7 @@ AI同士の評価が一致したことを、
 | モジュール | 品質プロファイル |
 |---|---|
 | RedBlackTreeCollections | [`Quality-Profile.md`](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| NextPermutationModule（現行実装名：PermutationModule） | [`Quality-Profile.md`](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
+| NextPermutationModule | [`Quality-Profile.md`](../../Sources/NextPermutationModule/Documentation/Quality-Profile.md) |
 | OptionalElementBufferModule | [`Quality-Profile.md`](../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
 | ElementBufferModule | [`Quality-Profile.md`](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
 

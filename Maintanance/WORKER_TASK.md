@@ -16,7 +16,7 @@
 
 手放した占有権は、相手へ丸ごと移るわけではない。固定されて誰も一方的には変更できない部分と、次の担当が変更できる部分を区別する。依頼後に依頼書を作り足すことや、返却物を受け取っただけで書き換えることはしない。
 
-Status: one implementation assignment prepared (PERM-076); startup unconfirmed. Prior three investigations are complete.
+Status: PERM-076 returned and locally accepted by Astra; user authorized grouped commits; implementation saved in 1f87e37a, documentation and completion records saved together. No worker is currently assigned further implementation.
 
 Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
 
@@ -47,4 +47,4 @@ Workerは記録された範囲だけを実施し、調整役Codexが証拠を独
 
 ## 現在の実装割当（2026-10-15、Astra）
 
-`PERM-076`：新旧moduleの実装・ローカル検証を1体へまとめる。[この依頼書](Current/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)だけを新しいXcode会話へ渡す。返却先は依頼書から辿れる。起動は未確認。benchmark名変更・remote CI・commitは依頼に含まない。
+`PERM-076`：新旧moduleの実装・ローカル検証を1体へまとめる。[この依頼書](Current/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)だけを新しいXcode会話へ渡す。返却先は依頼書から辿れる。2026-10-15返却・ローカル受入済み。[受入記録](Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md)を参照。ユーザーがコミットを許可し、実装は`1f87e37a`へ保存済み。文書・受入・DONE記録を後続コミットへ保存する。benchmark名変更・remote CIは後続で扱う。

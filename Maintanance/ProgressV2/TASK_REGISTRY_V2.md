@@ -40,6 +40,12 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `RBT-036` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の初回横断 | ユーザー指定のレビュー工程として登録。レビューは未着手。共通契約・型固有契約と既存testの配置を概観し、型別レビューの見取り図と未確認範囲を残す。初回だけで品質の合否を結論しない。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-037` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeSet | RBT-036のレビュー記録がそろってから着手。初回横断を入力に、Setの公開契約とtestを照合し、不足・偽陽性・境界条件を根拠付きで記録する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-038` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiSet | RBT-037のレビュー記録がそろってから着手。Setレビューの共通論点を引き継ぎ、MultiSet固有の重複・順序・操作契約とtestを照合する。Setの結果をそのまま保証として転用しない。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-039` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeDictionary | RBT-038のレビュー記録がそろってから着手。先行レビューを入力に、Dictionaryのkey/value・更新・Viewを含む現行公開契約とtestを照合する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-040` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiMap | RBT-039のレビュー記録がそろってから着手。先行レビューを入力に、MultiMapの重複keyとvalue・更新・Viewを含む現行公開契約とtestを照合する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-041` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | RBT-040のレビュー記録がそろってから着手。4型の個別結果を再照合し、型間の不整合・共通実装の未検証・重複指摘・個別レビューの見落としを整理し、修正候補と判断待ちを分ける。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-014` | `WAITING_USER` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalElementBuffer、ElementBufferの利用者向け文書作業による方式習熟は完了済み。赤黒木の利用者向け文書作業へ進めるというユーザー指示を待ち、その後、workflowと4公開型のoutlineを現在のAPI、test、設計資料へ再照合し、本文作成へ渡せる状態を確認する。状態変更だけでは実作業を開始しない | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -106,6 +112,11 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `RBT-037` | `RBT-036` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
+| `RBT-038` | `RBT-037` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
+| `RBT-039` | `RBT-038` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
+| `RBT-040` | `RBT-039` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
+| `RBT-041` | `RBT-040` | `SEQUENCE` | ユーザー指定の順序。先行段階のレビュー結果を記録してから次段階へ進む |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `RBT-004` | `RBT-011` | `SEQUENCE` | IndexのComparable採否を確定してから、残存するDebug限定比較宣言とBalanced群の処遇を扱う |
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |

@@ -44,7 +44,7 @@ taskは判断一つかゼロになるまで分解する。新規登録・内容�
 | `EXCLUDED` | 必要性の消失や対象外などの理由で残作業から外した記録。実施成功や前提充足とはみなさない |
 | `ARCHIVED` | 履歴へ移した記録。読むことによって現在の仕事へ復活させない |
 
-`GRAPH-001`・`HIST-001`・`DOC-030`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
+`GRAPH-001`・`HIST-001`・`DOC-030`・`OPS-043`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
 
 外部待ちの仕事を開始できないことと、待っている条件が解消したかを任された範囲で確認することは分ける。凍結解除やユーザー専任の制限を、この確認から導かない。
 
@@ -88,7 +88,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `001` |
-| `OPS` | `042` |
+| `OPS` | `043` |
 | `OPT` | `074` |
 | `PERF` | `005` |
 | `PERM` | `078` |
@@ -156,6 +156,8 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 | Markdown | 現在位置に残す理由 |
 | --- | --- |
 | `Maintanance/DOCUMENT.md` | 文書整備の恒久task `DOC-030` の維持文書。個別作業の完了や文書整理で移動・改名・アーカイブせず、配置変更はユーザーの明示指示に従う |
+| `Maintanance/USER_MANAGEMENT_INTERVIEW_ASTRA.md` | 協働のふりかえりの恒久task `OPS-043` に紐付くAstraの評価記録 |
+| `Maintanance/ASTRA_OBSERVATIONS.md` | 同taskに紐付くAstra本人の任意の観察を本人の声のまま保持する場所 |
 | `Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md` | Codexによるマネジメント継続性の記録 |
 | `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md` | Claudeによる独立したマネジメント評価の記録 |
 | `Maintanance/CLAUDE_OBSERVATIONS.md` | Claude本人の任意の観察を本人の声のまま保持する場所 |

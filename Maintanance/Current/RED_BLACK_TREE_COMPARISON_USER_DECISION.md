@@ -1,22 +1,10 @@
-# 残存比較宣言とBalanced群のユーザー判断
+# 比較演算類とBalanced系の記録案内
 
-2026-10-16、Astra記録。RBT-004。
+2026-10-16、Astra記録。ユーザー指示で内容を分割し、元のRBT-004はEXCLUDEDとして整理した。
 
-## 扱い
+- [比較演算類の経緯](RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md)：削除提案を退けた名残かもしれないというユーザーの記憶。経緯は未確認。
+- [Balanced系の保存意図](RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md)：コンパイルによる契約確認と、読み手へ伝える設計上の主張。今回ユーザーが説明した意図を記録。
 
-ユーザーが「ユーザー判断にしようかな。AIに話通じなくてつらかったやつ」と述べたため、Codex担当の凍結taskからUSER_ONLYの判断課題へ変更した。ユーザーが残存比較宣言とBalanced群の扱いを決める。AIは判断を先取りせず、実装・削除・委任・催促を行わない。明示的に頼まれた資料整理のみ補助する。
+一括した「残すか削除するか」のユーザー判断待ちは終了する。実装の変更・検証完了を意味しない。
 
-## 既存の論点
-
-既存記録ではDebug限定`Result: Comparable`はユーザー介入で削除済み。残る`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の比較宣言とBalanced群を対象とする。今回その扱いを決めたり、現行実装を再検証したりしていない。
-
-RBT-011のIndexのComparable採否を入力にする既存依存は維持する。前提が整ってもAIへの実行委任にならない。現在の状態・依存は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
-
-## 判断記録
-
-未記入。ユーザーの決定と対象範囲を記録し、実行が必要なら別途委任された範囲へ具体化する。
-
-## 資料
-
-- [既存監査](EXTERNAL_TYPE_EXTENSION_AUDIT.md)
-- [変更前の原文](../Archived/RBT-004_BEFORE_USER_DECISION_2026-10-16.md)
+[整理前の行・依存辺・正本原文](../Archived/RBT-004_EXCLUDED_2026-10-16.md)を保存した。

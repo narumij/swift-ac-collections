@@ -9,6 +9,9 @@
 | 0.6.0の範囲確定とリリース | [0.6.0](Current/RELEASE_0_6_0.md) | RELEASE-078による開始条件照合。実施工程はユーザーのリリース手順 |
 | 0.7.0の範囲確定とリリース | [0.7.0](Current/RELEASE_0_7_0.md) | 0.6.0完了と後続差分を材料にする |
 | SPI登録と公開導線の成立 | [SPI公開](Current/SPI_PUBLICATION_MILESTONE.md) | QUALITY-005 → DOC-026 → DOC-027 |
+| RedBlackTreeのチューニング再探索 | [再探索マイルストーン](Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md) | 旧RBT-035を移行。到達条件・時期・実作業は未確定 |
+| Validation計画のレビュー | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#validation計画のレビュー旧doc-032) | 旧DOC-032。公開後の人間レビューとは区別する |
+| RedBlackTree文書の本文作成準備 | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成準備旧rbt-014) | 旧RBT-014。現行API・test・設計との照合 |
 
 ## 維持方法
 

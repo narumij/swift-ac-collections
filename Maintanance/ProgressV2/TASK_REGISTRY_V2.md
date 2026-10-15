@@ -29,7 +29,7 @@
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
 | `OPS-045` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 圧縮後のタスク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、task ID・状態・依存・採番・恒久文書の紐付け・履歴への経路と未完了条件の保存を読み取り検査し、根拠付きの指摘と未確認範囲を返す。登録・凍結解除・受入判断・本文修正はしない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
 | `DOC-031` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 文書リンク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、現行の管理文書とDOCUMENT.md掲載の外部文書を対象にローカル参照・見出し・移動先・外部URLの確認範囲を区別して検査する。今回移動した履歴と原文への経路も確認する。問題・根拠・修正候補・未確認を返すだけとし、資料の移動・本文修正・CIや重い生成処理は行わない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
-| `DOC-032` | `USER_ONLY` | User | [DISCOVERY] ドキュメントValidation計画ドラフトのレビュー | ユーザーが計画の目的・対象・試行方法・判定境界をレビューし、指摘または修正不要の結果を残すことで完了する。計画の受け入れ・試行開始・既存taskの凍結解除とは分ける。AIは本体の着手・代行・委任・催促を行わず、明示依頼された補助だけを行う | `Maintanance/Current/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md` |
+| `DOC-032` | `EXCLUDED` | User | Validation計画レビューをマイルストーンへ移行 | 2026-10-16、ユーザー指示。独立したユーザー待ちtaskを整理しOPS-047へ接続。達成済み・実作業開始とは扱わず、必要な条件は詳細正本に保持 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
 
 ### 公開とリリース
 
@@ -50,12 +50,12 @@
 | `RBT-041` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | ゲート待ち。RBT-042→RBT-043→RBT-044→RBT-045の型別補完・正式返却・独立検証・受入記録を確認してから着手。レビュー完了だけでは通過しない。4型の最終成果で型間不整合・共通実装の未検証・重複指摘・見落としを整理する。契約・実装・test修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-014` | `WAITING_USER` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalElementBuffer、ElementBufferの利用者向け文書作業による方式習熟は完了済み。赤黒木の利用者向け文書作業へ進めるというユーザー指示を待ち、その後、workflowと4公開型のoutlineを現在のAPI、test、設計資料へ再照合し、本文作成へ渡せる状態を確認する。状態変更だけでは実作業を開始しない | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `RBT-014` | `EXCLUDED` | User | RedBlackTree文書の本文作成準備をマイルストーンへ移行 | 2026-10-16、ユーザー指示。独立したユーザー待ちtaskを整理しOPS-047へ接続。達成済み・実作業開始とは扱わず、必要な条件は詳細正本に保持 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
-| `RBT-035` | `USER_ONLY` | User | [DECISION] RedBlackTreeチューニング再探索の実施判断 | 2026-10-16、ユーザー指示により判断課題へ整理。過去のチューニングの取りこぼしを調査するか、実施する場合の目的・範囲をユーザーが判断して記録する。AIは判断の代行・委任・催促をせず、明示依頼された材料整理のみ補助する。調査開始・旧担当への再委任は含まない | `Maintanance/Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md` |
-| `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。RBT-014の現行API照合を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |
-| `RBT-004` | `USER_ONLY` | User | [DECISION] 残存する比較宣言・Balanced群の扱い | 2026-10-16、ユーザー指示で専任判断へ変更。RBT-011のIndex Comparable採否を入力に、残存比較宣言・Balanced群の扱いをユーザーが決めて範囲を記録する。AIは判断・実装・削除・委任・催促を行わず、明示依頼された資料整理のみ補助する。Result: Comparable削除済みという既存記録は維持 | `Maintanance/Current/RED_BLACK_TREE_COMPARISON_USER_DECISION.md` |
-| `RBT-005` | `USER_ONLY` | User | [DECISION] Memoize群の扱い | 2026-10-16、ユーザー指示により専任判断へ変更。Memoize群の論点・扱い・対象範囲をユーザーが判断して記録する。旧記録の外部consumer 2件の移行は実行前提として保持し、充足した扱いにしない。AIは判断・変更・委任・催促をせず、明示依頼された相談・資料整理のみ補助する | `Maintanance/Current/MEMOIZE_USER_DECISION.md` |
+| `RBT-035` | `EXCLUDED` | User | RedBlackTreeチューニング再探索をマイルストーンへ移行 | 2026-10-16、ユーザー訂正。独立した実施判断待ちを整理し、OPS-047のマイルストーン管理へ接続。到達条件・時期は未確定で、達成済み・調査実行の委任とは扱わない | `Maintanance/Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md` |
+| `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。関連する現行APIの照合結果（旧RBT-014から保持、未確認）を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |
+| `RBT-004` | `EXCLUDED` | User | 比較演算類・Balanced群の一括処遇taskを整理 | 2026-10-16、ユーザー指示。比較演算類の未確認の経緯とBalanced系の確認済み保存意図を別文書に分離。一括判断待ちを除外し、実装・削除・検証の完了とは扱わない | `Maintanance/Current/RED_BLACK_TREE_COMPARISON_USER_DECISION.md` |
+| `RBT-005` | `ACTIVE` | Codex | [DISCOVERY] swift-ac-memoize・Memoizeの依存状況調査 | 2026-10-16、ユーザー説明により判断待ちから訂正。GitHubの対象2件を特定し、このrepositoryへの依存宣言・実利用API・変更影響・移行の要否を根拠付きで返す。外部移行完了を調査開始条件にしない。調査未実施。製品方針決定・削除・外部変更は含めない | `Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md` |
 | `RBT-007` | `ACTIVE` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | 2026-10-15、ユーザー指示により有効化。現行readiness、対象範囲、必要な検証を照合して進める。状態変更だけでは実装操作を開始しない | `Maintanance/Current/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | 性能と所有構造への影響から、ユーザー判断で最後の最後まで凍結。所有構造・生成コスト・アクセス性能を評価できる段階で、ユーザーの明示的な再開指示があった場合のみ再検討する。1.0必須ゲートや自動再開条件にはしない | `Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md` |
 | `RBT-009` | `ACTIVE` | User / Codex | [DECISION] runtime-check実装の再審査 | 2026-10-16のユーザー棚卸し指示で1.0前の判断ゲートとして有効化。Design-RuntimeChecksの再審査材料を揃え、現行実装を1.0へ受け入れるかユーザーが一つ判断する。検査の変更・弱化は今回行わず、現行防御を維持する。資料収集や測定は対象・範囲を具体化してから実施する。 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
@@ -98,7 +98,6 @@
 | --- | --- | --- | --- |
 | `RBT-041` | `RBT-045` | `SEQUENCE` | 型別補完の直列ゲートを通り、4型の受入記録がそろってから最終横断 |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
-| `RBT-004` | `RBT-011` | `SEQUENCE` | IndexのComparable採否を確定してから、残存するDebug限定比較宣言とBalanced群の処遇を扱う |
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |
 | `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
 | `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |
@@ -106,7 +105,6 @@
 | `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |
 | `QUALITY-001` | `DOC-026` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、0.9.xをSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する |
 | `QUALITY-001` | `DOC-027` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する |
-| `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `RELEASE-078` | `QUALITY-004` | `SEQUENCE` | 現行提供区分に照らした品質課題と証拠の棚卸しを揃えてから、0.6.0開始条件と対象候補を再照合する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.9.x release後・登録実行の明示委任も確認する |
@@ -121,7 +119,7 @@
 - `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。これだけでは着手せず、RBT-045までの補完受入ゲートも必要。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 - `PERM-062`の受入済み入力：`PERM-065`。公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 
-「AまたはB」の条件はANDの辺二本に変えず、task行に残す。`RBT-004`は現行行と辺に従い`RBT-011`を待つ。旧資料のOR例を再開根拠にしない。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。
+「AまたはB」の条件はANDの辺二本に変えず、task行に残す。整理済みの`RBT-004`の旧依存・旧資料のOR例を再開根拠にしない。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。
 
 ## 目標の記録
 
@@ -220,3 +218,11 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - [完了8件（2026-10-16圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-16.md)：`RBT-033`・`PERM-073`〜`PERM-078`・`OPT-074`の原文。[Permutation移行文書](../Archived/PermutationMigration_2026-10-16/README.md)は対応表から辿る。赤黒木の未完了ゲートに必要な完了行と辺、恒久taskは現行に残す。
 
 - [凍結26件と関連重複の棚卸し結果](../Archived/FROZEN_TASK_RECONCILIATION_2026-10-16.md)：2026-10-16、6件を有効化。`DOC-010`・`BARE-035`・`PERM-046`と関連する`PERM-071`を除外し、[原文と除外理由](../Archived/FROZEN_TASKS_BEFORE_RECONCILIATION_2026-10-16.md)へ保存。残る17件は凍結を維持。
+
+- [RBT-004の分割・除外記録](../Archived/RBT-004_EXCLUDED_2026-10-16.md)：比較演算類の経緯とBalanced系の保存意図を分離し、一括処遇taskを整理。
+
+- [RBT-005の依存調査への訂正記録](../Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md)：ユーザー判断待ちを訂正し、二つのGitHubリポジトリの依存調査としてACTIVEへ変更。
+
+- [RBT-035のマイルストーン移行記録](../Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md)：実施判断待ちを除外し、マイルストーン管理へ接続。
+
+- [DOC-032・RBT-014のマイルストーン移行前記録](../Archived/DOC-032_RBT-014_BEFORE_MILESTONES_2026-10-16.md)：ユーザー待ちtaskを整理。RBT-026に必要なAPI照合は入力条件として保持。

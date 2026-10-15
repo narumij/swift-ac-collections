@@ -10,6 +10,8 @@
 
 ## A：借用寿命の再実行可能なcompiler検査（既知の残件）
 
+**2026-10-16更新（Astra）**：ユーザーが「品質側に移行してるからいらない」と判断し、PERM-051を独立taskとして除外した。以下の再開要求・対象外記述は当時の境界であり、今後の品質側の扱いに旧taskの再開を要求しない。本項の品質上の論点は維持するが、fixture実装済みとは扱わない。[除外記録](../Archived/PERM-051_EXCLUDED_2026-10-16.md)。
+
 根拠：`Sources/NextPermutationModule/BorrowedNextPermutations.swift`のnext()は、Spanがowner寿命を越えず、次のmutating accessと重ならないと約束する。`Tests/PermutationTests/BorrowedNextPermutations/`は適法な使用のruntime検査を持つが、`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`と`VerifyPermutationCompilerDiagnostics.sh`の否定的検査は通常ownerの直接初期化・copy・Sequenceだけである。
 
 `Maintanance/PermutationModule/BorrowedPermutationTestPlan.md`のPERM-051返却に、一時clientによる拒否結果が既にある。したがって「これまで未検証」ではなく「現行名・現行toolchainで再実行できるfixtureがない」が不足。RegistryのPERM-051はFROZENであり、今回のレビューから解除しない。新規反映taskへ同じ仕事を移して凍結を迂回しない。

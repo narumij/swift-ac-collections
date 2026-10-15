@@ -1,5 +1,16 @@
 # Permutation benchmark task名の現行型名への移行
 
+## 現行の扱い 2026-10-16
+
+Astra整理。これは完了済みmodule移行のmain到達確認とは別の、後段に延期したbenchmark表示名整理である。現行sourceの4 titleとCI登録2件には`Permutations.SubSequenceN`が残る。今回の照合で完了とは扱わず、PERM-063の凍結を維持する。PERM-064は同日、ユーザーの追加指示でACTIVEへ復帰した。先行依存を保ち、[現行正本](../Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md)に従う。
+
+以下の旧型名を新名称とする案は当時の計画である。現行の名称決定と整合する表示名は、再開時に対象とともに確定する。旧案の文字列をそのまま実装しない。workflow互換の先行mergeとgreen、その後のtitle変更という二段階は維持する。
+
+当時の「旧facade target削除PRの完了」は、現在の再開条件として使わない。[module移行計画](../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)に従い、後段でユーザーが時期・対象を確定して明示的に再開したときに具体化する。module移行の完了だけでは再開しない。
+
+## 当初の計画
+
+
 ## 目的
 
 現行workloadが`NextPermutationsSequence.Permutation.subscript(position:)`を測定しているのに、benchmark titleと
@@ -15,7 +26,7 @@ performance閾値、および実装方式は変更しない。
 - `Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md`は、task名変更時にworkflow互換を先にmergeしてgreenを確認し、その後の
   独立変更でtitleをrenameする二段階境界を要求する。
 
-## 確定する新名称
+## 当時の新名称案（現行採用名ではない）
 
 旧prefix `Permutations.SubSequenceN`を`NextPermutationsSequence.Permutation`へ置き換える。操作名と
 `(batched)` suffixは維持する。
@@ -51,7 +62,7 @@ performance閾値、および実装方式は変更しない。
 - workflow互換の終了はこの移行の完了条件に含めない。baselineでno-opとなった後も、過去commit比較と将来renameに
   利用できる一般的な互換処理として扱う。
 
-## 再開条件
+## 当時の再開条件（上記の現行扱いで更新）
 
 現在の旧facade target削除PRを完了した後、ユーザーがbenchmark表示名移行の開始を明示したときに
 `PERM-063`から再開する。文書ドラフトの現在の中間ゴールより優先して割り込ませる必要はない。

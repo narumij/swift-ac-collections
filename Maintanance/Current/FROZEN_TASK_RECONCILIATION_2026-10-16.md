@@ -70,3 +70,19 @@ PERM-063・064には旧NextPermutationsSequence名、PERM-051には旧source pat
 ## 検証範囲
 
 資料・ソース・保存された受入証拠の静的照合。製品test、性能測定、remote CI、外部consumerの実行はしていない。変更前原文の保存、ID重複、依存先の実在・循環、未変更行と依存辺の保持、採番表の無変更、ローカルリンクの実在を機械確認する。
+
+## 棚卸し後のユーザー判断 2026-10-16
+
+PERM-051は品質側へ移行済みのため不要との判断を受け、独立taskをEXCLUDEDとした。上記17件は当初の棚卸し結果であり、この判断後の凍結は16件。[除外記録と旧正本](../Archived/PERM-051_EXCLUDED_2026-10-16.md)へ接続する。
+
+続いてユーザー指示によりPERM-043・044を次回品質評価へ集約し、独立taskとして除外した。凍結は14件。[原文・依存辺と除外理由](../Archived/PERM-043_044_EXCLUDED_2026-10-16.md)、[品質評価への引継ぎ](../PermutationModule/CurrentQualityAssessment.md)を参照する。測定済み証拠は保持し、正式合格や新たな比率基準の採用とは扱わない。
+
+PERM-060はユーザーがバグとして復帰を指示したため、再現・影響範囲・修正要求を整理するACTIVEの調査へ変更した。凍結は13件。[現行課題](PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md)と[変更前原文](../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md)を参照。
+
+## ユーザー棚卸し後の到達点
+
+2026-10-16、ユーザーとの個別確認を反映した最終時点では凍結4件（RBT-004・005・008、PERM-063）。上記の各件数は途中経過であり、現行状態はRegistryを参照する。
+
+PERM-051・043・044とOPT-064は品質側へ移行してEXCLUDED。RELEASE-080もユーザーの解決確認と追跡不要の指示でEXCLUDED。PERM-060・064とRBT-026はACTIVEへ復帰し、RBT-035はUSER_ONLYの実施判断へ変更した。
+
+RELEASE-007・079はマイルストーンの版別正本へ集約してEXCLUDED、DOC-026・027は依存条件で待つACTIVEへ整理。[マイルストーン管理](../ProgressV2/MILESTONES.md)を恒久task OPS-047として維持する。元の行・旧正本・除外理由はRegistryの履歴入口から参照できる。整理による除外をDONEとして追跡しない。

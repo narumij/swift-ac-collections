@@ -1,5 +1,14 @@
 # NextPermutationModule Current Quality Assessment
 
+## 次回品質評価への性能引継ぎ 2026-10-16
+
+記録：Astra。ユーザーが既存の測定成果物を示し、PERM-043・044の整理を承認した。両taskは独立した残作業から除外し、性能再検査と必要な判定は次回品質評価で扱う。本文後段に残る旧taskの再開待ち・基準候補は過去の経緯であり、現在の追加ゲートにはしない。[除外前の行・依存辺・正本](../Archived/PERM-043_044_EXCLUDED_2026-10-16.md)を保存した。
+
+[macOSの測定成果物](../../Benchmarks/QualityAssessment/macOS/Permutations/README.md)には、生JSONとPNGが保存されている。旧比較、runtime View版対C++、borrowed版対C++を区別して参照し、未測定として扱わない。一方、成果物の存在だけで対象版の正式品質判定を合格にしない。
+
+次回は対象実装・公開契約・測定環境と既存証拠の対応を確認し、必要な範囲で性能を再検査する。性能の主張に判定基準が必要なら、その時点の品質要求とユーザー判断に従う。旧PERM-043の比率候補を採用済みとして持ち込まず、新しい重複taskや今回の測定実行も追加しない。
+
+
 ## 文書の役割
 
 この文書は、NextPermutationModuleの現行品質評価taskの詳細正本である。

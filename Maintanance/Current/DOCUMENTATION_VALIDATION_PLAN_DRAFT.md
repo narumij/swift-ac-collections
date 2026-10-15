@@ -89,7 +89,7 @@ SPI登録と対象版のDocC公開・導線確認が済んだ後、1.0品質判�
 ## 既存の計画との接続
 
 - [Permutation利用理解案](../PermutationModule/GeneralSwiftValidationScenario.md)：一時View・保存・類似API選択の課題を再利用する候補。実行taskは`PERM-062`であり、本案の作成で開始しない。
-- [OptionalElementBuffer利用理解案](../OptionalElementBufferModule/GeneralSwiftValidationScenario.md)：nil遷移・再利用・所有境界の課題を再利用する候補。`OPT-064`の凍結と再開条件を維持する。`OPT-065`の競技提出は本計画の文書利用試行とは別に扱う。
+- [OptionalElementBuffer利用理解案](../OptionalElementBufferModule/GeneralSwiftValidationScenario.md)：nil遷移・再利用・所有境界の課題を再利用する候補。2026-10-16、ユーザー指示により`OPT-064`は品質移行済みとして独立taskから除外した。用途、座標順、nil遷移、所有・並行利用境界の理解確認を本計画へ引き継ぎ、現行の提供区分・対象版に合わせて具体化する。旧taskの再開は不要だが、本計画の実施・受入済みや一般提供への変更を意味しない。[旧記録](../Archived/OPT-064_EXCLUDED_2026-10-16.md)を保存した。`OPT-065`の競技提出は本計画の文書利用試行とは別に扱う。
 - [品質棚卸し](QUALITY_ASSESSMENT_INVENTORY.md)：観測された不足を品質課題へ接続する。既存taskと重複する課題は、新規採番の前に統合先を確認する。
 
 次の実行案は、ElementBufferの一件について課題文・観測者用の判定根拠・返却欄を用意し、Astraが試行すること。人間レビューゲートの方針と、具体的な外部接触・他moduleの凍結解除・試行開始は分ける。SPI登録と公開導線は既存の`DOC-026`・`DOC-027`で扱い、その状態や再開条件を本案から変更しない。

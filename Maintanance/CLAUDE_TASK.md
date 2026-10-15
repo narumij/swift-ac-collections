@@ -25,6 +25,8 @@ bounded-task execution constraints. Codex integrates returned results, performs 
 and owns public-document completion. Repository evidence establishes factual correctness; product decisions remain with
 the user.
 
+調整役が`CLAUDE_TASK.md`で依頼する仕事は、事前にTask Registryへ登録し、依頼本文に固定IDを記載する。未登録なら、登録してから依頼する。
+
 ## Current job status
 
 **現在、Claudeへの実行中assignmentなし。**

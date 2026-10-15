@@ -87,6 +87,7 @@ Archived全体を探索しない。
 
 ## 2026-10-15移動分
 
+- `CLAUDE_TASK_HISTORY_2026-10-15.md`: 2026-10-15に受入済みまたは中止済みとなったClaude assignmentとReturnの原文
 - `TASK_REGISTRY_ARCHIVED_2026-10-15.md`: V2切替後に現行Registryから圧縮した完了・除外20件の原文
 - `Worker/`: 完了したBareArray本文レビューと、残作業から除外したWorker bootstrap・task契約候補
 - `PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`: V2接続後に失効済みと明示されていた旧進捗一覧の全文。現在のtask状態・制度・権限・着手条件ではない

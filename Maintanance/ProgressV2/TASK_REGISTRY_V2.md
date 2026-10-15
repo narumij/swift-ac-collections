@@ -20,6 +20,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `OPS-041` | `DONE` | Claude / Codex（受入・記録） | [EXECUTION] CLAUDE_TASK受入済み節の履歴圧縮 | 2026-10-15、ユーザーが`CLAUDE_TASK.md`の受入済み節を履歴へ移す常設委任を追加し、Codexへ初回実行の発注記録と姫への依頼を指示。Claudeが受入済み・中止済みの7節を新規履歴へ原文のまま移し、本体へ参照を追加。Codexが圧縮前原文との完全一致、参照先の実在、対象外文書が未変更であることを確認して受入。固定ID、Returnとの対応、返却文面の訂正経緯、Archived索引の登録漏れをユーザー指摘後に修復し、履歴ファイルと受入・Registry記録を同じcommitへ保存して完了 | `Maintanance/CLAUDE_TASK.md` / `Maintanance/Archived/CLAUDE_TASK_HISTORY_2026-10-15.md` / `Maintanance/Archived/README.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 
 ### 公開とリリース

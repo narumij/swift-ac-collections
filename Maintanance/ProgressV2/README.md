@@ -17,6 +17,7 @@
 | [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | 採用済みSQLite索引のメンテナンス手順。索引を扱うときだけ参照 |
 | [TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md) | 抽出規則、試作時の確認結果、限界を残す補助資料 |
 | [AGENT_TASK_FIT_INTERVIEW.md](AGENT_TASK_FIT_INTERVIEW.md) | 担当適性と委任範囲を検討するための観測資料。割当の根拠そのものにはしない |
+| [COORDINATION_KNOW_HOW.md](COORDINATION_KNOW_HOW.md) | 調整実務の発見・失敗・訂正と再利用できる方法。必要時に参照し、規則とは区別する |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 
 ## 恒久taskとの関係
@@ -26,6 +27,8 @@ Task Registry運用の恒久taskは `OPS-044`。入口、Registry、制度・採
 索引の試作メモは規則の由来・限界を調べる補助資料として紐付ける。`Utilities/Maintenance/TaskHistoryIndex.py` は関連する実装、`Maintanance/TaskHistoryIndex/` は再生成可能な索引の置き場であり、維持文書と区別する。担当適性資料と個別調査資料は、その用途と関係taskで扱い、このfolderにあることだけで恒久保存・配置固定とはしない。
 
 常設nodeの登録は、定期作業の自動開始、現在の読み手への任命、ユーザー判断の代行を意味しない。状態・委任の正本はRegistryに置き、本書に状態表を複製しない。
+
+調整ノウハウの継続蓄積は恒久task `OPS-046`。`COORDINATION_KNOW_HOW.md`を維持文書として紐付け、個別追記の完了だけでは履歴化しない。協働のふりかえり（OPS-043）と、Registry運用の維持（OPS-044）とは目的を分ける。
 
 ## 作成の基準
 

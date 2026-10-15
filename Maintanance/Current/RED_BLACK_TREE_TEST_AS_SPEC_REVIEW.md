@@ -210,3 +210,46 @@ testのsuffixは、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeDic
 反映時は必要なDebug/Releaseケースと構成条件を確認する。新たな仕様判断や不具合を見つけた場合はproductionを変更せず返す。今回はレビュー記録のみを更新し、test修正・採番・発注はしていない。RBT-039はコミット許可待ちのWAITING_USERとする。
 
 2026-10-15、ユーザーがDictionaryレビュー記録のコミットと次段階への継続を許可。RBT-039をDONEとして保存する。補完作業は未発注。
+
+
+### MultiMap仕様レビュー（RBT-040、2026-10-15、Astra）
+
+基準HEAD：`7e9960d8`。ClaudeのSet作業中差分は編集していない。MultiMap本体のupdateValue、Combining・Sequenceの契約と、番号付きInsertion・Removal・Utility・RangeView・TransformingAndCombining・ValueSemantics・Fuzzの本文を照合した。BoundExpressionの構成条件と逆転範囲、Index検査・内部CoW・Cpp比較の関係箇所を補助確認した。静的レビューのみで、実行検証・mutation検証・全API/構成の網羅確認ではない。
+
+以下のtest suffixは`Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap`に続くファイルを示す。製品不具合ではなくテスト補完候補として記録する。
+
+#### MM1：削除済みIndexへのupdateValue（優先）
+
+本体`updateValue(_:at:)`は無効Indexならnilを返す契約。`_5_InsertionTests.swift`には重複key群の中央の置換、endIndex拒否、共有元のvalue保持があるが、削除済みIndexによる更新は確認できなかった。Index自体の失効検査と、この公開操作のnil返却は別の観測である。
+
+補完候補：同じkeyに異なるvalueを持つ群から中央を削除し、保存したIndexの失効を確認後、updateValueがnilを返し、残るkey/valueを変更しないことを検査する。別の木のIndexや互換モードに通常モードの契約を転用しない。
+
+#### MM2：値変換・predicateがthrowする経路（優先）
+
+`+Sequence.swift`のmapValues/compactMapValues/filterと本体・範囲eraseはthrowing closureを受ける。MultiMap testでは意図的なthrowのケースを検索した範囲で確認できなかった。Cpp比較実行器のthrowは代替ではない。
+
+補完候補：重複keyの各valueを区別した入力で、固有エラーの伝播とthrow後のclosure非呼出しを確認する。非変更操作の元入力、変更操作の共有元のkey/value保持、一時生成した参照Valueの解放を必要な経路で検査する。変更側の全巻戻しは要求しない。D2/M4と実装経路を照合し、共通fixtureの複製や全組合せを増やさない。
+
+#### MM3：重複エントリと共有コピーによる参照Valueの保持（中）
+
+`_6_RemovalTests.swift`は重複keyに別々の参照Valueを入れて削除時の解放を確かめるが、同じ参照を複数エントリに入れた場合や、共有元・返却旧値による保持の寿命は確認できなかった。
+
+補完候補：同一参照を複数エントリに格納して共有コピーを残し、一部を削除・置換しても必要な参照が生存すること、最後の保持を解いた時に解放されることを検査する。updateValueの旧値を保持する期間も区別する。参照のdeep copyや内部copy回数を契約にしない。通常の文字列による位置指定削除は既に別valueを区別できており、その検査を無効扱いしない。
+
+#### MM4：Boundの公開動作をReleaseでも観測（中）
+
+`_16_BoundExpressionTests.swift`の主要部分はDEBUG条件内にあり、重複key群の逆転範囲で無変更・predicate非呼出しという公開契約もDebug限定になる。IndexRange・equalRange・distanceには別の検査があり、範囲全体が未検査ではない。
+
+補完候補：M3/D5と同様に公開結果の検査とDebug専用内部観測を分ける。重複keyのvalue列と個数を確認し、内部検査の条件を一括解除しない。
+
+#### 既存の検査で足りる点
+
+- 初回の「CoWでkeyしか見ていない」という懸念は、`_7_UtilityTests.swift`の挿入後value列保持、`_5_InsertionTests.swift`のupdateValue、`_8_RangeViewTests.swift`の同じkeyのvalues範囲swapによって一般的な不足としては解消する。
+- 通常挿入順、hintによる同値群内への挿入、中央のremove(at:)、eraseの後続valueは異なる文字列で検査されている。MultiSetのM2を機械的に追加しない。
+- `_11_TransformingAndCombiningTests.swift`は重複keyのmapValues/compactMapValues、inserting、meld/meldingのvalue保持を検査する。meldingは左右入力のvalueも直接確認している。
+- Fuzzはkeyの多重度に加えてvalue==keyを確認する。任意の異なるvalueの順序を保証するものではないが、番号付きの具体例と合わせて評価し、単純に無効としない。
+- 共有MappedValuesViewのDictionary検査に加え、MultiMap固有のkey指定範囲と重複valueのswap/CoW検査が存在する。範囲所属の契約変更は不要。
+
+反映時は関連Debug/Releaseケースを確認し、不具合や未決仕様はproductionを変更せず返す。今回test修正・採番・発注は行っていない。レビュー記録は完了し、RBT-040をコミット許可待ちのWAITING_USERとする。最終横断ではM/D/MMの共通課題を照合し、別型の証拠で代替できる範囲と固有入口の確認を整理する。
+
+2026-10-15、ユーザーがMultiMapレビュー記録のコミットを許可。RBT-040をDONEとして保存する。MM1〜MM4の補完作業は未発注。

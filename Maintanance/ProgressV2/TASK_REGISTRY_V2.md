@@ -85,7 +85,7 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
-| `HIST-002` | `ACTIVE` | V3オーサー / Astra（受入） | [DISCOVERY] 移行史の追加探索：残したもの・撤去したもの | HIST-001の個別サブタスク。ユーザーから依頼書を受領後、移行史の範囲で問いを一つ選んで調査する。方法は担当に委任。根拠付きの到達点・未確認範囲・反映案を返す。全履歴の網羅や新発見は必須としない。本文反映は独立受入後 | `Maintanance/Current/HIST_002_EXPLORATION.md` |
+| `HIST-002` | `DONE` | V3オーサー / Astra（受入） | [DISCOVERY] 移行史の追加探索：残したもの・撤去したもの | 2026-10-16、UnsafeNodeの2026-01-18〜22の移設・実質変更をGitで独立照合し受入。EVIDENCEへ反映済み。作者意図・当時のtest成功は未確認。ユーザーのcommit許可を受領。親HIST-001は継続 | `Maintanance/Current/HIST_002_EXPLORATION.md` |
 
 ## Task precedence
 

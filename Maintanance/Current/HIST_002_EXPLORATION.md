@@ -44,4 +44,63 @@ Astraが証拠と反映案を確認し、必要な反映とRegistryの状態更�
 
 ## 返却欄（V3記入）
 
-未着手。
+### 選んだ問いと範囲
+
+2026-01-18〜22の`UnsafeNode`について、path上の削除・再導入が実装や責務の断絶だったのかを調べた。
+調査時のHEADは`8094d43748174bbc981a481f9760c582f1b050ab`。現行HEADの祖先にあるcommitだけを対象に、
+型本体のblob、rename判定、削除直前と再追加直後のdiff、およびこの区間で型本体を変更したcommitを照合した。
+
+### 確認できた事実
+
+- `a5995bec`（2026-01-18 15:34 +09:00）は、
+  `UnsafeTreeV2/Tree/___Primitive/UnsafeNode.swift`を
+  `__tree/Unsafe/UnsafeNode.swift`へ`R100`で移した。移動前後のblobはともに
+  `1eddf823efadf925a17711a05081edaf588a0ea6`であり、この時点では実装変更を伴わない。
+- `364c203d`（同日15:59）は同じblobを`__tree/unsafe_tree/UnsafeNode.swift`へ、
+  `7cac21d8`（2026-01-19 04:28）は同じblobを`__tree/_types/unsafe_node.swift`へ、いずれも`R100`で移した。
+  したがって1月18〜19日のpath・大文字小文字の変更は、型本体については同一実装の連続である。
+- 型本体の実質的な変更は1月21日にあった。`0e3c417f`で、pointer extensionにあった
+  `create(id:)`を`UnsafeNode.create(id:)`へ移し、子・親を呼出元pointerではなく`nullptr`で初期化する形にした。
+  `e99f83b6`でそのfactoryを`package`へ公開し、`b9baeb13`で`Equatable`適合を加えた。
+- `658c70a6`（2026-01-22 12:42:36 +09:00）は`__tree/_types/unsafe_node.swift`を削除し、
+  直後の`96d45467`（12:43:43）は`__tree/unsafe_tree/unsafe_node.swift`を追加した。削除直前のblobは
+  `1753a92bbfdb9e717c24fb083ab9065d4f615a27`、再追加後は
+  `7bb1b235bd19ad31d9fe9831517388918f4560ff`で一致しないが、diffは空白と
+  `extension UnsafeNode: Equatable { }`から`extension UnsafeNode: Equatable {}`への整形だけである。
+  373行の型・field・method・可視性に意味上の差は見つからなかった。
+- 再追加後の同日17:55〜18:03には、`a87dcdb4`、`f9100295`、`08062511`で
+  `pointerIndex`を`rawIndex`へ、保存fieldとinitializer labelを`___node_id_`から`___raw_index`へ改名した。
+  これは削除・再追加そのものとは別の後続変更であり、Nodeが保持する整数identityの責務は残っている。
+
+### 解釈と未確認範囲
+
+この区間は「`UnsafeNode`実装を撤去して別実装を再導入した」とは説明しにくい。1月18〜19日は100% rename、
+1月22日の67秒間の削除・再追加も意味上は同一内容のpath移設であり、Node本体、pointer link、payload直後配置、
+deinitialize flag、CoW用の整数identityという主要責務は連続している。一方、1月21日のfactory変更と
+`Equatable`追加、1月22日夕方のidentity名称変更は実際の変更として分ける必要がある。
+
+commit messageは`many`、`remove`、`file`、`some`等に留まり、削除と再追加を二commitに分けた作者意図を
+直接説明する記録は今回の限定範囲では確認できなかった。したがって「path再編のため」という意図までは確定せず、
+実物の差から「結果としてpath移設になっている」とだけ判定する。当時のtest実行・green範囲は調べておらず、
+現行HEAD外の試作系譜も対象外とした。
+
+### 反映案と返却
+
+`EVIDENCE.md`の系譜表にある「一時削除」は誤りではないが、実装断絶にも読める。
+同表の`UnsafeNode`行を「V2側から100% renameで移動。`658c70a6`で削除後、67秒後の`96d45467`で
+空白整形のみの内容を別pathへ再追加」に具体化し、未確認欄の「同一実装の継続範囲は未確定」は、
+「型本体は上記範囲で連続。二commitに分けた意図と当時のtest実行範囲は未確認」へ更新する価値がある。
+
+本調査は完了として返却する。残る手掛かりは、作者意図を示す同時期の外部記録と当時のtest実行記録である。
+編集したのは本書の返却欄だけで、移行史本文、証拠別紙、Registry、製品source、testには触れていない。
+
+
+## 独立受入（2026-10-16 / Astra）
+
+V3の完了返却と編集終了を受け、記載11commitが現行HEADの祖先であること、3回のR100と同一blob、削除・追加の時刻とblob差分、factory・Equatable・identity名称の変更をGitから独立照合した。主張に食い違いはなく受入。原返却は変更していない。
+
+EVIDENCE.mdのUnsafeNode行と未確認欄を更新し、再検査できる根拠を追記した。READMEの一般的説明を変更する必要はなかった。当時の実行成功・作者意図・HEAD外の試作は未確認のまま。過去構成のbuildやtestは実行していない。
+
+HIST-002は受入済み、commit確認待ちのWAITING_USER。親HIST-001は常設ACTIVEのまま。新しい調査は発注していない。
+
+2026-10-16、ユーザーのcommit指示を受領。受入済みのHIST-002をDONEとして保存する。

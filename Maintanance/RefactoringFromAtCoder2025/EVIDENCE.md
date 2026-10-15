@@ -31,7 +31,7 @@ extensionや同じ責務の分割ファイルは一行へまとめる。名前�
 |---|---|---|---|---|---|
 | `UnsafeTree` → `UnsafeTreeV2` | `add37b4b`で初代、`7964713d`でV2を別型として新設 | `55ccdb3d`で旧型の大半を削除。V2初版は旧HeaderとNodeを利用 | `Implements/UnsafeTreeV2/` | 並行新設後の責務吸収 | `add37b4b`、`7964713d`、`55ccdb3d` |
 | `UnsafeIndex` → V2 → V3 | 無印`add37b4b`、V2`7964713d`、V3`357335f7` | 無印は`55ccdb3d`で削除。V2は`fd6559ac`からDeprecatedへ再配置 | V3は`_LazyTiedPtr`へのtypealias、V2は互換実装 | 世代交代と同名内部差し替え | `a53d9a5b`、`fd6559ac`、`005a7bb3` |
-| `UnsafeNode` | `add37b4b`で新設 | V2側への移動、一時削除、`364c203d`の100% renameを経る | `__tree/unsafe_node/unsafe_node.swift` | 名称再出現を含む責務継承候補 | `1c745eef`、`364c203d` |
+| `UnsafeNode` | `add37b4b`で新設 | V2側から100% renameで移動。`658c70a6`で削除後、67秒後の`96d45467`で空白整形のみの内容を別pathへ再追加 | `__tree/unsafe_node/unsafe_node.swift` | 2026-01-18〜22のpath移設で型本体の連続を確認。途中のfactory等の変更は下記参照 | `a5995bec`、`364c203d`、`7cac21d8`、`658c70a6`、`96d45467` |
 | `UnsafeIterator`系 | `add37b4b`で旧Tree用具象群、`5fd598b4`で現行namespace型 | 初期案を削除し、一部をDeprecatedへ隔離 | IteratorとDeprecatedの二層 | 具象型群からnamespace型への再構成 | `1c745eef`、`5fd598b4`、`14605f08` |
 | `UnsafeSlice` → Slice V2 → sealed range | `add37b4b`、`7964713d` | `1c745eef`で旧Slice削除、V2移動。2026-02-05にrangeをprotocolへ分解 | Index Range / View、旧protocolはDeprecated | パス名からrange/Viewへの責務分解 | `a53d9a5b`、`c9bd428e`、`3c5f1aae` |
 | Storage / Pair / FreshPool → Buffer | 2026-01-01以降に順次導入 | Storageは`55ccdb3d`、Pool V1/V2は`4dad3c9c`で削除 | Buffer/Header、Node、RawBuffer | allocation・header・payload責務への分解と統合 | `4a86c72d`、`4dad3c9c` |
@@ -44,6 +44,27 @@ extensionや同じ責務の分割ファイルは一行へまとめる。名前�
 
 **[事実]** `UnsafeIndexV4`追加commit`77095c38`等は`git log --all`では見つかるが、現行`HEAD`の
 祖先ではない。現行系譜へ直列に接続せず、非採用または未統合の試作として扱う。
+
+### UnsafeNodeの削除・再追加の照合（2026-10-16）
+
+**[事実]** HIST-002でV3オーサーが調査し、AstraがGitのblob・差分・時刻・祖先関係を独立照合した。
+当時のpathはすべて`Sources/RedBlackTreeModule/`以下。
+`a5995bec`で`UnsafeTreeV2/Tree/___Primitive/UnsafeNode.swift`から`__tree/Unsafe/UnsafeNode.swift`へ、
+`364c203d`で`__tree/unsafe_tree/UnsafeNode.swift`へ、`7cac21d8`で`__tree/_types/unsafe_node.swift`へ移った。
+三移動はR100で、blobは`1eddf823efadf925a17711a05081edaf588a0ea6`のままである。
+
+**[事実]** 1月21日の`0e3c417f`ではpointer extensionの`create(id:)`を型のstatic factoryへ移し、
+子・親の初期値を呼出元pointerから`nullptr`へ変更した。`e99f83b6`でfactoryをpackage公開、
+`b9baeb13`でEquatable適合を追加した。これらはpath移動とは別の実質的変更である。
+
+**[事実]** 1月22日12:42:36 JSTの`658c70a6`で型ファイルを削除し、12:43:43の`96d45467`で
+`__tree/unsafe_tree/unsafe_node.swift`へ再追加した。削除直前のblob `1753a92bbfdb9e717c24fb083ab9065d4f615a27`と
+再追加後の`7bb1b235bd19ad31d9fe9831517388918f4560ff`の差は空白整形のみ。
+その後の`a87dcdb4`・`f9100295`・`08062511`はpointerIndex / node IDの名称変更であり、削除・再追加とは分ける。
+
+**[解釈]** この削除・再追加は、結果として型本体を維持したpath移設であり、別実装への交換を示さない。
+二commitに分けた作者意図と当時のtest実行範囲は未確認。現行HEAD外の試作については一般化しない。
+返却と受入の詳細は`Maintanance/Current/HIST_002_EXPLORATION.md`に記録する。
 
 ## `UnsafeTree`内部構造の転換点
 
@@ -244,7 +265,7 @@ iterator bufferを共有するaliasingを別々に固定する。通常版Test a
 
 ## 未確認・追加調査
 
-- `UnsafeNode`の2026-01-18〜22の削除・再導入区間は責務の連続を確認したが、同一実装の継続範囲は未確定。
+- `UnsafeNode`の2026-01-18〜22は上記の範囲で型本体の連続と実質的変更を区別できた。削除・再追加を二commitに分けた作者意図と当時のtest実行範囲は未確認。
 - 現行`HEAD`外のUnsafe系試作は網羅分類していない。
 - MultiSet/Dictionary/MultiMapの仕様テストが現行の分割数へ至った個別commitは未追跡。
 - 2026-01月の各commit時点で実行されたtest commandとgreen範囲は、commit messageだけでは確定しない。

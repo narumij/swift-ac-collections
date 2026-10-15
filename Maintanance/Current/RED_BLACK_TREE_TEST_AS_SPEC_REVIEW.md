@@ -1,7 +1,7 @@
 # RedBlackTree Test as Spec 仕様レビュー
 
 作成者：Astra。2026-10-15。ユーザー指定の「4型をざっと横断 → 型順 → 最後に再横断」を記録する詳細正本。
-状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。今回は計画・登録のみで、レビュー結果はまだない。
+状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断の課題候補を以下に記録。型別レビューと最終横断は未実施。
 
 ## 目的と境界
 
@@ -34,4 +34,30 @@
 
 ## レビュー結果
 
-未実施。各段階の結果をここへ追記する。
+### 初回横断（RBT-036、2026-10-15、Astra）
+
+基準HEAD：`c98a0908`。赤黒木source・testに未コミット変更はなかった。並行してClaudeがPermutationのtest・返却・Tests/TESTING.mdを変更しているが、今回それらは編集していない。静的な概観のみ。テスト実行・mutation検証・全API網羅レビューは未実施。
+
+4型とも番号付きの生成・走査・検索・挿入削除・範囲・protocol・値意味論と、内部CoW・Index・Death Test群が存在する。Viewには独立した共通test群がある。共通土台がない状況ではなく、検査の強さと構成別の保証範囲を次に詰める。
+
+#### 課題候補（修正・発注はまだ行わない）
+
+1. **Death Testの終了判定の強さ（4型、優先確認）**。各`*_99_DeathTests.swift`に正確なSwift trap signalを指定する例と、`.failure`を受けてSIGSEGV/SIGBUS/AddressSanitizerを除外する例が混在する。例はMultiSetの逆転範囲・削除済みIndex。後者は意図した契約検査以外の失敗も通し得る。個別レビューでは期待する停止契約とsetupを照合し、必要なものだけ判定強化・negative control候補にする。製品不具合や全Death Testの無効を意味しない。
+2. **Map系CoWテストのvalue観測（Dictionary/MultiMap）**。両型の`*_13_ValueSemanticsTests.swift`の`test_copyOnWrite_mutatingCopyPreservesOriginal`は最終結果をkey列だけで比較している。このケース自身はvalueの取り違え・変更を検出しない。型別レビューで既存`*_98_CopyOnWriteTests.swift`、MappedValues View testによる補完を確認し、不足する公開操作経路だけを候補化する。内部のcopy回数の検査と公開valueの独立性は別の証拠として扱う。
+3. **CoW・寿命の型間の対応（確認課題）**。Setの`*_15_ValueSemanticsTests.swift`には参照要素の共有・分岐・両コピー破棄後の解放を追うケースがある。他3型の`*_13_ValueSemanticsTests.swift`には同じケースはないが、各RemovalTestsには参照解放testがある。これだけで不足とは確定しない。型別レビューで共有中の保持、最後の所有者の解放、Mapのkey/value、重複要素を既存testがどこまで見ているか確認する。参照要素のdeep copyを要求しない。
+4. **空の旧テストと現行証拠の説明（確認済みの文書上の問題）**。Dictionaryの`*_0_InitializationTests.swift`の`testInitWithDuplicateKeysShouldCauseFatalError`は本文がコメントだけで「実テスト不可」と記載するが、`*_99_DeathTests.swift`に`duplicateKeysInUniqueKeysInitializer_terminateProcess`が存在する。検証不足として新規testを増やすのでなく、旧説明と実行件数の読み違いを整理する候補。Setの空のremoveFirst/Last testにはDeath Testへの説明があり、同じ扱いで不足認定しない。
+
+#### 次の型別レビューへ渡す見取り図
+
+- Set：共通Index/Bound/View境界とDeath Test、値意味論の観測を起点にする。
+- MultiSet：Setと共通する論点に加え、重複数・等価要素の更新と寿命を確認する。
+- Dictionary：上記2・4を起点に、value更新・default subscript・重複統合closureの正常/失敗経路を確認する。例外時に原状回復する等の未記載契約は作らない。
+- MultiMap：重複keyごとのvalue保持・更新・削除、MappedValues ViewとCoWを確認する。
+- 最終横断：共通testで本当に保証される範囲と型固有差、構成条件を再照合する。
+
+4型のclosure内CoW testは同じ変更を双方へ行うが、Set/Dictionaryでは戻り値の検査、Multi系では個数の変化も検出に寄与する。したがって「同じ最終結果だから独立性を検証できない」と一律に断定しない。途中の非変更側の観測を補う必要があるかを型別で確認する。
+MappedValuesの範囲所属検査はAPI-Matrix-Viewの現行事前条件と既存RBT-026を尊重し、今回の課題出しで契約変更・凍結解除しない。内部CoWは`AC_COLLECTIONS_INTERNAL_CHECKS`、Death Testは`DEATH_TEST && !COMPATIBLE_ATCODER_2025`等の条件があるため、testの存在と各構成での実行保証は区別する。
+
+初回横断の到達点である見取り図・課題候補・未確認範囲の記録は完了。型別詳細レビュー・修正は未着手。コミット許可待ちとしてRBT-036をWAITING_USERとする。
+
+2026-10-15、ユーザーがコミットを許可。初回横断の記録を保存し、RBT-036をDONEとする。型別レビューは未着手。

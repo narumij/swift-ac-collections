@@ -40,7 +40,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-036` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の初回横断 | ユーザー指定のレビュー工程として登録。レビューは未着手。共通契約・型固有契約と既存testの配置を概観し、型別レビューの見取り図と未確認範囲を残す。初回だけで品質の合否を結論しない。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-036` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の初回横断 | 2026-10-15、Astraが4型を静的に概観し、Death Test判定・Map系value観測・共有寿命の対応・旧空testの説明の4課題候補、型別見取り図と未確認範囲を正本へ記録。実行検証・型別詳細レビュー・修正・発注なし。ユーザーのコミット許可により今回の記録を保存してDONE。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-037` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeSet | RBT-036のレビュー記録がそろってから着手。初回横断を入力に、Setの公開契約とtestを照合し、不足・偽陽性・境界条件を根拠付きで記録する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-038` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeMultiSet | RBT-037のレビュー記録がそろってから着手。Setレビューの共通論点を引き継ぎ、MultiSet固有の重複・順序・操作契約とtestを照合する。Setの結果をそのまま保証として転用しない。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-039` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：RedBlackTreeDictionary | RBT-038のレビュー記録がそろってから着手。先行レビューを入力に、Dictionaryのkey/value・更新・Viewを含む現行公開契約とtestを照合する。契約・実装・testの修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |

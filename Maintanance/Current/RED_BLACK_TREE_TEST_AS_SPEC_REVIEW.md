@@ -308,3 +308,19 @@ DictionaryはD1〜D6、MultiMapはMM1〜MM4を対象とし、前段受入後に�
 ### 一括発注への変更（2026-10-15、ユーザー指示）
 
 RBT-043〜045をCLAUDE_TASK.mdの一つの依頼セットへ準備・掲載した。Dictionary D1〜D6、MultiMap MM1〜MM4も具体的な範囲・検証・返却欄を用意済み。前節の「未発注」「次型を発注」はこれ以後、それぞれ「一括発注済み・着手ゲート待ち」「次型を開始」と読み替える。直列の受入ゲートは維持し、Astraが前型の正式返却・占有返却・独立検証・受入を確認してCLAUDE_TASKのゲートを開く。発注文を毎回作る必要はない。MultiSetのM1〜M5の作業内容は変えない。最終横断は引き続き4型の受入後。
+
+
+### MultiSet補完の独立受入（RBT-043、2026-10-16、Astra）
+
+Claudeの正式Returnと占有返却を確認し、6試験ファイルの差分をM1〜M5と照合した。削除済みIndexのnil、等価な別個体の位置削除、Releaseでの公開Bound、throw伝播と共有元保持、form演算と同一参照の最終解放が依頼範囲に対応する。既存Debug内部検査を維持し、未決の巻戻し保証やdeep copy保証を追加していない。production変更なし。追加修正を要する点は見つからず受入。
+
+Astra独立実行（Apple Swift 6.4、macOS arm64、通常寿命検査有効、ASanなし）:
+
+- `swift test --disable-sandbox --build-system native --filter RedBlackTreeMultiSet`: exit 0、178 XCTest＋30 Swift Testing成功。
+- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0、769 XCTest＋120 Swift Testing成功。MultiSet公開Bound 16件の実行を確認。
+- 両コマンドで`CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`を使用。ログは`/tmp/astra-multiset-accept-debug.log`、`/tmp/astra-multiset-accept-release.log`。
+- Claude報告のDebug全体954＋133と互換12件は返却証拠として扱い、Astraが同じ実行をしたとはしない。Linux、Swift 6.2、ASan、互換Release、mutation検査は今回未確認。
+
+RBT-043は受入済み・commit許可待ちのWAITING_USER。RBT-044の着手ゲートを開いた。RBT-045および最終横断のゲートは維持する。
+
+2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-043をDONEとして保存する。RBT-044は着手可能、RBT-045は引き続きゲート待ち。

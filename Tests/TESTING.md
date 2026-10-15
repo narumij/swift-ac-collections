@@ -71,8 +71,11 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   form系集合演算の共有元・相手の不変、削除済みIndex Death Testのsetup分離を追加した。範囲版`erase(_:where:)`の
   predicateエラーがtrapになる問題はAstraが4型で修正し、修正前失敗・修正後成功の回帰テスト8件を追加。
   修正と検証の記録は`Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`末尾。Claude返却原文は`Maintanance/CLAUDE_TASK.md`。
+- RBT-043 M1〜M5（MultiSet）：削除済みIndexへのupdate、等価な別個体の位置指定削除、Bound公開動作のRelease実行
+  （`RedBlackTreeMultiSetBoundPublicBehaviorTests`へ分離）、throwするfilter・erase(where:)、form系の共有元保持と
+  同一参照の寿命を追加した。返却は`Maintanance/CLAUDE_TASK.md`のRBT-043欄。
 
-最終更新: 2026-10-15 23:40 JST / Claude Opus 5.5
+最終更新: 2026-10-16 00:15 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

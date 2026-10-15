@@ -33,4 +33,39 @@ final class RedBlackTreeMultiSetValueSemanticsTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(original), [0, 1, 2, 2, 3, 99])
     XCTAssertEqual(Array(copy), [0, 1, 2, 2, 3, 99])
   }
+  /// 同じ参照を複数回格納したmultisetを共有コピーで分岐させても、残る出現と共有コピーが参照を保持し、
+  /// 最後の保持がなくなったときにだけ解放されること（RBT-043 M5）
+  func test_sameReferenceStoredMultipleTimesIsReleasedAfterTheLastOwner() {
+    final class Member: Comparable {
+      let key: Int
+      init(_ key: Int) { self.key = key }
+      static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+      static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+    }
+    weak var weakMember: Member?
+    var multiset: RedBlackTreeMultiSet<Member>
+    var copy: RedBlackTreeMultiSet<Member>
+    do {
+      let member = Member(1)
+      weakMember = member
+      multiset = RedBlackTreeMultiSet([member, member, member, Member(2)])
+      copy = multiset
+    }
+    XCTAssertNotNil(weakMember)
+
+    _ = multiset.popFirst()
+    XCTAssertNotNil(weakMember, "残る出現が参照を保持すること")
+    _ = multiset.popFirst()
+    _ = multiset.popFirst()
+    XCTAssertEqual(multiset.map(\.key), [2])
+    XCTAssertNotNil(weakMember, "変更側から全出現を除いても、共有コピーが参照を保持すること")
+    do {
+      let shared = Array(copy)
+      XCTAssertEqual(shared.map(\.key), [1, 1, 1, 2])
+      XCTAssertTrue(shared.prefix(3).allSatisfy { $0 === weakMember })
+    }
+
+    copy.removeAll()
+    XCTAssertNil(weakMember, "最後の保持がなくなったときに解放されること")
+  }
 }

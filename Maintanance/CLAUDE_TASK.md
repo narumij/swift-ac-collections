@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. Only RBT-043 is initially eligible; subsequent stages require the preceding acceptance gate. RBT-042 is DONE.**
+**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043 has been accepted by Astra; RBT-044 is now eligible. RBT-045 still requires RBT-044 acceptance. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -55,8 +55,8 @@ Author: Astra. The user requested preparation and issuance of all three stages t
 
 | Stage | Start gate (Astra updates) |
 | --- | --- |
-| RBT-043 | Open: Set accepted; range-erase fix saved in 31aa2f07 |
-| RBT-044 | Closed: RBT-043 return, scope release and independent acceptance required |
+| RBT-043 | Accepted by Astra on 2026-10-16; scope released; user authorized commit; DONE |
+| RBT-044 | Open: RBT-043 formally returned, scope released, and independently accepted by Astra on 2026-10-16. Proceed with D1–D6 below after checking current files. |
 | RBT-045 | Closed: RBT-044 return, scope release and independent acceptance required |
 
 
@@ -76,7 +76,36 @@ Author: Astra. The user requested preparation and issuance of all three stages t
 
 #### Return (`RBT-043`) — reserved for Claude
 
-No return received.
+Returned 2026-10-16 00:14 JST by Claude (Opus 5.5). Baseline/HEAD `f0e92c45`, which contains `31aa2f07`. My changes are uncommitted. Concurrent changes I did not make and did not touch: `ProgressV2/TASK_REGISTRY_V2.md`, `Current/ASAN_DEATH_TEST_*` (untracked). Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. All files below are in `Tests/RedBlackTreeTests/RedBlackTreeMultiSet/`. No shared fixtures were changed; each test uses the file's own `Member` or a test-local class.
+
+**M1** — `_5_InsertionTests.swift`, `test_update_atRemovedIndexReturnsNilAndKeepsSurvivors` (normal mode only). Three equivalent instances; `remove(at:)` on the middle returns that instance. `isElement(at:)` then reports `false`, which establishes invalidity; it uses the same `accessible` check as `update`. `update(_:at:)` with an equivalent new instance returns `nil`, and the survivors (first and last instance, count 2) are unchanged. No foreign-index or copy-count assertion.
+
+**M2** — `_6_RemovalTests.swift`, `test_removeAtAndErase_removeTheSelectedEquivalentInstance` (normal only). Three distinct instances with the same key. `remove(at:)` on the middle returns that instance and leaves first and last. `erase(_:)` on the middle returns an index whose element `=== last`, and leaves first and last. `eraseUnique` instance selection is not specified.
+
+**M3** — `_16_BoundExpressionTests.swift` is split in two. The `DEBUG && !COMPATIBLE_ATCODER_2025` class `RedBlackTreeMultiSetBoundExpressionTests` keeps only the test-support `isValid(_:)` assertions (start/after chain, end, `.last`, reversed range) and both `_copyCount` tests. Its guard is unchanged. All public-result assertions moved, unchanged in content, to a new `!COMPATIBLE_ATCODER_2025` class, `RedBlackTreeMultiSetBoundPublicBehaviorTests` (16 tests). These cover: unresolved `after` past the end and `end()` giving `nil`; lower/upper/find/`.last`; views, counts and operators; `equalRange` duplicates `[1, 1]`; bound erase, range erase and erase(where:); reversed-range erase as a no-op with 0 predicate calls; reversed-range view empty; lessThan/greaterThan helpers. Run evidence: `RedBlackTreeMultiSetBoundPublicBehaviorTests` executed 16 tests in **Release**; the Debug-only class is absent there, as intended.
+
+**M4** — two tests.
+- `_1_SequenceTests.swift`, `RedBlackTreeMultiSetFilterTests.testFilterRethrowsPredicateErrorWithoutKeepingPartialResult` (normal only). Members `[1, 2, 2', 3]` include two equivalent instances; the predicate includes 1 and 2, then throws on 2'. Checks: the exact error, 3 visits by identity (no call after the throw), and the source unchanged by identity and order. After the source scope ends, weak observers are all `nil`, so the partial result kept nothing. The base-class Debug lifetime counters also run.
+- `_6_RemovalTests.swift`, `test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal` (normal only). Same members; the predicate removes key 2 and throws on 2'. Checks: the exact error, 3 visits by identity, and the shared original unchanged by identity and order. For the receiver it only checks that keys are sorted and every element is one of the original instances; no rollback or particular partial state is assumed.
+- Range paths: not added. The subprocess regressions from `31aa2f07` in `_99_DeathTests.swift` already cover IndexRange/IndexRangeExpression propagation. Static reading shows full-set `erase(where:)` and Bound-range `erase(_:where:)` both call `___erase_range_if` directly, with no extra wrapper.
+
+**M5** — two tests.
+- `_10_SetAlgebraTests.swift`, `test_formOperations_changeOnlyTheReceiver` (also compiles in compatibility mode). lhs `[1,2,2,3]`, rhs `[2,3,3,4]`: formUnion gives `[1,2,2,2,3,3,3,4]`, formIntersection `[2,3]`, formDifference `[1,2]`, formSymmetricDifference `[1,2,3,4]`. Every result differs from lhs. Right after each operation it checks the receiver, the shared original and the rhs.
+- `_13_ValueSemanticsTests.swift`, `test_sameReferenceStoredMultipleTimesIsReleasedAfterTheLastOwner` (also compiles in compatibility mode). One instance is stored three times alongside `Member(2)`, plus a shared copy. `popFirst` ×1 leaves it alive through the remaining occurrences. `popFirst` ×3 total leaves it alive through the copy, which still holds three identical occurrences (checked inside a scope, so the temporary array does not extend the lifetime). `copy.removeAll()` releases it (weak → `nil`). No deep-copy or copy-count assertion. Existing meld/melding checks are not duplicated.
+
+**Validation**
+
+| Command | Result |
+| --- | --- |
+| `swift test -c debug --filter '<M3 classes + 7 new test names>'` | exit 0; Bound Debug class 6, Bound public class 16, the other suites' new cases passed |
+| same filter, `-c release` | exit 0; Bound public class 16 tests executed; Debug-only class absent |
+| `swift test -c debug --filter RedBlackTreeTests` | exit 0; XCTest 954, Swift Testing 133 in 17 suites (includes Death Tests), 0 failures |
+| `swift test -c release --filter RedBlackTreeTests` | exit 0; XCTest 769, Swift Testing 120 in 11 suites, 0 failures |
+| Compatibility: disposable copy under `mktemp -d`, `COMPATIBLE_ATCODER_2025` enabled only in the copy, filter on the MultiSet SetAlgebra and ValueSemantics suites | exit 0; both new compat-compiled cases passed (12 XCTest) |
+
+Normal lifetime-balance checks were on. Not run: Linux, Swift 6.2, ASan, the full `swift test` suite, compatibility-mode Release, and mutation checks for M1–M5. The tests' ability to detect faults is argued from their assertions only.
+
+**Completion and release** — M1–M5 complete; no unresolved item, production defect or open contract question found. I release the RBT-043 scope: the six MultiSet test files above, the `Tests/TESTING.md` handoff item, and this Return. RBT-044 will not start until its gate is opened. No commit or push.
 
 ### Shared constraints for RBT-044 and RBT-045
 

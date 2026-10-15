@@ -21,6 +21,7 @@
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// この型はnoncopyableであり、暗黙に複製できません。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -44,7 +45,7 @@
 
   /// `value`を`count`回呼び、その返り値を添字順に格納します。
   ///
-  /// `count`が0のとき、`f`は呼ばれません。
+  /// `count`が0のとき、`value`は呼ばれません。
   ///
   /// - Parameters:
   ///   - count: 要素数。
@@ -103,6 +104,7 @@ extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// 座標accessでは`width`が最内軸、`height`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// この型はnoncopyableであり、暗黙に複製できません。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -199,6 +201,7 @@ extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// 座標accessでは`width`が最内軸、`depth`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// この型はnoncopyableであり、暗黙に複製できません。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -310,6 +313,7 @@ extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 /// 座標accessでは`size0`が最内軸、`size3`が最外軸で、
 /// storage上では`size0`の軸が最も速く進みます。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// この型はnoncopyableであり、暗黙に複製できません。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -431,7 +435,8 @@ extension ElementBuffer {
   #if swift(>=6.4)
     /// `position`の要素を借用して読み書きする参照を返します。
     ///
-    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
+    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
     /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
     ///
     /// - Parameter position: 参照する要素の位置。
@@ -485,8 +490,21 @@ extension ElementBuffer2D {
   #if swift(>=6.4)
     /// 座標`(x, y)`の要素を借用して読み書きする参照を返します。
     ///
-    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
+    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
     /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
+    ///
+    /// ```swift
+    /// if #available(macOS 27.0, iOS 27.0, tvOS 27.0, watchOS 27.0, visionOS 27.0, *) {
+    ///   var table = ElementBuffer2D(repeating: 0, width: 4, height: 3)
+    ///   do {
+    ///     var cell = table.reference(at: 2, 1)
+    ///     cell.value += 1
+    ///     cell.value += 2
+    ///   }
+    ///   let value = table.element(at: 2, 1) // 3
+    /// }
+    /// ```
     ///
     /// - Parameters:
     ///   - x: 最内軸の位置。
@@ -547,7 +565,8 @@ extension ElementBuffer3D {
   #if swift(>=6.4)
     /// 座標`(x, y, z)`の要素を借用して読み書きする参照を返します。
     ///
-    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
+    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
     /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
     ///
     /// - Parameters:
@@ -615,7 +634,8 @@ extension ElementBuffer4D {
   #if swift(>=6.4)
     /// 座標`(x, y, z, w)`の要素を借用して読み書きする参照を返します。
     ///
-    /// 返された参照はこのbufferのstorageを所有せず、その有効期間は`self`の可変借用に
+    /// 返される[MutableRef](https://developer.apple.com/documentation/swift/mutableref)は
+    /// このbufferのstorageを所有せず、その有効期間は`self`の可変借用に
     /// 依存します。参照を使い終えるまで、このbufferへ別にaccessしないでください。
     ///
     /// - Parameters:

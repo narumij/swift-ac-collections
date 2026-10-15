@@ -16,7 +16,7 @@
 
 手放した占有権は、相手へ丸ごと移るわけではない。固定されて誰も一方的には変更できない部分と、次の担当が変更できる部分を区別する。依頼後に依頼書を作り足すことや、返却物を受け取っただけで書き換えることはしない。
 
-Status: three investigation assignments prepared; worker startup has not been observed.
+Status: three investigation returns accepted by Astra on 2026-10-15; user authorized the commit; completion records are saved together with the accepted returns. No implementation assignment is active.
 
 Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
 
@@ -40,3 +40,7 @@ Workerは記録された範囲だけを実施し、調整役Codexが証拠を独
 | 3 | `PERM-075` | 文書・導入経路 | [ワーカー3依頼書](Current/PERMUTATION_MIGRATION_WORKER_3.md) |
 
 全件の返却をAstraが照合・統合し、ユーザーと計画を相談する。調査3件は相互の必須前提を持たない。
+
+## 調査受入（2026-10-15、Astra）
+
+ユーザーの起動・終了報告を受け、3件の返却を独立照合して受け入れた。調査は完了し、2026-10-15ユーザーがコミットを許可。成果・受入記録と完了記録を同じコミットへ保存する。依頼文の先行互換条件の適用範囲の訂正とcandidate CI経路の補足は[受入・統合記録](Current/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)に置く。原回答は固定し、新しい作業はまだ割り当てない。

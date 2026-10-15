@@ -7,6 +7,14 @@
 `Sources/ElementBufferModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
 
+## 現行の供用区分の訂正（2026-10-15）
+
+ユーザーがElementBufferを1.0提供対象と再確認し、Swift 6.2を「1.0競技供用」（競技専用）、
+Swift 6.4を「1.0一般供用」と区分した。提供区分は`Maintanance/Current/QUALITY_REQUIREMENTS.md`、
+アクセス方式・設計理由・定性的性能表現の判断は現行Quality Profileに記録した。
+以下の「1.0提供対象外」「保守module」を前提とした判断は過去の経緯であり、現在の提供区分や
+評価の除外根拠に使わない。過去のtask状態・実行結果は改変せず、今回の訂正を品質達成や検証成功とは扱わない。
+
 ## Deprecated公開面の削除（2026-10-13）
 
 所有1D〜4D型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`をproduction sourceから削除した。
@@ -290,7 +298,9 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
   `@unchecked Sendable`を含む並行利用、`-Ounchecked`、一般Swift利用、競技利用、外部性能は、この
   Verificationから成功を推定せず未検証として維持する。
 
-### 外部性能判定taskの見直し（2026-10-14）
+### 外部性能判定taskの見直し（2026-10-14・当時の判断）
+
+> 現在の供用区分は冒頭の2026-10-15訂正を参照。この節の対象外という前提を現行評価へ適用しない。
 
 BareArrayは1.0提供対象外の保守moduleとなった。この提供区分では、1.0適合判定のためにC++ nested
 vectorとの固定性能比を先に決め、正式assessmentを実行する必要はない。このため`BARE-032`と

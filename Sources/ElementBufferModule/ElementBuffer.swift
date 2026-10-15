@@ -14,7 +14,7 @@
 
 // TODO: コピペでAtCoder提出可能なこと
 
-/// A one-dimensional array for competitive programming.
+/// A one-dimensional buffer for competitive programming and Swift 6.4 general-purpose use.
 ///
 /// A lightweight array allocated on the heap.
 /// Use this type to express large arrays for dynamic programming and similar tasks concisely.
@@ -96,7 +96,7 @@ extension ElementBuffer {
 
 extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 
-/// A multidimensional array for competitive programming.
+/// A multidimensional buffer for competitive programming and Swift 6.4 general-purpose use.
 ///
 /// A lightweight multidimensional array allocated on the heap.
 /// Use this type to express large arrays for dynamic programming and similar tasks concisely.
@@ -193,7 +193,7 @@ extension ElementBuffer2D {
 
 extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
-/// A multidimensional array for competitive programming.
+/// A multidimensional buffer for competitive programming and Swift 6.4 general-purpose use.
 ///
 /// A lightweight multidimensional array allocated on the heap.
 /// Use this type to express large arrays for dynamic programming and similar tasks concisely.
@@ -466,11 +466,13 @@ extension ElementBuffer {
   }
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
-  // 一般供用としてはmutable必須なので、一般供用不可となる
+  // Swift 6.2は競技供用。Swift 6.4の一般供用はmutating reference(at:)を中心とする。
   /// Replaces the element at `position` with `newValue`.
   ///
   /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
   /// stored in a `let` binding.
+  /// This competitive-programming access path does not synchronize concurrent access.
+  /// For general-purpose use with Swift 6.4, prefer `reference(at:)` and its multidimensional variants.
   ///
   /// - Parameters:
   ///   - newValue: The value to store at the specified position.
@@ -539,11 +541,13 @@ extension ElementBuffer2D {
   }
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
-  // 一般供用としてはmutable必須なので、一般供用不可となる
+  // Swift 6.2は競技供用。Swift 6.4の一般供用はmutating reference(at:)を中心とする。
   /// Replaces the element at coordinates `(x, y)` with `newValue`.
   ///
   /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
   /// stored in a `let` binding.
+  /// This competitive-programming access path does not synchronize concurrent access.
+  /// For general-purpose use with Swift 6.4, prefer `reference(at:)` and its multidimensional variants.
   ///
   /// - Parameters:
   ///   - newValue: The value to store at the specified position.
@@ -606,11 +610,13 @@ extension ElementBuffer3D {
   }
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
-  // 一般供用としてはmutable必須なので、一般供用不可となる
+  // Swift 6.2は競技供用。Swift 6.4の一般供用はmutating reference(at:)を中心とする。
   /// Replaces the element at coordinates `(x, y, z)` with `newValue`.
   ///
   /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
   /// stored in a `let` binding.
+  /// This competitive-programming access path does not synchronize concurrent access.
+  /// For general-purpose use with Swift 6.4, prefer `reference(at:)` and its multidimensional variants.
   ///
   /// - Parameters:
   ///   - newValue: The value to store at the specified position.
@@ -682,11 +688,13 @@ extension ElementBuffer4D {
   }
 
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
-  // 一般供用としてはmutable必須なので、一般供用不可となる
+  // Swift 6.2は競技供用。Swift 6.4の一般供用はmutating reference(at:)を中心とする。
   /// Replaces the element at coordinates `(x, y, z, w)` with `newValue`.
   ///
   /// The previous element is destroyed. Because this method is nonmutating, it can also update a buffer
   /// stored in a `let` binding.
+  /// This competitive-programming access path does not synchronize concurrent access.
+  /// For general-purpose use with Swift 6.4, prefer `reference(at:)` and its multidimensional variants.
   ///
   /// - Parameters:
   ///   - newValue: The value to store at the specified position.

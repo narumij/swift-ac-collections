@@ -25,7 +25,7 @@
 | RedBlackTreeCollections | 1.0提供対象 | [現行品質評価](../RedBlackTreeModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
 | PermutationModule | Swift 6.4以降の1.0提供対象 | [現行品質評価](../PermutationModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
 | OptionalElementBufferModule | traitで明示的に有効化する、留保付きの実験的提供 | [現行品質評価](../OptionalElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
-| ElementBufferModule | 1.0提供対象外。実装・仕様・test・benchmark・安全性・既存利用影響を保守 | [現行品質評価](../ElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
+| ElementBufferModule | 1.0提供対象。Swift 6.2は1.0競技供用、Swift 6.4は1.0一般供用（2026-10-15ユーザー訂正） | [現行品質評価](../ElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
 
 品質評価の一巡は、確認済みと不足を整理した到達点である。全品質要求の充足や公開可能な文書の完成を意味しない。
 実験提供・保守対象にも、実際に利用する範囲の正確性、メモリ安全性、要素寿命、build・test可能性は必要である。
@@ -82,7 +82,7 @@
 - PermutationのABC328E実提出探索は`PERM-002`として完了済み。最速80msのunsafe枝は製品候補から除外されており、現行安全契約の製品性能へ転用しない。
 - OptionalElementBufferの固定外部性能比を決めて正式評価する旧taskは、実験提供への限定により除外済み。一般提供方式の再設計は別の凍結調査である。
 - OptionalElementBufferの過去の`mutating`化による性能回帰を、nonmutatingへ戻した現行版の不具合としてそのまま計上しない。現在の性能保証とは別に、測定時点を保存する。
-- ElementBufferの一般利用・競技利用Validation、安定提供を前提とした外部性能判定は、現行提供方針では残作業へ戻さない。保守範囲の安全性や既存利用への影響は引き続き対象とする。
+- ElementBufferの評価を「1.0提供対象外」のため不要とした整理は、2026-10-15のユーザー訂正で失効した。Swift 6.2の1.0競技供用とSwift 6.4の1.0一般供用を分け、用途ごとの証拠と未検証範囲を扱う。旧taskの除外・凍結を自動解除せず、評価済みとも扱わない。設計理由と定性的性能表現の判断は[品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md#供用区分と設計判断)を参照する。
 - 次元名体系の再判断、旧公開Viewの監査、完了済みのTest as Specification整理を、古い記述だけから復活させない。
 
 ## 完了条件と成果

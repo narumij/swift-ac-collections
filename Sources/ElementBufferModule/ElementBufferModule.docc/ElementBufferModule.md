@@ -9,6 +9,11 @@ low-level building blocks intended for workloads such as competitive-programming
 programming tables; they do not conform to `Collection`. Each buffer is noncopyable, so you
 cannot implicitly duplicate a buffer or its storage.
 
+With Swift 6.2, these buffers are intended exclusively for competitive programming, using
+`element` and `setElement` for value access. With Swift 6.4, they also support general-purpose
+use through borrowed references. The current package requires Swift 6.4; the Swift 6.2 usage
+applies to the buffer source rather than installation of the current package.
+
 Import the package facade to use these APIs:
 
 ```swift
@@ -21,9 +26,13 @@ let value = table.element(at: 2, 1) // 42
 
 `setElement(_:at:_:)` is nonmutating. A buffer bound with `let`, as in the example above, can
 still replace its stored elements; `let` does not make the buffer contents read-only.
+This value-access API avoids a mutating access to the buffer for competitive workloads.
+It does not synchronize concurrent access: callers must prevent overlapping reads and writes
+to the same element. This also applies when using the value-access API with Swift 6.4.
 
-On Swift 6.4 and supported Apple platforms, use `reference(at:_:)` when you need to read and
-write the same element repeatedly within one exclusive borrowing scope. It returns Swift's
+For general-purpose use with Swift 6.4 and supported platforms, use `reference(at:_:)` to read
+and write an element within an exclusive borrowing scope. On Apple platforms, this API requires
+OS version 27 or later. It returns Swift's
 [`MutableRef`](https://developer.apple.com/documentation/swift/mutableref):
 
 ```swift

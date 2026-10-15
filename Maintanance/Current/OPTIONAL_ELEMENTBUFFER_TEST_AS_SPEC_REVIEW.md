@@ -78,4 +78,19 @@ Codexによる独立確認後、記録保存のコミット許可待ちをWAITIN
 
 ## Astra受入確認欄
 
-未確認。
+2026-10-15、Astraが受入確認。基準HEAD `9d0a25c4`に対する返却作業ツリーを確認した。
+A〜Eは1D〜4Dで反映されている。nested Optionalはpattern matchで三状態を区別し、共有参照は弱参照・明示consume・最後の外部参照解放で寿命を検査する。
+全消去・全座標再利用、各軸ゼロ時の消去とread／値write／nil write拒否、所有型の正常移送と拒否診断を確認した。
+production sourceとroot manifestに変更はない。
+
+独立実行環境：macOS arm64、Apple Swift 6.4（swiftlang-6.4.0.34.1）。
+
+- `swift test --disable-sandbox --filter OptionalElementBufferModuleTests`：終了0。XCTest 49件、Death Test 25件（2 suites）、全件成功。
+- `swift test --disable-sandbox -c release --filter OptionalElementBufferModuleTests`：関連外targetのdSYM生成で`Operation not permitted`となりbuild失敗。テスト成功の証拠に含めない。
+- `swift test --disable-sandbox -c release -debug-info-format none --filter OptionalElementBufferModuleTests`：終了0。XCTest 49件、Death Test 25件、全件成功。Release最適化のままdebug情報の生成だけを省いた構成。
+- `sh Utilities/Maintenance/CompilerDiagnostics/OptionalElementBufferPublicSurface/verify.sh`：終了0。正常target（1D〜4D）、Copyable要求拒否4件、consume後使用拒否4件を確認。
+- `git diff --check HEAD`：問題なし。
+
+Claude返却欄は確認時点で未記入だったため、本人の実行報告を代筆せず、上記の実物照合とAstra自身の実行を受入根拠とした。
+今回の受入範囲はA〜Eの仕様test補完。Linux・Swift 6.2・ASan・mutation試験・一般利用Validation・性能は今回未実施であり、品質全体の保証には広げない。
+実装・検証を受け入れ、2026-10-15のユーザーのコミット指示により、反映と受入記録を同じコミットに保存してtaskを`DONE`とする。

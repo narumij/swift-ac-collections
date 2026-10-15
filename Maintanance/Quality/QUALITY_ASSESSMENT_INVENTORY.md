@@ -70,7 +70,7 @@
 
 | 参照 | 対象・課題 | 現在の根拠と区分 | 棚卸しで明らかにすること | 関連する既存task・根拠 |
 | --- | --- | --- | --- | --- |
-| (C-1) | 主に赤黒木・Permutationの利用理解と公開文書 | 三対象の本文ドラフトは受入済み。公開可能な初版の完成や、設計非参加者が正しく使えることとは別。Permutationの一時View・失効・保存時のcopyの理解は未検証 | 作成済み本文、公開準備、契約との整合、利用理解の実証を分ける。赤黒木の文書準備とValidationの対応範囲も確認する | `PERM-062`・`RBT-014`・`RBT-026`。後二者は文書準備・契約判断であり、Validation全体の割当ではない。[Permutationの試行設計](CrossVersion/PermutationModule/GeneralSwiftValidationScenario.md) / [赤黒木の文書workflow](../UserDocuments/RedBlackTreeCollections/Head/DOCUMENTATION_WORKFLOW.md) |
+| (C-1) | 主に赤黒木・Permutationの利用理解と公開文書 | 三対象の本文ドラフトは受入済み。公開可能な初版の完成や、設計非参加者が正しく使えることとは別。Permutationの一時View・失効・保存時のcopyの理解は未検証 | 作成済み本文、公開準備、契約との整合、利用理解の実証を分ける。赤黒木の文書準備とValidationの対応範囲も確認する | `PERM-062`・`RBT-014`・`RBT-026`。後二者は文書準備・契約判断であり、Validation全体の割当ではない。[Permutationの試行設計](CrossVersion/PermutationModule/GeneralSwiftValidationScenario.md) / [赤黒木の文書workflow](../Current/DOCUMENTATION_WORKFLOW.md) |
 | (C-2) | OptionalElementBufferの競技用途への適合 | EDPC例のcompile証拠はあるが、正答・時間・memoryを含む利用結果の証拠が不足 | 現行実験提供の用途に対応する試行対象と証拠の不足を整理する。別moduleや別実装の提出結果を代用しない | `OPT-065`。[利用Validationの設計](CrossVersion/OptionalElementBufferModule/GeneralSwiftValidationScenario.md) |
 | (C-3) | 全体の評価表に残る古い未実施表現 | 本文ドラフト、DocC継続生成、Permutation実提出など、完了した仕事が一部の評価表では未実施に見える | 旧記述、後発の完了・判断の根拠、現在の適用範囲、訂正先を対応づける。歴史的な評価を消さず、現在の評価と分ける | 本taskの横断整理対象。[DocC継続検証](../Current/DOCUMENTATION_CI_PLAN.md) / [10月13日の完了記録](../Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md) / 各moduleの現行品質評価 |
 

@@ -52,7 +52,7 @@
 | [AcCollections DocC](../Sources/AcCollections/AcCollections.docc/)、[赤黒木 DocC](../Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/)、[Permutation DocC](../Sources/NextPermutationModule/NextPermutationModule.docc/)、[OptionalElementBuffer DocC](../Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/)、[ElementBuffer DocC](../Sources/ElementBufferModule/ElementBufferModule.docc/) | 公開ドキュメントの生成入力。各moduleのSwiftソース内の公開コメントも関連する | `DOC-030`。生成入力と生成物を区別し、変更対象の生成・リンク解決を確認する |
 | [旧RedBlackTree DocC](../Sources/_RedBlackTreeModule/RedBlackTreeModule.docc/)、[旧Permutation DocC](../Sources/_PermutationModule/PermutationModule.docc/) | 旧名互換入口の案内 | `DOC-030`。旧名という理由で履歴・削除対象にしない |
 | [設計資料](../Sources/RedBlackTreeCollections/Documentation/Design/Design-Overview.md)、[API Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix.md)、[View Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md) | 赤黒木の設計・公開面の維持文書 | `DOC-030`。仕様判断は対象task・決定正本に従う |
-| [文書workflow・本文・outline](UserDocuments/RedBlackTreeCollections/Head/) | 文書作成手順と作業資料が混在。本文・outlineの完成や公開可否は個別に確認する | `DOC-030`。具体的な作業状態はRegistryと対象taskで管理する |
+| [文書作成手順](Current/DOCUMENTATION_WORKFLOW.md) / [本文・outline](UserDocuments/RedBlackTreeCollections/Head/) | 作成手順の正本と作業資料を分ける。本文・outlineの完成や公開可否は個別に確認する | `DOC-030`。具体的な作業状態はRegistryと対象taskで管理する |
 | [赤黒木のその他資料](../Sources/RedBlackTreeCollections/Documentation/)、[Indexメモ](../Sources/RedBlackTreeCollections/Implements/Index/index_stale_check.md) | 比較証拠、互換説明、設計メモなど。フォルダ全体を現行仕様の正本とは扱わない | `DOC-030`では用途・参照先を整理し、個別の判断や証拠は関係taskへ紐付ける |
 
 ### AI用

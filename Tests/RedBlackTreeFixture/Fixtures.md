@@ -2,6 +2,8 @@
 
 # RedBlackTree Test Fixtures
 
+<!-- 2026-10-16 ユーザーの振り返り：この文書がCodexとClaudeによる情報共有の始まりだった。明示的なハンズオフの記載がない作業文書として、両者が同じ情報を見て仕事をつなぐ役割を担っていた。現在の正本運用の原型かもしれない、という見立てを残す。 -->
+
 この文書は `RedBlackTreeTests` で使用している Fixture と Fixture 構築支援コードを整理する。
 
 Fixture は SUT (System Under Test) とは別の概念として扱う。

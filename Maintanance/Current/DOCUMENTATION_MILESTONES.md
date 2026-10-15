@@ -12,7 +12,7 @@
 
 文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。三対象の文書作業による方式習熟は既存記録で完了済みだが、赤黒木の照合済みとは扱わない。
 
-手順資料は[Documentation Workflow](../UserDocuments/RedBlackTreeCollections/Head/DOCUMENTATION_WORKFLOW.md)。今回、その手順自体は変更していない。
+手順資料は[Documentation Workflow](DOCUMENTATION_WORKFLOW.md)。今回、その手順自体は変更していない。
 
 Mapped Values View契約の検討（RBT-026）には、関連する現行APIの照合結果が必要という条件を残す。旧RBT-014のEXCLUDEDを入力の充足とみなさず、またマイルストーン全体の達成を新しい開始条件として加えない。必要な実作業は具体化時にRegistryへ接続する。
 

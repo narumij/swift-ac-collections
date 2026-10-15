@@ -18,7 +18,7 @@
 | [進捗の入口](ProgressV2/PROGRESS_OVERVIEW_V2.md) | 現在の依頼から関係するtaskへ進む |
 | [Task Registry](ProgressV2/TASK_REGISTRY_V2.md) | 状態・担当・依存・再開条件と詳細正本 |
 | [現行資料の索引](Current/README.md) | 横断的な正本・運用資料への案内 |
-| [テスト整備](../Tests/TESTING.md) | テスト基盤とテスト整理 |
+| [テスト整備](../Tests/TESTING.md) | Claude（姫）が担うAI向けのテスト整備文書 |
 | [RedBlackTree設計資料](../Sources/RedBlackTreeCollections/Documentation/) | 赤黒木の設計・API・品質に関する資料。他moduleは対象taskの詳細正本から辿る |
 | [圧縮・アーカイブ手順](ProgressV2/TASK_REGISTRY_ARCHIVE.md) | 原文を保存し、現行から履歴へ辿れるようにする手順 |
 
@@ -28,21 +28,41 @@
 
 この一覧への掲載は、恒久保存・配置固定・内容の正しさ・編集権限を一括で認めるものではない。維持文書と途中の作業資料、取得済みの証拠を区別する。移動・アーカイブの際は用途と依存する仕事を確かめる。
 
+主な読み手・用途で分類する。「ユーザー用」はライブラリ利用者向け、「開発用」は実装・検証・文書制作向け、「AI用」はAIの作業・協働規則、「品質」は品質主張・評価・検証証拠を指す。複数の用途を持つ資料は主用途に置き、分類だけで公開可否や変更権限を決めない。
+
+### ユーザー用
+
 | ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
 | --- | --- | --- |
-| [AGENTS.md](../AGENTS.md)、[CLAUDE.md](../CLAUDE.md) | 協働の規則。各文書の変更権限に従う | `DOC-030`では参照関係を把握する。本文の変更権限は得ない |
-| [Tests/TESTING.md](../Tests/TESTING.md) | テストの継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | テスト整備の恒久系の中心文書。専用の恒久taskは未登録。`DOC-030`では文書の参照関係を扱う |
-| [Tests/CLAUDE.md](../Tests/CLAUDE.md)、[Fixtures.md](../Tests/RedBlackTreeFixture/Fixtures.md) | テスト作業の規則とfixtureの説明 | テスト整備に関連。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
 | [README.ja.md](../README.ja.md)、[README.md](../README.md) | 利用者向け入口。日本語版が正本、英語版は翻訳という現行の指定を維持する | `DOC-030`。製品方針の決定は代行しない |
 | [CHANGELOG.md](../CHANGELOG.md) | 利用者に関係する変更の記録 | `DOC-030`。対象の変更・リリース作業と照合する |
 | [Documentation/](../Documentation/) | 利用者向け本文・互換APIの説明 | `DOC-030`。各文書の正本・翻訳・対象版を確認する |
+
+### 品質
+
+| ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
+| --- | --- | --- |
+| [赤黒木](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md)、[Permutation](../Sources/NextPermutationModule/Documentation/Quality-Profile.md)、[OptionalElementBuffer](../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md)、[ElementBuffer](../Sources/ElementBufferModule/Documentation/Quality-Profile.md)の品質プロファイル | module別の品質主張・境界 | `DOC-030`では文書整合を扱う。品質の判断・検証は品質要求と各評価taskによる |
+| [Benchmark結果一覧](../Benchmarks/Results.md)、[macOS品質評価資料](../Benchmarks/QualityAssessment/macOS/) | 計測結果の入口、評価説明、生成結果・証拠が混在 | `DOC-030`では導線を維持する。結果の有効範囲・保存・再測定は関係する品質・性能taskで扱う |
+
+### 開発用
+
+| ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
+| --- | --- | --- |
+| [AcCollections DocC](../Sources/AcCollections/AcCollections.docc/)、[赤黒木 DocC](../Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/)、[Permutation DocC](../Sources/NextPermutationModule/NextPermutationModule.docc/)、[OptionalElementBuffer DocC](../Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/)、[ElementBuffer DocC](../Sources/ElementBufferModule/ElementBufferModule.docc/) | 公開ドキュメントの生成入力。各moduleのSwiftソース内の公開コメントも関連する | `DOC-030`。生成入力と生成物を区別し、変更対象の生成・リンク解決を確認する |
+| [旧RedBlackTree DocC](../Sources/_RedBlackTreeModule/RedBlackTreeModule.docc/)、[旧Permutation DocC](../Sources/_PermutationModule/PermutationModule.docc/) | 旧名互換入口の案内 | `DOC-030`。旧名という理由で履歴・削除対象にしない |
 | [設計資料](../Sources/RedBlackTreeCollections/Documentation/Design/Design-Overview.md)、[API Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix.md)、[View Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md) | 赤黒木の設計・公開面の維持文書 | `DOC-030`。仕様判断は対象task・決定正本に従う |
 | [文書workflow・本文・outline](../Sources/RedBlackTreeCollections/Documentation/Head/) | 文書作成手順と作業資料が混在。本文・outlineの完成や公開可否は個別に確認する | `DOC-030`。具体的な作業状態はRegistryと対象taskで管理する |
 | [赤黒木のその他資料](../Sources/RedBlackTreeCollections/Documentation/)、[Indexメモ](../Sources/RedBlackTreeCollections/Implements/Index/index_stale_check.md) | 比較証拠、互換説明、設計メモなど。フォルダ全体を現行仕様の正本とは扱わない | `DOC-030`では用途・参照先を整理し、個別の判断や証拠は関係taskへ紐付ける |
-| [赤黒木](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md)、[Permutation](../Sources/NextPermutationModule/Documentation/Quality-Profile.md)、[OptionalElementBuffer](../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md)、[ElementBuffer](../Sources/ElementBufferModule/Documentation/Quality-Profile.md)の品質プロファイル | module別の品質主張・境界 | `DOC-030`では文書整合を扱う。品質の判断・検証は品質要求と各評価taskによる |
-| [AcCollections DocC](../Sources/AcCollections/AcCollections.docc/)、[赤黒木 DocC](../Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/)、[Permutation DocC](../Sources/NextPermutationModule/NextPermutationModule.docc/)、[OptionalElementBuffer DocC](../Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/)、[ElementBuffer DocC](../Sources/ElementBufferModule/ElementBufferModule.docc/) | 公開ドキュメントの生成入力。各moduleのSwiftソース内の公開コメントも関連する | `DOC-030`。生成入力と生成物を区別し、変更対象の生成・リンク解決を確認する |
-| [旧RedBlackTree DocC](../Sources/_RedBlackTreeModule/RedBlackTreeModule.docc/)、[旧Permutation DocC](../Sources/_PermutationModule/PermutationModule.docc/) | 旧名互換入口の案内 | `DOC-030`。旧名という理由で履歴・削除対象にしない |
-| [Benchmark結果一覧](../Benchmarks/Results.md)、[macOS品質評価資料](../Benchmarks/QualityAssessment/macOS/) | 計測結果の入口、評価説明、生成結果・証拠が混在 | `DOC-030`では導線を維持する。結果の有効範囲・保存・再測定は関係する品質・性能taskで扱う |
+
+### AI用
+
+| ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
+| --- | --- | --- |
+| [Fixtures.md](../Tests/RedBlackTreeFixture/Fixtures.md) | AIがテストを整備するためのfixtureの説明 | テスト整備に関連。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
+| [Tests/TESTING.md](../Tests/TESTING.md) | Claude（姫）が担う、AI向けのテスト継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | テスト整備の恒久系の中心文書。専用の恒久taskは未登録。`DOC-030`では文書の参照関係を扱う |
+| [AGENTS.md](../AGENTS.md)、[CLAUDE.md](../CLAUDE.md) | 協働の規則。各文書の変更権限に従う | `DOC-030`では参照関係を把握する。本文の変更権限は得ない |
+| [Tests/CLAUDE.md](../Tests/CLAUDE.md) | AIがテスト作業を行う際の規則 | テスト整備に関連。`DOC-030`では参照関係を把握し、内容更新は現在の依頼と変更権限に従う |
 
 一覧は文書・作業資料への入口であり、ソースコード・全生成物のファイル台帳ではない。資料を追加したときは、その用途に応じてこの入口または関係taskの詳細正本から辿れるようにする。現時点で個別の紐付けが未確認の資料は、掲載だけで確認済みとしない。
 

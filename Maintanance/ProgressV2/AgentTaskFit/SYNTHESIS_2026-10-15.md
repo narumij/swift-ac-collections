@@ -11,8 +11,8 @@
 
 ## 実物記録で補った点
 
-1. `Maintanance/Current/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md`：調査3件は訂正・補足付きで受入済み。調査1・3の「受入未確認」は当人が知らないという意味で、現状が未受入という意味ではない。調査2の回答者が経験を確認できなくても、過去の成果自体は受入済み。candidate経路の補足と先行互換条件の訂正を要した。
-2. `Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`：実装とCI成功・main到達の証拠がある。一方、生成器の範囲外編集と文書訂正を要した。実装ワーカー回答の境界遵守への自己評価だけでは、この反証が抜ける。
+1. `Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md`：調査3件は訂正・補足付きで受入済み。調査1・3の「受入未確認」は当人が知らないという意味で、現状が未受入という意味ではない。調査2の回答者が経験を確認できなくても、過去の成果自体は受入済み。candidate経路の補足と先行互換条件の訂正を要した。
+2. `Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`：実装とCI成功・main到達の証拠がある。一方、生成器の範囲外編集と文書訂正を要した。実装ワーカー回答の境界遵守への自己評価だけでは、この反証が抜ける。
 3. `Maintanance/Current/OPTIONAL_ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md`：test・fixtureと独立検証の記録、後日のClaude終了・占有返却がある。作成能力と返却の完結性を別々に評価する。今回のインタビュー集計は製品taskの再受入や状態更新を兼ねない。
 4. V3、ぷらいむ、Claudeの過去実例は本人の記述として採取した。引用された全commit・当時の全ログの再監査は今回行わない。自己申告を全て独立検証済みの実績へ昇格させない。
 

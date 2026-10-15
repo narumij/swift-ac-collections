@@ -39,4 +39,4 @@
 
 ## 後続計画
 
-2026-10-15、ユーザーが旧名を互換用として残し、benchmark名整理を後段まで遅らせる方針を確認した。[module移行計画](PERMUTATION_MODULE_MIGRATION_PLAN.md)に、確認済み方針と具体工程案を分けて記録した。
+2026-10-15、ユーザーが旧名を互換用として残し、benchmark名整理を後段まで遅らせる方針を確認した。[module移行計画](../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)に、確認済み方針と具体工程案を分けて記録した。

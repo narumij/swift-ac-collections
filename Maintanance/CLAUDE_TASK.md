@@ -29,6 +29,8 @@ the user.
 
 ## Current job status
 
+Additional inspections `OPS-045` and `DOC-031` are issued below; begin only after releasing the currently occupied work scope. They do not supersede the test batch.
+
 **Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043 and RBT-044 have been accepted by Astra; RBT-045 is now eligible. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
@@ -283,3 +285,9 @@ Independent Release verification also passed: native build, debug-info disabled,
 #### Astra follow-up correction (`RBT-042`, 2026-10-15)
 
 The user authorized the production fix after checkpoint `7ed1cc6b`. Astra reproduced all eight failing range/type combinations and corrected the wrappers. The original return and earlier verification remain historical evidence. Current fix and validation results are in `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, section 範囲eraseのpredicateエラー伝播修正. No further work is assigned to Claude by this note.
+
+## Additional bounded inspection — OPS-045 and DOC-031
+
+Author: Astra / 2026-10-16. Both IDs were registered before this request. The user requested task-integrity and document-link checks after permanent-task setup and archival.
+
+After finishing and formally releasing your currently occupied scope (including RBT-045 if still in progress), perform [the two maintenance checks](Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md), OPS-045 then DOC-031. No intermediate acceptance is required between these two inspections. They do not replace the RBT batch or open any test gate. Read the current Registry rows and the complete bounded request. Edit only its respective Return sections, report findings without repairing the inspected files, and explicitly release each scope. Do not commit or change task state. Astra handles independent verification and acceptance.

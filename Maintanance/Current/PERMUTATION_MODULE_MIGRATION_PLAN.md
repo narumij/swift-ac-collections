@@ -1,7 +1,7 @@
 # Permutation module移行計画
 
 作成者：Astra。2026-10-15。基準：`6f101a27`。
-入力：[調査受入・統合記録](PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)、[名称決定](PUBLIC_API_NAMING_DECISIONS.md)、[性能CI変更手順](PERFORMANCE_CI_CHANGE_GUIDE.md)。
+入力：[調査受入・統合記録](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)、[名称決定](PUBLIC_API_NAMING_DECISIONS.md)、[性能CI変更手順](PERFORMANCE_CI_CHANGE_GUIDE.md)。
 段階：計画。以下のユーザー確認済み方針と、Astraが具体化した工程案を区別する。本書は実装完了やCI成功の記録ではない。
 
 ## ユーザー確認済みの方針
@@ -61,10 +61,10 @@ AcCollections target → NextPermutationModule（実装）
 
 ## 実行への接続（2026-10-15）
 
-ユーザーの「では、すすもう」を受け、工程2・3を一体のローカル実装task `PERM-076`として登録した。[ワーカー依頼書](PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)を1体へ渡す。調査用3体は完了済みであり再起動しない。remote CI・main到達は今回のワーカー範囲に含めず、返却の受入後に扱う。
+ユーザーの「では、すすもう」を受け、工程2・3を一体のローカル実装task `PERM-076`として登録した。[ワーカー依頼書](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)を1体へ渡す。調査用3体は完了済みであり再起動しない。remote CI・main到達は今回のワーカー範囲に含めず、返却の受入後に扱う。
 
 ## 工程完了記録（2026-10-15）
 
-工程1〜3はローカル受入、工程4はPR #196の全11 job成功、工程5はmain到達commit `3ef37fc2`の照合をもって完了した。実装は`1f87e37a`、文書・ローカル受入記録は`4cd0ebc2`に保存済み。証拠と確認範囲は[受入記録](PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md#pr-cimain到達確認2026-10-15)に記す。
+工程1〜3はローカル受入、工程4はPR #196の全11 job成功、工程5はmain到達commit `3ef37fc2`の照合をもって完了した。実装は`1f87e37a`、文書・ローカル受入記録は`4cd0ebc2`に保存済み。証拠と確認範囲は[受入記録](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md#pr-cimain到達確認2026-10-15)に記す。
 
 新名を主入口、旧名を互換入口とする今回のmodule移行は完了。candidate CI経路は未実行であり、その成功を含めない。benchmark名整理は後段に残し、本完了によって着手・凍結解除しない。

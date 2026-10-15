@@ -16,7 +16,7 @@
 
 本書の旧評価と実行記録にある`PermutationModule`は、その時点の対象名として保持する。
 2026-10-15の名称決定では通常・borrowedの入口とowner、generic parameter `Element`を含む名称familyが正式決定済みである。
-今回の作業差分では実装を`NextPermutationModule`へ移し、旧名を互換入口として残した。ローカル検証とremote CI・main到達は分け、今回の証拠と受入範囲は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
+今回の作業差分では実装を`NextPermutationModule`へ移し、旧名を互換入口として残した。ローカル検証とremote CI・main到達は分け、今回の証拠と受入範囲は`Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
 
 ### 後続タスクへ切り出す内容
 

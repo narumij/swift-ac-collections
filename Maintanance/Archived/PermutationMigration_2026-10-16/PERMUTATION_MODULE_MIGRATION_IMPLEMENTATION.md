@@ -5,7 +5,7 @@
 
 ## 目的と入力
 
-[移行計画](PERMUTATION_MODULE_MIGRATION_PLAN.md)のmodule移行を、ローカルで検証可能な一つの差分として返す。
+[移行計画](../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)のmodule移行を、ローカルで検証可能な一つの差分として返す。
 [調査受入](PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)の訂正・補足を先に読む。
 新名`NextPermutationModule`が実装と主入口、旧名`PermutationModule`は同じ宣言を再公開する互換入口としてmainに残す。benchmark名の整理は後段へ遅らせる。
 

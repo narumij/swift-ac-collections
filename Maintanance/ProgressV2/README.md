@@ -18,7 +18,7 @@
 | [TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md) | 抽出規則、試作時の確認結果、限界を残す補助資料 |
 | [AGENT_TASK_FIT_INTERVIEW.md](AGENT_TASK_FIT_INTERVIEW.md) | 担当適性と委任範囲を検討するための観測資料。割当の根拠そのものにはしない |
 | [COORDINATION_KNOW_HOW.md](COORDINATION_KNOW_HOW.md) | 調整実務の発見・失敗・訂正と再利用できる方法。必要時に参照し、規則とは区別する |
-| [MILESTONES.md](MILESTONES.md) | 恒久task OPS-047が維持する到達点と個別正本への入口 |
+| [MILESTONES.md](../MILESTONES.md) | 恒久task OPS-047が維持する到達点と個別正本への入口 |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 
 ## 恒久taskとの関係
@@ -107,4 +107,4 @@ V2初稿では、元データとの照合で、50件のID・状態・担当・�
 
 確認範囲は、通常入口からの読み取りと採番手順の理解までである。返却では、ファイル変更・採番・task操作・commitは行っていない。実際の更新操作、製品作業での有効性、起動時間や利用量の改善は未検証である。今回の返却から、制度本文の追加修正は必要と判断しなかった。
 
-マイルストーン管理は恒久task OPS-047。MILESTONES.mdを維持文書とし、個別到達の完了だけでは履歴化しない。
+マイルストーン管理は恒久task OPS-047。Maintanance直下のMILESTONES.mdを維持文書とし、個別到達の完了だけでは履歴化しない。

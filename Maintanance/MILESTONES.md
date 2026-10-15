@@ -6,9 +6,9 @@
 
 | 到達点 | 条件と判断の正本 | 関連作業 |
 | --- | --- | --- |
-| 0.6.0の範囲確定とリリース | [0.6.0](../Current/RELEASE_0_6_0.md) | RELEASE-078による開始条件照合。実施工程はユーザーのリリース手順 |
-| 0.7.0の範囲確定とリリース | [0.7.0](../Current/RELEASE_0_7_0.md) | 0.6.0完了と後続差分を材料にする |
-| SPI登録と公開導線の成立 | [SPI公開](../Current/SPI_PUBLICATION_MILESTONE.md) | QUALITY-005 → DOC-026 → DOC-027 |
+| 0.6.0の範囲確定とリリース | [0.6.0](Current/RELEASE_0_6_0.md) | RELEASE-078による開始条件照合。実施工程はユーザーのリリース手順 |
+| 0.7.0の範囲確定とリリース | [0.7.0](Current/RELEASE_0_7_0.md) | 0.6.0完了と後続差分を材料にする |
+| SPI登録と公開導線の成立 | [SPI公開](Current/SPI_PUBLICATION_MILESTONE.md) | QUALITY-005 → DOC-026 → DOC-027 |
 
 ## 維持方法
 
@@ -16,4 +16,4 @@
 
 マイルストーンへ到達しても恒久taskはDONEにしない。個別の到達証拠・判断日・残す範囲を個別正本へ残す。条件が整っただけで公開・リリース開始・別taskの凍結解除を代行しない。実作業は必要な単位でRegistryへ置き、マイルストーンごとに重複した凍結taskを作らない。
 
-[整理前の記録](../Archived/MILESTONE_REORGANIZATION_2026-10-16.md)。RELEASE-007・079は完了ではなくEXCLUDED。版別の判断を削除した意味ではない。
+[整理前の記録](Archived/MILESTONE_REORGANIZATION_2026-10-16.md)。RELEASE-007・079は完了ではなくEXCLUDED。版別の判断を削除した意味ではない。

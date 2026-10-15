@@ -29,4 +29,4 @@ RBT-035は[ユーザー専任の実施判断](../RED_BLACK_TREE_TUNING_RESEARCH_
 
 RELEASE-080はユーザーの解決確認と追跡不要の指示によりEXCLUDED。[解決記録](../../Archived/RELEASE-080_RESOLVED_2026-10-16.md)。
 
-リリース開始ゲート2件は版別正本へ集約してEXCLUDED、SPI実行2件は依存条件で待つACTIVEへ変更。[マイルストーン管理](../../ProgressV2/MILESTONES.md)を参照。
+リリース開始ゲート2件は版別正本へ集約してEXCLUDED、SPI実行2件は依存条件で待つACTIVEへ変更。[マイルストーン管理](../../MILESTONES.md)を参照。

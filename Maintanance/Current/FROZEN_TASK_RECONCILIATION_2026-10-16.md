@@ -85,4 +85,4 @@ PERM-060はユーザーがバグとして復帰を指示したため、再現・
 
 PERM-051・043・044とOPT-064は品質側へ移行してEXCLUDED。RELEASE-080もユーザーの解決確認と追跡不要の指示でEXCLUDED。PERM-060・064とRBT-026はACTIVEへ復帰し、RBT-035はUSER_ONLYの実施判断へ変更した。
 
-RELEASE-007・079はマイルストーンの版別正本へ集約してEXCLUDED、DOC-026・027は依存条件で待つACTIVEへ整理。[マイルストーン管理](../ProgressV2/MILESTONES.md)を恒久task OPS-047として維持する。元の行・旧正本・除外理由はRegistryの履歴入口から参照できる。整理による除外をDONEとして追跡しない。
+RELEASE-007・079はマイルストーンの版別正本へ集約してEXCLUDED、DOC-026・027は依存条件で待つACTIVEへ整理。[マイルストーン管理](../MILESTONES.md)を恒久task OPS-047として維持する。元の行・旧正本・除外理由はRegistryの履歴入口から参照できる。整理による除外をDONEとして追跡しない。

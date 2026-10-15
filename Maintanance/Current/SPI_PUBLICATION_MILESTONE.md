@@ -1,6 +1,6 @@
 # SPI公開マイルストーン
 
-2026-10-16、Astra。管理入口：[マイルストーン管理](../ProgressV2/MILESTONES.md)。
+2026-10-16、Astra。管理入口：[マイルストーン管理](../MILESTONES.md)。
 
 ## 到達条件
 

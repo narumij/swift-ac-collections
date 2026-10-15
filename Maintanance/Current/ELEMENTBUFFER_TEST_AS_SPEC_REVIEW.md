@@ -2,6 +2,7 @@
 
 ## 目的・担当・開始条件
 
+- 作成者: Astra（レビュー原案・依頼正本）
 - 固定ID: `BARE-046`
 - 種別: `EXECUTION`
 - 実施予定: Claude（姫）。Codexが返却された証拠を照合してRegistryを更新する。
@@ -93,7 +94,7 @@ production実装・公開API・性能基準・供用方針・Registryは実施�
 2. 追加した通常テスト・Death Test・compiler診断を必要な構成で実行し、toolchain、OS、Debug／Release、実行コマンド、結果を残す。未実施と成功を区別する。
 3. 関連する既存テストの回帰を確認する。compilerの拒否例には正常例と期待診断を対応づける。
 4. production変更がないこと、各テストがどの仕様違反を検出するかを示す。
-5. Codexが結果を照合し、残る判断待ちがないことを確認してDONEとする。レビュー反映完了を1.0品質全体の受け入れとは扱わない。
+5. Codexが結果を照合し、残る判断待ちがなければ、作業・検証完了を記録して`WAITING_USER`でコミット許可を尋ねる（2026-10-15からの試行）。許可後のコミット確認、またはユーザーのコミット不要判断を記録して`DONE`とする。既にコミット済みの成果を未完了へ戻さず、追加記録のコミット待ちと区別する。レビュー反映完了を1.0品質全体の受け入れとは扱わない。
 
 ## 返却欄（Claudeが記入）
 
@@ -155,3 +156,13 @@ redirectしても色付き診断（ANSI escape）を出し、`error: lifetime-de
 Xcodeのactive test plan `swift-ac-collections`から`ElementBufferModuleTests` 81件を指定して再実行し、81件成功、失敗0件、skip 0件、未実行0件を確認した。
 直接の`swift test --filter ElementBufferModuleTests`は実行環境の`sandbox-exec: sandbox_apply: Operation not permitted`で開始できなかったため、その失敗をtest failureとは扱わず、Xcode実行結果を受入証拠とした。
 未実施として返却されたD・Eのmutation検査、Linux、Swift 6.2 toolchainは受入範囲外のまま残す。A〜Eの既存契約を検出するtest補強として受け入れ、1.0品質全体の受入とは扱わない。
+
+
+## Astra確認（2026-10-15）
+
+- 確認者: Astra。
+- 対象: 反映commit `4b44e758c8a1ce455b4b37f319686c2f2a6a5f95`の仕様テスト・compiler fixture・検証scriptと、現行のClaude返却・Codex受入記録。
+- 判定: A〜Eのレビュー反映を、既存契約のテスト補強として確認した。Aは借用継続中の5操作×4次元の拒否例と借用終了後の正常例、Bは非対称寸法の全座標と更新対象以外の保持、Cは各軸単独の負寸法とゼロ・負の共存、Dは各ゼロ軸の初期化・最外軸indices・空領域access拒否、Eは外部参照・取得済み参照・複数slotによる共有寿命に対応している。反映commitにproduction実装の変更はない。
+- 検証範囲: 今回はソース・差分・記録の静的照合。テストの再実行はしていない。81件成功とcompiler診断再実行の結果は上記「Codex受入」の証拠として参照し、Astra自身の実行結果とはしない。Swift 6.2・Linux・D/Eのmutation検査は引き続き未実施。
+- 診断scriptの限定: `all_errors`は指定fixtureファイルに紐づくerrorだけを数える。「他のerror 0件」はこの範囲であり、ビルド出力全体の別ファイル・driver由来errorを排除する検査にはなっていない。A〜Eのテスト追加を否定する問題ではないが、全出力のerrorを拒否する保証とは区別する。Claudeの原返却は改変せず、この確認欄で補足する。
+- コミット状態: テスト反映と従来の受入記録は上記commitで保存済み。今回の作成者・完了手順・Astra確認の追記、および対応するRegistry更新は、2026-10-15のユーザー許可に基づき本記録のコミットへ含める。

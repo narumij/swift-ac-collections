@@ -16,9 +16,8 @@
 
 /// An array for memoization.
 ///
-/// An array for array-based memoization.
-/// Use it without providing a sentinel for an uninitialized value.
-/// Each slot is either unset or set and owns one `Element`.
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
 /// Passing `nil` to `setElement(_:at:)` destroys the set element and returns the slot to the unset state.
 /// This type cannot be copied. `setElement(_:at:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
@@ -129,9 +128,8 @@ extension OptionalElementBuffer {
 
 /// An array for memoization.
 ///
-/// An array for array-based memoization.
-/// Use it without providing a sentinel for an uninitialized value.
-/// Each slot is either unset or set and owns one `Element`.
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
 /// Coordinates are ordered `(x, y)`, with `width` as the innermost axis and `height` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
@@ -241,9 +239,8 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
 
 /// An array for memoization.
 ///
-/// An array for array-based memoization.
-/// Use it without providing a sentinel for an uninitialized value.
-/// Each slot is either unset or set and owns one `Element`.
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
 /// Coordinates are ordered `(x, y, z)`, with `width` as the innermost axis and `depth` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:_:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
@@ -369,9 +366,8 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
 
 /// An array for memoization.
 ///
-/// An array for array-based memoization.
-/// Use it without providing a sentinel for an uninitialized value.
-/// Each slot is either unset or set and owns one `Element`.
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
 /// Coordinates are ordered `(x, y, z, w)`, with `size0` as the innermost axis and
 /// `size3` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:_:_:)` and `removeAll()` are nonmutating, so

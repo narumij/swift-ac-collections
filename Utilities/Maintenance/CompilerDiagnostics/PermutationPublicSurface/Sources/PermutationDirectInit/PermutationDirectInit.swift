@@ -1,4 +1,4 @@
-import PermutationModule
+import NextPermutationModule
 
 // 期待: compile error。ownerは公開initializerを持たず、`nextPermutations()`からだけ作れる。
 func constructOwnerDirectly() {

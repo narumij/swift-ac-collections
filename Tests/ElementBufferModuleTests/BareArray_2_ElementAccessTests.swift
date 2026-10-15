@@ -1,7 +1,7 @@
 import ElementBufferModule
 import XCTest
 
-/// 座標access: 所有型の要素を`element`と`setElement`で読み書きする。
+/// Coordinate access: reads and writes elements of owned types with `element` and `setElement`.
 final class BareArray_2_ElementAccessTests: XCTestCase {
 
   // MARK: - Mutation
@@ -99,7 +99,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
     }
   }
 
-  /// 4Dの軸は`size0`が最内、`size3`が最外。
+  /// For 4D, `size0` is the innermost axis and `size3` is the outermost axis.
   func testBareArray4DCoordinateAccessReachesEveryPositionWithAsymmetricDimensions() {
     let (size0, size1, size2, size3) = (2, 3, 4, 5)
     var next = 0

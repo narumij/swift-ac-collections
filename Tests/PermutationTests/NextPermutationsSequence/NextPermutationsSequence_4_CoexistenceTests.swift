@@ -9,7 +9,7 @@
 
 #if !COMPATIBLE_ATCODER_2025
 import Algorithms
-import PermutationModule
+import NextPermutationModule
 #if false
 
 import XCTest

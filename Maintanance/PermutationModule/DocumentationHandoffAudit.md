@@ -143,7 +143,7 @@ facade経由の利用: `Tests/AcCollectionsTests/AcCollectionsTests.swift:73`（
 | 結果の添字は0始まりの`Int` | 履歴上の事実（testに「契約」と明記） | F3:25の「2026-10-07から契約」 | `c204dd9f`。**本文と不一致:** `AtCoder2025CompatibilityPlan.md:42-43`は、sliceでの結果添字の起点を「契約として固定していない（未決）」と書いている |
 | `Equatable` / `Hashable` / `CustomStringConvertible` | 履歴上の事実 | 要素の並びだけで決まる（spec testを先に追加） | `c204dd9f`、F3:8。ユーザー判断の記録は未確認 |
 | `Collection.count`の契約を信じる | 決定済み | 契約違反の`Collection`へは防御しない | L287-288（2026-10-07、ユーザー判断）、`d8734a65`、品質評価28行目 |
-| `Sendable` | 決定済み | Swift 6以降で必須とし、3公開型すべてに適合 | `StrictMemorySafetyReadiness.md:252`（ユーザー決定）、`ImplementationPlan.md:72-75`。どちらの文書も旧名（`IteratorN` / `SubSequenceN`）のまま |
+| `Sendable` | 決定済み | Swift 6以降で必須とし、3公開型すべてに適合 | `Maintanance/Current/StrictMemorySafetyReadiness.md:252`（ユーザー決定）、`ImplementationPlan.md:72-75`。どちらの文書も旧名（`IteratorN` / `SubSequenceN`）のまま |
 | swift-algorithmsとの共存・使い分け | 履歴上の事実（Registry DONE） | 全順列はswift-algorithmsの`permutations()`、とdoc comment（L17-18）とF4で固定 | Registry `PERM-018`、`0ff5fd84` |
 | 互換modeの境界 | 未決定 | 互換modeは`PERM-001`がFROZEN、`PERM-014`がACTIVE（`R-1` / `R-2`が未決）。基準ref `release/AtCoder/2025`は旧名と削除済みAPIを持つ。構成案（file単位の排他`#if`、trait化）は計画だけで未実施。通常版testは`COMPATIBLE_ATCODER_2025`のときF0の非露出検査を外す（F0:44） | `AtCoder2025CompatibilityPlan.md:5-25,45-72,98-123,193-199` |
 | facade（`AcCollections`）の再公開 | 履歴上の事実。方針は未決定 | 現在は`PermutationModule`を無条件に`@_exported`（`d421972b`、2026-10-05）。`ImplementationPlan.md:55-57`（2026-10-03）は「互換モードで再公開する経路」と書いており、当時の状態。再公開方針は`Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`へ退避したD3でユーザー判断待ちとされている | `Sources/AcCollections/AcCollections.swift:1-4` |
@@ -151,7 +151,7 @@ facade経由の利用: `Tests/AcCollectionsTests/AcCollectionsTests.swift:73`（
 旧名・旧構成が残る記述（履歴記録として正しい可能性があり、訂正の要否はCodexが判断する）:
 
 - `ImplementationPlan.md:67-68`は`NextPermutationProtocol.swift`経由の1経路と書いている。このprotocolは`0ef177d3`でBufferへ統合された。
-- `ImplementationPlan.md:72-75`と`StrictMemorySafetyReadiness.md` §9は`IteratorN` / `SubSequenceN`の旧名で書かれている。
+- `ImplementationPlan.md:72-75`と`Maintanance/Current/StrictMemorySafetyReadiness.md` §9は`IteratorN` / `SubSequenceN`の旧名で書かれている。
 - `Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`へ退避したD3（2026-10-04 review）は「互換modeでだけPermutationを再公開」と書いているが、`d421972b`以後の現状と合わない。この監査の対象外の文書なので、記録だけにする。
 
 ## Codex evidence intake（2026-10-08）

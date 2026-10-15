@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" font-family="Hiragino Sans, Hiragino Kaku Gothic ProN, sans-serif">
+  <defs>
+    <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1e293b"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1100" fill="#fffdf7"/>
+
+  <!-- Title -->
+  <text x="60" y="84" font-size="46" font-weight="700" fill="#1e293b">原理ばっかり増える ｗ</text>
+  <text x="560" y="84" font-size="30" fill="#c2410c">→ 全部、この2本の軸の言い換えでした</text>
+
+  <!-- Axes -->
+  <line x1="180" y1="960" x2="1500" y2="960" stroke="#1e293b" stroke-width="4" marker-end="url(#ax)"/>
+  <line x1="180" y1="960" x2="180" y2="170" stroke="#1e293b" stroke-width="4" marker-end="url(#ax)"/>
+
+  <text x="760" y="1012" font-size="26" font-weight="700" fill="#0f766e">軸1　効果はどこまで届き、取り消せるか</text>
+  <text x="760" y="1046" font-size="18" fill="#0f766e">出典：Haskell（純粋 と IO）　＋ 変化量の向き</text>
+  <text x="200" y="1012" font-size="17" fill="#64748b">読むだけ</text>
+  <text x="1380" y="1012" font-size="17" fill="#64748b">外の世界</text>
+
+  <g transform="translate(110,700) rotate(-90)">
+    <text x="0" y="0" font-size="26" font-weight="700" fill="#7c2d12">軸2　それは誰の持ち物か</text>
+    <text x="0" y="34" font-size="18" fill="#7c2d12">出典：民法（所有 と 占有）</text>
+  </g>
+
+  <!-- Axis-1 stickers (teal), placed along horizontal band -->
+  <g font-size="21">
+    <rect x="260" y="820" width="250" height="88" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="278" y="856" fill="#134e4a" font-weight="700">課題は遅延で、</text>
+    <text x="278" y="888" fill="#134e4a" font-weight="700">問題は先回りで</text>
+
+    <rect x="540" y="820" width="270" height="88" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="558" y="856" fill="#134e4a" font-weight="700">Test as Spec</text>
+    <text x="558" y="888" fill="#134e4a">効果を内側で止める道具</text>
+
+    <rect x="840" y="820" width="300" height="88" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="858" y="856" fill="#134e4a" font-weight="700">確定 と 保留</text>
+    <text x="858" y="888" fill="#134e4a">確定は保留に依存しない</text>
+
+    <rect x="1170" y="820" width="290" height="88" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="1188" y="856" fill="#134e4a" font-weight="700">品質要求</text>
+    <text x="1188" y="888" fill="#134e4a">いちばん外側の目盛り</text>
+
+    <rect x="700" y="700" width="420" height="88" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="718" y="736" fill="#134e4a" font-weight="700">被害 ≈ 混入から露呈までに</text>
+    <text x="718" y="768" fill="#134e4a">上へ積まれた変化量（時間ではない）</text>
+  </g>
+
+  <!-- Axis-2 stickers (amber), placed along vertical band -->
+  <g font-size="21">
+    <rect x="230" y="210" width="300" height="88" rx="14" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+    <text x="248" y="246" fill="#7c2d12" font-weight="700">SSoT</text>
+    <text x="248" y="278" fill="#7c2d12">正本は一か所＝持ち主は一人</text>
+
+    <rect x="230" y="330" width="300" height="88" rx="14" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+    <text x="248" y="366" fill="#7c2d12" font-weight="700">委譲 ＝ 占有を渡すこと</text>
+    <text x="248" y="398" fill="#7c2d12">処分は持ち主に残す</text>
+
+    <rect x="230" y="450" width="300" height="88" rx="14" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+    <text x="248" y="486" fill="#7c2d12" font-weight="700">介入を控える</text>
+    <text x="248" y="518" fill="#7c2d12">＝ 自力救済の禁止</text>
+
+    <rect x="230" y="570" width="300" height="88" rx="14" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+    <text x="248" y="606" fill="#7c2d12" font-weight="700">持ち主だと思ってる人が多い</text>
+    <text x="248" y="638" fill="#7c2d12">＝ データ競合</text>
+  </g>
+
+  <!-- Center: the generator -->
+  <rect x="640" y="250" width="820" height="370" rx="24" fill="#1e3a5f"/>
+  <text x="680" y="320" font-size="30" font-weight="700" fill="#ffffff">判断の前に、2つだけ聞く</text>
+  <text x="680" y="388" font-size="26" fill="#a5f3fc">① この効果は、どこまで届き、取り消せるか</text>
+  <text x="680" y="442" font-size="26" fill="#fed7aa">② それは、誰の持ち物か</text>
+  <line x1="680" y1="478" x2="1420" y2="478" stroke="#475569" stroke-width="2"/>
+  <text x="680" y="524" font-size="20" fill="#e2e8f0">新しい「原理」を思いついたら、まずどちらの軸の言い換えか確かめる。</text>
+  <text x="680" y="556" font-size="20" fill="#e2e8f0">新しい軸でなければ、足さない。</text>
+  <text x="680" y="596" font-size="17" fill="#94a3b8">（これが原理を増やさないための、最後の原理）</text>
+
+  <!-- Footer -->
+  <text x="60" y="1086" font-size="15" fill="#94a3b8">2026-10-14　ユーザーと姫（Claude）。Haskell × 民法のシナジー。詳しい地図は EFFECT_GRADIENT_POSTER へ。</text>
+</svg>

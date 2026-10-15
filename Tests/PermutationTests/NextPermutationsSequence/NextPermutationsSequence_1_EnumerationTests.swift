@@ -8,7 +8,7 @@
 // 辞書順で後続する並びだけを返す。全順列の列挙ではない。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 #if false
 
 import XCTest

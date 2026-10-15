@@ -411,7 +411,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 ## AI task process poster
 
 このplaybookの主要な流れ、品質主張と証拠の変更影響、および責任境界を1枚に要約したV2を
-[`AI_TASK_PROCESS_POSTER.png`](../../AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
+[`AI_TASK_PROCESS_POSTER.png`](../Posters/AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
 `AI_TASK_PROCESS_POSTER.svg`ではなく、`Utilities/Maintenance/GenerateAITaskProcessPoster.py`である。
 
 再生成手順:

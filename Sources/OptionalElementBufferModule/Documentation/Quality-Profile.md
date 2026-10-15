@@ -4,7 +4,7 @@
 
 この文書は、リポジトリ全体の上位品質要求をOptionalElementBufferModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
 
-この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
+この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/Current/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
 
 ## 文書の位置づけ
 
@@ -64,7 +64,7 @@ OptionalArrayは、要素ごとの有無を保持し、単一の連続storage上
 
 ### 公開文書と監査記録
 
-documentation commentと利用者向け文書は、nil状態、所有権、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`は、公開面の棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
+documentation commentと利用者向け文書は、nil状態、所有権、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`は、公開面の棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
 
 ### 性能証拠
 
@@ -171,16 +171,16 @@ trait無効時には`AcCollections`から公開しない。一般Swift向けの�
 
 | 対象 | 正本 |
 | --- | --- |
-| リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
-| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
+| リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
+| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 観察可能な仕様 | `Tests/OptionalElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift` |
-| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalArrayModule/OptionalArrayAudit.md` |
+| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` |
 | 競技用途のcompile evidence | `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `EDPC-L.swift` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/QUALITY_REQUIREMENTS.md)
+- [上位品質要求](../../../Maintanance/Current/QUALITY_REQUIREMENTS.md)
 - [旧品質評価・調査記録（2026-10-08時点）](../../../Maintanance/Archived/Quality/OptionalArray_QualityAssessment-ISO25010_2026-10-08.md)

@@ -4,8 +4,8 @@ import Foundation
 
 let packageRoot = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 let sourcePaths = [
-  "Sources/PermutationModule/Compatibility/AtCoder2025/NextPermutationProtocol.swift",
-  "Sources/PermutationModule/Compatibility/AtCoder2025/PermutationsAtCoder2025.swift",
+  "Sources/NextPermutationModule/Compatibility/AtCoder2025/NextPermutationProtocol.swift",
+  "Sources/NextPermutationModule/Compatibility/AtCoder2025/PermutationsAtCoder2025.swift",
 ]
 let opening = "#if COMPATIBLE_ATCODER_2025\n"
 let closing = "#endif\n"

@@ -14,16 +14,16 @@
 - Index PoCとcross-tree監査の完了記録は`Archived/`に保存済み。
 - 公開コメント、DocC、API Matrixの大規模監査は一区切り済み。
 - Index契約確定後に、公開コメント、Design、API Matrix、DocC Topicsを最終同期する。
-- テストの現在地は`Tests/TESTING.md`、全体進捗は`PROGRESS_OVERVIEW.md`を正とする。
-- Claudeの現行権限とhandoffは`CLAUDE_TASK.md`、完了履歴は`Archived/CLAUDE_TASK_HISTORY.md`を正とする。
+- テストの現在地は`Tests/TESTING.md`、全体進捗は`ProgressV2/PROGRESS_OVERVIEW_V2.md`を入口とする。
+- 現行の横断資料は`Current/README.md`から辿る。
 
 ## Document roles
 
 | 文書 | 役割 |
 | --- | --- |
-| `PROGRESS_OVERVIEW.md` | Task Registryと現在状態の唯一の入口 |
+| `ProgressV2/PROGRESS_OVERVIEW_V2.md` | 現在の仕事とTask Registryへの入口 |
 | `MAINTENANCE.md` | 文書整備の恒久ルールと現在handoff |
-| `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | RedBlackTree残taskの設計正本 |
+| `Current/README.md` | 現行の横断的な正本・運用資料への索引 |
 | `Tests/TESTING.md` | テスト基盤とテスト整理の正本 |
 | `Sources/RedBlackTreeCollections/Documentation/` | 利用者・実装者向けの現行設計資料 |
 | `Archived/` | 完了した調査、旧handoff、履歴スナップショット |

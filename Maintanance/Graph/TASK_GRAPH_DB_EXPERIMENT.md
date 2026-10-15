@@ -8,7 +8,7 @@ SQLiteをtask依存管理のgraph databaseとして利用できるか、Claude�
 
 ## Authority
 
-- `Maintanance/PROGRESS_OVERVIEW.md`のTask RegistryとTask precedenceを唯一の正本とする。
+- `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`のTask RegistryとTask precedenceを唯一の正本とする。2026-10-14より前は旧`Maintanance/PROGRESS_OVERVIEW.md`（現在は`Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`）が正本だった。
 - 試験DBは正本のlocal projectionであり、DBからRegistryへ自動で書き戻さない。
 - DBとRegistryが食い違う場合はRegistryを優先し、DB側を修正する。
 - Registryの確定更新権限と既存の担当境界は変更しない。
@@ -112,3 +112,16 @@ Claudeが現行Registryの`FROZEN` 32行を、precedence前提、中間ゴール
 二つのPoCを試した。生成scriptと画像は`.task-graphs/`に置き、Git対象外とする。Codexは標準library
 だけで再生成でき、出力が空でないことを確認した。goalとtaskの対応は正本ではなく候補表示に限定し、
 Registryへの書き戻しや外部tool導入は行わない。
+
+## Registry V2への読み取り先の切替（2026-10-15）
+
+2026-10-15、ユーザーの許可を得て、Claudeのlocal projectionと構造lintの読み取り先を旧`Maintanance/PROGRESS_OVERVIEW.md`から
+`Maintanance/ProgressV2/TASK_REGISTRY_V2.md`へ切り替えた。旧一覧は10-14のV2接続後に更新されず、10-15に`Archived/`へ移っていたため、
+それまでのprojectionは切替前の状態を読んでいた。
+
+- `Maintanance/Graph/TaskGraphLint/run.sh`：既定の読み取り先をV2へ変更した。precedence表の終わりを任意の`## `見出しとし、
+  後続の「履歴へ移す前の完了記録」の表を依存辺として読まないようにした。現行Registryで46 task・18辺、警告・error 0、fixtureもPASS。
+- local projection（`.task-graphs/`、Git対象外）：V2の`###`分野見出しで読み取りが切れないようにし、`Flow`列（`SEQUENCE`・`PARALLEL_JOIN`）を
+  開始・完了の前提として読むようにした。commitとの対応は旧一覧とV2の両方の履歴から作り、V2の新規作成と旧一覧の削除を、全行の状態変化として数えない。
+  Registry自身は、行が引用していてもtask専用の詳細正本として扱わない。
+- 読み取り結果の状態別件数と辺数は、現行Registryの表と一致した。

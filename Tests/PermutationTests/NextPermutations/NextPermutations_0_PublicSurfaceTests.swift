@@ -13,7 +13,7 @@
 // compile-fail fixtureで検証する。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class NextPermutations_0_PublicSurfaceTests: XCTestCase {

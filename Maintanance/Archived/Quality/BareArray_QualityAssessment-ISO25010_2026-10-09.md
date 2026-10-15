@@ -2,7 +2,7 @@
 
 > この文書は、2026-10-09までに行われた品質評価、監査、および作業記録の履歴である。
 > 現行の品質要求、契約、検証状態の判断には使用しない。
-> 現行文書は`../../../Sources/BareArrayModule/Documentation/Quality-Profile.md`を参照する。
+> 現行文書は`../../../Sources/ElementBufferModule/Documentation/Quality-Profile.md`を参照する。
 
 > 状態: 初版（2026-10-09 / Claude Opus 5.5、`claude-opus-5-5`）。Codex受入済み。
 > 評価対象: `Sources/BareArrayModule/BareArray.swift`の公開7型・公開宣言29件と公開適合4件。
@@ -17,7 +17,7 @@ BareArrayを競技プログラミング向けの低レベル公開部品（`BARE
 - 根拠source: `BareArray.swift`（502行）。以下`L<n>`は同fileの現行行。
 - 根拠test: `Tests/BareArrayModuleTests`の番号付き8 file。実行結果は`BARE-005`のCodex受入記録
   （通常test Debug 35件〔internal `clone()`の7件を含む〕・Release 28件、Death Test両構成42件、macOS）を使う。
-- 根拠監査: `Maintanance/BareArrayModule/BareArrayAudit.md`（以下Audit）の`BARE-002` ledger、
+- 根拠監査: `Maintanance/ElementBufferModule/ElementBufferAudit.md`（以下Audit）の`BARE-002` ledger、
   `BARE-009`〜`BARE-015`の決定と受入、`BARE-005`受入。strict memory safetyは
   `Maintanance/StrictMemorySafetyReadiness.md` §10。
 - 評価対象外: 性能の計測（`BARE-006` / `BARE-007`、凍結）、View寿命・storage再設計・strict memory safetyの

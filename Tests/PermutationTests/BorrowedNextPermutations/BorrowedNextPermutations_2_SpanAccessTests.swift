@@ -12,7 +12,7 @@
 // compilerが拒否する性質で、実行時testでは表せない。PERM-051の返却記録にcompile結果を残す。
 
 #if compiler(>=6.4)
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class BorrowedNextPermutations_2_SpanAccessTests: XCTestCase {

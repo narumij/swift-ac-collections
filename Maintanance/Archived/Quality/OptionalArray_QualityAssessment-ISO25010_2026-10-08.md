@@ -2,7 +2,7 @@
 
 > この文書は、2026-10-08までに行われた品質評価、証拠収集、および作業記録の履歴である。
 > 現行の品質要求、契約、検証状態の判断には使用しない。
-> 現行文書は`../../../Sources/OptionalArrayModule/Documentation/Quality-Profile.md`を参照する。
+> 現行文書は`../../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`を参照する。
 
 > 状態: 初版完成（2026-10-08）。利用者向け文書作業後に再評価する。
 > 評価対象: `Sources/OptionalArrayModule/OptinalArray.swift`の公開7型・公開宣言29件と公開適合4件。
@@ -43,7 +43,8 @@ Test as Specificationと体系監査を仕様・証拠の正本とし、本書�
 #### 3.1 Claude証拠（OPT-039、2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `ad82f4e7`。`L<n>`は`OptinalArray.swift`の現行行。
-`Audit OPT-0xx`は`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`の同名節（行番号は`85e60200`時点のもの）。
+`Audit OPT-0xx`は現行`Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`のrename前版にある
+同名節（内容・行番号は`85e60200`時点のもの）。
 testは`Tests/OptionalArrayModuleTests/`のfile名・test名で示す。新しい実行は、本日のOPT-036で行ったDebug／Releaseの`swift test --filter OptionalArrayModuleTests`だけ。
 
 | 特性・副特性 | 確認できる事実 | 根拠 | 未検証範囲 | 評価時に区別すべき前提 |

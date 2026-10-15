@@ -3,7 +3,7 @@
 import XCTest
 import Testing
 
-@testable import PermutationModule
+@testable import NextPermutationModule
 
 final class EtcTests: XCTestCase {
 

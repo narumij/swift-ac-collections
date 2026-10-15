@@ -12,26 +12,29 @@
 // コピペで提出に使っていただいて構いません。
 // 提出の際のライセンス記載は不要です。
 
-/// メモ化用配列
+// TODO: コピペでAtCoder提出可能なこと
+
+/// An array for memoization.
 ///
-/// 配列ベースのメモ化に用いる配列です。
-/// 未初期化値の番兵を用意することなく利用できます。
-/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// `setElement(_:at:)`へ`nil`を渡すと、設定済みの要素を破棄して未設定状態へ戻します。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
+/// Passing `nil` to `setElement(_:at:)` destroys the set element and returns the slot to the unset state.
+/// This type cannot be copied. `setElement(_:at:)` and `removeAll()` are nonmutating, so
+/// you can also update the contents of a buffer stored in a `let` binding.
+/// The array is `Sendable` when `Element` is `Sendable`.
+/// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @safe public struct OptionalElementBuffer<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
-  /// `capacity`個の未設定slotを持つ配列を作ります。
+  /// Creates an array with `capacity` unset slots.
   ///
-  /// `capacity`が0なら空の配列を作ります。
+  /// Creates an empty array when `capacity` is zero.
   ///
-  /// - Parameter capacity: slot数。
-  /// - Precondition: `capacity`は0以上でなければなりません。
+  /// - Parameter capacity: The number of slots.
+  /// - Precondition: `capacity` must be nonnegative.
   /// - Complexity: O(`capacity`)
   @inlinable
   public init(capacity: Int) {
@@ -53,9 +56,9 @@
     unsafe hasPayload.deallocate()
   }
 
-  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  /// Destroys every set element and returns each slot to the unset state.
   ///
-  /// slot数と確保済みstorageは保持され、各位置を再利用できます。
+  /// The slot count and allocated storage are preserved, so every position can be reused.
   ///
   /// - Complexity: O(`indices.count`)
   @inlinable
@@ -72,12 +75,14 @@
 
 extension OptionalElementBuffer {
 
-  /// 有効なslot位置である`0..<capacity`を返します。
+  /// Returns `0..<capacity`, the valid slot positions.
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<count }
 
-  /// `position`の要素を返します。未設定なら`nil`を返します。
+  /// Returns the element at `position`. Returns `nil` if it is unset.
+  ///
+  /// - Precondition: `position` must be in `0..<capacity`.
   @inlinable
   public func element(at position: Int) -> Element? {
     precondition(0 <= position && position < count)
@@ -85,7 +90,11 @@ extension OptionalElementBuffer {
     return unsafe payload[position]
   }
 
-  /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// Sets the element at `position`. Passing `nil` returns the slot to the unset state.
+  ///
+  /// - Precondition: `position` must be in `0..<capacity`.
   @inlinable
   public func setElement(_ newValue: consuming Element?, at position: Int) {
     precondition(0 <= position && position < count)
@@ -101,7 +110,7 @@ extension OptionalElementBuffer {
   }
 }
 
-extension OptionalElementBuffer: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer: @unchecked Sendable where Element: Sendable {}
 
 extension OptionalElementBuffer {
 
@@ -117,14 +126,15 @@ extension OptionalElementBuffer {
   }
 }
 
-/// メモ化用配列
+/// An array for memoization.
 ///
-/// 配列ベースのメモ化に用いる配列です。
-/// 未初期化値の番兵を用意することなく利用できます。
-/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 座標は`(x, y)`の順で、`width`が最内軸、`height`が最外軸です。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
+/// Coordinates are ordered `(x, y)`, with `width` as the innermost axis and `height` as the outermost axis.
+/// This type cannot be copied. `setElement(_:at:_:)` and `removeAll()` are nonmutating, so
+/// you can also update the contents of a buffer stored in a `let` binding.
+/// The array is `Sendable` when `Element` is `Sendable`.
+/// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer2D<Element>: ~Copyable {
 
@@ -134,14 +144,14 @@ extension OptionalElementBuffer {
   @usableFromInline let height: Int
   @usableFromInline let capacity: Int
 
-  /// `width * height`個の未設定slotを持つ配列を作ります。
+  /// Creates an array with `width * height` unset slots.
   ///
-  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  /// Creates an array with no elements if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - width: 最内軸のslot数。
-  ///   - height: 最外軸のslot数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - width: The number of slots along the innermost axis.
+  ///   - height: The number of slots along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height`)
   @inlinable
   public init(width: Int, height: Int) {
@@ -167,9 +177,9 @@ extension OptionalElementBuffer {
     unsafe hasPayload.deallocate()
   }
 
-  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  /// Destroys every set element and returns each slot to the unset state.
   ///
-  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  /// The shape and allocated storage are preserved, so every position can be reused.
   ///
   /// - Complexity: O(`width * height`)
   @inlinable
@@ -186,12 +196,14 @@ extension OptionalElementBuffer {
 
 extension OptionalElementBuffer2D {
 
-  /// 外側の軸に有効な位置である`0..<height`を返します。
+  /// Returns `0..<height`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<height }
 
-  /// `(x, y)`の要素を返します。未設定なら`nil`を返します。
+  /// Returns the element at `(x, y)`. Returns `nil` if it is unset.
+  ///
+  /// - Precondition: `x` must be in `0..<width`, and `y` must be in `0..<height`.
   @inlinable
   public func element(at x: Int, _ y: Int) -> Element? {
     precondition(0 <= x && x < width)
@@ -201,7 +213,11 @@ extension OptionalElementBuffer2D {
     return unsafe payload[offset]
   }
 
-  /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// Sets the element at `(x, y)`. Passing `nil` returns the slot to the unset state.
+  ///
+  /// - Precondition: `x` must be in `0..<width`, and `y` must be in `0..<height`.
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
     precondition(0 <= x && x < width)
@@ -219,16 +235,17 @@ extension OptionalElementBuffer2D {
   }
 }
 
-extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
-/// メモ化用配列
+/// An array for memoization.
 ///
-/// 配列ベースのメモ化に用いる配列です。
-/// 未初期化値の番兵を用意することなく利用できます。
-/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 座標は`(x, y, z)`の順で、`width`が最内軸、`depth`が最外軸です。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
+/// Coordinates are ordered `(x, y, z)`, with `width` as the innermost axis and `depth` as the outermost axis.
+/// This type cannot be copied. `setElement(_:at:_:_:)` and `removeAll()` are nonmutating, so
+/// you can also update the contents of a buffer stored in a `let` binding.
+/// The array is `Sendable` when `Element` is `Sendable`.
+/// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer3D<Element>: ~Copyable {
 
@@ -239,15 +256,15 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
   @usableFromInline let depth: Int
   @usableFromInline let capacity: Int
 
-  /// `width * height * depth`個の未設定slotを持つ配列を作ります。
+  /// Creates an array with `width * height * depth` unset slots.
   ///
-  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  /// Creates an array with no elements if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - width: 最内軸のslot数。
-  ///   - height: 中間軸のslot数。
-  ///   - depth: 最外軸のslot数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - width: The number of slots along the innermost axis.
+  ///   - height: The number of slots along the middle axis.
+  ///   - depth: The number of slots along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(width: Int, height: Int, depth: Int) {
@@ -280,9 +297,9 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
     unsafe hasPayload.deallocate()
   }
 
-  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  /// Destroys every set element and returns each slot to the unset state.
   ///
-  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  /// The shape and allocated storage are preserved, so every position can be reused.
   ///
   /// - Complexity: O(`width * height * depth`)
   @inlinable
@@ -299,7 +316,7 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
 
 extension OptionalElementBuffer3D {
 
-  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  /// Returns `0..<depth`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
@@ -307,7 +324,10 @@ extension OptionalElementBuffer3D {
 
 extension OptionalElementBuffer3D {
 
-  /// `(x, y, z)`の要素を返します。未設定なら`nil`を返します。
+  /// Returns the element at `(x, y, z)`. Returns `nil` if it is unset.
+  ///
+  /// - Precondition: `x`, `y`, and `z`
+  ///   must be in `0..<width`, `0..<height`, and `0..<depth`, respectively.
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int) -> Element? {
     precondition(0 <= x && x < width)
@@ -318,7 +338,12 @@ extension OptionalElementBuffer3D {
     return unsafe payload[offset]
   }
 
-  /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// Sets the element at `(x, y, z)`. Passing `nil` returns the slot to the unset state.
+  ///
+  /// - Precondition: `x`, `y`, and `z`
+  ///   must be in `0..<width`, `0..<height`, and `0..<depth`, respectively.
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
     precondition(0 <= x && x < width)
@@ -337,17 +362,18 @@ extension OptionalElementBuffer3D {
   }
 }
 
-extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 
-/// メモ化用配列
+/// An array for memoization.
 ///
-/// 配列ベースのメモ化に用いる配列です。
-/// 未初期化値の番兵を用意することなく利用できます。
-/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 座標は`(x, y, z, w)`の順で、`size0`が最内軸、
-/// `size3`が最外軸です。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+/// Stores memoized values without requiring a sentinel value for unset slots.
+/// Each slot is either unset or holds one owned `Element`.
+/// Coordinates are ordered `(x, y, z, w)`, with `size0` as the innermost axis and
+/// `size3` as the outermost axis.
+/// This type cannot be copied. `setElement(_:at:_:_:_:)` and `removeAll()` are nonmutating, so
+/// you can also update the contents of a buffer stored in a `let` binding.
+/// The array is `Sendable` when `Element` is `Sendable`.
+/// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer4D<Element>: ~Copyable {
 
@@ -359,16 +385,16 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
   @usableFromInline let size3: Int
   @usableFromInline let capacity: Int
 
-  /// `size0 * size1 * size2 * size3`個の未設定slotを持つ配列を作ります。
+  /// Creates an array with `size0 * size1 * size2 * size3` unset slots.
   ///
-  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  /// Creates an array with no elements if any dimension is zero.
   ///
   /// - Parameters:
-  ///   - size0: 最内軸のslot数。
-  ///   - size1: 内側から2番目の軸のslot数。
-  ///   - size2: 内側から3番目の軸のslot数。
-  ///   - size3: 最外軸のslot数。
-  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  ///   - size0: The number of slots along the innermost axis.
+  ///   - size1: The number of slots along the second-innermost axis.
+  ///   - size2: The number of slots along the third-innermost axis.
+  ///   - size3: The number of slots along the outermost axis.
+  /// - Precondition: Every dimension must be nonnegative, and their product must be representable as an `Int`.
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int) {
@@ -403,9 +429,9 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
     unsafe hasPayload.deallocate()
   }
 
-  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  /// Destroys every set element and returns each slot to the unset state.
   ///
-  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  /// The shape and allocated storage are preserved, so every position can be reused.
   ///
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
@@ -422,12 +448,15 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
 
 extension OptionalElementBuffer4D {
 
-  /// 外側の軸に有効な位置である`0..<size3`を返します。
+  /// Returns `0..<size3`, the valid positions along the outermost axis.
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<size3 }
 
-  /// `(x, y, z, w)`の要素を返します。未設定なら`nil`を返します。
+  /// Returns the element at `(x, y, z, w)`. Returns `nil` if it is unset.
+  ///
+  /// - Precondition: `x`, `y`, `z`, and `w`
+  ///   must be in `0..<size0`, `0..<size1`, `0..<size2`, and `0..<size3`, respectively.
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element? {
     precondition(0 <= x && x < size0)
@@ -439,7 +468,12 @@ extension OptionalElementBuffer4D {
     return unsafe payload[offset]
   }
 
-  /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
+  /// Sets the element at `(x, y, z, w)`. Passing `nil` returns the slot to the unset state.
+  ///
+  /// - Precondition: `x`, `y`, `z`, and `w`
+  ///   must be in `0..<size0`, `0..<size1`, `0..<size2`, and `0..<size3`, respectively.
   @inlinable
   public func setElement(
     _ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int, _ w: Int
@@ -461,4 +495,4 @@ extension OptionalElementBuffer4D {
   }
 }
 
-extension OptionalElementBuffer4D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer4D: @unchecked Sendable where Element: Sendable {}

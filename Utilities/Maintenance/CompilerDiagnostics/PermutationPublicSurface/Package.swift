@@ -17,6 +17,18 @@ let package = Package(
       dependencies: [.product(name: "AcCollections", package: "swift-ac-collections")]
     ),
     .target(
+      name: "PermutationLegacyImportValid",
+      dependencies: [.product(name: "AcCollections", package: "swift-ac-collections")]
+    ),
+    .target(
+      name: "PermutationFacadeImportValid",
+      dependencies: [.product(name: "AcCollections", package: "swift-ac-collections")]
+    ),
+    .target(
+      name: "PermutationDualImportValid",
+      dependencies: [.product(name: "AcCollections", package: "swift-ac-collections")]
+    ),
+    .target(
       name: "PermutationDirectInit",
       dependencies: [.product(name: "AcCollections", package: "swift-ac-collections")]
     ),

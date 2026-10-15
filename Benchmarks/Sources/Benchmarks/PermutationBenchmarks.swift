@@ -23,7 +23,7 @@
 //   the optimizer cannot remove the work.
 
 import CollectionsBenchmark
-import PermutationModule
+import NextPermutationModule
 
 extension Bool: @retroactive Comparable {
   public static func < (lhs: Bool, rhs: Bool) -> Bool {

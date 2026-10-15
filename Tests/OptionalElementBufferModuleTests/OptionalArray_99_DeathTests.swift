@@ -4,11 +4,11 @@
   import Testing
   import OptionalElementBufferModule
 
-  /// initializerの次元契約(2026-10-08、OPT-032)に違反する入力で停止することを検証する。
-  /// 各次元は0以上、全次元の積は`Int`で表現可能であること。
+  /// Verifies that inputs violating the initializer dimension contract (2026-10-08, OPT-032) trap.
+  /// Every dimension must be nonnegative, and the product of all dimensions must be representable as an `Int`.
   ///
-  /// 負値の検査は軸ごとに確かめる。負の軸以外に0の軸を1つ置いて積を0にし、
-  /// 確保量の異常ではなく、その軸の検査で停止することを固定する。
+  /// Checks negative values one axis at a time. Sets one other axis to zero so that the product is zero,
+  /// ensuring that the trap comes from checking that axis rather than an invalid allocation size.
   struct OptionalArrayDimensionDeathTests {
 
     @Test func negativeCapacity_traps_1D() async throws {

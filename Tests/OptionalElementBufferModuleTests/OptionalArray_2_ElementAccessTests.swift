@@ -108,4 +108,95 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
     array.setElement(nil, at: 1, 2, 3, 4)
     XCTAssertNil(array.element(at: 1, 2, 3, 4))
   }
+
+  // MARK: - Unset slot versus a stored `Optional.none` (OPT-074 A)
+
+  // With `Element == Int?`, `element(at:)` returns `Int??`. An unset slot is `.none`; a slot that
+  // stores `nil` is `.some(.none)`. Passing the outer `nil` unsets a slot; passing `.some(nil)`
+  // stores `nil`. Each state is classified by pattern matching so that the two nils never merge.
+
+  private enum NestedSlot: Equatable {
+    case unset
+    case storedNil
+    case stored(Int)
+  }
+
+  private static func classify(_ value: Int??) -> NestedSlot {
+    switch value {
+    case .none: return .unset
+    case .some(.none): return .storedNil
+    case .some(.some(let value)): return .stored(value)
+    }
+  }
+
+  private func checkNestedOptionalStates<B: OptionalBufferProbe<Int?> & ~Copyable>(
+    _ array: borrowing B, shape: [Int], file: StaticString = #filePath, line: UInt = #line
+  ) {
+    let positions = allCoordinates(shape)
+    let first = 0
+    let last = positions.count - 1
+    var expected = Array(repeating: NestedSlot.unset, count: positions.count)
+
+    func verify(_ stage: String) {
+      for (i, position) in positions.enumerated() {
+        XCTAssertEqual(
+          Self.classify(array.probeElement(at: position)), expected[i],
+          "\(stage) at \(position)", file: file, line: line)
+      }
+    }
+
+    verify("initial")
+
+    array.probeSetElement(Int??.some(nil), at: positions[first])
+    expected[first] = .storedNil
+    array.probeSetElement(Int??.some(5), at: positions[last])
+    expected[last] = .stored(5)
+    verify("store nil and a value")
+
+    array.probeSetElement(Int??.some(7), at: positions[first])
+    expected[first] = .stored(7)
+    array.probeSetElement(Int??.some(nil), at: positions[last])
+    expected[last] = .storedNil
+    verify("overwrite stored nil with a value and a value with stored nil")
+
+    array.probeSetElement(Int??.none, at: positions[first])
+    expected[first] = .unset
+    array.probeSetElement(Int??.none, at: positions[last])
+    expected[last] = .unset
+    verify("unset with the outer nil")
+
+    array.probeSetElement(Int??.some(nil), at: positions[first])
+    expected[first] = .storedNil
+    array.probeSetElement(Int??.some(9), at: positions[last])
+    expected[last] = .stored(9)
+    verify("set again after unsetting")
+
+    array.removeAll()
+    expected = Array(repeating: .unset, count: positions.count)
+    verify("removeAll")
+
+    array.probeSetElement(Int??.some(nil), at: positions[last])
+    expected[last] = .storedNil
+    verify("store nil after removeAll")
+  }
+
+  func testUnsetSlotAndStoredNilAreDistinct1D() {
+    let array = OptionalElementBuffer<Int?>(capacity: 3)
+    checkNestedOptionalStates(array, shape: [3])
+  }
+
+  func testUnsetSlotAndStoredNilAreDistinct2D() {
+    let array = OptionalElementBuffer2D<Int?>(width: 2, height: 3)
+    checkNestedOptionalStates(array, shape: [2, 3])
+  }
+
+  func testUnsetSlotAndStoredNilAreDistinct3D() {
+    let array = OptionalElementBuffer3D<Int?>(width: 2, height: 3, depth: 2)
+    checkNestedOptionalStates(array, shape: [2, 3, 2])
+  }
+
+  func testUnsetSlotAndStoredNilAreDistinct4D() {
+    let array = OptionalElementBuffer4D<Int?>(size0: 2, size1: 1, size2: 3, size3: 2)
+    checkNestedOptionalStates(array, shape: [2, 1, 3, 2])
+  }
 }

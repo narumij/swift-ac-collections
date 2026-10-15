@@ -1,209 +1,50 @@
-# Prime-to-Worker Codex Work Request
+# Worker Codex Work Request
 
-Status: Experimental file-based handoff. This interface is not yet adopted as routine operation.
+## 占有権と受渡し
 
-The fixed role and boundaries are defined in `Orientation/WORKER_CODEX_BOOTSTRAP.md`. Worker
-execution does not accept or complete the repository task. Prime Codex independently reviews the
-return and owns every correction, Registry update, and completion decision.
+占有権とは、ユーザーの委任に基づき、明示された範囲を、いま自分の判断で変更できる権限である。所有権とは別であり、調整役であることだけでは得られない。以下は担当名に依存せず、依頼する側と引き受ける側のどちらにも適用する。
 
-## Current job status
+受け入れ・検収・統合も、ユーザーの委任に基づく代理執行である。委任された範囲と受け入れ条件に従って成果を確認・反映する仕事であり、担当者に委任から独立した受け入れの判断権限を与えるものではない。委任に含まれない判断が必要になった場合は、事実と論点を整理してユーザーへ返す。占有と受け入れ・検収・統合の権限は、いずれも役職や担当名ではなく、ユーザーの委任から生じる。
 
-**受入完了: BareArray利用者向け本文の独立読者レビュー**
+| 段階 | 占有権の扱い |
+| --- | --- |
+| 作成中 | 作成者が、任された範囲を変更できる。依頼本文・入力資料・記入先を揃えてから相手へ渡す。 |
+| 相手へ渡す | 依頼本文と入力資料は、双方が依存するものとして固定する。相手がまだ着手していなくても、渡した側は一方的に変更できなくなる。 |
+| 作業中 | 引き受けた側が、明示された作業範囲・回答欄を変更できる。依頼本文や共有入力まで変更できるわけではなく、渡した側も相手の作業範囲を一方的に変更しない。 |
+| 返却 | 引き受けた側は返却範囲の変更を終える。返却物は検収対象として固定され、受け取った側にも自由な書換え権限は生じない。検収・受け入れ・統合と、原回答の編集は区別する。 |
+| 再編集 | 対象範囲と担当を明示し、改めて占有権を割り当てる。作業中の範囲を変更する場合は、先に停止を伝え、停止と途中成果を確認してから受け渡し直す。 |
 
-The user may start this assignment by opening the existing Worker Xcode conversation and saying
-`やって`. The Worker must reread this file and execute only the assignment below.
+手放した占有権は、相手へ丸ごと移るわけではない。固定されて誰も一方的には変更できない部分と、次の担当が変更できる部分を区別する。依頼後に依頼書を作り足すことや、返却物を受け取っただけで書き換えることはしない。
 
-Prime acceptance (2026-10-13): Workerの唯一の`MUST-FIX`をsourceと品質正本へ照合し、
-`reference(at:)`のSwift 6.4とApple OS 27以降という両境界を明記する必要があると受け入れた。
-本文を最小修正し、同時にWorkerが見つけた脱字を修正。その他のAPI・座標・初期化・所有・
-借用寿命・性能・提供境界の独立レビューを受け入れた。
+Status: PERM-076 returned and locally accepted by Astra; user authorized grouped commits; implementation saved in 1f87e37a, documentation and completion records saved together. No worker is currently assigned further implementation.
 
-## Active assignment: BareArray user-document draft review
+Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
 
-### Objective
+この固定パスは、調整役Codexが限定した依頼と返却先を記録し、ユーザーが別のXcode会話へ渡すために保持する。
+現在の依頼は下記の実装1件。フレッシュ会話1体へ割り当てる。過去のassignmentや未採用bootstrap候補は再開しない。
 
-Read the new BareArray user-document draft as an independent first-time reader and compare its
-claims with the current public source and the two current quality records. Find factual
-disagreements, promises stronger than the evidence, missing constraints that would materially
-mislead a user, and explanations or examples likely to create the wrong usage model.
+新しい依頼を記録するときは、目的、許可範囲、対象外、入力、受入条件、検証、停止条件、返却先をこの文書内で完結させる。
+Workerは記録された範囲だけを実施し、調整役Codexが証拠を独立に確認して受入・統合する。
 
-Pay particular attention to the distinction between value access and the standard-library
-`MutableRef`, the availability of `reference(at:)`, owner-dependent lifetime, exclusive mutable
-borrowing, and whether the example teaches compilable valid use.
+過去のBareArray本文レビューと、除外したbootstrap候補は
+[`Archived/Worker/`](Archived/Worker/)に履歴として保存している。
 
-This is a read-only review. Do not rewrite the draft and do not decide its public medium,
-performance acceptance, or compatibility policy.
+## 完了した調査割当（2026-10-15、Astra）
 
-### Workspace and start state
+立案完了、調査フェーズ。3件を3体で並行調査する。依頼書は個別に完結し、返却先も分離している。
 
-- Workspace: the existing Xcode workspace for this repository.
-- Expected branch: `develop/misc/64`.
-- Expected HEAD: `9d264e0b` (`Draft OptionalArray user documentation`).
-- Expected worktree changes before Worker starts:
-  - `Maintanance/BareArrayModule/UserDocumentationDraft.md` added;
-  - `Maintanance/PROGRESS_OVERVIEW.md` modified;
-  - this assignment in `Maintanance/WORKER_TASK.md` modified.
-- Prime Codex and the user retain ownership of the shared worktree.
+| ワーカー | 固定ID | 担当 | 依頼書 |
+| --- | --- | --- | --- |
+| 1 | `PERM-073` | 構成・互換入口 | [ワーカー1依頼書](Current/PERMUTATION_MIGRATION_WORKER_1.md) |
+| 2 | `PERM-074` | 性能CI・benchmark | [ワーカー2依頼書](Current/PERMUTATION_MIGRATION_WORKER_2.md) |
+| 3 | `PERM-075` | 文書・導入経路 | [ワーカー3依頼書](Current/PERMUTATION_MIGRATION_WORKER_3.md) |
 
-Verify branch, HEAD, and worktree before reviewing. If another difference exists, record it in the
-return section and stop. Commits ahead of the remote are not a stop condition.
+全件の返却をAstraが照合・統合し、ユーザーと計画を相談する。調査3件は相互の必須前提を持たない。
 
-### Required reading
+## 調査受入（2026-10-15、Astra）
 
-Read only these files, in this order:
+ユーザーの起動・終了報告を受け、3件の返却を独立照合して受け入れた。調査は完了し、2026-10-15ユーザーがコミットを許可。成果・受入記録と完了記録を同じコミットへ保存する。依頼文の先行互換条件の適用範囲の訂正とcandidate CI経路の補足は[受入・統合記録](Current/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)に置く。原回答は固定する。後続の実装依頼は次節に分離する。
 
-1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
-2. This assignment in full.
-3. `BareArrayModule/UserDocumentationDraft.md`.
-4. `Sources/BareArrayModule/ElementBuffer.swift`.
-5. `Sources/BareArrayModule/Documentation/Quality-Profile.md`.
-6. `BareArrayModule/CurrentQualityAssessment.md`.
-7. Only the `BARE-040` row in `PROGRESS_OVERVIEW.md`.
+## 現在の実装割当（2026-10-15、Astra）
 
-Do not scan the repository, Archived records, tests, benchmarks, Apple documentation, or Git
-history. If the listed sources cannot resolve a claim, classify it as needing evidence rather than
-widening the search.
-
-### Review questions
-
-Evaluate the draft against these questions:
-
-1. Does every API spelling, signature, coordinate order, initializer behavior, ownership statement,
-   complexity statement, and availability claim agree with the current public source?
-2. Is the distinction between `element` / `setElement` and `reference(at:)` technically accurate and
-   useful without inventing a performance guarantee?
-3. Does the `MutableRef` example respect the mutable owner's lifetime and exclusivity, and does it
-   use the standard `value` property?
-4. Does the draft distinguish verified behavior, implementation-derived complexity, and unverified
-   Validation or external-performance claims at least as carefully as the quality records?
-5. Could a first-time user mistakenly infer Collection conformance, implicit copy, retained Views,
-   unrestricted availability, thread-safe shared mutation, or guaranteed C/C++-level performance?
-6. Is a constraint omitted whose absence would materially change correct use?
-7. Is any passage technically correct but likely to produce a wrong mental model?
-
-Do not treat writing preference alone as a defect. Preserve uncertainty where the source and
-quality records do not answer a question.
-
-### Finding classes
-
-Classify each finding as exactly one of:
-
-- `MUST-FIX`: factual error, stale API, unsupported guarantee, unsafe omission, or example that
-  teaches invalid use;
-- `SHOULD-FIX`: materially confusing wording or structure likely to mislead a normal reader;
-- `OPTIONAL`: a useful improvement whose absence does not make the draft incorrect or misleading;
-- `QUESTION`: the allowed evidence cannot resolve the point or a product decision is required.
-
-For every `MUST-FIX`, `SHOULD-FIX`, or `QUESTION`, give the draft line or heading, the exact claim,
-the conflicting or missing evidence, and the smallest correction direction. Do not write replacement
-prose. Summarize `OPTIONAL` findings briefly and keep them separate from acceptance blockers.
-
-### Allowed changes
-
-- Only the `Worker return` section of this file.
-
-No source, test, quality record, draft, Registry, or other file may be changed by Worker.
-
-### Validation boundary
-
-No build, test, snippet execution, or documentation search is authorized. This review checks the
-draft against already recorded source and quality evidence. If the example's compilability cannot be
-established from those inputs, report that limitation instead of executing it.
-
-### Repository operation authority
-
-- Branch creation or switching: not authorized.
-- Commit, push, merge, rebase, reset, restoration, or deletion: not authorized.
-- Other-agent delegation: not authorized.
-
-### Stop conditions
-
-Stop and return observed facts if the branch, HEAD, or initial worktree differs beyond the expected
-files; another participant changes a review input while it is being read; the review requires broad
-repository or Archived exploration; or resolving a finding requires a new product decision.
-
-### Return requirements
-
-Write the result below. Include the start state, checked files, findings grouped by class, an explicit
-acceptance recommendation (`accept`, `accept after MUST-FIX`, or `revise and review again`),
-limitations, and the exact files changed by Worker. Do not update the Task Registry or accept the
-draft.
-
-## Worker return
-
-Status: review completed; awaiting Prime review.
-
-### Start state
-
-- Branch: `develop/misc/64`.
-- HEAD: `9d264e0b` (`Draft OptionalArray user documentation`).
-- Observed worktree changes matched the expected set:
-  - `Maintanance/BareArrayModule/UserDocumentationDraft.md` added;
-  - `Maintanance/PROGRESS_OVERVIEW.md` modified;
-  - `Maintanance/WORKER_TASK.md` modified.
-
-### Checked files
-
-- `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md`
-- `Maintanance/WORKER_TASK.md`
-- `Maintanance/BareArrayModule/UserDocumentationDraft.md`
-- `Sources/BareArrayModule/ElementBuffer.swift`
-- `Sources/BareArrayModule/Documentation/Quality-Profile.md`
-- `Maintanance/BareArrayModule/CurrentQualityAssessment.md`
-- The `BARE-040` task row in `Maintanance/PROGRESS_OVERVIEW.md`
-
-### Findings
-
-#### MUST-FIX
-
-1. Draft lines 71 and 90, heading ``MutableRef`による借用参照`.
-   - Exact claim: line 71 identifies Apple OS 27 or later, while line 90 says only generally that
-     `reference(at:)` is available where the standard-library type's conditions are met and that no
-     compatibility type is supplied for older OSes or toolchains.
-   - Conflicting or missing evidence: source lines 429, 452, 478, and 507 apply
-     `@available(anyAppleOS 27.0, *)` to the four overloads. Quality Profile line 22 and Current Quality
-     Assessment lines 14–15 and 23–30 identify the borrowed-reference API as Swift 6.4 and Apple OS 27
-     dependent. The draft never states the Swift 6.4 threshold, so a reader can reasonably infer that
-     satisfying only the Apple OS condition is enough to compile this API.
-   - Smallest correction direction: state the Swift 6.4 toolchain requirement explicitly alongside
-     the Apple OS 27 availability, while preserving the existing statement that no compatibility type
-     is provided. Do not broaden the platform promise beyond the recorded evidence.
-
-#### SHOULD-FIX
-
-None.
-
-#### OPTIONAL
-
-- Draft line 13 contains the apparent typo `最後まbuffer`. Correcting it would improve polish but is
-  not needed to repair a technical claim or usage model.
-
-#### QUESTION
-
-None.
-
-### Acceptance recommendation
-
-`accept after MUST-FIX`
-
-Apart from the missing explicit toolchain threshold, the draft agrees with the allowed evidence on
-API spellings and signatures, initializer behavior, coordinate order, value access, standard-library
-`MutableRef.value`, owner-dependent lifetime, exclusive mutable borrowing, example scope, ownership,
-element lifetime, preconditions, zero dimensions, complexity boundaries, package paths, Collection
-exclusion, removed Views, and the limits of performance and competitive-programming evidence.
-
-### Limitations
-
-- This was a textual review against only the assignment's allowed inputs.
-- The example was not compiled. Its API use and lexical owner/reference ordering agree with the source
-  and with the compile-pass and owner-escape evidence recorded in Current Quality Assessment.
-- Tests, compiler fixtures, benchmarks, package configuration, facade source, Apple documentation,
-  Archived records, and Git history were not inspected.
-- No build, test, snippet execution, or documentation search was run, as required by the validation
-  boundary.
-- The review does not decide public medium, performance acceptance, compatibility policy, naming, or
-  task acceptance.
-
-### Files changed by Worker
-
-- `Maintanance/WORKER_TASK.md` — only this `Worker return` section.
+`PERM-076`：新旧moduleの実装・ローカル検証を1体へまとめる。[この依頼書](Current/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)だけを新しいXcode会話へ渡す。返却先は依頼書から辿れる。2026-10-15返却・ローカル受入済み。[受入記録](Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md)を参照。ユーザーがコミットを許可し、実装は`1f87e37a`へ保存済み。文書・受入・DONE記録を後続コミットへ保存する。benchmark名変更・remote CIは後続で扱う。

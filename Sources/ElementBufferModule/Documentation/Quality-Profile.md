@@ -4,7 +4,7 @@
 
 この文書は、リポジトリ全体の上位品質要求をElementBufferModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
 
-この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
+この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/Current/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
 
 ## 文書の位置づけ
 
@@ -22,6 +22,23 @@
 主な対象は、`Sources/ElementBufferModule/ElementBuffer.swift`の所有1D〜4D型、座標value access、およびSwift 6.4向け借用参照APIと、それらの公開宣言・適合である。旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、現行公開契約には含めない。
 
 ElementBufferは、単一の連続storageを使う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
+
+## 供用区分と設計判断
+
+2026-10-15のユーザー説明を記録する。提供区分の正本は上位品質要求であり、ElementBufferは1.0提供対象である。
+
+| 言語バージョン | 供用区分 | 主なアクセス方式 |
+| --- | --- | --- |
+| Swift 6.2 | 1.0競技供用（競技プログラミング専用） | `element`／nonmutating `setElement` |
+| Swift 6.4 | 1.0一般供用 | 標準`MutableRef`による借用参照 |
+
+- `Sendable`適合の主な意図は、トップレベルを入口とするプログラムでactor隔離に伴う利用上の不便を避けることにある。同期機構を提供するという意味ではない。
+- nonmutating更新は、`mutating`による排他アクセス検査の対象になることを避けるための設計である。`let`からの更新は意図した性質であり、読み取り専用性や並行更新の安全性を保証しない。
+- ユーザーはこの設計を「安全とは言いがたいが、最低限安全」と説明した。所有・初期化・破棄・座標検査・借用寿命の個別保証と、任意の並行利用の安全性を分けて評価する。
+- ユーザーは少なくとも`std::vector`並みの速度を確保していると説明し、既存の「C配列に近いアクセス性能」という定性的表現を維持する判断を示した。今回、新しい比較測定は実施していない。この判断を測定済みの性能比や全構成での保証へ読み替えない。
+
+現行sourceではSwift 6.4でも値アクセスAPIが残っている。一般供用では借用参照を中心に説明し、残るnonmutating更新を自動的に排他アクセス検査付きと扱わない。
+パッケージの必要toolchainはmanifest、標準`MutableRef`の対応OSはAPI availabilityに従う。6.2向けソース利用と現行パッケージの導入条件を混同しない。
 
 ## 上位品質要求との接続
 
@@ -57,7 +74,7 @@ ElementBufferは、単一の連続storageを使う低レベル配列部品であ
 
 ### 公開文書と監査記録
 
-documentation commentと利用者向け文書は、所有権、借用参照の寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/BareArrayModule/BareArrayAudit.md`は、削除済み公開面を含む棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
+documentation commentと利用者向け文書は、所有権、借用参照の寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/ElementBufferModule/ElementBufferAudit.md`は、削除済み公開面を含む棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
 
 ### 性能証拠
 
@@ -161,15 +178,15 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 | 対象 | 正本 |
 | --- | --- |
-| リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
-| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
+| リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
+| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 観察可能な仕様 | `Tests/ElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/ElementBufferModule/ElementBuffer.swift` |
-| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/BareArrayModule/BareArrayAudit.md` |
+| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/ElementBufferModule/ElementBufferAudit.md` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/QUALITY_REQUIREMENTS.md)
+- [上位品質要求](../../../Maintanance/Current/QUALITY_REQUIREMENTS.md)
 - [旧品質評価・調査記録（2026-10-09時点）](../../../Maintanance/Archived/Quality/BareArray_QualityAssessment-ISO25010_2026-10-09.md)

@@ -1,7 +1,7 @@
 // Tests-only experiment for PERM-059. This adapter is not product API.
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import Testing
 import XCTest
 

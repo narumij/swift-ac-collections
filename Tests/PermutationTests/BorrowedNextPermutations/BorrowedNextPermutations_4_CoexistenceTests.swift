@@ -11,7 +11,7 @@
 
 #if compiler(>=6.4)
 import Algorithms
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 final class BorrowedNextPermutations_4_CoexistenceTests: XCTestCase {

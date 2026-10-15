@@ -15,7 +15,7 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Testing
-  import PermutationModule
+  import NextPermutationModule
 
   struct NextPermutations_99_ViewInvalidationDeathTests {
 

@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# Read-only structural lint for the Task Registry in PROGRESS_OVERVIEW.md.
+# Read-only structural lint for the Task Registry in ProgressV2/TASK_REGISTRY_V2.md.
 # Usage from the repository root:
 #   sh Maintanance/Graph/TaskGraphLint/run.sh
 
 set -eu
 
 repo_root=$(CDPATH= cd -- "$(dirname "$0")/../../.." && pwd)
-registry=${1:-"$repo_root/Maintanance/PROGRESS_OVERVIEW.md"}
+registry=${1:-"$repo_root/Maintanance/ProgressV2/TASK_REGISTRY_V2.md"}
 if [ ! -f "$registry" ]; then
   echo "Task Registry not found: $registry" >&2
   exit 2
@@ -35,7 +35,7 @@ awk -F '|' '
     return value
   }
   /^## Task precedence$/ { in_precedence = 1; next }
-  /^## Registry rules$/ { in_precedence = 0; next }
+  /^## / { in_precedence = 0 }
   in_precedence && /^\| `/ {
     print clean($2) "\t" clean($3) "\t" clean($4) "\t" clean($5)
   }

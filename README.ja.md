@@ -47,6 +47,27 @@ dependencies: [
 import AcCollections
 ```
 
+通常の入口は`AcCollections`で、Permutation APIも再公開します。moduleを直接利用する場合の
+主入口は`NextPermutationModule`です。旧名`PermutationModule`は同じ宣言を再公開する互換入口として残します。
+
+### OptionalElementBufferを有効にする
+
+`OptionalElementBuffer`は既定では`AcCollections`から公開されません。実験的な低レベル部品として
+明示的に利用する場合は、package dependencyで`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にします。
+
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "main",
+    traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
+]
+```
+
+traitを有効にした後は、通常どおり`AcCollections`をimportすると1Dから4Dの
+`OptionalElementBuffer`を利用できます。SwiftPMのtrait設定については、
+[Swift Package Managerの案内](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
+
 @Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
 
 <!-- 英訳: Branch Strategy -->

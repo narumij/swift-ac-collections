@@ -201,7 +201,7 @@ V2は通常のtask運用を一周するための現行正本である。次の�
   後続taskに欠けた必須前提を発見するための観察メモ。
 - [`TASK_DEPENDENCY_RUNTIME_STOP.md`](TASK_DEPENDENCY_RUNTIME_STOP.md):
   実行中に成立条件が疑わしくなった場合の停止、依存確定、および再開の詳しい説明。
-- [`../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`](../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md):
+- [`../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`](../../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md):
   Task precedenceの着手条件と完了条件を分離し、`SEQUENCE`と`PARALLEL_JOIN`へ整理した導出・追試記録。
 
 これらの詳細資料を通常作業の開始時に読む必要はない。V2と表現が重なる場合、V2採用後の運用規則は

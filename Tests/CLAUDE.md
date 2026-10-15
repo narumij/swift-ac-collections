@@ -1,6 +1,7 @@
 # Test Work Instructions
 
-Use the Task Registry in `Maintanance/PROGRESS_OVERVIEW.md` as the project-level entry point. Use this
+Use `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` as the project-level entry point and the Task Registry in
+`Maintanance/ProgressV2/TASK_REGISTRY_V2.md` for the selected task. Use this
 file as the test-specific instruction layer after a test task has been selected. Paths in this
 document are relative to the repository root.
 
@@ -8,13 +9,13 @@ document are relative to the repository root.
 
 Before changing files:
 
-1. Read only the Task Registry at the top of `Maintanance/PROGRESS_OVERVIEW.md` and identify the
+1. Read the relevant row in `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` and identify the
    selected task. Do not scan all maintenance or Archived documents.
 2. Read `Maintanance/CLAUDE_TASK.md`. If it contains an active assignment,
    treat it as the current task. Codex-to-Claude work requests in that file
    must be written in English.
 3. Read only the task-relevant portions of `Tests/TESTING.md`.
-4. Search `Tests/Archived/TESTING_REFERENCE.md` only when the current task requires
+4. Search `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md` only when the current task requires
    historical context or a detailed legacy procedure. Do not read it from
    beginning to end by default.
 5. Inspect the relevant implementation, tests, fixtures, and API matrices

@@ -1,4 +1,4 @@
-import BareArrayModule
+import ElementBufferModule
 
 @_lifetime(immortal)
 @available(macOS 27.0, *)

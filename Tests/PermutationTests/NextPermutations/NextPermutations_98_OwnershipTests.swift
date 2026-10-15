@@ -13,7 +13,7 @@
 // 解放回数は、test関数ごとに作る`ReleaseCounter`で数える。グローバルな状態は持たない。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
 private final class ReleaseCounter {

@@ -1,11 +1,38 @@
-# PermutationModule Current Quality Assessment
+# NextPermutationModule Current Quality Assessment
 
 ## 文書の役割
 
-この文書は、PermutationModuleの現行品質評価taskの詳細正本である。
-上位品質要求は`Maintanance/QUALITY_REQUIREMENTS.md`、モジュールへの適用と
-証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
+この文書は、NextPermutationModuleの現行品質評価taskの詳細正本である。
+上位品質要求は`Maintanance/Current/QUALITY_REQUIREMENTS.md`、モジュールへの適用と
+証拠境界は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
+
+## 公開名称決定の品質評価への反映（2026-10-15、Astra）
+
+名称決定の正本`Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`に基づき、
+採用module名を`NextPermutationModule`、通常版一時View名を`NextPermutations.Permutation`とする。
+後者は現行名の維持である。三者回答の根拠は
+`Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`に保存されている。
+
+本書の旧評価と実行記録にある`PermutationModule`は、その時点の対象名として保持する。
+2026-10-15の名称決定では通常・borrowedの入口とowner、generic parameter `Element`を含む名称familyが正式決定済みである。
+今回の作業差分では実装を`NextPermutationModule`へ移し、旧名を互換入口として残した。ローカル検証とremote CI・main到達は分け、今回の証拠と受入範囲は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
+
+### 後続タスクへ切り出す内容
+
+以下はタスク化の入力であり、今回の文書反映では登録・着手しない。
+
+| 区分 | 残る仕事 | 完了時に残す内容 |
+| --- | --- | --- |
+| 実装済み方針 | 旧`PermutationModule`は互換targetとして残す | 実装を複製せず、`NextPermutationModule`の同じ宣言を再公開する |
+| 実装 | 方針確定後、採用module名をmanifest・依存・再公開・source配置・import・公開文書へ反映する | 選んだ移行方式に従い、対象範囲を揃える。test・compiler fixture・benchmark・CI・文書生成の参照先も影響範囲に含める |
+| Verification | 改名後の導入・名前解決・文書導線と既存契約の継続を確認する | 対象版・構成と、build、公開surface／再公開test、関連Test as Specification、DocC生成・link確認の結果。旧名の扱いは決定した互換方針どおりか確認する |
+| 文書確認 | 通常版一時Viewの説明・例・診断を維持する | `NextPermutations.Permutation`が一時Viewであり、次の`next()`やowner破棄で失効し、保存にはcopyが必要と読み取れることをsource・DocCで照合する |
+
+benchmarkの参照先変更と、計測task名・baselineの移行は別の影響として確認する。
+module改名から、凍結中のbenchmark名移行やSequence検討の再開は導かない。
+名称の合意はQR-04の利用理解Validationや品質全体の達成判定を代替しない。
+既存の利用理解Validationへ、採用名と改名後の公開文書を評価対象として渡す。
 
 ## 現行runtime-check版の証拠同期（2026-10-13）
 
@@ -90,7 +117,7 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 
 ## 確認済みの開始時点
 
-- 通常版の`PermutationModule` targetには`.strictMemorySafety()`が恒久適用されている。
+- 通常版の`NextPermutationModule` targetには`.strictMemorySafety()`が恒久適用され、旧`PermutationModule`互換targetにも適用されている。
 - 2026-10-11、testingを含むproject buildが警告・errorなしで成功した。
 - 通常版実装のポインタ操作は明示的なscoped `unsafe`に置かれている。
 - `PermutationTests` target自体には`.strictMemorySafety()`が設定されていない。
@@ -183,7 +210,7 @@ benchmarkの実行環境、toolchain、最適化構成、およびmachine条件�
 | QR-04 理解可能性 | 後続順列と全順列、開始位置、重複、値保持、Index、失敗条件、計算量、類似APIとの差を確認できる | 確認済み | 公開documentation commentとコード例が各項目を説明し、対応するTest as Specificationが成功 | 一般Swift利用者による理解のValidationは未実施。独立した利用者向けPermutation文書は存在しない |
 | QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | project build成功、facade再公開test 1件成功、共存test 2件成功 | 今回のローカルRelease再実行は環境sandboxに阻まれ未取得。CI設定の存在とremote成功記録は区別する |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | 通常版・互換modeの仕様testと単一file経路は候補証拠だが、実提出は未実施 | `PERM-002`はユーザー専任。今回の通常構成では互換mode 5件は条件外で未実行 |
-| QR-06 持続可能性 | 公開面、列挙、値セマンティクス、Collection、共存、安全性、性能を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、benchmark library、Debug・Release・ASan・performanceを含むworkflow分担があり、評価前の文書整備ではPermutationModuleのDocC生成が個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、Permutationのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない。workflowの存在だけで特定commitのremote成功を推定しない |
+| QR-06 持続可能性 | 公開面、列挙、値セマンティクス、Collection、共存、安全性、性能を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、benchmark library、Debug・Release・ASan・performanceを含むworkflow分担があり、`NextPermutationModule`と旧`PermutationModule`はDocC matrixの継続生成対象である | workflowの存在だけで特定commitのremote成功を推定しない。remote CIの実結果は別途確認する |
 
 ## 実行記録
 

@@ -565,7 +565,7 @@ Claudeへの全面委譲は行わない。
 **目的:** Codexが追記した`2026-10-08 OptionalArray管理方式による更新`を、Claude自身の実績と
 認識から独立にreviewし、合意できる境界と修正が必要な境界を分ける。
 
-**入力:** この文書、Task Registry、`OptionalArrayModule/OptionalArrayAudit.md`の
+**入力:** この文書、Task Registry、`OptionalElementBufferModule/OptionalElementBufferAudit.md`の
 `Claude向け証拠収集package`、`CLAUDE_TASK.md`の現在有効なbounded-assignment規則だけを使う。
 Archived記録からtaskを復活させない。
 

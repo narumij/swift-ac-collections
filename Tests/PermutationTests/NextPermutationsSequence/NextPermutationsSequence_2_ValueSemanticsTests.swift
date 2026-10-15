@@ -9,7 +9,7 @@
 // - 上の2点は、別のTaskへ渡した場合も成り立つ
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
 #if false
 
 import XCTest

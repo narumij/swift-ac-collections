@@ -45,6 +45,29 @@ Import it in your source code:
 import AcCollections
 ```
 
+`AcCollections` is the usual entry point and re-exports the permutation APIs. Direct users should
+import `NextPermutationModule`; the former `PermutationModule` name remains as a compatibility entry
+point that re-exports the same declarations.
+
+### Enabling OptionalElementBuffer
+
+`OptionalElementBuffer` isn't exposed through `AcCollections` by default. To explicitly use this
+experimental low-level utility, enable the `ENABLE_OPTIONAL_ELEMENT_BUFFER` trait on the package
+dependency:
+
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "main",
+    traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
+]
+```
+
+After enabling the trait, import `AcCollections` normally to use the one- through four-dimensional
+`OptionalElementBuffer` types. For more about configuring dependency traits, see
+[Adding dependencies to a Swift package](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
+
 ## Branch Strategy
 
 | Branch | Recommended | Description |

@@ -1,4 +1,4 @@
-# RedBlackTree 0.6.0現行品質アセスメント（進行中）
+# RedBlackTree 0.6.0現行品質アセスメント
 
 ## 目的
 
@@ -36,16 +36,17 @@ dirty状態、OS、toolchain、依存解決、trait、除外条件、環境変�
 
 ## 実行記録
 
-測定対象はcommit `ee1dbaebdcbb2a07fb87807c72cae191cbfb6354`、Apple Swift 6.4
-（`swiftlang-6.4.0.34.1`）、arm64、macOS 27.0.1である。
+最終測定対象はcommit `36f821a4b6292f14f48b3592af04e736ed1fcb5d`、Apple Swift 6.4
+（`swiftlang-6.4.0.34.1`）、arm64、macOS 27.0.1である。実行時の完全log、終了status、環境、依存解決、
+dirty状態、およびコマンドは[証拠package](Evidence/RBT-032-2026-10-15/README.md)に保存した。
 
 | 検証 | 構成・結果 | 評価上の扱い |
 | --- | --- | --- |
-| Debug全体 | `swift test --disable-sandbox -c debug`成功。`RedBlackTreeTreeTests` 121件、`RedBlackTreeTests` 940件が失敗0 | 確認済み |
-| Release全体 | `swift test --disable-sandbox -c release`成功。`RedBlackTreeTests` 743件、`CppBehaviorReferenceTests` 35件、facade 5件が失敗0 | 確認済み |
+| Debug全体 | 隔離build pathで成功。`RedBlackTreeTreeTests` 121件、`RedBlackTreeTests` 940件、`CppBehaviorReferenceTests` 35件、facade 5件が失敗0 | 確認済み |
+| Release全体 | 隔離build pathで成功。`RedBlackTreeTreeTests` 68件、`RedBlackTreeTests` 743件、`CppBehaviorReferenceTests` 35件、facade 5件が失敗0 | 確認済み |
 | 通常Death Test | Debug・Releaseの全体試験に含めて成功 | 通常構成では確認済み |
 | ASan本体 | 隔離build pathで`DeathTests`と`RedBlackTreeInternalCoverageTests`を除外した全体試験が終了status 0。C++挙動比較35件、facade 5件を含む選択試験が失敗0 | 対象外suiteを明示した局所証拠として確認済み |
-| ASan＋Death Test | 既定構成と`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` trait構成の双方で失敗 | 検証経路未成立 |
+| ASan＋Death Test | `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` traitと親プロセスへのruntime注入を併用しても、子プロセスでinterceptorが遅延ロードされ終了status 1 | 検証経路未成立 |
 | DocC | `RedBlackTreeCollections`を`--warnings-as-errors`で生成成功 | 確認済み |
 
 最初のSwiftPM実行はmacOS sandboxの適用拒否でmanifest評価前に停止したため、以後はSwiftPM内部の
@@ -87,8 +88,8 @@ swift test --disable-sandbox -c debug --sanitize address \
   --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
 ```
 
-この再試験はbuild cacheへの依存を避けた局所的な再実行には成功した。一方、完全logと依存解決結果を
-repository内の証拠packageとして保存していないため、アセスメント全体の再現可能性は未成立である。
+この再試験はbuild cacheへの依存を避けて成功し、完全log、終了status、依存解決、選択条件を
+repository内の証拠packageへ保存した。
 
 Debug lifetime balance検査をtraitで無効化し、親プロセスへASan runtimeも明示注入した再試験。
 子プロセスでは同じ遅延ロード診断が発生し、全体として失敗した:
@@ -153,8 +154,9 @@ Death Test、およびDocCの個別試験は成立している。ASanは停止�
 
 一方、macOSのASan＋Swift Testing Death Test経路、strict memory safety全面適用、外部条件待ちのIndex最終契約、
 および利用Validationは閉じていない。これらを隠して0.6.0品質全体を無条件に合格とは判定しないが、
-今回の試験から現行公開機能の修正を直ちに要求する製品不具合は確認されなかった。ただし、環境と完全logを
-含む証拠packageが未整備であるため、この文書自体は完成した品質アセスメントとはまだ扱わない。
+今回の試験から現行公開機能の修正を直ちに要求する製品不具合は確認されなかった。環境、依存解決、選択条件、
+完全log、終了statusを証拠packageへ保存したため、ここに記した境界を伴う0.6.0現行品質アセスメントとして完成とする。
+未確定領域は合格へ丸めず、後続の判断・調査・1.0品質ゲートへ残す。
 
 ## 既知の未確定領域
 
@@ -163,6 +165,6 @@ Death Test、およびDocCの個別試験は成立している。ASanは停止�
 - `lazyDetach`等の並行初期化保証は凍結中である。
 - Mapped Values ViewのO(1)範囲契約は利用者向け文書作業まで凍結中である。
 - macOSのASan＋Swift Testing Death Test子プロセス経路は、実行基盤の切り分け待ちである。
-- commit、dirty状態、依存解決、選択test、完全log、終了statusを一体で保存する再現可能な証拠形式は未確定である。
+- 1.0品質保証CIで用いる永続的な証拠形式とLinux代表環境の実行は、凍結中の別taskで扱う。
 
 これらは今回の試験失敗とは扱わず、0.6.0時点で閉じていない品質境界として評価する。

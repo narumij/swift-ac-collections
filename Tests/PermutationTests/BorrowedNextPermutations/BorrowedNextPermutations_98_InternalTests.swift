@@ -9,15 +9,15 @@
 // - 列挙の途中で破棄しても、列挙を終えてから破棄しても同じ
 
 #if compiler(>=6.4)
-import PermutationModule
+import NextPermutationModule
 import XCTest
 
-/// `Span`は`~Escapable`なので`XCTAssertNil`等へ直接渡せない。次の並びがあったかだけを返す。
+/// Because `Span` is `~Escapable`, it cannot be passed directly to `XCTAssertNil` or similar APIs. Returns only whether a next permutation existed.
 private func advance<Element: Comparable>(_ iterator: inout BorrowedNextPermutations<Element>) -> Bool {
   iterator.next() != nil
 }
 
-/// 解放回数を数える箱。グローバルな状態を持たないよう、test関数ごとに作る。
+/// A box that counts releases. Create one per test function to avoid global state.
 private final class ReleaseCounter {
   var count = 0
 }

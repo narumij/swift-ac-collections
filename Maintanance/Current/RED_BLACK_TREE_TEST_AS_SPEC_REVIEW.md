@@ -158,3 +158,55 @@ S1〜S4はtest補完の依頼を具体化できる範囲として記録するが
 M1〜M5の補完時は関連ケースのDebug/Release実行を確認し、構成限定の理由を残す。不具合や未決の仕様が現れた場合はproductionを変更せず根拠を返す。現段階ではtest修正・新規採番・Claudeへの発注は行っていない。レビュー記録は完了し、RBT-038はコミット許可待ちのWAITING_USERとする。
 
 2026-10-15、ユーザーがレビュー記録のコミットを許可。RBT-038をDONEとして保存する。M1〜M5の補完作業は未発注。
+
+
+### Dictionary仕様レビュー（RBT-039、2026-10-15、Astra）
+
+基準HEAD：`926271e1`。Setの5つのtestファイルにはClaudeの作業中差分があり、変更していない。DictionaryのInitialize・Subscript・Combining・Sequenceの公開契約と、番号付きInitialization・Insertion・Removal・Utility・ValueSemantics・RangeView、内部CopyOnWrite・Fuzz、共通MappedValuesViewの本文を照合した。BoundExpressionの構成条件とケース、Death Testの重複初期化検査、Cpp比較の対象操作も確認した。静的レビューであり、test実行・mutation検証・全API/全構成の網羅確認は未実施。以下は検査の補完候補で、製品不具合を認定するものではない。
+
+testのsuffixは、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeDictionary/RedBlackTreeDictionary`に続くファイル名を示す。
+
+#### D1：default付きsubscriptの遅延評価と共有元保持（優先）
+
+`+Subscript.swift`は未登録キーの読み出しでdefaultを評価するが挿入せず、変更時には挿入する契約を持つ。`_5_InsertionTests.swift`には読み出し・append・左右の単回転/二重回転が既にある。一方、default生成の副作用による評価回数と、共有コピーを残した既存/未登録キーの変更は確認できなかった。Cpp比較にもdefault加算はあるが、この二点の代替にはならない。
+
+補完候補：カウンタ付きdefaultで、既存キーでは不要な評価をしないこと、未登録キーの読み出しは評価しても登録しないこと、初回変更で一度生成することを検査する。値型Valueを使って共有元を残し、既存キーと未登録キーへの変更後に双方のkey/valueを確認する。内部コピー回数や参照型Valueのdeep copyは要求しない。既存の回転ケースは増やさない。
+
+#### D2：throwing closureの伝播と途中生成物の寿命（優先）
+
+`+Initialize.swift`の重複統合・grouping、`+Combining.swift`のmerge/merging、`+Sequence.swift`のmapValues/compactMapValues/filterはthrowを受ける。Dictionaryのtest検索では、これらへ独自エラーを投げるケースを確認できなかった。テスト関数のthrows指定やCpp実行器のエラーは、対象closureの伝播検査ではない。
+
+補完候補：まずDictionary固有の重複統合と値変換を対象に、エラー識別とthrow後のclosure非呼出し、元入力のkey/value保持を確認する。途中で生成した参照値が解放されることも検査する。mergeでは共有元を保持するが、変更側の全巻戻しは要求しない。Sequence版とDictionary版のmerge、grouping、filter/eraseの共通・相違経路を確認して必要分を補う。全組合せを展開せず、Set/MultiSetのthrow検査で代替できる範囲とDictionary入口固有の範囲を分ける。
+
+#### D3：Optional Valueのnilとキー不在を区別する（中）
+
+`subscript(key:)`はValue?を返し、外側のnil代入を削除とする。既存Insertion/Utility/Fuzzは主にInt・String・配列であり、Value自体がOptionalであるケースを検索した範囲では確認できなかった。
+
+補完候補：`RedBlackTreeDictionary<Int, Int?>`で、未登録・登録済みnil・登録済み値ありを、外側Optionalのパターンとcount/キー存在で区別する。`.some(nil)`の代入で登録を保持し、外側nilで削除すること、default付き読み出しが登録済みnilを未登録と取り違えないことを確認する。曖昧なXCTAssertNilだけで三状態を同一視しない。
+
+#### D4：共有した参照Valueの置換・削除後の寿命（中）
+
+`_6_RemovalTests.swift`にはpop/removeAll/nil代入/上書きの参照解放検査があり、単独所有の基本解放は既に確認されている。一方、共有コピーを残した参照Valueの置換・削除と、旧値を戻り値として保持する期間の寿命は確認できなかった。
+
+補完候補：小さな参照Valueの辞書を共有し、一方をupdateValueまたは削除して、他方の参照identityと内容を確認する。共有元や取り出した旧値が保持している間の生存と、最後の保持を解いた後の解放を分けて観測する。テスト自身のローカル変数による保持を制御し、deep copyを要求しない。
+
+#### D5：Bound公開動作のRelease検査（中）
+
+`_16_BoundExpressionTests.swift`の主要部分がDEBUG条件内で、未解決Boundや逆転範囲のpredicate非呼出しなどもDebug限定になる。distanceとIndexRangeの別検査はReleaseでも存在するため、「範囲検査が全くない」とはしない。
+
+補完候補：MultiSetのM3と同じ方針で、公開結果だけの検査をDebug専用の内部観測から分離する。Dictionaryではkeyに加えて対応valueも確認する。共通化のための共有fixture変更はこのレビューだけでは発注しない。
+
+#### D6：空の重複初期化testの説明整理（軽微）
+
+`_0_InitializationTests.swift`の`testInitWithDuplicateKeysShouldCauseFatalError`はコメントだけで「実テスト不可」とするが、`_99_DeathTests.swift`の`duplicateKeysInUniqueKeysInitializer_terminateProcess`が実在する。空のtest関数を実行保証として数えず、実際のDeath Testと有効条件への参照に整理する。新しい重複初期化testを増やす必要はない。
+
+#### 初回懸念の解消と追加しない課題
+
+- `_13_ValueSemanticsTests.swift`単独ではkeyだけを見るが、`_7_UtilityTests.swift`に通常subscript更新後の元value/変更後valueの直接検査がある。初回横断の「DictionaryのCoWでvalue未観測」は一般的な不足としては解消する。
+- `RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift`はvaluesの置換・swap・範囲操作・共有元のvalue保持を検査している。同じ検査を再追加しない。範囲所属の契約変更や凍結課題の再開はしない。
+- mergingには非可換な文字列連結で旧値/新値の順序と双方入力保持を確かめるケースがある。統合順序の検査がないとはしない。
+- FuzzはSwift Dictionaryとkey/valueを比較する。通常の代入・merge・mapValues・削除の内容検査を重複して増量しない。
+
+反映時は必要なDebug/Releaseケースと構成条件を確認する。新たな仕様判断や不具合を見つけた場合はproductionを変更せず返す。今回はレビュー記録のみを更新し、test修正・採番・発注はしていない。RBT-039はコミット許可待ちのWAITING_USERとする。
+
+2026-10-15、ユーザーがDictionaryレビュー記録のコミットと次段階への継続を許可。RBT-039をDONEとして保存する。補完作業は未発注。

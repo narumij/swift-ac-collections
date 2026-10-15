@@ -73,8 +73,8 @@ borrowed owner`BorrowedNextPermutations`、generic parameter`Element`は、既�
 
 | 対象 | 回答 | 理由・条件 |
 | --- | --- | --- |
-| `NextPermutationModule` | 未回答 | |
-| `Permutation`維持 | 未回答 | |
+| `NextPermutationModule` | 同意 | 現在の中心入口`nextPermutations()`とowner `NextPermutations`に語幹が揃い、今後の利用者がmoduleと中心機能を対応づけやすい。未具体化の将来APIより現行機能を優先する。旧module名の互換措置は名称判断に含めない |
+| `Permutation`維持 | 判断保留 | repositoryと依存package内に具体的な型宣言の衝突がないことは姫の調査で確認できるが、数学上の広い「置換」、所有された値、自前の同名型との意味上の重なりというユーザーの懸念は解消していない。nested名による限定で十分か、失効する一時viewをより正確に表す候補があるかを判断できる根拠が不足している |
 
 ## 受渡しと完了条件
 

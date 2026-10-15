@@ -110,3 +110,51 @@ MappedValuesの範囲所属検査はAPI-Matrix-Viewの現行事前条件と既�
 S1〜S4はtest補完の依頼を具体化できる範囲として記録するが、まだ実装taskの採番・委任はしていない。担当者は現行差分と契約を再確認し、不具合ならproductionを修正せず返す。レビュー記録は完了し、RBT-037はコミット許可待ち。MultiSet以降は未実施。
 
 2026-10-15、ユーザーがS1〜S4の発注後のコミットを許可。RBT-042を登録してCLAUDE_TASK.mdへ依頼を掲載した。RBT-037はDONEとして保存する。S1〜S4の依頼入力を固定し、今後の別型レビューは別節へ追記する。
+
+
+### MultiSet仕様レビュー（RBT-038、2026-10-15、Astra）
+
+基準HEAD：`2fc2dc66`。開始時と記録直前の作業ツリーはclean。公開MultiSet本体・Combining・SetAlgebra・Sequence・RangeExpression・BoundsExpressionと、MultiSetのInsertion、Removal、Search、Utility、SetAlgebra、ValueSemantics、RangeView、BoundExpression、Fuzz、Death Test、およびCppBehaviorReferenceTestsのMultiSet比較を静的に照合した。全assertion・全構成の網羅検証ではなく、テスト実行・mutation検証はしていない。以下はテスト補完候補であり、製品不具合の確認ではない。SetのS1〜S4とClaudeへの依頼入力は変更していない。
+
+以下のtestファイル名は、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeMultiSet/`内の`RedBlackTreeMultiSet`に続くsuffixを示す。
+
+#### M1：削除済みIndexへのupdateがnilを返す契約（優先）
+
+根拠：`Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift`の`update(_:at:)`は、無効なIndexまたは非等価要素ならnilを返す。`_5_InsertionTests.swift`は等価な別参照への置換、endIndex・非等価要素の拒否、共有コピー保持を検査しているが、削除済みIndexへのupdateは確認できなかった。
+
+反映候補：重複群の一要素を削除し、そのIndexが無効になったことを確認してから、等価な別参照でupdateする。nil返却と残存要素・個数の不変を確認する。他の木のIndexの扱いや、拒否時の内部コピー回数を新しい契約にしない。
+
+#### M2：位置指定削除が、指定した等価要素そのものを取り除く（優先）
+
+根拠：`_6_RemovalTests.swift`の`test_removeAt_removesOnlyTheSelectedDuplicate`と`test_erase_returnsTheFollowingIndex`はIntで内容・戻り値を検査する。`Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`にも位置指定削除の比較があるが、Int64の等価要素には個体の区別がない。`_5_InsertionTests.swift`には参照を用いた`erase(exactly:)`の検査があるものの、別APIかつ構成条件付きである。
+
+反映候補：同値だが別個体の参照を三つ並べ、中央のIndexに対するremove(at:)で返る参照と残る参照を`===`で確認する。eraseでは削除対象と返却された後続の参照を区別する。キー指定のeraseUniqueがどの個体を選ぶかという未記載の保証は追加しない。
+
+#### M3：Boundの公開動作をReleaseでも検査する（中）
+
+根拠：`_16_BoundExpressionTests.swift`の主要部分は`DEBUG && !COMPATIBLE_ATCODER_2025`で囲まれ、未解決Boundのnil、逆転範囲の空結果・predicate非呼出し、重複範囲などの公開動作もDebugに限定されている。distanceの一部は別条件でReleaseでも対象になる。`_8_RangeViewTests.swift`にはIndex範囲・equalRangeの検査があり、範囲検査全体が欠けているわけではない。
+
+反映候補：公開結果だけで検査できるBoundケースをReleaseでもコンパイル・実行できる部分へ分ける。内部copy countやDebug専用の有効性検査は元の条件を維持し、DEBUGを一括削除しない。重複範囲、未解決Bound、逆転範囲でpredicateを呼ばないことを中心に、実際のRelease実行対象を確認する。
+
+#### M4：throwするpredicateの失敗経路（優先）
+
+根拠：MultiSetのfilterとerase(where:)、範囲eraseはthrowing closureを受けるが、調査したMultiSet testでは意図的に独自エラーを投げるケースを確認できなかった。SetのS2を補完しても、MultiSetの公開入口まで自動的に検証済みとはならない。
+
+反映候補：固有エラーの伝播、throw後のpredicate非呼出し、filterの元コンテナ保持、変更操作の共有元保持を検査する。重複要素を含め、一時的な参照保持が残らないことも必要な範囲で確認する。throwした変更側の全巻戻しや特定の途中状態は要求しない。範囲版は実装経路を照合し、共通経路と異なる部分だけを補う。
+
+#### M5：重複を持つ共有コピーの保持と参照寿命（中）
+
+根拠：`_10_SetAlgebraTests.swift`にはunionの重複数a+b、intersectionのmin、differenceのmax(a-b,0)、symmetricDifferenceの絶対差について内容検査があるが、form系の操作直後に共有元を直接確認するケースは見当たらなかった。`_6_RemovalTests.swift`には別個体の参照の解放検査があるが、同一参照を複数回格納し、共有コピーを分岐させた場合の保持・最終解放は確認できなかった。
+
+反映候補：form系は変更用コピー・共有元・rhsを保持して三者の期待内容を確認する。寿命は同じ参照を複数回格納した小さなケースで、一部の出現を削除しても残る出現や共有コピーが保持すること、最後の保持がなくなれば解放されることを検査する。参照要素のdeep copyや内部コピー回数は要求しない。
+
+#### 追加課題にしないものと反映範囲
+
+- ヒント付き挿入の重複群内の位置と等価な別参照へのupdateは、既に具体的な検査がある。SetのS1をそのまま転記しない。
+- meld/meldingには共有元lhsの保持検査がある。M5で同じ検査を追加しない。
+- 位置指定削除、重複数、基本操作の参照モデルFuzzは既存の証拠として残す。「MultiSetの重複処理が未検証」とはしない。
+- SetのS4と同じsetup偽陽性をMultiSetで確認したわけではない。Death Testの広い失敗判定を一律変更しない。
+
+M1〜M5の補完時は関連ケースのDebug/Release実行を確認し、構成限定の理由を残す。不具合や未決の仕様が現れた場合はproductionを変更せず根拠を返す。現段階ではtest修正・新規採番・Claudeへの発注は行っていない。レビュー記録は完了し、RBT-038はコミット許可待ちのWAITING_USERとする。
+
+2026-10-15、ユーザーがレビュー記録のコミットを許可。RBT-038をDONEとして保存する。M1〜M5の補完作業は未発注。

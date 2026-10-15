@@ -4,7 +4,7 @@
 
 ## 結果
 
-担当者が作業終了・占有返却を明記した返却を受領し、実装・ローカル検証を受け入れた。Astraによる下記の文書訂正を含む。2026-10-15ユーザーのコミット許可を受領。実装・検証は`1f87e37a`に保存し、文書・受入記録とRegistryのDONEを後続コミットへ保存する。remote CI・PR・main到達は未実施であり、移行全体は未完了。
+担当者が作業終了・占有返却を明記した返却を受領し、実装・ローカル検証を受け入れた。Astraによる下記の文書訂正を含む。2026-10-15ユーザーのコミット許可を受領。実装・検証は`1f87e37a`に保存し、文書・受入記録とRegistryのDONEは`4cd0ebc2`へ保存した。その後、下記のPR CI成功とmain到達を確認し、新名を主入口・旧名を互換入口とする今回のmodule移行を完了した。
 
 原回答：[ワーカー返却](PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION_RESULT.md)。原回答は編集していない。
 
@@ -29,8 +29,16 @@
 
 ## 後続
 
-ユーザー許可に基づき、実装・検証と文書・受入記録を分けて保存する。PR・remote CIでは各jobの実結果を確認し、DocCのcontinue-on-errorを全体greenで見落とさない。benchmark名整理は遅らせ、旧互換入口は維持する。
+candidate CI経路は今回未実行であり、成功とは扱わない。benchmark名整理はユーザー確認済みの方針どおり後段へ残し、旧互換入口は維持する。
 
 2026-10-15、ユーザーから、ワーカーに変更をまとまりごとにコミットさせると障害時の切り分けが楽になるとの助言を受けた。一つの整合したPRと一つのコミットを混同しない。次の依頼では、変更の区切りとcommitの許可を事前に明確にする。今回の返却者へ追加操作は依頼していない。
 
 原回答SHA-256：`dc3f48284193f92608b815cc0447fe520cad90128edc8b7187fad4dee9758377`。
+
+## PR CI・main到達確認（2026-10-15）
+
+- [PR #196](https://github.com/narumij/swift-ac-collections/pull/196)のhead `4cd0ebc24965cf9cea3962fcbe1f9c1629875959`について、GitHubのcheck-runsで全11 jobが`completed / success`であることをAstraが確認した。
+- 内訳：debug、release、address-sanitizer、performance、documentationと、対象別DocC 6件（AcCollections、RedBlackTreeModule、NextPermutationModule、PermutationModule、OptionalElementBufferModule、ElementBufferModule）。DocCは全体のgreenだけでなく個別jobの成功を確認した。
+- ユーザーによるmerge後にoriginを取得し、`origin/main`の`3ef37fc2`（Merge pull request #196）を確認した。上記PR headがその祖先であることも確認した。これはPR headに対するCI証拠であり、merge commitでCIを再実行したという意味ではない。
+- main到達後、ユーザー指示で同commitから`develop/misc/67`を作成した。新名実装・旧名互換入口およびbenchmark名を維持した変更がmainへ到達した。
+- candidate CI経路は未実行。benchmark名整理・旧入口削除・releaseは今回の完了範囲に含めない。

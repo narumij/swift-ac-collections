@@ -2,6 +2,8 @@
 
 Status: no active assignment.
 
+Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
+
 この固定パスは、調整役Codexが限定した依頼と返却先を記録し、ユーザーが別のXcode会話へ渡すために保持する。
 現在、Worker Codexへ委任された仕事はない。過去のassignmentや未採用bootstrap候補を、この文書が空いていることを理由に再開しない。
 

@@ -66,8 +66,8 @@ borrowed owner`BorrowedNextPermutations`、generic parameter`Element`は、既�
 
 | 対象 | 回答 | 理由・条件 |
 | --- | --- | --- |
-| `NextPermutationModule` | 未回答 | |
-| `Permutation`維持 | 未回答 | |
+| `NextPermutationModule` | 同意 | Round 3・4での選好（`MN-03`）と同じ。中心の入口・ownerと語幹が一致する。互換modeの全順列APIとの不一致と、旧名を残すかの移行判断は、提案どおり名称への同意に含めない |
+| `Permutation`維持 | 判断保留 | 型名の衝突は確認した範囲では無い：package内のSourcesとtests、依存package（`.build/checkouts`の10件）で`Permutation`型の宣言はこのnested typeだけで、常に`NextPermutations<…>.Permutation`と修飾して使うため、利用者のtop-level型とも衝突しない（extension内では利用者側の同名型を覆い隠す）。一方、名前の重なりは別の問題として残る：数学の「置換」（全単射）や、所有された値を想像させる一般名詞で、次の`next()`で失効する一時viewの名前としては広すぎる。AtCoder利用者が自前の`Permutation`型を持つことも多いと見込まれる（未確認）。swift-ac-library等の姉妹packageは調べていない（repository外）。Round 4までの7点は型の衝突がない前提での評価だったが、ユーザーの懸念のうち「意味の重なり」は否定できないため、同意から保留へ下げる |
 
 ### V3回答欄
 

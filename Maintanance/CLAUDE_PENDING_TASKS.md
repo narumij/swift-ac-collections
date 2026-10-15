@@ -40,7 +40,22 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
-未処理entryは現在なし。
+### `CP-20261015-007` — `PERM-072` Astra最終提案への姫回答
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-15 18:30頃の会話。ユーザーが`Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`を示し、
+  CLAUDE_TASK.mdでの依頼を経ずに「未採番タスクで処理して」と指示した。
+- 種別候補: `EXECUTION`
+- 対象範囲: 同文書の「Claude姫回答欄」2行の記入だけ。
+- 対象外: 提案本文、ユーザー・V3の回答欄、集約欄、Registry、名称決定正本、source・test・DocC。
+- 完了条件: 2対象に回答と理由・条件がある。
+- 前提・既存task候補: Registry ID`PERM-072`（`ACTIVE`）が既に存在する。このentryは依頼票の代わりに、権限と範囲を残すためのもの。
+- 担当候補・受入担当: 姫（Claude）回答 / Codex集約。
+- 停止条件: 提案本文の変更が必要に見えた場合は、回答欄に書かず報告する。
+- 成果・検証: 2026-10-15 18:33 JST / Claude Opus 5.5。`NextPermutationModule`は同意、`Permutation`維持は判断保留。
+  `Permutation`型の宣言は、`Sources`・`Tests`・`.build/checkouts`の依存10件を検索して、`NextPermutations.swift:186`の一つだけだった。
+  独立性への影響: 回答前にユーザー回答欄（module名は同意、`Permutation`は不同意）を読んでいる。V3回答欄は未回答の状態だった。commitしていない。
+- Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。
 

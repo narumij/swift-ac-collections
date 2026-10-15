@@ -75,6 +75,71 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(multiset[next], 2)
     }
 
+    /// 同値だが別個体の参照が並ぶとき、remove(at:)は指定位置の個体そのものを取り除いて返し、
+    /// erase(_:)は指定位置の個体を取り除いて直後の個体のIndexを返すこと。ほかの個体は残ること（RBT-043 M2）
+    func test_removeAtAndErase_removeTheSelectedEquivalentInstance() {
+      final class Member: Comparable {
+        let key: Int
+        init(_ key: Int) { self.key = key }
+        static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+        static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      }
+      let first = Member(2)
+      let middle = Member(2)
+      let last = Member(2)
+
+      var removing = RedBlackTreeMultiSet([first, middle, last])
+      let removed = removing.remove(at: removing.index(after: removing.startIndex))
+      XCTAssertTrue(removed === middle)
+      let afterRemove = Array(removing)
+      XCTAssertEqual(afterRemove.count, 2)
+      XCTAssertTrue(afterRemove[0] === first)
+      XCTAssertTrue(afterRemove[1] === last)
+
+      var erasing = RedBlackTreeMultiSet([first, middle, last])
+      let next = erasing.erase(erasing.index(after: erasing.startIndex))
+      XCTAssertTrue(erasing[next] === last, "返されたIndexは削除した個体の直後の個体を指すこと")
+      let afterErase = Array(erasing)
+      XCTAssertEqual(afterErase.count, 2)
+      XCTAssertTrue(afterErase[0] === first)
+      XCTAssertTrue(afterErase[1] === last)
+    }
+
+    /// erase(where:) は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 等価な別個体を含む共有元は変わらないこと。変更側の途中状態は契約がないため、
+    /// 元の個体だけを順序どおりに持つことだけを確かめる（RBT-043 M4）
+    func test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      final class Member: Comparable {
+        let key: Int
+        init(_ key: Int) { self.key = key }
+        static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+        static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      }
+      struct StopError: Error, Equatable {}
+      let members = [Member(1), Member(2), Member(2), Member(3)]
+      let original = RedBlackTreeMultiSet(members)
+      var multiset = original
+      var visited: [Member] = []
+
+      XCTAssertThrowsError(
+        try multiset.erase { member in
+          visited.append(member)
+          if member === members[2] { throw StopError() }
+          return member.key == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited.count, 3, "エラーの後は述語を呼ばないこと")
+      XCTAssertTrue(zip(visited, members).allSatisfy { $0 === $1 })
+      let preserved = Array(original)
+      XCTAssertEqual(preserved.count, 4)
+      XCTAssertTrue(zip(preserved, members).allSatisfy { $0 === $1 }, "共有元は同じ個体を同じ順序で保持すること")
+      let remaining = Array(multiset)
+      XCTAssertEqual(remaining.map(\.key), remaining.map(\.key).sorted())
+      XCTAssertTrue(remaining.allSatisfy { member in members.contains { $0 === member } })
+    }
+
     func test_eraseUnique_removesOneMatchingMember() {
       var multiset = RedBlackTreeMultiSet([1, 2, 2, 2, 3])
 

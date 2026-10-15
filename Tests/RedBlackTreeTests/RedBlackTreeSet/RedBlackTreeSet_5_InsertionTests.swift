@@ -234,6 +234,41 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(duplicate, 20)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
     }
+
+    /// ヒント付きinsertは同順序の別参照を入れず既存の参照を残し、ヒント付きupdateは旧参照を返して
+    /// 格納参照を置き換えること。位置の悪いhintとendIndexのどちらでも同じで、先に共有したコピーの
+    /// 格納参照は変わらないこと（RBT-042 S1）
+    func test_hintedInsertKeepsAndHintedUpdateReplacesEquivalentReference() {
+      let low = ComparableReference(key: 10, label: "low")
+      let high = ComparableReference(key: 30, label: "high")
+      var set = RedBlackTreeSet([low, high])
+      let shared = set
+
+      // insert：key 30にstartIndex（位置の悪いhint）、key 10にendIndex
+      let keptHigh = set.insert(ComparableReference(key: 30, label: "duplicate"), hint: set.startIndex)
+      XCTAssertFalse(keptHigh.inserted)
+      XCTAssertTrue(set[keptHigh.indexAfterInsert] === high)
+      let keptLow = set.insert(ComparableReference(key: 10, label: "duplicate"), hint: set.endIndex)
+      XCTAssertFalse(keptLow.inserted)
+      XCTAssertTrue(set[keptLow.indexAfterInsert] === low)
+      XCTAssertEqual(set.map(\.key), [10, 30])
+      XCTAssertTrue(set.first === low)
+      XCTAssertTrue(set.last === high)
+
+      // update：同じhintで、旧参照を返し、格納参照を新しい参照へ置き換える
+      let newHigh = ComparableReference(key: 30, label: "new")
+      XCTAssertTrue(set.update(newHigh, hint: set.startIndex) === high)
+      let newLow = ComparableReference(key: 10, label: "new")
+      XCTAssertTrue(set.update(newLow, hint: set.endIndex) === low)
+      XCTAssertEqual(set.map(\.key), [10, 30])
+      XCTAssertTrue(set.first === newLow)
+      XCTAssertTrue(set.last === newHigh)
+
+      // 共有していたコピーは元の参照を保持する
+      XCTAssertEqual(shared.map(\.key), [10, 30])
+      XCTAssertTrue(shared.first === low)
+      XCTAssertTrue(shared.last === high)
+    }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

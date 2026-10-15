@@ -253,6 +253,161 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(other["b"], 10)
   }
 
+  /// default付きsubscriptのdefaultは必要なときだけ評価されること（RBT-044 D1）。
+  /// 既存キーの読み出し・変更では評価せず、未登録キーの読み出しでは評価しても登録せず、
+  /// 未登録キーの初回変更で一度だけ評価して登録すること。
+  func test_defaultSubscript_evaluatesDefaultOnlyWhenNeeded() {
+    var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10]
+    var evaluations = 0
+    func makeDefault() -> Int {
+      evaluations += 1
+      return 0
+    }
+
+    XCTAssertEqual(dictionary[1, default: makeDefault()], 10)
+    dictionary[1, default: makeDefault()] += 1
+    XCTAssertEqual(evaluations, 0, "既存キーではdefaultを評価しないこと")
+    XCTAssertEqual(dictionary[1], 11)
+
+    XCTAssertEqual(dictionary[2, default: makeDefault()], 0)
+    XCTAssertEqual(evaluations, 1)
+    XCTAssertNil(dictionary[2], "未登録キーの読み出しは登録しないこと")
+    XCTAssertEqual(dictionary.count, 1)
+
+    dictionary[2, default: makeDefault()] += 5
+    XCTAssertEqual(evaluations, 2, "未登録キーの初回変更で一度だけ評価すること")
+    XCTAssertEqual(dictionary[2], 5)
+    dictionary[2, default: makeDefault()] += 1
+    XCTAssertEqual(evaluations, 2, "登録後の変更では評価しないこと")
+    XCTAssertEqual(dictionary[2], 6)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2])
+  }
+
+  /// 共有コピーを残したまま、default付きsubscriptで既存キーまたは未登録キーを変更しても、
+  /// 共有元のkey/valueは変わらないこと（RBT-044 D1）
+  func test_defaultSubscript_mutationLeavesSharedOriginalUnchanged() {
+    let original: RedBlackTreeDictionary<Int, [String]> = [1: ["a"]]
+
+    var existing = original
+    existing[1, default: []].append("b")
+    XCTAssertEqual(existing.map(\.key), [1])
+    XCTAssertEqual(existing[1], ["a", "b"])
+
+    var absent = original
+    absent[2, default: []].append("c")
+    XCTAssertEqual(absent.map(\.key), [1, 2])
+    XCTAssertEqual(absent[1], ["a"])
+    XCTAssertEqual(absent[2], ["c"])
+
+    XCTAssertEqual(original.map(\.key), [1])
+    XCTAssertEqual(original[1], ["a"])
+    XCTAssertNil(original[2])
+  }
+
+  /// Valueが`Optional`のとき、未登録・登録済み`nil`・登録済みの値を区別すること（RBT-044 D3）。
+  /// `.some(nil)`の代入は登録を保ち、外側の`nil`の代入は削除し、default付き読み出しは
+  /// 登録済み`nil`を未登録と取り違えないこと。
+  func test_optionalValue_distinguishesAbsentKeyStoredNilAndStoredValue() {
+    enum Slot: Equatable {
+      case absent
+      case storedNil
+      case stored(Int)
+    }
+    var dictionary = RedBlackTreeDictionary<Int, Int?>()
+    func slot(_ key: Int) -> Slot {
+      switch dictionary[key] {
+      case .none: return .absent
+      case .some(.none): return .storedNil
+      case .some(.some(let value)): return .stored(value)
+      }
+    }
+
+    dictionary[1] = Int??.some(nil)
+    dictionary[2] = Int??.some(5)
+    XCTAssertEqual(slot(1), .storedNil)
+    XCTAssertEqual(slot(2), .stored(5))
+    XCTAssertEqual(slot(3), .absent)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2])
+
+    dictionary[2] = Int??.some(nil)
+    XCTAssertEqual(slot(2), .storedNil, "`.some(nil)`の代入は登録を保つこと")
+    XCTAssertEqual(dictionary.count, 2)
+
+    XCTAssertEqual(dictionary[1, default: 7], Int?.none, "登録済み`nil`はdefaultに置き換わらないこと")
+    XCTAssertEqual(dictionary[3, default: 7], 7)
+    XCTAssertEqual(slot(3), .absent)
+
+    dictionary[2] = Int??.none
+    XCTAssertEqual(slot(2), .absent, "外側の`nil`の代入は削除すること")
+    XCTAssertEqual(dictionary.map(\.key), [1])
+    XCTAssertEqual(slot(1), .storedNil)
+  }
+
+  /// merge(_:uniquingKeysWith:)は統合closureのエラーをそのまま投げ、投げた後は残りを処理しないこと。
+  /// Sequence版・Dictionary版とも、共有していた元の辞書と相手の辞書は変わらず、
+  /// 受け取った参照値もエラーの後に残らないこと。変更側の途中状態は検査しない（RBT-044 D2）
+  func test_merge_rethrowsCombineErrorAndKeepsSharedOriginalAndOther() {
+    final class Box { let id: Int; init(_ id: Int) { self.id = id } }
+    struct StopError: Error, Equatable {}
+
+    weak var weakIncoming: Box?
+    do {
+      let kept = Box(0)
+      let original: RedBlackTreeDictionary<Int, Box> = [1: kept]
+      let incoming = Box(1)
+      weakIncoming = incoming
+      var calls = 0
+
+      var fromSequence = original
+      XCTAssertThrowsError(
+        try fromSequence.merge([(1, incoming), (1, Box(2)), (2, Box(3))]) { _, _ in
+          calls += 1
+          throw StopError()
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(calls, 1, "エラーの後に統合closureを呼ばないこと")
+
+      let other: RedBlackTreeDictionary<Int, Box> = [1: incoming, 2: Box(4)]
+      var fromDictionary = original
+      calls = 0
+      XCTAssertThrowsError(
+        try fromDictionary.merge(other) { _, _ in
+          calls += 1
+          throw StopError()
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(calls, 1)
+
+      XCTAssertEqual(original.map(\.key), [1])
+      XCTAssertTrue(original[1] === kept)
+      XCTAssertEqual(other.map(\.key), [1, 2])
+      XCTAssertTrue(other[1] === incoming)
+    }
+    XCTAssertNil(weakIncoming, "エラーの後、受け取った参照値が残らないこと")
+  }
+
+  /// merging(_:uniquingKeysWith:)は統合closureのエラーをそのまま投げ、どちらの入力も変えないこと（RBT-044 D2）
+  func test_merging_rethrowsCombineErrorAndKeepsBothInputs() {
+    struct StopError: Error, Equatable {}
+    let original: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2]
+    let other: RedBlackTreeDictionary<String, Int> = ["b": 10, "c": 3]
+
+    XCTAssertThrowsError(try original.merging(other) { _, _ in throw StopError() }) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertThrowsError(try original.merging([("b", 20)]) { _, _ in throw StopError() }) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(original.map(\.key), ["a", "b"])
+    XCTAssertEqual(original.map(\.value), [1, 2])
+    XCTAssertEqual(other.map(\.key), ["b", "c"])
+    XCTAssertEqual(other.map(\.value), [10, 3])
+  }
+
   func test_merging_returnsChangedCopyAndPreservesOriginal() {
     let original: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2]
 

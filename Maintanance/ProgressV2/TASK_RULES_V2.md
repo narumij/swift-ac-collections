@@ -91,10 +91,10 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `OPS` | `042` |
 | `OPT` | `074` |
 | `PERF` | `005` |
-| `PERM` | `076` |
+| `PERM` | `078` |
 | `QUALITY` | `005` |
-| `RBT` | `035` |
-| `RELEASE` | `079` |
+| `RBT` | `045` |
+| `RELEASE` | `080` |
 | `TEST` | `004` |
 
 ## 文書ランクと変更権限

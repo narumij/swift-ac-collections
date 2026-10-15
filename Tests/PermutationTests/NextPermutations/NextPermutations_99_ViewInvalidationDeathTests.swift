@@ -16,6 +16,15 @@
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Testing
   import NextPermutationModule
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
+
+  /// Exit status of a child process whose setup did not reach the state under test.
+  /// It is a normal exit, so it never matches the expected trap signal and the test fails.
+  private let setupFailedExitStatus: Int32 = 86
 
   struct NextPermutations_99_ViewInvalidationDeathTests {
 
@@ -62,12 +71,26 @@
 
     // MARK: - 終端の`next()`が`nil`を返した後
 
+    // 終端が`nil`であることは、まず子processの外で通常のassertionとして確かめる。
+    // 子process内でsetupが成立しない場合は、trapではなく`setupFailedExitStatus`で正常終了させる。
+    // そうすれば終端処理が壊れたときに、setupの失敗が期待signalとして成功扱いされない（PERM-078 B）。
+    // `next()!`の失敗もtrapになるため、setupの各段階は`guard`で終了statusへ逃がす。
+
+    @Test func terminalNextReturnsNilForTheSetupsBelow() {
+      var single = [7].nextPermutations()
+      #expect(single.next() != nil)
+      #expect(single.next() == nil)
+      var descending = [2, 1].nextPermutations()
+      #expect(descending.next() != nil)
+      #expect(descending.next() == nil)
+    }
+
     @Test func subscriptTrapsAfterTerminalNextReturnsNil() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var permutations = [7].nextPermutations()
-        let p = permutations.next()!
-        let terminal = permutations.next()
-        precondition(terminal == nil, "single element must yield exactly once")
+        guard let p = permutations.next(), permutations.next() == nil else {
+          exit(setupFailedExitStatus)
+        }
         _ = p[0]
       }
     }
@@ -75,9 +98,9 @@
     @Test func startIndexTrapsAfterTerminalNextReturnsNil() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var permutations = [2, 1].nextPermutations()
-        let p = permutations.next()!
-        let terminal = permutations.next()
-        precondition(terminal == nil, "descending order must yield exactly once")
+        guard let p = permutations.next(), permutations.next() == nil else {
+          exit(setupFailedExitStatus)
+        }
         _ = p.startIndex
       }
     }

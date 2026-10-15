@@ -5,6 +5,10 @@
 //  Created by narumij on 2026/02/14.
 //
 
+// Debug専用の観察（test supportの`isValid`と内部のcopy count）は元の条件のまま残し、
+// 公開結果だけで確かめられるBoundの動作は下の`RedBlackTreeMultiSetBoundPublicBehaviorTests`で
+// Releaseでも実行する（RBT-043 M3）。
+
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
   import RedBlackTreeCollections
@@ -15,20 +19,74 @@
 
     func testAfter() throws {
       XCTAssertTrue(a.isValid(start()))
-      XCTAssertEqual(a[start()], 0)
-
       XCTAssertTrue(a.isValid(start().after))
-      XCTAssertEqual(a[start().after], 1)
-
       XCTAssertTrue(a.isValid(start().after.after))
-      XCTAssertEqual(a[start().after.after], 2)
-
       XCTAssertFalse(a.isValid(start().after.after.after))
-      XCTAssertEqual(a[start().after.after.after], nil)
     }
 
     func testEndIsInvalid() throws {
       XCTAssertFalse(a.isValid(end()))
+    }
+
+    func testLastIsValid() throws {
+      XCTAssertTrue(a.isValid(.last))
+    }
+
+    /// 空のMultiSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させないこと。
+    func testEraseBoundsOnEmptyMultiSetDoesNotCopy() throws {
+      var b = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      b.erase(lowerBound(0)..<upperBound(10))
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
+    /// 空のMultiSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
+    func testEraseIndexRangeOnEmptyMultiSetDoesNotCopy() throws {
+      var b = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      let range: RedBlackTreeIndexRange = b.equalRange(0)
+      XCTAssertEqual(b.erase(range), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(range) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(b.startIndex..<b.endIndex) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(...), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import XCTest
+  import RedBlackTreeCollections
+
+  /// Boundの公開動作。公開APIの結果だけで確かめるので、Releaseでも実行する（RBT-043 M3）。
+  final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
+
+    let a = RedBlackTreeMultiSet<Int>([0, 1, 2])
+
+    /// 解決できる`after`は要素を返し、末尾を越えた`after`は解決できず`nil`になること。
+    func testAfterResolvesUntilTheEnd() throws {
+      XCTAssertEqual(a[start()], 0)
+      XCTAssertEqual(a[start().after], 1)
+      XCTAssertEqual(a[start().after.after], 2)
+      XCTAssertNil(a[start().after.after.after])
+    }
+
+    func testEndResolvesToNoElement() throws {
       XCTAssertNil(a[end()])
     }
 
@@ -47,7 +105,6 @@
       XCTAssertEqual(a[find(1)], 1)
       XCTAssertEqual(a[find(5)], nil)
 
-      XCTAssertTrue(a.isValid(.last))
       XCTAssertEqual(a[.last], 2)
     }
 
@@ -117,37 +174,6 @@
       XCTAssertEqual(Array(b), [0, 1, 1, 2, 3])
     }
 
-    /// 空のMultiSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
-    /// バッファからの退避)を発生させないこと。
-    func testEraseBoundsOnEmptyMultiSetDoesNotCopy() throws {
-      var b = RedBlackTreeMultiSet<Int>()
-      XCTAssertEqual(b._copyCount, 0)
-      b.erase(lowerBound(0)..<upperBound(10))
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertTrue(b.isEmpty)
-    }
-
-    /// 空のMultiSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
-    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
-    func testEraseIndexRangeOnEmptyMultiSetDoesNotCopy() throws {
-      var b = RedBlackTreeMultiSet<Int>()
-      XCTAssertEqual(b._copyCount, 0)
-      let range: RedBlackTreeIndexRange = b.equalRange(0)
-      XCTAssertEqual(b.erase(range), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(range) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      b.erase(b.startIndex..<b.endIndex) { _ in true }
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertEqual(b.erase(...), b.endIndex)
-      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
-      XCTAssertTrue(b.isEmpty)
-    }
-
     func testLessThanAndOrEqualMulti() throws {
       let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
 
@@ -188,8 +214,8 @@
       XCTAssertEqual(Array(view5), [1, 2])
     }
 
-    func testIsValidBoundsInvalidDoesNotCrash() throws {
-      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+    /// 逆向きのBound範囲のviewは空になり、列挙しても要素を返さないこと。
+    func testReversedBoundsViewIsEmpty() throws {
       XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)
       XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
     }

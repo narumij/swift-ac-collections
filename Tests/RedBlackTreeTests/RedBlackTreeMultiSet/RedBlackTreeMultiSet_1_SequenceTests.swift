@@ -260,5 +260,49 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(f), [1, 3, 3, 3])
       XCTAssertEqual(Array(m), [1, 2, 2, 3, 3, 3])
     }
+
+    /// `filter(_:)`は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 等価な別個体を含む元のmultisetは変わらず、途中まで作られた結果が要素を保持し続けないこと（RBT-043 M4）
+    func testFilterRethrowsPredicateErrorWithoutKeepingPartialResult() {
+      final class Member: Comparable {
+        let key: Int
+        init(_ key: Int) { self.key = key }
+        static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+        static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      }
+      struct StopError: Error, Equatable {}
+      final class WeakMember { weak var member: Member? }
+
+      var observers: [WeakMember] = []
+      do {
+        let members = [Member(1), Member(2), Member(2), Member(3)]
+        let m = RedBlackTreeMultiSet(members)
+        observers = members.map { member in
+          let observer = WeakMember()
+          observer.member = member
+          return observer
+        }
+        var visited: [Member] = []
+
+        // 1と最初の2を結果に含めた後、2つ目の2でエラーを投げる
+        XCTAssertThrowsError(
+          try m.filter { member in
+            visited.append(member)
+            if member === members[2] { throw StopError() }
+            return true
+          }
+        ) { error in
+          XCTAssertEqual(error as? StopError, StopError())
+        }
+        XCTAssertEqual(visited.count, 3, "エラーの後は述語を呼ばないこと")
+        XCTAssertTrue(zip(visited, members).allSatisfy { $0 === $1 })
+        let preserved = Array(m)
+        XCTAssertEqual(preserved.count, 4)
+        XCTAssertTrue(zip(preserved, members).allSatisfy { $0 === $1 })
+      }
+      XCTAssertTrue(
+        observers.allSatisfy { $0.member == nil },
+        "元のmultisetを破棄した後、途中まで作られた結果が要素を保持していないこと")
+    }
   }
 #endif

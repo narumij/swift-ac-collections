@@ -164,6 +164,26 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(multiset[multiset.startIndex] === newMember)
       XCTAssertTrue(copy[copy.startIndex] === oldMember)
     }
+
+    /// 削除済みのIndexへのupdateはnilを返し、残っている等価な要素とその個数を変えないこと（RBT-043 M1）
+    func test_update_atRemovedIndexReturnsNilAndKeepsSurvivors() {
+      let members = [
+        Member(key: 1, label: "first"),
+        Member(key: 1, label: "middle"),
+        Member(key: 1, label: "last"),
+      ]
+      var multiset = RedBlackTreeMultiSet(members)
+      let removedIndex = multiset.index(after: multiset.startIndex)
+      XCTAssertTrue(multiset.remove(at: removedIndex) === members[1])
+      XCTAssertFalse(multiset.isElement(at: removedIndex), "削除した位置のIndexは無効になっていること")
+
+      XCTAssertNil(multiset.update(Member(key: 1, label: "new"), at: removedIndex))
+
+      let result = Array(multiset)
+      XCTAssertEqual(result.count, 2)
+      XCTAssertTrue(result[0] === members[0])
+      XCTAssertTrue(result[1] === members[2])
+    }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

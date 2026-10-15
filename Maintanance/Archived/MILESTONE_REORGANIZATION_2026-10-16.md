@@ -33,7 +33,7 @@
 ## 既存資料
 
 - [Maintanance/Current/RELEASE_0_6_0.md](../Current/RELEASE_0_6_0.md)
-- [Maintanance/Current/QUALITY_REQUIREMENTS.md](../Current/QUALITY_REQUIREMENTS.md)
+- [Maintanance/Current/QUALITY_REQUIREMENTS.md](../Quality/QUALITY_REQUIREMENTS.md)
 - [Package.swift](../../Package.swift)
 
 ## 今後の判断記録
@@ -62,7 +62,7 @@
 
 - [Maintanance/Current/RELEASE_0_7_0.md](../Current/RELEASE_0_7_0.md)
 - [Maintanance/User/RELEASE_PROCESS.md](../User/RELEASE_PROCESS.md)
-- [Maintanance/Current/QUALITY_REQUIREMENTS.md](../Current/QUALITY_REQUIREMENTS.md)
+- [Maintanance/Current/QUALITY_REQUIREMENTS.md](../Quality/QUALITY_REQUIREMENTS.md)
 - [Package.swift](../../Package.swift)
 
 ## 今後の判断記録

@@ -22,7 +22,7 @@
 
 ## 既存資料
 
-- [Maintanance/PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md](../PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md)
+- [Maintanance/PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md](../Current/BENCHMARK_TASK_NAME_MIGRATION.md)
 - [Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift](../../Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift)
 - [Benchmarks/Libraries/CI.json](../../Benchmarks/Libraries/CI.json)
 
@@ -34,4 +34,4 @@
 
 後段のbenchmark名整理として凍結を維持。ユーザーの明示再開とPERM-063の先行merge・green確認後、確定した移行先表示名へsourceの4 titleとCI登録2件を変更し、task列挙・base/current比較・remote performance CIのgreenを確認する。旧計画の型名をそのまま移行先にしない。
 
-当時の旧facade削除PR待ちは現行条件として使わない。現行のbenchmark titleが旧名のままであることを確認した。今回実装・CI実行・mergeはしていない。最新の具体化方針は[移行資料](../PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md)の冒頭を参照する。
+当時の旧facade削除PR待ちは現行条件として使わない。現行のbenchmark titleが旧名のままであることを確認した。今回実装・CI実行・mergeはしていない。最新の具体化方針は[移行資料](../Current/BENCHMARK_TASK_NAME_MIGRATION.md)の冒頭を参照する。

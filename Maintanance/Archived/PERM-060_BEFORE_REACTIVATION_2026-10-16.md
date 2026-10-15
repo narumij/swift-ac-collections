@@ -28,7 +28,7 @@
 
 ## 既存資料
 
-- [Maintanance/PermutationModule/NextPermutationsSequenceExperiment.md](../PermutationModule/NextPermutationsSequenceExperiment.md)
+- [Maintanance/PermutationModule/NextPermutationsSequenceExperiment.md](../Technical/NextPermutationsSequenceExperiment.md)
 
 ## 今後の判断記録
 

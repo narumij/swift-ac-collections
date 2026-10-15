@@ -52,7 +52,7 @@
 | [AcCollections DocC](../Sources/AcCollections/AcCollections.docc/)、[赤黒木 DocC](../Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/)、[Permutation DocC](../Sources/NextPermutationModule/NextPermutationModule.docc/)、[OptionalElementBuffer DocC](../Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/)、[ElementBuffer DocC](../Sources/ElementBufferModule/ElementBufferModule.docc/) | 公開ドキュメントの生成入力。各moduleのSwiftソース内の公開コメントも関連する | `DOC-030`。生成入力と生成物を区別し、変更対象の生成・リンク解決を確認する |
 | [旧RedBlackTree DocC](../Sources/_RedBlackTreeModule/RedBlackTreeModule.docc/)、[旧Permutation DocC](../Sources/_PermutationModule/PermutationModule.docc/) | 旧名互換入口の案内 | `DOC-030`。旧名という理由で履歴・削除対象にしない |
 | [設計資料](../Sources/RedBlackTreeCollections/Documentation/Design/Design-Overview.md)、[API Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix.md)、[View Matrix](../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md) | 赤黒木の設計・公開面の維持文書 | `DOC-030`。仕様判断は対象task・決定正本に従う |
-| [文書workflow・本文・outline](../Sources/RedBlackTreeCollections/Documentation/Head/) | 文書作成手順と作業資料が混在。本文・outlineの完成や公開可否は個別に確認する | `DOC-030`。具体的な作業状態はRegistryと対象taskで管理する |
+| [文書workflow・本文・outline](UserDocuments/RedBlackTreeCollections/Head/) | 文書作成手順と作業資料が混在。本文・outlineの完成や公開可否は個別に確認する | `DOC-030`。具体的な作業状態はRegistryと対象taskで管理する |
 | [赤黒木のその他資料](../Sources/RedBlackTreeCollections/Documentation/)、[Indexメモ](../Sources/RedBlackTreeCollections/Implements/Index/index_stale_check.md) | 比較証拠、互換説明、設計メモなど。フォルダ全体を現行仕様の正本とは扱わない | `DOC-030`では用途・参照先を整理し、個別の判断や証拠は関係taskへ紐付ける |
 
 ### AI用
@@ -157,3 +157,23 @@ swift package --disable-sandbox -c release \
 - [2026-10-07までの履歴](Archived/MAINTENANCE_HISTORY_2026-10-07.md)。
 
 必要な経緯を調べるときだけ参照する。過去の完了記録は、現在の仕様・実装・文書まで検証済みであることを意味しない。
+
+## 品質評価・試験の記録
+
+[品質資料の入口](Quality/README.md)に版別評価と、版横断・対象版未確定の記録を集約する。履歴資料の移動は評価の完了や現行契約の変更を意味しない。
+
+## 利用者向け文書の草案
+
+本文草案は`Maintanance/UserDocuments/`にmodule別で配置する。公開用DocC・ソースコメントとは区別し、配置変更を公開・受入の判断としない。
+
+- [ElementBufferModule](UserDocuments/ElementBufferModule/UserDocumentationDraft.md)
+- [OptionalElementBufferModule](UserDocuments/OptionalElementBufferModule/UserDocumentationDraft.md)
+- [NextPermutationModule](UserDocuments/NextPermutationModule/UserDocumentationDraft.md)
+
+## 技術調査・探索記録
+
+[人間とAIによる実提出チューニング報告](Technical/HumanAITuningReport.md)を`Technical/`に配置する。探索の経緯であり、正式な品質判定や製品実装の採用判断とは区別する。
+
+- [NextPermutations実装探索レポート](Technical/NextPermutationsImplementationExploration.md)：候補・反証・暫定性能と実装選択の経緯。
+
+- [NextPermutations Sequence実験](Technical/NextPermutationsSequenceExperiment.md)：tests-only adapterの観測結果と判断境界。

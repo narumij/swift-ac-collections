@@ -29,7 +29,7 @@
 
 ## 既存資料
 
-- [Maintanance/PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md](../PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md)
+- [Maintanance/PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md](../Current/BENCHMARK_TASK_NAME_MIGRATION.md)
 - [Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md](../Current/PERFORMANCE_CI_CHANGE_GUIDE.md)
 - [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
 
@@ -41,4 +41,4 @@
 
 後段のbenchmark名整理として凍結を維持。ユーザーが時期・対象・移行先表示名を確定して明示再開した後、旧名baselineと新名HEADを比較できる入力変換・結果名正規化を先行導入し、mainへのmergeとremote performance CIのgreenを確認する。完了済みmodule移行のmergeとは別工程であり、旧型名を移行先へ自動採用しない。
 
-当時の旧facade削除PR待ちは現行条件として使わない。現行のbenchmark titleが旧名のままであることを確認した。今回実装・CI実行・mergeはしていない。最新の具体化方針は[移行資料](../PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md)の冒頭を参照する。
+当時の旧facade削除PR待ちは現行条件として使わない。現行のbenchmark titleが旧名のままであることを確認した。今回実装・CI実行・mergeはしていない。最新の具体化方針は[移行資料](../Current/BENCHMARK_TASK_NAME_MIGRATION.md)の冒頭を参照する。

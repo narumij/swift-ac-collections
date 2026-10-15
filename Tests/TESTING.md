@@ -32,7 +32,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   compatibility smoke testは、facade targetの終了に合わせて削除した。
 - ElementBufferModule: 番号付き仕様群（`BareArray_0_`〜`BareArray_7_`）、Death Test、借用参照のDeath Testを維持する。
   旧subscript・Viewのdeprecated指定は削除済みで、Sourcesにdeprecated指定はない。1.0提供対象外で、保守範囲は
-  `Maintanance/Current/QUALITY_REQUIREMENTS.md`に従う。旧`BareArrayModule`のcompatibility smoke testは、facade targetの終了に
+  `Maintanance/Quality/QUALITY_REQUIREMENTS.md`に従う。旧`BareArrayModule`のcompatibility smoke testは、facade targetの終了に
   合わせて削除した。2026-10-13時点の詳細記録は移動分にある。
 - PermutationModule（`NextPermutationModule`）: runtime-check View通常版は番号付き7群・XCTest 29件・Swift Testing 16件
   （失効・終端のDeath Testを含む）、borrowed Span版は番号付き5群・XCTest 27件、AtCoder 2025互換modeは5件を独立した仕様として維持する。
@@ -69,7 +69,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 - 赤黒木Test as Specの補完（RBT-042〜046）は完了・受入済み。範囲版`erase(_:where:)`がpredicateのエラーをtrapにする問題は
   Astraが4型で修正し、回帰テスト8件がある。重複keyでの`.lessThanOrEqual(k)`がどの値を指すかは規定しない（RBT-041で整理）。
-  経緯は`Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`、各返却は`Maintanance/CLAUDE_TASK.md`。
+  経緯は`Maintanance/Quality/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`、各返却は`Maintanance/CLAUDE_TASK.md`。
 - ElementBuffer系の仕様testのファイル名は改名前の`BareArray_*`・`OptionalArray_*`のまま。監査の正本がこの名前を
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が2件ある（`RedBlackTreeInternal_ComparatorsTests.swift:178`・`:219`、2026-10-16確認）。仕様には影響しない。

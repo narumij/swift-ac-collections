@@ -143,7 +143,7 @@ Counted references:
 
 - **Actual stale navigation (2)**
   1. `Sources/NextPermutationModule/Documentation/Quality-Profile.md:42` cites `Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md` as where to read "今回の受入範囲". The file moved to `Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`. Impact: a current quality profile points at a missing file. Proposed correction: point to the archived path, keeping the wording that it is a completed acceptance record. This is the only current, non-historical reference to the ten moved files that I found in a repository-wide `git grep`.
-  2. `Tests/TESTING.md:32` cites `Maintanance/QUALITY_REQUIREMENTS.md`; the file is `Maintanance/Current/QUALITY_REQUIREMENTS.md` (moved in `9d36da92`). Impact: the TEST-005 dashboard points at a missing path. Proposed correction: update the path. This is my own document (TEST-005), but I left it unchanged under this read-only assignment.
+  2. `Tests/TESTING.md:32` cites `Maintanance/QUALITY_REQUIREMENTS.md`; the file is `Maintanance/Quality/QUALITY_REQUIREMENTS.md` (moved in `9d36da92`). Impact: the TEST-005 dashboard points at a missing path. Proposed correction: update the path. This is my own document (TEST-005), but I left it unchanged under this read-only assignment.
 - **Historical paths, correct to keep (22)**
   - `Archived/PermutationMigration_2026-10-16/README.md:7–16`: the old-path column of the mapping table, by design.
   - Moved worker requests `…WORKER_{1,2,3}.md:45`: the original output paths.

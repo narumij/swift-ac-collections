@@ -18,7 +18,7 @@ benchmark sourceに残る旧内部型名を含む4 titleと、CI libraryの登�
 
 ## 参照先
 
-- [二段階の移行計画](../PermutationModule/BENCHMARK_TASK_NAME_MIGRATION.md)
+- [二段階の移行計画](BENCHMARK_TASK_NAME_MIGRATION.md)
 - [性能CI変更手順](PERFORMANCE_CI_CHANGE_GUIDE.md)
 - [benchmark source](../../Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift)
 - [CI登録](../../Benchmarks/Libraries/CI.json)

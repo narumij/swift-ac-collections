@@ -340,7 +340,7 @@ MM1–MM4 and explicit scope release are independently accepted at HEAD `8053683
 
 - Registry ID: `PERM-078` (registered before this request).
 - Assigned by Astra under the user's 2026-10-15 direction: issue this request first, then close OPT-074 acceptance records.
-- Execute [the bounded request](Current/PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md). Its scope, stops, validation, and Return section are part of this assignment.
+- Execute [the bounded request](Quality/PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md). Its scope, stops, validation, and Return section are part of this assignment.
 - Address only findings B–D: terminal-nil Death Test false positives, destruction of an unstarted nonempty borrowed owner, and independence from subsequent source-array changes.
 - Finding A / frozen `PERM-051`, production changes, and unrelated work are excluded. No commit or push authorization.
 - Return results in the linked request's reserved Return section. State remaining concerns and release of the assigned scope explicitly. Astra performs independent acceptance.

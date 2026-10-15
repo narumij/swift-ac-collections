@@ -20,7 +20,7 @@
 | ID | 理由と引継ぎ先 |
 | --- | --- |
 | DOC-010 | [ElementBuffer品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md)の「供用区分と設計判断」に、ユーザーによる定性的性能表現の維持判断が記録済み。文言の再判断という独立作業を除外。新しい比較測定や性能適合が完了したことにはしない |
-| BARE-035 | [現行品質要求](../Current/QUALITY_REQUIREMENTS.md)でElementBufferは1.0競技供用・一般供用の対象。旧「対象外」から残った提供停止検討には現在の需要がなく除外。提供停止を将来の義務として残さない |
+| BARE-035 | [現行品質要求](../Quality/QUALITY_REQUIREMENTS.md)でElementBufferは1.0競技供用・一般供用の対象。旧「対象外」から残った提供停止検討には現在の需要がなく除外。提供停止を将来の義務として残さない |
 | PERM-046 | 現行品質要求はNextPermutationModuleをSwift 6.4以降の対象とし、[manifest](../../Package.swift)も6.4。6.2向けソース利用やAtCoder互換modeを、package全体の6.2提供義務に広げない。version-specific manifest調査は現行範囲から除外 |
 | PERM-071 | [名称決定](../Current/PUBLIC_API_NAMING_DECISIONS.md)、[移行計画の完了記録](../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)、[独立受入とPR/main到達記録](PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md)で、名称・新旧入口・generic parameter・compile/DocC等が照合済み。ゲート確認を受入へ吸収して除外。名称レビュー冒頭の「未決定」を訂正し、決定正本と移行へ接続した |
 
@@ -32,10 +32,10 @@
 | --- | --- |
 | QUALITY-001 | 1.0として受け入れるかのゲートは現在も必要。行の「Index確定後に再開」と、依存表の「品質調査は並行可能」が食い違っていた。Indexは最終判定の合流条件として保持し、全準備作業の停止条件にはしない |
 | RBT-009 | [runtime-check設計](../../Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md)が1.0前の再審査を要求。判断ゲートとして復帰。防御の変更や-Ouncheckedの保証変更は行わず、判断材料とユーザー決定を待つ |
-| RBT-034 | [赤黒木の評価](../RedBlackTreeModule/CurrentQualityAssessment.md)を1.0対象版の証拠へ接続する仕事は残る。QUALITY-001の復帰に伴い証拠準備を有効化。既存の0.6評価や型別レビューを未完了へ戻さない |
-| QUALITY-002 | [品質要求](../Current/QUALITY_REQUIREMENTS.md)のLinux代表環境の証拠は必要。既存のCI成功をゼロ扱いせず、要求との差だけ補う仕事として復帰。今回CIを変更・起動しない |
+| RBT-034 | [赤黒木の評価](../Quality/0.6.x/RedBlackTreeModule/CurrentQualityAssessment.md)を1.0対象版の証拠へ接続する仕事は残る。QUALITY-001の復帰に伴い証拠準備を有効化。既存の0.6評価や型別レビューを未完了へ戻さない |
+| QUALITY-002 | [品質要求](../Quality/QUALITY_REQUIREMENTS.md)のLinux代表環境の証拠は必要。既存のCI成功をゼロ扱いせず、要求との差だけ補う仕事として復帰。今回CIを変更・起動しない |
 | QUALITY-003 | 品質要求の暫定Apple platforms 27方針に対し、manifestはmacOS 15の宣言。宣言・platform別build・導入の不足が残るため復帰。対応環境の新規決定、manifest変更、buildは今回実施しない |
-| QUALITY-005 | [SPI登録前ゲート](../Current/SPI_REGISTRATION_GATE.md)は、SPI公開後に人間レビューする最新の方針とも整合する必要な判断点。ゲートを有効化し、重複する「再開指示待ち」を取り除いた。対象版の登録可判断、0.9.x以降の時期、登録実行の委任は残る |
+| QUALITY-005 | [SPI登録前ゲート](../Quality/SPI_REGISTRATION_GATE.md)は、SPI公開後に人間レビューする最新の方針とも整合する必要な判断点。ゲートを有効化し、重複する「再開指示待ち」を取り除いた。対象版の登録可判断、0.9.x以降の時期、登録実行の委任は残る |
 
 既存の必須依存辺は、削除したPERM-071の入力辺を除き保持した。QUALITY-002・003をQUALITY-001の完了待ちにはしていない。RBT-004をOR条件の例とする古い補足は、現在の行・辺のRBT-011待ちに合わせて訂正した。
 
@@ -50,16 +50,16 @@
 | RELEASE-079 | 0.7.0の範囲・開始判断。0.6.0完了が前提。version固有の判断であり0.6ゲートと重複しない |
 | RBT-035 | チューニング知見の再探索。現在の性能評価と目的が違い、完了・不要の根拠が不足。探索量も未確定 |
 | RBT-026 | [View Matrix](../../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md)にO(1)契約が残る。文書作業時に呼出し側前提を含め再判断する境界を維持 |
-| RBT-004 | [監査](../Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md)に残存比較宣言・Balanced群の未決事項がある。Result削除済みを全体完了としない。現在のIndex採否待ちを維持 |
+| RBT-004 | [監査](../Quality/EXTERNAL_TYPE_EXTENSION_AUDIT.md)に残存比較宣言・Balanced群の未決事項がある。Result削除済みを全体完了としない。現在のIndex採否待ちを維持 |
 | RBT-005 | 同監査で外部consumer 2件の互換維持が必要。移行済みの証拠を今回は得ていない。repository内で使わないことだけでは除去できない |
 | RBT-008 | ユーザーが性能上の理由で「最後の最後」と明示した意図的な凍結。必要性不明や介入による凍結として扱わない。[凍結判断の正本](../Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md)に理由と再開の境界を記録した |
 | PERM-063 | benchmark名の互換処理は、[移行計画](../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)でユーザーが後段まで遅らせた仕事。現在の名称に合わせる必要はあるが、今回着手しない |
 | PERM-064 | PERM-063の互換導入後にtitleを変える別受入境界。二段階は[性能CI手順](../Current/PERFORMANCE_CI_CHANGE_GUIDE.md)に必要であり重複ではない |
-| PERM-043 | [現行評価内の記録](../PermutationModule/CurrentQualityAssessment.md)に比較水準の明示保留あり。旧COWの数値を現行実装へ転用できない。再検査時に対象と主張を更新して判断する |
+| PERM-043 | [現行評価内の記録](../Quality/CrossVersion/PermutationModule/CurrentQualityAssessment.md)に比較水準の明示保留あり。旧COWの数値を現行実装へ転用できない。再検査時に対象と主張を更新して判断する |
 | PERM-044 | 基準を決めるPERM-043と実測・評価は別の仕事。既存チャートを否定せず、現行対象版と判定水準の証拠不足を残す |
-| PERM-051 | [仕様レビュー](../Current/PERMUTATION_TEST_AS_SPEC_REVIEW.md)でも借用寿命の再実行可能なcompiler fixtureが残件。既存の通常版public-surface fixtureやruntime testでは代替できない |
-| PERM-060 | [Sequence実験](../PermutationModule/NextPermutationsSequenceExperiment.md)は一時Viewを集める問題を示す。現在非Sequenceだから将来判断を完了扱いにせず、明示的な延期を維持 |
-| OPT-064 | 既存taskは一般提供方式の判断を前提とする。一方、[新Validation案](../Current/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)は現行の実験提供を含む公開文書の確認。対象が同じとは確定できず、計画レビュー前に統合・解除しない |
+| PERM-051 | [仕様レビュー](../Quality/PERMUTATION_TEST_AS_SPEC_REVIEW.md)でも借用寿命の再実行可能なcompiler fixtureが残件。既存の通常版public-surface fixtureやruntime testでは代替できない |
+| PERM-060 | [Sequence実験](../Technical/NextPermutationsSequenceExperiment.md)は一時Viewを集める問題を示す。現在非Sequenceだから将来判断を完了扱いにせず、明示的な延期を維持 |
+| OPT-064 | 既存taskは一般提供方式の判断を前提とする。一方、[新Validation案](../Quality/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)は現行の実験提供を含む公開文書の確認。対象が同じとは確定できず、計画レビュー前に統合・解除しない |
 
 PERM-063・064には旧NextPermutationsSequence名、PERM-051には旧source pathなどが残る。仕事の必要性とは分け、実行を具体化するときに現行名・契約へ照合する。今回、将来のbenchmark表示名を独自に決定していない。
 
@@ -77,7 +77,7 @@ PERM-063・064には旧NextPermutationsSequence名、PERM-051には旧source pat
 
 PERM-051は品質側へ移行済みのため不要との判断を受け、独立taskをEXCLUDEDとした。上記17件は当初の棚卸し結果であり、この判断後の凍結は16件。[除外記録と旧正本](PERM-051_EXCLUDED_2026-10-16.md)へ接続する。
 
-続いてユーザー指示によりPERM-043・044を次回品質評価へ集約し、独立taskとして除外した。凍結は14件。[原文・依存辺と除外理由](PERM-043_044_EXCLUDED_2026-10-16.md)、[品質評価への引継ぎ](../PermutationModule/CurrentQualityAssessment.md)を参照する。測定済み証拠は保持し、正式合格や新たな比率基準の採用とは扱わない。
+続いてユーザー指示によりPERM-043・044を次回品質評価へ集約し、独立taskとして除外した。凍結は14件。[原文・依存辺と除外理由](PERM-043_044_EXCLUDED_2026-10-16.md)、[品質評価への引継ぎ](../Quality/CrossVersion/PermutationModule/CurrentQualityAssessment.md)を参照する。測定済み証拠は保持し、正式合格や新たな比率基準の採用とは扱わない。
 
 PERM-060はユーザーがバグとして復帰を指示したため、再現・影響範囲・修正要求を整理するACTIVEの調査へ変更した。凍結は13件。[現行課題](../Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md)と[変更前原文](PERM-060_BEFORE_REACTIVATION_2026-10-16.md)を参照。
 

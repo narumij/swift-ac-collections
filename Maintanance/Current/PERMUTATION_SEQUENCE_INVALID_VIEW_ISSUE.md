@@ -8,7 +8,7 @@
 
 ## 問題
 
-[実験記録](../PermutationModule/NextPermutationsSequenceExperiment.md)では、tests-onlyのRuntimeCheckedPermutationSequenceを`Array(sequence)`へ渡すと、次のnext()と終端nilの取得でViewが失効し、完成した配列の要素を読めなくなる。通常のSequence操作で利用できない結果を作ることが、この課題の対象である。
+[実験記録](../Technical/NextPermutationsSequenceExperiment.md)では、tests-onlyのRuntimeCheckedPermutationSequenceを`Array(sequence)`へ渡すと、次のnext()と終端nilの取得でViewが失効し、完成した配列の要素を読めなくなる。通常のSequence操作で利用できない結果を作ることが、この課題の対象である。
 
 実験adapterは[テスト](../../Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift)内にある。現行の[通常公開型](../../Sources/NextPermutationModule/NextPermutations.swift)と[借用公開型](../../Sources/NextPermutationModule/BorrowedNextPermutations.swift)はSequence非準拠と明記されている。公開製品で同じ操作が可能だという確認には広げない。
 

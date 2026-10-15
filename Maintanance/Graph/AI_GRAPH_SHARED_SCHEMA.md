@@ -202,8 +202,8 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 2. document 9件（`repo_text` / `candidate`）:
    `Documentation/RedBlackTreeMultiMap.ja.md`、`Documentation/RedBlackTreeMultiMap.md`、`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`、
    `Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md`、`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`、
-   `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeMultiMap.outline.md`、
-   `Sources/RedBlackTreeCollections/Documentation/Head/RedBlackTreeMultiMap.ja.md`、`Sources/RedBlackTreeCollections/Documentation/Head/RedBlackTreeMultiMap.md`、
+   `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/RedBlackTreeMultiMap.outline.md`、
+   `Maintanance/UserDocuments/RedBlackTreeCollections/Head/RedBlackTreeMultiMap.ja.md`、`Maintanance/UserDocuments/RedBlackTreeCollections/Head/RedBlackTreeMultiMap.md`、
    `Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeMappedValuesView.md`
 3. commit（新しい順、`repo_git` / `confirmed`）: `211ca2fc` 2026-10-05、`3349e4b3` 2026-10-03、`3e79163c` 2026-10-01、`4e5c3306`・`0266bfd5`・`0bbde8a0` 2026-09-28
 4. task: 0件（導出元なし。6節）

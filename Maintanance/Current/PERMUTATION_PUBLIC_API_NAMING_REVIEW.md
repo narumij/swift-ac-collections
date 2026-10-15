@@ -117,6 +117,7 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND4.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND4.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND4.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND4_REPORT.md`
 - `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`
 - `Sources/PermutationModule/PermutationModule.docc/PermutationModule.md`

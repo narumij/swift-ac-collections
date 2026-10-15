@@ -3,7 +3,7 @@
 ## 状態
 
 Round 4回答者: ユーザー。共通入力は`PERMUTATION_PUBLIC_API_NAMING_ROUND4_INPUT.md`。
-Round 3の採点形式を保ち、候補ごとの自由記述欄を追加した。まだ回答を開始していない。
+Round 3の採点形式を保ち、候補ごとの自由記述欄を追加した。2026-10-15回答済み。
 
 ## Round 4比較表
 

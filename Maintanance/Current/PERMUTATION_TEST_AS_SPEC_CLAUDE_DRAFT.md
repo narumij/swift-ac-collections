@@ -1,8 +1,8 @@
-# Permutation Test as Spec — prepared Claude request
+# Permutation Test as Spec — Claude request
 
-Author: Astra / 2026-10-15. Task: PERM-078. Status: PROPOSED, NOT DISPATCHED.
+Author: Astra / 2026-10-15. Task: PERM-078. Status: ACTIVE, issued through CLAUDE_TASK.md on 2026-10-15.
 
-This is a prepared request, not the current assignment. Do not start from this file alone. OPT-074 must first be returned by Claude and accepted by Astra; the coordinator must then check the current Registry and issue this bounded request through CLAUDE_TASK.md. Do not modify that active assignment while preparing this work.
+The user authorized dispatch before closing OPT-074 acceptance records. Claude has returned OPT-074 and released its scope; the current Registry was checked before issuing this request. CLAUDE_TASK.md now assigns PERM-078 to Claude. ACTIVE records the issued assignment, not confirmation that execution has started.
 
 ## Objective and inputs
 
@@ -28,8 +28,8 @@ Run the narrow affected tests first, then the affected PermutationTests target i
 
 For finding B, demonstrate that setup failure is not accepted as the expected trap, with a temporary test-only negative control if needed; restore it before handback. Record the mechanism and result.
 
-List changed files and group changes by purpose. No commit or push authorization is included in this draft; obtain explicit authorization at dispatch if worker commits are desired. State remaining concerns, completion, and release of the assigned scope explicitly. A successful test run alone does not release ownership or complete acceptance.
+List changed files and group changes by purpose. No commit or push authorization is included in this assignment. State remaining concerns, completion, and release of the assigned scope explicitly. A successful test run alone does not release ownership or complete acceptance.
 
 ## Return — reserved for Claude after dispatch
 
-Not started. Not returned.
+No return received. Execution start has not been confirmed.

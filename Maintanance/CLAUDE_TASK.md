@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `OPT-074-HIME` — ACTIVE, awaiting Claude’s completion and handback confirmation. Astra independently verified the saved changes (`427b155a`), but Claude’s remaining work, concerns, and release of the assigned scope have not been confirmed. The earlier DONE status was corrected by user direction on 2026-10-15.**
+**Current assignment: `PERM-078-HIME` — ACTIVE (issued; execution start not confirmed). `OPT-074` has been returned and accepted; the user authorized committing its closure record as DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -51,6 +51,17 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 ## Active assignment
 
+### PERM-078-HIME — Permutation Test as Specification findings B–D
+
+- Registry ID: `PERM-078` (registered before this request).
+- Assigned by Astra under the user's 2026-10-15 direction: issue this request first, then close OPT-074 acceptance records.
+- Execute [the bounded request](Current/PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md). Its scope, stops, validation, and Return section are part of this assignment.
+- Address only findings B–D: terminal-nil Death Test false positives, destruction of an unstarted nonempty borrowed owner, and independence from subsequent source-array changes.
+- Finding A / frozen `PERM-051`, production changes, and unrelated work are excluded. No commit or push authorization.
+- Return results in the linked request's reserved Return section. State remaining concerns and release of the assigned scope explicitly. Astra performs independent acceptance.
+
+## Returned assignment — accepted, DONE
+
 ### OPT-074-HIME — OptionalElementBuffer Test as Specification review follow-up
 
 - Registry ID: `OPT-074` (registered before this request).
@@ -69,3 +80,7 @@ Returned 2026-10-15 by Claude. Work is in `427b155a`; no further diff. Re-ran De
 (49 XCTest + 25 Death Tests each) and the compiler fixture, all exit 0. No remaining work, concerns,
 specification questions, or production defects. Assigned scope released. Details:
 `Current/OPTIONAL_ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md` § Claude返却欄.
+
+#### Astra acceptance (`OPT-074`, 2026-10-15)
+
+Claude’s completion and scope release are confirmed in the return above, saved in `92b65db8`. Tests and compiler fixtures have no changes since independently verified `427b155a`. Acceptance is complete; the user authorized committing the closure record on 2026-10-15. Registry status is DONE, saved with this record. See the review document’s latest Astra confirmation.

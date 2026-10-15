@@ -31,7 +31,7 @@ the user.
 
 Additional inspections `OPS-045` and `DOC-031` are issued below; begin only after releasing the currently occupied work scope. They do not supersede the test batch.
 
-**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043 and RBT-044 have been accepted by Astra; RBT-045 is now eligible. RBT-042 is DONE.**
+**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043, RBT-044 and RBT-045 have been accepted by Astra; RBT-045 is DONE; final cross-type review is eligible. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -182,7 +182,52 @@ Registry ID `RBT-045`; registered before issuance. Start only after the RBT-044 
 
 #### Return (`RBT-045`) — reserved for Claude
 
-No return received.
+Returned 2026-10-16 03:16 JST by Claude (Opus 5.5). HEAD `d6095cdd`; the RBT-044 gate was open when I started. My changes are uncommitted and limited to four files in `Tests/RedBlackTreeTests/RedBlackTreeMultiMap/` plus `Tests/TESTING.md`. Concurrent maintenance edits by others (Registry, MILESTONES, `Current/*DECISION*`, and new Archived/Current files) were not touched. Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. No shared fixtures were changed.
+
+**MM1** — `_5_InsertionTests.swift`, `test_updateValue_atRemovedIndexReturnsNilAndKeepsSurvivors` (normal only). Setup: `[(1,first),(1,middle),(1,last),(2,other)]`. `remove(at:)` on the middle returns `"middle"`, and `isElement(at:)` on the saved index is then `false`. `updateValue("new", at:)` returns `nil`. Keys `[1,1,2]`, values `[first,last,other]`, and `count(forKey: 1) == 2` are unchanged. No foreign-index or compatibility claim.
+
+**MM2** — two tests.
+- `_11_TransformingAndCombiningTests.swift`, `test_transformations_rethrowClosureErrorWithoutKeepingPartialResults` (both modes). Input `[(1,10),(1,11),(1,12),(2,20)]` gives distinguishable values under one key.
+  - `mapValues` throws at 11: visits `[10,11]`, so later same-key values are not called.
+  - `compactMapValues` throws at 12: visits `[10,11,12]`.
+  - The 3 reference values produced before the throws are all released.
+  - `filter` over reference values under duplicate keys throws at the 2nd value: visits `[0,1]`, the source keys and identities are unchanged, and everything is released once the source scope ends.
+  - Source keys and values are unchanged. Each case checks the exact error.
+- `_6_RemovalTests.swift`, `test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal` (normal only). Under one key, `b` is removed and `c` throws. Checks the exact error, visits `[a,b,c]`, and that the shared original's keys and values are unchanged. For the receiver it only checks sorted keys and that every entry comes from the original; no rollback assumed.
+
+Range-erase predicate propagation is covered by the `31aa2f07` regressions and was not duplicated.
+
+**MM3** — `_6`, `test_sameReferenceValueInManyEntriesIsReleasedAfterTheLastOwner` (normal only). One reference is stored in three entries (keys 1, 1, 2), plus `Box(3)` and a shared copy.
+- `remove(at: startIndex)` returns that reference; the returned tuple is scoped so it does not extend the lifetime.
+- `updateValue(Box(10), at: startIndex)` returns that reference, and it is retained in `replaced`. The receiver is now keys `[1,2,3]`, value ids `[10,1,3]`; the remaining entry keeps the reference alive.
+- `eraseMulti(2)` removes the last entry. The copy still has keys `[1,1,2,3]` with the first three `===` the reference.
+- `copy.removeAll()`: still alive through `replaced`. `replaced = nil` releases it.
+
+Existing String position tests are unchanged. No deep-copy or copy-count assertion.
+
+**MM4** — `_16_BoundExpressionTests.swift`, split as in M3/D5. The Debug class keeps only `isValid` and `_copyCount` assertions; its guard is unchanged. The new `!COMPATIBLE_ATCODER_2025` class `RedBlackTreeMultiMapBoundPublicBehaviorTests` holds the original public assertions (now also checking values) plus duplicate-key cases on `[(0,a),(1,b),(1,c),(2,d)]`:
+- `lowerBound(1)` → `b`, `upperBound(1)` → `d`, `.lessThan(2)` → `c`.
+- `equalRange(1)` and `lowerBound(1)..<upperBound(1)` give `["1:b","1:c"]` with count 2; partial and closed ranges give the expected value sequences and counts.
+- Erasing the whole duplicate group leaves `["0:a","2:d"]` and `count(forKey: 1) == 0`.
+- Reversed ranges, including `upperBound(1)..<lowerBound(1)`, are a no-op with `count(forKey: 1) == 2` and 0 predicate calls.
+
+Existing IndexRange, equalRange and distance tests are unchanged. It executed 19 tests in **Release**.
+
+Static/contract note: my first draft asserted that `.lessThanOrEqual(1)` resolves to the *last* duplicate (`c`). It resolved to `b`. `Sources/RedBlackTreeCollections/Documentation/DSL.md` defines `.lessThanOrEqual(k)` as "the `find(k)` position if `find` succeeds, otherwise one before `lowerBound(k)`", and does not say which duplicate `find` selects in a multi container. I treated this as my wrong expectation, not a defect: the test now checks only the key, with a comment. The DSL table row "`k` 以下の最大の要素" could be read as the last duplicate. If that reading is intended, it is a documentation/contract question for Astra or the user; nothing changed in production or docs.
+
+**Validation**
+
+| Command | Result |
+| --- | --- |
+| `swift test -c debug --filter 'RedBlackTreeMultiMap(Insertion\|Removal\|TransformingAndCombining\|BoundExpression\|BoundPublicBehavior)Tests'` | exit 0 after the assertion fix; all 5 suites passed. The first run had 1 failure: the `lessThanOrEqual` duplicate expectation above |
+| same, `-c release` | all 4 compiled suites passed; `RedBlackTreeMultiMapBoundPublicBehaviorTests` executed 19; the Debug-only class is absent |
+| `swift test -c debug --filter RedBlackTreeTests` | exit 0; XCTest 979, Swift Testing 133 in 17 suites (includes Death Tests), 0 failures |
+| `swift test -c release --filter RedBlackTreeTests` | exit 0; XCTest 817, Swift Testing 120 in 11 suites, 0 failures |
+| Compatibility: disposable copy, `COMPATIBLE_ATCODER_2025` enabled only in the copy, `RedBlackTreeMultiMapTransformingAndCombiningTests` | exit 0; the one compat-compiled new case passed (the others are normal-only) |
+
+Normal lifetime-balance checks were on. Not run: Linux, Swift 6.2, ASan, the full `swift test` suite, compatibility-mode Release, and mutation checks.
+
+**Completion and release** — MM1–MM4 complete. No production defect found. One open documentation question remains: whether `.lessThanOrEqual` on duplicates should name a particular occurrence. I release the RBT-045 scope: the four MultiMap test files, the `Tests/TESTING.md` handoff item, and this Return. No commit or push. Next per the request: OPS-045, then DOC-031.
 
 ## Returned assignment — RBT-042 accepted, DONE
 
@@ -235,6 +280,10 @@ Returned 2026-10-15 23:35 JST by Claude (Opus 5.5). Work started at HEAD `c98a09
 Normal lifetime-balance checks were on; no SKIP traits were used. Not run: Linux (SIGILL path and opt-in Death Tests), Swift 6.2, ASan, the full `swift test` suite, compatibility-mode Release. The multi-container wrapper pattern was checked by reading the source only.
 
 **Concerns, completion, release** — S1, S3, S4 and the filter/erase(where:) part of S2 are complete. The IndexRange/IndexRangeExpression `erase(_:where:)` path of S2 is stopped and needs a contract or fix decision. Process note: an earlier task-owned temporary copy printed its path once; every copy was removed. I release the assigned scope: the five Set test files, the `Tests/TESTING.md` handoff item (which replaced the now-stale PERM-078 item), and this Return. No commit or push.
+
+#### Astra acceptance (`RBT-045`, 2026-10-16)
+
+MM1–MM4 and explicit scope release are independently accepted at HEAD `8053683a` plus the returned changes. Native Debug: 979 XCTest + 133 Swift Testing cases; Release with debug info disabled: 817 + 120, all passed. The duplicate `.lessThanOrEqual` check matches the documented find-position rule and implementation; no last-duplicate contract is introduced. See the review canonical document for commands and validation limits. Registry is WAITING_USER for commit confirmation. RBT-041 final cross-type review is eligible, not yet performed. This note does not alter the OPS-045 / DOC-031 inspection assignments.
 
 ## Returned assignment — PERM-078 accepted, DONE
 
@@ -291,3 +340,7 @@ The user authorized the production fix after checkpoint `7ed1cc6b`. Astra reprod
 Author: Astra / 2026-10-16. Both IDs were registered before this request. The user requested task-integrity and document-link checks after permanent-task setup and archival.
 
 After finishing and formally releasing your currently occupied scope (including RBT-045 if still in progress), perform [the two maintenance checks](Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md), OPS-045 then DOC-031. No intermediate acceptance is required between these two inspections. They do not replace the RBT batch or open any test gate. Read the current Registry rows and the complete bounded request. Edit only its respective Return sections, report findings without repairing the inspected files, and explicitly release each scope. Do not commit or change task state. Astra handles independent verification and acceptance.
+
+#### Astra closure (`RBT-045`, 2026-10-16)
+
+The user authorized committing the accepted work after archival. RBT-045 is DONE and its Registry row is preserved in `Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md`. The original return and acceptance evidence remain here and in the review document. OPS-045 / DOC-031 remain separate assignments; their return sections were not edited.

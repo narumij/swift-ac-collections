@@ -34,6 +34,6 @@ RELEASE-080はユーザーの解決確認と追跡不要の指示によりEXCLUD
 
 PERM-063はEXCLUDEDとし、必要な互換工程をPERM-064へ統合。[記録](PERM-063_EXCLUDED_2026-10-16.md)。
 
-RBT-004は[ユーザー専任の判断](../Current/RED_BLACK_TREE_COMPARISON_USER_DECISION.md)へ変更した。
+RBT-004は[ユーザー専任の判断](RED_BLACK_TREE_COMPARISON_USER_DECISION_RETIRED_2026-10-16.md)へ変更した。
 
-RBT-005は[Memoize群のユーザー判断](../Current/MEMOIZE_USER_DECISION.md)へ変更した。
+RBT-005は[Memoize群のユーザー判断](MEMOIZE_USER_DECISION_RETIRED_2026-10-16.md)へ変更した。

@@ -71,12 +71,12 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   form系集合演算の共有元・相手の不変、削除済みIndex Death Testのsetup分離を追加した。範囲版`erase(_:where:)`の
   predicateエラーがtrapになる問題はAstraが4型で修正し、修正前失敗・修正後成功の回帰テスト8件を追加。
   修正と検証の記録は`Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`末尾。Claude返却原文は`Maintanance/CLAUDE_TASK.md`。
-- RBT-043（MultiSet、受入済み）・RBT-044（Dictionary）：Bound公開動作をRelease実行のclassへ分離
-  （`RedBlackTree{MultiSet,Dictionary}BoundPublicBehaviorTests`、Debug専用の`isValid`・copy countは元の条件）。
-  Dictionaryはdefault付きsubscriptの評価回数、Optional Valueの三状態、throwする統合・変換・filter・erase、
-  共有参照Valueの寿命を追加し、空の重複初期化testをDeath Testへの参照に置き換えた。返却は`Maintanance/CLAUDE_TASK.md`。
+- RBT-043（MultiSet）・RBT-044（Dictionary）は受入済み。RBT-045（MultiMap）：Bound公開動作を
+  `RedBlackTreeMultiMapBoundPublicBehaviorTests`へ分離（3型とも同じ形、Debug専用の`isValid`・copy countは元の条件）。
+  削除済みIndexへのupdateValue、throwする変換・filter・erase、同一参照Valueを複数エントリに持つ場合の寿命を追加した。
+  重複keyでの`.lessThanOrEqual(k)`はDSL.mdで`find(k)`の位置と定義され、どの値かは規定外。返却は`Maintanance/CLAUDE_TASK.md`。
 
-最終更新: 2026-10-16 00:35 JST / Claude Opus 5.5
+最終更新: 2026-10-16 03:15 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

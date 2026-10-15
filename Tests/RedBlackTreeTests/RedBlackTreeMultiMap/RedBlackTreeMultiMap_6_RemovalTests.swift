@@ -92,6 +92,67 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(map.map(\.value), ["a", "d"])
     }
+
+    /// erase(where:)は重複keyの値を区別した入力でも述語のエラーをそのまま投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元のmultimapのkey/valueは変わらないこと。変更側の途中状態は、元のエントリだけを
+    /// key順に持つことだけを確かめる（RBT-045 MM2）
+    func test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c"), (2, "d")]
+      var map = original
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try map.erase { element in
+          visited.append(element.value)
+          if element.value == "c" { throw StopError() }
+          return element.value == "b"
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["a", "b", "c"])
+      XCTAssertEqual(original.map(\.key), [1, 1, 1, 2])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(map.map(\.key), map.map(\.key).sorted())
+      XCTAssertTrue(map.allSatisfy { element in original.contains { $0.key == element.key && $0.value == element.value } })
+    }
+
+    /// 同じ参照Valueを複数のエントリに格納し共有コピーを残したとき、一部の削除・置換の後も残るエントリ・
+    /// 共有コピー・取り出した旧値が参照を保持し、最後の保持を解いたときに解放されること（RBT-045 MM3）
+    func test_sameReferenceValueInManyEntriesIsReleasedAfterTheLastOwner() {
+      final class Box { let id: Int; init(_ id: Int) { self.id = id } }
+      weak var weakShared: Box?
+      var map: RedBlackTreeMultiMap<Int, Box>
+      do {
+        let shared = Box(1)
+        weakShared = shared
+        map = [(1, shared), (1, shared), (2, shared), (3, Box(3))]
+      }
+      var copy = map
+
+      // 一部のエントリの削除と置換。旧値は戻り値として取り出す
+      do {
+        let removed = map.remove(at: map.startIndex)
+        XCTAssertTrue(removed.value === weakShared)
+      }
+      var replaced = map.updateValue(Box(10), at: map.startIndex)
+      XCTAssertTrue(replaced === weakShared)
+      XCTAssertEqual(map.map(\.key), [1, 2, 3])
+      XCTAssertEqual(map.map(\.value.id), [10, 1, 3])
+      XCTAssertNotNil(weakShared, "残るエントリが参照を保持すること")
+
+      // 変更側から残りのエントリも消す。共有コピーと取り出した旧値が保持する
+      XCTAssertEqual(map.eraseMulti(2), 1)
+      XCTAssertNotNil(weakShared)
+      XCTAssertEqual(copy.map(\.key), [1, 1, 2, 3])
+      XCTAssertTrue(copy.prefix(3).allSatisfy { $0.value === weakShared }, "共有コピーは元の参照を保つこと")
+
+      copy.removeAll()
+      XCTAssertNotNil(weakShared, "取り出した旧値を保持している間は生存すること")
+      replaced = nil
+      XCTAssertNil(weakShared, "最後の保持を解いたときに解放されること")
+    }
   #endif
 
   func test_removeAll_clearsEntriesAndHonorsCapacityChoice() {

@@ -88,6 +88,21 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.first?.value, "new")
       XCTAssertEqual(copy.first?.value, "old")
     }
+
+    /// 同じkeyの群から中央を削除した後、保存していたIndexへのupdateValueはnilを返し、
+    /// 残っているkey/valueを変えないこと（RBT-045 MM1）
+    func test_updateValue_atRemovedIndexReturnsNilAndKeepsSurvivors() {
+      var map: RedBlackTreeMultiMap<Int, String> = [(1, "first"), (1, "middle"), (1, "last"), (2, "other")]
+      let removedIndex = map.index(after: map.startIndex)
+      XCTAssertEqual(map.remove(at: removedIndex).value, "middle")
+      XCTAssertFalse(map.isElement(at: removedIndex), "削除した位置のIndexは無効になっていること")
+
+      XCTAssertNil(map.updateValue("new", at: removedIndex))
+
+      XCTAssertEqual(map.map(\.key), [1, 1, 2])
+      XCTAssertEqual(map.map(\.value), ["first", "last", "other"])
+      XCTAssertEqual(map.count(forKey: 1), 2)
+    }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

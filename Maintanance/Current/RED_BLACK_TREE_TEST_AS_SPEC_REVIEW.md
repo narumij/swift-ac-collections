@@ -341,3 +341,21 @@ Claudeの正式返却・占有返却を確認し、5試験ファイルの差分�
 RBT-044は受入済み・commit許可待ちのWAITING_USER。RBT-045の着手ゲートを開放。最終横断RBT-041はMultiMapの返却・独立受入まで開始しない。原Returnは変更していない。
 
 2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-044をDONEとして保存する。MultiMapの続行依頼はユーザー意向により3:00 JST以降まで待機し、自動起動はしない。
+
+
+### MultiMap補完の独立受入（RBT-045、2026-10-16、Astra）
+
+基準HEADは`8053683a`、対象はClaudeが返却・占有返却したMultiMapの4テストファイルとhandoff。MM1〜MM4の差分を依頼と照合した。削除済みIndexのnil返却と生存要素、throw後の非呼出し・共有元不変・一時参照解放、重複エントリと返却旧値の寿命、ReleaseでのBound公開結果を確認。Debug専用内部観測と通常モードの条件は保持されている。production変更はない。
+
+Astra独立実行（Apple Swift 6.4、macOS arm64、通常の寿命検査有効）：
+
+- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`：exit 0、XCTest 979件、Swift Testing 133件／17 suites成功。
+- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`：exit 0、XCTest 817件、Swift Testing 120件／11 suites成功。MultiMap Bound公開検査も実行。
+- 通常起動は環境のsandbox制約、次の既定build systemでの試行はbuild失敗となったため、native buildへ切り替えた。これらを製品不具合や成功した検証へ数えない。
+- 互換構成はClaude返却の実行報告と構成条件の静的照合を根拠とし、Astraは再実行していない。Linux・Swift 6.2・ASan・全target・mutation検証は今回の独立確認外。
+
+`.lessThanOrEqual(k)`について、DSL.mdの解決規則とUnsafeTreeV2+BoundsExpression.swiftはいずれもfind成功時の位置を使う。重複群の最後のvalueを契約として要求する根拠はなく、keyだけの検査は妥当。表現上の懸念は返却原文に保持するが、この受入の未決仕様・製品不具合とはしない。公開契約は変更していない。
+
+MM1〜MM4を受入。RBT-045はcommit確認待ちのWAITING_USER。4型の正式返却・独立受入が揃い、RBT-041最終横断の着手条件は充足した。最終横断自体はまだ実施していない。
+
+2026-10-16、ユーザーが圧縮・アーカイブ後のcommitを指示。受入済みRBT-045をDONEとして履歴化した。最終横断RBT-041は着手可能・未実施。

@@ -17,3 +17,5 @@
 `Maintanance/`直下の協働入口・観察・評価文書と[`DOCUMENT.md`](../DOCUMENT.md)も、明示された配置を維持する。
 
 完了した[Permutation移行の依頼・返却・受入記録](../Archived/PermutationMigration_2026-10-16/README.md)は履歴へ移した。後段の方針を含む[移行計画](PERMUTATION_MODULE_MIGRATION_PLAN.md)は現行に残す。
+
+比較演算類とBalanced系は[経緯](RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md)と[保存意図](RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md)を別に保持する。旧ユーザー判断の案内2件は[今回の圧縮記録](../Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md)に従い履歴へ移した。Memoizeの現行正本は[依存調査](MEMOIZE_DEPENDENCY_INVESTIGATION.md)。

@@ -50,4 +50,75 @@ final class RedBlackTreeMultiMapTransformingAndCombiningTests: RedBlackTreeTestC
     XCTAssertEqual(lhs.map(\.value), ["a", "c"])
     XCTAssertEqual(rhs.map(\.value), ["b", "d"])
   }
+  /// mapValues・compactMapValues・filterは、重複keyの値を区別した入力でもclosureのエラーをそのまま投げ、
+  /// 投げた後はclosureを呼ばないこと。元のkey/valueは変わらず、途中まで作られた結果が参照値を
+  /// 保持し続けないこと（RBT-045 MM2）
+  func test_transformations_rethrowClosureErrorWithoutKeepingPartialResults() {
+    final class Box { let id: Int; init(_ id: Int) { self.id = id } }
+    struct StopError: Error, Equatable {}
+    final class WeakBox { weak var box: Box? }
+
+    let source: RedBlackTreeMultiMap<Int, Int> = [(1, 10), (1, 11), (1, 12), (2, 20)]
+    var produced: [WeakBox] = []
+    func track(_ box: Box) -> Box {
+      let observer = WeakBox()
+      observer.box = box
+      produced.append(observer)
+      return box
+    }
+
+    var visited: [Int] = []
+    XCTAssertThrowsError(
+      try source.mapValues { value -> Box in
+        visited.append(value)
+        if value == 11 { throw StopError() }
+        return track(Box(value))
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [10, 11], "同じkeyの後続の値へclosureを呼ばないこと")
+
+    visited = []
+    XCTAssertThrowsError(
+      try source.compactMapValues { value -> Box? in
+        visited.append(value)
+        if value == 12 { throw StopError() }
+        return track(Box(value))
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [10, 11, 12])
+
+    XCTAssertEqual(produced.count, 3)
+    XCTAssertTrue(produced.allSatisfy { $0.box == nil }, "途中まで作られた結果が変換後の値を保持していないこと")
+
+    var observers: [WeakBox] = []
+    do {
+      let boxes: RedBlackTreeMultiMap<Int, Box> = [(1, Box(0)), (1, Box(1)), (1, Box(2)), (2, Box(3))]
+      observers = boxes.map { element in
+        let observer = WeakBox()
+        observer.box = element.value
+        return observer
+      }
+      var filtered: [Int] = []
+      XCTAssertThrowsError(
+        try boxes.filter { element in
+          filtered.append(element.value.id)
+          if element.value.id == 1 { throw StopError() }
+          return true
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(filtered, [0, 1])
+      XCTAssertEqual(boxes.map(\.key), [1, 1, 1, 2])
+      XCTAssertTrue(zip(boxes.map(\.value), observers).allSatisfy { $0 === $1.box })
+    }
+    XCTAssertTrue(observers.allSatisfy { $0.box == nil }, "元のmultimapを破棄した後、filterの途中結果が参照値を保持していないこと")
+
+    XCTAssertEqual(source.map(\.key), [1, 1, 1, 2])
+    XCTAssertEqual(source.map(\.value), [10, 11, 12, 20])
+  }
 }

@@ -24,7 +24,8 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   内訳はRedBlackTreeTests 986、RedBlackTreeTreeTests 121、PermutationTests 63、OptionalElementBufferModuleTests 49、
   ElementBufferModuleTests 43、CppBehaviorReferenceTests 35、RedBlackTreeLegacyTests 27、AcCollectionsTests 5。
   同日、RedBlackTreeTestsはReleaseでもXCTest 834件・Swift Testing 120件で成功し、互換modeのtest buildも通る。
-  Linuxは未確認。公開API・公開名が番号付き仕様testから参照されているという照合は2026-10-15時点のもので、再照合していない。
+  Linuxは未確認。2026-10-16、RedBlackTreeとNextPermutationModuleの公開API 476件がすべて番号付き仕様testから参照されていることを
+  Claudeのtask graph（index store）で再照合した。ElementBuffer系の公開名各8件の照合は2026-10-15時点のもの。
 - OptionalElementBufferModule: 番号付き8仕様群を維持する。OPT-074の補完後、通常49件・Death Test 25件がDebugと
   Releaseで成功し、所有型のcompiler fixture（`Utilities/Maintenance/CompilerDiagnostics/OptionalElementBufferPublicSurface/`）
   も通る。ASanの成功記録は補完前（通常35件・Death Test 26件）のものである。View寿命とstrict memory safetyは未達、`Sendable`、`-Ounchecked`、外部性能、
@@ -75,7 +76,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 - test内に未使用変数の警告が2件ある（`RedBlackTreeInternal_ComparatorsTests.swift:178`・`:219`、2026-10-16確認）。仕様には影響しない。
 - `Tests/RedBlackTreeFixture/Fixtures.md`の「場所」をリポジトリ直下からのパスにそろえた（DOC-031の指摘）。
 
-最終更新: 2026-10-16 04:20 JST / Claude Opus 5.5
+最終更新: 2026-10-16 08:40 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

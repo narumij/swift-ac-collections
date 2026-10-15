@@ -40,7 +40,26 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
-未処理entryなし。
+### `CP-20261016-001` — テスト再建の記録（2026年秋）の作成
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-16 05時台の会話。`MILESTONES.md`の画像を見たあと、ユーザーが「ひめもテスト再構築の歩みみたいなのつくるかい？」と提案した。続けて次の指示があった。
+  - 置き場所：`Tests/`ではなく`Maintanance/`内のフォルダ。`Maintanance/`外のmdは徐々に減らしたい。
+  - 形：`RefactoringFromAtCoder2025`のようなリファクタリング記録。
+  - 中身は姫に任せる。`Fixtures.md`の移動は「まだいい」。queueで記録し、正本は作る。
+- 種別候補: `EXECUTION`
+- 対象範囲: `Maintanance/TestRebuild2026/`の新設（`README.md`説明正本、`EVIDENCE.md`事実正本、`Data/`、`Images/`）と、このentry。
+- 対象外: `Fixtures.md`等の移動、`DOCUMENT.md`・Registry・採番表・配置維持例外の変更、source・testの変更。
+- 完了条件: 説明と事実の正本、集計データ、図がそろい、件数と記述がgit履歴・保存資料・実行結果と照合できる。
+- 前提・既存task候補: 恒久task `TEST-005`の関連記録。`DOC-030`（文書の入口・参照）と`HIST-001`（移行史）に隣接する。
+- 担当候補・受入担当: 姫（Claude）作成 / Codex・Astra（入口への接続・受入）。
+- 停止条件: 作業主体や作者を記録から確かめられない場合は、推測で埋めず「確認していない」と書く。
+- 成果・検証: 2026-10-16 / Claude Opus 5.5。4ファイル（README、EVIDENCE、CSV、SVG・PNG）を作成した。
+  - 宣言数の数え方を、既存の`repository-test-counts.csv`の`165c81aa`（1739件）と照合し、一致した。
+  - 不具合8件は、各commitのdiffと、変更ファイルにtestが含まれることを確認した。
+  - パレット検証scriptはNode.jsがないため実行していない。理由と代わりの措置は`EVIDENCE.md`の6.に書いた。
+  - commitしていない。`DOCUMENT.md`や`MILESTONES.md`など入口からのリンクは張っていない（Codex・Astraの判断）。
+- Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。
 

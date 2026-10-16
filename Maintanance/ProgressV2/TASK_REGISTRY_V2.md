@@ -65,7 +65,7 @@
 | `QUALITY-003` | `ACTIVE` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` |
 | `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |
 
-| `RBT-049` | `ACTIVE` | Claude（姫：調査） / Codex（受入・統合） | [DISCOVERY] ASan strip_envの固定版検証 | 2026-10-17ユーザー指定で正式依頼。81204d22とmacOS環境を固定し、既定条件とstrip_env=0でProbe・DeathTests・RedBlackTreeInternalCoverageTestsを隔離比較。完全ログ・終了statusと適用限界を返却。製品・Tests・CI変更、全体suite、Linux適用は範囲外。0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |
+| `RBT-049` | `DONE` | Claude（姫：調査） / Codex（受入・統合） | [DISCOVERY] ASan strip_envの固定版検証 | 2026-10-17 Codex受入。81204d22・記載macOS環境の保存証拠で既定条件の失敗とstrip_env=0のProbe 3件・DeathTests 213件・内部カバレッジ5件成功を確認。原Returnのエラー出現行数は受入節で補正。固定版の限定調査完了。採用判断・製品/Tests/CI変更は含まず、Linux・全体suite・CI・リリース可否は未検証。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |
 
 ### Permutation
 

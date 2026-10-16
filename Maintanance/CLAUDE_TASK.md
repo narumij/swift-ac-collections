@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**No active Claude assignment.** OPS-050は返却・Astra受入済み、ユーザーcommit指示によりDONE。
+**Current assignment: OPS-052（依存見取り図の自動配置への助言）。** OPS-050は返却・Astra受入済み、DONE。
 
 RBT-042〜046、PERM-078、OPT-074、OPS-045・DOC-031はすべて受入済み・`DONE`。
 依頼・返却・受入の原文は[CLAUDE_TASK_HISTORY_2026-10-16.md](Archived/CLAUDE_TASK_HISTORY_2026-10-16.md)へ移した。
@@ -74,3 +74,18 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 ### OPS-050受入（Astra記入）
 
 2026-10-16、助言成果を受入。回答原文は保持し、正本のAstra受入欄に検証と補足を記録。Registryはユーザーcommit指示によりDONE。技術選定・実装は未実施。
+
+## OPS-052：依存見取り図の自動配置への助言
+
+2026-10-16、ユーザー指示によりAstraからClaude（姫）へ正式依頼。Registry登録済み。
+
+依頼本文・固定commit・入力資料・編集境界・受入条件は[助言依頼の正本](Current/TASK_REGISTRY_LAYOUT_ADVICE.md)。同書のClaude回答欄へ、コードによる自動化を増やしAIの調整負担を減らす案を返す。方式の確定・実装・commitは含めない。
+
+### OPS-052 Return（Claude記入）
+
+2026-10-16 / Claude（姫、Opus 5.5）。完了。回答は[助言依頼の正本](Current/TASK_REGISTRY_LAYOUT_ADVICE.md)の「Claude回答」欄。
+
+- 主な提案：枝を「骨格から出るか・骨格へ入るか」の2ビットで経路（横）・供給（縦）・退避（上）に分類すると、Flowを使わずに現行の横縦混在とPERM-079の上側配置を説明できる。骨格は到達点の最長路で導ける見込み。固定IDは`layoutHints`としてJSONへ移し、上書き専用にする。全体fallbackは枝単位にし、前回位置からの移動量を評価に入れる。
+- 次の一歩は分類関数だけを入れ、現データで全位置が現行と完全一致することを確かめること。
+- 未検証：導出した骨格と分類が現行配置と一致するかは、コードを実行して確かめていない。
+- 編集したのは回答欄と本Return欄だけ。入力コード・依頼本文は変更していない。commitしていない。

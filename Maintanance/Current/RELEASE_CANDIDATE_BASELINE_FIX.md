@@ -32,3 +32,33 @@ RELEASE-084 / 2026-10-16 / 作成・受入Astra、実装・検証Claude（姫）
 ## Return
 
 未着手。変更一覧、入力hash、検証結果、未確認・残判断、公開前に必要な反映順序、作業終了・範囲解放を返す。
+
+### Claude返却（2026-10-16 22:49〜23:00、停止報告）
+
+**停止した。** 正本の入力にある停止条件「比較契約の不一致が見つかれば報告して停止し、閾値・比較元を独断変更しない」に当たる事実を、実装の前に見つけた。ファイルの変更はこのReturnだけ。workflow・Scripts・Libraries・Evidenceには何も作っていない。
+
+**入力hash（着手時、HEAD `964c12bc`）:** `candidate.yml` `ee96cebf…c606`、`CI.json` `ae78926a…eaff`、`CI-Small.json` `af951833…ef8`。RELEASE-083の固定入力と同じ。
+
+**見つけた不一致（事実）:**
+- 0.5.3（`139ffef8`、2026-10-10）と比べられる21件のうち、3件はPermutationの測定。
+  - `Permutations.SubSequenceN subscript sequential access (batched)`
+  - `Permutations.SubSequenceN subscript shuffled access (batched)`
+  - `Permutations nextPermutations end-to-end checksum`（CI-Small）
+- 3件ともtitleは0.5.3にもある。batchedは`e9126d24`（10-03）から存在する。
+- ただし実装の方式が違う。
+  - 0.5.3の`PermutationModule/Permutations.swift`には、世代や失効を確かめる仕組みがない（`generation`・`GateKeeper`は0件。`precondition`は範囲検査の1件だけ）。
+  - 候補では、`9ff515c9`（2026-10-12「Adopt runtime-checked permutation views」）で、runtime-check付きViewに替わっている（`NextPermutations.swift`で`generation`・`GateKeeper`が15件）。
+- `PERFORMANCE_CI_CHANGE_GUIDE.md`の「Permutation実装方式の切替」は、この切替をまたぐ比較を「同じ実装系列内の回帰ではなく方式差」とし、PR #191のmerge commitを以後のruntime-check版baselineとしている。0.5.3はその切替より前なので、この3件を30%閾値で比べると、方式差を回帰として赤にするおそれがある。
+- 8件の欠落を直すだけだと、この3件の比較が新たに始まる（今は比較の前に止まっている）。
+
+**残る判断（ユーザー・Astra）:** 0.5.3を比較元にする候補CIで、Permutation 3件をどう扱うか。私は決めていない。
+1. 8件と同じ「既知SHA限定の例外」に、理由「契約の切替（`9ff515c9`）」を付けて、比較しない側へ明示する。結果に「Not compared: contract changed」と出す。
+2. 比較はするが、この3件だけは合否に使わず、参考として表示する。
+3. 0.5.3との性能比較は候補判定に使わないと決める（候補CIの比較元の規則を変えることになる）。
+- 正本は「閾値・比較元を独断変更しない」としているので、2と3は特に判断が要る。1でも、比較しない理由が「欠落」から「契約差」に広がる点を承認してもらう必要がある。
+
+**未確認:**
+- 3件で実際に30%を超える差が出るかは測っていない（全規模の測定は範囲外）。
+- RedBlackTreeの18件に、同じような方式の切替があるかは照合していない。製品コードの0.5.3からの変更は`31aa2f07`の範囲eraseだけ（RELEASE-081の調査）で、CIの18件の測定経路には含まれないと考えるが、未確認。
+
+**作業終了。** 方針が決まるまで停止し、範囲を解放する。commitしていない。

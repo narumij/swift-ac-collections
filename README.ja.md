@@ -23,6 +23,8 @@ swift-ac-collections は、
 
 ### Swift Package Manager での利用
 
+現行パッケージのビルドにはSwift 6.4以降が必要です。個別APIのOS条件はAPIドキュメントを確認してください。
+
 `Package.swift` の `dependencies` に以下を追加してください:
 
 ```swift
@@ -105,6 +107,13 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 連続削除には範囲削除 API を使用してください。
 
 ## ドキュメント
+
+各モジュールの現行ソース版ガイド：
+
+- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
+- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
+- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
+- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
 生成済みのAPIドキュメントは
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。

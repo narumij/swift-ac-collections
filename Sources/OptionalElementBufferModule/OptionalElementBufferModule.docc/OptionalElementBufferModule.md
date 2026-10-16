@@ -6,7 +6,8 @@ Store one- to four-dimensional optional elements in reusable contiguous buffers.
 
 Optional element buffers represent each position as either unset or as an owned `Element`. They
 support coordinate-based access without requiring callers to choose a sentinel value and are
-intended primarily for competitive-programming memoization workloads.
+intended primarily for competitive-programming memoization workloads. This module is experimental;
+its API does not carry stable compatibility guarantees.
 
 The package exposes these APIs from `AcCollections` only when the
 `ENABLE_OPTIONAL_ELEMENT_BUFFER` package trait is enabled. After enabling the trait as described in
@@ -27,7 +28,8 @@ memo.setElement(nil, at: 2, 1)     // Unset this position again.
 
 The four buffer types are noncopyable. Their `setElement` and `removeAll()` methods are
 nonmutating, however, so a buffer stored in a `let` binding can still change its contents. A `let`
-binding does not make the stored elements read-only.
+binding does not make the stored elements read-only. These operations do not synchronize access;
+callers must prevent overlapping reads and writes, including clearing the buffer with `removeAll()`.
 
 Coordinates are ordered from the innermost axis to the outermost axis. In the example above,
 `x` comes before `y`; `width` is the innermost axis and `height` is the outermost one. A buffer's

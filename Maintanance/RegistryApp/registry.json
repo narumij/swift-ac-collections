@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "f6e181b2",
-    "sha256": "3e8ccdf58cc811500f893896909ee60506a56efb7bf02df91aae294baf0e8901",
+    "head": "e76964c2",
+    "sha256": "83125de9fa9ae5107b9591fa7f0fa88af6f5281b200d3cb1cc917511af1ff947",
     "dirty": true,
-    "generatedAt": "2026-10-16T21:00:43.986886+09:00",
+    "generatedAt": "2026-10-16T21:20:58.100885+09:00",
     "generator": "sync.py",
     "rulesSha256": "a2d23808d272c9392fdab75b2e0ab0fe5ec49162dee5bbd243a11a7572ff81d0"
   },
@@ -297,9 +297,9 @@
       "state": "USER_ONLY",
       "owner": "User",
       "item": "[DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断",
-      "condition": "2026-10-16ユーザー預かり指定。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし",
+      "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし",
       "detail": "`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`",
-      "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
+      "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
       "sourceLine": 45,
       "group": "協働と運用",
       "permanent": false
@@ -318,12 +318,12 @@
     },
     {
       "id": "DOC-035",
-      "state": "ACTIVE",
+      "state": "DONE",
       "owner": "Astra",
       "item": "[EXECUTION] 0.6.0全公開対象の文書初版確認",
-      "condition": "2026-10-16ユーザー指示で構築。未実行。2026-10-16 DOC-037のユーザー受入可が明示され、当該前提は充足。RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。",
+      "condition": "2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。",
       "detail": "`Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md`",
-      "raw": "| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。未実行。2026-10-16 DOC-037のユーザー受入可が明示され、当該前提は充足。RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |",
+      "raw": "| `DOC-035` | `DONE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |",
       "sourceLine": 47,
       "group": "協働と運用",
       "permanent": false
@@ -533,12 +533,12 @@
     },
     {
       "id": "RELEASE-078",
-      "state": "PROPOSED",
-      "owner": "Codex",
+      "state": "DONE",
+      "owner": "Astra",
       "item": "[DISCOVERY] 0.6.0開始条件と現行提供区分の再照合",
-      "condition": "旧棚卸しtaskの完了を待たず、着手時点の品質課題・証拠と0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、文書初版を重点とする0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。工程整備・自動化とSPI公開は0.7.0へ置き、0.6.0には対象版の品質確認を残す。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない",
-      "detail": "`Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`",
-      "raw": "| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 旧棚卸しtaskの完了を待たず、着手時点の品質課題・証拠と0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、文書初版を重点とする0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。工程整備・自動化とSPI公開は0.7.0へ置き、0.6.0には対象版の品質確認を残す。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |",
+      "condition": "2026-10-16ユーザーの先行実施承認に基づき、e76964c2のmanifest・公開入口・4モジュール・品質要求を照合。現行名、trait・言語・OS条件、文書入力と残るリリース判断を整理しDOC-035へ引渡し。製品範囲・release開始・1.0品質達成は未決定。",
+      "detail": "`Maintanance/Current/RELEASE_0_6_0_SCOPE_RECONCILIATION.md`",
+      "raw": "| `RELEASE-078` | `DONE` | Astra | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 2026-10-16ユーザーの先行実施承認に基づき、e76964c2のmanifest・公開入口・4モジュール・品質要求を照合。現行名、trait・言語・OS条件、文書入力と残るリリース判断を整理しDOC-035へ引渡し。製品範囲・release開始・1.0品質達成は未決定。 | `Maintanance/Current/RELEASE_0_6_0_SCOPE_RECONCILIATION.md` |",
       "sourceLine": 70,
       "group": "公開とリリース",
       "permanent": false,
@@ -1344,9 +1344,9 @@
         "state": "USER_ONLY",
         "owner": "User",
         "item": "[DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断",
-        "condition": "2026-10-16ユーザー預かり指定。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし",
+        "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし",
         "detail": "`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`",
-        "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
+        "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
         "sourceLine": 45,
         "group": "協働と運用",
         "permanent": false
@@ -1365,12 +1365,12 @@
       },
       {
         "id": "DOC-035",
-        "state": "ACTIVE",
+        "state": "DONE",
         "owner": "Astra",
         "item": "[EXECUTION] 0.6.0全公開対象の文書初版確認",
-        "condition": "2026-10-16ユーザー指示で構築。未実行。2026-10-16 DOC-037のユーザー受入可が明示され、当該前提は充足。RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。",
+        "condition": "2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。",
         "detail": "`Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md`",
-        "raw": "| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。未実行。2026-10-16 DOC-037のユーザー受入可が明示され、当該前提は充足。RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |",
+        "raw": "| `DOC-035` | `DONE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |",
         "sourceLine": 47,
         "group": "協働と運用",
         "permanent": false
@@ -1580,12 +1580,12 @@
       },
       {
         "id": "RELEASE-078",
-        "state": "PROPOSED",
-        "owner": "Codex",
+        "state": "DONE",
+        "owner": "Astra",
         "item": "[DISCOVERY] 0.6.0開始条件と現行提供区分の再照合",
-        "condition": "旧棚卸しtaskの完了を待たず、着手時点の品質課題・証拠と0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、文書初版を重点とする0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。工程整備・自動化とSPI公開は0.7.0へ置き、0.6.0には対象版の品質確認を残す。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない",
-        "detail": "`Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`",
-        "raw": "| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 旧棚卸しtaskの完了を待たず、着手時点の品質課題・証拠と0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、文書初版を重点とする0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。工程整備・自動化とSPI公開は0.7.0へ置き、0.6.0には対象版の品質確認を残す。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |",
+        "condition": "2026-10-16ユーザーの先行実施承認に基づき、e76964c2のmanifest・公開入口・4モジュール・品質要求を照合。現行名、trait・言語・OS条件、文書入力と残るリリース判断を整理しDOC-035へ引渡し。製品範囲・release開始・1.0品質達成は未決定。",
+        "detail": "`Maintanance/Current/RELEASE_0_6_0_SCOPE_RECONCILIATION.md`",
+        "raw": "| `RELEASE-078` | `DONE` | Astra | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 2026-10-16ユーザーの先行実施承認に基づき、e76964c2のmanifest・公開入口・4モジュール・品質要求を照合。現行名、trait・言語・OS条件、文書入力と残るリリース判断を整理しDOC-035へ引渡し。製品範囲・release開始・1.0品質達成は未決定。 | `Maintanance/Current/RELEASE_0_6_0_SCOPE_RECONCILIATION.md` |",
         "sourceLine": 70,
         "group": "公開とリリース",
         "permanent": false,
@@ -2159,7 +2159,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
           "line": 34
         }
       },
@@ -2183,7 +2183,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
           "line": 81
         }
       },
@@ -2291,7 +2291,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
           "line": 87
         }
       },
@@ -2346,7 +2346,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
-        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
         "line": 23
       }
     },
@@ -2504,7 +2504,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
         "line": 34
       }
     },
@@ -2528,7 +2528,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
         "line": 81
       }
     },
@@ -2636,7 +2636,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "sha256": "d55194e827932233becbd210d6995c92ce220f5fc2bbefc10c2262ed15890838",
         "line": 87
       }
     },

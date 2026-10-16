@@ -1,0 +1,21 @@
+warning: /Users/narumij/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'swift-ac-collections': failed storing manifest for 'swift-ac-collections' in cache: attempt to write a readonly database
+warning: 'swift-algorithms': failed storing manifest for 'swift-algorithms' in cache: attempt to write a readonly database
+warning: 'swift-docc-plugin': failed storing manifest for 'swift-docc-plugin' in cache: attempt to write a readonly database
+warning: 'swift-numerics': failed storing manifest for 'swift-numerics' in cache: attempt to write a readonly database
+warning: 'swift-docc-symbolkit': failed storing manifest for 'swift-docc-symbolkit' in cache: attempt to write a readonly database
+[0/1] Planning build
+Building for production...
+[0/2] Write sources
+[1/2] Write swift-version--58304C5D6DBC2206.txt
+[3/6] Compiling ElementBufferModule ElementBuffer.swift
+[4/6] Compiling NextPermutationModule BorrowedNextPermutations.swift
+[5/6] Compiling OptionalElementBufferModule OptionalElementBuffer.swift
+[6/7] Compiling PermutationModule PermutationModule.swift
+[7/7] Compiling RedBlackTreeCollections RedBlackTreeBoundExpression+TopLevel.swift
+[8/8] Compiling RedBlackTreeModule RedBlackTreeModule.swift
+[9/9] Compiling AcCollections AcCollections.swift
+Build of target: 'AcCollections' complete! (8.75s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.

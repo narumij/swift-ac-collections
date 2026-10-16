@@ -21,6 +21,8 @@ These sorted sets and dictionaries are designed to
 
 ### Using Swift Package Manager
 
+Building the current package requires Swift 6.4 or later. Check the API documentation for OS availability of individual APIs.
+
 Add the following to the `dependencies` section of your `Package.swift`:
 
 ```swift
@@ -101,6 +103,13 @@ Indices become invalid after removal and must not be reused.
 Use range-based removal APIs for consecutive deletions.
 
 ## Documentation
+
+Current guides in this checkout:
+
+- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
+- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
+- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
+- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
 The generated API documentation is available on
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).

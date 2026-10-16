@@ -2,11 +2,11 @@
 
 > 2026-10-16ユーザー判断で今回のreleaseを0.5.4へ振替。[現在のゲート](RELEASE_0_5_4.md)を優先する。以下は準備・判断の経緯。将来の0.6.0範囲は未定。
 
-人間用ゲート資料。AIの再開用要約は[0.6.0キャッシュ](../Cache/Astra/RELEASE_0_6_0.md)に置く。
+人間用ゲート資料。AIの再開用要約は[0.6.0キャッシュ](../../Cache/Astra/RELEASE_0_6_0.md)に置く。
 
 ## マイルストーンとしての管理 2026-10-16
 
-RELEASE-007は重複する独立ゲートとしてEXCLUDEDとし、本書へ集約した。到達範囲と開始のユーザー判断は[リリース手順](../User/RELEASE_PROCESS.md)の候補採用判断へ接続し、同じ判断を再度求めない。最終リリース判断は別段階として維持する。調査・前提充足は開始許可ではない。管理入口は[マイルストーン管理](../MILESTONES.md)。
+RELEASE-007は重複する独立ゲートとしてEXCLUDEDとし、本書へ集約した。到達範囲と開始のユーザー判断は[リリース手順](../../User/RELEASE_PROCESS.md)の候補採用判断へ接続し、同じ判断を再度求めない。最終リリース判断は別段階として維持する。調査・前提充足は開始許可ではない。管理入口は[マイルストーン管理](../../MILESTONES.md)。
 
 
 最終更新: 2026-10-10 / Codex
@@ -74,13 +74,13 @@ Archivedへ移した。人間向け工程の正本は`../User/RELEASE_PROCESS.md
 
 ユーザーが、これまでの`Maintanance/Quality/Current/`の一式を`Maintanance/Quality/0.6.0-1/`へ保存し、次回用に空の`Current/`を作るよう指示した。保存先は会話で`Old`、`0.5.4-1`を検討した後、ユーザーが`0.6.0-1`へ訂正し、実行を明示した。AIが独自に対象版や保存時期を決めたものではない。
 
-この指示に従い、[今回までの品質資料](../Quality/0.6.0-1/)を保存し、`Quality/Current/`は`.gitkeep`だけを置いた空の作業先とした。関連する参照先も保存先へ更新した。共通の品質要求は`Quality/`直下に維持する。
+この指示に従い、[今回までの品質資料](../../Quality/0.6.0-1)を保存し、`Quality/Current/`は`.gitkeep`だけを置いた空の作業先とした。関連する参照先も保存先へ更新した。共通の品質要求は`Quality/`直下に維持する。
 
 これは資料の保存と次回作業場所の準備の判断であり、全資料が0.6.0で実測済みであること、品質合格、未解決課題の完了、次回試験やリリースの開始を決めたものではない。元資料の対象版・証拠・未確認事項は保持し、残作業の状態はTask Registryに従う。
 
 ## リリース完了後の互換調査再開判断
 
-2026-10-16ユーザー指定。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。詳細は[AtCoder 2025互換計画](AtCoder2025CompatibilityPlan.md)。
+2026-10-16ユーザー指定。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。詳細は[AtCoder 2025互換計画](../../Current/AtCoder2025CompatibilityPlan.md)。
 
 これはリリース後の判断点であり、0.6.0のリリースを止める条件ではない。リリース完了だけで調査・統合・mergeを自動開始しない。再開可の場合に調査の範囲・完了条件・担当を更新し、統合時期・送り先・merge許可は別途扱う。
 
@@ -96,7 +96,7 @@ DOC-035の全公開対象の文書初版確認を、本書の文書初版条件�
 
 ## 開始条件の照合と初版確認（2026-10-16 / Astra）
 
-[RELEASE-078の照合結果](RELEASE_0_6_0_SCOPE_RECONCILIATION.md)で現行4対象・提供条件・必要入力を整理した。[DOC-035の初版確認](PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md)では文書訂正、4対象＋共通入口のDocC生成、既存例の確認を実施。2026-10-16ユーザーのcommit承認により完了。確認範囲と未実施事項は同正本を参照し、本書に検証結果を重複転記しない。リリース候補・開始許可・1.0品質達成は未決定のまま。
+[RELEASE-078の照合結果](RELEASE_0_6_0_SCOPE_RECONCILIATION.md)で現行4対象・提供条件・必要入力を整理した。[DOC-035の初版確認](../../Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md)では文書訂正、4対象＋共通入口のDocC生成、既存例の確認を実施。2026-10-16ユーザーのcommit承認により完了。確認範囲と未実施事項は同正本を参照し、本書に検証結果を重複転記しない。リリース候補・開始許可・1.0品質達成は未決定のまま。
 
 ## 開始承認と今回のタグ方針（2026-10-16 / ユーザー判断）
 
@@ -130,4 +130,4 @@ RELEASE-084はWAITING_EXTERNALとして0.6.0リリース完了まで後送。完
 
 ## 文書・開始条件の完了証拠引継ぎ（2026-10-16圧縮）
 
-RELEASE-078の開始条件照合とDOC-035の全公開対象の文書初版確認は受入済み。完了nodeとその完了済み前提の辺を現行一覧・Studioから外し、[原Registry・依存](../Archived/TASK_REGISTRY_COMPLETED_DOCUMENT_GATES_2026-10-16.md)へ保存した。[開始条件の照合](RELEASE_0_6_0_SCOPE_RECONCILIATION.md)、[初版確認](PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md)、[本文とユーザー受入](RED_BLACK_TREE_DOCUMENT_COMPLETION.md)が証拠の入口。証拠を履歴化しても前提が未達へ戻るわけではない。候補CIの赤の引受判断、最終タグ・公開判断は別であり、文書完成からrelease完了とはしない。
+RELEASE-078の開始条件照合とDOC-035の全公開対象の文書初版確認は受入済み。完了nodeとその完了済み前提の辺を現行一覧・Studioから外し、[原Registry・依存](../../Archived/TASK_REGISTRY_COMPLETED_DOCUMENT_GATES_2026-10-16.md)へ保存した。[開始条件の照合](RELEASE_0_6_0_SCOPE_RECONCILIATION.md)、[初版確認](../../Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md)、[本文とユーザー受入](../../Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md)が証拠の入口。証拠を履歴化しても前提が未達へ戻るわけではない。候補CIの赤の引受判断、最終タグ・公開判断は別であり、文書完成からrelease完了とはしない。

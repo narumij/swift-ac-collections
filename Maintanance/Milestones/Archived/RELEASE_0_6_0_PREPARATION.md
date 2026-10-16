@@ -38,7 +38,7 @@ Claudeの[返却原文](RELEASE_0_6_0_QUALITY_EVIDENCE_RETURN.md)を保持し、
 
 - Swift 6.2の供用説明は未決ではない。現行ElementBufferModule.docc/ElementBufferModule.mdは、package導入はSwift 6.4、6.2での競技利用はbufferソース利用と明記済み。説明の再判断をユーザーへ戻さない。6.2での今回の対象ソースの実行証拠が未確認である点は別に残す。
 - ElementBuffer座標アクセスの不足は旧Assessmentからそのまま引き継がない。Tests/ElementBufferModuleTests/BareArray_7_BorrowedReferenceTests.swiftには1〜4次元の全座標・非対称形状・対象要素だけの更新の検査がある。Archived/Reviews/ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.mdには追加と受入記録がある。全座標APIの完全性を今回保証するものではないが、旧「未検証」4行を新たな必須課題へ転用しない。
-- ASan＋Death Testは「成立した証拠がない」ではない。[調査正本](ASAN_DEATH_TEST_INVESTIGATION.md)にはmacOS Swift 6.4の最小構成3件成功とASan検出の証拠がある。製品全体・Linuxでの成立は未確認で、今回の0.6.0必須条件へ自動昇格させない。
+- ASan＋Death Testは「成立した証拠がない」ではない。[調査正本](../../Current/ASAN_DEATH_TEST_INVESTIGATION.md)にはmacOS Swift 6.4の最小構成3件成功とASan検出の証拠がある。製品全体・Linuxでの成立は未確認で、今回の0.6.0必須条件へ自動昇格させない。
 - 既定Linux CIは差分確認の提案経路であり「唯一の手段」ではない。保存された最後の全体CI証拠と、現在のGitHubの最新成功を区別する。
 
 ### 統合した開始判断材料

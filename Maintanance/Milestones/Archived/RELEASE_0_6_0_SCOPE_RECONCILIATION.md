@@ -13,7 +13,7 @@
 | OptionalElementBufferModule | AcCollectionsからの再公開はENABLE_OPTIONAL_ELEMENT_BUFFER traitが必要。実験的、留保付き1.0対象 | 現行DocC・4次元型コメント。unset、要素寿命、非mutating更新、利用制約 |
 | ElementBufferModule | AcCollectionsから再公開。Swift 6.2競技供用／6.4一般供用という方針 | 現行DocC・4次元型コメント。現パッケージはSwift 6.4必須。MutableRefアクセスはApple OS 27以降 |
 
-根拠：Package.swift、Sources/AcCollections/AcCollections.swift、各モジュールの現行ソースとDocC、[品質要求](../Quality/QUALITY_REQUIREMENTS.md#10に向けた開発対象)。manifestのmacOS最低宣言は15であり、個別APIの27条件や将来の1.0環境方針を混同しない。他platformの実行品質を宣言だけで確定しない。
+根拠：Package.swift、Sources/AcCollections/AcCollections.swift、各モジュールの現行ソースとDocC、[品質要求](../../Quality/QUALITY_REQUIREMENTS.md#10に向けた開発対象)。manifestのmacOS最低宣言は15であり、個別APIの27条件や将来の1.0環境方針を混同しない。他platformの実行品質を宣言だけで確定しない。
 
 ## 条件付き依存と判断の境界
 

@@ -6,9 +6,10 @@ Usage (from the repository root):
   python3 Maintanance/RegistryApp/sync.py           # regenerate registry.json and the HTML seed
 
 What is derived (never edit by hand): tasks and edges, source hashes, baseline, the HTML seed.
-What is carried over from the current registry.json (not derivable from the Registry): milestones,
-milestoneRelations, milestoneSnapshot, and per-task displayInterest. Milestone quotes are checked
-against their source files and reported when stale.
+Milestone cards are read from the gate files in Maintanance/Milestones/<version>/ (UUID + カード情報;
+the 記録 part is never read). What is carried over from the current registry.json (not derivable from
+the Registry): milestoneRelations, milestoneSnapshot, and per-task displayInterest. Relation quotes are
+checked against their source files and reported when stale.
 """
 import datetime, hashlib, json, re, subprocess, sys
 from pathlib import Path
@@ -89,6 +90,88 @@ def milestone_sources(old):
     return stale, changed
 
 
+MILESTONES = ROOT / 'Maintanance/Milestones'
+
+
+def relocate_sources(old):
+    """A relation source whose file moved or no longer holds the quote is searched for in
+    Maintanance/Milestones/ and Maintanance/MILESTONES.md; repointed only when exactly one file has it."""
+    pool = sorted(MILESTONES.glob('**/*.md')) + [ROOT / 'Maintanance/MILESTONES.md']
+    done = []
+    for r in old.get('milestoneRelations', []):
+        src = r.get('source') or {}
+        q, p = src.get('quote'), ROOT / src.get('path', '')
+        if not q or (p.exists() and q in p.read_text(encoding='utf-8')):
+            continue
+        hits = [f for f in pool if q in f.read_text(encoding='utf-8')]
+        if len(hits) == 1:
+            src['path'] = hits[0].relative_to(ROOT).as_posix()
+            done.append(f"{r['prerequisite']}->{r['successor']}: {src['path']}")
+    return done
+
+
+def sections(text, level):
+    """Split markdown into {heading: body} at the given heading level ('#' or '##')."""
+    out, name = {}, None
+    for line in text.split('\n'):
+        m = re.match(r'^' + level + r' (.+)$', line)
+        if m:
+            name = m.group(1).strip()
+            out[name] = []
+        elif name is not None:
+            out[name].append(line)
+    return {k: '\n'.join(v).strip() for k, v in out.items()}
+
+
+def read_gates():
+    """Milestone cards from Maintanance/Milestones/<version>/*.md (2026-10-17 gate format).
+
+    Each gate file has three parts: '# 一意識別子' (UUID), '# カード情報' (## ID / ## 名前 / ## 正本 /
+    ## 状態), and '# 記録' (free text, never read). Gates whose ID is 'なし' or a Task Registry task are
+    not Studio milestones. Returns (cards, errors)."""
+    cards, errors, seen = [], [], {}
+    task_ids = {t['id'] for t in parse_registry()[0]}
+    for path in sorted(MILESTONES.glob('[0-9]*/*.md')):
+        if path.name == 'END.md':  # terminal marker of the final version folder, not a gate
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        top = sections(path.read_text(encoding='utf-8'), '#')
+        card = sections(top.get('カード情報', ''), '##')
+        uid = top.get('一意識別子', '').split('\n')[0].strip()
+        gid = card.get('ID', '').strip('` \n')
+        name = card.get('名前', '').split('\n')[0].strip()
+        state = card.get('状態', '')
+        if not re.fullmatch(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', uid):
+            errors.append(f'{rel}: no UUID under "# 一意識別子"'); continue
+        if uid in seen:
+            errors.append(f'{rel}: duplicate UUID (also {seen[uid]})'); continue
+        seen[uid] = rel
+        if not gid or not name or not re.search(r'- \[( |x)\] DONE', state):
+            errors.append(f'{rel}: カード情報 needs ## ID, ## 名前 and "- [ ] DONE" under ## 状態'); continue
+        if gid == 'なし' or gid in task_ids:
+            continue
+        canon = card.get('正本', '')
+        link = re.search(r'\]\(([^)]+)\)', canon)
+        if link:
+            target = (path.parent / link.group(1)).resolve()
+            if not target.exists():
+                errors.append(f'{rel}: 正本 link not found: {link.group(1)}'); continue
+            detail = target.relative_to(ROOT).as_posix()
+        elif canon.startswith('このファイル'):
+            detail = rel
+        else:
+            errors.append(f'{rel}: ## 正本 needs a link or "このファイル"'); continue
+        cond = f'ゲート：{rel}\n正本：{detail}'
+        cards.append(dict(id=gid, kind='milestone', item=name,
+                          state='DONE' if '- [x] DONE' in state else 'ACTIVE',
+                          owner='ユーザー同席（AI単独では扱わない）', condition=cond, detail=detail, raw=cond,
+                          uuid=uid, gate=rel))
+    ids = [c['id'] for c in cards]
+    for gid in {i for i in ids if ids.count(i) > 1}:
+        errors.append(f'duplicate milestone ID {gid}')
+    return cards, errors
+
+
 def build(old):
     tasks, edges = parse_registry()
     interest = {t['id']: t['displayInterest'] for t in old.get('tasks', []) if 'displayInterest' in t}
@@ -101,6 +184,7 @@ def build(old):
                           generatedAt=datetime.datetime.now(JST).isoformat(), generator='sync.py',
                           rulesSha256=sha256(RULES))
     data['tasks'], data['edges'] = tasks, edges
+    data['milestones'] = read_gates()[0]
     data['baseline'] = dict(tasks=json.loads(json.dumps(tasks)), edges=json.loads(json.dumps(edges)),
                             milestoneRelations=json.loads(json.dumps(old.get('milestoneRelations', []))))
     return data
@@ -166,18 +250,37 @@ def main():
     seed = seed_of(HTML.read_text(encoding='utf-8'))
     if seed != old:
         changes.append('~ HTML seed differs from registry.json')
+    relocated = relocate_sources(old)
+    if relocated:
+        print('relocated relation sources (quote found in exactly one file):\n  ' + '\n  '.join(relocated))
     stale, moved = milestone_sources(old)
-    print(f"tasks {len(new['tasks'])}, edges {len(new['edges'])}, milestones {len(new.get('milestones', []))} (carried over)")
+    gate_errors = read_gates()[1]
+    if gate_errors:
+        print('GATE file problems (fix the file under Maintanance/Milestones/):\n  ' + '\n  '.join(gate_errors))
+    print(f"tasks {len(new['tasks'])}, edges {len(new['edges'])}, milestones {len(new.get('milestones', []))} (from gate files)")
     print('\n'.join(changes) if changes else 'no drift between Task Registry, registry.json, and the HTML seed')
     if moved:
         print('milestone sources changed since snapshot (quote still present; review):\n  ' + '\n  '.join(moved))
     if stale:
         print('STALE milestone quotes (not auto-fixed; edit registry.json by hand):\n  ' + '\n  '.join(stale))
     if '--check' in sys.argv:
-        sys.exit(1 if changes or stale or moved else 0)
+        sys.exit(1 if changes or stale or moved or gate_errors else 0)
 
-    if stale or moved:
+    if gate_errors:
+        sys.exit('Gate files need fixing before synchronization; no files written')
+    if stale:
         sys.exit('Milestone sources need review before synchronization; no files written')
+    if moved:
+        # Quote still present: the file only changed elsewhere. Refresh hash and line, then continue.
+        for r in new.get('milestoneRelations', []):
+            src = r.get('source') or {}
+            p = ROOT / src.get('path', '')
+            if src.get('quote') and p.exists():
+                text = p.read_text(encoding='utf-8')
+                src['sha256'] = sha256(p)
+                src['line'] = text[:text.find(src['quote'])].count('\n') + 1
+        new['baseline']['milestoneRelations'] = json.loads(json.dumps(new.get('milestoneRelations', [])))
+        print('refreshed hash/line for sources whose quote is still present')
 
     node = tool('--node', 'REGISTRY_STUDIO_NODE', shutil.which('node'))
     marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)

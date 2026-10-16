@@ -55,6 +55,55 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 照合済みCP-014〜016は[原文と統合結果](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md)へ保存。CP-014→RBT-033追加証拠・RBT-049候補、CP-015→RELEASE-083/084、CP-016→PERM-080。未着手の候補はRegistryで扱う。
 
+### `CP-20261017-001` — 文書マイルストーンを版フォルダ`Milestones/`へ正本として分割
+
+- queue状態: `AWAITING_CODEX`（実施済み。OPS-047への接続はAstra）
+- 発見元・ユーザー指示: 2026-10-17未明。ユーザーが`Maintanance/Milestones/`（`HEAD.md`、版フォルダ、`MS_*.md`）を作成し、「これをさっきのフォルダに分割して正本形式で配置してほしい」（`Current/DOCUMENTATION_MILESTONES.md`）。
+- 種別候補: `EXECUTION`
+- 実施:
+  - `Milestones/0.5.4/MS_RBT_DOCUMENTS.md`：旧RBT-014の節、ゲート作業、受入証拠、履歴。ユーザーの「到達済み」を保持。
+  - `Milestones/0.7.0/MS_VALIDATION_REVIEW.md`：旧DOC-032の節とDOC-036のゲート作業。
+  - `Milestones/0.8.0/MS_DOCUMENT_EXPANSION.md`：新規。0.8.0への拡充移管と固定範囲の決定。
+  - `Current/DOCUMENTATION_MILESTONES.md`：索引に変えた。見出しは残したので、`MILESTONES.md`などからのアンカー付きリンクは切れない。
+  - 移し先の決まらなかった1行（DOC-035 → 0.6.0の文書初版条件、DOC-035は完了済み）は、ユーザーの指定で`Milestones/Archived/DOCUMENTATION_MILESTONES_LEFTOVER_2026-10-16.md`へ移した。
+  - `registry.json`の到達点の出典（MS-DOC、MS-VALIDATION、DOC-036→MS-VALIDATIONの関係）を新しいファイルへ向け直し、`sync.py`で再生成した。
+- 検証:
+  - 元の段落と箇条（13件）は、リンク先の相対パス以外すべて逐語で新しいファイルにある（`4532e9df`の版と機械照合）。
+  - 新しいファイルと索引の相対リンクは、すべて実在する。
+  - `sync.py`の書き込みは成功（verify.cjsもpass）。`--check`でずれなし。
+- 対象外: `MS_CANDIDATE.md`各ファイル（Xcodeのテンプレート見出しが入ったまま。触っていない）、`MS_LEFT.md`、`HEAD.md`、`MILESTONES.md`本文、Registry。
+- 判断が要ること: 旧ID（`MS-DOC`・`MS-VALIDATION`・`MS-080`）と新しいファイル名のどちらを正式なIDにするか。今はファイルに両方を書いた。
+- 追記（同夜）: ユーザーがリリース文書8件を`Current/`から版フォルダへ移した（`RELEASE_0_5_4`・`RELEASE_0_6_0`系5件→`0.5.4/`、`RELEASE_0_7_0`→`0.6.0/`、`RELEASE_0_8_0`→`0.7.0/`）。ユーザー依頼「リンクなおしてくれない？」により、姫がリンクを直した。
+  - 移動先を指すMarkdownリンクを15ファイルで書き換え。移動したファイル自身の相対リンクも、新しい場所から辿れるように直した。書き換えた範囲で、リンク切れは0件。
+  - `registry.json`の到達点の出典13件を新しい場所へ向け直した。リンクを直したファイルのhashも更新し、`sync.py`で再生成した（verify pass、`--check`でずれなし）。試作`GateDecisionDigestPrototype/marks.json`のパス2件も直した。
+  - 直していないもの（持ち主の判断か、過去の記録のため）: `TASK_REGISTRY_V2.md`の詳細正本列のパス6件（39・40・47・48・49・78行）、`Archived/`の2ファイル（`CLAUDE_TASK_HISTORY_2026-10-16_3.md`・`MILESTONE_REORGANIZATION_2026-10-16.md`）のリンク、`COORDINATION_KNOW_HOW.md`の本文中のパス表記1件、試作の出力スナップショット`out-*.md`、`completed-document-layout-fixture.json`。
+- 配置の決まり（2026-10-17ユーザー判断、会話）: リリース文書（`RELEASE_*.md`）は「その文書を扱っている現在地」の版フォルダに置く（例：0.7.0の計画は`0.6.0/`）。到達点（`MS_*.md`）はゲートなので「目標の版」のフォルダに置いたまま（例：`MS_VALIDATION_REVIEW`は`0.7.0/`）。
+- 追記（同夜、2回目）: ユーザーがリリース文書8件をすべて`Milestones/Archived/`へ移し、各版に`GATE_<次の版>.md`を置いた（理想形を先に作り、のちにサルベージする方針）。`MS_CANDIDATE.md`は「候補が本当に確定したら記入するだけ」のファイルにする予定（ユーザー）。ユーザー依頼によりリンクを再度直した：11ファイル18か所、`registry.json`の出典を`Archived/`へ向け直してhash更新、`marks.json`も同様。`sync.py`再生成。`Archived/`（ルート）の2ファイルは過去の記録なので直していない。
+- commit: していない。
+- Codex reconciliation: 未処理
+
+### `CP-20261017-002` — MILESTONES.mdのゲート要素を版ごとのゲートへ移す
+
+- queue状態: `AWAITING_CODEX`（実施済み。OPS-047への接続はAstra）
+- 発見元・ユーザー指示: 2026-10-17未明。ユーザー「これ（MILESTONES.md）のうち、報告要素とゲート要素があって、ゲート要素をさっきみたいに抜き出して、配置して欲しい」。
+- 種別候補: `EXECUTION`
+- 実施:
+  - `Milestones/Archived/GATE_0_5_4.md`：旧「0.6.0」として準備したゲート（今回の0.5.4、merge済みなので過去の記録）。版ごとの重点の0.6.0行と「文書ゲートの作業接続」の節。
+  - `Milestones/0.6.0/GATE_0_7_0.md`：版ごとの重点の0.7.0行、その下の注記、見取り図の下の0.7.0の条件の注記。
+  - `Milestones/0.7.0/GATE_0_8_0.md`：版ごとの重点の0.8.0行と「0.8.0の追加」の2段落。
+  - 3ファイルとも`GATE_TEMPLATE.md`の形にし、原文は「原文（MILESTONES.mdから移した）」に逐語で置いた（リンクの相対パスだけ直した）。
+  - `MILESTONES.md`には報告要素（現在位置、タスク数、全体の図、SPI・1.0の流れ、未接続の到達点、維持方法、CI立て直し）を残した。移した箇所には移動先へのリンクを置き、到達点の一覧表のリンクを新しいゲートと`MS_*.md`へ向け直した。
+- 検証: 元の行・段落はすべて、`MILESTONES.md`か3つのゲートに逐語である（機械照合）。リンク切れ0件。`registry.json`の出典を向け直して`sync.py`で再生成（verify pass、`--check`ずれなし）。
+- 判断が要ること: 移した原文の「0.6.0」は、振り替え前の名前（今回の0.5.4）を指す場合と、これからの0.6.0を指す場合が混ざっている。特に0.7.0の条件「0.6.0完了と後続差分を材料にする」がどちらを指すかは決めていない。`0.5.5/GATE_TEMPLATE.md`（空）と`0.5.5/GATE_0_6_0.md`（未作成）には触っていない。
+- commit: していない。
+- Codex reconciliation: 未処理
+- 追記（2026-10-17）：ユーザー「README配置して、今は切り替え中で方針は項ですってかきますか。で、各フォルダには次の目標をいれる」。`Milestones/README.md`を作った（切り替え中であること、方針：`<版>/`には次の目標`GATE_<次の版>.md`を入れる）。`MS_*.md`の置き場所（いまは到達先の版のフォルダ）とこの方針が食い違う点は、ユーザーに確認中。続けてユーザー「バージョンゲートは、そのフォルダの最終ゲートですってしよう」。READMEに追記（フォルダ内の`MS_*.md`は途中の到達点）。ユーザーが`MS_VALIDATION_REVIEW`を`0.6.0/`へ、`MS_DOCUMENT_EXPANSION`を`0.7.0/`へ、`SPI_PUBLICATION_MILESTONE`と`DOCUMENTATION_MILESTONES`を`Milestones/Archived/`へ移動。ユーザー「そもそもどのバージョンで実施するって記述を消そう」により、`MS_VALIDATION_REVIEW`から版の記述（「版:」行、「0.7.0のリリース前ゲートへ配置する。0.6.0の前提にはしない。」、「→ 0.7.0」）を消し、由来欄に削除を明記。移動で切れたリンクを直し、`registry.json`の出典を向け直して再同期（verify pass、ずれなし、リンク切れ0）。`MS_DOCUMENT_EXPANSION`・`MS_RBT_DOCUMENTS`の版の記述はまだ残す。続けてユーザーが方針を決定（フォルダ＝版、ファイル＝ゲート、フォルダ作成とゲートの新規作成・移動で版の遷移、ゲートは常にシーケンス・最終がバージョンゲート・他はナンバリングのソート順）。READMEの方針節へそのまま記載。既存`MS_*.md`への番号付けは未実施。ユーザー「逆でさ。いったん、スタジオとおなじにしたいの」により、番号付けではなくStudioのIDへ改名：`MS_RBT_DOCUMENTS`→`0.5.4/MS-DOC.md`、`MS_VALIDATION_REVIEW`→`0.6.0/MS-VALIDATION.md`、`MS_DOCUMENT_EXPANSION`→`0.7.0/MS-080.md`。ID欄・リンク・`GATE_TEMPLATE`・`registry.json`を追随、再同期（verify pass、ずれなし、リンク切れ0）。上の記録中の旧ファイル名は当時の名前。
+- 追記2（2026-10-17）：Studioの到達点を調べると、`4532e9df`（10-16 23:48）でMS-060の見出しが「0.6.0 リリース」から「0.5.4 リリース」へ書き換えられ、0.6.0がStudioから消えていた（0.5.4の挿入ではなく改名）。到達点データは`8a0c8769`〜`a5669c53`で不変、変わったのは`4532e9df`だけ。ユーザー「まずリリースしくじる前のスタジオにもどそう」により、`registry.json`の`milestones`・`milestoneRelations`（とbaseline）を`a5669c53`の内容へ戻した。調整は3点：(1) 出典pathを移動後のファイルへ向け直しsha・行を更新、(2) Task Registryにもう無いtaskへの関係3本（RELEASE-078→MS-060、DOC-034→MS-DOC、DOC-035→MS-060）は戻さない、(3) DOC-036→MS-VALIDATIONの引用は今日削った「→ 0.7.0」なしの現行文へ。`4532e9df`で足されたMS-RECOVERY（RELEASE-087→）は戻した結果なくなった（HEADの`registry.json`に残る）。`verify.cjs`の件数固定を8・17→7・16へ。sync完了・verify pass・ずれなし。Studioの到達点データの変更なので、Astraの受入が要る。
+- 追記3（2026-10-17）：ユーザー「マイルストーンで並列扱うと難しいから、シーケンシャル制限にしたい」、列の案に「1よい、2-bがいいな」。到達点を一本の列にした：MS-DOC→MS-060→MS-VALIDATION→MS-070→MS-SPI→MS-080→MS-HUMAN（→QUALITY-001）。Studioの関係は3本外し（MS-060→MS-070、MS-070→MS-080、MS-SPI→MS-HUMAN）、3本足した（MS-060→MS-VALIDATION、MS-SPI→MS-080、MS-080→MS-HUMAN、出典は`Milestones/README.md`の「いまの列」）。外したMS-060→MS-070の制約文（0.6.0完了証拠を0.7.0検討の前提とする）は`Archived/RELEASE_0_7_0.md`に残るがStudioの線からは消えた。各到達点のdetailをゲートのファイルへ。フォルダ：`0.5.4/10_RBT_DOCUMENTS.md`＋`GATE_0_6_0.md`（新）、`0.6.0/10_VALIDATION_REVIEW.md`＋`GATE_0_7_0.md`、`0.7.0/10_SPI.md`（新）＋`GATE_0_8_0.md`（旧`MS-080.md`の本文を統合して削除）、`0.8.0/10_HUMAN_REVIEW.md`（新）＋`GATE_1_0_0.md`（新、QUALITY-001）。READMEに制限と列、`GATE_TEMPLATE`を番号形式へ。`verify.cjs`に一本の列の検査を追加（分岐・合流・循環・離れ島で失敗。分岐を入れたデータで失敗することを確認）。sync完了・verify pass・ずれなし・リンク切れ0。
+- 追記4（2026-10-17）：ユーザー「0.9と1.0もゲート足して欲しい」「1.0はいらないか」。`0.8.0/GATE_1_0_0.md`を`0.9.0/`へ移し、`0.8.0/GATE_0_9_0.md`（中身は未定、Studioの到達点なし）を作った。`1.0.0/`は到着点でゲートなし。READMEの列と、それを引用するMS-080→MS-HUMANの出典を更新。sync完了・verify pass・ずれなし・リンク切れ0。
+- 追記5（2026-10-17）：ユーザー提案「先頭にUUID」、「ある程度準備ができてからアストラに受け入れてもらうから、なっとくいくまでおれとやろう」。ユーザーと設計中（Astraへはまだ出さない）。第1歩として版フォルダの9ゲートの1行目に`<!-- gate: <UUID> -->`を付け、`GATE_TEMPLATE`にも欄を置いた。`sync.py`はまだ変えていない（UUIDは未使用）。sha更新・sync済み。続けてユーザー「カードと同じ情報が入ってて欲しい」「1，いいよ」「ステートとして、ACTIVEかDONEでいいような」「というか、DONEチェックか」「選択肢を狭めよう」。9ゲートの見出しをカードの名前にし、直後に`- ID:`・`- [ ] DONE`（済みは`[x]`）・`- 担当:`・`- 条件:`を置いた（値はStudioのカード、QUALITY-001はRegistry）。旧の状態見出し（「# 到達済み」「# 未通過」）と旧ID行は外した（MS-DOCはユーザー記載の到達済み→`[x] DONE`）。`GATE_TEMPLATE`も同じ並び。Studio側の状態はまだ「到達未確認」のまま（読取りは`sync.py`変更時）。続けてユーザーが形を指定（「# 一意識別子 / # カード情報（## ID・## 名前・## 正本・## 状態 `- [ ] DONE`）/ # 記録」）。9ゲートと`GATE_TEMPLATE`をこの三部構成に組み替えた。正本はStudioの引用元ファイル（MS-DOC・MS-VALIDATIONは「このファイル」、QUALITY-001は品質Profile、0.9.0は「なし」）。担当・条件はカード情報の指定に無いので記録の先頭へ移した。記録内の見出しは1段下げた。sha更新・sync済み・リンク切れ0。続けてユーザー「担当はなしかな。必ず俺が同席するし。一人ではやらせないって書いておいて欲しい、もう」。9ゲートから担当行を消し、READMEに「マイルストーンとゲートの作業は、必ずユーザーが同席する。AIに一人ではやらせない」を記載（`GATE_TEMPLATE`の記録欄にも注記）。Astra受入時にAGENTS等へ載せるかはAstra・ユーザー判断。
+- 追記6（2026-10-17）：ユーザー「A-2はうまいことやって」。`sync.py`を変更：(1) 到達点のカードを`Milestones/<版>/*.md`の一意識別子とカード情報から作る（ID・名前・状態DONE/ACTIVE・正本→detail、条件欄は「ゲート：…／正本：…」、担当は「ユーザー同席（AI単独では扱わない）」、UUIDとゲートpathも保持。ID「なし」とRegistryのtaskは到達点にしない。`END.md`は読まない）。UUID重複・カード欠け・正本リンク切れで停止。(2) 関係の引用元ファイルが動いた/引用が無いときは`Milestones/`と`MILESTONES.md`から引用を探し、1ファイルだけなら付け替え。(3) 引用が残っていてファイルだけ変わった場合はsha・行を自動更新して続行（引用が消えたときだけ停止）。試験：ゲートの記録に追記＋ファイル名変更→sync 1回でカード・関係とも追随、verify pass、元に戻して再sync。MS-DOCがStudioでDONE表示に。Astraの道具の変更なので受入が要る（ユーザーと詰めてから出す）。
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

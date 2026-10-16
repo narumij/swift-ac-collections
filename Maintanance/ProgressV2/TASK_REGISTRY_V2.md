@@ -35,13 +35,18 @@
 | `OPS-054` | `DONE` | Astra | [DISCOVERY] Claude起動系文書の見直し検討 | 2026-10-16ユーザー受入・終了指示。起動経路の参照・矛盾修正、テスト入口の簡素化、承認済み日本語原稿の英語反映を完了。共通の一時作業物管理はOPS-055で整備済み | `Maintanance/Current/CLAUDE_STARTUP_DOCUMENT_REVIEW.md` |
 
 | `OPS-055` | `DONE` | Astra（作成・受入） / Claude（レビュー済み） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。Claude返却・Astra受入、指摘4点の対応済み。2026-10-16ユーザーが終了・commitを承認。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
+| `OPS-056` | `ACTIVE` | Claude（姫：試作・評価） / Astra（受入） | [DISCOVERY] Astraの判断追跡負荷を軽くする限定試作 | 2026-10-16ユーザー依頼。OPS-048配下。CP-20261016-006を正式化し、スニペット固定の判断一件でゲート・task別の一覧と原文追跡を試す。判断待ちと作業待ちを分離し、部分変更・適用範囲を保持。方式の採用や現行UI・制度の変更は含めない。依頼票作成済み、返却待ち | `Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md` |
+| `OPS-057` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |
 
-| `DOC-033` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
-| `DOC-034` | `ACTIVE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
-| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-037のユーザー受入可を確認し、RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
+| `DOC-033` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
+| `DOC-034` | `ACTIVE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-037のユーザー受入可を確認し、RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
 | `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
 
 | `DOC-037` | `WAITING_USER` | User | [DECISION] 赤黒木本文の受入判断 | 2026-10-16ユーザー指定。DOC-034の本文・同期・検証結果を受け、赤黒木本文を受け入れるか判断する。受入可の明示記録後にDOC-035へ進む。差戻し・保留なら進めない。DOC-034は未完了のため判断材料待ち | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+
+| `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
+| `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
 
 ### 公開とリリース
 
@@ -130,7 +135,7 @@
 
 ## 目標の記録
 
-2026-10-16のユーザー決定：0.6.0はドキュメント初版整備、0.7.0はリリース工程準備・公開運用整備とrelease後のSPI公開を重点とする。品質は各0.x.0で差分と残課題に応じて改善する。版別の配置は`Maintanance/MILESTONES.md`を参照し、1.0の全ゲートを各版へ一括で前倒ししない。
+2026-10-16のユーザー決定：0.6.0はドキュメント初版整備、0.7.0はリリース工程準備・公開運用整備とrelease後のSPI公開、0.8.0はコードスニペット追加と文書の再検討を重点とする。品質は各0.x.0で差分と残課題に応じて改善する。版別の配置は`Maintanance/MILESTONES.md`を参照し、1.0の全ゲートを各版へ一括で前倒ししない。
 
 現在選択中の目標は[入口](PROGRESS_OVERVIEW_V2.md#現在の目標)に置く。以下の記録だけでは、後続目標の選択や凍結解除は成立しない。中間ゴールはtaskではなく、独自のID・状態を付けない。
 
@@ -253,3 +258,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | 親 | サブタスク |
 | --- | --- |
 | `OPS-048` | `OPS-051` |
+
+| `OPS-048` | `OPS-056` |
+
+| `OPS-048` | `OPS-057` |

@@ -80,6 +80,54 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 未着手（調査と試作のみ。試作に使った一時ディレクトリ`registry-layout-check.*`は削除済み）。
 - Codex reconciliation: 2026-10-16、Astra。既存の恒久OPS-048へ統合。ユーザーの「修正お願いします」に基づき、先頭へ入る枝の補助列ルールを実装。原回答は保持。Nodeで現行40taskのfallback=false、重なり・辺方向・収容、ID置換不変性と従来fixtureの座標維持を検証。実画面はユーザー確認待ち。新規採番なし。
 
+### `CP-20261016-006` — リリースゲート手前の判断を一度に出す（Astraへの提案）
+
+- queue状態: `RECONCILED`（OPS-056へ正式化。原提案の方式採用・完了認定ではない）
+- 発見元・ユーザー指示: 2026-10-16 夕方の会話。ユーザー「判断を正本に記載するようになってて散らばってるため、追跡が難しい」「リリースゲートの手前の判断を一気にだせるぐらいがいいのかなぁ？」
+  「未採番で、あすとらさんに提案タスクとして、なんかやってみて」。
+- 種別候補: `DISCOVERY`
+- 対象範囲: 提案文書[`Current/GATE_DECISION_DIGEST_PROPOSAL.md`](Current/GATE_DECISION_DIGEST_PROPOSAL.md)の新規作成。`registry.json`からゲートの上流をさかのぼり、未決のユーザー判断・判断の言及・ゲートの直接条件を出す試作（MS-060で実行、結果を文書に転記）。
+- 対象外: `index.html`・`registry.json`・Registry・Rulesの変更。判断の印の書式の採用。試作スクリプトのrepository追加（文書に本文だけ載せた）。
+- 前提・既存task候補: 恒久`OPS-048`（Registry Studio）。`OPS-036`（Task履歴索引）は将来の拡張先。
+- 担当候補・受入担当: 試作・提案は姫 / 採否・実装・受入はAstra。
+- 成果・検証: 2026-10-16 / Claude Opus 5.5。MS-060の上流6件のうち、未決のユーザー判断1件（DOC-037）、判断の言及4件を出した。MS-070は12件中5件、QUALITY-001は24件中11件が未決。
+  限界は3つ（語の照合は「ユーザー指示」などの経緯と判断を分けられない／詳細正本の本文は見ていない／置き換え関係が分からない）で、文書に記した。
+  一時ディレクトリ`gate-decision-digest.*`は削除済み。commitしていない。
+- Codex reconciliation: 2026-10-16 Astra。ユーザーの採番・依頼指示によりOPS-056へ統合。原提案は保存し、Astraの要望を別正本へ記載。限定試作をCLAUDE_TASK.mdで正式依頼。
+
+### `CP-20261016-007` — Registry Studioの同期を1コマンドにする（`sync.py`）
+
+- queue状態: `RECONCILED`（OPS-057へ正式化、仕上げ依頼。受入は未実施）
+- 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「正本から画面への更新がまだ手作業寄り。同じ事実を複数箇所へ手で反映して、最後に整合を確かめる仕事を一番減らしたい」を受けた姫の提案A-1に、ユーザーが「A-1は未採番でやって」。
+- 種別候補: `EXECUTION`
+- 対象範囲: `Maintanance/RegistryApp/sync.py`の新規作成。Task Registryからtask・依存辺・親子関係・常設区分を読み、`registry.json`とHTMLのseedを作り直す。`--check`は書き込まずに差分だけを出す。
+  書き込みモードでは、続けて既存の`build-pending.py`を実行する。Nodeがあれば`build-documents.mjs`と`verify.cjs`も実行する。
+- 引き継ぐもの（Registryから導けないので、現行の`registry.json`から持ち越す）: マイルストーンとその関係、`milestoneSnapshot`、taskごとの`displayInterest`。マイルストーンの引用が原文にまだあるかは検査して報告する。
+- 対象外: `index.html`・`registry.json`・`verify.cjs`・`README.md`の変更（Astraの未commit作業中のため）。書き込みモードの実行。マイルストーン関係の自動導出。
+- 検証: 2026-10-16 / Claude Opus 5.5。
+  - 現行の`registry.json`に対し、生成したtask 44件はすべての欄が一致した（`sourceLine`・親子・常設・`displayInterest`を含む）。依存辺14本は、行番号以外のすべての欄が一致した。マイルストーン7件は持ち越しで一致した。
+  - `--check`の結果は「sourceLine moved for 14 rows」だった。現行`registry.json`の依存辺の行番号が、Registryの今の位置から4行ずれている。手作業の同期で起きる漏れの実例で、これを検知できた。
+  - 一時コピーのRegistryでDOC-034の状態とDOC-035←DOC-037のFlowを書き換えたところ、`~ task DOC-034: state, raw`、`~ edge DOC-035 <- DOC-037`、hashの変化が出た（一時ディレクトリ`sync-drift-test.*`、削除済み）。
+  - Nodeがこの環境にないため、書き込みモードの後段（`build-documents.mjs`・`verify.cjs`）は試していない。
+- 使い方の提案（採否はAstra）: 正本を直したら`sync.py`を1回実行し、`registry.json`とHTML内のデータは手で直さない。コミット前に`--check`が差分なしを返すことを確かめる。README（利用手順の正本）の手順2・3をこれに置き換えるかはAstraが判断する。
+- 担当候補・受入担当: 作成は姫 / 採否・READMEへの接続・受入はAstra。
+- Codex reconciliation: 2026-10-16 Astra。ユーザー指示によりOPS-057へ正式登録。既存試作を入力にCLAUDE_TASK.mdで仕上げ・通常更新の検証を依頼。
+
+### `CP-20261016-008` — 判断アーカイブ（Astraへの提案）
+
+- queue状態: `CANDIDATE`（提案の記録のみ。実施しない）
+- 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「判断を追記で残すと、古い本文との優先関係が残る。『後ろに訂正を書いたから読めるはず』に頼っている」に対する姫の提案A-3を、ユーザーが「いいね。判断アーカイブだ。それは提案として追加の未採番にして」。
+- 種別候補: `DECISION`（運用の方針。採否はユーザーとAstra）
+- 提案:
+  1. 本文はいつも「今効いている判断」に書き換える。古い文は、同じ文書の履歴の節か`Archived/`へ移す（CLAUDE_TASK.mdの圧縮と同じ考え方）。追記で訂正を重ねない。
+  2. 同じ判断は一か所に書き、ほかの場所からはリンクする。OPS-056の試作では、「0.6.0では既存スニペットを固定」が同じ文で3か所（RELEASE_0_8_0.md、RELEASE_0_6_0.md、Registry DOC-034行）にあった。
+  3. 書き換えるときは、移した先へのリンクを本文に一行残し、由来をたどれるようにする。
+- 前提・既存task候補: `OPS-056`（判断追跡の試作）、`OPS-044`（Registry運用）、`DOC-030`（文書整備）。
+- 担当候補・受入担当: 採否はユーザー / 運用はAstra。
+- 停止条件: ユーザーが確定した文書（書き換えない約束のもの）には適用しない。その場合は別文書に訂正を置き、持ち主へ渡す。
+- 成果・検証: 未着手（提案の記録のみ）
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

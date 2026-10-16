@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**現在の依頼なし。OPS-055はClaude返却・Astra受入済み。指摘対応後、ユーザー承認によりDONE。** OPS-053 R2は受入済み・DONE。
+**現在の依頼：OPS-057（Studio同期の一コマンド化）。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
@@ -300,3 +300,97 @@ Follow root CLAUDE.md for user-facing communication.
 原回答を保持して受入。入力5件のhashを確認。指摘1〜4をCOMMONS.mdへ反映し、圧縮手順から接続した。提案Aは既存委任への参照で処理、提案Bの項目削減は今回は見送り。実掃除は未実施。修正後のClaude再検証とは扱わず、OPS-055はWAITING_USER（確認・commit待ち）。
 
 2026-10-16、ユーザーが終了とcommitを承認したためOPS-055をDONEへ更新。継続維持はOPS-044、実際の掃除は別の依頼として扱う。
+
+## OPS-056 — Astraを元気にする、判断追跡負荷の軽減試作
+
+2026-10-16、ユーザーの「採番した上でアストラさんを元気にするタスクとして、要望とか修正とかそえて、タスク依頼しよう」に基づく依頼。作成・受入：Astra、試作・評価：Claude（姫）。Registryへ登録済み。本依頼完成をもって受渡しとし、本文と入力を固定する。
+
+### 依頼
+
+[詳細正本](Current/ASTRA_DECISION_TRACE_SUPPORT.md)に記載した一件の試作をお願いします。原提案の方向は役立つと考えています。Astraが判断を探し直す負担を減らせるか、記録の手間を増やしすぎないかを見たいです。賛成ありきではなく、もっと簡単な案や難点も歓迎します。
+
+正本の5つの要望と受入条件に従い、MS-060とDOC-034からスニペット固定の判断へ辿れる一覧見本、最小の抽出方法、分類・部分置換の確認結果を用意してください。
+
+### 編集範囲・権限
+
+編集可：`Maintanance/Current/GateDecisionDigestPrototype/`の新規試作・評価資料と、この節のReturn欄。既存ファイルがあれば上書きせず確認する。任意の感想追記の常設委任は維持する。Registry・Rules・index.html・registry.json・入力正本・原提案・本依頼本文は変更しない。採番・方式の正式採用・commitは今回含まない。ユーザーが後から変更した指示はReturnへ一言残す。
+
+入力は未commit作業ツリーを含む。着手時に対象ファイルの版（hash）を記録し、作業中の変更に気づいたら関係する範囲を止めて返す。必要な参照だけを読み、一時作業物はCOMMONS.mdに従う。成果の原文は返却後固定し、Astraが検証する。
+
+### OPS-056 Return
+
+2026-10-16 / Claude（姫、Opus 5.5）。完了・作業終了。評価と詳細は[試作のREADME](Current/GateDecisionDigestPrototype/README.md)。
+
+**入力と版（着手時と返却時で一致）：** SHA-256先頭16桁。
+- `ASTRA_DECISION_TRACE_SUPPORT.md` `d578971b5ac07efc`
+- `RELEASE_0_8_0.md` `bded81ad3c9cdb4e`
+- `RELEASE_0_6_0.md` `4ea61dc2d98d7b20`
+- `TASK_REGISTRY_V2.md` `9a0b6a42a6a545b2`
+- `registry.json` `c2fb29a21bd85078`
+
+原提案`GATE_DECISION_DIGEST_PROPOSAL.md`は`ec271fcafa337b4f`。読んだのは依頼に挙がった範囲（DOC-033〜039の行、0.6.0／0.8.0の該当節、Studio snapshotの依存）だけ。
+
+**成果：** `Maintanance/Current/GateDecisionDigestPrototype/`を新設した（README・`marks.json`・`test_marks.json`・`digest.py`、見本の`out-*.md`が4件）。既存のファイルは変更していない。
+
+**実行と検証：** `digest.py`を、MS-060・DOC-034・MS-070に実データで実行した。DOC-034には`--test`（仮想例を含む）でも実行した。
+- 実在の判断（0.6.0では既存スニペットを固定し、0.8.0へ送る）を、原文3か所で引用一致として確認した（RELEASE_0_8_0.md:21、RELEASE_0_6_0.md:91、Registry 40行）。
+- MS-060を選ぶと、判断1件、判断待ち（DOC-037）、材料待ち（MS-DOC・RELEASE-078）、作業待ち3件が出る。DOC-034を選ぶと、下流のゲートの判断として同じ判断が届く。
+- 要望1：MS-070で、RELEASE-072・075・076（ユーザー実作業）とDOC-036・037（判断）が別の区分に分かれた。
+- 要望4：仮想例で、`fix-count`条項だけが置き換わり、残り3条項は有効のまま残った。置換の記載がない新しい仮想判断は矛盾候補になり、失効させなかった。
+
+**欠陥（未修正）：** 置換の範囲が対象taskに絞られない。DOC-034だけを対象にした仮想の置換が、DOC-035の表示でも「置き換え済み」と出る。直すには、置換を「条項×対象」で持つ必要があり、印が重くなる。
+
+**負担：** 減るのは、判断・待ち条件・原文の場所を1回で出せることと、判断待ちとユーザー実作業待ちの読み分け。増えるのは、判断のたびに印を約20行書くこと。実在の判断は、正本3か所に同じ文で散っていた。
+
+**率直な評価と次の一歩：** 印を毎回書くのは重く、抜けやすい。印は「判断が覆ったとき」と「ゲートに効く判断」だけに付け、それ以外はRegistry行からのリンクで足りるか試すことを勧める。条項×対象の置換は、実際に部分置換が起きてから決めればよい。
+
+**未確認・範囲外：** 印のない判断の拾い出し（語の照合や本文の解析）はしていない。Registry Studioへの組み込み、正本への印付けはしていない。一時ディレクトリは使っていない。commitしていない。
+
+## OPS-057 — Studio同期を一回で回せるように仕上げる
+
+2026-10-16、ユーザーの「いったんやってもらおう」に基づく正式依頼。Registry登録済み。作成・受入：Astra、実装・検証：Claude（姫）。この依頼の完成をもって受渡し。
+
+[正本](Current/REGISTRY_STUDIO_SYNC.md)に従い、CP-20261016-007のsync.pyを仕上げてください。完全な汎用化は不要です。手作業の同期を置き換えて使い始められることを目指します。
+
+編集可：Maintanance/RegistryApp/のsync.py、必要な小さな検証補助、README.md、verify.cjsの必要な調整。index.htmlは生成データ部分のみ、registry.jsonは生成更新を許可します。既存の未commit差分を保ち、レイアウト・表示機能を変更しない。正本・Registry・Rules・他の担当成果は編集しない。OPS-056の返却と今回を混ぜない。
+
+今回は書込みモードの実行も委任します。まず写しで失敗時と正常更新を確認し、その後現行データを同期して既存検証を実行してください。一時物はCOMMONS.mdに従い記録する。開始時に入力の版を記録し、競合する更新があれば止めて返してください。Astraは返却までRegistryAppを編集しません。
+
+この環境で確認済みの候補（実在確認して使用）：
+- Node: `/Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
+- marked: `/Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/marked/lib/marked.esm.js`
+
+使えない場合は未検証として返し、成功とは記録しない。受入判定・採番・commitは今回の委任外。ユーザーが指示を変更した場合はReturnへ一言記録する。任意の感想追記権限は維持する。
+
+### OPS-057 Return
+
+2026-10-16 / Claude（姫、Opus 5.5）。完了・作業終了。
+
+**入力の版（着手時、SHA-256先頭12桁）：** `TASK_REGISTRY_V2.md` `3b73609ad369`、`index.html` `87f2f50fc342`、`registry.json` `c2fb29a21bd8`、`verify.cjs` `f85add4d50b7`、`README.md` `b6127a43c477`、`sync.py` `6d43b5d1471e`。作業中に、競合する外部の更新はなかった。
+
+**変更：**
+- `sync.py`：
+  - `--node`・`--marked`（または環境変数）で実行環境を指定できるようにした。
+  - `--check`は、HTML seedと`registry.json`の不一致も検出する。
+  - マイルストーン本体と関係について、引用の全文が原文にあるかを確かめ、消えたものは`STALE`、原文のhashが変わったものは確認対象として報告する。
+  - 書き込みの前に退避し、Nodeがない、文書の生成や`verify.cjs`が失敗した、のいずれでも`registry.json`と`index.html`を元に戻して`FAILED`・終了コード1で止まる。
+  - 内容に変化がなければ`generatedAt`を据え置く。
+- `verify.cjs`：決め打ちの件数を2か所、データから求める形に直した。
+  - task 44件・辺14本 → Registryの行数。
+  - OPS-048の子2件 → `parentTask`の数。
+  - task追加のたびに検証が落ちる原因になっていた。
+- `README.md`：末尾に「同期の一コマンド化」の節を足した（日常の手順、持ち越す部分の限界、失敗時の動き、配布用HTML）。
+- `index.html`：生成データの3ブロック（seed・documents・pendingSeed）だけを更新した。それ以外の部分は、写しとの比較で同一だった（レイアウト・表示コードは不変）。
+
+**検証：** 一時ディレクトリ`ops057-sync-test.*`（repositoryの`.md`とRegistryAppの写し、削除済み）で、次を確かめた。
+- Nodeのパス不正と、Nodeなし：どちらも`FAILED`になり、2ファイルがbyte一致で元に戻った。
+- 正常更新：`verify.cjs`までPASSし、続く`--check`はずれなし。
+- 再実行：`registry.json`がbyte一致で変わらない。
+- HTMLの生成データ以外の部分は、元と同一。
+
+その後、現行データで`sync.py`を実行した（指定のNode v24.19.0とmarkedを使用）。
+- 検出した同期漏れ：OPS-057のtask追加、45行の行番号のずれ、Registryのhash。
+- これを取り込み、`verify.cjs`の全項目がPASSした。続く`--check`は「no drift」。
+- `STALE`のマイルストーン引用はなかった。
+
+**残る限界：** マイルストーンとその関係は自動では作らない（持ち越しと検査だけ）。表示の重み`displayInterest`は手で付けるもの。Registryの表の形（列数・節名）が変わると、読み取りがずれる。`verify.cjs`は画面の描画を確かめない（「Not tested: DOM rendering」のまま）。commitしていない。

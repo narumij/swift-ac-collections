@@ -124,3 +124,20 @@ task間依存と合わせたグラフを検査し、接続したtaskは独立列
 第3タブはRegistryの各パスの配置維持印から生成する。文書・紐付くtask・区分・付与日・経過日・記録者・理由を表示し、文書をクリックして本文を開く。AIは理由付きで暫定保護または恒久希望を記録できるが、恒久決定はユーザーに留保する。既存指定の効力は維持し、開始日未確認のものは不明と表示する。付与日当日を1日目とし、日本時間の暦日差を描画時に計算する。別の対象一覧を手で維持しない。
 
 2026-10-16：先頭の骨格nodeへ入る供給枝は、骨格より前に補助列を設けて収める。負の列を列0へ切り詰めない。補助列が不要な既存グラフの座標は維持する。CP-20261016-005の助言をOPS-048で反映し、追加後の文書ゲートでも全体fallbackに落ちないことを検証した。
+
+## 同期の一コマンド化（sync.py、OPS-057）
+
+正本（Task Registry）を直したら、repositoryの直下で次を1回実行する。`registry.json`とHTML内のデータ（seed・採番待ち・内蔵文書）は手で直さない。
+
+```sh
+python3 Maintanance/RegistryApp/sync.py --node <nodeのパス> --marked <marked.esm.jsのパス>
+python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registry・registry.json・HTML seedのずれを出す。ずれがあれば終了コード1
+```
+
+`--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略すると`PATH`上の`node`と、環境の`marked`を使う。
+
+- **作り直すもの：** task・依存辺・親子・常設区分（Registryから）、生成元のhash、baseline、HTML seed、採番待ち（`build-pending.py`）、内蔵文書（`build-documents.mjs`）。最後に`verify.cjs`を通す。
+- **持ち越すもの（Registryから作れない）：** マイルストーンとその関係、`milestoneSnapshot`、taskごとの`displayInterest`。引用が原文から消えたものは`STALE`として報告し、自動では直さない。原文の版（hash）が変わっただけのものは、確認対象として一覧に出す。マイルストーンを増やしたり変えたりするときは、`registry.json`を手で直してから`sync.py`を回す。
+- **失敗したとき：** Nodeが見つからない、文書の生成か`verify.cjs`が失敗した、のいずれでも、`registry.json`と`index.html`を実行前の状態に戻して`FAILED`と表示し、終了コード1で止まる。成功と区別できる。
+- **再実行：** 内容が変わっていなければ`registry.json`は書き換わらない（`generatedAt`も据え置く）。
+- **配布用HTML：** 配布先へは、`sync.py`が成功した後の`index.html`をそのままコピーする。配布先で直接編集しない。

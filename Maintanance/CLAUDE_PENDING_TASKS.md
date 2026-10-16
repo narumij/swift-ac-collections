@@ -116,14 +116,14 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261017-003` — Registry Studio：registry.jsonを空から生成する
 
-- queue状態: `AWAITING_CODEX`（実施済み・commit済み`5f090e1a`。受入はAstra。CP-20261017-002のRECONCILED（追記16まで）には含まれない）
+- queue状態: `RECONCILED`（2026-10-17 Astra受入。範囲と未確認は健全性調査正本の最新節。旧注記：）（実施済み・commit済み`5f090e1a`。受入はAstra。CP-20261017-002のRECONCILED（追記16まで）には含まれない）
 - 発見元・ユーザー指示: ユーザー「JSON生成を姫がつくれないかな」
 - 実施・検証: Astraの手順（1.関心度と古いスナップショットを外し表示順への影響だけ確認、2.空から組み立てる、3.既存JSONは差分確認用だけ・無くても生成、最後に既存JSONなしで再生成して一致を検証）に沿って実施。`sync.py`：`build()`を空から組み立てる形に（schemaVersion・source・tasks・edges・baseline・milestones・milestoneRelations・milestoneHeadのみ）、`displayInterest`と`milestoneSnapshot`を廃止、使われていなかった`milestone_sources`・`relocate_sources`と旧引用照合の分岐を削除、既存JSONが無いときも生成・失敗時の復元を両対応、差分報告にゲートと線を追加。`index.html`：関心度による並べ替えと吹き出しの関心度表示を削除（並びはDONEを後ろ・Registry順）。`verify.cjs`：恒久図の順の確認を関心度なしに。表示順への影響：独立タスク12件と恒久図10件の並びがRegistry順に変わる（見取り図本体は不変）。検証：registry.jsonを削除して生成→コミット済みのものとtasks43・edges7・milestones18・relations31がすべて一致、違いは`milestoneSnapshot`が無いことだけ。2回目は`--check`でずれなし。Studio README更新。
 - Codex reconciliation: 未処理
 
 ### `CP-20261017-004` — マイルストーン移行の健全性回復（Astra調査A・B・Cの修正）
 
-- queue状態: `AWAITING_CODEX`（実施済み・未commit。受入はAstra。OPS-047 / OPS-048）
+- queue状態: `RECONCILED`（2026-10-17 Astra受入。範囲と未確認は健全性調査正本の最新節。旧注記：）（実施済み・未commit。受入はAstra。OPS-047 / OPS-048）
 - 発見元・ユーザー指示: Astra「マイルストーン移行後の健全性調査・姫への引継ぎ」（`Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md`）。ユーザー「先にコミットしてから、タスクやって」（先にAstraの文書を`dacd456f`でcommit）。
 - A（`index.html`）：ENDの代わりにGATEへ描く線は元のEND側の端点（`shownFor`）を保持。除去・つなぎ替えは元データの関係で行い、選んだ版ゲートはデータ上その手前のENDへ結ぶ（版ゲートへ入るのはENDだけ）。ゲートどうしの列は配置から作るので編集を断り案内を出す。除去で何も変わらなければ変更ありにしない。表示用の情報は保存JSONへ入らない。`verify.cjs`に、描画用に変換された線を入力して、取消・変更なし・列の拒否・除去・つなぎ替え・保存に表示用情報が無いことの検査を追加。
 - B（`CLAUDE_PENDING_TASKS.md`）：CP-20261017-001・002の元entryのqueue状態とreconciliation行を、末尾のAstra照合結果（RECONCILED）へ合わせた。本文は返却時のまま。採番待ち表示はCP-20261016-013（凍結）とCP-20261017-003だけになった。

@@ -1,0 +1,131 @@
+Fetching https://github.com/apple/swift-collections from cache
+Fetching https://github.com/apple/swift-collections-benchmark from cache
+Fetching https://github.com/iShape-Swift/iTree from cache
+Fetched https://github.com/iShape-Swift/iTree from cache (0.66s)
+Fetched https://github.com/apple/swift-collections from cache (0.66s)
+Fetched https://github.com/apple/swift-collections-benchmark from cache (0.67s)
+Computing version for https://github.com/iShape-Swift/iTree
+Computed https://github.com/iShape-Swift/iTree at 0.5.0 (1.18s)
+Computing version for https://github.com/apple/swift-collections-benchmark
+Computed https://github.com/apple/swift-collections-benchmark at 0.0.4 (0.52s)
+Fetching https://github.com/apple/swift-system from cache
+Fetching https://github.com/apple/swift-argument-parser from cache
+Fetched https://github.com/apple/swift-argument-parser from cache (0.95s)
+Fetched https://github.com/apple/swift-system from cache (0.95s)
+Computed https://github.com/iShape-Swift/iTree at 0.5.0 (0.98s)
+Computed https://github.com/apple/swift-collections-benchmark at 0.0.4 (0.00s)
+Computing version for https://github.com/apple/swift-collections
+Computed https://github.com/apple/swift-collections at 1.7.3 (0.60s)
+Computed https://github.com/apple/swift-collections at 1.7.3 (0.00s)
+Computing version for https://github.com/apple/swift-argument-parser
+Computed https://github.com/apple/swift-argument-parser at 1.8.2 (0.34s)
+Computing version for https://github.com/apple/swift-system
+Computed https://github.com/apple/swift-system at 1.8.1 (0.34s)
+Creating working copy for https://github.com/iShape-Swift/iTree
+Working copy of https://github.com/iShape-Swift/iTree resolved at 0.5.0
+Creating working copy for https://github.com/apple/swift-collections
+Working copy of https://github.com/apple/swift-collections resolved at 1.7.3
+Creating working copy for https://github.com/apple/swift-collections-benchmark
+Working copy of https://github.com/apple/swift-collections-benchmark resolved at 0.0.4
+Creating working copy for https://github.com/apple/swift-system
+Working copy of https://github.com/apple/swift-system resolved at 1.8.1
+Creating working copy for https://github.com/apple/swift-argument-parser
+Working copy of https://github.com/apple/swift-argument-parser resolved at 1.8.2
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/OptionalElementBufferModule/Documentation': File not found.
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/NextPermutationModule/Documentation': File not found.
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/ElementBufferModule/Documentation': File not found.
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/OptionalElementBufferModule/Documentation': File not found.
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/NextPermutationModule/Documentation': File not found.
+warning: 'baseline': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline/Sources/ElementBufferModule/Documentation': File not found.
+Building for production...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 596]
+[Planning deferred tasks]
+[122 / 256]
+[131 / 264] RedBlackTreeCollections
+[133 / 267] NextPermutationModule
+[135 / 271] ElementBufferModule
+[137 / 275]
+[139 / 292]
+[141 / 292]
+[144 / 292]
+[153 / 292] OptionalElementBufferModule
+[163 / 321] OptionalElementBufferModule
+[167 / 330]
+[171 / 330]
+[174 / 330]
+[186 / 330] NextPermutationModule
+[195 / 330] ElementBufferModule
+[207 / 330] NextPermutationModule
+[215 / 332] PermutationModule
+[223 / 332]
+[223 / 332] iTree
+[230 / 332]
+[234 / 332]
+[236 / 332] InternalCollectionsUtilities
+[250 / 336] SpanPreview
+[268 / 339]
+[271 / 339]
+[276 / 346]
+[277 / 346]
+[279 / 346]
+[280 / 346]
+[281 / 346]
+[282 / 346]
+[283 / 346] BasicContainers
+[289 / 346] SystemPackage
+[295 / 346] RedBlackTreeCollections
+[302 / 347] RedBlackTreeModule
+[311 / 349] RedBlackTreeModule
+[311 / 349] AcCollections
+[319 / 350] AcCollections
+[319 / 350] SortedCollections
+[325 / 350] ArgumentParser
+[332 / 351] CollectionsBenchmark
+[344 / 384]
+[348 / 384]
+[351 / 384]
+[354 / 384]
+[357 / 384]
+[359 / 384]
+[360 / 384]
+[363 / 384]
+[365 / 384]
+[366 / 384] CollectionsBenchmark
+[373 / 385] Benchmarks
+[376 / 387] Benchmarks
+[383 / 388] benchmark-product
+[385 / 389] benchmark-product
+[387 / 389] benchmark-product
+[388 / 389] benchmark-product
+Build complete! (45.62秒)
+Running 28 tasks on 2 sizes from 1 to 2:
+  RedBlackTreeSet<Int> init from range
+  RedBlackTreeSet<Int> sequential iteration
+  RedBlackTreeSet<Int> successful find
+  RedBlackTreeSet<Int> unsuccessful find
+  RedBlackTreeSet<Int> insert
+  RedBlackTreeSet<Int> remove
+  RedBlackTreeSet<Int> insert, shared
+  RedBlackTreeSet<Int> remove, shared
+  RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)
+  RedBlackTreeDictionary<Int, Int> sequential iteration
+  RedBlackTreeDictionary<Int, Int> subscript, successful lookups
+  RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups
+  RedBlackTreeDictionary<Int, Int> subscript, insert, unique
+  RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique
+  RedBlackTreeDictionary<Int, Int> subscript, insert, shared
+  RedBlackTreeDictionary<Int, Int> subscript, remove existing, shared
+  RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing
+  RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing
+  Permutations.SubSequenceN subscript sequential access (batched)
+  Permutations.SubSequenceN subscript shuffled access (batched)
+  (8 more)
+Output file: /var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.SScyujnJt4/baseline.json
+Discarding all existing data.
+
+Collecting data:
+  1.2 -- 254ms
+Finished in 256ms
+CI.json exit=0

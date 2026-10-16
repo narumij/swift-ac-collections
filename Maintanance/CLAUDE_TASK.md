@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-RELEASE-084：2026-10-17ユーザーの修正依頼により限定再開。Claude（姫）は[修正正本の再依頼](Current/RELEASE_CANDIDATE_BASELINE_FIX.md)に従い、現行baselineの確認、既決範囲の修正・検証を行う。比較除外・閾値・baseline選択方針の変更は未委任。下記の旧停止記録は履歴。
+RELEASE-084：2026-10-17の再依頼をAstra受入。現行baselineでは修正不要、ユーザーのcommit承認により限定依頼はDONE。追加実装依頼なし。Ubuntu CI成功とは扱わない。
 
 RELEASE-083：調査返却・Astra受入済み、ユーザーcommit承認により完了。追加実装依頼なし。下記の正式依頼へ。別の直接依頼とは独立。
 

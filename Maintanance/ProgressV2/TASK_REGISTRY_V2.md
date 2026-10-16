@@ -109,7 +109,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RELEASE-084` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17ユーザーが再依頼。現在baselineを確認し、既決範囲の欠落処理・診断・表示を修正検証。今回範囲は0.5.4完了・RELEASE-086確定待ちを解除。比較除外・閾値・baseline選択規則は変更せず、未決部分は判断へ返す。CI実走・公開・commitは別許可。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
+| `RELEASE-084` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
 
 
 | `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |

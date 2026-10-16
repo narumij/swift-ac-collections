@@ -106,4 +106,39 @@ RELEASE-084を以下の限定範囲で再開する。担当Claude（姫）、受
 
 ### 再依頼のReturn
 
-未返却。
+**Claude返却（2026-10-17、姫）。結論：現在のbaselineでは問題が解消しているため、workflowの修正はしていない。**
+
+**固定入力：** branch `develop/misc/69`、HEAD `0789479b`、着手時の作業差分なし。`candidate.yml` `ee96cebf3777cf5e…`、`CI.json` `ae78926adb7c16ce…`、`CI-Small.json` `af951833fbb7b436…`（RELEASE-083と同一）。
+
+**現在のbaselineと根拠：**
+- candidate.ymlは「候補HEADに含まれる`x.y.z`形式のtagのうち最新」を比較元に選ぶ。
+- ローカル：`git tag --merged HEAD`の最新は`0.5.4`（→`b03d0bf2`、PR #199のmerge）。
+- remote：`git ls-remote --tags origin`で`refs/tags/0.5.4`＝`b03d0bf2…`を確認（ネットワーク取得済み）。`0.5.3`は`139ffef8`のまま。
+- よって`b03d0bf2`を含む候補（今のdevelop系PR）の比較元は0.5.4になる。0.5.3向けの例外は不要。
+
+**8件欠落と契約差の再確認：**
+- RELEASE-083で0.5.3に無かった8件は、0.5.4のBenchmarks/Sourcesにすべてある。現行CI.json・CI-Small.jsonの29件で0.5.4に無いものは0件。
+- Permutationのruntime-check切替`9ff515c9`は0.5.4の祖先。比較元と候補の性能契約は同じ。
+- 0.5.4→HEADで`Benchmarks/`・`Sources/`の差分なし。
+
+**最小ケースの検証：** 0.5.4を一時worktreeへチェックアウトし、候補のCIライブラリを写してcandidate.ymlと同じ手順で`benchmark library run`を実行。CI.json・CI-Small.jsonともexit 0、`unknown tasks`なし、29件記録。証拠は`Evidence/RELEASE-084/`。macOSローカル実行で、Ubuntu runner上の実走ではない。
+
+**変更一覧：** workflow・Scripts・Librariesの変更なし。追加は`Evidence/RELEASE-084/`（README・ログ2件）と本Returnだけ。
+
+**未解決判断（ユーザー）：**
+1. 将来、新しい測定を足してリリースする前に候補CIを走らせると、同じ「比較元に無い測定」で止まる構造は残っている（workflowが候補のライブラリを比較元へ写すため）。恒久対策として「比較元に無い測定は未比較として明示し、比較できた件数と分けて表示する」を入れるかは方針判断。推奨は入れる（ただし今回の範囲外、立て直しRELEASE-085/086で扱う）。
+2. 0.5.4は候補と測定コードが同一なので、比較は配置ゆれ（過去に±20%の観測あり）だけを測ることになる。30%閾値は変えていない。
+
+**workflow反映順：** 変更なしのため不要。
+
+**推奨commit単位：** 証拠と本Returnの1commit。
+
+**作業終了・範囲解放。** CI実走成功・リリース可とは呼ばない。commit・push・GitHub操作はしていない。
+
+## Astra受入（2026-10-17、0789479b後の返却）
+
+限定再依頼を受入。現在baselineでは旧例外修正が不要という結論を確認した。workflowの数値版tag選択を手元で再現すると0.5.4、SHAはb03d0bf21f110fc64c7dc9dfa0d790dab915b106。9ff515c9が0.5.4の祖先で、0.5.4→HEADのSources・Benchmarks差分はゼロ。保存された最小測定ログのCI.json/CI-Small.json exit=0を確認した。remote確認はClaude返却の証拠であり、Astraは再取得していない。
+
+workflow変更なしを受け入れる。Ubuntu CIの実走合格・性能保証・リリース可否は未認定。将来の測定追加に対する恒久対策はRELEASE-085/086へ残す。RELEASE-084はWAITING_USER（受入済み証拠・記録のcommit確認待ち）。END-0.5.4への接続は維持。追加のClaude実装依頼なし。
+
+2026-10-17、ユーザーが今回の証拠・受入・振り返りのcommitを承認。RELEASE-084はDONEへ更新。限定依頼の完了であり、Ubuntu CI合格・リリース判断や将来の恒久対策完了を意味しない。

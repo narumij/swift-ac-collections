@@ -90,7 +90,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `EVAL` | `001` |
 | `FIT` | `007` |
 | `GRAPH` | `019` |
-| `HIST` | `002` |
+| `HIST` | `003` |
 | `OPS` | `047` |
 | `OPT` | `074` |
 | `PERF` | `005` |
@@ -98,7 +98,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `QUALITY` | `005` |
 | `RBT` | `046` |
 | `RELEASE` | `080` |
-| `TEST` | `005` |
+| `TEST` | `007` |
 
 ## 文書ランクと変更権限
 

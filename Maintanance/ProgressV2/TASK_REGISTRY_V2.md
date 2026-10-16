@@ -28,6 +28,9 @@
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
 
+| `TEST-006` | `ACTIVE` | Claude（移動済み） / Astra（参照更新・受入） | [EXECUTION] テスト整備文書のTesting集約と参照接続 | CP-20261016-002を正式登録。dcb9e3ceで移動済み。残る制度・Registry・文書入口等の旧参照を更新し、差分・buildへの影響・リンクを確認して受入。採番時点では受入未了。Tests/CLAUDE.mdは維持 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Testing/TESTING.md` / `Maintanance/Testing/Fixtures.md` |
+| `TEST-007` | `ACTIVE` | Astra（配置・紐付け） / User（本文変更の判断） | [EXECUTION] 判断座標草案のサルベージ | CP-20261016-003を正式登録。原文を保持してTestingへ一時配置しTEST-005に接続する。由来と共有の扱いを記載。姫の所見は未採用の提案として保持し、本文修正・現行規則への昇格は含めない。未実施 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Archived/JudgmentCoordinates/README.md` |
+
 ### 公開とリリース
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
@@ -81,6 +84,8 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
+
+| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [EXECUTION] テスト再建の記録作成・受入と入口接続 | CP-20261016-001を正式登録。17d40163で5ファイル作成済み。件数・根拠・図の独立照合と入口接続が残る。History系の配置案は未確定で、現位置を維持。採番だけで受入済みにはしない | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/TestRebuild2026/README.md` / `Maintanance/TestRebuild2026/EVIDENCE.md` |
 
 ## Task precedence
 

@@ -42,7 +42,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261016-001` — テスト再建の記録（2026年秋）の作成
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-16 05時台の会話。`MILESTONES.md`の画像を見たあと、ユーザーが「ひめもテスト再構築の歩みみたいなのつくるかい？」と提案した。続けて次の指示があった。
   - 置き場所：`Tests/`ではなく`Maintanance/`内のフォルダ。`Maintanance/`外のmdは徐々に減らしたい。
   - 形：`RefactoringFromAtCoder2025`のようなリファクタリング記録。
@@ -59,13 +59,13 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 不具合8件は、各commitのdiffと、変更ファイルにtestが含まれることを確認した。
   - パレット検証scriptはNode.jsがないため実行していない。理由と代わりの措置は`EVIDENCE.md`の6.に書いた。
   - commitしていない。`DOCUMENT.md`や`MILESTONES.md`など入口からのリンクは張っていない（Codex・Astraの判断）。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 / Astra。`HIST-003`としてACTIVEへ正式登録。実施済み部分と残作業は[照合記録](Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に分離。今回の処理は採番・接続であり成果の受入完了ではない。
 - 追記（同日）: ユーザーとの会話で、置き場所は`HIST-001`の正本と並べて`History/`系にまとめる案が出た（採番がHISTなら`History/`、とユーザー）。
   移動は未実施。採番時に`HIST`の番号と置き場所をあわせて決めてもらう想定。
 
 ### `CP-20261016-002` — `Maintanance/Testing/`の新設とテスト整備文書の移動
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-16 09時頃の会話。ユーザーが「Testingほって、md移動するのは可。採番待ちで記録しておいて」と指示した。
   前段として、`Maintanance/`外のmdを減らしたい、見て楽しむ記録は`Misc`や`History`に分けたい、という方針が示されている。
 - 種別候補: `EXECUTION`
@@ -92,11 +92,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 移動と上記の参照更新を実施した。
   - `swift build --build-tests`は警告なしで完了した（`Fixtures.md`の除外指定がなくなっても、未処理resourceの警告は出なかった）。
   - commitしていない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 / Astra。`TEST-006`としてACTIVEへ正式登録。実施済み部分と残作業は[照合記録](Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に分離。今回の処理は採番・接続であり成果の受入完了ではない。
 
 ### `CP-20261016-003` — 判断座標の草案のサルベージ（`Testing/`へ配置し`TEST-005`に紐付け）
 
-- queue状態: `AWAITING_CODEX`（依頼の記録のみ。Claudeは実行しない）
+- queue状態: `RECONCILED`（依頼の記録のみ。Claudeは実行しない）
 - 発見元・ユーザー指示: 2026-10-16 09時台の会話。ユーザーが`Maintanance/Archived/JudgmentCoordinates/`を示し、
   「いまだと修正ポイントなにかあるかな？」と尋ねた。姫の所見を受けて、ユーザーが次のように指示した。
   「採番待ちで、サルベージ依頼するのがいいんじゃないかな？ Testingに配置するよう依頼して、恒久タスク紐付けに。テストの恒久もあるよね？」
@@ -124,7 +124,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 担当候補・受入担当: Astra（採番・配置・紐付け）/ 内容の採否はユーザー。姫は所見の提供と、`TEST-005`の維持文書側の参照更新。
 - 停止条件: 草案の本文を書き換える必要が出たら、占有の差し戻し（草案§4「確定は手放すこと」）をユーザーに確かめる。
 - 成果・検証: 未着手（記録のみ）
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 / Astra。`TEST-007`としてACTIVEへ正式登録。実施済み部分と残作業は[照合記録](Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に分離。今回の処理は採番・接続であり成果の受入完了ではない。
 
 過去のreconciliation済みentryは次を参照する。
 

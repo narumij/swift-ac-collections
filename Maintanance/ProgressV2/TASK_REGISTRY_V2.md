@@ -27,9 +27,12 @@
 | `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` |
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
-| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期到達点は既存graph試験の調査と読み取り専用再現。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。今回登録のみ | `Maintanance/Current/TASK_REGISTRY_APP.md` |
-| `OPS-051` | `WAITING_USER` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |
+| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md` |
+| `OPS-051` | `DONE` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザーが初期試作を受入・完了とし、残る改善は親OPS-048で扱うよう指示。HTML閲覧編集とJSON返却・正本反映の往復を確認済み。全環境・全UIの網羅検証を意味しない。受入範囲と継続事項は詳細正本を参照 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |
 
+
+| `OPS-053` | `ACTIVE` | Astra | [DISCOVERY] 配置維持例外表の簡素化検討 | ユーザー指定の検討task。登録のみ・未着手。現行根拠・問題の有無・選択肢・推奨案と必要な判断を提示し、検討結果の受入まで。改訂・移動・保護解除は含めない | `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` |
+| `OPS-054` | `ACTIVE` | Astra | [DISCOVERY] Claude起動系文書の見直し検討 | ユーザー指定の検討task。登録のみ・未着手。OPS-053の検討結果受入後に開始。現行根拠・問題の有無・選択肢・推奨案と必要な判断を提示し、検討結果の受入まで。改訂・移動・保護解除は含めない | `Maintanance/Current/CLAUDE_STARTUP_DOCUMENT_REVIEW.md` |
 
 ### 公開とリリース
 
@@ -102,6 +105,8 @@
 | `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
+| `OPS-054` | `OPS-053` | `SEQUENCE` | 配置維持例外表の検討結果を受け入れてからClaude起動系文書を検討する。前段の提案実施完了は条件にしない |
+
 ### 受入済みの前提成果
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
@@ -166,7 +171,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 ## 過去の記録への入口
 
-- [完了6件とアプリ親子関係の圧縮前記録](../Archived/TASK_REGISTRY_COMPLETED_VIEWER_2026-10-16.md)：`OPS-049`・`OPS-050`・`OPS-052`・`TEST-006`・`TEST-007`・`RBT-005`。調査・助言・受入の原文と証拠への経路を保存。OPS-051の受入待ちは維持。
+- [完了6件とアプリ親子関係の圧縮前記録](../Archived/TASK_REGISTRY_COMPLETED_VIEWER_2026-10-16.md)：`OPS-049`・`OPS-050`・`OPS-052`・`TEST-006`・`TEST-007`・`RBT-005`。調査・助言・受入の原文と証拠への経路を保存。圧縮時点ではOPS-051の受入待ちを維持（その後の受入は現行行を参照）。
 
 - [完了5件・除外1件と旧前提説明（品質資料整理後の圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-16_QUALITY_ROUND.md)：`OPS-045`・`DOC-031`・`RBT-041`・`RBT-046`・`HIST-002`・`QUALITY-004`。元の状態・受入範囲・証拠への参照を保存。
 

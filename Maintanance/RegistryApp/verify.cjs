@@ -71,7 +71,7 @@ console.log('PASS: rectangle collision checks, each-edge removal, new-node and r
 vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
 vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
 const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,10);assert(permanent.every(g=>g.documents.length));assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).sort((a,b)=>(b.displayInterest?.score??0)-(a.displayInterest?.score??0)).map(t=>t.id));
-const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('function switchMap('),script.indexOf("for(const id of ['dependencyTab'")),ctx);ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
+const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('function switchMap('),script.indexOf("for(const id of ['dependencyTab'")),ctx);ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 
 const reference=JSON.parse(fs.readFileSync(require('path').join(__dirname,'layout-reference.json'),'utf8'));for(const [id,position] of Object.entries(reference))assert.deepEqual(placed.pos.get(id),position);
@@ -88,3 +88,10 @@ assert(permanent.some(g=>g.task.id==='HIST-003'&&g.task.state==='ACTIVE'));
 
 assert(!groups.regular.some(t=>['OPS-049','OPS-050','OPS-051','OPS-052'].includes(t.id)));
 assert(permanent.find(g=>g.task.id==='OPS-048').children.some(t=>t.id==='OPS-051'));
+
+vm.runInContext(script.slice(script.indexOf('function protectionRecords('),script.indexOf('function renderProtection(')),ctx);
+assert.equal(ctx.protectionRecords(original).length,18);
+assert.equal(ctx.protectionDays('2026-10-16','2026-10-16'),'1日目');
+assert.equal(ctx.protectionDays('2026-10-15','2026-10-16'),'2日目');
+assert.equal(ctx.protectionDays('不明','2026-10-16'),'不明');
+ctx.switchMap('protection');assert(!controls.protectionView.hidden);assert(controls.dependencyView.hidden&&controls.permanentView.hidden);

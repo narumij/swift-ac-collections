@@ -5,7 +5,7 @@
   - RedBlackTreeSet.md（英訳）
   - RedBlackTreeSet.swift の documentation comment（英語）
 - Priority: 初心者への配慮より、RedBlackTreeSet について過不足なく伝えることを優先
-- Code Examples: 指定された節では必須
+- Code Examples: 2026-10-16ユーザー決定により既存の構成・掲載数を固定。追加・削除は0.8.0で再検討。
 -->
 
 # RedBlackTreeSet
@@ -68,7 +68,9 @@
 - 指している要素を削除すると無効
 - slot 再利用後も古い index は再利用不可
 - CoW 分岐後の index の扱い
-- 無関係なコレクション由来の index は事前条件違反
+- 無関係なコレクション由来の index は事前条件違反。常に検出されるという保証にはしない
+- 通常構成のCoWでは対応する位置のindexを共有できるが、有効性は操作先の世代・削除状態で決まる
+- Viewの終端は元の木では要素位置である場合があり、View内の範囲を守って使用する
 - `RedBlackTreeSet.Bound`
   - index を直接扱わない代替記法
   - `.start`
@@ -86,6 +88,8 @@
 - コード例必須
 
 ## Performance
+- 下記の変更操作の計算量は、CoWによるストレージ複製を別途必要としない場合。比較・要素操作を定数時間とする
+- Viewの作成は要素配列をコピーしないが、独立したViewの変更でCoWが発生する場合がある
 - 計算量表必須
 - `isEmpty`: O(1)
 - `count`: O(1)
@@ -108,3 +112,4 @@
 
 ## Important
 - thread-safe ではない
+- 本照合は通常構成（COMPATIBLE_ATCODER_2025無効）の公開APIを対象とする

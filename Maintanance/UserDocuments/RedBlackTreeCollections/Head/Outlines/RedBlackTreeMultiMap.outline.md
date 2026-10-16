@@ -5,7 +5,7 @@
   - RedBlackTreeMultiMap.md（英訳）
   - RedBlackTreeMultiMap.swift の documentation comment（英語）
 - Priority: 初心者への配慮より、RedBlackTreeMultiMap について過不足なく伝えることを優先
-- Code Examples: 指定された節では必須
+- Code Examples: 2026-10-16ユーザー決定により既存の構成・掲載数を固定。追加・削除は0.8.0で再検討。
 -->
 
 # RedBlackTreeMultiMap
@@ -21,7 +21,7 @@
 - 同じキーに複数の値を関連付けられる
 - 同じキーを持つ要素も、それぞれ独立した要素として保持
 - 通常の挿入では同一キー内の要素順は挿入順
-- hint付き挿入では同一キーのグループ内で挿入位置を指定できる
+- hint付き挿入では、有効かつ順序条件に合うhintの直前へ挿入できる。常に指定位置へ挿入する保証ではない
 - 挿入・削除を行ってもキーのソート順を維持
 - キー順で昇順・降順に走査
 - 順序を利用した検索
@@ -110,7 +110,7 @@
 - 同一キーの全pairを保持すること
 - `meld(_:)` / `melding(_:)`
 - 自身を更新する操作と、新しいmultimapを返す操作の違い
-- 性能上の使い分けはCombining APIの調査結果と照合して確定
+- 要素ごとの追加と、ソート済みの二つの木を走査して新しい木を構築するmeldを区別する
 - コード例必須
 
 ## Transforming and Iterating
@@ -132,7 +132,9 @@
 - 指している要素を削除すると無効
 - slot 再利用後も古い index は再利用不可
 - CoW 分岐後の index の扱い
-- 無関係なコレクション由来の index は事前条件違反
+- 無関係なコレクション由来の index は事前条件違反。常に検出されるという保証にはしない
+- 通常構成のCoWでは対応する位置のindexを共有できるが、有効性は操作先の世代・削除状態で決まる
+- Viewの終端は元の木では要素位置である場合があり、View内の範囲を守って使用する
 - index range subscriptと`RedBlackTreeKeyValueRangeView`
 - key-value pairの位置範囲を扱い、キーsubscriptのmapped values viewとは異なること
 - `containsSubrange(_:)`
@@ -154,6 +156,8 @@
 - コード例必須
 
 ## Performance
+- 下記の変更操作の計算量は、CoWによるストレージ複製を別途必要としない場合。比較・要素操作を定数時間とする
+- Viewの作成は要素配列をコピーしないが、独立したViewの変更でCoWが発生する場合がある
 - 計算量表必須
 - `isEmpty`: O(1)
 - `count`: O(1)
@@ -169,8 +173,9 @@
 - 同一キーの m 要素を検索して処理: O(log `count` + m)
 - range view は対象要素をコピーしない
 - 再平衡化: 償却 O(1)
-- `filter` / `mapValues` / `compactMapValues`
-- `insert(contentsOf:)` / `inserting(contentsOf:)` / `meld` / `melding`はCombining APIの調査結果と照合して確定
+- `filter` / `mapValues` / `compactMapValues`: O(n)、クロージャのコストは別途
+- `insert(contentsOf:)` / `inserting(contentsOf:)`: 入力n件・元m件で O(n log(m + n))、CoW複製は別途
+- `meld` / `melding`: O(n + m)、新しい木を構築する
 - `Key` の比較コストの影響
 
 ## Red-Black Tree
@@ -183,3 +188,4 @@
 
 ## Important
 - thread-safe ではない
+- 本照合は通常構成（COMPATIBLE_ATCODER_2025無効）の公開APIを対象とする

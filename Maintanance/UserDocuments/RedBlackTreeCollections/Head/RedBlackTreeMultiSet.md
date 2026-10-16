@@ -1,15 +1,8 @@
-<!-- 編集用原稿: English user guideと現行Swiftソース先頭コメントの和集合。 -->
-<!-- 重複を整理してから RedBlackTreeMultiSet.swift のコメントドックへ反映する。 -->
-
-<!-- RedBlackTreeMultiSet.ja.md is the canonical source. RedBlackTreeMultiSet.md is its English translation. -->
-
 # RedBlackTreeMultiSet
 
-English | [日本語](RedBlackTreeMultiSet.ja.md)
-
-A red-black-tree-based set that keeps its elements in ascending order and allows duplicate values.
-
 ## Declaration
+
+Use `RedBlackTreeMultiSet` with `import AcCollections`. Any declaration below illustrates the type signature rather than a complete executable program.
 
 ```swift
 import AcCollections
@@ -19,7 +12,7 @@ struct RedBlackTreeMultiSet<Element: Comparable>
 
 ## Overview
 
-`RedBlackTreeMultiSet` is a set that can store duplicate elements while always maintaining them in ascending order.
+A red-black-tree multiset that stores elements in ascending order and retains duplicates. Equivalent elements have distinct positions and appear consecutively. Unlike `Set` or `RedBlackTreeSet`, it retains multiplicities; unlike an `Array`, it maintains order across updates. Use `RedBlackTreeSet` when duplicates are not needed.
 
 ```swift
 let numbers: RedBlackTreeMultiSet = [5, 2, 4, 2, 1, 3, 3]
@@ -28,28 +21,6 @@ print(numbers)
 // [1, 2, 2, 3, 3, 4, 5]
 ```
 
-Unlike `RedBlackTreeSet`, it can store multiple elements with the same value.
-
-`RedBlackTreeMultiSet` uses a red-black tree, a type of balanced binary search tree.
-
-This allows it to search for, insert, and remove elements in logarithmic time,
-while always traversing all elements in sorted order.
-
-`RedBlackTreeMultiSet` is particularly useful when you need to:
-
-- maintain duplicate values while keeping all elements sorted
-- dynamically insert and remove elements while preserving their multiplicities
-- efficiently find the first element greater than or equal to a specified value, or strictly greater than it
-- efficiently find the range of elements with a particular value
-- traverse elements in ascending or descending order
-- work with an ordered multiset while repeatedly inserting and removing elements
-
-If you do not need to store duplicate elements, use `RedBlackTreeSet` instead.
-
-## Duplicate Elements
-
-`RedBlackTreeMultiSet` can store multiple elements that are considered equivalent by their ordering comparison.
-
 ```swift
 let numbers: RedBlackTreeMultiSet = [3, 1, 2, 3, 2, 1]
 
@@ -57,91 +28,28 @@ print(numbers)
 // [1, 1, 2, 2, 3, 3]
 ```
 
-When the same value is inserted multiple times, each occurrence is stored as an independent element.
-
-If you do not need to store duplicate elements, use `RedBlackTreeSet` instead.
-
-## Sorted Iteration
-
-When iterating over a `RedBlackTreeMultiSet` in its normal order,
-elements always appear in ascending order.
-
 ```swift
-let numbers: RedBlackTreeMultiSet = [7, 2, 9, 2, 1, 5]
-
-for number in numbers {
-  print(number)
-}
+var set: RedBlackTreeMultiSet<Int> = []
+set.insert(3) // -> [3]
+set.insert(1) // -> [1, 3]
+set.insert(4) // -> [1, 3, 4]
+set.insert(1) // -> [1, 1, 3, 4]
+set.insert(5) // -> [1, 1, 3, 4, 5]
 ```
 
-Output:
+## Creating a Multiset
 
-```text
-1
-2
-2
-5
-7
-9
-```
+Create an empty instance, use a literal, or initialize from an input sequence. `init(minimumCapacity:)` sets initial capacity and `reserveCapacity(_:)` reserves storage. `capacity` is distinct from the element count. Array literals, sequences, collections, and ranges can supply the elements.
 
-There is no need to first extract the elements into an array and sort them.
-The collection's structure always maintains the elements in sorted order.
+## Searching and Accessing Elements
 
-Elements with the same value appear consecutively in the sorted order.
+`contains(_:)` checks membership and `count(of:)` returns the number of matches. `first` / `last` and `min()` / `max()` access the endpoints. `firstIndex(of:)` returns `nil` when absent; `find(_:)` returns `endIndex`. `lowerBound(_:)` finds the first value greater than or equal to its argument, and `upperBound(_:)` the first strictly greater value; both return the end if none exists. `equalRange(_:)` returns the half-open range of all equivalent elements. Move forward or backward from search results within the endpoint preconditions; the end cannot be dereferenced as an element.
 
-This is particularly useful when elements are repeatedly inserted and removed
-while they need to be processed in sorted order each time.
+## Insertion and Removal
 
-## Ordered Lookup
+Insertion adds an element without replacing equivalent elements. A hint must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. Invalid indices or unequal replacements return `nil`.
 
-Because a red-black tree performs searches using the ordering between elements,
-it can efficiently perform not only simple value lookups, but also ordered searches.
-
-For example, you can query:
-
-- whether a specified value exists
-- the first element greater than or equal to a specified value
-- the first element strictly greater than a specified value
-- the range containing all elements equal to a specified value
-- the element immediately before or after a specified position
-
-In particular, when working with duplicate elements,
-combining lower-bound and upper-bound searches allows you to efficiently find
-the range of elements with the same value.
-
-These operations do not need to linearly scan elements from the beginning.
-
-Because the height of a red-black tree is logarithmically bounded with respect to the number of elements,
-value-based searches have a worst-case complexity of O(log `count`).
-
-## Indices
-
-A `RedBlackTreeMultiSet` index represents a logical position within the sorted sequence of elements.
-
-Even when multiple elements have the same value,
-each element occupies a distinct position.
-
-Using indices, you can move from one element to the next or previous element.
-
-Because elements in a red-black tree are not necessarily stored in a contiguous array,
-indices are not integer offsets.
-
-This differs from `Array`.
-
-Inserting or removing a different element does not invalidate an index as long as the
-element it refers to still exists. Removing that element invalidates the index, and the
-index must not be reused even if the same slot is later recycled.
-
-An index can also identify the corresponding position in a collection derived through
-copy-on-write, as long as the corresponding element still exists and its generation matches.
-Using an index with an unrelated collection is a precondition violation, and detection of
-that misuse is not guaranteed.
-
-## Multiset Operations
-
-As a set that allows duplicate elements, `RedBlackTreeMultiSet` provides basic operations
-such as value lookup, insertion, and removal.
+`eraseUnique(_:)` removes one match; `eraseMulti(_:)` removes all matches. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty multiset. Predicate removal with `erase(where:)`, range removal, and `removeAll(keepingCapacity:)` are also available. For sequential removal, continue with the index returned by `erase(_:) -> Index`, not a deleted index.
 
 ```swift
 var numbers: RedBlackTreeMultiSet = [1, 3, 3, 5]
@@ -153,125 +61,10 @@ numbers.insert(4)
 // [1, 3, 3, 3, 4, 5]
 ```
 
-Adding an element automatically preserves the collection's sorted order.
-
-Inserting a value that is already present adds another element with the same value.
-
-## Performance
-
-`RedBlackTreeMultiSet` uses a red-black tree,
-whose height is logarithmically bounded with respect to the number of elements.
-
-The complexities of representative operations are as follows:
-
-| Operation | Complexity |
-| --- | ---: |
-| `isEmpty` | O(1) |
-| `count` | O(1) |
-| `startIndex` | O(1) |
-| `endIndex` | O(1) |
-| Value lookup | O(log `count`) |
-| Lower-bound lookup | O(log `count`) |
-| Upper-bound lookup | O(log `count`) |
-| Element insertion | O(log `count`) |
-| Search for a value and remove one element | O(log `count`) |
-| Search for a value and remove K matching elements | O(log `count` + K) |
-| Removal at a known index | Amortized O(1) |
-
-These complexities follow from the structure of the red-black tree itself.
-If storage is shared and a mutation triggers copy-on-write, copying the tree adds
-O(`count`) work.
-
-Actual execution time also depends on factors such as the comparison cost of `Element`
-and memory-access characteristics.
-
-In particular, if comparing `Element` values does not take constant time,
-the actual cost of comparison is also reflected in search, insertion, and removal operations.
-
-## Red-Black Tree
-
-A red-black tree is a type of self-balancing binary search tree.
-
-Each element is arranged according to binary-search-tree ordering,
-and the tree maintains its balance during insertion and removal through node recoloring and rotations.
-
-This prevents the tree from becoming excessively skewed due to a particular insertion order,
-keeping the worst-case complexity of search, insertion, and removal at O(log `count`).
-
-The cost of the rebalancing work associated with insertions and removals is amortized O(1).
-
-This distinguishes red-black trees from ordinary binary search trees that do not perform balancing.
-
-## Implementation Details
-
-`RedBlackTreeMultiSet` manages each element as a node in a red-black tree.
-
-Elements with the same value are also stored as independent nodes.
-
-Rather than performing an independent heap allocation for every node,
-multiple nodes are stored together in shared storage.
-
-Compared with implementations that allocate each node individually,
-this reduces per-node allocation overhead.
-
-The node metadata and the stored value are also placed close to each other in memory.
-
-This is designed to improve memory-access efficiency during traversal
-while retaining the node-based structure required by the red-black tree.
-
-However, unlike `Array`, the elements are not all stored in a single contiguous buffer.
-
-As a result, `RedBlackTreeMultiSet` has different performance characteristics from contiguous arrays.
-
-## Choosing a Collection
-
-Different collection types are suited to different use cases.
-
-`Set` is suitable when element ordering and duplicate values are not required
-and fast membership testing is the primary concern.
-
-`Array` is suitable when you need contiguous storage and fast random access through integer indices.
-
-`RedBlackTreeSet` is suitable when duplicate values are not allowed
-and you need to repeatedly insert and remove elements while maintaining sorted order.
-
-`RedBlackTreeMultiSet` is suitable when you need to retain duplicate elements
-while maintaining sorted order and performing searches based on value ordering.
-
----
-
-## Current Source Type Documentation
-
-<!-- 以下は現行 RedBlackTreeMultiSet.swift の型コメント。上記にない内容を取りこぼさないための編集素材。 -->
-
-# RedBlackTreeMultiSet
-
-`RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
-implemented using a red-black tree.
-Elements are always kept in sorted order.
-
-```swift
-var set: RedBlackTreeMultiSet<Int> = []
-set.insert(3) // -> [3]
-set.insert(1) // -> [1, 3]
-set.insert(4) // -> [1, 3, 4]
-set.insert(1) // -> [1, 1, 3, 4]
-set.insert(5) // -> [1, 1, 3, 4, 5]
-```
-
-## Removal
-
-Both single-element removal and range removal are supported.
-
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-set.remove(3) // -> [1, 1, 4, 5]
+set.eraseUnique(3) // -> [1, 1, 4, 5]
 ```
-
-Avoid performing repeated removals via indices in a `for` loop.
-Since indices are tightly coupled with tree nodes, removing an element
-invalidates the operation that retrieves the next index.
-Use the range-removal APIs for consecutive deletions instead.
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -283,9 +76,6 @@ var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
 ```
 
-As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-You can remove elements while receiving the next index.
-
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 var i = set.startIndex
@@ -294,22 +84,74 @@ while i != set.endIndex {
 }
 ```
 
-## Index Alternative Syntax
+## Combining Multisets
 
-`BoundExpression` is designed as a **safe alternative** to direct index usage.
-It allows specifying elements or boundaries without handling indices directly.
+`insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. The insertion APIs accept a set, multiset, or arbitrary sequence.
+
+## Multiset Algebra
+
+For multiplicities a and b, `union` yields a+b, `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol.
+
+## Iterating over Elements
+
+Normal iteration is ascending. `sorted()` and `reversed()` return ascending and descending arrays. `filter(_:)` returns a new multiset, retaining selected duplicates. Range views traverse in the same order.
+
+```swift
+let numbers: RedBlackTreeMultiSet = [7, 2, 9, 2, 1, 5]
+
+for number in numbers {
+  print(number)
+}
+```
+
+```text
+1
+2
+2
+5
+7
+9
+```
+
+## Indices and Bound Expressions
+
+An index represents an element position, not an integer offset. Indices support forward and backward movement within their endpoint preconditions. Inserting or deleting other elements preserves an index while its element exists. Deleting that element invalidates the index; reusing its slot does not revive it. In the normal configuration, corresponding positions can be shared across copy-on-write branches, but validity depends on the target’s generation and deletion state. Using an unrelated tree’s index violates a precondition and is not guaranteed to be detected.
+
+Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
+
+`Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan` / `.lessThanOrEqual`, `.greaterThan` / `.greaterThanOrEqual`, `.before` / `.after`, and `.advanced(by:limit:)`. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-print(set[.start.advanced(by: 1)]) // -> 1
+print(set[.start.advanced(by: 1)]) // Optional containing 1
 ```
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-print(set[.lowerBound(5)]) // -> 5
+print(set[.lowerBound(5)]) // Optional containing 5
 print(set[.upperBound(5)]) // -> nil (equivalent to end)
 print(set[.find(2)]) // -> nil (not found)
 ```
 
-- Important: `RedBlackTreeMultiSet` is not thread-safe.
+## Performance
 
+These bounds assume constant-time comparisons and element operations, and exclude copying shared storage for copy-on-write. Copying retains deletion history and is not always bounded by the current count alone. Creating a view does not copy elements into an array, but a later mutation can require copy-on-write.
+
+| Operation | Complexity |
+| --- | --- |
+| `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+| Lookup, lower/upper bound, insertion, lookup and removal of one element | O(log n) |
+| Removal at a known index; rebalancing | Amortized O(1) |
+| Lookup and removal/processing of K matching elements | O(log n + K) |
+| `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
+| `meld`, `melding` | O(n+m), new storage |
+| Union, intersection, difference, symmetric difference | O(n+m) |
+
+
+## Red-Black Tree
+
+A red-black tree is a self-balancing binary search tree that maintains logarithmic height through recoloring and rotations. Logical element order differs from physical memory layout. In duplicate-supporting types, each element still occupies its own node. Nodes are managed in grouped storage rather than requiring a separate allocation for every node.
+
+## Important
+
+This type is not thread-safe and does not protect concurrent access to the same variable. This guide describes the normal configuration.

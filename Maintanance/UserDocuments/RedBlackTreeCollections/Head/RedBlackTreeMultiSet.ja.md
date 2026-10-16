@@ -1,16 +1,8 @@
-<!-- 編集用原稿: 日本語利用者向け文書と現行Swiftソース先頭コメントの和集合。 -->
-<!-- 重複を整理してから RedBlackTreeMultiSet.swift のコメントドックへ反映する。 -->
-
-<!-- このRedBlackTreeMultiSet.ja.mdを正本とします。RedBlackTreeMultiSet.mdは、この文書の英訳コピーです。 -->
-<!-- 人間向け、割と初心者向け -->
-
 # RedBlackTreeMultiSet
 
-[English](RedBlackTreeMultiSet.md) | 日本語
-
-要素を昇順に保持し、重複を許容する赤黒木ベースの集合です。
-
 ## Declaration
+
+`import AcCollections` で利用する `RedBlackTreeMultiSet`。以下の宣言は型の形を示す断片です。
 
 ```swift
 import AcCollections
@@ -20,7 +12,7 @@ struct RedBlackTreeMultiSet<Element: Comparable>
 
 ## Overview
 
-`RedBlackTreeMultiSet` は、重複する要素を保持でき、それらを常に昇順に並べて管理する集合です。
+要素を昇順に保持する赤黒木ベースの多重集合です。同値要素を何個でも保持し、各要素は異なる位置を持ちます。同値要素は順序上で連続します。`Set` や `RedBlackTreeSet` と異なり重複を除かず、`Array` と異なり更新中も順序を維持します。重複が不要なら `RedBlackTreeSet` を使います。
 
 ```swift
 let numbers: RedBlackTreeMultiSet = [5, 2, 4, 2, 1, 3, 3]
@@ -29,28 +21,6 @@ print(numbers)
 // [1, 2, 2, 3, 3, 4, 5]
 ```
 
-`RedBlackTreeSet` とは異なり、同じ値を複数格納できます。
-
-`RedBlackTreeMultiSet` は、平衡二分探索木の一種である赤黒木を使用します。
-
-このため、要素の検索・挿入・削除を対数時間で行いながら、
-すべての要素を常にソート済みの順序で走査できます。
-
-`RedBlackTreeMultiSet` は、特に次のような用途に適しています。
-
-- 重複する値を保持しながら、常にソート済みの状態を維持したい場合
-- 要素を動的に追加・削除しながら、その出現回数も保持したい場合
-- 指定した値以上、または指定した値より大きい最初の要素を効率よく検索したい場合
-- 同じ値を持つ要素の範囲を効率よく調べたい場合
-- 要素を昇順または降順に走査したい場合
-- 挿入や削除を繰り返しながら順序付きの多重集合を扱いたい場合
-
-重複する要素を保持する必要がない場合は、`RedBlackTreeSet` を使用します。
-
-## Duplicate Elements
-
-`RedBlackTreeMultiSet` は、順序比較上同一とみなされる要素を複数保持できます。
-
 ```swift
 let numbers: RedBlackTreeMultiSet = [3, 1, 2, 3, 2, 1]
 
@@ -58,89 +28,28 @@ print(numbers)
 // [1, 1, 2, 2, 3, 3]
 ```
 
-同じ値を複数回挿入すると、それぞれが独立した要素として保持されます。
-
-重複する要素を保持する必要がない場合は、`RedBlackTreeSet` を使用します。
-
-## Sorted Iteration
-
-`RedBlackTreeMultiSet` を通常の順序で走査すると、
-要素は常に昇順で現れます。
-
 ```swift
-let numbers: RedBlackTreeMultiSet = [7, 2, 9, 2, 1, 5]
-
-for number in numbers {
-  print(number)
-}
+var set: RedBlackTreeMultiSet<Int> = []
+set.insert(3) // -> [3]
+set.insert(1) // -> [1, 3]
+set.insert(4) // -> [1, 3, 4]
+set.insert(1) // -> [1, 1, 3, 4]
+set.insert(5) // -> [1, 1, 3, 4, 5]
 ```
 
-出力:
+## Creating a Multiset
 
-```text
-1
-2
-2
-5
-7
-9
-```
+空の初期化とリテラルに加え、入力列から作成できます。`init(minimumCapacity:)` で初期容量を指定し、`reserveCapacity(_:)` で容量を予約できます。`capacity` と要素数 `count` は異なります。 array literal、sequence、collection、rangeから初期化できます。
 
-要素をあらかじめ配列へ取り出してソートする必要はありません。
-ソート順はコレクション自身の構造によって常に維持されます。
+## Searching and Accessing Elements
 
-同じ値を持つ要素は、ソート順の中で連続して現れます。
+`contains(_:)` は存在、`count(of:)` は一致数を返します。`first` / `last`、`min()` / `max()` は順序の両端です。`firstIndex(of:)` は不在なら `nil`、`find(_:)` は `endIndex` を返します。`lowerBound(_:)` は指定値以上、`upperBound(_:)` は指定値より大きい最初の位置で、なければ終端です。`equalRange(_:)` は同値な全要素の半開範囲を返します。検索した位置から前後へ移動できますが、終端は要素として参照できません。
 
-この性質は、要素の追加や削除を繰り返しながら、
-その都度ソート済みの順序で処理したい場合に特に有用です。
+## Insertion and Removal
 
-## Ordered Lookup
+挿入は同値要素を置換せず追加します。hintは有効な位置を渡し、順序条件に合う場合に挿入位置の探索を助けます。`update(_:at:)` は旧値と新値が `==` の場合だけ置換し、旧値を返します。無効なindexや非同値の値では `nil` を返します。
 
-赤黒木は要素間の順序を利用して検索を行うため、
-単純な値の検索だけでなく、順序に基づく検索も効率よく実行できます。
-
-たとえば、次のような問い合わせを行えます。
-
-- 指定した値が存在するか
-- 指定した値以上の最初の要素はどれか
-- 指定した値より大きい最初の要素はどれか
-- 指定した値と等しい要素が存在する範囲はどこか
-- 指定した位置の直前または直後の要素はどれか
-
-特に、重複する要素を扱う場合には lower-bound と upper-bound を組み合わせることで、
-同じ値を持つ要素の範囲を効率よく求められます。
-
-これらの操作では、先頭から要素を線形に走査する必要はありません。
-
-赤黒木の高さは要素数に対して対数的に抑えられるため、
-値に基づく検索は最悪 O(log `count`) の計算量で実行されます。
-
-## Indices
-
-`RedBlackTreeMultiSet` の index は、ソートされた要素列の中の論理的な位置を表します。
-
-同じ値を持つ要素が複数存在する場合でも、
-それぞれの要素は異なる位置を持ちます。
-
-index を使うことで、ある要素から次の要素、または前の要素へ移動できます。
-
-赤黒木では要素が連続した配列上に配置されているとは限らないため、
-index は整数オフセットではありません。
-
-この点は `Array` とは異なります。
-
-別の要素を挿入または削除しても、指している要素が存在する限り、
-その index は有効なままです。指している要素自体を削除すると無効になり、
-同じslotが再利用されても、そのindexを後から再利用することはできません。
-
-CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
-indexからその位置を特定できます。無関係なコレクションから取得したindexを
-使用することは事前条件違反であり、その検出は保証しません。
-
-## Multiset Operations
-
-`RedBlackTreeMultiSet` は、重複を許容する集合として、
-値の検索、挿入、削除といった基本的な操作を提供します。
+`eraseUnique(_:)` は一致する1要素、`eraseMulti(_:)` は一致する全要素を削除します。`popFirst()` / `popLast()` は空なら `nil`、`removeFirst()` / `removeLast()` は空でないことが事前条件です。`erase(where:)`、範囲削除、`removeAll(keepingCapacity:)` も使えます。削除済みindexを進めず、逐次削除は `erase(_:) -> Index` の戻り値で継続します。
 
 ```swift
 var numbers: RedBlackTreeMultiSet = [1, 3, 3, 5]
@@ -152,127 +61,10 @@ numbers.insert(4)
 // [1, 3, 3, 3, 4, 5]
 ```
 
-要素を追加しても、コレクションのソート順は自動的に維持されます。
-
-既に格納されている値を再度挿入した場合も、
-新しい要素として追加されます。
-
-## Performance
-
-`RedBlackTreeMultiSet` は赤黒木を使用しており、
-木の高さは要素数に対して対数的に制限されます。
-
-代表的な操作の計算量は次のようになります。
-
-| 操作 | 計算量 |
-| --- | ---: |
-| `isEmpty` | O(1) |
-| `count` | O(1) |
-| `startIndex` | O(1) |
-| `endIndex` | O(1) |
-| 値の検索 | O(log `count`) |
-| lower-bound 検索 | O(log `count`) |
-| upper-bound 検索 | O(log `count`) |
-| 要素の挿入 | O(log `count`) |
-| 値を検索して1要素を削除 | O(log `count`) |
-| 値を検索して一致するK要素を削除 | O(log `count` + K) |
-| 既知のindexから削除 | 償却 O(1) |
-
-実際の実行時間は、`Element` の比較コストやメモリアクセスの特性によっても変化します。
-
-特に `Element` の比較が一定時間ではない場合、
-検索・挿入・削除の実際のコストには比較処理のコストも加わります。
-
-## Red-Black Tree
-
-赤黒木は自己平衡二分探索木の一種です。
-
-各要素は二分探索木の順序に従って配置され、
-挿入や削除の際にはノードの色変更や回転操作によって木のバランスが維持されます。
-
-この仕組みにより、特定の挿入順序によって木が極端に片寄ることを防ぎ、
-検索・挿入・削除の最悪計算量を O(log `count`) に保ちます。
-
-また、挿入や削除に伴う再平衡化処理のコストは、償却 O(1) となります。
-
-この点は、平衡処理を行わない単純な二分探索木とは異なります。
-
-## Implementation Details
-
-`RedBlackTreeMultiSet` は、各要素を赤黒木のノードとして管理します。
-
-同じ値を持つ要素も、それぞれ独立したノードとして保持されます。
-
-ノードは個別に独立したヒープ allocation を行うのではなく、
-複数のノードをまとめた storage 上に配置されます。
-
-この方式により、ノードごとに個別 allocation を行う実装と比較して、
-allocation overhead を削減できます。
-
-また、ノードの管理情報と格納される値は互いに近い位置に配置されます。
-
-これにより、赤黒木として必要なノードベースの構造を維持しながら、
-走査時のメモリアクセス効率を改善できるよう設計されています。
-
-`RedBlackTreeMultiSet` の要素は論理的には常に昇順に並んでいますが、
-メモリ上でもその順序どおりに配置されているわけではありません。
-
-つまり、論理的にはソート済みですが、`Array` のように
-物理的な配置までソート順になっているデータ構造ではありません。
-
-そのため、`RedBlackTreeMultiSet` は連続配列とは異なる
-メモリアクセス特性や性能特性を持ちます。
-
-## Choosing a Collection
-
-用途によって、適した集合型は異なります。
-
-`Set` は、要素の順序や重複を必要とせず、
-主に高速な membership test を行いたい場合に適しています。
-
-`Array` は、連続したストレージと整数 index による高速な
-random access が必要な場合に適しています。
-
-`RedBlackTreeSet` は、重複を許さず、
-要素の追加・削除を繰り返しながらソート順を維持したい場合に適しています。
-
-`RedBlackTreeMultiSet` は、重複する要素を保持しながら、
-ソート順を維持し、値の順序に基づく検索を行いたい場合に適しています。
-
----
-
-## Current Source Type Documentation
-
-<!-- 以下は現行 RedBlackTreeMultiSet.swift の型コメント。上記にない内容を取りこぼさないための編集素材。 -->
-
-# RedBlackTreeMultiSet
-
-`RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
-implemented using a red-black tree.
-Elements are always kept in sorted order.
-
-```swift
-var set: RedBlackTreeMultiSet<Int> = []
-set.insert(3) // -> [3]
-set.insert(1) // -> [1, 3]
-set.insert(4) // -> [1, 3, 4]
-set.insert(1) // -> [1, 1, 3, 4]
-set.insert(5) // -> [1, 1, 3, 4, 5]
-```
-
-## Removal
-
-Both single-element removal and range removal are supported.
-
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-set.remove(3) // -> [1, 1, 4, 5]
+set.eraseUnique(3) // -> [1, 1, 4, 5]
 ```
-
-Avoid performing repeated removals via indices in a `for` loop.
-Since indices are tightly coupled with tree nodes, removing an element
-invalidates the operation that retrieves the next index.
-Use the range-removal APIs for consecutive deletions instead.
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -284,9 +76,6 @@ var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
 ```
 
-As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-You can remove elements while receiving the next index.
-
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 var i = set.startIndex
@@ -295,22 +84,74 @@ while i != set.endIndex {
 }
 ```
 
-## Index Alternative Syntax
+## Combining Multisets
 
-`BoundExpression` is designed as a **safe alternative** to direct index usage.
-It allows specifying elements or boundaries without handling indices directly.
+`insert(contentsOf:)` は自身へ入力を追加し、`inserting(contentsOf:)` は追加後の値を返します。要素ごとに既存storageへ挿入し、共有されている場合はCoW複製が必要です。`meld(_:)` は自身を結合結果へ置き換え、`melding(_:)` は結果を返します。両者はソート済みの二つの木を走査して新しいstorageを構築します。予約済み容量だけを理由にmeldを選ぶものではありません。 insert系はSet、MultiSet、任意のsequenceを入力にできます。
+
+## Multiset Algebra
+
+各値の多重度をa、bとすると、`union` は a+b、`intersection` は min(a,b)、`difference` は max(a-b,0)、`symmetricDifference` は abs(a-b) です。対応する `formUnion`、`formIntersection`、`formDifference`、`formSymmetricDifference` は自身を更新します。これらは一意集合の意味論ではなく、標準 `SetAlgebra` には適合しません。
+
+## Iterating over Elements
+
+通常の走査は昇順です。`sorted()` と `reversed()` は昇順・降順の配列を返します。`filter(_:)` は条件に合う要素を新しいMultiSetへ残し、重複を保持します。範囲Viewでも同じ順序で走査できます。
+
+```swift
+let numbers: RedBlackTreeMultiSet = [7, 2, 9, 2, 1, 5]
+
+for number in numbers {
+  print(number)
+}
+```
+
+```text
+1
+2
+2
+5
+7
+9
+```
+
+## Indices and Bound Expressions
+
+indexは整数オフセットではなく要素位置を表します。前後へ移動できますが、始端より前・終端より後へ移動してはいけません。他要素の挿入・削除では指す要素が残る限り有効です。指す要素を削除すると無効になり、slotの再利用でも古いindexは復活しません。通常構成のCoWでは対応する位置を共有できますが、有効性は操作先の世代・削除状態で決まります。無関係な木のindexを使うことは事前条件違反であり、常に検出される保証はありません。
+
+index範囲subscriptは対象範囲のViewを返します。要素を別配列へコピーせず、元の木と同じindex型を使いますが、View固有の終端と範囲を守ります。元では要素を指す位置がViewでは終端になることもあります。subscriptへ直接変更すれば元を変更し、独立変数へ取り出したViewの変更はCoWで分離します。`containsSubrange(_:)` は範囲を確認し、`distance(from:to:)` はindexまたはBound間の距離を求めます。
+
+`Bound` はindexを直接扱わず位置を指定する記法です。`.start`、`.last`、`.end`、`.lowerBound`、`.upperBound`、`.find`、`.lessThan` / `.lessThanOrEqual`、`.greaterThan` / `.greaterThanOrEqual`、`.before` / `.after`、`.advanced(by:limit:)` を使えます。単一Boundが終端または解決不能ならsubscriptは `nil`、不成立または逆順のBound範囲は空Viewを返します。
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-print(set[.start.advanced(by: 1)]) // -> 1
+print(set[.start.advanced(by: 1)]) // Optional containing 1
 ```
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-print(set[.lowerBound(5)]) // -> 5
+print(set[.lowerBound(5)]) // Optional containing 5
 print(set[.upperBound(5)]) // -> nil (equivalent to end)
 print(set[.find(2)]) // -> nil (not found)
 ```
 
-- Important: `RedBlackTreeMultiSet` is not thread-safe.
+## Performance
 
+比較・要素操作を定数時間とし、CoWのstorage複製を別途必要としない場合の計算量です。複製は削除履歴も保持するため、現在countだけではコストを表せない場合があります。Viewの作成で配列をコピーしなくても、その後の変更にCoWが必要な場合があります。
+
+| Operation | Complexity |
+| --- | --- |
+| `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+| Lookup, lower/upper bound, insertion, lookup and removal of one element | O(log n) |
+| Removal at a known index; rebalancing | Amortized O(1) |
+| Lookup and removal/processing of K matching elements | O(log n + K) |
+| `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
+| `meld`, `melding` | O(n+m), new storage |
+| Union, intersection, difference, symmetric difference | O(n+m) |
+
+
+## Red-Black Tree
+
+赤黒木は、色変更と回転で高さを対数的に維持する自己平衡二分探索木です。要素の論理的な順序とメモリ上の物理配置は異なります。重複を許す型でも各要素は独立したノードを持ちます。ノードをまとめたstorageで管理し、ノードごとの独立allocationを避ける設計です。
+
+## Important
+
+thread-safeではありません。同じ変数への並行アクセスを保護しません。本稿は通常構成のAPIを対象とします。

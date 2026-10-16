@@ -1,0 +1,25 @@
+warning: /Users/narumij/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'swift-ac-collections': failed storing manifest for 'swift-ac-collections' in cache: attempt to write a readonly database
+warning: 'swift-algorithms': failed storing manifest for 'swift-algorithms' in cache: attempt to write a readonly database
+warning: 'swift-docc-plugin': failed storing manifest for 'swift-docc-plugin' in cache: attempt to write a readonly database
+warning: 'swift-numerics': failed storing manifest for 'swift-numerics' in cache: attempt to write a readonly database
+warning: 'swift-docc-symbolkit': failed storing manifest for 'swift-docc-symbolkit' in cache: attempt to write a readonly database
+Building for production...
+[0/2] Write swift-version--58304C5D6DBC2206.txt
+Build of product 'snippet-extract' complete! (0.56s)
+Building for production...
+[0/2] Write sources
+[1/2] Write swift-version--58304C5D6DBC2206.txt
+[3/3] Compiling RedBlackTreeCollections RedBlackTreeBoundExpression+TopLevel.swift
+Build of target: 'RedBlackTreeCollections' complete! (5.54s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+Extracting symbol information for 'RedBlackTreeCollections'...
+Finished extracting symbol information for 'RedBlackTreeCollections'. (5.88s)
+Building documentation for 'RedBlackTreeCollections'...
+
+
+Finished building documentation for 'RedBlackTreeCollections' (0.65s)
+Generated documentation archive at:
+  /Users/narumij/Documents/GitHub/swift-ac-collections/.build/astra-docc-doc034

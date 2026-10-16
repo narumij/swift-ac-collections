@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**現在の依頼なし。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
+**現在の依頼：DOC-040〜044（赤黒木4型の本文独立レビュー、5件一括）。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
@@ -398,3 +398,9 @@ Follow root CLAUDE.md for user-facing communication.
 ### OPS-057 Astra受入
 
 2026-10-16、原Returnを保持して受入。限定補修と現行同期・検証の結果はREGISTRY_STUDIO_SYNC.mdへ記録。RegistryはDONE（ユーザーcommit承認済み）。
+
+## DOC-040〜044 — 赤黒木4型の本文独立レビュー（一括）
+
+2026-10-16、ユーザー「ひめにたくさんふって」に基づく正式依頼。作成・受入：Astra、実施：Claude（姫）。Registry登録済み。依頼作成完了をもって入力と依頼本文を固定して受渡し。
+
+[正式依頼・入力hash・5件の返却先](Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md)を参照。型別4件の後に横断1件を、中間承認待ちを挟まず実施する。本文は読み取り専用、5返却文書だけ編集可。commitしない。DOC-034完成・DOC-037ユーザー受入は別。

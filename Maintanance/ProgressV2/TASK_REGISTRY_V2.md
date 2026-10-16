@@ -38,8 +38,8 @@
 | `OPS-056` | `ACTIVE` | Claude（姫：試作・評価） / Astra（受入） | [DISCOVERY] Astraの判断追跡負荷を軽くする限定試作 | 2026-10-16ユーザー依頼。OPS-048配下。CP-20261016-006を正式化し、スニペット固定の判断一件でゲート・task別の一覧と原文追跡を試す。判断待ちと作業待ちを分離し、部分変更・適用範囲を保持。方式の採用や現行UI・制度の変更は含めない。依頼票作成済み、返却待ち | `Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md` |
 | `OPS-057` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |
 
-| `DOC-033` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
-| `DOC-034` | `ACTIVE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+| `DOC-033` | `DONE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。2026-10-16照合・技術訂正済み、結果と証拠を詳細正本から接続。本文へ引渡し済み、ユーザーcommit承認。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
+| `DOC-034` | `WAITING_EXTERNAL` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。2026-10-16日英本文・型コメントの固定稿と検証が揃った。DOC-040〜044をClaudeへ依頼、返却・Astra受入と指摘対応待ち。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
 | `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-037のユーザー受入可を確認し、RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
 | `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
 
@@ -47,6 +47,12 @@
 
 | `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
 | `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
+
+| `DOC-040` | `ACTIVE` | Claude（姫：独立レビュー） / Astra（受入） | [DISCOVERY] 赤黒木文書のRedBlackTreeSetレビュー | 2026-10-16ユーザーのClaude委任指示。DOC-034の固定稿を独立照合。本文・契約・スニペット数を変更せず、根拠付き指摘と修正案を返す。着手可能。4型は独立して確認し、返却後も固定入力は変更しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md` / `Maintanance/Current/DOC-040_DOCUMENT_REVIEW_RETURN.md` |
+| `DOC-041` | `ACTIVE` | Claude（姫：独立レビュー） / Astra（受入） | [DISCOVERY] 赤黒木文書のRedBlackTreeDictionaryレビュー | 2026-10-16ユーザーのClaude委任指示。DOC-034の固定稿を独立照合。本文・契約・スニペット数を変更せず、根拠付き指摘と修正案を返す。着手可能。4型は独立して確認し、返却後も固定入力は変更しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md` / `Maintanance/Current/DOC-041_DOCUMENT_REVIEW_RETURN.md` |
+| `DOC-042` | `ACTIVE` | Claude（姫：独立レビュー） / Astra（受入） | [DISCOVERY] 赤黒木文書のRedBlackTreeMultiSetレビュー | 2026-10-16ユーザーのClaude委任指示。DOC-034の固定稿を独立照合。本文・契約・スニペット数を変更せず、根拠付き指摘と修正案を返す。着手可能。4型は独立して確認し、返却後も固定入力は変更しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md` / `Maintanance/Current/DOC-042_DOCUMENT_REVIEW_RETURN.md` |
+| `DOC-043` | `ACTIVE` | Claude（姫：独立レビュー） / Astra（受入） | [DISCOVERY] 赤黒木文書のRedBlackTreeMultiMapレビュー | 2026-10-16ユーザーのClaude委任指示。DOC-034の固定稿を独立照合。本文・契約・スニペット数を変更せず、根拠付き指摘と修正案を返す。着手可能。4型は独立して確認し、返却後も固定入力は変更しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md` / `Maintanance/Current/DOC-043_DOCUMENT_REVIEW_RETURN.md` |
+| `DOC-044` | `ACTIVE` | Claude（姫：独立レビュー） / Astra（受入） | [DISCOVERY] 赤黒木文書の4型横断レビュー | 2026-10-16ユーザーのClaude委任指示。DOC-034の固定稿を独立照合。本文・契約・スニペット数を変更せず、根拠付き指摘と修正案を返す。4型の返却が揃った後に共通契約・型差・日英と公開コメントを横断確認。一括依頼中の中間承認は不要。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md` / `Maintanance/Current/DOC-044_DOCUMENT_REVIEW_RETURN.md` |
 
 ### 公開とリリース
 
@@ -121,6 +127,11 @@
 
 | `OPS-054` | `OPS-053` | `SEQUENCE` | 配置維持例外表の検討結果を受け入れてからClaude起動系文書を検討する。前段の提案実施完了は条件にしない |
 | `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |
+| `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
+| `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
+| `DOC-044` | `DOC-042` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
+| `DOC-044` | `DOC-043` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
+| `DOC-034` | `DOC-044` | `PARALLEL_JOIN` | 本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する |
 | `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |
 | `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |
 | `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |

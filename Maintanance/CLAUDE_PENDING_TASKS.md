@@ -152,8 +152,9 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 発見元・ユーザー指示: 2026-10-17、ユーザー「candidate.ymlだったかな。それに足してみてくれない？」「ASanでもデステスト通したいのリリーステストなんだよね」「チェック自体はなくてもいいとはおもってるんだけど、品質保証の証拠として避けられない感じで」「いや、linuxでしかCIしてないんだ」。
 - 実施：`.github/workflows/candidate.yml`に`address-sanitizer-death-tests` job（`runs-on: ubuntu-24.04`、SwiftyLab/setup-swift、環境記録、`ASAN_OPTIONS=detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan`で`swift test -c debug --sanitize address --build-system native --traits ENABLE_DEATH_TESTS --filter 'DeathTests|RedBlackTreeInternalCoverageTests'`、ログをartifactへ）を追加し、`report`のneedsとPRコメントの一覧に入れた。既存jobは不変。最初はmacOS＋`strip_env=0`で書いたが、CIはLinuxだけなので書き直した（strip_envはmacOSのDYLDの話で、Linuxには関係しない）。
 - 検証：YAMLの構文とjob一覧・needsを確認。手元にLinux環境（container・Swift SDK）がないので、ローカル実行はしていない。
-- 未検証：LinuxのASan＋exit test（death test）が通るかどうか。最初の候補実行がそのまま初回の検証になり、Linux固有の別の理由で失敗する可能性がある。コメント起動（`/test release`）はdefault branchのworkflowを使うため、mainへ入るまで効かない。`candidate-*` tagのpushはそのcommitのworkflowで動く。
-- commit: していない。
+- CI結果：2026-10-17、ユーザー報告「とおりました」。GitHub上のcandidate実行でこのjobが成功した（Linux ubuntu-24.04でASan＋death testが`strip_env`相当の対処なしで成立）。run URL・対象commitは未記録、Claudeはログを直接確認していない。
+- 未検証：上記以外のSwift版・runner image。コメント起動（`/test release`）はdefault branchのworkflowを使うため、mainへ入るまで効かない。`candidate-*` tagのpushはそのcommitのworkflowで動く。
+- commit: `8631a031`（candidate.yml）。
 - Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。

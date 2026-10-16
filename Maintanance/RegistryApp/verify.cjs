@@ -141,7 +141,7 @@ console.log('PASS: leading feeder column, no global fallback, renamed IDs and fi
 
 assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-037'));assert(historical.edges.some(e=>e.prerequisite==='DOC-037'&&e.successor==='DOC-035'));assert(!historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-035'));
 
-assert(!original.tasks.some(t=>t.state==='DONE'), 'completed tasks have moved to evidence archives');
+// DONE tasks may stay in the Registry until compression; compression is not immediate (2026-10-17 user).
 
 // Sequential restriction (2026-10-17 user decision): milestones form a single chain, no branch or join.
 {const ms=new Set(original.milestones.map(m=>m.id)),mm=original.milestoneRelations.filter(e=>ms.has(e.prerequisite)&&ms.has(e.successor));

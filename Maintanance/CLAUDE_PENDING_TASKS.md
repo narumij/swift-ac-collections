@@ -136,6 +136,26 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 追記（2026-10-17）：ユーザー「HEAD空を選べるようにしてほしい」。版の選択欄に「HEAD から（x.y.z 以降）」を追加（HEADの版フォルダとそれ以降のゲートと上流タスクだけ表示、HEADより前は外す）。続けてユーザー「初期はHEADがいいね」で、開いたときの表示を「HEAD から」に変更（「全体」も選べる）。`Milestones/README.md`の未実装の注記に一文追記。HEAD 0.5.4でMS-DOC・GATE-0.5.4が外れることを確認。sync完了・verify pass。未commit。
 - Codex reconciliation: 2026-10-17 Codex照合。健全性回復と表示対応をOPS-047 / OPS-048へ受入・統合済み。実装は39f81e5b・6cf18dc4・0789479b、受入記録は81204d22。 Safari実操作と調査正本の残事項は未完了。
 
+### `CP-20261017-005` — Registry Studio：DONEのtaskがあると作り直しが止まる不具合
+
+- queue状態: `AWAITING_CODEX`（実施済み・未commit。OPS-048）
+- 発見元: 2026-10-17、ユーザーが`sync.py`を実行して失敗（RBT-049・RELEASE-084がDONEになった後）。
+- 原因1（姫の不具合）：`6cf18dc4`の独立タスクの色順は`index.html`の`stateRank`と`STATES`に頼っていたが、`verify.cjs`は`independentGroups`だけを取り出して動かすため並べ替えが効かず、「DONEは最後」の検査で失敗。独立タスクにDONEが無かった間は通っていた。→ 並び順を`independentGroups`の中に移した（`STATES`が無いときも同じ順）。
+- 原因2：`verify.cjs`の「RegistryにDONEを残さない」検査（`4532e9df`）。ユーザー「タスク圧縮はすぐはしないから」により、DONEがしばらく残る運用と合わないため外した。
+- 検証：`/usr/bin/python3`で`sync.py`完了・verify pass。DONEのRBT-049・RELEASE-084を含めて生成。
+- commit: していない。
+- Codex reconciliation: 未処理
+
+### `CP-20261017-006` — 候補CIにLinuxのASan＋death test jobを追加
+
+- queue状態: `AWAITING_CODEX`（実施済み・未commit。RBT-033 / RBT-049の後続、CI適用はユーザー判断）
+- 発見元・ユーザー指示: 2026-10-17、ユーザー「candidate.ymlだったかな。それに足してみてくれない？」「ASanでもデステスト通したいのリリーステストなんだよね」「チェック自体はなくてもいいとはおもってるんだけど、品質保証の証拠として避けられない感じで」「いや、linuxでしかCIしてないんだ」。
+- 実施：`.github/workflows/candidate.yml`に`address-sanitizer-death-tests` job（`runs-on: ubuntu-24.04`、SwiftyLab/setup-swift、環境記録、`ASAN_OPTIONS=detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan`で`swift test -c debug --sanitize address --build-system native --traits ENABLE_DEATH_TESTS --filter 'DeathTests|RedBlackTreeInternalCoverageTests'`、ログをartifactへ）を追加し、`report`のneedsとPRコメントの一覧に入れた。既存jobは不変。最初はmacOS＋`strip_env=0`で書いたが、CIはLinuxだけなので書き直した（strip_envはmacOSのDYLDの話で、Linuxには関係しない）。
+- 検証：YAMLの構文とjob一覧・needsを確認。手元にLinux環境（container・Swift SDK）がないので、ローカル実行はしていない。
+- 未検証：LinuxのASan＋exit test（death test）が通るかどうか。最初の候補実行がそのまま初回の検証になり、Linux固有の別の理由で失敗する可能性がある。コメント起動（`/test release`）はdefault branchのworkflowを使うため、mainへ入るまで効かない。`candidate-*` tagのpushはそのcommitのworkflowで動く。
+- commit: していない。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

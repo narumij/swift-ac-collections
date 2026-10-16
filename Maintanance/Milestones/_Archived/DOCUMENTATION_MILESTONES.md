@@ -10,7 +10,7 @@
 
 ## RedBlackTree文書の本文作成完了（旧RBT-014）
 
-→ [`Milestones/0.5.4/10_RBT_DOCUMENTS.md`](../0.5.4/10_RBT_DOCUMENTS.md)
+→ [`Milestones/0.5.3/10_RBT_DOCUMENTS.md`](../0.5.3/10_RBT_DOCUMENTS.md)
 
 ## 0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）
 

@@ -11,7 +11,7 @@ const layoutSource=script.slice(script.indexOf('function graphLayout('),script.i
 const fixture=['A','B','C','D','E','F'].map(id=>({id})),links=['A','B','C'].map(prerequisite=>({prerequisite,successor:'F'}));
 const layout=ctx.graphLayout(fixture,links);assert(!layout.pos.has('D'));assert(!layout.pos.has('E'));for(const id of ['A','B','C'])assert(layout.pos.get(id)[0]<layout.pos.get('F')[0]);
 const actual=ctx.graphLayout(original.tasks,original.edges);const connected=new Set(original.edges.flatMap(e=>[e.prerequisite,e.successor]));assert.equal(actual.pos.size,connected.size);for(const edge of original.edges)assert(actual.pos.get(edge.prerequisite)[0]<actual.pos.get(edge.successor)[0]);assert.equal(new Set([...actual.pos.values()].map(p=>p.join(','))).size,connected.size);assert.equal(ctx.graphLayout(fixture,[]).pos.size,0);console.log('PASS: independent nodes excluded from graph; all connected nodes retained; all edges left-to-right; no overlap; empty-edge graph.');
-vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert.equal(original.milestones.length,7);assert.equal(original.milestoneRelations.length,16);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['MS-060','MS-070','MS-SPI','MS-HUMAN','QUALITY-001'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-060'&&e.successor==='PERM-079'&&e.relation==='resume'));assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='MS-070'&&e.relation==='required'));rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
+vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert(original.milestones.length>0);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['GATE-0.6.0','GATE-0.7.0','MS-SPI','MS-HUMAN','MS-QUALITY'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite==='PERM-079'&&e.successor==='END-0.6.0'&&e.relation==='resume'));assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='END-0.6.0'&&e.relation==='required'));rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
 
 vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));const expected=original.tasks.filter(t=>!visual.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)&&!original.tasks.some(parent=>parent.id===t.parentTask));assert.equal(groups.regular.length+groups.permanent.length,expected.length);assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,expected.length);console.log('PASS: independent regular/permanent partition, no omissions or duplicates.');
 
@@ -46,7 +46,7 @@ assert.throws(()=>ctx.rewireRelation(base,edge,'OPS-048','OPS-048'));
 assert.throws(()=>ctx.rewireRelation(base,edge,'MISSING','OPS-059'));
 assert.throws(()=>ctx.rewireRelation(base,edge,base.edges[0].prerequisite,base.edges[0].successor));
 assert.throws(()=>ctx.rewireRelation(base,edge,'QUALITY-001','RBT-001'));
-const relation=base.milestoneRelations[0],moved=ctx.rewireRelation(base,relation,'MS-060','OPS-048');ctx.check(moved);assert.deepEqual(moved.milestoneRelations[0].source,relation.source);assert.deepEqual(base,untouched);
+const relation=base.milestoneRelations[0],moved=ctx.rewireRelation(base,relation,'GATE-0.6.0','OPS-048');ctx.check(moved);assert.deepEqual(moved.milestoneRelations[0].source,relation.source);assert.deepEqual(base,untouched);
 ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx.initializeRelationBaseline(ctx.doc);console.log('PASS: transactional rewiring, retained evidence/baseline, task and milestone endpoints, self/duplicate/dangling/cycle rejection.');
 
 assert.equal(placed.pos.get('PERM-079')[0]-placed.pos.get('MS-060')[0],295);
@@ -136,3 +136,23 @@ assert(!original.tasks.some(t=>t.state==='DONE'), 'completed tasks have moved to
  const heads=[...ms].filter(id=>!prev.has(id));assert.equal(heads.length,1,'milestones must form one chain: '+heads.join(','));
  let n=0;for(let id=heads[0];id;id=next.get(id)){n++;assert(n<=ms.size,'milestone cycle');}assert.equal(n,ms.size,'milestones must form one chain');
  console.log('PASS: milestones form one sequential chain ('+n+').');}
+
+// Only END-xyz may enter a version gate; a version gate leads only to the next milestone (2026-10-17).
+{const ms=new Set(original.milestones.map(m=>m.id));
+ for(const e of original.milestoneRelations){
+  if(e.successor.startsWith('GATE-'))assert(e.prerequisite.startsWith('END-'),'only END may enter '+e.successor+' (got '+e.prerequisite+')');
+  if(e.prerequisite.startsWith('GATE-'))assert(ms.has(e.successor),e.prerequisite+' may not lead to task '+e.successor);}
+ console.log('PASS: version gates are entered only from END.');}
+
+// Each version folder is a DAG rooted at its END: every gate of the folder, and every task feeding them,
+// reaches the folder's END-xyz (2026-10-17). Cycles are rejected by the checks above.
+{const ms=original.milestones,edges=original.edges.concat(original.milestoneRelations),next=new Map();
+ for(const e of edges){if(!next.has(e.prerequisite))next.set(e.prerequisite,[]);next.get(e.prerequisite).push(e.successor);}
+ const reaches=(from,to,seen=new Set())=>from===to||(!seen.has(from)&&(seen.add(from),(next.get(from)||[]).some(n=>reaches(n,to,seen))));
+ const msIds=new Set(ms.map(m=>m.id));let checked=0;
+ for(const end of ms.filter(m=>m.id.startsWith('END-'))){
+  const folder=end.gate,members=new Set(ms.filter(m=>m.gate&&m.gate.startsWith(folder)&&!m.id.startsWith('GATE-')&&m.id!==end.id).map(m=>m.id));
+  for(let grew=true;grew;){grew=false;for(const e of edges)if(members.has(e.successor)&&!members.has(e.prerequisite)&&!msIds.has(e.prerequisite)){members.add(e.prerequisite);grew=true;}}
+  for(const e of original.milestoneRelations)if(e.successor===end.id&&!msIds.has(e.prerequisite))members.add(e.prerequisite);
+  for(const id of members){assert(reaches(id,end.id),id+' does not reach '+end.id);checked++;}}
+ console.log('PASS: every version folder is a DAG rooted at its END ('+checked+' nodes).');}

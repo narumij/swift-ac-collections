@@ -6,7 +6,7 @@
 
 ## 通る条件
 
-- [x] [10_RBT_DOCUMENTS](../0.5.4/10_RBT_DOCUMENTS.md) — RedBlackTree文書の本文作成完了（到達済み）
+- [x] [10_RBT_DOCUMENTS](../0.5.3/10_RBT_DOCUMENTS.md) — RedBlackTree文書の本文作成完了（到達済み）
 
 ## 原文（MILESTONES.mdから移した）
 

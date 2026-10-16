@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "b03d0bf2",
-    "sha256": "9752a121bdf66de3242444f87cd8b9c977567eb7f2dda5b9a1dc6bcd51dffc0b",
-    "dirty": false,
-    "generatedAt": "2026-10-17T01:47:37.968528+09:00",
+    "head": "e2dd63d6",
+    "sha256": "962923c75b823db67da3abce2cda14a8a5ee18a759f2bb1d69d4c073d7856e76",
+    "dirty": true,
+    "generatedAt": "2026-10-17T02:37:31.055677+09:00",
     "generator": "sync.py",
     "rulesSha256": "e354cbe7f3452f00ec86066f746808526e37f0dcb9eb8c2fbe5f89d35e984590"
   },
@@ -451,25 +451,6 @@
       }
     },
     {
-      "id": "QUALITY-001",
-      "state": "ACTIVE",
-      "owner": "User / Codex",
-      "item": "[DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート",
-      "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
-      "detail": "`Maintanance/Quality/Profiles/RedBlackTreeCollections.md`",
-      "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
-      "sourceLine": 64,
-      "group": "RedBlackTreeと品質ゲート",
-      "permanent": false,
-      "displayInterest": {
-        "score": 3,
-        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
-        "by": "Astra",
-        "date": "2026-10-16",
-        "provisional": true
-      }
-    },
-    {
       "id": "QUALITY-002",
       "state": "ACTIVE",
       "owner": "Codex",
@@ -477,7 +458,7 @@
       "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。",
       "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`",
       "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml` |",
-      "sourceLine": 65,
+      "sourceLine": 64,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false,
       "displayInterest": {
@@ -496,7 +477,7 @@
       "condition": "2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。",
       "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift`",
       "raw": "| `QUALITY-003` | `ACTIVE` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` |",
-      "sourceLine": 66,
+      "sourceLine": 65,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false,
       "displayInterest": {
@@ -515,7 +496,7 @@
       "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
       "detail": "`Maintanance/Current/SPI_REGISTRATION_GATE.md`",
       "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
-      "sourceLine": 67,
+      "sourceLine": 66,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false,
       "displayInterest": {
@@ -534,7 +515,7 @@
       "condition": "CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。",
       "detail": "`Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
       "raw": "| `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
-      "sourceLine": 69,
+      "sourceLine": 68,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false
     },
@@ -546,7 +527,7 @@
       "condition": "API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う",
       "detail": "保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md`",
       "raw": "| `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md` |",
-      "sourceLine": 75,
+      "sourceLine": 74,
       "group": "Permutation",
       "permanent": false,
       "displayInterest": {
@@ -565,7 +546,7 @@
       "condition": "2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手",
       "detail": "`Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md`",
       "raw": "| `PERM-064` | `ACTIVE` | Codex | [EXECUTION] Permutation benchmark表示名の現行型名への移行 | 2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手 | `Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md` |",
-      "sourceLine": 76,
+      "sourceLine": 75,
       "group": "Permutation",
       "permanent": false,
       "displayInterest": {
@@ -584,7 +565,7 @@
       "condition": "2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施",
       "detail": "`Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md`",
       "raw": "| `PERM-060` | `ACTIVE` | Codex（調査・整理） | [DISCOVERY] Sequenceによる失効View収集バグの再現と修正範囲整理 | 2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施 | `Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md` |",
-      "sourceLine": 77,
+      "sourceLine": 76,
       "group": "Permutation",
       "permanent": false,
       "displayInterest": {
@@ -603,7 +584,7 @@
       "condition": "2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない",
       "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md`",
       "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md` |",
-      "sourceLine": 78,
+      "sourceLine": 77,
       "group": "Permutation",
       "permanent": false,
       "displayInterest": {
@@ -622,7 +603,7 @@
       "condition": "CP-016を提案登録。0.5.4 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。",
       "detail": "`Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md`",
       "raw": "| `PERM-080` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] 0.5.4後のPermutation性能改善候補調査 | CP-016を提案登録。0.5.4 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。 | `Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md` |",
-      "sourceLine": 80,
+      "sourceLine": 79,
       "group": "Permutation",
       "permanent": false
     },
@@ -634,7 +615,7 @@
       "condition": "ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない",
       "detail": "保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift`",
       "raw": "| `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |",
-      "sourceLine": 86,
+      "sourceLine": 85,
       "group": "OptionalElementBuffer",
       "permanent": false,
       "displayInterest": {
@@ -653,7 +634,7 @@
       "condition": "移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する",
       "detail": "`Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md`",
       "raw": "| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |",
-      "sourceLine": 97,
+      "sourceLine": 96,
       "group": "移行史",
       "permanent": true,
       "displayInterest": {
@@ -672,7 +653,7 @@
       "condition": "常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する",
       "detail": "`Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md`",
       "raw": "| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |",
-      "sourceLine": 99,
+      "sourceLine": 98,
       "group": "移行史",
       "permanent": true,
       "displayInterest": {
@@ -691,7 +672,7 @@
       "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。",
       "detail": "`Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md`",
       "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
-      "sourceLine": 105,
+      "sourceLine": 104,
       "group": "調整・運用の個別課題",
       "permanent": false,
       "parentTask": "OPS-048"
@@ -704,7 +685,7 @@
       "condition": "ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。",
       "detail": "`Maintanance/Current/BRANCH_NAMING_DISCUSSION.md`",
       "raw": "| `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |",
-      "sourceLine": 106,
+      "sourceLine": 105,
       "group": "調整・運用の個別課題",
       "permanent": false
     },
@@ -716,7 +697,7 @@
       "condition": "ユーザーが候補CIの赤を引き受け0.5.4前の修正を後送すると確定。0.5.4 release完了と立て直しプランRELEASE-086の確定後、baselineと修正の必要性・範囲を確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。",
       "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
       "raw": "| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.5.4前の修正を後送すると確定。0.5.4 release完了と立て直しプランRELEASE-086の確定後、baselineと修正の必要性・範囲を確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
-      "sourceLine": 113,
+      "sourceLine": 112,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -728,7 +709,7 @@
       "condition": "0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 116,
+      "sourceLine": 115,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -740,7 +721,7 @@
       "condition": "RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-086` | `PROPOSED` | Astra | [EXECUTION] 立て直しプラン作成 | RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 117,
+      "sourceLine": 116,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -752,7 +733,7 @@
       "condition": "計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 118,
+      "sourceLine": 117,
       "group": "リリース後の立て直し",
       "permanent": false
     }
@@ -764,7 +745,7 @@
       "flow": "SEQUENCE",
       "constraint": "ユーザーが立て直し範囲を決めてから計画化する",
       "raw": "| `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |",
-      "sourceLine": 126
+      "sourceLine": 125
     },
     {
       "successor": "RELEASE-084",
@@ -772,7 +753,7 @@
       "flow": "SEQUENCE",
       "constraint": "確定プランで既存限定修正の必要性と範囲を確認してから再開。0.5.4完了の外部条件と明示依頼も必要",
       "raw": "| `RELEASE-084` | `RELEASE-086` | `SEQUENCE` | 確定プランで既存限定修正の必要性と範囲を確認してから再開。0.5.4完了の外部条件と明示依頼も必要 |",
-      "sourceLine": 127
+      "sourceLine": 126
     },
     {
       "successor": "RELEASE-087",
@@ -780,7 +761,7 @@
       "flow": "SEQUENCE",
       "constraint": "計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない",
       "raw": "| `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |",
-      "sourceLine": 128
+      "sourceLine": 127
     },
     {
       "successor": "RBT-001",
@@ -788,47 +769,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
       "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-      "sourceLine": 129
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "RBT-001",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
-      "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-      "sourceLine": 130
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "RBT-009",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
-      "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-      "sourceLine": 131
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "RBT-034",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
-      "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-      "sourceLine": 132
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "QUALITY-002",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
-      "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-      "sourceLine": 133
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "QUALITY-003",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
-      "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-      "sourceLine": 134
+      "sourceLine": 128
     },
     {
       "successor": "RELEASE-076",
@@ -836,7 +777,7 @@
       "flow": "SEQUENCE",
       "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
       "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-      "sourceLine": 135
+      "sourceLine": 129
     },
     {
       "successor": "DOC-026",
@@ -844,7 +785,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
       "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-      "sourceLine": 136
+      "sourceLine": 130
     },
     {
       "successor": "DOC-027",
@@ -852,7 +793,7 @@
       "flow": "SEQUENCE",
       "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
       "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-      "sourceLine": 137
+      "sourceLine": 131
     }
   ],
   "baseline": {
@@ -1298,25 +1239,6 @@
         }
       },
       {
-        "id": "QUALITY-001",
-        "state": "ACTIVE",
-        "owner": "User / Codex",
-        "item": "[DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート",
-        "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
-        "detail": "`Maintanance/Quality/Profiles/RedBlackTreeCollections.md`",
-        "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
-        "sourceLine": 64,
-        "group": "RedBlackTreeと品質ゲート",
-        "permanent": false,
-        "displayInterest": {
-          "score": 3,
-          "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
-          "by": "Astra",
-          "date": "2026-10-16",
-          "provisional": true
-        }
-      },
-      {
         "id": "QUALITY-002",
         "state": "ACTIVE",
         "owner": "Codex",
@@ -1324,7 +1246,7 @@
         "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。",
         "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`",
         "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml` |",
-        "sourceLine": 65,
+        "sourceLine": 64,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false,
         "displayInterest": {
@@ -1343,7 +1265,7 @@
         "condition": "2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。",
         "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift`",
         "raw": "| `QUALITY-003` | `ACTIVE` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` |",
-        "sourceLine": 66,
+        "sourceLine": 65,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false,
         "displayInterest": {
@@ -1362,7 +1284,7 @@
         "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
         "detail": "`Maintanance/Current/SPI_REGISTRATION_GATE.md`",
         "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
-        "sourceLine": 67,
+        "sourceLine": 66,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false,
         "displayInterest": {
@@ -1381,7 +1303,7 @@
         "condition": "CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。",
         "detail": "`Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
         "raw": "| `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
-        "sourceLine": 69,
+        "sourceLine": 68,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false
       },
@@ -1393,7 +1315,7 @@
         "condition": "API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う",
         "detail": "保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md`",
         "raw": "| `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md` |",
-        "sourceLine": 75,
+        "sourceLine": 74,
         "group": "Permutation",
         "permanent": false,
         "displayInterest": {
@@ -1412,7 +1334,7 @@
         "condition": "2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手",
         "detail": "`Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md`",
         "raw": "| `PERM-064` | `ACTIVE` | Codex | [EXECUTION] Permutation benchmark表示名の現行型名への移行 | 2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手 | `Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md` |",
-        "sourceLine": 76,
+        "sourceLine": 75,
         "group": "Permutation",
         "permanent": false,
         "displayInterest": {
@@ -1431,7 +1353,7 @@
         "condition": "2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施",
         "detail": "`Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md`",
         "raw": "| `PERM-060` | `ACTIVE` | Codex（調査・整理） | [DISCOVERY] Sequenceによる失効View収集バグの再現と修正範囲整理 | 2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施 | `Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md` |",
-        "sourceLine": 77,
+        "sourceLine": 76,
         "group": "Permutation",
         "permanent": false,
         "displayInterest": {
@@ -1450,7 +1372,7 @@
         "condition": "2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない",
         "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md`",
         "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md` |",
-        "sourceLine": 78,
+        "sourceLine": 77,
         "group": "Permutation",
         "permanent": false,
         "displayInterest": {
@@ -1469,7 +1391,7 @@
         "condition": "CP-016を提案登録。0.5.4 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。",
         "detail": "`Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md`",
         "raw": "| `PERM-080` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] 0.5.4後のPermutation性能改善候補調査 | CP-016を提案登録。0.5.4 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。 | `Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md` |",
-        "sourceLine": 80,
+        "sourceLine": 79,
         "group": "Permutation",
         "permanent": false
       },
@@ -1481,7 +1403,7 @@
         "condition": "ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない",
         "detail": "保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift`",
         "raw": "| `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |",
-        "sourceLine": 86,
+        "sourceLine": 85,
         "group": "OptionalElementBuffer",
         "permanent": false,
         "displayInterest": {
@@ -1500,7 +1422,7 @@
         "condition": "移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する",
         "detail": "`Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md`",
         "raw": "| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |",
-        "sourceLine": 97,
+        "sourceLine": 96,
         "group": "移行史",
         "permanent": true,
         "displayInterest": {
@@ -1519,7 +1441,7 @@
         "condition": "常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する",
         "detail": "`Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md`",
         "raw": "| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |",
-        "sourceLine": 99,
+        "sourceLine": 98,
         "group": "移行史",
         "permanent": true,
         "displayInterest": {
@@ -1538,7 +1460,7 @@
         "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。",
         "detail": "`Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md`",
         "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
-        "sourceLine": 105,
+        "sourceLine": 104,
         "group": "調整・運用の個別課題",
         "permanent": false,
         "parentTask": "OPS-048"
@@ -1551,7 +1473,7 @@
         "condition": "ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。",
         "detail": "`Maintanance/Current/BRANCH_NAMING_DISCUSSION.md`",
         "raw": "| `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |",
-        "sourceLine": 106,
+        "sourceLine": 105,
         "group": "調整・運用の個別課題",
         "permanent": false
       },
@@ -1563,7 +1485,7 @@
         "condition": "ユーザーが候補CIの赤を引き受け0.5.4前の修正を後送すると確定。0.5.4 release完了と立て直しプランRELEASE-086の確定後、baselineと修正の必要性・範囲を確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。",
         "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
         "raw": "| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.5.4前の修正を後送すると確定。0.5.4 release完了と立て直しプランRELEASE-086の確定後、baselineと修正の必要性・範囲を確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
-        "sourceLine": 113,
+        "sourceLine": 112,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1575,7 +1497,7 @@
         "condition": "0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 116,
+        "sourceLine": 115,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1587,7 +1509,7 @@
         "condition": "RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-086` | `PROPOSED` | Astra | [EXECUTION] 立て直しプラン作成 | RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 117,
+        "sourceLine": 116,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1599,7 +1521,7 @@
         "condition": "計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 118,
+        "sourceLine": 117,
         "group": "リリース後の立て直し",
         "permanent": false
       }
@@ -1611,7 +1533,7 @@
         "flow": "SEQUENCE",
         "constraint": "ユーザーが立て直し範囲を決めてから計画化する",
         "raw": "| `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |",
-        "sourceLine": 126
+        "sourceLine": 125
       },
       {
         "successor": "RELEASE-084",
@@ -1619,7 +1541,7 @@
         "flow": "SEQUENCE",
         "constraint": "確定プランで既存限定修正の必要性と範囲を確認してから再開。0.5.4完了の外部条件と明示依頼も必要",
         "raw": "| `RELEASE-084` | `RELEASE-086` | `SEQUENCE` | 確定プランで既存限定修正の必要性と範囲を確認してから再開。0.5.4完了の外部条件と明示依頼も必要 |",
-        "sourceLine": 127
+        "sourceLine": 126
       },
       {
         "successor": "RELEASE-087",
@@ -1627,7 +1549,7 @@
         "flow": "SEQUENCE",
         "constraint": "計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない",
         "raw": "| `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |",
-        "sourceLine": 128
+        "sourceLine": 127
       },
       {
         "successor": "RBT-001",
@@ -1635,47 +1557,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
         "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-        "sourceLine": 129
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "RBT-001",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
-        "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sourceLine": 130
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "RBT-009",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
-        "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sourceLine": 131
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "RBT-034",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
-        "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sourceLine": 132
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "QUALITY-002",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
-        "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sourceLine": 133
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "QUALITY-003",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
-        "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sourceLine": 134
+        "sourceLine": 128
       },
       {
         "successor": "RELEASE-076",
@@ -1683,7 +1565,7 @@
         "flow": "SEQUENCE",
         "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
         "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-        "sourceLine": 135
+        "sourceLine": 129
       },
       {
         "successor": "DOC-026",
@@ -1691,7 +1573,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
         "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-        "sourceLine": 136
+        "sourceLine": 130
       },
       {
         "successor": "DOC-027",
@@ -1699,77 +1581,29 @@
         "flow": "SEQUENCE",
         "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
         "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-        "sourceLine": 137
+        "sourceLine": 131
       }
     ],
     "milestoneRelations": [
       {
-        "prerequisite": "MS-070",
-        "successor": "MS-SPI",
-        "relation": "stage",
-        "constraint": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
-        "source": {
-          "path": "Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
-          "quote": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
-          "sha256": "f92f1066e97d73d42b4b0948e589992d97a540a84e076e973fca6f228f651bcb",
-          "line": 7
-        }
-      },
-      {
-        "prerequisite": "MS-HUMAN",
-        "successor": "QUALITY-001",
-        "relation": "material",
-        "constraint": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-        "source": {
-          "path": "Maintanance/MILESTONES.md",
-          "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-          "sha256": "43400b0078abf8f6435d00e970c8c2c372909c131b9fe914cfad1715315da8cc",
-          "line": 150
-        }
-      },
-      {
-        "prerequisite": "MS-DOC",
-        "successor": "MS-060",
-        "relation": "material",
-        "constraint": "赤黒木の本文準備も必要な文書入力へ接続する",
-        "source": {
-          "path": "Maintanance/Milestones/Archived/GATE_0_5_4.md",
-          "quote": "赤黒木の本文完成も必要な文書入力へ接続する",
-          "sha256": "62b328b8e0b34c67b91e443eb456e2a2bde7fe0935e79c5c1e7f2a19f6cfd8fd",
-          "line": 15
-        }
-      },
-      {
-        "prerequisite": "MS-060",
-        "successor": "PERM-079",
+        "prerequisite": "PERM-079",
+        "successor": "END-0.6.0",
         "relation": "resume",
         "constraint": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_6_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_6_0.md",
           "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
           "sha256": "90265e790dc21c7f05a94ec058a698106fc3da9b9be2657a1ca06151aeec7f44",
           "line": 83
         }
       },
       {
-        "prerequisite": "MS-VALIDATION",
-        "successor": "MS-070",
-        "relation": "required",
-        "constraint": "を0.7.0リリース前のゲートとする。",
-        "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
-          "quote": "を0.7.0リリース前のゲートとする。",
-          "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
-          "line": 68
-        }
-      },
-      {
         "prerequisite": "RELEASE-072",
-        "successor": "MS-070",
+        "successor": "END-0.6.0",
         "relation": "required",
         "constraint": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
           "quote": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
           "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
           "line": 55
@@ -1777,11 +1611,11 @@
       },
       {
         "prerequisite": "RELEASE-075",
-        "successor": "MS-070",
+        "successor": "END-0.6.0",
         "relation": "required",
         "constraint": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
           "quote": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
           "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
           "line": 56
@@ -1789,23 +1623,23 @@
       },
       {
         "prerequisite": "RELEASE-076",
-        "successor": "MS-070",
+        "successor": "END-0.6.0",
         "relation": "required",
         "constraint": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
           "quote": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
           "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
           "line": 57
         }
       },
       {
-        "prerequisite": "MS-070",
-        "successor": "QUALITY-005",
+        "prerequisite": "QUALITY-005",
+        "successor": "END-0.7.0",
         "relation": "after",
         "constraint": "0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
           "quote": "2. 対象版の公開準備をQUALITY-005で判定し、ユーザーの登録可判断と実行委任を得る。",
           "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
           "line": 77
@@ -1817,7 +1651,7 @@
         "relation": "required",
         "constraint": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
         "source": {
-          "path": "Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
+          "path": "Maintanance/Milestones/_Archived/SPI_PUBLICATION_MILESTONE.md",
           "quote": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
           "sha256": "f92f1066e97d73d42b4b0948e589992d97a540a84e076e973fca6f228f651bcb",
           "line": 11
@@ -1831,17 +1665,17 @@
         "source": {
           "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
           "quote": "DOC-036 → Validation計画レビュー（MS-VALIDATION）。",
-          "sha256": "f72a924639816516a1e4af15963b2a6ecde538e254a3c45edaf7bdf8dac49bea",
-          "line": 39
+          "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
+          "line": 35
         }
       },
       {
         "prerequisite": "DOC-038",
-        "successor": "MS-080",
+        "successor": "END-0.7.0",
         "relation": "required",
         "constraint": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
           "quote": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
           "sha256": "7bc7e6cb41ee6bb5d29fb6f8551a384bc738bbb65376d7d32d935e852e431c02",
           "line": 15
@@ -1849,50 +1683,278 @@
       },
       {
         "prerequisite": "DOC-039",
-        "successor": "MS-080",
+        "successor": "END-0.7.0",
         "relation": "required",
         "constraint": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
         "source": {
-          "path": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
+          "path": "Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
           "quote": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
           "sha256": "7bc7e6cb41ee6bb5d29fb6f8551a384bc738bbb65376d7d32d935e852e431c02",
           "line": 15
         }
       },
       {
-        "prerequisite": "MS-060",
+        "prerequisite": "RBT-001",
+        "successor": "MS-QUALITY",
+        "relation": "material",
+        "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 32
+        }
+      },
+      {
+        "prerequisite": "RBT-009",
+        "successor": "MS-QUALITY",
+        "relation": "material",
+        "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 33
+        }
+      },
+      {
+        "prerequisite": "RBT-034",
+        "successor": "MS-QUALITY",
+        "relation": "material",
+        "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 34
+        }
+      },
+      {
+        "prerequisite": "QUALITY-002",
+        "successor": "MS-QUALITY",
+        "relation": "material",
+        "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 35
+        }
+      },
+      {
+        "prerequisite": "QUALITY-003",
+        "successor": "MS-QUALITY",
+        "relation": "material",
+        "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 36
+        }
+      },
+      {
+        "prerequisite": "MS-DOC",
+        "successor": "END-0.5.3",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+          "quote": "`GATE-054`",
+          "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
+          "line": 40
+        }
+      },
+      {
+        "prerequisite": "END-0.5.3",
+        "successor": "GATE-0.5.4",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+          "quote": "`GATE-054`",
+          "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
+          "line": 40
+        }
+      },
+      {
+        "prerequisite": "GATE-0.5.4",
+        "successor": "END-0.5.4",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.5.4/GATE_0_6_0.md",
+          "quote": "`GATE-060`",
+          "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
+          "line": 51
+        }
+      },
+      {
+        "prerequisite": "END-0.5.4",
+        "successor": "GATE-0.6.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.5.4/GATE_0_6_0.md",
+          "quote": "`GATE-060`",
+          "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
+          "line": 51
+        }
+      },
+      {
+        "prerequisite": "GATE-0.6.0",
         "successor": "MS-VALIDATION",
         "relation": "stage",
-        "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.6.0/` 10_VALIDATION_REVIEW（MS-VALIDATION）→ GATE_0_7_0（MS-070）",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
+          "quote": "`MS-VALIDATION`",
+          "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
+          "line": 5
+        }
+      },
+      {
+        "prerequisite": "MS-VALIDATION",
+        "successor": "END-0.6.0",
+        "relation": "required",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
         "source": {
           "path": "Maintanance/Milestones/README.md",
-          "quote": "- `0.6.0/` 10_VALIDATION_REVIEW（MS-VALIDATION）→ GATE_0_7_0（MS-070）",
-          "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-          "line": 21
+          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+          "line": 32
+        }
+      },
+      {
+        "prerequisite": "END-0.6.0",
+        "successor": "GATE-0.7.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.6.0/GATE_0_7_0.md",
+          "quote": "`GATE-070`",
+          "sha256": "57d2504f39eca2dc04e299157e76b38aefb452917129fefd6d86c801df563c22",
+          "line": 58
+        }
+      },
+      {
+        "prerequisite": "GATE-0.7.0",
+        "successor": "MS-SPI",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.7.0/10_SPI.md",
+          "quote": "`MS-SPI`",
+          "sha256": "925fb06b6485ee4947086c23e4973f5b5b8c40a2e970ec89a82c40698fd373e1",
+          "line": 5
         }
       },
       {
         "prerequisite": "MS-SPI",
-        "successor": "MS-080",
+        "successor": "END-0.7.0",
         "relation": "stage",
-        "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.7.0/` 10_SPI（MS-SPI）→ GATE_0_8_0（MS-080）",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "- `0.7.0/` 10_SPI（MS-SPI）→ GATE_0_8_0（MS-080）",
-          "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-          "line": 22
+          "path": "Maintanance/Milestones/0.7.0/GATE_0_8_0.md",
+          "quote": "`GATE-080`",
+          "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
+          "line": 70
         }
       },
       {
-        "prerequisite": "MS-080",
+        "prerequisite": "END-0.7.0",
+        "successor": "GATE-0.8.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.7.0/GATE_0_8_0.md",
+          "quote": "`GATE-080`",
+          "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
+          "line": 70
+        }
+      },
+      {
+        "prerequisite": "GATE-0.8.0",
         "successor": "MS-HUMAN",
         "relation": "after",
-        "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.8.0/` 10_HUMAN_REVIEW（MS-HUMAN）→ GATE_0_9_0（中身は未定）",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md",
+          "quote": "`MS-HUMAN`",
+          "sha256": "971d69eea23a29d6321a4ac115ad84a24452185063ab9eea4cb8bc74c1a54262",
+          "line": 5
+        }
+      },
+      {
+        "prerequisite": "MS-HUMAN",
+        "successor": "END-0.8.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+          "quote": "`GATE-090`",
+          "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
+          "line": 50
+        }
+      },
+      {
+        "prerequisite": "END-0.8.0",
+        "successor": "GATE-0.9.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+          "quote": "`GATE-090`",
+          "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
+          "line": 50
+        }
+      },
+      {
+        "prerequisite": "GATE-0.9.0",
+        "successor": "MS-QUALITY",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+          "quote": "`MS-QUALITY`",
+          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+          "line": 5
+        }
+      },
+      {
+        "prerequisite": "MS-QUALITY",
+        "successor": "END-0.9.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
         "source": {
           "path": "Maintanance/Milestones/README.md",
-          "quote": "- `0.8.0/` 10_HUMAN_REVIEW（MS-HUMAN）→ GATE_0_9_0（中身は未定）",
-          "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-          "line": 23
+          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+          "line": 32
+        }
+      },
+      {
+        "prerequisite": "END-0.9.0",
+        "successor": "GATE-1.0.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/0.9.0/GATE_1_0_0.md",
+          "quote": "`GATE-100`",
+          "sha256": "0694a5a1636f7f06c1dd4f314f7e1e69d7a158590e9f3a417291d68a117c701b",
+          "line": 51
+        }
+      },
+      {
+        "prerequisite": "GATE-1.0.0",
+        "successor": "END-1.0.0",
+        "relation": "stage",
+        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "source": {
+          "path": "Maintanance/Milestones/README.md",
+          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+          "line": 32
         }
       }
     ]
@@ -1904,22 +1966,55 @@
       "item": "赤黒木の本文作成完了",
       "state": "DONE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md\n正本：Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md",
-      "detail": "Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md",
-      "raw": "ゲート：Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md\n正本：Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md",
-      "uuid": "451e559c-827c-4fb4-8886-db228245c937",
-      "gate": "Maintanance/Milestones/0.5.4/10_RBT_DOCUMENTS.md"
+      "condition": "ゲート：Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md\n正本：Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md",
+      "detail": "Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md",
+      "raw": "ゲート：Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md\n正本：Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md",
+      "gate": "Maintanance/Milestones/0.5.3/10_RBT_DOCUMENTS.md"
     },
     {
-      "id": "MS-060",
+      "id": "END-0.5.3",
+      "kind": "milestone",
+      "item": "END-0.5.3",
+      "state": "DONE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.5.3/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-0.5.4",
+      "kind": "milestone",
+      "item": "0.5.4 リリース",
+      "state": "DONE",
+      "owner": "ユーザー同席（AI単独では扱わない）",
+      "condition": "ゲート：Maintanance/Milestones/0.5.3/GATE_0_5_4.md\n正本：Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+      "detail": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+      "raw": "ゲート：Maintanance/Milestones/0.5.3/GATE_0_5_4.md\n正本：Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+      "gate": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md"
+    },
+    {
+      "id": "END-0.5.4",
+      "kind": "milestone",
+      "item": "END-0.5.4",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.5.4/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-0.6.0",
       "kind": "milestone",
       "item": "0.6.0 リリース",
       "state": "ACTIVE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.5.4/GATE_0_6_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_6_0.md",
-      "detail": "Maintanance/Milestones/Archived/RELEASE_0_6_0.md",
-      "raw": "ゲート：Maintanance/Milestones/0.5.4/GATE_0_6_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_6_0.md",
-      "uuid": "c019732e-b9d5-4839-9f09-81c13d83e17b",
+      "condition": "ゲート：Maintanance/Milestones/0.5.4/GATE_0_6_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_6_0.md",
+      "detail": "Maintanance/Milestones/_Archived/RELEASE_0_6_0.md",
+      "raw": "ゲート：Maintanance/Milestones/0.5.4/GATE_0_6_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_6_0.md",
       "gate": "Maintanance/Milestones/0.5.4/GATE_0_6_0.md"
     },
     {
@@ -1931,19 +2026,29 @@
       "condition": "ゲート：Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md\n正本：Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
       "detail": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
       "raw": "ゲート：Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md\n正本：Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
-      "uuid": "19a5bf0a-83f3-45f7-88b8-a477f929cf12",
       "gate": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md"
     },
     {
-      "id": "MS-070",
+      "id": "END-0.6.0",
+      "kind": "milestone",
+      "item": "END-0.6.0",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.6.0/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-0.7.0",
       "kind": "milestone",
       "item": "0.7.0 リリース",
       "state": "ACTIVE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.6.0/GATE_0_7_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
-      "detail": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
-      "raw": "ゲート：Maintanance/Milestones/0.6.0/GATE_0_7_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
-      "uuid": "137133e2-623f-48f8-abc6-61ad53350249",
+      "condition": "ゲート：Maintanance/Milestones/0.6.0/GATE_0_7_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
+      "detail": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
+      "raw": "ゲート：Maintanance/Milestones/0.6.0/GATE_0_7_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
       "gate": "Maintanance/Milestones/0.6.0/GATE_0_7_0.md"
     },
     {
@@ -1952,22 +2057,32 @@
       "item": "SPI登録・公開導線",
       "state": "ACTIVE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.7.0/10_SPI.md\n正本：Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
-      "detail": "Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
-      "raw": "ゲート：Maintanance/Milestones/0.7.0/10_SPI.md\n正本：Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
-      "uuid": "476847c8-a0ab-44fd-8d4a-fa249e82a0fa",
+      "condition": "ゲート：Maintanance/Milestones/0.7.0/10_SPI.md\n正本：Maintanance/Milestones/_Archived/SPI_PUBLICATION_MILESTONE.md",
+      "detail": "Maintanance/Milestones/_Archived/SPI_PUBLICATION_MILESTONE.md",
+      "raw": "ゲート：Maintanance/Milestones/0.7.0/10_SPI.md\n正本：Maintanance/Milestones/_Archived/SPI_PUBLICATION_MILESTONE.md",
       "gate": "Maintanance/Milestones/0.7.0/10_SPI.md"
     },
     {
-      "id": "MS-080",
+      "id": "END-0.7.0",
       "kind": "milestone",
-      "item": "0.8.0 文書拡充・再検討",
+      "item": "END-0.7.0",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.7.0/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-0.8.0",
+      "kind": "milestone",
+      "item": "0.8.0 リリース",
       "state": "ACTIVE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.7.0/GATE_0_8_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
-      "detail": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
-      "raw": "ゲート：Maintanance/Milestones/0.7.0/GATE_0_8_0.md\n正本：Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
-      "uuid": "a6608fd9-b3d3-49f7-a0d9-fb698bc5d35e",
+      "condition": "ゲート：Maintanance/Milestones/0.7.0/GATE_0_8_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
+      "detail": "Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
+      "raw": "ゲート：Maintanance/Milestones/0.7.0/GATE_0_8_0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
       "gate": "Maintanance/Milestones/0.7.0/GATE_0_8_0.md"
     },
     {
@@ -1979,78 +2094,98 @@
       "condition": "ゲート：Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md\n正本：Maintanance/MILESTONES.md",
       "detail": "Maintanance/MILESTONES.md",
       "raw": "ゲート：Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md\n正本：Maintanance/MILESTONES.md",
-      "uuid": "8307f471-e08b-4813-8409-090926bccf21",
       "gate": "Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md"
+    },
+    {
+      "id": "END-0.8.0",
+      "kind": "milestone",
+      "item": "END-0.8.0",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.8.0/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-0.9.0",
+      "kind": "milestone",
+      "item": "0.9.0 リリース",
+      "state": "ACTIVE",
+      "owner": "ユーザー同席（AI単独では扱わない）",
+      "condition": "ゲート：Maintanance/Milestones/0.8.0/GATE_0_9_0.md\n正本：Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+      "detail": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+      "raw": "ゲート：Maintanance/Milestones/0.8.0/GATE_0_9_0.md\n正本：Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+      "gate": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md"
+    },
+    {
+      "id": "MS-QUALITY",
+      "kind": "milestone",
+      "item": "1.0 品質判断",
+      "state": "ACTIVE",
+      "owner": "ユーザー同席（AI単独では扱わない）",
+      "condition": "ゲート：Maintanance/Milestones/0.9.0/10_QUALITY-0001.md\n正本：Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "detail": "Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "raw": "ゲート：Maintanance/Milestones/0.9.0/10_QUALITY-0001.md\n正本：Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "gate": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md"
+    },
+    {
+      "id": "END-0.9.0",
+      "kind": "milestone",
+      "item": "END-0.9.0",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/0.9.0/",
+      "virtual": true
+    },
+    {
+      "id": "GATE-1.0.0",
+      "kind": "milestone",
+      "item": "1.0.0 リリース",
+      "state": "ACTIVE",
+      "owner": "ユーザー同席（AI単独では扱わない）",
+      "condition": "ゲート：Maintanance/Milestones/0.9.0/GATE_1_0_0.md\n正本：Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "detail": "Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "raw": "ゲート：Maintanance/Milestones/0.9.0/GATE_1_0_0.md\n正本：Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "gate": "Maintanance/Milestones/0.9.0/GATE_1_0_0.md"
+    },
+    {
+      "id": "END-1.0.0",
+      "kind": "milestone",
+      "item": "END-1.0.0",
+      "state": "ACTIVE",
+      "owner": "",
+      "condition": "",
+      "raw": "",
+      "detail": "Maintanance/Milestones/README.md",
+      "gate": "Maintanance/Milestones/1.0.0/",
+      "virtual": true
     }
   ],
   "milestoneRelations": [
     {
-      "prerequisite": "MS-070",
-      "successor": "MS-SPI",
-      "relation": "stage",
-      "constraint": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
-      "source": {
-        "path": "Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
-        "quote": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
-        "sha256": "f92f1066e97d73d42b4b0948e589992d97a540a84e076e973fca6f228f651bcb",
-        "line": 7
-      }
-    },
-    {
-      "prerequisite": "MS-HUMAN",
-      "successor": "QUALITY-001",
-      "relation": "material",
-      "constraint": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-      "source": {
-        "path": "Maintanance/MILESTONES.md",
-        "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-        "sha256": "43400b0078abf8f6435d00e970c8c2c372909c131b9fe914cfad1715315da8cc",
-        "line": 150
-      }
-    },
-    {
-      "prerequisite": "MS-DOC",
-      "successor": "MS-060",
-      "relation": "material",
-      "constraint": "赤黒木の本文準備も必要な文書入力へ接続する",
-      "source": {
-        "path": "Maintanance/Milestones/Archived/GATE_0_5_4.md",
-        "quote": "赤黒木の本文完成も必要な文書入力へ接続する",
-        "sha256": "62b328b8e0b34c67b91e443eb456e2a2bde7fe0935e79c5c1e7f2a19f6cfd8fd",
-        "line": 15
-      }
-    },
-    {
-      "prerequisite": "MS-060",
-      "successor": "PERM-079",
+      "prerequisite": "PERM-079",
+      "successor": "END-0.6.0",
       "relation": "resume",
       "constraint": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_6_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_6_0.md",
         "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
         "sha256": "90265e790dc21c7f05a94ec058a698106fc3da9b9be2657a1ca06151aeec7f44",
         "line": 83
       }
     },
     {
-      "prerequisite": "MS-VALIDATION",
-      "successor": "MS-070",
-      "relation": "required",
-      "constraint": "を0.7.0リリース前のゲートとする。",
-      "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
-        "quote": "を0.7.0リリース前のゲートとする。",
-        "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
-        "line": 68
-      }
-    },
-    {
       "prerequisite": "RELEASE-072",
-      "successor": "MS-070",
+      "successor": "END-0.6.0",
       "relation": "required",
       "constraint": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
         "quote": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
         "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
         "line": 55
@@ -2058,11 +2193,11 @@
     },
     {
       "prerequisite": "RELEASE-075",
-      "successor": "MS-070",
+      "successor": "END-0.6.0",
       "relation": "required",
       "constraint": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
         "quote": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
         "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
         "line": 56
@@ -2070,23 +2205,23 @@
     },
     {
       "prerequisite": "RELEASE-076",
-      "successor": "MS-070",
+      "successor": "END-0.6.0",
       "relation": "required",
       "constraint": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
         "quote": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
         "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
         "line": 57
       }
     },
     {
-      "prerequisite": "MS-070",
-      "successor": "QUALITY-005",
+      "prerequisite": "QUALITY-005",
+      "successor": "END-0.7.0",
       "relation": "after",
       "constraint": "0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_7_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_7_0.md",
         "quote": "2. 対象版の公開準備をQUALITY-005で判定し、ユーザーの登録可判断と実行委任を得る。",
         "sha256": "f64ea157156f0939084d34a2b0d3bc2f1fdce0892c765d73f77cf3b76c5e60da",
         "line": 77
@@ -2098,7 +2233,7 @@
       "relation": "required",
       "constraint": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
       "source": {
-        "path": "Maintanance/Milestones/Archived/SPI_PUBLICATION_MILESTONE.md",
+        "path": "Maintanance/Milestones/_Archived/SPI_PUBLICATION_MILESTONE.md",
         "quote": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
         "sha256": "f92f1066e97d73d42b4b0948e589992d97a540a84e076e973fca6f228f651bcb",
         "line": 11
@@ -2112,17 +2247,17 @@
       "source": {
         "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
         "quote": "DOC-036 → Validation計画レビュー（MS-VALIDATION）。",
-        "sha256": "f72a924639816516a1e4af15963b2a6ecde538e254a3c45edaf7bdf8dac49bea",
-        "line": 39
+        "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
+        "line": 35
       }
     },
     {
       "prerequisite": "DOC-038",
-      "successor": "MS-080",
+      "successor": "END-0.7.0",
       "relation": "required",
       "constraint": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
         "quote": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
         "sha256": "7bc7e6cb41ee6bb5d29fb6f8551a384bc738bbb65376d7d32d935e852e431c02",
         "line": 15
@@ -2130,50 +2265,278 @@
     },
     {
       "prerequisite": "DOC-039",
-      "successor": "MS-080",
+      "successor": "END-0.7.0",
       "relation": "required",
       "constraint": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
       "source": {
-        "path": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md",
+        "path": "Maintanance/Milestones/_Archived/RELEASE_0_8_0.md",
         "quote": "DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。",
         "sha256": "7bc7e6cb41ee6bb5d29fb6f8551a384bc738bbb65376d7d32d935e852e431c02",
         "line": 15
       }
     },
     {
-      "prerequisite": "MS-060",
+      "prerequisite": "RBT-001",
+      "successor": "MS-QUALITY",
+      "relation": "material",
+      "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 32
+      }
+    },
+    {
+      "prerequisite": "RBT-009",
+      "successor": "MS-QUALITY",
+      "relation": "material",
+      "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 33
+      }
+    },
+    {
+      "prerequisite": "RBT-034",
+      "successor": "MS-QUALITY",
+      "relation": "material",
+      "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 34
+      }
+    },
+    {
+      "prerequisite": "QUALITY-002",
+      "successor": "MS-QUALITY",
+      "relation": "material",
+      "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 35
+      }
+    },
+    {
+      "prerequisite": "QUALITY-003",
+      "successor": "MS-QUALITY",
+      "relation": "material",
+      "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 36
+      }
+    },
+    {
+      "prerequisite": "MS-DOC",
+      "successor": "END-0.5.3",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+        "quote": "`GATE-054`",
+        "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
+        "line": 40
+      }
+    },
+    {
+      "prerequisite": "END-0.5.3",
+      "successor": "GATE-0.5.4",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.5.3/GATE_0_5_4.md",
+        "quote": "`GATE-054`",
+        "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
+        "line": 40
+      }
+    },
+    {
+      "prerequisite": "GATE-0.5.4",
+      "successor": "END-0.5.4",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.5.4/GATE_0_6_0.md",
+        "quote": "`GATE-060`",
+        "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
+        "line": 51
+      }
+    },
+    {
+      "prerequisite": "END-0.5.4",
+      "successor": "GATE-0.6.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.5.4/GATE_0_6_0.md",
+        "quote": "`GATE-060`",
+        "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
+        "line": 51
+      }
+    },
+    {
+      "prerequisite": "GATE-0.6.0",
       "successor": "MS-VALIDATION",
       "relation": "stage",
-      "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.6.0/` 10_VALIDATION_REVIEW（MS-VALIDATION）→ GATE_0_7_0（MS-070）",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
+        "quote": "`MS-VALIDATION`",
+        "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
+        "line": 5
+      }
+    },
+    {
+      "prerequisite": "MS-VALIDATION",
+      "successor": "END-0.6.0",
+      "relation": "required",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
       "source": {
         "path": "Maintanance/Milestones/README.md",
-        "quote": "- `0.6.0/` 10_VALIDATION_REVIEW（MS-VALIDATION）→ GATE_0_7_0（MS-070）",
-        "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-        "line": 21
+        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+        "line": 32
+      }
+    },
+    {
+      "prerequisite": "END-0.6.0",
+      "successor": "GATE-0.7.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.6.0/GATE_0_7_0.md",
+        "quote": "`GATE-070`",
+        "sha256": "57d2504f39eca2dc04e299157e76b38aefb452917129fefd6d86c801df563c22",
+        "line": 58
+      }
+    },
+    {
+      "prerequisite": "GATE-0.7.0",
+      "successor": "MS-SPI",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.7.0/10_SPI.md",
+        "quote": "`MS-SPI`",
+        "sha256": "925fb06b6485ee4947086c23e4973f5b5b8c40a2e970ec89a82c40698fd373e1",
+        "line": 5
       }
     },
     {
       "prerequisite": "MS-SPI",
-      "successor": "MS-080",
+      "successor": "END-0.7.0",
       "relation": "stage",
-      "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.7.0/` 10_SPI（MS-SPI）→ GATE_0_8_0（MS-080）",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "- `0.7.0/` 10_SPI（MS-SPI）→ GATE_0_8_0（MS-080）",
-        "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-        "line": 22
+        "path": "Maintanance/Milestones/0.7.0/GATE_0_8_0.md",
+        "quote": "`GATE-080`",
+        "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
+        "line": 70
       }
     },
     {
-      "prerequisite": "MS-080",
+      "prerequisite": "END-0.7.0",
+      "successor": "GATE-0.8.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.7.0/GATE_0_8_0.md",
+        "quote": "`GATE-080`",
+        "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
+        "line": 70
+      }
+    },
+    {
+      "prerequisite": "GATE-0.8.0",
       "successor": "MS-HUMAN",
       "relation": "after",
-      "constraint": "シーケンシャル制限による一本の列（2026-10-17 ユーザー決定）。- `0.8.0/` 10_HUMAN_REVIEW（MS-HUMAN）→ GATE_0_9_0（中身は未定）",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md",
+        "quote": "`MS-HUMAN`",
+        "sha256": "971d69eea23a29d6321a4ac115ad84a24452185063ab9eea4cb8bc74c1a54262",
+        "line": 5
+      }
+    },
+    {
+      "prerequisite": "MS-HUMAN",
+      "successor": "END-0.8.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+        "quote": "`GATE-090`",
+        "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
+        "line": 50
+      }
+    },
+    {
+      "prerequisite": "END-0.8.0",
+      "successor": "GATE-0.9.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.8.0/GATE_0_9_0.md",
+        "quote": "`GATE-090`",
+        "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
+        "line": 50
+      }
+    },
+    {
+      "prerequisite": "GATE-0.9.0",
+      "successor": "MS-QUALITY",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
+        "quote": "`MS-QUALITY`",
+        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
+        "line": 5
+      }
+    },
+    {
+      "prerequisite": "MS-QUALITY",
+      "successor": "END-0.9.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
       "source": {
         "path": "Maintanance/Milestones/README.md",
-        "quote": "- `0.8.0/` 10_HUMAN_REVIEW（MS-HUMAN）→ GATE_0_9_0（中身は未定）",
-        "sha256": "14276b82c701c34fa5f64f8e5977701386f051cfb1b4c86202dde0bcfc2ba42d",
-        "line": 23
+        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+        "line": 32
+      }
+    },
+    {
+      "prerequisite": "END-0.9.0",
+      "successor": "GATE-1.0.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/0.9.0/GATE_1_0_0.md",
+        "quote": "`GATE-100`",
+        "sha256": "0694a5a1636f7f06c1dd4f314f7e1e69d7a158590e9f3a417291d68a117c701b",
+        "line": 51
+      }
+    },
+    {
+      "prerequisite": "GATE-1.0.0",
+      "successor": "END-1.0.0",
+      "relation": "stage",
+      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "source": {
+        "path": "Maintanance/Milestones/README.md",
+        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
+        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
+        "line": 32
       }
     }
   ],
@@ -2181,5 +2544,6 @@
     "generator": "Astra / OPS-051",
     "note": "正本から明示関係を抜き出した表示用snapshot。MS-*はアプリ内IDでTask Registryの採番ではない。",
     "head": "8fce1fa6adb8f6fdf1f81761af310eea3e83888b"
-  }
+  },
+  "milestoneHead": "0.5.4"
 }

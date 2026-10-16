@@ -1,7 +1,3 @@
-# 一意識別子
-
-8307f471-e08b-4813-8409-090926bccf21
-
 # カード情報
 
 ## ID
@@ -12,13 +8,13 @@
 
 公開文書の人間レビュー
 
-## 正本
-
-[MILESTONES.md](../../MILESTONES.md)
-
 ## 状態
 
 - [ ] DONE
+
+# 正本
+
+[MILESTONES.md](../../MILESTONES.md)
 
 # 記録
 

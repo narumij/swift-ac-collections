@@ -22,7 +22,7 @@ RELEASE-078の提供区分・対象・必要文書入力の整理と、DOC-034�
 
 ## 実施入力（2026-10-16）
 
-[RELEASE-078照合結果](../Milestones/_Archived/RELEASE_0_6_0_SCOPE_RECONCILIATION.md)を受領し開始。証拠はEvidence/DOC-035-2026-10-16/へ保存する。
+[RELEASE-078照合結果](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0-scope-reconciliation)を受領し開始。証拠はEvidence/DOC-035-2026-10-16/へ保存する。
 
 ## 確認結果（2026-10-16 / Astra）
 
@@ -51,4 +51,4 @@ RELEASE-078の提供区分・対象・必要文書入力の整理と、DOC-034�
 
 ブラウザ目視・外部リンクの到達性・Linux実行・全製品テスト・性能再測定は今回実施していない。未公開3対象のPages配信方式は既決の0.7.0工程へ残す。これらを今回確認済みと読み替えない。今回の文書訂正を超える公開契約変更・新規スニペットは行っていない。
 
-本結果を[0.6.0ゲート](../Milestones/_Archived/RELEASE_0_6_0.md)へ接続する。ユーザーが成果報告後に「コミットして」と明示し、この文書確認を完了とした。対象版に必要な品質確認と製品範囲・release開始のユーザー判断は別途維持する。
+本結果を[0.6.0ゲート](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0)へ接続する。ユーザーが成果報告後に「コミットして」と明示し、この文書確認を完了とした。対象版に必要な品質確認と製品範囲・release開始のユーザー判断は別途維持する。

@@ -10,7 +10,7 @@
 
 # 正本
 
-[RELEASE_0_6_0.md](../_Archived/RELEASE_0_6_0.md)
+[RELEASE_0_6_0.md](../_Archived/RELEASE_0_5_4_HISTORY.md)
 
 # 記録
 
@@ -24,7 +24,7 @@
 
 - [x] [10_RBT_DOCUMENTS](../0.5.3/10_RBT_DOCUMENTS.md)（`MS-DOC`）— 赤黒木の本文作成完了（到達済み）
 
-条件（Studioの引用元から）：全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を始める条件とする。（[原文](../_Archived/RELEASE_0_6_0.md)）
+条件（Studioの引用元から）：全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を始める条件とする。（[原文](../_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0)）
 
 ## 候補（確定したときだけ記入）
 

@@ -56,64 +56,46 @@ function graphData(){
  return {nodes,edges};
 }
 function graphLayout(tasks,edges){
- const branchOffset=250*(3-Math.sqrt(5))/2; // Short golden-ratio segment for branches below the backbone.
- const used=new Set(edges.flatMap(e=>[e.successor,e.prerequisite]));
- const depth=new Map(tasks.map(t=>[t.id,0]));
- for(let i=0;i<tasks.length;i++)for(const e of edges)depth.set(e.prerequisite,Math.max(depth.get(e.prerequisite),depth.get(e.successor)+1));
- const maxDepth=Math.max(0,...depth.values()),cols=new Map(),pos=new Map();
- for(const t of tasks.filter(t=>used.has(t.id))){let col=2*(maxDepth-depth.get(t.id));
- // Display-only placement: the post-0.6 decision is not a prerequisite for 0.7.
- if(t.id==='PERM-079'&&used.has('MS-060')&&used.has('MS-070'))col=2*(maxDepth-depth.get('MS-070'))-1;
- if(!cols.has(col))cols.set(col,[]);cols.get(col).push(t);}
- const usedColumns=[...cols.keys()].sort((a,b)=>a-b),columnX=new Map();
- for(const col of usedColumns){const previous=usedColumns[usedColumns.indexOf(col)-1];columnX.set(col,previous===undefined?20:columnX.get(previous)+Math.max(295,(col-previous)*147.5));}
- for(const [col,items] of cols){
- // User-requested visual ordering only; do not change task precedence.
- items.sort((a,b)=>(a.id==='RELEASE-078'?-1:0)-(b.id==='RELEASE-078'?-1:0));
- let mi=0,ti=0;for(const t of items){pos.set(t.id,[columnX.get(col),t.id==='PERM-079'?55:t.kind==='milestone'?185+(mi++)*116:430+(ti++)*116]);}}
- // Visual stack requested beneath the Validation milestone (not new dependencies).
- if(pos.has('MS-VALIDATION')){
- const [x,y]=pos.get('MS-VALIDATION'),stack=['RELEASE-075','RELEASE-076','RELEASE-072'].filter(id=>pos.has(id));
- const others=[...pos.entries()].filter(([id,p])=>p[0]===x&&p[1]>y&&!stack.includes(id)).sort((a,b)=>a[1][1]-b[1][1]);
- const startY=Math.max(y+116,(pos.get('RELEASE-078')?.[1]??y)+116);
- stack.forEach((id,i)=>pos.set(id,[x,startY+116*i]));others.forEach(([id],i)=>pos.set(id,[x,startY+116*(stack.length+i)]));
+ const W=250,H=96,gutter=45,step=W+gutter,row=H+20,drop=H+40,golden=W*(3-Math.sqrt(5))/2;
+ // Presentation groups only: membership is not precedence or execution permission.
+ const groups=[
+  {anchor:'MS-DOC',below:['RELEASE-078']},
+  {anchor:'MS-060',header:'MS-VALIDATION',below:['RELEASE-075','RELEASE-076','RELEASE-072'],above:['PERM-079']},
+  {anchor:'MS-070',route:['QUALITY-005','DOC-026','DOC-027']},
+  {anchor:'MS-SPI',below:['RBT-011']},
+  {anchor:'MS-HUMAN',below:['RBT-001','RBT-034','RBT-009','QUALITY-002','QUALITY-003']},
+  {anchor:'QUALITY-001'}
+ ];
+ const used=new Set(edges.flatMap(e=>[e.prerequisite,e.successor])),pos=new Map();
+ const nodes=tasks.filter(t=>used.has(t.id));
+ let x=20;
+ for(const group of groups){
+  if(!used.has(group.anchor))continue;
+  const y=185,below=(group.below||[]).filter(id=>used.has(id)),above=(group.above||[]).filter(id=>used.has(id)),route=(group.route||[]).filter(id=>used.has(id));
+  pos.set(group.anchor,[x,y]);
+  const header=used.has(group.header);if(header)pos.set(group.header,[x,y+row]);
+  below.forEach((id,i)=>pos.set(id,[x+golden,y+(header?row:0)+drop+i*row]));
+  above.forEach((id,i)=>pos.set(id,[x+step,y-130-i*row]));
+  route.forEach((id,i)=>pos.set(id,[x+step*(i+1),y+drop]));
+  // Routes reserve their columns. Upper branches share the next milestone's span.
+  x+=route.length?step*(route.length+1):above.length?step+golden:step*1.5;
  }
- // Compress unused horizontal space between 0.7 and SPI, keeping intermediate tasks.
- if(pos.has('MS-070')&&pos.has('MS-SPI')){
- const start=pos.get('MS-070')[0],end=pos.get('MS-SPI')[0];
- const xs=[...new Set([...pos.values()].map(p=>p[0]).filter(x=>x>=start&&x<=end))].sort((a,b)=>a-b);
- const packed=new Map(xs.map((x,i)=>[x,start+i*295])),shift=end-(packed.get(end)??end);
- for(const [id,[x,y]] of pos)pos.set(id,[x>end?x-shift:packed.get(x)??x,y]);
+ // Unknown/new groups get a dependency-ranked layout; fall back as a whole if
+ // rewiring would make the presentation groups misleading or overlap cards.
+ function valid(){
+  if(pos.size!==nodes.length)return false;
+  for(const e of edges){const a=pos.get(e.prerequisite),b=pos.get(e.successor);if(!(a[0]<b[0]||(a[0]===b[0]&&a[1]<b[1])))return false;}
+  const rects=[...pos.values()];for(let i=0;i<rects.length;i++)for(let j=0;j<i;j++)if(Math.abs(rects[i][0]-rects[j][0])<W&&Math.abs(rects[i][1]-rects[j][1])<H)return false;
+  return true;
  }
- // PERM-079 floats above the backbone and does not need its own full column.
- if(pos.has('MS-060')&&pos.has('MS-070')){
- const left=pos.get('MS-060')[0],right=pos.get('MS-070')[0];
- const between=[...pos.entries()].some(([id,p])=>id!=='PERM-079'&&p[0]>left&&p[0]<right);
- const shift=between?0:Math.max(0,right-left-(295+branchOffset));
- if(shift)for(const [id,[x,y]] of pos)if(x>=right)pos.set(id,[x-shift,y]);
+ let fallback=!valid();
+ if(fallback){
+  pos.clear();const depth=new Map(nodes.map(t=>[t.id,0]));
+  for(let i=0;i<nodes.length;i++)for(const e of edges)depth.set(e.prerequisite,Math.max(depth.get(e.prerequisite),depth.get(e.successor)+1));
+  const max=Math.max(0,...depth.values()),counts=new Map();
+  for(const t of nodes){const col=max-depth.get(t.id),n=counts.get(col)||0;pos.set(t.id,[20+col*step,185+n*row]);counts.set(col,n+1);}
  }
- if(pos.has('PERM-079')&&pos.has('MS-060'))pos.set('PERM-079',[pos.get('MS-060')[0]+295,pos.get('PERM-079')[1]]);
- if(pos.has('MS-060')){
- const [x,y]=pos.get('MS-060'),gap=Math.abs((pos.get('MS-VALIDATION')?.[1]??y+116)-y)||116;
- ['RELEASE-075','RELEASE-076','RELEASE-072'].forEach((id,i)=>{if(pos.has(id))pos.set(id,[x+branchOffset,y+2*gap+20+116*i]);});
- }
- if(pos.has('MS-DOC')&&pos.has('RELEASE-078'))pos.set('MS-DOC',[pos.get('RELEASE-078')[0]-branchOffset,pos.get('MS-DOC')[1]]);
- if(['MS-DOC','RELEASE-078','MS-VALIDATION','RELEASE-075'].every(id=>pos.has(id))){const gap=pos.get('RELEASE-075')[1]-pos.get('MS-VALIDATION')[1];pos.set('RELEASE-078',[pos.get('RELEASE-078')[0],pos.get('MS-DOC')[1]+gap]);}
- if(['MS-070','QUALITY-005','MS-VALIDATION','RELEASE-075'].every(id=>pos.has(id))){
- const gap=pos.get('RELEASE-075')[1]-pos.get('MS-VALIDATION')[1],shift=pos.get('MS-070')[1]+gap-pos.get('QUALITY-005')[1];
- for(const id of ['QUALITY-005','DOC-026','DOC-027'])if(pos.has(id))pos.set(id,[pos.get(id)[0],pos.get(id)[1]+shift]);
- }
- // Give the final milestone groups more breathing room (1.5 normal columns).
- for(const [left,right] of [['MS-SPI','MS-HUMAN'],['MS-HUMAN','QUALITY-001']])if(pos.has(left)&&pos.has(right)){
- const boundary=pos.get(right)[0],shift=Math.max(0,pos.get(left)[0]+442.5-boundary);
- if(shift)for(const [id,[x,y]] of pos)if(x>=boundary)pos.set(id,[x+shift,y]);
- }
- if(pos.has('MS-VALIDATION')&&pos.has('RELEASE-075')){
- const gap=pos.get('RELEASE-075')[1]-pos.get('MS-VALIDATION')[1];
- for(const [anchor,ids] of [['MS-SPI',['RBT-011']],['MS-HUMAN',['RBT-001','RBT-034','RBT-009','QUALITY-002','QUALITY-003']]])if(pos.has(anchor))ids.forEach((id,i)=>{if(pos.has(id))pos.set(id,[pos.get(anchor)[0]+branchOffset,pos.get(anchor)[1]+gap+116*i]);});
- }
- const minX=Math.min(20,...[...pos.values()].map(p=>p[0]));if(minX<20)for(const [id,[x,y]] of pos)pos.set(id,[x+20-minX,y]);
- return {pos,offset:0,hasIsolated:false,hasEdges:edges.length>0,width:Math.max(900,Math.max(0,...[...pos.values()].map(p=>p[0]))+295),height:Math.max(180,...[...pos.values()].map(p=>p[1]+130))};
+ return {pos,fallback,offset:0,hasIsolated:false,hasEdges:edges.length>0,width:Math.max(900,...[...pos.values()].map(p=>p[0]+step)),height:Math.max(180,...[...pos.values()].map(p=>p[1]+H+34))};
 }
 function independentGroups(data){
  const used=new Set(data.edges.concat(data.milestoneRelations||[]).flatMap(e=>[e.successor,e.prerequisite]));
@@ -155,13 +137,13 @@ function editRelation(e){
 }
 function graph(){
  const tip=$('graphTip');tip.hidden=true;
- const data=graphData();const {pos,offset,hasIsolated,hasEdges,width,height}=graphLayout(data.nodes,data.edges);
+ const data=graphData();const {pos,fallback,offset,hasIsolated,hasEdges,width,height}=graphLayout(data.nodes,data.edges);
  const W=250,H=96;
  const s=svg('svg',{width,height,viewBox:`0 0 ${width} ${height}`,role:'group','aria-label':'全taskの明示依存グラフ'});const defs=svg('defs',{}),m=svg('marker',{id:'arrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'});m.append(svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#78998c'}));defs.append(m);s.append(defs);
  for(const e of data.edges){let [x,y]=pos.get(e.prerequisite),[u,v]=pos.get(e.successor);const p=svg('path',{d:x===u?`M${x+W/2},${y+H} L${u+W/2},${v}`:`M${x+W},${y+H/2} C${x+W+20},${y+H/2} ${u-20},${v+H/2} ${u},${v+H/2}`,fill:'none',stroke:['resume','after'].includes(e.relation)?'#9266ab':e.relation==='stage'?'#126c58':'#78998c','stroke-width':e.relation==='stage'?3:1.5,'stroke-dasharray':e.flow==='PARALLEL_JOIN'&&e.relation!=='stage'?'5 4':'','marker-end':'url(#arrow)'});p.append(svg('title',{},(e.relation||e.flow)+' / '+e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));s.append(p);const hit=svg('path',{d:p.getAttribute('d'),fill:'none',stroke:'transparent','stroke-width':16,'pointer-events':'stroke',tabindex:0,role:'button','aria-label':e.prerequisite+' → '+e.successor+' の関係を編集',style:'cursor:pointer'});hit.append(svg('title',{},e.prerequisite+' → '+e.successor+'\nクリックしてつなぎ替え・除去'));hit.onclick=()=>editRelation(e);hit.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();editRelation(e);}};hit.onfocus=()=>{p.setAttribute('stroke-width',5);};hit.onblur=()=>{p.setAttribute('stroke-width',e.relation==='stage'?3:1.5);};s.append(hit);}
  if(hasIsolated)s.append(svg('text',{x:20,y:28,fill:'#657477'},'独立タスク（明示依存なし）'));
  if(!hasEdges)s.append(svg('text',{x:20,y:60,fill:'#657477'},'明示された依存はありません。'));
- if(hasEdges)s.append(svg('text',{x:20+offset*295,y:28,fill:'#657477'},'前提からゲートへ →'));
+ if(hasEdges)s.append(svg('text',{x:20+offset*295,y:28,fill:'#657477'},fallback?'依存順の自動配置 →':'前提からゲートへ →'));
  const measure=document.createElement('canvas').getContext('2d');measure.font='12px -apple-system, sans-serif';
  function lines(text){let out=[''];for(const ch of text){let i=out.length-1;if(measure.measureText(out[i]+ch).width>W-24)out.push(ch);else out[i]+=ch;}if(out.length>2){out=out.slice(0,2);while(measure.measureText(out[1]+'…').width>W-24)out[1]=out[1].slice(0,-1);out[1]+='…';}return out;}
  function show(t,x,y){tip.textContent=t.id+(t.kind==='milestone'?' · 到達点':t.permanent?' · 常設':'')+'\n'+t.item+'\n\n状態：'+t.state+'\n担当：'+t.owner+'\n\n条件：'+t.condition;tip.hidden=false;const r=tip.getBoundingClientRect();tip.style.left=Math.max(12,Math.min(x+14,innerWidth-r.width-12))+'px';tip.style.top=Math.max(12,Math.min(y+14,innerHeight-r.height-12))+'px';}

@@ -91,13 +91,13 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `003` |
-| `OPS` | `059` |
+| `OPS` | `060` |
 | `OPT` | `074` |
 | `PERF` | `005` |
-| `PERM` | `079` |
+| `PERM` | `080` |
 | `QUALITY` | `005` |
-| `RBT` | `048` |
-| `RELEASE` | `082` |
+| `RBT` | `049` |
+| `RELEASE` | `087` |
 | `TEST` | `008` |
 
 ## 文書ランクと変更権限

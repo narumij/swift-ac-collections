@@ -1,0 +1,23 @@
+[0/1] Planning build
+Building for debugging...
+[0/2] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.19s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+Test Suite 'All tests' started at 2026-10-16 22:18:01.394.
+Test Suite 'All tests' passed at 2026-10-16 22:18:01.396.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ProbeTests started.
+􀟈  Test cleanChild() started.
+DYLD_INSERT_LIBRARIES at suite init: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+􁁛  Test cleanChild() passed after 0.033 seconds.
+􀟈  Test trapChild() started.
+DYLD_INSERT_LIBRARIES at suite init: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+􁁛  Test trapChild() passed after 0.026 seconds.
+􀟈  Test sanitizerStillDetectsOverflow() started.
+DYLD_INSERT_LIBRARIES at suite init: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+􁁛  Test sanitizerStillDetectsOverflow() passed after 0.037 seconds.
+􁁛  Suite ProbeTests passed after 0.097 seconds.
+􁁛  Test run with 3 tests in 1 suite passed after 0.097 seconds.

@@ -21,3 +21,6 @@ Benchmarks/.build/
 /Maintanance/Cache/**
 !/Maintanance/Cache/*/
 !/Maintanance/Cache/*/README.md
+
+# Private user drafts
+/Maintanance/User/Rights/

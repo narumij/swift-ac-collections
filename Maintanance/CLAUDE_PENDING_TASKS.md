@@ -53,6 +53,8 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - commit: していない。
 - Codex reconciliation: 2026-10-16 Astra。OPS-059へFROZENで正式登録。Safariでの未解決と未commit差分を保持。受入・修正・再開は行わない。
 
+照合済みCP-014〜016は[原文と統合結果](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md)へ保存。CP-014→RBT-033追加証拠・RBT-049候補、CP-015→RELEASE-083/084、CP-016→PERM-080。未着手の候補はRegistryで扱う。
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`
@@ -74,3 +76,12 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - Studioの同期確認で内容の差はなく、生成時のHEAD・dirty表示のみ変化していた。今回再同期する。画面の実操作検証は今回含まない。
 
 同じ共有ファイルを含めてcommitするときは、stage直前の差分に他担当の編集中の行が混ざっていないかを確認する。今回は最終内容が整合しているため、既存commitの書き換えは行わない。
+
+## Astra照合・統合（2026-10-16、811b7a7aの返却を確認）
+
+原entry本文は保持する。処理結果は本節を最新とする。
+
+- CP-013：追加報告受領。OPS-059のSafari解決情報を訂正。凍結維持、修正の完了受入は保留。
+- CP-014：RECONCILED。RBT-033正本へmacOS保存実験の証拠を受入・統合。固定版・適用範囲検証はRBT-049 PROPOSED。Linux CIへ適用しない。
+- CP-015：RECONCILED。RELEASE-083/084へ統合。workflowとガイドを照合。契約差による停止は適切。未取得runの成功不在は断定しない。ユーザーの赤merge方針は伝達記録として保持。
+- CP-016：RECONCILED。PERM-080 PROPOSEDとして正式登録、未着手。0.6.0後の範囲確定待ち。

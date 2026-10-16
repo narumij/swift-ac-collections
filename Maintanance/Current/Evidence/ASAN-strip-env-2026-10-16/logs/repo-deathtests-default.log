@@ -1,0 +1,2291 @@
+[0/1] Planning build
+[1/1] Compiling plugin Swift-DocC Preview
+[2/2] Compiling plugin Swift-DocC
+Building for debugging...
+[2/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (4.66s)
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite RedBlackTreeSetDeathTests started.
+􀟈  Suite RedBlackTreeSetAdditionalDeathTests started.
+􀟈  Suite RedBlackTreeDictionaryDeathTests started.
+􀟈  Suite RedBlackTreeMultiSetDeathTests started.
+􀟈  Suite TreeFoundamentalDeathTests started.
+􀟈  Suite OptionalArrayDimensionDeathTests started.
+􀟈  Suite RedBlackTreeMultiMapRangePredicatePropagationTests started.
+􀟈  Suite RedBlackTreeInternalPointerDeathTests started.
+􀟈  Suite RedBlackTreeViewDeathTests started.
+􀟈  Suite RedBlackTreeSetRangePredicatePropagationTests started.
+􀟈  Suite OptionalArray_97_CoordinateValueAccessDeathTests started.
+􀟈  Suite RedBlackTreeDictionaryRangePredicatePropagationTests started.
+􀟈  Suite RedBlackTreeMultiMapDeathTests started.
+􀟈  Suite NextPermutationsSequenceExperimentDeathTests started.
+􀟈  Suite NextPermutations_99_ViewInvalidationDeathTests started.
+􀟈  Suite RedBlackTreeMultiSetRangePredicatePropagationTests started.
+􀟈  Suite BareArray_99_DeathTests started.
+􀟈  Suite BareArray_97_CoordinateValueAccessDeathTests started.
+􀟈  Suite BareArray_96_BorrowedReferenceDeathTests started.
+􀟈  Suite NextPermutations_99_DeathTests started.
+􀟈  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "removed index setup reaches the removed state" started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その2" started.
+􀟈  Test erasingForeignRangeFromEmptySet_terminatesProcess() started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その5" started.
+􀟈  Test removingLastFromEmptySet_terminatesProcess() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptySet_terminatesProcess() started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その3" started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その3" started.
+􀟈  Test "endIndex cannot be subscripted" started.
+􀟈  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その2" started.
+􀟈  Test removingAnAlreadyRemovedIndex_terminatesProcess() started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その1" started.
+􀟈  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その4" started.
+􀟈  Test removingFirstFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2" started.
+􀟈  Test "removed index cannot be subscripted" started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その1" started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2" started.
+􀟈  Test mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test removingLastFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test removedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test reversedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingForeignRangeFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test erasingThroughReversedRangeView_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test duplicateKeysInUniqueKeysInitializer_terminateProcess() started.
+􀟈  Test creating128BitBitmapForNullPointer_terminatesProcess() started.
+􀟈  Test comparingMultiWithNullRightPointer_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test comparingBitmapWithNullLeftPointer_terminatesProcess() started.
+􀟈  Test negativeHeight_traps_3D() started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test productOverflow_traps_3D() started.
+􀟈  Test sealingNegativeTrackingTag_terminatesProcess() started.
+􀟈  Test creatingBitmapForNullPointer_terminatesProcess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test removingLastFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test comparingBitmapWithNullRightPointer_terminatesProcess() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test measuringNullPointerHeight_terminatesProcess() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingReversedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test negativeCapacity_traps_1D() started.
+􀟈  Test negativeHeight_traps_2D() started.
+􀟈  Test negativeSize1_traps_4D() started.
+􀟈  Test removingFirstFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test productOverflow_traps_2D() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test comparingMultiWithNullLeftPointer_terminatesProcess() started.
+􀟈  Test negativeWidth_traps_2D() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test negativeSize2_traps_4D() started.
+􀟈  Test negativeDepth_traps_3D() started.
+􀟈  Test negativeWidth_traps_3D() started.
+􀟈  Test negativeSize0_traps_4D() started.
+􀟈  Test productOverflow_traps_4D() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test nullRightPointer_terminatesProcess() started.
+􀟈  Test conditionallyErasingReversedRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingLastFromEmptyMappedValuesView_terminatesProcess() started.
+􀟈  Test removingLastFromEmptyKeyValueRangeViewOfNonEmptyDictionary_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptyMappedValuesView_terminatesProcess() started.
+􀟈  Test endRightPointer_terminatesProcess() started.
+􀟈  Test nullLeftPointer_terminatesProcess() started.
+􀟈  Test emptyBufferRejectsCoordinateZero1D() started.
+􀟈  Test removingFirstFromEmptyKeyValueRangeView_terminatesProcess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test endLeftPointer_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptyKeyOnlyRangeView_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptyKeyOnlyRangeViewOfNonEmptySet_terminatesProcess() started.
+􀟈  Test removingLastFromEmptyKeyValueRangeView_terminatesProcess() started.
+􀟈  Test elementAtRejectsInvalidCoordinates2D() started.
+􀟈  Test setElementRejectsInvalidCoordinates1D() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test negativeSize3_traps_4D() started.
+􀟈  Test emptyBufferRejectsCoordinateZero4D() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test setElementRejectsInvalidCoordinates4D() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test elementAtRejectsInvalidCoordinates1D() started.
+􀟈  Test emptyBufferRejectsCoordinateZero3D() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test setElementRejectsInvalidCoordinates2D() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test emptyBufferRejectsCoordinateZero2D() started.
+􀟈  Test setElementRejectsInvalidCoordinates3D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates4D() started.
+􀟈  Test copiedIteratorInvalidatesTheOtherCopiesCurrentView() started.
+􀟈  Test removingLastFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test elementAtRejectsInvalidCoordinates3D() started.
+􀟈  Test collectingViewsThenReadingAnEarlierViewTraps() started.
+􀟈  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingFirstFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test currentViewAndItsCopyAreReadableBeforeAdvancing() started.
+􀟈  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test subscriptTrapsAfterNextReturnsNewView() started.
+􀟈  Test endIndexTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test subscriptTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test startIndexTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test endIndexTrapsAfterNextReturnsNewView() started.
+􀟈  Test startIndexTrapsAfterTerminalNextReturnsNil() started.
+􀟈  Test terminalNextReturnsNilForTheSetupsBelow() started.
+􀟈  Test setElementRejectsInvalidCoordinates1D() started.
+􀟈  Test removingLastFromEmptyKeyOnlyRangeView_terminatesProcess() started.
+􀟈  Test setElementRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test subscriptTrapsAfterTerminalNextReturnsNil() started.
+􀟈  Test setElementRejectsInvalidCoordinates2D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates1D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates4D() started.
+􀟈  Test setElementRejectsInvalidCoordinates3D() started.
+􀟈  Test startIndexTrapsAfterNextReturnsNewView() started.
+􀟈  Test elementAtRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test setElementRejectsInvalidCoordinates4D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates2D() started.
+􀟈  Test copyOfViewTrapsAfterNext() started.
+􀟈  Test negativeDimension_traps_2DClosure() started.
+􀟈  Test negativeDimension_traps_2DRepeating() started.
+􀟈  Test elementAtRejectsInvalidCoordinates3D() started.
+􀟈  Test negativeDimension_traps_1DRepeating() started.
+􀟈  Test negativeDimension_traps_4DRepeating() started.
+􀟈  Test endIndexRead_traps() started.
+􀟈  Test dimensionProductOverflow_traps_3DClosure() started.
+􀟈  Test referenceRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test negativeSingleAxis_traps_3DClosure() started.
+􀟈  Test intMaxIndexRead_traps() started.
+􀟈  Test referenceRejectsInvalidCoordinates3D() started.
+􀟈  Test pastEndIndexRead_traps() started.
+􀟈  Test negativeSingleAxis_traps_3DRepeating() started.
+􀟈  Test referenceRejectsInvalidCoordinates1D() started.
+􀟈  Test negativeIndexRead_traps() started.
+􀟈  Test dimensionProductOverflow_traps_3DRepeating() started.
+􀟈  Test negativeDimension_traps_3DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_2DRepeating() started.
+􀟈  Test zeroAndNegativeAxes_traps_2D() started.
+􀟈  Test intMinIndexRead_traps() started.
+􀟈  Test referenceRejectsInvalidCoordinates2D() started.
+􀟈  Test zeroAndNegativeAxes_traps_3D() started.
+􀟈  Test dimensionProductOverflow_traps_4DRepeating() started.
+􀟈  Test negativeDimension_traps_1DClosure() started.
+􀟈  Test referenceRejectsInvalidCoordinates4D() started.
+􀟈  Test dimensionProductOverflow_traps_2DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_4DClosure() started.
+􀟈  Test negativeSingleAxis_traps_4DRepeating() started.
+􀟈  Test negativeDimension_traps_3DRepeating() started.
+􀟈  Test negativeSingleAxis_traps_4DClosure() started.
+􀟈  Test negativeSingleAxis_traps_2DRepeating() started.
+􀟈  Test negativeDimension_traps_4DClosure() started.
+􀟈  Test zeroAndNegativeAxes_traps_4D() started.
+􀟈  Test negativeSingleAxis_traps_2DClosure() started.
+􀟈  Test case passing 1 argument operation → .freeMinimum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freeMaximum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freeNext to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freeNextIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freePreviousIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolMinimum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolMaximum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolNext to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolNextIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolPreviousIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolLeaf to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .leftRotateNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .leftRotateMissingRightChild to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .rightRotateNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .rightRotateMissingLeftChild to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .balanceRoot to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .balanceInsertedNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .removeRoot to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .removeNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .removeMalformedTree to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􁁛  Test "removed index setup reaches the removed state" passed after 0.980 seconds.
+􁁛  Test currentViewAndItsCopyAreReadableBeforeAdvancing() passed after 3.310 seconds.
+􁁛  Test terminalNextReturnsNilForTheSetupsBelow() passed after 3.310 seconds.
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その5" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13979==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test erasingForeignRangeFromEmptySet_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:56:15: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "インデックスによる区間不正はtrapすること、その3" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13985==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingLastFromEmptySet_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:148:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==13993==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingFirstFromEmptyDictionary_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:33:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "removed index cannot be subscripted" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13995==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test comparingBitmapWithNullLeftPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:77:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test sealingNegativeTrackingTag_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:42:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14035==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14026==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14029==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test creatingBitmapForNullPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:70:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test measuringNullPointerHeight_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:63:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .leftRotateNode at TreeFoundamentalDeathTests.swift:150:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingFirstFromEmptyMultiSet_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:86:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14067==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:62:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14068==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .leftRotateMissingRightChild at TreeFoundamentalDeathTests.swift:155:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .rightRotateNode at TreeFoundamentalDeathTests.swift:162:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolNext at TreeFoundamentalDeathTests.swift:130:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .removeMalformedTree at TreeFoundamentalDeathTests.swift:194:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyKeyValueRangeViewOfNonEmptyDictionary_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:59:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:286:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:395:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test removingEmptyStartIndex_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:71:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:40:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:419:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:28:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14124==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullLeftPointer_terminatesProcess() recorded an issue at RedBlackTreeInternal_98_PointerDeathTests.swift:50:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:55:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test endLeftPointer_terminatesProcess() recorded an issue at RedBlackTreeInternal_98_PointerDeathTests.swift:57:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:310:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14143==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test subscriptTrapsAfterNextReturnsNewView() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:64:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:28:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:77:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13972==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:62:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeIndexRead_traps() recorded an issue at NextPermutations_99_DeathTests.swift:18:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13971==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test erasingForeignRangeFromEmptySet_terminatesProcess() failed after 3.460 seconds with 1 issue.
+􀄵  /// 空のSetでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+􀄵  /// (空のときにCoWを省いても、範囲の検査は省かない)。
+􀢄  Test "インデックスによる区間不正はtrapすること、その2" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13975==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その2" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13983==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:68:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13970==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その3" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13980==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "インデックスによる区間不正はtrapすること、その3" failed after 3.510 seconds with 1 issue.
+􀢄  Test negativeSingleAxis_traps_3DClosure() recorded an issue at BareArray_99_DeathTests.swift:98:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "endIndex cannot be subscripted" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13984==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingEmptyStartIndex_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:76:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13986==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:135:7: Expectation failed: stderr.contains("The pointer is being used as a different node")
+􀄵  stderr.contains("The pointer is being used as a different node") → false
+􀄵    stderr → "==13986==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+     DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+     "interceptors not installed" && 0
+     "
+􀢄  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13989==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingFirstFromEmptySet_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:140:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptySet_terminatesProcess() failed after 3.511 seconds with 1 issue.
+􀢄  Test zeroAndNegativeAxes_traps_4D() recorded an issue at BareArray_99_DeathTests.swift:172:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingFirstFromEmptyDictionary_terminatesProcess() failed after 3.511 seconds with 1 issue.
+􀢄  Test mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==13996==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingAnAlreadyRemovedIndex_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:92:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その1" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13991==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その4" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13992==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13973==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingEndIndex_terminatesProcess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:84:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:270:13: Expectation failed: expected exit status ".success", but ".signal(SIGABRT)" was reported instead
+􀄵  .success → .signal(SIGABRT)
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14001==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingLastFromEmptyDictionary_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:41:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "インデックスによる区間不正はtrapすること、その1" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13998==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14003==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14000==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14009==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test reversedIndexRange_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14010==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14004==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14005==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "removed index cannot be subscripted" failed after 3.551 seconds with 1 issue.
+􀢄  Test removingEmptyStartIndex_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:70:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:250:13: Expectation failed: expected exit status ".success", but ".signal(SIGABRT)" was reported instead
+􀄵  .success → .signal(SIGABRT)
+􀄵    SIGABRT → 6
+􀢄  Test erasingForeignRangeFromEmptyDictionary_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:13:15: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14014==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14015==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14012==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test endIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:151:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingEndIndex_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:66:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14017==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14018==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test erasingThroughReversedRangeView_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14019==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test duplicateKeysInUniqueKeysInitializer_terminateProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:26:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test comparingMultiWithNullRightPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:56:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13988==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeSet_99_DeathTests.swift:116:7: Expectation failed: stderr.contains("The pointer is being used as a different node")
+􀄵  stderr.contains("The pointer is being used as a different node") → false
+􀄵    stderr → "==13988==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+     DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+     "interceptors not installed" && 0
+     "
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeSet_99_DeathTests.swift:43:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13981==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test endIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:281:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:240:13: Expectation failed: expected exit status ".success", but ".signal(SIGABRT)" was reported instead
+􀄵  .success → .signal(SIGABRT)
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14027==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:50:15: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:50:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test comparingBitmapWithNullLeftPointer_terminatesProcess() failed after 3.556 seconds with 1 issue.
+􁁛  Test productOverflow_traps_3D() passed after 3.556 seconds.
+􀢄  Test sealingNegativeTrackingTag_terminatesProcess() failed after 3.556 seconds with 1 issue.
+􀢄  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" failed after 3.556 seconds with 1 issue.
+􀢄  Test mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() failed after 3.556 seconds with 1 issue.
+􀢄  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" failed after 3.557 seconds with 1 issue.
+􀢄  Test removedIndexRange_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14006==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test creatingBitmapForNullPointer_terminatesProcess() failed after 3.557 seconds with 1 issue.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14037==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:260:13: Expectation failed: expected exit status ".success", but ".signal(SIGABRT)" was reported instead
+􀄵  .success → .signal(SIGABRT)
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .freeMinimum at TreeFoundamentalDeathTests.swift:100:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyMultiSet_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:94:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .freeNextIterator at TreeFoundamentalDeathTests.swift:112:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==13997==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test creating128BitBitmapForNullPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:91:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14023==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .freeMaximum at TreeFoundamentalDeathTests.swift:104:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test measuringNullPointerHeight_terminatesProcess() failed after 3.560 seconds with 1 issue.
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14052==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .freeNext at TreeFoundamentalDeathTests.swift:108:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolMaximum at TreeFoundamentalDeathTests.swift:125:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolMinimum at TreeFoundamentalDeathTests.swift:120:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingEmptyStartIndex_terminatesProcess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:58:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test comparingBitmapWithNullRightPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:84:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolPreviousIterator at TreeFoundamentalDeathTests.swift:140:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingEndIndex_terminatesProcess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:78:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14046==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􁁛  Test negativeHeight_traps_2D() passed after 3.572 seconds.
+􁁛  Test negativeSize1_traps_4D() passed after 3.583 seconds.
+􁁛  Test negativeWidth_traps_2D() passed after 3.584 seconds.
+􀢄  Test removingFirstFromEmptyMultiSet_terminatesProcess() failed after 3.583 seconds with 1 issue.
+􀢄  Test mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() failed after 3.583 seconds with 1 issue.
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() failed after 3.583 seconds with 1 issue.
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() failed after 3.583 seconds with 1 issue.
+􁁛  Test negativeCapacity_traps_1D() passed after 3.584 seconds.
+􀢄  Test closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14038==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􁁛  Test productOverflow_traps_2D() passed after 3.584 seconds.
+􁁛  Test negativeSize2_traps_4D() passed after 3.583 seconds.
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .rightRotateMissingLeftChild at TreeFoundamentalDeathTests.swift:167:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolLeaf at TreeFoundamentalDeathTests.swift:145:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test comparingMultiWithNullLeftPointer_terminatesProcess() recorded an issue at TreeFoundamentalDeathTests.swift:49:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .balanceRoot at TreeFoundamentalDeathTests.swift:174:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􁁛  Test negativeWidth_traps_3D() passed after 3.584 seconds.
+􁁛  Test negativeSize0_traps_4D() passed after 3.584 seconds.
+􀢄  Test predicateErrorPropagatesFromIndexRange() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:381:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test nullRightPointer_terminatesProcess() recorded an issue at RedBlackTreeInternal_98_PointerDeathTests.swift:64:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test conditionallyErasingReversedRange_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14083==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .balanceInsertedNode at TreeFoundamentalDeathTests.swift:179:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .removeRoot at TreeFoundamentalDeathTests.swift:184:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyKeyValueRangeViewOfNonEmptyDictionary_terminatesProcess() failed after 3.584 seconds with 1 issue.
+􀢄  Test erasingReversedIndexRange_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14054==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyBufferRejectsCoordinateZero1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:13:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .removeNode at TreeFoundamentalDeathTests.swift:189:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14042==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .protocolNextIterator at TreeFoundamentalDeathTests.swift:135:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyMappedValuesView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:78:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingFirstFromEmptyKeyOnlyRangeViewOfNonEmptySet_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:32:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14097==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test removingFirstFromEmptyKeyOnlyRangeView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:16:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14096==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test setElementRejectsInvalidCoordinates1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:60:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:65:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyKeyValueRangeView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:51:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test endRightPointer_terminatesProcess() recorded an issue at RedBlackTreeInternal_98_PointerDeathTests.swift:71:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() failed after 3.616 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􁁛  Test productOverflow_traps_4D() passed after 3.616 seconds.
+􀢄  Test removingFirstFromEmptyMappedValuesView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:70:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() failed after 3.616 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test removingEmptyStartIndex_terminatesProcess() failed after 3.616 seconds with 1 issue.
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() failed after 3.618 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test removingFirstFromEmptyKeyValueRangeView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:43:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14107==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14117==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:88:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:97:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:72:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyMultiMap_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:95:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:108:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test collectingViewsThenReadingAnEarlierViewTraps() recorded an issue at NextPermutationsSequenceExperimentTests.swift:143:11: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test copiedIteratorInvalidatesTheOtherCopiesCurrentView() recorded an issue at NextPermutationsSequenceExperimentTests.swift:151:11: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14125==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" failed after 3.634 seconds with 1 issue.
+􀢄  Test nullLeftPointer_terminatesProcess() failed after 3.635 seconds with 1 issue.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14126==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14127==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14131==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:19:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14129==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14132==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:63:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14114==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14134==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test endIndexSubscript_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:238:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test endLeftPointer_terminatesProcess() failed after 3.677 seconds with 1 issue.
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() failed after 3.677 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14135==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14130==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:50:15: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14140==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test endIndexTrapsAfterOwnerIsDestroyed() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:122:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingFirstFromEmptyMultiMap_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:87:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:448:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" failed after 3.679 seconds with 1 issue.
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:79:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test subscriptTrapsAfterNextReturnsNewView() failed after 3.679 seconds with 1 issue.
+􀢄  Test startIndexTrapsAfterOwnerIsDestroyed() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:111:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingLastFromEmptyKeyOnlyRangeView_terminatesProcess() recorded an issue at RedBlackTreeView_99_DeathTests.swift:24:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:405:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14070==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:113:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test removingEndIndex_terminatesProcess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:79:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:12:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:134:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:424:13: Expectation failed: expected exit status ".exitCode(EXIT_SUCCESS)", but ".signal(SIGABRT)" was reported instead
+􀄵  .exitCode(0) → .signal(SIGABRT)
+􀄵    EXIT_SUCCESS → 0
+􀄵    SIGABRT → 6
+􀢄  Test subscriptTrapsAfterTerminalNextReturnsNil() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:89:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test startIndexTrapsAfterNextReturnsNewView() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:46:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates1D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:53:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:92:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14137==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14142==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test startIndexTrapsAfterTerminalNextReturnsNil() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:99:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:161:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􁁛  Test negativeDimension_traps_4DRepeating() passed after 3.881 seconds.
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" failed after 3.891 seconds with 1 issue.
+􀢄  Test endIndexTrapsAfterNextReturnsNewView() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:55:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test subscriptTrapsAfterOwnerIsDestroyed() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:133:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test intMaxIndexRead_traps() recorded an issue at NextPermutations_99_DeathTests.swift:50:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:36:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) recorded an issue with 1 argument operation → .freePreviousIterator at TreeFoundamentalDeathTests.swift:116:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates1D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:44:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeIndexRead_traps() failed after 3.893 seconds with 1 issue.
+􀢄  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" failed after 3.906 seconds with 1 issue.
+􁁛  Test dimensionProductOverflow_traps_3DRepeating() passed after 3.891 seconds.
+􀢄  Test "インデックスによる区間不正はtrapすること、その2" failed after 3.906 seconds with 1 issue.
+􀢄  Test zeroAndNegativeAxes_traps_2D() recorded an issue at BareArray_99_DeathTests.swift:142:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test pastEndIndexRead_traps() recorded an issue at NextPermutations_99_DeathTests.swift:34:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() failed after 3.976 seconds with 1 issue.
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" failed after 3.976 seconds with 1 issue.
+􀢄  Test referenceRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:87:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates2D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:20:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_3D() recorded an issue at BareArray_99_DeathTests.swift:157:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test copyOfViewTrapsAfterNext() recorded an issue at NextPermutations_99_ViewInvalidationDeathTests.swift:146:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_3DRepeating() recorded an issue at BareArray_99_DeathTests.swift:86:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:58:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􁁛  Test dimensionProductOverflow_traps_4DClosure() passed after 3.961 seconds.
+􀢄  Test endIndexRead_traps() recorded an issue at NextPermutations_99_DeathTests.swift:26:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "endIndex cannot be subscripted" failed after 3.980 seconds with 1 issue.
+􀢄  Test removingEmptyStartIndex_terminatesProcess() failed after 3.981 seconds with 1 issue.
+􀢄  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() failed after 3.980 seconds with 2 issues.
+􀢄  Test negativeSingleAxis_traps_4DClosure() recorded an issue at BareArray_99_DeathTests.swift:125:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates1D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:10:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2" failed after 3.987 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptySet_terminatesProcess() failed after 3.987 seconds with 1 issue.
+􀢄  Test mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() failed after 3.988 seconds with 1 issue.
+􀢄  Test removingAnAlreadyRemovedIndex_terminatesProcess() failed after 3.989 seconds with 1 issue.
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" failed after 4.045 seconds with 1 issue.
+􀢄  Test removingEndIndex_terminatesProcess() failed after 4.045 seconds with 1 issue.
+􀢄  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() failed after 4.044 seconds with 1 issue.
+􀢄  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" failed after 4.044 seconds with 1 issue.
+􀢄  Test removingLastFromEmptyDictionary_terminatesProcess() failed after 4.044 seconds with 1 issue.
+􀢄  Test "インデックスによる区間不正はtrapすること、その1" failed after 4.044 seconds with 1 issue.
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2" failed after 4.044 seconds with 1 issue.
+􀢄  Test indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() failed after 4.044 seconds with 1 issue.
+􀢄  Test mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() failed after 4.044 seconds with 1 issue.
+􀢄  Test reversedIndexRange_terminatesWithoutInvalidMemoryAccess() failed after 4.044 seconds with 1 issue.
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" failed after 4.045 seconds with 1 issue.
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" failed after 4.045 seconds with 1 issue.
+􀢄  Test removingEmptyStartIndex_terminatesProcess() failed after 4.045 seconds with 1 issue.
+􀢄  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() failed after 4.045 seconds with 1 issue.
+􀢄  Test erasingForeignRangeFromEmptyDictionary_terminatesProcess() failed after 4.045 seconds with 1 issue.
+􀄵  /// 空のDictionaryでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+􀄵  /// (空のときにCoWを省いても、範囲の検査は省かない)。
+􀢄  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" failed after 4.045 seconds with 1 issue.
+􀢄  Test closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.045 seconds with 1 issue.
+􀢄  Test endIndexSubscript_terminatesProcess() failed after 4.049 seconds with 1 issue.
+􀢄  Test removingEndIndex_terminatesProcess() failed after 4.049 seconds with 1 issue.
+􀢄  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" failed after 4.049 seconds with 1 issue.
+􀢄  Test erasingThroughReversedRangeView_terminatesWithoutInvalidMemoryAccess() failed after 4.049 seconds with 1 issue.
+􀢄  Test duplicateKeysInUniqueKeysInitializer_terminateProcess() failed after 4.049 seconds with 1 issue.
+􀢄  Test comparingMultiWithNullRightPointer_terminatesProcess() failed after 4.049 seconds with 1 issue.
+􀢄  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() failed after 4.050 seconds with 2 issues.
+􀢄  Test "RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" failed after 4.050 seconds with 1 issue.
+􀢄  Test endIndexSubscript_terminatesProcess() failed after 4.049 seconds with 1 issue.
+􀢄  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() failed after 4.049 seconds with 1 issue.
+􀢄  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() failed after 4.074 seconds with 1 issue.
+􀄵  /// 空のMultiSetでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+􀄵  /// (空のときにCoWを省いても、範囲の検査は省かない)。
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() failed after 4.073 seconds with 1 issue.
+􀢄  Test removedIndexRange_terminatesWithoutInvalidMemoryAccess() failed after 4.074 seconds with 1 issue.
+􀢄  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() failed after 4.089 seconds with 1 issue.
+􁁛  Test negativeHeight_traps_3D() passed after 4.090 seconds.
+􀢄  Test removingLastFromEmptyMultiSet_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" failed after 4.091 seconds with 1 issue.
+􀢄  Test creating128BitBitmapForNullPointer_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" failed after 4.090 seconds with 1 issue.
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingEmptyStartIndex_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test comparingBitmapWithNullRightPointer_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingEndIndex_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() failed after 4.090 seconds with 1 issue.
+􀢄  Test closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.090 seconds with 1 issue.
+􀢄  Test comparingMultiWithNullLeftPointer_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test predicateErrorPropagatesFromIndexRange() failed after 4.090 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􁁛  Test negativeDepth_traps_3D() passed after 4.090 seconds.
+􀢄  Test nullAlgorithmPrecondition_terminatesProcess(_:) with 20 test cases failed after 4.090 seconds with 20 issues.
+􀢄  Test nullRightPointer_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test conditionallyErasingReversedRange_terminatesWithoutInvalidMemoryAccess() failed after 4.090 seconds with 1 issue.
+􀢄  Test erasingReversedIndexRange_terminatesWithoutInvalidMemoryAccess() failed after 4.091 seconds with 1 issue.
+􀢄  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" failed after 4.091 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptyKeyOnlyRangeViewOfNonEmptySet_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingLastFromEmptyMappedValuesView_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptyKeyOnlyRangeView_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" failed after 4.090 seconds with 1 issue.
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.091 seconds with 1 issue.
+􁁛  Test negativeSize3_traps_4D() passed after 4.090 seconds.
+􀢄  Test removingLastFromEmptyKeyValueRangeView_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test endRightPointer_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptyMappedValuesView_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptyKeyValueRangeView_terminatesProcess() failed after 4.090 seconds with 1 issue.
+􀢄  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" failed after 4.090 seconds with 1 issue.
+􀢄  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.090 seconds with 1 issue.
+􀢄  Test removingLastFromEmptyMultiMap_terminatesProcess() failed after 4.107 seconds with 1 issue.
+􀢄  Test collectingViewsThenReadingAnEarlierViewTraps() failed after 4.124 seconds with 1 issue.
+􀢄  Test copiedIteratorInvalidatesTheOtherCopiesCurrentView() failed after 4.124 seconds with 1 issue.
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" failed after 4.124 seconds with 1 issue.
+􀢄  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" failed after 4.125 seconds with 1 issue.
+􀢄  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" failed after 4.125 seconds with 1 issue.
+􀢄  Test emptyStartIndexSubscript_terminatesProcess() failed after 4.135 seconds with 1 issue.
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" failed after 4.135 seconds with 1 issue.
+􀢄  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" failed after 4.135 seconds with 1 issue.
+􀢄  Test endIndexSubscript_terminatesProcess() failed after 4.135 seconds with 1 issue.
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.135 seconds with 1 issue.
+􀢄  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() failed after 4.135 seconds with 1 issue.
+􀄵  /// 空のMultiMapでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+􀄵  /// (空のときにCoWを省いても、範囲の検査は省かない)。
+􀢄  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" failed after 4.136 seconds with 1 issue.
+􀢄  Test endIndexTrapsAfterOwnerIsDestroyed() failed after 4.135 seconds with 1 issue.
+􀢄  Test removingFirstFromEmptyMultiMap_terminatesProcess() failed after 4.136 seconds with 1 issue.
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() failed after 4.135 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test startIndexTrapsAfterOwnerIsDestroyed() failed after 4.135 seconds with 1 issue.
+􀢄  Test removingLastFromEmptyKeyOnlyRangeView_terminatesProcess() failed after 4.135 seconds with 1 issue.
+􀢄  Test predicateErrorPropagatesFromIndexRangeExpression() failed after 4.136 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test setElementRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:31:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:41:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() failed after 4.142 seconds with 1 issue.
+􀢄  Test removingEndIndex_terminatesProcess() failed after 4.141 seconds with 1 issue.
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:80:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test predicateErrorPropagatesFromIndexRange() failed after 4.142 seconds with 1 issue.
+􀄵  // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+􀢄  Test subscriptTrapsAfterTerminalNextReturnsNil() failed after 4.142 seconds with 1 issue.
+􀢄  Test startIndexTrapsAfterNextReturnsNewView() failed after 4.142 seconds with 1 issue.
+􀢄  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" failed after 4.159 seconds with 1 issue.
+􀢄  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" failed after 4.159 seconds with 1 issue.
+􀢄  Test startIndexTrapsAfterTerminalNextReturnsNil() failed after 4.159 seconds with 1 issue.
+􁁛  Test negativeDimension_traps_2DClosure() passed after 4.158 seconds.
+􁁛  Test negativeDimension_traps_1DRepeating() passed after 4.245 seconds.
+􀢄  Test endIndexTrapsAfterNextReturnsNewView() failed after 4.250 seconds with 1 issue.
+􁁛  Test negativeDimension_traps_2DRepeating() passed after 4.249 seconds.
+􀢄  Test subscriptTrapsAfterOwnerIsDestroyed() failed after 4.250 seconds with 1 issue.
+􀢄  Test intMaxIndexRead_traps() failed after 4.243 seconds with 1 issue.
+􀢄  Test pastEndIndexRead_traps() failed after 4.265 seconds with 1 issue.
+􀢄  Test elementAtRejectsInvalidCoordinates1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:56:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􁁛  Test negativeDimension_traps_1DClosure() passed after 4.277 seconds.
+􁁛  Test dimensionProductOverflow_traps_4DRepeating() passed after 4.277 seconds.
+􀢄  Test copyOfViewTrapsAfterNext() failed after 4.292 seconds with 1 issue.
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:29:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test endIndexRead_traps() failed after 4.288 seconds with 1 issue.
+􁁛  Test negativeDimension_traps_3DRepeating() passed after 4.279 seconds.
+􁁛  Test negativeDimension_traps_3DClosure() passed after 4.291 seconds.
+􀢄  Test negativeSingleAxis_traps_2DRepeating() recorded an issue at BareArray_99_DeathTests.swift:68:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􁁛  Test dimensionProductOverflow_traps_3DClosure() passed after 4.300 seconds.
+􀢄  Test negativeSingleAxis_traps_4DRepeating() recorded an issue at BareArray_99_DeathTests.swift:110:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その4" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14217==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14218==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14219==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test zeroAndNegativeAxes_traps_4D() recorded an issue at BareArray_99_DeathTests.swift:175:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その2" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14212==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyBufferRejectsCoordinateZero1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:14:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:61:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test intMinIndexRead_traps() recorded an issue at NextPermutations_99_DeathTests.swift:42:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Suite RedBlackTreeSetRangePredicatePropagationTests failed after 4.319 seconds with 2 issues.
+􀢄  Suite RedBlackTreeDictionaryRangePredicatePropagationTests failed after 4.319 seconds with 2 issues.
+􀢄  Test negativeSingleAxis_traps_2DClosure() recorded an issue at BareArray_99_DeathTests.swift:77:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:66:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Suite RedBlackTreeInternalPointerDeathTests failed after 4.320 seconds with 4 issues.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14233==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􁁛  Test dimensionProductOverflow_traps_2DRepeating() passed after 4.338 seconds.
+􁁛  Test dimensionProductOverflow_traps_2DClosure() passed after 4.335 seconds.
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:65:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その5" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14204==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Suite RedBlackTreeSetDeathTests failed after 4.358 seconds with 18 issues.
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その3" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14213==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test elementAtRejectsInvalidCoordinates1D() failed after 4.353 seconds with 2 issues.
+􀢄  Test negativeSingleAxis_traps_3DClosure() recorded an issue at BareArray_99_DeathTests.swift:101:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:90:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_3D() recorded an issue at BareArray_99_DeathTests.swift:160:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_4DClosure() recorded an issue at BareArray_99_DeathTests.swift:128:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.432 seconds with 2 issues.
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.432 seconds with 2 issues.
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14205==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その2" failed after 4.433 seconds with 2 issues.
+􁁛  Suite OptionalArrayDimensionDeathTests passed after 4.436 seconds.
+􀢄  Suite TreeFoundamentalDeathTests failed after 4.436 seconds with 28 issues.
+􀢄  Suite RedBlackTreeMultiMapRangePredicatePropagationTests failed after 4.436 seconds with 2 issues.
+􀢄  Suite RedBlackTreeViewDeathTests failed after 4.472 seconds with 8 issues.
+􀢄  Test setElementRejectsInvalidCoordinates1D() failed after 4.467 seconds with 2 issues.
+􀢄  Test intMinIndexRead_traps() failed after 4.453 seconds with 1 issue.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14221==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Suite NextPermutationsSequenceExperimentDeathTests failed after 4.507 seconds with 2 issues.
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiSet_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14220==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􁁛  Test negativeDimension_traps_4DClosure() passed after 4.482 seconds.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:109:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その1" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14216==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14231==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:20:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.504 seconds with 2 issues.
+􀢄  Suite RedBlackTreeMultiSetRangePredicatePropagationTests failed after 4.509 seconds with 2 issues.
+􀢄  Suite NextPermutations_99_ViewInvalidationDeathTests failed after 4.509 seconds with 9 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:80:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:89:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeDictionary_99_DeathTests.swift:377:9: Expectation failed: !standardError.contains("AddressSanitizer")
+􀄵  !standardError.contains("AddressSanitizer") → true
+􀄵    standardError.contains("AddressSanitizer") → false
+􀄵      standardError → "==14229==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:73:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() recorded an issue at RedBlackTreeMultiMap_99_DeathTests.swift:37:5: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14232==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:39:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates1D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:56:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:98:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:137:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates2D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:23:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates1D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:47:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates1D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:13:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:164:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:61:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.583 seconds with 2 issues.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.582 seconds with 2 issues.
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.582 seconds with 2 issues.
+􀢄  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.580 seconds with 2 issues.
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その1" failed after 4.584 seconds with 2 issues.
+􀢄  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.607 seconds with 2 issues.
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:116:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:15:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() failed after 4.609 seconds with 2 issues.
+􀢄  Test setElementRejectsInvalidCoordinates1D() failed after 4.609 seconds with 2 issues.
+􀢄  Test negativeSingleAxis_traps_4DRepeating() recorded an issue at BareArray_99_DeathTests.swift:113:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その3" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14264==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:42:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates1D() failed after 4.698 seconds with 2 issues.
+􀢄  Test negativeSingleAxis_traps_2DClosure() recorded an issue at BareArray_99_DeathTests.swift:80:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_2D() recorded an issue at BareArray_99_DeathTests.swift:145:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_4DClosure() recorded an issue at BareArray_99_DeathTests.swift:131:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates1D() failed after 4.693 seconds with 2 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:68:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_3DRepeating() recorded an issue at BareArray_99_DeathTests.swift:89:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:95:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:83:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Suite NextPermutations_99_DeathTests failed after 4.720 seconds with 5 issues.
+􀢄  Test setElementRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:34:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:30:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_4D() recorded an issue at BareArray_99_DeathTests.swift:178:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_3D() recorded an issue at BareArray_99_DeathTests.swift:163:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:67:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:93:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero1D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:15:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:90:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:42:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その5" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14263==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test negativeSingleAxis_traps_2DClosure() failed after 4.841 seconds with 2 issues.
+􀢄  Suite RedBlackTreeDictionaryDeathTests failed after 4.891 seconds with 29 issues.
+􀢄  Suite RedBlackTreeMultiSetDeathTests failed after 4.919 seconds with 30 issues.
+􀢄  Test negativeSingleAxis_traps_2DRepeating() recorded an issue at BareArray_99_DeathTests.swift:71:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その4" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14257==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Suite RedBlackTreeMultiMapDeathTests failed after 4.936 seconds with 26 issues.
+􀢄  Test elementAtRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:18:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero1D() failed after 4.934 seconds with 3 issues.
+􀢄  Test negativeSingleAxis_traps_3DClosure() recorded an issue at BareArray_99_DeathTests.swift:104:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:140:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:119:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_2D() recorded an issue at BareArray_99_DeathTests.swift:148:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:21:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_2DRepeating() failed after 4.927 seconds with 2 issues.
+􀢄  Test setElementRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:37:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:110:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_3DRepeating() recorded an issue at BareArray_99_DeathTests.swift:92:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:81:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates2D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:26:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:99:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_3DClosure() failed after 4.944 seconds with 3 issues.
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:86:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:167:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_4DRepeating() recorded an issue at BareArray_99_DeathTests.swift:116:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:64:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その3" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14283==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:74:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_4DClosure() recorded an issue at BareArray_99_DeathTests.swift:134:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:31:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:71:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsCoordinateZeroInEmptyStorage() failed after 5.073 seconds with 4 issues.
+􀢄  Test negativeSingleAxis_traps_3DRepeating() failed after 5.071 seconds with 3 issues.
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:43:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:96:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates2D() failed after 5.141 seconds with 4 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:98:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_4D() recorded an issue at BareArray_99_DeathTests.swift:181:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その3" failed after 5.149 seconds with 4 issues.
+􀢄  Test negativeSingleAxis_traps_4DClosure() failed after 5.131 seconds with 4 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates2D() failed after 5.148 seconds with 4 issues.
+􀢄  Test zeroAndNegativeAxes_traps_3D() recorded an issue at BareArray_99_DeathTests.swift:166:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:100:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:68:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsCoordinateZeroInEmptyStorage() failed after 5.145 seconds with 4 issues.
+􀄵  // BARE-046 D: empty storage has no valid coordinate, even when `indices` is not empty.
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:45:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_4D() failed after 5.136 seconds with 4 issues.
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:67:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:91:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_3D() failed after 5.147 seconds with 4 issues.
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その5" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14299==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test elementAtRejectsCoordinateZeroInEmptyStorage() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:21:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:111:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:143:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates2D() failed after 5.166 seconds with 4 issues.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:170:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:82:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:22:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:32:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その5" failed after 5.173 seconds with 4 issues.
+􀢄  Test elementAtRejectsCoordinateZeroInEmptyStorage() failed after 5.168 seconds with 4 issues.
+􀢄  Test referenceRejectsInvalidCoordinates2D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:29:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test zeroAndNegativeAxes_traps_2D() recorded an issue at BareArray_99_DeathTests.swift:151:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:122:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test negativeSingleAxis_traps_4DRepeating() recorded an issue at BareArray_99_DeathTests.swift:119:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:75:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates2D() failed after 5.295 seconds with 4 issues.
+􀢄  Test zeroAndNegativeAxes_traps_2D() failed after 5.295 seconds with 4 issues.
+􀢄  Test negativeSingleAxis_traps_4DRepeating() failed after 5.292 seconds with 4 issues.
+􀢄  Test setElementRejectsInvalidCoordinates2D() failed after 5.309 seconds with 4 issues.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:112:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その4" recorded an issue at RedBlackTreeSet_99_AdditionalDeathTests.swift:54:7: Expectation failed: !stderr.contains("AddressSanitizer")
+􀄵  Address Sanitizer が不正メモリアクセスを検出した
+􀄵  !stderr.contains("AddressSanitizer") → true
+􀄵    stderr.contains("AddressSanitizer") → false
+􀄵      stderr → "==14300==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+       DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+       "interceptors not installed" && 0
+       "
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:70:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:44:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:48:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:146:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:173:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:23:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test "文字列のインデックス範囲外の挙動と同様にする、その4" failed after 5.318 seconds with 4 issues.
+􀢄  Suite BareArray_99_DeathTests failed after 5.398 seconds with 30 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:83:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Suite RedBlackTreeSetAdditionalDeathTests failed after 5.416 seconds with 21 issues.
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:33:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:101:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:101:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero2D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:24:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:92:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:45:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero2D() failed after 5.422 seconds with 6 issues.
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:73:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates3D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:51:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:125:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:149:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:176:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates3D() failed after 5.461 seconds with 6 issues.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:113:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:84:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:152:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() failed after 5.553 seconds with 6 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:104:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:102:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:46:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:93:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() failed after 5.559 seconds with 6 issues.
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:76:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:179:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:128:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates3D() failed after 5.561 seconds with 6 issues.
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:34:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:182:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() failed after 5.652 seconds with 8 issues.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:114:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:107:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates3D() failed after 5.657 seconds with 6 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at BareArray_97_CoordinateValueAccessDeathTests.swift:155:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() failed after 5.658 seconds with 8 issues.
+􀢄  Suite BareArray_97_CoordinateValueAccessDeathTests failed after 5.665 seconds with 48 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:103:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:47:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:35:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates4D() recorded an issue at BareArray_96_BorrowedReferenceDeathTests.swift:79:13: Expectation failed: expected exit statwarning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+us ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test referenceRejectsInvalidCoordinates4D() failed after 5.672 seconds with 8 issues.
+􀢄  Suite BareArray_96_BorrowedReferenceDeathTests failed after 5.692 seconds with 24 issues.
+􀢄  Test setElementRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:115:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test setElementRejectsInvalidCoordinates4D() failed after 5.735 seconds with 8 issues.
+􀢄  Test elementAtRejectsInvalidCoordinates4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:104:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test elementAtRejectsInvalidCoordinates4D() failed after 5.735 seconds with 8 issues.
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:48:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:36:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero3D() failed after 5.745 seconds with 9 issues.
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:49:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:50:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() recorded an issue at OptionalArray_97_CoordinateValueAccessDeathTests.swift:51:13: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(expectedSwiftTrapSignal) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test emptyBufferRejectsCoordinateZero4D() failed after 5.960 seconds with 12 issues.
+􀢄  Suite OptionalArray_97_CoordinateValueAccessDeathTests failed after 5.965 seconds with 70 issues.
+􀢄  Test run with 213 tests in 20 suites failed after 5.966 seconds with 360 issues.
+Note: Some test targets reported failures:
+  - swift-ac-collectionsPackageTests (Swift Testing)

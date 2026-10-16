@@ -1,0 +1,106 @@
+diff -ruN a/.github/workflows/candidate.yml b/.github/workflows/candidate.yml
+--- a/.github/workflows/candidate.yml	2026-10-16 22:40:40
++++ b/.github/workflows/candidate.yml	2026-10-16 22:41:21
+@@ -223,6 +223,17 @@
+               ./Libraries/CI.json
+           fi
+ 
++          # Measure only tasks the baseline registers. Dropped titles are
++          # written out and checked against an explicit allowlist later.
++          swift run -c release benchmark info --tasks \
++            > ../benchmark-results/baseline-known-tasks.txt
++          : > ../benchmark-results/baseline-missing-tasks.txt
++          for LIB in ./Libraries/CI.json ./Libraries/CI-Small.json; do
++            python3 ../../candidate/Benchmarks/Scripts/filter_library_for_baseline.py \
++              "$LIB" ../benchmark-results/baseline-known-tasks.txt \
++              ../benchmark-results/baseline-missing-tasks.txt
++          done
++
+           swift run -c release benchmark library run \
+             --library ./Libraries/CI.json \
+             ../benchmark-results/baseline.json \
+@@ -241,14 +252,16 @@
+             sed -i \
+               -e 's/BareArray2D<Int>/ElementBuffer2D<Int>/g' \
+               -e 's/BareArray3D<Int>/ElementBuffer3D<Int>/g' \
+-              ../benchmark-results/baseline.json
++              ../benchmark-results/baseline.json \
++              ../benchmark-results/baseline-missing-tasks.txt
+           fi
+ 
+           if [ "$OPTIONAL_ARRAY_RENAMED" -eq 0 ]; then
+             sed -i \
+               -e 's/OptionalArray2D<Int>/OptionalElementBuffer2D<Int>/g' \
+               -e 's/OptionalArray3D<Int>/OptionalElementBuffer3D<Int>/g' \
+-              ../benchmark-results/baseline.json
++              ../benchmark-results/baseline.json \
++              ../benchmark-results/baseline-missing-tasks.txt
+           fi
+ 
+       - name: Check performance regression
+@@ -265,6 +278,21 @@
+ 
+           printf '%s\n' "$OUTPUT" \
+             | tee ../benchmark-results/comparison.txt
++
++          # Candidate-only tasks are listed, never silently dropped.
++          MISSING=../../baseline/benchmark-results/baseline-missing-tasks.txt
++          ALLOWED="$( { grep -v '^#' ./Libraries/CI-baseline-new-tasks.txt || true; } | sed '/^$/d' | LC_ALL=C sort -u)"
++          UNEXPECTED="$(LC_ALL=C sort -u "$MISSING" | LC_ALL=C comm -23 - <(printf '%s\n' "$ALLOWED" | sed '/^$/d'))"
++          {
++            echo ""
++            echo "Not compared (missing from baseline $(cat ../benchmark-results/environment/baseline-commit.txt)):"
++            sed 's/^/  /' "$MISSING"
++          } | tee -a ../benchmark-results/comparison.txt
++          if [ -n "$UNEXPECTED" ]; then
++            echo "Tasks missing from baseline and not in CI-baseline-new-tasks.txt:"
++            printf '%s\n' "$UNEXPECTED"
++            exit 1
++          fi
+ 
+           printf '%s\n' "$OUTPUT" |
+           awk '
+diff -ruN a/Benchmarks/Libraries/CI-baseline-new-tasks.txt b/Benchmarks/Libraries/CI-baseline-new-tasks.txt
+--- a/Benchmarks/Libraries/CI-baseline-new-tasks.txt	1970-01-01 09:00:00
++++ b/Benchmarks/Libraries/CI-baseline-new-tasks.txt	2026-10-16 22:40:40
+@@ -0,0 +1,13 @@
++# Tasks that exist in the candidate but not in the baseline release.
++# They are measured for the candidate only and are not compared.
++# A task missing from the baseline that is not listed here fails the check.
++# Remove entries once the baseline release contains them.
++# Added in 2026-10-12 (b6ff8a85), after 0.5.3.
++ElementBuffer2D<Int> element(at:) sequential read checksum
++ElementBuffer2D<Int> setElement(_:at:) sequential write
++ElementBuffer3D<Int> element(at:) sequential read checksum
++ElementBuffer3D<Int> setElement(_:at:) sequential write
++OptionalElementBuffer2D<Int> direct methods cold memoization checksum
++OptionalElementBuffer2D<Int> direct methods warm memoization checksum
++OptionalElementBuffer3D<Int> direct methods cold memoization checksum
++OptionalElementBuffer3D<Int> direct methods warm memoization checksum
+diff -ruN a/Benchmarks/Scripts/filter_library_for_baseline.py b/Benchmarks/Scripts/filter_library_for_baseline.py
+--- a/Benchmarks/Scripts/filter_library_for_baseline.py	1970-01-01 09:00:00
++++ b/Benchmarks/Scripts/filter_library_for_baseline.py	2026-10-16 22:40:40
+@@ -0,0 +1,23 @@
++#!/usr/bin/env python3
++"""Keep only tasks known to the baseline binary; write the dropped titles. Usage:
++filter_library.py LIBRARY.json KNOWN_TASKS.txt MISSING_OUT.txt"""
++import json, sys
++lib_path, known_path, missing_path = sys.argv[1:4]
++known = set(l.rstrip('\n') for l in open(known_path, encoding='utf-8') if l.strip())
++lib = json.load(open(lib_path, encoding='utf-8'))
++missing = []
++def walk(node):
++    if isinstance(node, dict):
++        if 'tasks' in node:
++            missing.extend(t for t in node['tasks'] if t not in known)
++            node['tasks'] = [t for t in node['tasks'] if t in known]
++        node['contents'] = [c for c in (walk(c) for c in node.get('contents', [])) if c is not None] if 'contents' in node else node.get('contents')
++        if node.get('contents') is None: node.pop('contents', None)
++        if node.get('kind') == 'chart' and not node.get('tasks'): return None
++        if node.get('kind') == 'group' and not node.get('contents'): return None
++    return node
++lib = walk(lib) or {"kind": "group", "title": "empty", "contents": []}
++json.dump(lib, open(lib_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
++open(missing_path, 'a', encoding='utf-8').write(''.join(t + '\n' for t in missing))
++print(f'{len(missing)} task(s) not in baseline, excluded from baseline run')
++for t in missing: print('  ' + t)

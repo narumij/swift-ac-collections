@@ -47,3 +47,9 @@ Probe.swiftのsuite初期化は、この環境のASan runtime絶対パスをsete
 候補は「ASan構成に限り、子プロセス生成前に実際にロードされたruntimeのパスを保持・復元する試験側の準備」。採用時には既存DYLD設定を上書きしないこと、並列実行中のprocess-global環境変更を避けること、runtimeパスの固定を避けることが必要。
 
 今回の成立証拠は最小packageの3件に限る。4型の全Death Test、姫の追加試験、Linux、別Swift版では未検証。製品コード、既存Tests、Package.swift、CI、CLAUDE_TASKは変更していない。正式適用と全体検証は後続の実装範囲とする。
+
+## 追加調査の受入（2026-10-16 / Astra）
+
+CP-20261016-014を本調査への追加証拠として統合。原報告は[strip_env調査](Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md)。Probeを読み、setenvによる復元なしで、正常終了・trap・ASan領域外検出を確認する構成であること、保存ログの3件成功およびDeathTests 213件成功／既定条件360 issuesを照合した。今回は再実行していない。
+
+受入範囲はmacOSでstrip_env=0により改善した保存実験の証拠。compiler-rt内部の原因確定、版を固定した製品全体の合格、Linux CIでの有効性は未確認。元のRBT-033 DONEは初回調査の完了として維持し、追加の固定版検証はRBT-049へ分離する。製品・Tests・CIへの適用は行わない。

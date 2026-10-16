@@ -109,7 +109,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.5.4前の修正を後送すると確定。0.5.4 release完了と立て直しプランRELEASE-086の確定後、baselineと修正の必要性・範囲を確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
+| `RELEASE-084` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17ユーザーが再依頼。現在baselineを確認し、既決範囲の欠落処理・診断・表示を修正検証。今回範囲は0.5.4完了・RELEASE-086確定待ちを解除。比較除外・閾値・baseline選択規則は変更せず、未決部分は判断へ返す。CI実走・公開・commitは別許可。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
 
 
 | `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
@@ -123,7 +123,7 @@
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
 | `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |
-| `RELEASE-084` | `RELEASE-086` | `SEQUENCE` | 確定プランで既存限定修正の必要性と範囲を確認してから再開。0.5.4完了の外部条件と明示依頼も必要 |
+| `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |
 | `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |

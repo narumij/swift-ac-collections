@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-RELEASE-084：停止報告を受入済み、0.5.4後へ後送。現在有効な実装依頼なし。立て直し協議RELEASE-085→プランRELEASE-086で範囲を確認してから改めて依頼する。
+RELEASE-084：2026-10-17ユーザーの修正依頼により限定再開。Claude（姫）は[修正正本の再依頼](Current/RELEASE_CANDIDATE_BASELINE_FIX.md)に従い、現行baselineの確認、既決範囲の修正・検証を行う。比較除外・閾値・baseline選択方針の変更は未委任。下記の旧停止記録は履歴。
 
 RELEASE-083：調査返却・Astra受入済み、ユーザーcommit承認により完了。追加実装依頼なし。下記の正式依頼へ。別の直接依頼とは独立。
 
@@ -88,3 +88,7 @@ OPS-053・055〜057、DOC-040〜044、RBT-047、RELEASE-081の依頼・返却・
 RELEASE-084は停止報告を受入、実装は未着手。WAITING_USER。詳細正本のAstra受入節を参照。今回追加依頼はない。CP-014〜016は統合済み、提案taskは自動開始しない。OPS-059の凍結は維持する。
 
 2026-10-16ユーザー確定：RELEASE-084は0.6.0後へ後送、WAITING_EXTERNAL。今回の候補CIの赤を引き受けユーザーがmergeする方針。追加実装依頼なし。commit・push・merge・タグは未実施。詳細はRELEASE_CANDIDATE_BASELINE_FIX.mdの最新判断。
+
+## RELEASE-084 — CI修正の限定再依頼（2026-10-17）
+
+ユーザーの「CIの修正依頼もだしてほしい」に基づく。Registry既存ID RELEASE-084を再利用。[正本](Current/RELEASE_CANDIDATE_BASELINE_FIX.md)末尾の再依頼が現行範囲。旧案を無条件に再実施せず、現在の比較元を確認して既決範囲の修正と限定検証をお願いします。残る方針判断は未適用で返してください。作成完了をもって指定編集範囲をClaudeへ受渡し、Astraは返却まで同範囲を編集しません。commit・外部操作は含めません。

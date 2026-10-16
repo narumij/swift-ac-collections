@@ -97,7 +97,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `PERM` | `079` |
 | `QUALITY` | `005` |
 | `RBT` | `048` |
-| `RELEASE` | `081` |
+| `RELEASE` | `082` |
 | `TEST` | `008` |
 
 ## 文書ランクと変更権限

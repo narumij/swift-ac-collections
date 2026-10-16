@@ -107,6 +107,8 @@
 
 | `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
 
+| `RELEASE-082` | `DONE` | Astra | [EXECUTION] 0.6.0手元の候補確認 | 範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。 | `Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md` |
+
 ## Task precedence
 
 内部task間の必須AND前提を記録する。`SEQUENCE`は前提成果がそろうまで後続を開始・継続しない。`PARALLEL_JOIN`は独立部分を並行でき、後続の完了までに合流する。いずれも状態・委任・再開条件を上書きしない。

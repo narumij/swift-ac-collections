@@ -153,22 +153,15 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 ## 正本整理時の配置維持例外
 
-正本整理、役割別のfolder分け、またはArchivedへの移動を行う場合でも、次のMarkdownは現在位置から
-移動または改名しない。この表は配置だけの例外を定め、各文書の権限、正本性、内容の更新規則は変更しない。配置変更はユーザーの明示指示に従う。文書内の履歴整理は、各文書の権限と圧縮手順に従って別に扱う。
+配置維持の対象ファイルは、現行[Task Registry](TASK_REGISTRY_V2.md)の詳細正本欄で各パスに付けた「（配置維持）」を正本とする。本書へ同じファイル一覧を重ねて置かない。
 
-| Markdown | 現在位置に残す理由 |
-| --- | --- |
-| `Maintanance/Testing/TESTING.md` / `Tests/CLAUDE.md` / `Maintanance/Testing/Fixtures.md` | テスト整備の恒久task `TEST-005` の維持文書。個別作業の完了を理由に移動・改名・アーカイブしない |
-| `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` | Task Registry運用の恒久task `OPS-044` の維持文書。個別作業や圧縮の完了を理由に移動・改名・アーカイブしない |
-| `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` / `Maintanance/MILESTONES.md` | 恒久task OPS-046・OPS-047の維持文書。個別作業の完了によって移動・履歴化しない。配置変更はユーザーの明示指示に従う |
-| `Maintanance/DOCUMENT.md` | 文書整備の恒久task `DOC-030` の維持文書。個別作業の完了や文書整理で移動・改名・アーカイブせず、配置変更はユーザーの明示指示に従う |
-| `Maintanance/USER_MANAGEMENT_INTERVIEW_ASTRA.md` | 協働のふりかえりの恒久task `OPS-043` に紐付くAstraの評価記録 |
-| `Maintanance/ASTRA_OBSERVATIONS.md` | 同taskに紐付くAstra本人の任意の観察を本人の声のまま保持する場所 |
-| `Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md` | Codexによるマネジメント継続性の記録 |
-| `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md` | Claudeによる独立したマネジメント評価の記録 |
-| `Maintanance/CLAUDE_OBSERVATIONS.md` | Claude本人の任意の観察を本人の声のまま保持する場所 |
-| `Maintanance/CODEX_OBSERVATIONS.md` | Codex本人の任意の観察を本人の声のまま保持する場所 |
-| `Maintanance/Quality/CONCEPT_DEFINITION.md` | ユーザーが定める製品目的の最上位正本であり、ユーザー専有の現在位置と権限境界を保持する |
+この指定がある文書は、正本整理・folder分け・個別作業完了・task圧縮を理由に移動・改名・アーカイブしない。配置変更や指定の解除はユーザーの明示指示に従う。指定は対象文書を維持する恒久taskの行に置き、個別taskの完了で失わせない。
+
+恒久taskへの所属や詳細正本欄のリンクだけでは、配置固定を意味しない。「（配置維持）」のない資料に保護を広げない。配置指定は内容の正本性・編集権限・受入状態を変更せず、文書内の履歴整理は各文書の権限と圧縮手順に従う。
+
+AGENTS.md、CONCEPT_DEFINITION.md、Orientation、User領域などの独自の権限・配置制限は、上記「文書ランクと変更権限」に従う。Registryの指定がないことを制限解除と解釈しない。
+
+整理前の一覧と理由は[OPS-053の保存原文](../Archived/PLACEMENT_EXCEPTIONS_BEFORE_OPS_053_2026-10-16.md)に残す。
 
 ## 履歴の照合とSQLite索引
 

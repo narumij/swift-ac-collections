@@ -31,7 +31,9 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**No active Claude assignment.** OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
+**Active: OPS-053 — 配置維持管理の一本化の完了確認（Claude／姫）。**
+
+OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
 RBT-042〜046、PERM-078、OPT-074、OPS-045・DOC-031はすべて受入済み・`DONE`。
 依頼・返却・受入の原文は[CLAUDE_TASK_HISTORY_2026-10-16.md](Archived/CLAUDE_TASK_HISTORY_2026-10-16.md)へ移した。
@@ -57,3 +59,38 @@ Current assignments must follow the current request and explicit delegation, not
 
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
+
+
+## OPS-053 — 配置維持管理の一本化の完了確認
+
+2026-10-16、ユーザーの「ひめに完了確認依頼を」に基づく正式依頼。作成・受入：Astra。確認担当：Claude（姫）。本依頼の作成完了をもって受渡し。入力と依頼本文を固定する。
+
+### 目的と固定範囲
+
+配置維持例外表とTask Registryで重複していた文書保存管理について、Astraの整理で目的を満たし、必要な保護が失われていないかを独立確認してください。同意ありきにせず、未達・過剰変更・判断不足があれば具体的に指摘してください。
+
+- 旧表の18文書がRegistryの「（配置維持）」へ過不足なく移り、同じ維持taskから辿れるか。
+- CONCEPT_DEFINITION.mdの独自保護が上位節で維持され、AGENTS・Orientation・User領域等の制限も弱まっていないか。
+- 恒久taskの全リンクを配置固定するなど、保護対象を勝手に広げていないか。文書本体・taskの削除や移動をしていないか。
+- Rulesの共通規則とRegistryの対象指定で効力が成立し、二つの対象一覧を維持する必要がなくなったか。
+- 保存原文・正本・参照経路に不足や矛盾がないか。完了といえる範囲、残る指摘を報告する。
+
+### 入力の版
+
+未コミット作業ツリーを対象とする。HEADだけで固定しない。次のSHA-256と実物を照合し、食い違う入力があれば確認を止めて差分を返す。必要な参照先は読んでよいが、対象を無関係な文書整理へ広げない。
+
+- `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` — SHA-256 `223181605697eea236305a28be53ec712de1b04da8e3dd8359fa7b9a781b6438`
+- `Maintanance/Archived/PLACEMENT_EXCEPTIONS_BEFORE_OPS_053_2026-10-16.md` — SHA-256 `5865678e3e3d94afbd884e1f82d02215588f6d311cb82448eb2aa3ce11643a1d`
+- `Maintanance/ProgressV2/TASK_RULES_V2.md` — SHA-256 `a19e58dbc81b9ef2880cb4fb46668c93a2d3ec1523b662b9a102582a509e8542`
+- `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` — SHA-256 `dafb0beb34a8edb573fd4c30b64d5c76f9ba8406878b4c476f342e814e8e0712`
+- `Maintanance/DOCUMENT.md` — SHA-256 `a75797af4e96996176b7c39c74854bc8ab1bec4fbd9c44479d0ab27446d10f12`
+
+### 編集範囲・返却
+
+編集可：下の「OPS-053 Return」欄のみ。任意のCLAUDE_OBSERVATIONS.md追記権限は維持する。入力文書・Registry・Rules・依頼本文は編集しない。指摘修正、OPS-054開始、採番、commitは今回の委任に含めない。後からユーザーが明示的に範囲を変更した場合は、適用する指示と対象を返却欄へ一言残す。
+
+確認したファイルと範囲、照合結果、問題の有無と具体的な根拠、完了確認の結論、未確認点を記入する。返却後は作業を終え、Astraの受入を待つ。最終のRegistry更新はAstraが行う。
+
+### OPS-053 Return（Claude記入欄）
+
+未返却。

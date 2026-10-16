@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "51e04b2f",
-    "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+    "head": "d05afde5",
+    "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
     "dirty": true,
-    "generatedAt": "2026-10-17T03:05:02.527774+09:00",
+    "generatedAt": "2026-10-17T03:13:04.157867+09:00",
     "generator": "sync.py",
     "rulesSha256": "e354cbe7f3452f00ec86066f746808526e37f0dcb9eb8c2fbe5f89d35e984590"
   },
@@ -111,8 +111,8 @@
       "owner": "現在委任された調整担当",
       "item": "[EXECUTION] マイルストーン管理の恒久維持",
       "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
-      "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`",
-      "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md` |",
+      "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md`",
+      "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md` |",
       "sourceLine": 28,
       "group": "協働と運用",
       "permanent": true,
@@ -149,8 +149,8 @@
       "owner": "Astra",
       "item": "[EXECUTION] Task Registry閲覧・編集アプリの継続整備",
       "condition": "ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う",
-      "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-      "raw": "| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+      "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md`",
+      "raw": "| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md` |",
       "sourceLine": 30,
       "group": "協働と運用",
       "permanent": true,
@@ -192,8 +192,8 @@
       "owner": "User",
       "item": "[DECISION] 文書Validation計画の受入判断",
       "condition": "2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。",
-      "detail": "`Maintanance/Current/DOCUMENTATION_MILESTONES.md`",
-      "raw": "| `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |",
+      "detail": "`Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md`",
+      "raw": "| `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md` |",
       "sourceLine": 36,
       "group": "協働と運用",
       "permanent": false
@@ -204,8 +204,8 @@
       "owner": "Astra",
       "item": "[EXECUTION] 0.8.0ドキュメントのコードスニペット追加",
       "condition": "2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行",
-      "detail": "`Maintanance/Current/RELEASE_0_8_0.md`",
-      "raw": "| `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |",
+      "detail": "`Maintanance/Milestones/0.7.0/GATE-0.8.0.md`",
+      "raw": "| `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Milestones/0.7.0/GATE-0.8.0.md` |",
       "sourceLine": 39,
       "group": "協働と運用",
       "permanent": false
@@ -216,8 +216,8 @@
       "owner": "Astra",
       "item": "[DISCOVERY] 0.8.0ドキュメントの再検討",
       "condition": "2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行",
-      "detail": "`Maintanance/Current/RELEASE_0_8_0.md`",
-      "raw": "| `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |",
+      "detail": "`Maintanance/Milestones/0.7.0/GATE-0.8.0.md`",
+      "raw": "| `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Milestones/0.7.0/GATE-0.8.0.md` |",
       "sourceLine": 40,
       "group": "協働と運用",
       "permanent": false
@@ -228,8 +228,8 @@
       "owner": "User",
       "item": "[EXECUTION] 人間向けリリース工程表の作成",
       "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する",
-      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-      "raw": "| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+      "raw": "| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
       "sourceLine": 47,
       "group": "公開とリリース",
       "permanent": false,
@@ -247,8 +247,8 @@
       "owner": "User",
       "item": "[EXECUTION] リリース工程の不足仕様充当",
       "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する",
-      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-      "raw": "| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+      "raw": "| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
       "sourceLine": 48,
       "group": "公開とリリース",
       "permanent": false,
@@ -266,8 +266,8 @@
       "owner": "User",
       "item": "[EXECUTION] リリース工程のValidation & Verification",
       "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する",
-      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-      "raw": "| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+      "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+      "raw": "| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
       "sourceLine": 49,
       "group": "公開とリリース",
       "permanent": false,
@@ -285,8 +285,8 @@
       "owner": "User / Codex",
       "item": "[EXECUTION] Swift Package Indexへのpackage登録",
       "condition": "2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施",
-      "detail": "`Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
-      "raw": "| `DOC-026` | `ACTIVE` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
+      "detail": "`Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
+      "raw": "| `DOC-026` | `ACTIVE` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施 | `Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
       "sourceLine": 50,
       "group": "公開とリリース",
       "permanent": false,
@@ -304,8 +304,8 @@
       "owner": "Codex",
       "item": "[EXECUTION] Swift Package Index公開導線のREADME・Pages反映",
       "condition": "2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施",
-      "detail": "`Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
-      "raw": "| `DOC-027` | `ACTIVE` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | 2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
+      "detail": "`Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
+      "raw": "| `DOC-027` | `ACTIVE` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | 2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施 | `Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
       "sourceLine": 51,
       "group": "公開とリリース",
       "permanent": false,
@@ -582,8 +582,8 @@
       "owner": "User（再開判断） / Codex（判断後の調査・手順案）",
       "item": "[DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断",
       "condition": "2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない",
-      "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md`",
-      "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md` |",
+      "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Milestones/_Archived/RELEASE_0_5_4.md`",
+      "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Milestones/_Archived/RELEASE_0_5_4.md` |",
       "sourceLine": 77,
       "group": "Permutation",
       "permanent": false,
@@ -899,8 +899,8 @@
         "owner": "現在委任された調整担当",
         "item": "[EXECUTION] マイルストーン管理の恒久維持",
         "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
-        "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`",
-        "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md` |",
+        "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md`",
+        "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md` |",
         "sourceLine": 28,
         "group": "協働と運用",
         "permanent": true,
@@ -937,8 +937,8 @@
         "owner": "Astra",
         "item": "[EXECUTION] Task Registry閲覧・編集アプリの継続整備",
         "condition": "ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う",
-        "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-        "raw": "| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+        "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md`",
+        "raw": "| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md`  / `Maintanance/Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md` |",
         "sourceLine": 30,
         "group": "協働と運用",
         "permanent": true,
@@ -980,8 +980,8 @@
         "owner": "User",
         "item": "[DECISION] 文書Validation計画の受入判断",
         "condition": "2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。",
-        "detail": "`Maintanance/Current/DOCUMENTATION_MILESTONES.md`",
-        "raw": "| `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |",
+        "detail": "`Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md`",
+        "raw": "| `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md` |",
         "sourceLine": 36,
         "group": "協働と運用",
         "permanent": false
@@ -992,8 +992,8 @@
         "owner": "Astra",
         "item": "[EXECUTION] 0.8.0ドキュメントのコードスニペット追加",
         "condition": "2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行",
-        "detail": "`Maintanance/Current/RELEASE_0_8_0.md`",
-        "raw": "| `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |",
+        "detail": "`Maintanance/Milestones/0.7.0/GATE-0.8.0.md`",
+        "raw": "| `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Milestones/0.7.0/GATE-0.8.0.md` |",
         "sourceLine": 39,
         "group": "協働と運用",
         "permanent": false
@@ -1004,8 +1004,8 @@
         "owner": "Astra",
         "item": "[DISCOVERY] 0.8.0ドキュメントの再検討",
         "condition": "2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行",
-        "detail": "`Maintanance/Current/RELEASE_0_8_0.md`",
-        "raw": "| `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |",
+        "detail": "`Maintanance/Milestones/0.7.0/GATE-0.8.0.md`",
+        "raw": "| `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Milestones/0.7.0/GATE-0.8.0.md` |",
         "sourceLine": 40,
         "group": "協働と運用",
         "permanent": false
@@ -1016,8 +1016,8 @@
         "owner": "User",
         "item": "[EXECUTION] 人間向けリリース工程表の作成",
         "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する",
-        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-        "raw": "| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+        "raw": "| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
         "sourceLine": 47,
         "group": "公開とリリース",
         "permanent": false,
@@ -1035,8 +1035,8 @@
         "owner": "User",
         "item": "[EXECUTION] リリース工程の不足仕様充当",
         "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する",
-        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-        "raw": "| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+        "raw": "| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
         "sourceLine": 48,
         "group": "公開とリリース",
         "permanent": false,
@@ -1054,8 +1054,8 @@
         "owner": "User",
         "item": "[EXECUTION] リリース工程のValidation & Verification",
         "condition": "0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する",
-        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md`",
-        "raw": "| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
+        "detail": "`Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md`",
+        "raw": "| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.0/GATE-0.7.0.md` |",
         "sourceLine": 49,
         "group": "公開とリリース",
         "permanent": false,
@@ -1073,8 +1073,8 @@
         "owner": "User / Codex",
         "item": "[EXECUTION] Swift Package Indexへのpackage登録",
         "condition": "2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施",
-        "detail": "`Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
-        "raw": "| `DOC-026` | `ACTIVE` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
+        "detail": "`Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
+        "raw": "| `DOC-026` | `ACTIVE` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施 | `Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
         "sourceLine": 50,
         "group": "公開とリリース",
         "permanent": false,
@@ -1092,8 +1092,8 @@
         "owner": "Codex",
         "item": "[EXECUTION] Swift Package Index公開導線のREADME・Pages反映",
         "condition": "2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施",
-        "detail": "`Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
-        "raw": "| `DOC-027` | `ACTIVE` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | 2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
+        "detail": "`Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md`",
+        "raw": "| `DOC-027` | `ACTIVE` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | 2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施 | `Maintanance/Milestones/0.7.0/10_SPI.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
         "sourceLine": 51,
         "group": "公開とリリース",
         "permanent": false,
@@ -1370,8 +1370,8 @@
         "owner": "User（再開判断） / Codex（判断後の調査・手順案）",
         "item": "[DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断",
         "condition": "2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない",
-        "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md`",
-        "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_5_4.md` |",
+        "detail": "`Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Milestones/_Archived/RELEASE_0_5_4.md`",
+        "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.5.4リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.5.4のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.5.4リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Milestones/_Archived/RELEASE_0_5_4.md` |",
         "sourceLine": 77,
         "group": "Permutation",
         "permanent": false,
@@ -1593,7 +1593,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 291
         }
       },
@@ -1605,7 +1605,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 292
         }
       },
@@ -1617,7 +1617,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 293
         }
       },
@@ -1629,7 +1629,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 294
         }
       },
@@ -1641,7 +1641,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 295
         }
       },
@@ -1653,7 +1653,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 296
         }
       },
@@ -1665,7 +1665,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 297
         }
       },
@@ -1677,7 +1677,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 298
         }
       },
@@ -1689,7 +1689,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 299
         }
       },
@@ -1701,7 +1701,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 300
         }
       },
@@ -1713,7 +1713,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 301
         }
       },
@@ -1725,7 +1725,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 302
         }
       },
@@ -1737,7 +1737,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 303
         }
       },
@@ -1749,7 +1749,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-          "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
           "line": 304
         }
       },
@@ -1757,204 +1757,204 @@
         "prerequisite": "MS-DOC",
         "successor": "END-0.5.3",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-          "line": 33
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.5.3` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 312
         }
       },
       {
         "prerequisite": "END-0.5.3",
         "successor": "GATE-0.5.4",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.5.3/GATE-0.5.4.md",
-          "quote": "`GATE-0.5.4`",
-          "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-0.5.4` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 313
         }
       },
       {
         "prerequisite": "GATE-0.5.4",
         "successor": "END-0.5.4",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-          "line": 33
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.5.4` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 314
         }
       },
       {
         "prerequisite": "END-0.5.4",
         "successor": "GATE-0.6.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.5.4/GATE-0.6.0.md",
-          "quote": "`GATE-0.6.0`",
-          "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-0.6.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 315
         }
       },
       {
         "prerequisite": "GATE-0.6.0",
         "successor": "MS-VALIDATION",
         "relation": "stage",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
-          "quote": "`MS-VALIDATION`",
-          "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `MS-VALIDATION` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 316
         }
       },
       {
         "prerequisite": "MS-VALIDATION",
         "successor": "END-0.6.0",
         "relation": "required",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-          "line": 32
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.6.0` | `required` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 317
         }
       },
       {
         "prerequisite": "END-0.6.0",
         "successor": "GATE-0.7.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.6.0/GATE-0.7.0.md",
-          "quote": "`GATE-0.7.0`",
-          "sha256": "57d2504f39eca2dc04e299157e76b38aefb452917129fefd6d86c801df563c22",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-0.7.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 318
         }
       },
       {
         "prerequisite": "GATE-0.7.0",
         "successor": "MS-SPI",
         "relation": "stage",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.7.0/10_SPI.md",
-          "quote": "`MS-SPI`",
-          "sha256": "925fb06b6485ee4947086c23e4973f5b5b8c40a2e970ec89a82c40698fd373e1",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `MS-SPI` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 319
         }
       },
       {
         "prerequisite": "MS-SPI",
         "successor": "END-0.7.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-          "line": 33
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.7.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 320
         }
       },
       {
         "prerequisite": "END-0.7.0",
         "successor": "GATE-0.8.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.7.0/GATE-0.8.0.md",
-          "quote": "`GATE-0.8.0`",
-          "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-0.8.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 321
         }
       },
       {
         "prerequisite": "GATE-0.8.0",
         "successor": "MS-HUMAN",
         "relation": "after",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md",
-          "quote": "`MS-HUMAN`",
-          "sha256": "971d69eea23a29d6321a4ac115ad84a24452185063ab9eea4cb8bc74c1a54262",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `MS-HUMAN` | `after` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 322
         }
       },
       {
         "prerequisite": "MS-HUMAN",
         "successor": "END-0.8.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-          "line": 33
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.8.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 323
         }
       },
       {
         "prerequisite": "END-0.8.0",
         "successor": "GATE-0.9.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.8.0/GATE-0.9.0.md",
-          "quote": "`GATE-0.9.0`",
-          "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-0.9.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 324
         }
       },
       {
         "prerequisite": "GATE-0.9.0",
         "successor": "MS-QUALITY",
         "relation": "stage",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
-          "quote": "`MS-QUALITY`",
-          "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `MS-QUALITY` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 325
         }
       },
       {
         "prerequisite": "MS-QUALITY",
         "successor": "END-0.9.0",
         "relation": "stage",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-          "line": 32
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-0.9.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 326
         }
       },
       {
         "prerequisite": "END-0.9.0",
         "successor": "GATE-1.0.0",
         "relation": "stage",
-        "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/0.9.0/GATE-1.0.0.md",
-          "quote": "`GATE-1.0.0`",
-          "sha256": "0694a5a1636f7f06c1dd4f314f7e1e69d7a158590e9f3a417291d68a117c701b",
-          "line": 5
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `GATE-1.0.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 327
         }
       },
       {
         "prerequisite": "GATE-1.0.0",
         "successor": "END-1.0.0",
         "relation": "stage",
-        "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
         "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-          "line": 32
+          "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+          "quote": "| `END-1.0.0` | `stage` |",
+          "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+          "line": 328
         }
       }
     ]
@@ -2175,7 +2175,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 291
       }
     },
@@ -2187,7 +2187,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 292
       }
     },
@@ -2199,7 +2199,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 293
       }
     },
@@ -2211,7 +2211,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 294
       }
     },
@@ -2223,7 +2223,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 295
       }
     },
@@ -2235,7 +2235,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 296
       }
     },
@@ -2247,7 +2247,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 297
       }
     },
@@ -2259,7 +2259,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 298
       }
     },
@@ -2271,7 +2271,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 299
       }
     },
@@ -2283,7 +2283,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 300
       }
     },
@@ -2295,7 +2295,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 301
       }
     },
@@ -2307,7 +2307,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 302
       }
     },
@@ -2319,7 +2319,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 303
       }
     },
@@ -2331,7 +2331,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sha256": "bbb9b55960e1f8eb03300e70a2d83ae842e8942cabe941c78d67e4ce4b194a53",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
         "line": 304
       }
     },
@@ -2339,204 +2339,204 @@
       "prerequisite": "MS-DOC",
       "successor": "END-0.5.3",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-        "line": 33
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.5.3` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 312
       }
     },
     {
       "prerequisite": "END-0.5.3",
       "successor": "GATE-0.5.4",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.5.3/GATE-0.5.4.md",
-        "quote": "`GATE-0.5.4`",
-        "sha256": "94380c96ea01862ca7ce5f7f60a2d8d807ce0f9066cc346ec564acfad39bae76",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-0.5.4` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 313
       }
     },
     {
       "prerequisite": "GATE-0.5.4",
       "successor": "END-0.5.4",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-        "line": 33
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.5.4` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 314
       }
     },
     {
       "prerequisite": "END-0.5.4",
       "successor": "GATE-0.6.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.5.4/GATE-0.6.0.md",
-        "quote": "`GATE-0.6.0`",
-        "sha256": "24b88bc301a2283851f327617f87bf554e2894b88f7165cf0ebf4508be846444",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-0.6.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 315
       }
     },
     {
       "prerequisite": "GATE-0.6.0",
       "successor": "MS-VALIDATION",
       "relation": "stage",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md",
-        "quote": "`MS-VALIDATION`",
-        "sha256": "7c0402dc146d5903a1d3d662fb1b199777c7a56168e232471475bd92122ba7dd",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `MS-VALIDATION` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 316
       }
     },
     {
       "prerequisite": "MS-VALIDATION",
       "successor": "END-0.6.0",
       "relation": "required",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-        "line": 32
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.6.0` | `required` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 317
       }
     },
     {
       "prerequisite": "END-0.6.0",
       "successor": "GATE-0.7.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.6.0/GATE-0.7.0.md",
-        "quote": "`GATE-0.7.0`",
-        "sha256": "57d2504f39eca2dc04e299157e76b38aefb452917129fefd6d86c801df563c22",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-0.7.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 318
       }
     },
     {
       "prerequisite": "GATE-0.7.0",
       "successor": "MS-SPI",
       "relation": "stage",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.7.0/10_SPI.md",
-        "quote": "`MS-SPI`",
-        "sha256": "925fb06b6485ee4947086c23e4973f5b5b8c40a2e970ec89a82c40698fd373e1",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `MS-SPI` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 319
       }
     },
     {
       "prerequisite": "MS-SPI",
       "successor": "END-0.7.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-        "line": 33
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.7.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 320
       }
     },
     {
       "prerequisite": "END-0.7.0",
       "successor": "GATE-0.8.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.7.0/GATE-0.8.0.md",
-        "quote": "`GATE-0.8.0`",
-        "sha256": "66d46017c483b20afc7f3695b303d1d7b08ba218543403cd70722ece1c878839",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-0.8.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 321
       }
     },
     {
       "prerequisite": "GATE-0.8.0",
       "successor": "MS-HUMAN",
       "relation": "after",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md",
-        "quote": "`MS-HUMAN`",
-        "sha256": "971d69eea23a29d6321a4ac115ad84a24452185063ab9eea4cb8bc74c1a54262",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `MS-HUMAN` | `after` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 322
       }
     },
     {
       "prerequisite": "MS-HUMAN",
       "successor": "END-0.8.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "71f4ca2dfc4ccd8b3d6fd00f24d7afa5cf4c3ae7a15cf8a4e20144b78823896b",
-        "line": 33
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.8.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 323
       }
     },
     {
       "prerequisite": "END-0.8.0",
       "successor": "GATE-0.9.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.8.0/GATE-0.9.0.md",
-        "quote": "`GATE-0.9.0`",
-        "sha256": "76d150c08cfb75228dd8664e1c1fba458fb62a7e37a754f052c9697ea045a7aa",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-0.9.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 324
       }
     },
     {
       "prerequisite": "GATE-0.9.0",
       "successor": "MS-QUALITY",
       "relation": "stage",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.9.0/10_QUALITY-0001.md",
-        "quote": "`MS-QUALITY`",
-        "sha256": "1c209eefb096f7d679194e6dac612a612f990206d6f88cebb7715b9b9b134d7e",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `MS-QUALITY` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 325
       }
     },
     {
       "prerequisite": "MS-QUALITY",
       "successor": "END-0.9.0",
       "relation": "stage",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-        "line": 32
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-0.9.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 326
       }
     },
     {
       "prerequisite": "END-0.9.0",
       "successor": "GATE-1.0.0",
       "relation": "stage",
-      "constraint": "ゲートの配置元・行き先と、フォルダ内の番号順から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/0.9.0/GATE-1.0.0.md",
-        "quote": "`GATE-1.0.0`",
-        "sha256": "0694a5a1636f7f06c1dd4f314f7e1e69d7a158590e9f3a417291d68a117c701b",
-        "line": 5
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `GATE-1.0.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 327
       }
     },
     {
       "prerequisite": "GATE-1.0.0",
       "successor": "END-1.0.0",
       "relation": "stage",
-      "constraint": "ゲートの列（フォルダとファイル名の順）から導いた。",
+      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
       "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "3815f36aa8f893e36b46523e2bb9f32d992d13c78a7373eca40762936ce55e5a",
-        "line": 32
+        "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+        "quote": "| `END-1.0.0` | `stage` |",
+        "sha256": "22e67b645d1fceaf7b71efd96961f5f035481bf3bf01cf2d335138fbb631325f",
+        "line": 328
       }
     }
   ],

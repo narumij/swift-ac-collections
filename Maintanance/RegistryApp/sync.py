@@ -8,7 +8,7 @@ Usage (from the repository root):
 What is derived (never edit by hand): tasks and edges, source hashes, baseline, the HTML seed.
 Milestone cards are read from the gate files in Maintanance/Milestones/<version>/ (カード情報;
 the 記録 part is never read). What is carried over from the current registry.json (not derivable from
-the Registry): milestone-to-milestone relation types, milestoneSnapshot, and per-task displayInterest.
+the Registry): milestoneSnapshot and per-task displayInterest.
 Task/milestone connections are generated exclusively from the Registry milestone connection table.
 """
 import datetime, hashlib, json, re, subprocess, sys
@@ -277,36 +277,44 @@ def registry_milestone_relations():
     return result
 
 
-def chain_relations(cards, carried, old_milestones=()):
-    """Milestone-to-milestone relations follow the gate order (sequential restriction). Relations that
-    touch a task are read from the Registry table."""
+def registry_gate_relation_types(cards):
+    """Incoming chain-edge types keyed by destination ID, independent of placement."""
+    result, active = {}, False
     ids = {c['id'] for c in cards}
-    keep = registry_milestone_relations()
-    same = {(r['prerequisite'], r['successor']): r for r in carried
-            if r['prerequisite'] in ids and r['successor'] in ids}
+    for no, line in enumerate(REGISTRY.read_text(encoding='utf-8').splitlines(), 1):
+        if line.startswith('## '):
+            active = line == '## ゲート経路の関係種類'
+        if not active or not line.startswith('| `'):
+            continue
+        c = cells(line)
+        if len(c) != 2:
+            raise ValueError(f'Registry line {no}: invalid gate relation row')
+        target, relation = map(unquote, c)
+        if target not in ids or target in result or relation not in {'stage', 'required', 'material', 'resume', 'after'}:
+            raise ValueError(f'Registry line {no}: invalid or duplicate gate relation: {target}, {relation}')
+        result[target] = (relation, line, no)
+    return result
+
+
+def chain_relations(cards):
+    """Topology comes from placement; relation types come from Registry, never old JSON."""
+    types = registry_gate_relation_types(cards)
     chain = []
     for a, b in zip(cards, cards[1:]):
-        r = same.get((a['id'], b['id']))
-        if r:  # existing pair keeps its relation type; evidence is kept while the quote still holds
-            src = r.get('source') or {}
-            sp = ROOT / src.get('path', '')
-            if src.get('quote') and sp.exists() and src['quote'] in sp.read_text(encoding='utf-8'):
-                chain.append(r); continue
-            r = dict(r, source=None)
-        if b.get('virtual'):
-            nxt = cards[cards.index(b) + 1] if cards.index(b) + 1 < len(cards) else None
-            inherit = same.get((a['id'], nxt['id'])) if nxt else None
-            if inherit and not r:  # the old a->gate relation now lands on the folder's END
-                chain.append(dict(inherit, successor=b['id'])); continue
-            path, quote = ROOT / 'Maintanance/Milestones/README.md', END_RULE
+        if b['id'] in types:
+            relation, quote, no = types[b['id']]
+            path = REGISTRY
         else:
-            path, quote = ROOT / b['gate'], f"`{b['id']}`"
-        text = path.read_text(encoding='utf-8')
-        chain.append(dict(prerequisite=a['id'], successor=b['id'], relation=(r or {}).get('relation', 'stage'),
-                          constraint='ゲートの配置元・行き先と、フォルダ内の番号順から導いた。',
-                          source=dict(path=path.relative_to(ROOT).as_posix(), quote=quote, sha256=sha256(path),
-                                      line=text[:text.find(quote)].count('\n') + 1)))
-    return keep + chain
+            relation = 'stage'
+            path = ROOT / 'Maintanance/Milestones/README.md'
+            quote = END_RULE
+            no = path.read_text(encoding='utf-8').splitlines().index(next(
+                line for line in path.read_text(encoding='utf-8').splitlines() if quote in line)) + 1
+        chain.append(dict(prerequisite=a['id'], successor=b['id'], relation=relation,
+                          constraint='接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。',
+                          source=dict(path=path.relative_to(ROOT).as_posix(), quote=quote,
+                                      sha256=sha256(path), line=no)))
+    return registry_milestone_relations() + chain
 
 
 def build(old):
@@ -323,8 +331,7 @@ def build(old):
     data['tasks'], data['edges'] = tasks, edges
     data['milestones'] = read_gates()[0]
     data['milestoneHead'] = '.'.join(str(x[1]) for x in head_version())  # current position for the Studio picker
-    data['milestoneRelations'] = chain_relations(data['milestones'], old.get('milestoneRelations', []),
-                                                 old.get('milestones', []))
+    data['milestoneRelations'] = chain_relations(data['milestones'])
     data['baseline'] = dict(tasks=json.loads(json.dumps(tasks)), edges=json.loads(json.dumps(edges)),
                             milestoneRelations=json.loads(json.dumps(data['milestoneRelations'])))
     return data

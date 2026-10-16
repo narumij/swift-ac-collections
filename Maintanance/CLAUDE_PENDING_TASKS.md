@@ -144,3 +144,12 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - CP-014：RECONCILED。RBT-033正本へmacOS保存実験の証拠を受入・統合。固定版・適用範囲検証はRBT-049 PROPOSED。Linux CIへ適用しない。
 - CP-015：RECONCILED。RELEASE-083/084へ統合。workflowとガイドを照合。契約差による停止は適切。未取得runの成功不在は断定しない。ユーザーの赤merge方針は伝達記録として保持。
 - CP-016：RECONCILED。PERM-080 PROPOSEDとして正式登録、未着手。0.6.0後の範囲確定待ち。
+
+## Astra受入・統合（2026-10-17、マイルストーン移行）
+
+原返却は保持し、CP-20261017-001・002のqueue状態と処理結果は本節を最新とする。
+
+- CP-20261017-001：RECONCILED。文書分割・配置移行をOPS-047へ受入・統合。
+- CP-20261017-002：RECONCILED。追記16までのゲート移行・Studio対応をOPS-047 / OPS-048へ受入・統合。恒久タスクはACTIVEのまま。
+- 検証、Astraによる後続変更との区別、残る意味確認・古い説明の補正は[受入正本](Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md)を参照。リリース通過やUSER_ONLYの判断は代行しない。
+- CP-20261016-013 / OPS-059は今回対象外、凍結維持。2026-10-17ユーザーが受入記録のコミットを承認。

@@ -28,13 +28,8 @@
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
 | `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期到達点は既存graph試験の調査と読み取り専用再現。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。今回登録のみ | `Maintanance/Current/TASK_REGISTRY_APP.md` |
-| `OPS-049` | `DONE` | Astra | [DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査 | 恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・ユーザーcommit指示により完了。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手 | `Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md` |
-| `OPS-050` | `DONE` | Claude（姫）（助言） / Astra（受入・統合） | [DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言 | 恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。ユーザーcommit指示により完了。実装・技術選定の確定は含めない | `Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md` |
 | `OPS-051` | `WAITING_USER` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |
-| `OPS-052` | `DONE` | Claude（姫）（助言） / Astra（受入） | [DISCOVERY] 依存見取り図の自動配置・AI調整負担削減への助言 | 2026-10-16助言受入。ユーザー指示で骨格最長路・枝の経路分類を限定反映し、全座標一致・ID置換不変を確認。交差最適化等は保留。ユーザーcommit指示により完了 | `Maintanance/Current/TASK_REGISTRY_LAYOUT_ADVICE.md` |
 
-| `TEST-006` | `DONE` | Claude（移動済み） / Astra（参照更新・受入） | [EXECUTION] テスト整備文書のTesting集約と参照接続 | 2026-10-16 Astra受入済み。独立照合・必要な訂正・参照更新を完了。証拠は詳細正本の受入記録。ユーザーのcommit指示により完了 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Testing/TESTING.md` / `Maintanance/Testing/Fixtures.md` |
-| `TEST-007` | `DONE` | Astra（配置・紐付け） / User（本文変更の判断） | [EXECUTION] 判断座標草案のサルベージ | 2026-10-16 Astraが原文6文書を保持した写し・由来・未採用の姫所見をTestingへ配置しTEST-005へ接続。原文一致・参照を確認し受入済み。本文変更・現行規則への昇格なし。ユーザーのcommit指示により完了 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Testing/JudgmentCoordinates/README.md` |
 
 ### 公開とリリース
 
@@ -55,7 +50,6 @@
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |
 | `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。関連する現行APIの照合結果（旧RBT-014から保持、未確認）を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |
-| `RBT-005` | `DONE` | Codex | [DISCOVERY] swift-ac-memoize・Memoizationの依存状況調査 | 2026-10-16 Astraが2リポジトリのHEAD・作業差分・依存固定先・実利用を照合。現行LRU wrapperは限定型チェック成功、Memoization旧API経路は別の不整合として分離。調査受入済み。同日のユーザーcommit指示により完了。同日ユーザー判断で旧来の非公開化・削除検討は整理（EXCLUDED）として残作業から除外。調査成果は保持し、現行API・外部consumerは変更しない | `Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md` |
 | `RBT-007` | `ACTIVE` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | 2026-10-15、ユーザー指示により有効化。現行readiness、対象範囲、必要な検証を照合して進める。状態変更だけでは実装操作を開始しない | `Maintanance/Current/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | 性能と所有構造への影響から、ユーザー判断で最後の最後まで凍結。所有構造・生成コスト・アクセス性能を評価できる段階で、ユーザーの明示的な再開指示があった場合のみ再検討する。1.0必須ゲートや自動再開条件にはしない | `Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md` |
 | `RBT-009` | `ACTIVE` | User / Codex | [DECISION] runtime-check実装の再審査 | 2026-10-16のユーザー棚卸し指示で1.0前の判断ゲートとして有効化。Design-RuntimeChecksの再審査材料を揃え、現行実装を1.0へ受け入れるかユーザーが一つ判断する。検査の変更・弱化は今回行わず、現行防御を維持する。資料収集や測定は対象・範囲を具体化してから実施する。 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
@@ -172,6 +166,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 ## 過去の記録への入口
 
+- [完了6件とアプリ親子関係の圧縮前記録](../Archived/TASK_REGISTRY_COMPLETED_VIEWER_2026-10-16.md)：`OPS-049`・`OPS-050`・`OPS-052`・`TEST-006`・`TEST-007`・`RBT-005`。調査・助言・受入の原文と証拠への経路を保存。OPS-051の受入待ちは維持。
+
 - [完了5件・除外1件と旧前提説明（品質資料整理後の圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-16_QUALITY_ROUND.md)：`OPS-045`・`DOC-031`・`RBT-041`・`RBT-046`・`HIST-002`・`QUALITY-004`。元の状態・受入範囲・証拠への参照を保存。
 
 - [Permutation公開API削減の実施記録](../Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md)：2026-10-16、ユーザー指示で旧ImplementationPlanを全文保存。旧実装の判断・検証の経緯として参照する。
@@ -238,4 +234,4 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 | 親 | サブタスク |
 | --- | --- |
-| `OPS-048` | `OPS-049`, `OPS-050`, `OPS-051`, `OPS-052` |
+| `OPS-048` | `OPS-051` |

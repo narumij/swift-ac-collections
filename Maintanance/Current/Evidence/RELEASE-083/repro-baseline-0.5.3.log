@@ -1,0 +1,46 @@
+Fetching https://github.com/apple/swift-collections-benchmark from cache
+Fetching https://github.com/apple/swift-collections from cache
+Fetched https://github.com/apple/swift-collections from cache (1.03s)
+Fetched https://github.com/apple/swift-collections-benchmark from cache (1.06s)
+Computing version for https://github.com/apple/swift-collections-benchmark
+Computed https://github.com/apple/swift-collections-benchmark at 0.0.4 (1.56s)
+Fetching https://github.com/apple/swift-system from cache
+Fetching https://github.com/apple/swift-argument-parser from cache
+Fetched https://github.com/apple/swift-system from cache (1.54s)
+Fetched https://github.com/apple/swift-argument-parser from cache (1.55s)
+Computed https://github.com/apple/swift-collections-benchmark at 0.0.4 (1.57s)
+Computing version for https://github.com/apple/swift-collections
+Computed https://github.com/apple/swift-collections at 1.7.3 (0.75s)
+Computed https://github.com/apple/swift-collections at 1.7.3 (0.00s)
+Computing version for https://github.com/apple/swift-argument-parser
+Computed https://github.com/apple/swift-argument-parser at 1.8.2 (0.34s)
+Computing version for https://github.com/apple/swift-system
+Computed https://github.com/apple/swift-system at 1.8.1 (0.35s)
+Creating working copy for https://github.com/apple/swift-collections
+Working copy of https://github.com/apple/swift-collections resolved at 1.7.3
+Creating working copy for https://github.com/apple/swift-argument-parser
+Working copy of https://github.com/apple/swift-argument-parser resolved at 1.8.2
+Creating working copy for https://github.com/apple/swift-system
+Working copy of https://github.com/apple/swift-system resolved at 1.8.1
+Creating working copy for https://github.com/apple/swift-collections-benchmark
+Working copy of https://github.com/apple/swift-collections-benchmark resolved at 0.0.4
+Building for production...
+/private<work>/baseline/Sources/PermutationModule/Permutations.swift:170:19: [1;33mwarning: [1;39mresult of call to 'withUnsafeMutablePointers' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m168 |[0;0m     @inlinable
+[0;36m169 |[0;0m     deinit {
+[0;36m170 |[0;0m       unsafe self.withUnsafeMutablePointers [4;39m{ header, elements in[0;0m
+    [0;36m|[0;0m                   `- [1;33mwarning: [1;39mresult of call to 'withUnsafeMutablePointers' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m171 |[0;0m         unsafe elements.deinitialize(count: header.pointee.count)
+[0;36m172 |[0;0m       }
+
+Build complete! (44.05秒)
+Error: 8 unknown tasks:
+BareArray2D<Int> element(at:) sequential read checksum
+BareArray2D<Int> setElement(_:at:) sequential write
+BareArray3D<Int> element(at:) sequential read checksum
+BareArray3D<Int> setElement(_:at:) sequential write
+OptionalArray2D<Int> direct methods cold memoization checksum
+OptionalArray2D<Int> direct methods warm memoization checksum
+OptionalArray3D<Int> direct methods cold memoization checksum
+OptionalArray3D<Int> direct methods warm memoization checksum
+exit=1

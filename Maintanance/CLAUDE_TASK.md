@@ -31,6 +31,10 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+RELEASE-084：候補CIの比較元未登録測定への限定修正を依頼。正本の範囲を参照。
+
+RELEASE-083：調査返却・Astra受入済み、ユーザーcommit承認により完了。追加実装依頼なし。下記の正式依頼へ。別の直接依頼とは独立。
+
 RELEASE-081：品質証拠調査は返却・Astra受入済み、ユーザーcommit承認により完了。追加依頼なし。原回答は保持し、補正と統合は詳細正本のAstra受入節を参照。
 
 **RBT-047（index指定更新の失敗時CoW調査）は返却・Astra検収済み、修正判断待ち。DOC-040〜044は受入済み・DONE。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は限定試作・評価としてAstra受入済み・ユーザーcommit承認により完了（方式の採用ではない）。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
@@ -66,3 +70,15 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 ## 受入済み依頼の履歴
 
 OPS-053・055〜057、DOC-040〜044、RBT-047、RELEASE-081の依頼・返却・受入原文は[2026-10-16後半の履歴](Archived/CLAUDE_TASK_HISTORY_2026-10-16_3.md)へ保存。現行の正式依頼に未受入はない。Studioのユーザー直接依頼はOPS-059として凍結中で、完了扱いにはしない。
+
+## RELEASE-083 — 候補CIの比較元ベンチマーク停止調査
+
+2026-10-16、ユーザーの「姫に調査依頼」に基づく正式依頼。Registry登録済み。作成・受入Astra、調査Claude（姫）。[調査正本・固定入力・範囲・Return](Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md)に従い、停止原因と最小修正案を返してください。調査までで製品・workflowの修正、CI再実行、commitは委任しません。別の直接依頼とは独立。依頼完成をもって受渡し。
+
+## RELEASE-083 Astra受入
+
+調査正本のAstra受入節を参照。原Returnを保持し、再現証拠と実行版を照合した。修正案は未適用。
+
+## RELEASE-084 — 候補CIの比較元対応を実装・検証
+
+2026-10-16、ユーザーの進行委任に基づく正式依頼。Registry登録済み。担当Claude（姫）、受入Astra。[修正正本とReturn](Current/RELEASE_CANDIDATE_BASELINE_FIX.md)に従って実装・限定検証をお願いします。既知baseline SHAだけの例外、想定外欠落の失敗、比較範囲の明示を守る。ci.ymlは変更しない。commit・GitHub操作は含めない。作成完了をもって指定範囲を受渡し。

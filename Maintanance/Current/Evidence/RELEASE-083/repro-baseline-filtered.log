@@ -1,0 +1,20 @@
+  RedBlackTreeSet<Int> remove, shared
+  RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)
+  RedBlackTreeDictionary<Int, Int> sequential iteration
+  RedBlackTreeDictionary<Int, Int> subscript, successful lookups
+  RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups
+  RedBlackTreeDictionary<Int, Int> subscript, insert, unique
+  RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique
+  RedBlackTreeDictionary<Int, Int> subscript, insert, shared
+  RedBlackTreeDictionary<Int, Int> subscript, remove existing, shared
+  RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing
+  RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing
+  Permutations.SubSequenceN subscript sequential access (batched)
+  Permutations.SubSequenceN subscript shuffled access (batched)
+Output file: <work>/baseline.json
+Discarding all existing data.
+
+Collecting data:
+  1.2 -- 369ms
+Finished in 371ms
+exit=0

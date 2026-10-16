@@ -109,6 +109,10 @@
 
 | `RELEASE-082` | `DONE` | Astra | [EXECUTION] 0.6.0手元の候補確認 | 範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。 | `Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md` |
 
+| `RELEASE-083` | `DONE` | Claude（姫：原因調査） / Astra（受入） | [DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案 | Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md` |
+
+| `RELEASE-084` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | RELEASE-083受入済み調査に基づき、既知SHAの新規8件を明示し未知欠落は失敗。候補CIだけの限定修正。通常CI・測定契約・閾値・製品は変更しない。ローカル検証後に返却、remote操作とcommitは別。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
+
 ## Task precedence
 
 内部task間の必須AND前提を記録する。`SEQUENCE`は前提成果がそろうまで後続を開始・継続しない。`PARALLEL_JOIN`は独立部分を並行でき、後続の完了までに合流する。いずれも状態・委任・再開条件を上書きしない。

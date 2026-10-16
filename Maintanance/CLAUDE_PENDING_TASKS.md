@@ -141,7 +141,9 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 7点を反映した。原本のパス`User/CONCEPT_DEFINITION.md`は現行の`Maintanance/Quality/CONCEPT_DEFINITION.md`に直した。
   - 所見6のcommit件数は再集計した（10-15 00:00以降、`ff209700`まで155件中、件名にtask番号の形があるもの5件）。所見作成時の「149件中2件」から更新。
   - 所見4の`RBT-042`の記述は、当時の作業記録との照合をしていない（姫の記憶と会話の要約による）。
-  - commitしていない。
+  - 訂正（同日）: 作業中にAstraが`ff209700`で6文書の写しと`README.md`を回収・commitしていた。姫はそれを確かめずに`README.md`を
+    上書きし、`c3b0259a`でcommitした。誤りなので、Astraの`README.md`を`ff209700`の内容へ戻した。改訂版`JUDGMENT_COORDINATES.md`への
+    案内をREADMEへ足すかはAstraに任せる。
 - Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。

@@ -26,7 +26,7 @@
 ///
 /// ## Declaration
 ///
-/// Use `RedBlackTreeSet` with `import AcCollections`. Any declaration below illustrates the type signature rather than a complete executable program.
+/// Use `RedBlackTreeSet` with `import AcCollections`.
 ///
 /// ## Overview
 ///

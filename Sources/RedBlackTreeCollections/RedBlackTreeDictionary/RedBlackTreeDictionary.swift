@@ -110,7 +110,7 @@
 ///
 /// The following assumes constant-time comparisons and element operations, and excludes copying shared storage for copy-on-write. Copying can retain deletion history, so its cost is not always determined by the current element count.
 ///
-///
+/// Creating a view does not copy elements into an array. Mutating a view stored in a separate variable can trigger copy-on-write.
 ///
 /// | Operation | Complexity |
 /// | --- | --- |

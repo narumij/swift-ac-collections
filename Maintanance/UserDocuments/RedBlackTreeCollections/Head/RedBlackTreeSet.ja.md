@@ -120,14 +120,14 @@ index範囲subscriptは対象範囲のViewを返します。要素を別配列�
 var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 
 print(set[.start.advanced(by: 1)])
-// 3
+// Optional(3)
 ```
 
 ```swift
 var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 
 print(set[.lowerBound(5)])
-// 5
+// Optional(5)
 
 print(set[.upperBound(5)])
 // nil (equivalent to end)

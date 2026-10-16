@@ -44,7 +44,7 @@ map.insert(key: 5, value: "e") // -> [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
 
 ## Creating a Multimap
 
-空の初期化とリテラルに加え、入力列から作成できます。`init(minimumCapacity:)` で初期容量を指定し、`reserveCapacity(_:)` で容量を予約できます。`capacity` と要素数 `count` は異なります。 array literal、dictionary literal、`init(keysWithValues:)` は重複キーを保持します。`init(grouping:by:)` は入力値ごとにキーを割り当て、値を配列へまとめずpairとして保持します。
+空の初期化とリテラルに加え、入力列から作成できます。`init(minimumCapacity:)` で初期容量を指定し、`reserveCapacity(_:)` で容量を予約できます。`capacity` と要素数 `count` は異なります。配列リテラル、辞書リテラル、`init(keysWithValues:)` は重複キーを保持します。`init(grouping:by:)` は入力値ごとにキーを割り当て、値を配列へまとめずpairとして保持します。
 
 ## Searching and Accessing Elements
 
@@ -108,7 +108,7 @@ map[key].swapAt(i, j)
 
 ## Insertion, Updating, and Removal
 
-`insert(key:value:)` / `insert(_:)` は同じキーがあってもpairを追加します。`insert(_:hint:)` は有効かつ順序条件に合うhintの直前へ挿入できます。`updateValue(_:at:)` はキーを変えず指定位置の値だけを更新し、旧値を返します。無効なindexなら `nil` です。
+`insert(key:value:)` / `insert(_:)` は同じキーがあってもpairを追加します。`insert(_:hint:)` は有効かつ順序条件に合うhintの直前へ挿入できます。有効でも順序条件に合わないhintは性能にのみ影響し、通常の順序位置へ挿入します。無効なhintは事前条件違反です。`updateValue(_:at:)` はキーを変えず指定位置の値だけを更新し、旧値を返します。無効なindexなら `nil` です。
 
 `eraseUnique(_:)` は一致する1要素、`eraseMulti(_:)` は全要素を削除します。`popFirst()` / `popLast()` は空なら `nil`、`removeFirst()` / `removeLast()` は空でないことが事前条件です。`erase(where:)`、範囲・View経由の削除、`removeAll(keepingCapacity:)` も使えます。逐次削除には `erase(_:) -> Index` が返す次の位置を使います。`index(inserting:)` は挿入結果とindexを返します。`erase(exactly:)` は指定indexの要素を削除して次のindexを返し、操作先でアクセスできないindexなら `nil` を返します。
 

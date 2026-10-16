@@ -1,0 +1,15 @@
+warning: /Users/narumij/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'swift-ac-collections': failed storing manifest for 'swift-ac-collections' in cache: attempt to write a readonly database
+warning: 'swift-algorithms': failed storing manifest for 'swift-algorithms' in cache: attempt to write a readonly database
+warning: 'swift-docc-plugin': failed storing manifest for 'swift-docc-plugin' in cache: attempt to write a readonly database
+warning: 'swift-numerics': failed storing manifest for 'swift-numerics' in cache: attempt to write a readonly database
+warning: 'swift-docc-symbolkit': failed storing manifest for 'swift-docc-symbolkit' in cache: attempt to write a readonly database
+Building for production...
+[Planning deferred tasks]
+error: Operation not permitted
+error: GenerateDSYMFile /Users/narumij/Documents/GitHub/swift-ac-collections/.build/out/Products/Release/snippet-extract.dSYM /Users/narumij/Documents/GitHub/swift-ac-collections/.build/out/Products/Release/snippet-extract failed with a nonzero exit code. Command line:     cd /Users/narumij/Documents/GitHub/swift-ac-collections/.build/checkouts/swift-docc-plugin
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/narumij/Documents/GitHub/swift-ac-collections/.build/out/Products/Release/snippet-extract -o /Users/narumij/Documents/GitHub/swift-ac-collections/.build/out/Products/Release/snippet-extract.dSYM
+error: Build failed
+error: fatalError

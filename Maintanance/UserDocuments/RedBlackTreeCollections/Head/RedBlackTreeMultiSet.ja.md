@@ -39,7 +39,7 @@ set.insert(5) // -> [1, 1, 3, 4, 5]
 
 ## Creating a Multiset
 
-空の初期化とリテラルに加え、入力列から作成できます。`init(minimumCapacity:)` で初期容量を指定し、`reserveCapacity(_:)` で容量を予約できます。`capacity` と要素数 `count` は異なります。 array literal、sequence、collection、rangeから初期化できます。
+空の初期化とリテラルに加え、入力列から作成できます。`init(minimumCapacity:)` で初期容量を指定し、`reserveCapacity(_:)` で容量を予約できます。`capacity` と要素数 `count` は異なります。配列リテラル、Sequence、Collection、Rangeから初期化できます。
 
 ## Searching and Accessing Elements
 
@@ -47,7 +47,7 @@ set.insert(5) // -> [1, 1, 3, 4, 5]
 
 ## Insertion and Removal
 
-挿入は同値要素を置換せず追加します。hintは有効な位置を渡し、順序条件に合う場合に挿入位置の探索を助けます。`update(_:at:)` は旧値と新値が `==` の場合だけ置換し、旧値を返します。無効なindexや非同値の値では `nil` を返します。
+挿入は同値要素を置換せず追加します。`insert(_:hint:)` のhintには有効な位置を渡し、順序条件に合う場合に挿入位置の探索を助けます。`update(_:at:)` は旧値と新値が `==` の場合だけ置換し、旧値を返します。無効なindexや非同値の値では `nil` を返します。
 
 `eraseUnique(_:)` は一致する1要素、`eraseMulti(_:)` は一致する全要素を削除します。`popFirst()` / `popLast()` は空なら `nil`、`removeFirst()` / `removeLast()` は空でないことが事前条件です。`erase(where:)`、範囲削除、`removeAll(keepingCapacity:)` も使えます。削除済みindexを進めず、逐次削除は `erase(_:) -> Index` の戻り値で継続します。
 
@@ -86,7 +86,7 @@ while i != set.endIndex {
 
 ## Combining Multisets
 
-`insert(contentsOf:)` は自身へ入力を追加し、`inserting(contentsOf:)` は追加後の値を返します。要素ごとに既存storageへ挿入し、共有されている場合はCoW複製が必要です。`meld(_:)` は自身を結合結果へ置き換え、`melding(_:)` は結果を返します。両者はソート済みの二つの木を走査して新しいstorageを構築します。予約済み容量だけを理由にmeldを選ぶものではありません。 insert系はSet、MultiSet、任意のsequenceを入力にできます。
+`insert(contentsOf:)` は自身へ入力を追加し、`inserting(contentsOf:)` は追加後の値を返します。要素ごとに既存storageへ挿入し、共有されている場合はCoW複製が必要です。`meld(_:)` は自身を結合結果へ置き換え、`melding(_:)` は結果を返します。両者はソート済みの二つの木を走査して新しいstorageを構築します。予約済み容量だけを理由にmeldを選ぶものではありません。挿入APIはSet・MultiSet・任意のSequenceを受け取れます。
 
 ## Multiset Algebra
 

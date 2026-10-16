@@ -26,7 +26,7 @@
 ///
 /// ## Declaration
 ///
-/// Use `RedBlackTreeMultiMap` with `import AcCollections`. Any declaration below illustrates the type signature rather than a complete executable program.
+/// Use `RedBlackTreeMultiMap` with `import AcCollections`.
 ///
 /// ## Overview
 ///
@@ -59,7 +59,7 @@
 ///
 /// ## Insertion, Updating, and Removal
 ///
-/// `insert(key:value:)` / `insert(_:)` add a pair even when its key already exists. `insert(_:hint:)` can insert immediately before a valid hint when the ordering conditions fit. `updateValue(_:at:)` replaces only the mapped value at an index and returns its old value, or `nil` for an invalid index.
+/// `insert(key:value:)` / `insert(_:)` add a pair even when its key already exists. `insert(_:hint:)` can insert immediately before a valid hint when the ordering conditions fit. A valid hint that does not satisfy those ordering conditions affects only performance; insertion still uses the normal ordered position. An invalid hint violates a precondition. `updateValue(_:at:)` replaces only the mapped value at an index and returns its old value, or `nil` for an invalid index.
 ///
 /// `eraseUnique(_:)` removes one matching pair; `eraseMulti(_:)` removes all. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty map. Predicate removal, range/view removal, and `removeAll(keepingCapacity:)` are supported. For sequential removal use the next index returned by `erase(_:) -> Index`. `index(inserting:)` returns an insertion result and index. `erase(exactly:)` removes the indexed element and returns the next index, or `nil` if the index is not accessible in this map.
 ///

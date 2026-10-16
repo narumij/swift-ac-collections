@@ -26,7 +26,7 @@
 ///
 /// ## Declaration
 ///
-/// Use `RedBlackTreeMultiSet` with `import AcCollections`. Any declaration below illustrates the type signature rather than a complete executable program.
+/// Use `RedBlackTreeMultiSet` with `import AcCollections`.
 ///
 /// ## Overview
 ///
@@ -51,7 +51,7 @@
 ///
 /// ## Insertion and Removal
 ///
-/// Insertion adds an element without replacing equivalent elements. A hint must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. Invalid indices or unequal replacements return `nil`.
+/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. Invalid indices or unequal replacements return `nil`.
 ///
 /// `eraseUnique(_:)` removes one match; `eraseMulti(_:)` removes all matches. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty multiset. Predicate removal with `erase(where:)`, range removal, and `removeAll(keepingCapacity:)` are also available. For sequential removal, continue with the index returned by `erase(_:) -> Index`, not a deleted index.
 ///
@@ -288,14 +288,14 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Replaces the element at `i` when it is equivalent to `newMember`.
+    /// Replaces the element at `i` when its value equals `newMember` under `==`.
     ///
     /// Requiring equivalence preserves the multiset's sorted order.
     ///
     /// - Parameters:
     ///   - newMember: The replacement element.
     ///   - i: The index of the element to replace.
-    /// - Returns: The replaced element, or `nil` if the index is invalid or the elements aren't equivalent.
+    /// - Returns: The replaced element, or `nil` if the index is invalid or the values are unequal under `==`.
     @inlinable
     public mutating func update(_ newMember: Element, at i: Index) -> Element? {
       __tree_.ensureUnique()

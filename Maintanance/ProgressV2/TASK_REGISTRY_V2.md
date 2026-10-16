@@ -90,7 +90,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |
 
-| `HIST-003` | `DONE` | Claude（作成） / Astra（受入・接続） | [EXECUTION] テスト再建の記録作成・受入と入口接続 | 2026-10-16 Astra受入済み。独立照合・必要な訂正・参照更新を完了。証拠は詳細正本の受入記録。ユーザーのcommit指示により完了 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |
+| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |
 
 ## Task precedence
 
@@ -231,3 +231,11 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - [DOC-032・RBT-014のマイルストーン移行前記録](../Archived/DOC-032_RBT-014_BEFORE_MILESTONES_2026-10-16.md)：ユーザー待ちtaskを整理。RBT-026に必要なAPI照合は入力条件として保持。
 
 - [再分類後の圧縮記録](../Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md)：RBT-004・014・035、DOC-032をEXCLUDEDとして履歴化。RBT-045は受入済み・commit許可を受けDONE。RBT-041の必須入力RBT-045は充足済みで、原行・依存辺と検証証拠を本記録から辿れる。
+
+## 恒久タスクの親子関係
+
+親子関係は所属を表し、依存・着手許可を追加しない。履歴化したサブタスクを復活させない。
+
+| 親 | サブタスク |
+| --- | --- |
+| `OPS-048` | `OPS-049`, `OPS-050`, `OPS-051`, `OPS-052` |

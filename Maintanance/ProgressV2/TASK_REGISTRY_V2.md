@@ -36,7 +36,7 @@
 
 | `OPS-055` | `DONE` | Astra（作成・受入） / Claude（レビュー済み） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。Claude返却・Astra受入、指摘4点の対応済み。2026-10-16ユーザーが終了・commitを承認。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
 | `OPS-056` | `ACTIVE` | Claude（姫：試作・評価） / Astra（受入） | [DISCOVERY] Astraの判断追跡負荷を軽くする限定試作 | 2026-10-16ユーザー依頼。OPS-048配下。CP-20261016-006を正式化し、スニペット固定の判断一件でゲート・task別の一覧と原文追跡を試す。判断待ちと作業待ちを分離し、部分変更・適用範囲を保持。方式の採用や現行UI・制度の変更は含めない。依頼票作成済み、返却待ち | `Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md` |
-| `OPS-057` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |
+| `OPS-057` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |
 
 | `DOC-033` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
 | `DOC-034` | `ACTIVE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |

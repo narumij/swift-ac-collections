@@ -115,7 +115,7 @@ def diff(old, new):
         elif i not in n:
             out.append(f'- task {i}')
         else:
-            changed = [k for k in n[i] if o[i].get(k) != n[i].get(k) and k != 'sourceLine']
+            changed = [k for k in sorted(set(o[i]) | set(n[i])) if o[i].get(k) != n[i].get(k) and k != 'sourceLine']
             if changed:
                 out.append(f'~ task {i}: {", ".join(changed)}')
     key = lambda e: (e['successor'], e['prerequisite'])
@@ -128,6 +128,9 @@ def diff(old, new):
         out.append(f'~ sourceLine moved for {moved} rows (position only)')
     if old['source'].get('sha256') != new['source']['sha256']:
         out.append(f"~ source sha256 {old['source'].get('sha256', '')[:12]} -> {new['source']['sha256'][:12]}")
+    for k in ('rulesSha256', 'head', 'dirty'):
+        if old['source'].get(k) != new['source'].get(k):
+            out.append(f'~ source {k}')
     return out
 
 
@@ -146,7 +149,7 @@ def embed(data):
     block = '<script id="seed" type="application/json">' + json.dumps(data, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
     s, n = re.subn(r'<script id="seed" type="application/json">.*?</script>', lambda m: block, s, count=1, flags=re.S)
     if n != 1:
-        sys.exit('seed block not found in index.html')
+        raise ValueError('seed block not found in index.html')
     HTML.write_text(s, encoding='utf-8')
 
 
@@ -171,7 +174,10 @@ def main():
     if stale:
         print('STALE milestone quotes (not auto-fixed; edit registry.json by hand):\n  ' + '\n  '.join(stale))
     if '--check' in sys.argv:
-        sys.exit(1 if changes or stale else 0)
+        sys.exit(1 if changes or stale or moved else 0)
+
+    if stale or moved:
+        sys.exit('Milestone sources need review before synchronization; no files written')
 
     node = tool('--node', 'REGISTRY_STUDIO_NODE', shutil.which('node'))
     marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)
@@ -188,7 +194,7 @@ def main():
             raise FileNotFoundError('node not found; documents cannot be rebuilt or verified (use --node PATH)')
         subprocess.run([node, str(APP / 'build-documents.mjs')] + ([marked] if marked else []), cwd=APP, check=True)
         subprocess.run([node, str(APP / 'verify.cjs')], cwd=APP, check=True)
-    except (subprocess.CalledProcessError, OSError) as e:
+    except (subprocess.CalledProcessError, OSError, ValueError) as e:
         for f in (JSON, HTML):
             shutil.copy2(backup / f.name, f)
         shutil.rmtree(backup)

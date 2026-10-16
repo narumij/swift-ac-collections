@@ -141,3 +141,5 @@ python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registr
 - **失敗したとき：** Nodeが見つからない、文書の生成か`verify.cjs`が失敗した、のいずれでも、`registry.json`と`index.html`を実行前の状態に戻して`FAILED`と表示し、終了コード1で止まる。成功と区別できる。
 - **再実行：** 内容が変わっていなければ`registry.json`は書き換わらない（`generatedAt`も据え置く）。
 - **配布用HTML：** 配布先へは、`sync.py`が成功した後の`index.html`をそのままコピーする。配布先で直接編集しない。
+
+2026-10-16 Astra受入補修：--checkは属性削除・Rules版等の差分も検知する。マイルストーン出典の引用欠落またはhash変更があれば、--checkは非ゼロ終了し、通常同期も書込み前に止まる。必要な範囲を原文と照合して表示用出典を更新してから再実行する。

@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "94a387a7",
-    "sha256": "3b73609ad369d5b83a4bbfee85f69b91736ae24a4c3a0972c5de7dd65cbdd65a",
+    "head": "ab5eed94",
+    "sha256": "e5745a40a17b7f33d47c85926df350b02e4198a8a17aca3fe8d5b023faf5f66e",
     "dirty": true,
-    "generatedAt": "2026-10-16T18:32:08.423512+09:00",
+    "generatedAt": "2026-10-16T19:06:15.816219+09:00",
     "generator": "sync.py",
-    "rulesSha256": "55458ec488002b9fff2bf83a33c1bf083cb6ab2fe7a735190c0bb271219ddb53"
+    "rulesSha256": "0b2e5982f08755a9710f9b70539dbfe3c0bdf58804b8f6c13d39c91cfc6c6b62"
   },
   "tasks": [
     {
@@ -110,9 +110,9 @@
       "state": "ACTIVE",
       "owner": "現在委任された調整担当",
       "item": "[EXECUTION] マイルストーン管理の恒久維持",
-      "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
-      "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承）",
-      "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） |",
+      "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
+      "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`",
+      "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md` |",
       "sourceLine": 28,
       "group": "協働と運用",
       "permanent": true,
@@ -233,12 +233,12 @@
     },
     {
       "id": "OPS-057",
-      "state": "ACTIVE",
+      "state": "DONE",
       "owner": "Claude（姫：実装・検証） / Astra（受入）",
       "item": "[EXECUTION] Registry Studio同期の一コマンド化",
-      "condition": "2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち",
+      "condition": "2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外",
       "detail": "`Maintanance/Current/REGISTRY_STUDIO_SYNC.md`",
-      "raw": "| `OPS-057` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |",
+      "raw": "| `OPS-057` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |",
       "sourceLine": 39,
       "group": "協働と運用",
       "permanent": false,
@@ -1001,9 +1001,9 @@
         "state": "ACTIVE",
         "owner": "現在委任された調整担当",
         "item": "[EXECUTION] マイルストーン管理の恒久維持",
-        "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
-        "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承）",
-        "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） |",
+        "condition": "到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない",
+        "detail": "`Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md`",
+        "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md` |",
         "sourceLine": 28,
         "group": "協働と運用",
         "permanent": true,
@@ -1124,12 +1124,12 @@
       },
       {
         "id": "OPS-057",
-        "state": "ACTIVE",
+        "state": "DONE",
         "owner": "Claude（姫：実装・検証） / Astra（受入）",
         "item": "[EXECUTION] Registry Studio同期の一コマンド化",
-        "condition": "2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち",
+        "condition": "2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外",
         "detail": "`Maintanance/Current/REGISTRY_STUDIO_SYNC.md`",
-        "raw": "| `OPS-057` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16ユーザー依頼。CP-20261016-007のsync.py試作を仕上げ、生成・差分確認・既存検証・利用手順を接続する。マイルストーン自動導出と判断運用の変更は対象外。OPS-048配下、正式依頼済み・返却待ち | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |",
+        "raw": "| `OPS-057` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |",
         "sourceLine": 39,
         "group": "協働と運用",
         "permanent": false,
@@ -1823,8 +1823,8 @@
         "source": {
           "path": "Maintanance/MILESTONES.md",
           "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
-          "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-          "line": 136
+          "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+          "line": 138
         }
       },
       {
@@ -1835,8 +1835,8 @@
         "source": {
           "path": "Maintanance/MILESTONES.md",
           "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-          "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-          "line": 145
+          "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+          "line": 147
         }
       },
       {
@@ -1847,8 +1847,8 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-          "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-          "line": 32
+          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "line": 34
         }
       },
       {
@@ -1859,8 +1859,8 @@
         "source": {
           "path": "Maintanance/MILESTONES.md",
           "quote": "赤黒木の本文完成も必要な文書入力へ接続する",
-          "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-          "line": 46
+          "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+          "line": 48
         }
       },
       {
@@ -1871,8 +1871,8 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-          "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-          "line": 79
+          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "line": 81
         }
       },
       {
@@ -1979,8 +1979,8 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-          "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-          "line": 85
+          "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+          "line": 87
         }
       },
       {
@@ -2034,8 +2034,8 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
-        "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-        "line": 21
+        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "line": 23
       }
     },
     {
@@ -2082,8 +2082,8 @@
       "source": {
         "path": "Maintanance/MILESTONES.md",
         "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
-        "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-        "line": 136
+        "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+        "line": 138
       }
     },
     {
@@ -2168,8 +2168,8 @@
       "source": {
         "path": "Maintanance/MILESTONES.md",
         "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
-        "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-        "line": 136
+        "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+        "line": 138
       }
     },
     {
@@ -2180,8 +2180,8 @@
       "source": {
         "path": "Maintanance/MILESTONES.md",
         "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
-        "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-        "line": 145
+        "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+        "line": 147
       }
     },
     {
@@ -2192,8 +2192,8 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-        "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-        "line": 32
+        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "line": 34
       }
     },
     {
@@ -2204,8 +2204,8 @@
       "source": {
         "path": "Maintanance/MILESTONES.md",
         "quote": "赤黒木の本文完成も必要な文書入力へ接続する",
-        "sha256": "18f244b06be1424178316c615daffef9cb916e58d459c06fce412b1a66ed6f97",
-        "line": 46
+        "sha256": "d1c417d751f3a30c90142338ef33d88719f503740a06948d1152b5757e279679",
+        "line": 48
       }
     },
     {
@@ -2216,8 +2216,8 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-        "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-        "line": 79
+        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "line": 81
       }
     },
     {
@@ -2324,8 +2324,8 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-        "sha256": "4ea61dc2d98d7b2026f5218b4340bc0d635a2bb2f07d05f8eb5bc52345338dec",
-        "line": 85
+        "sha256": "2ff5f48dc65c05217fd98569b838078145a3b0b2a3079249fd72427a0949be69",
+        "line": 87
       }
     },
     {

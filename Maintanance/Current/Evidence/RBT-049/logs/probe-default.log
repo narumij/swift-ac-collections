@@ -1,0 +1,47 @@
+cmd: swift test --sanitize address --build-system native
+Building for debugging...
+[0/6] /private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/probe/.build/arm64-apple-macosx/debug/ProbePackageTests.derived/runner.swift
+[1/6] Write sources
+[3/6] Write swift-version--58304C5D6DBC2206.txt
+[5/8] Compiling ProbeTests Probe.swift
+[6/8] Emitting module ProbeTests
+[7/10] Compiling ProbePackageTests runner.swift
+[8/10] Emitting module ProbePackageTests
+[8/10] Write Objects.LinkFileList
+[9/10] Linking ProbePackageTests
+Build complete! (4.45s)
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+Test Suite 'All tests' started at 2026-10-17 04:15:16.635.
+Test Suite 'All tests' passed at 2026-10-17 04:15:16.638.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.003) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite ProbeTests started.
+􀟈  Test cleanChild() started.
+DYLD_INSERT_LIBRARIES at suite init: <unset>
+􀢄  Test cleanChild() recorded an issue at Probe.swift:9:9: Expectation failed: expected exit status ".success", but ".signal(SIGABRT)" was reported instead
+􀄵  .success → .signal(SIGABRT)
+􀄵    SIGABRT → 6
+􀢄  Test cleanChild() failed after 0.012 seconds with 1 issue.
+􀟈  Test trapChild() started.
+DYLD_INSERT_LIBRARIES at suite init: <unset>
+􀢄  Test trapChild() recorded an issue at Probe.swift:12:9: Expectation failed: expected exit status ".signal(SIGTRAP)", but ".signal(SIGABRT)" was reported instead
+􀄵  .signal(SIGTRAP) → .signal(SIGABRT)
+􀄵    SIGTRAP → 5
+􀄵    SIGABRT → 6
+􀢄  Test trapChild() failed after 0.010 seconds with 1 issue.
+􀟈  Test sanitizerStillDetectsOverflow() started.
+DYLD_INSERT_LIBRARIES at suite init: <unset>
+􀢄  Test sanitizerStillDetectsOverflow() recorded an issue at Probe.swift:23:3: Expectation failed: output.contains("AddressSanitizer: heap-buffer-overflow")
+􀄵  output.contains("AddressSanitizer: heap-buffer-overflow") → false
+􀄵    output → "==51585==ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late (e.g. via dlopen). Please launch the executable with:
+     DYLD_INSERT_LIBRARIES=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+     "interceptors not installed" && 0
+     "
+􀢄  Test sanitizerStillDetectsOverflow() failed after 0.011 seconds with 1 issue.
+􀢄  Suite ProbeTests failed after 0.035 seconds with 3 issues.
+􀢄  Test run with 3 tests in 1 suite failed after 0.035 seconds with 3 issues.
+Note: Some test targets reported failures:
+  - ProbePackageTests (Swift Testing)
+exit=1

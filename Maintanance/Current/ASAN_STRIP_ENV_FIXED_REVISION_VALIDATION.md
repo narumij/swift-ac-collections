@@ -46,4 +46,50 @@ scope until Return; the coordinator will not edit it while the work is in progre
 
 ## Return
 
-Awaiting Claude.
+### Claude return (2026-10-17, 姫)
+
+**Fixed inputs and environment.** Repository `81204d227e14710c5e1732afcf421b4252899e79` (git worktree in an isolated `mktemp` directory, own `.build`). macOS 27.0.1 (26A434), arm64, Xcode 27.0 (27A266a), Apple Swift 6.4 (swiftlang-6.4.0.34.1, clang-2100.3.34.1). ASan runtime inserted by `swift test`: `…/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib` (symlink to `…/usr/lib/clang/21/lib/darwin/`), SHA-256 `3a2b9562…7579bd7`. Shell started with `ASAN_OPTIONS` and `DYLD_INSERT_LIBRARIES` unset. Traits: the default set, no `--traits` (on macOS `DEATH_TEST` is defined by the platform condition in Package.swift). Only `ASAN_OPTIONS=strip_env=0` differs between the conditions; the repository runs share one build (`--skip-build`).
+
+**Changed files.** Only new evidence under `Evidence/RBT-049/` and this Return. No product, Tests, Package.swift, CI, Registry or other-task edits. No commit.
+
+**Exact commands and evidence.** `Evidence/RBT-049/commands.sh`, `environment.txt`, `logs/` (each log: command on line 1, `exit=` last).
+
+**Per-case comparison (default → strip_env=0).**
+
+| Case | default | strip_env=0 |
+| --- | --- | --- |
+| Probe (3 tests) | exit 1. cleanChild and trapChild get SIGABRT; overflow control fails (no ASan report). Variable at suite init `<unset>` | exit 0. 3 passed. Variable = ASan dylib path |
+| DeathTests (213 tests, 20 suites) | exit 1. 360 issues, 269 of them SIGABRT | exit 0. 213 passed |
+| RedBlackTreeInternalCoverageTests (5 tests, 1 suite) | exit 1. 1 issue: `_TrackingTagSealing.sealのカバレッジ確保` expected SIGTRAP, got SIGABRT | exit 0. 5 passed |
+
+The DeathTests figures match the 2026-10-16 working-copy run exactly (213 / 360 / 269). The pinned revision now replaces that unrecorded working copy.
+
+**Detector-control validity.**
+- Established for strip_env=0: in a child process, the intentional heap-buffer-overflow was reported (`AddressSanitizer: heap-buffer-overflow`), and the repository test binary links `@rpath/libclang_rt.asan_osx_dynamic.dylib` (39 `__asan_` imports). So the passing strip_env=0 runs are ASan-instrumented, not silently uninstrumented.
+- Under the default settings the control is invalid by construction (the child aborts before it can detect anything).
+
+**Mechanism.**
+- Confirmed by runtime behaviour: with the default setting, the parent's `DYLD_INSERT_LIBRARIES` no longer contains the runtime at suite init. A child started from it prints `ERROR: Interceptors are not working. This may be because AddressSanitizer is loaded too late…` and `"interceptors not installed" && 0`, then aborts with SIGABRT. This was seen in 2 Probe lines and 182 DeathTests lines, and in none of the strip_env=0 logs.
+- Source correspondence: in llvm/llvm-project `50b1c281`, `InitializePlatformEarly()` calls `VerifyInterceptorsWorking()` (which raises the `RAW_CHECK` above) and then `StripEnv()`. `StripEnv()` removes the runtime from `DYLD_INSERT_LIBRARIES` unless `strip_env` is false, and the flag is declared `COMMON_FLAG(bool, strip_env, true, …)`. Excerpts are in `compiler-rt-excerpts.txt`.
+- The installed runtime contains the same flag help text and the same error strings. It is an Apple build from internal sources (`clang_compiler_rt`, clang-2100.3.34.1), so the exact source revision is not established. The match is by identical strings and behaviour, not by revision.
+
+**Remaining uncertainty and limits.**
+- RedBlackTreeInternalCoverageTests does not capture child stderr, so there the interceptor error is inferred (consistent SIGABRT), not observed.
+- Not verified: Linux (the mechanism is the macOS DYLD path), other Swift or Xcode versions, the full suite under ASan, the non-native build system, and CI.
+- Product-wide ASan success or release readiness is not claimed. Adopting `strip_env=0` in local scripts or CI remains a separate decision.
+
+**Blockers.** None.
+
+**Work completion / scope release.** Done. The temporary worktree and directory were removed; a pre-existing unrelated prunable worktree under `/private/tmp` was left untouched. Output scope released to the coordinator.
+
+## Codex受入（2026-10-17）
+
+ユーザーの受入処理依頼に基づき、Claude原Returnを保持して保存証拠を照合した。RBT-049の固定版・限定調査を受入、DONEとする。製品・Tests・CIへの適用判断は含まない。
+
+- 固定入力81204d227e14710c5e1732afcf421b4252899e79、環境記録、実行コマンド、Probe、ビルドと6本の比較ログを確認。固定版Package.swiftではmacOSでDEATH_TESTが有効となるため、追加traitなしの選択と整合する。既存Probe.swiftとの一致も確認した。
+- ログ末尾の終了statusと集計は、Probeが既定exit=1・3 issues／strip_env=0でexit=0・3件成功、DeathTestsが既定exit=1・213件360 issues／strip_env=0でexit=0・213件成功、内部カバレッジが既定exit=1・5件1 issue／strip_env=0でexit=0・5件成功。ASanビルドはexit=0。
+- Probeの負例は子プロセスのstderrにheap-buffer-overflowが含まれることをassertする。strip_env=0でこのassertを含む3件が成功し、既定ではassert失敗・interceptorエラーを確認した。成功時の子stderr全文はログに出力されないため、検出確認の証拠は保存Probeのassertと成功結果であり、生のASan診断全文を保存したとはしない。環境記録のASanリンク情報はClaudeの採取証拠として扱う。
+- 原Returnの「Interceptors are not working」の出現行数は補正する。保存ログを文字列で数えるとProbe既定1行、DeathTests既定91行、strip_env=0はともに0行。原文の2行・182行は採用しない。DeathTestsのSIGABRTは単純な行数とは区別し、issue記録を単位に扱う。件数の補正は比較結果を変えない。
+- compiler-rt保存抜粋ではstrip_env既定trueとDYLD_INSERT_LIBRARIESからruntimeを除く処理が示される。Apple実装と公開ソースの厳密な版対応は未確定のまま。内部カバレッジの子stderrに基づく原因確定も行わない。
+
+今回の受入では試験やネットワーク取得を再実行していない。受入範囲は保存証拠による固定版・記載macOS環境での比較調査。Linux、他toolchain、全体suite、CI成功、製品全体のASan合格、リリース可否は未検証。strip_env=0の恒久採用は別判断であり、後続実装や新規taskを開始しない。commit・Studio再生成は行っていない。

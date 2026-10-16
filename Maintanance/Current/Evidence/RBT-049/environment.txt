@@ -1,0 +1,36 @@
+date: 2026-10-17 04:14:57 JST
+repo pin: 81204d227e14710c5e1732afcf421b4252899e79
+--- sw_vers
+ProductName:		macOS
+ProductVersion:		27.0.1
+BuildVersion:		26A434
+--- uname -m
+arm64
+--- swift --version
+swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)
+Target: arm64-apple-macosx27.0.0
+--- xcode-select -p
+/Applications/Xcode.app/Contents/Developer
+--- xcodebuild -version
+Xcode 27.0
+Build version 27A266a
+--- toolchain
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift
+asan runtime: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+3a2b956276eea23f703fabbf1c9bc75318d032ea66d11d6eb400d3e2b7579bd7  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+-rwxr-xr-x  1 narumij  staff  4940928 Sep  3 21:22 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+/AppleInternal/Library/BuildRoots/4~CXBqugC50TQ7Kh9N7vrCC7JgGyX-GVUEPubPx_k/Library/Caches/com.apple.xbs/TemporaryDirectory.3PVQl1/Sources/clang_compiler_rt/compiler-rt/lib/asan/asan_allocator.cpp
+/AppleInternal/Library/BuildRoots/4~CXBqugC50TQ7Kh9N7vrCC7JgGyX-GVUEPubPx_k/Library/Caches/com.apple.xbs/TemporaryDirectory.3PVQl1/Sources/clang_compiler_rt/compiler-rt/lib/asan/../sanitizer_common/sanitizer_allocator_primary64.h
+/AppleInternal/Library/BuildRoots/4~CXBqugC50TQ7Kh9N7vrCC7JgGyX-GVUEPubPx_k/Library/Caches/com.apple.xbs/TemporaryDirectory.3PVQl1/Sources/clang_compiler_rt/compiler-rt/lib/asan/../sanitizer_common/sanitizer_allocator_secondary.h
+strip_env
+--- ASAN_OPTIONS in this shell: <unset>
+DYLD_INSERT_LIBRARIES: <unset>
+--- runtime actually inserted (from probe-strip_env0.log)
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+-rwxr-xr-x  1 narumij  staff  4940928 Sep  3 21:22 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+3a2b956276eea23f703fabbf1c9bc75318d032ea66d11d6eb400d3e2b7579bd7  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/clang/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/libclang_rt.asan_osx_dynamic.dylib
+--- test binary linkage (otool -L, asan lines)
+repo/.build/arm64-apple-macosx/debug/swift-ac-collectionsPackageTests.xctest/Contents/MacOS/swift-ac-collectionsPackageTests
+	@rpath/libclang_rt.asan_osx_dynamic.dylib (compatibility version 0.0.0, current version 0.0.0)
+__asan_init refs: 39

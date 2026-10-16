@@ -1,0 +1,498 @@
+cmd: ASAN_OPTIONS=strip_env=0 swift test --skip-build --sanitize address --build-system native --filter DeathTests
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/NextPermutationModule/Documentation': File not found.
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/ElementBufferModule/Documentation': File not found.
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/OptionalElementBufferModule/Documentation': File not found.
+[0/1] Planning build
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite TreeFoundamentalDeathTests started.
+􀟈  Suite RedBlackTreeDictionaryDeathTests started.
+􀟈  Suite RedBlackTreeMultiMapDeathTests started.
+􀟈  Suite NextPermutations_99_ViewInvalidationDeathTests started.
+􀟈  Suite RedBlackTreeMultiMapRangePredicatePropagationTests started.
+􀟈  Suite NextPermutations_99_DeathTests started.
+􀟈  Suite RedBlackTreeSetAdditionalDeathTests started.
+􀟈  Suite NextPermutationsSequenceExperimentDeathTests started.
+􀟈  Suite RedBlackTreeViewDeathTests started.
+􀟈  Suite BareArray_96_BorrowedReferenceDeathTests started.
+􀟈  Suite RedBlackTreeMultiSetRangePredicatePropagationTests started.
+􀟈  Suite RedBlackTreeInternalPointerDeathTests started.
+􀟈  Suite RedBlackTreeSetRangePredicatePropagationTests started.
+􀟈  Suite RedBlackTreeMultiSetDeathTests started.
+􀟈  Suite RedBlackTreeDictionaryRangePredicatePropagationTests started.
+􀟈  Suite BareArray_97_CoordinateValueAccessDeathTests started.
+􀟈  Suite OptionalArray_97_CoordinateValueAccessDeathTests started.
+􀟈  Suite OptionalArrayDimensionDeathTests started.
+􀟈  Suite RedBlackTreeSetDeathTests started.
+􀟈  Test creating128BitBitmapForNullPointer_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test conditionallyErasingReversedRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingReversedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test comparingMultiWithNullRightPointer_terminatesProcess() started.
+􀟈  Suite BareArray_99_DeathTests started.
+􀟈  Test measuringNullPointerHeight_terminatesProcess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test sealingNegativeTrackingTag_terminatesProcess() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test comparingBitmapWithNullRightPointer_terminatesProcess() started.
+􀟈  Test formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test comparingMultiWithNullLeftPointer_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test creatingBitmapForNullPointer_terminatesProcess() started.
+􀟈  Test reversedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test comparingBitmapWithNullLeftPointer_terminatesProcess() started.
+􀟈  Test closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test erasingForeignRangeFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingFirstFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test duplicateKeysInUniqueKeysInitializer_terminateProcess() started.
+􀟈  Test removedIndexRange_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingLastFromEmptyDictionary_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingThroughReversedRangeView_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingLastFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test endIndexTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test removingFirstFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test subscriptTrapsAfterNextReturnsNewView() started.
+􀟈  Test startIndexTrapsAfterNextReturnsNewView() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test startIndexTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test endIndexTrapsAfterNextReturnsNewView() started.
+􀟈  Test terminalNextReturnsNilForTheSetupsBelow() started.
+􀟈  Test startIndexTrapsAfterTerminalNextReturnsNil() started.
+􀟈  Test copyOfViewTrapsAfterNext() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その4" started.
+􀟈  Test subscriptTrapsAfterTerminalNextReturnsNil() started.
+􀟈  Test currentViewAndItsCopyAreReadableBeforeAdvancing() started.
+􀟈  Test subscriptTrapsAfterOwnerIsDestroyed() started.
+􀟈  Test "removed index cannot be subscripted" started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その3" started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その1" started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その5" started.
+􀟈  Test "removed index setup reaches the removed state" started.
+􀟈  Test "endIndex cannot be subscripted" started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その3" started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test copiedIteratorInvalidatesTheOtherCopiesCurrentView() started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その2" started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test removingFirstFromEmptyKeyOnlyRangeViewOfNonEmptySet_terminatesProcess() started.
+􀟈  Test intMinIndexRead_traps() started.
+􀟈  Test removingLastFromEmptyMappedValuesView_terminatesProcess() started.
+􀟈  Test intMaxIndexRead_traps() started.
+􀟈  Test "文字列のインデックス範囲外の挙動と同様にする、その2" started.
+􀟈  Test "インデックスによる区間不正はtrapすること、その1" started.
+􀟈  Test negativeIndexRead_traps() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test removingFirstFromEmptyKeyValueRangeView_terminatesProcess() started.
+􀟈  Test referenceRejectsInvalidCoordinates4D() started.
+􀟈  Test referenceRejectsInvalidCoordinates3D() started.
+􀟈  Test referenceRejectsInvalidCoordinates2D() started.
+􀟈  Test collectingViewsThenReadingAnEarlierViewTraps() started.
+􀟈  Test pastEndIndexRead_traps() started.
+􀟈  Test referenceRejectsInvalidCoordinates1D() started.
+􀟈  Test removingLastFromEmptyKeyValueRangeView_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptyKeyOnlyRangeView_terminatesProcess() started.
+􀟈  Test endIndexRead_traps() started.
+􀟈  Test removingFirstFromEmptyMappedValuesView_terminatesProcess() started.
+􀟈  Test removingLastFromEmptyKeyValueRangeViewOfNonEmptyDictionary_terminatesProcess() started.
+􀟈  Test removingLastFromEmptyKeyOnlyRangeView_terminatesProcess() started.
+􀟈  Test referenceRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test nullLeftPointer_terminatesProcess() started.
+􀟈  Test endRightPointer_terminatesProcess() started.
+􀟈  Test endLeftPointer_terminatesProcess() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test nullRightPointer_terminatesProcess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test elementAtRejectsInvalidCoordinates4D() started.
+􀟈  Test removingLastFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test setElementRejectsInvalidCoordinates4D() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test setElementRejectsInvalidCoordinates2D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates3D() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test emptyBufferRejectsCoordinateZero4D() started.
+􀟈  Test removingFirstFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test elementAtRejectsInvalidCoordinates1D() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test elementAtRejectsInvalidCoordinates3D() started.
+􀟈  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test emptyBufferRejectsCoordinateZero3D() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test elementAtRejectsInvalidCoordinates1D() started.
+􀟈  Test setElementRejectsInvalidCoordinates4D() started.
+􀟈  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test elementAtRejectsInvalidCoordinates4D() started.
+􀟈  Test setElementRejectsInvalidCoordinates3D() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test setElementRejectsInvalidCoordinates1D() started.
+􀟈  Test setElementRejectsInvalidCoordinates1D() started.
+􀟈  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test setElementRejectsInvalidCoordinates2D() started.
+􀟈  Test emptyBufferRejectsCoordinateZero2D() started.
+􀟈  Test elementAtRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test setElementRejectsInvalidCoordinates3D() started.
+􀟈  Test setElementRejectsCoordinateZeroInEmptyStorage() started.
+􀟈  Test elementAtRejectsInvalidCoordinates2D() started.
+􀟈  Test negativeSize1_traps_4D() started.
+􀟈  Test elementAtRejectsInvalidCoordinates2D() started.
+􀟈  Test case passing 1 argument operation → .freeMaximum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freeMinimum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test emptyBufferRejectsCoordinateZero1D() started.
+􀟈  Test case passing 1 argument operation → .freeNext to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .freeNextIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test negativeWidth_traps_2D() started.
+􀟈  Test negativeCapacity_traps_1D() started.
+􀟈  Test case passing 1 argument operation → .freePreviousIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingAnAlreadyRemovedIndex_terminatesProcess() started.
+􀟈  Test case passing 1 argument operation → .protocolMinimum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test negativeDepth_traps_3D() started.
+􀟈  Test negativeSize3_traps_4D() started.
+􀟈  Test case passing 1 argument operation → .protocolMaximum to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .protocolNext to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test case passing 1 argument operation → .protocolNextIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2" started.
+􀟈  Test removingLastFromEmptySet_terminatesProcess() started.
+􀟈  Test case passing 1 argument operation → .protocolPreviousIterator to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test productOverflow_traps_2D() started.
+􀟈  Test negativeHeight_traps_3D() started.
+􀟈  Test case passing 1 argument operation → .protocolLeaf to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test negativeSize2_traps_4D() started.
+􀟈  Test case passing 1 argument operation → .leftRotateNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test negativeSize0_traps_4D() started.
+􀟈  Test case passing 1 argument operation → .leftRotateMissingRightChild to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test negativeWidth_traps_3D() started.
+􀟈  Test productOverflow_traps_3D() started.
+􀟈  Test case passing 1 argument operation → .rightRotateNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test case passing 1 argument operation → .rightRotateMissingLeftChild to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test removingFirstFromEmptySet_terminatesProcess() started.
+􀟈  Test productOverflow_traps_4D() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test case passing 1 argument operation → .balanceRoot to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test negativeHeight_traps_2D() started.
+􀟈  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2" started.
+􀟈  Test case passing 1 argument operation → .balanceInsertedNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingForeignRangeFromEmptySet_terminatesProcess() started.
+􀟈  Test case passing 1 argument operation → .removeRoot to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test case passing 1 argument operation → .removeNode to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test case passing 1 argument operation → .removeMalformedTree to nullAlgorithmPrecondition_terminatesProcess(_:) started.
+􀟈  Test negativeSingleAxis_traps_2DRepeating() started.
+􀟈  Test dimensionProductOverflow_traps_2DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_4DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_4DRepeating() started.
+􀟈  Test dimensionProductOverflow_traps_3DClosure() started.
+􀟈  Test negativeDimension_traps_1DClosure() started.
+􀟈  Test negativeSingleAxis_traps_3DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_3DRepeating() started.
+􀟈  Test negativeDimension_traps_3DClosure() started.
+􀟈  Test zeroAndNegativeAxes_traps_2D() started.
+􀟈  Test negativeDimension_traps_1DRepeating() started.
+􀟈  Test negativeDimension_traps_4DRepeating() started.
+􀟈  Test negativeSingleAxis_traps_4DClosure() started.
+􀟈  Test zeroAndNegativeAxes_traps_4D() started.
+􀟈  Test negativeDimension_traps_2DClosure() started.
+􀟈  Test dimensionProductOverflow_traps_2DRepeating() started.
+􀟈  Test zeroAndNegativeAxes_traps_3D() started.
+􀟈  Test negativeSingleAxis_traps_4DRepeating() started.
+􀟈  Test negativeDimension_traps_3DRepeating() started.
+􀟈  Test negativeDimension_traps_2DRepeating() started.
+􀟈  Test negativeSingleAxis_traps_3DRepeating() started.
+􀟈  Test negativeSingleAxis_traps_2DClosure() started.
+􀟈  Test negativeDimension_traps_4DClosure() started.
+􁁛  Test terminalNextReturnsNilForTheSetupsBelow() passed after 4.798 seconds.
+􁁛  Test currentViewAndItsCopyAreReadableBeforeAdvancing() passed after 4.798 seconds.
+􁁛  Test "removed index setup reaches the removed state" passed after 4.868 seconds.
+􁁛  Test erasingReversedIndexRange_terminatesWithoutInvalidMemoryAccess() passed after 6.312 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 6.316 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 6.317 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 6.323 seconds.
+􁁛  Test removingLastFromEmptyMultiMap_terminatesProcess() passed after 6.324 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 6.325 seconds.
+􁁛  Test duplicateKeysInUniqueKeysInitializer_terminateProcess() passed after 6.325 seconds.
+􁁛  Test removingFirstFromEmptyDictionary_terminatesProcess() passed after 6.325 seconds.
+􁁛  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" passed after 6.325 seconds.
+􁁛  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 6.325 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" passed after 6.327 seconds.
+􁁛  Test subscriptTrapsAfterOwnerIsDestroyed() passed after 6.327 seconds.
+􁁛  Test removingLastFromEmptyMultiSet_terminatesProcess() passed after 6.399 seconds.
+􁁛  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" passed after 6.416 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" passed after 6.417 seconds.
+􁁛  Test removingLastFromEmptyKeyOnlyRangeView_terminatesProcess() passed after 6.425 seconds.
+􁁛  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" passed after 6.426 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" passed after 6.433 seconds.
+􁁛  Test nullLeftPointer_terminatesProcess() passed after 6.469 seconds.
+􁁛  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" passed after 6.498 seconds.
+􁁛  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() passed after 6.506 seconds.
+􁁛  Test creating128BitBitmapForNullPointer_terminatesProcess() passed after 6.910 seconds.
+􁁛  Test comparingMultiWithNullRightPointer_terminatesProcess() passed after 6.909 seconds.
+􁁛  Test sealingNegativeTrackingTag_terminatesProcess() passed after 6.924 seconds.
+􁁛  Test measuringNullPointerHeight_terminatesProcess() passed after 6.924 seconds.
+􁁛  Test indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() passed after 6.925 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 6.924 seconds.
+􁁛  Test endIndexSubscript_terminatesProcess() passed after 6.924 seconds.
+􁁛  Test comparingBitmapWithNullRightPointer_terminatesProcess() passed after 6.930 seconds.
+􁁛  Test nullAlgorithmPrecondition_terminatesProcess(_:) with 20 test cases passed after 6.930 seconds.
+􁁛  Test formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() passed after 6.930 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" passed after 6.930 seconds.
+􁁛  Test comparingMultiWithNullLeftPointer_terminatesProcess() passed after 6.930 seconds.
+􁁛  Test mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() passed after 6.930 seconds.
+􁁛  Test comparingBitmapWithNullLeftPointer_terminatesProcess() passed after 6.930 seconds.
+􁁛  Test mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() passed after 6.930 seconds.
+􁁛  Test advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() passed after 6.850 seconds.
+􁁛  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() passed after 6.930 seconds.
+􁁛  Test "RangeExpressionでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" passed after 6.881 seconds.
+􁁛  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" passed after 6.930 seconds.
+􁁛  Test closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 6.930 seconds.
+􁁛  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 6.973 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" passed after 6.974 seconds.
+􁁛  Test endIndexSubscript_terminatesProcess() passed after 6.974 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" passed after 7.042 seconds.
+􁁛  Test erasingForeignRangeFromEmptyDictionary_terminatesProcess() passed after 7.042 seconds.
+􁁛  Test closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" passed after 7.042 seconds.
+􁁛  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test erasingThroughReversedRangeView_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test removedIndexRange_terminatesWithoutInvalidMemoryAccess() passed after 7.042 seconds.
+􁁛  Test removingLastFromEmptyDictionary_terminatesProcess() passed after 7.042 seconds.
+􁁛  Test conditionallyErasingReversedRange_terminatesWithoutInvalidMemoryAccess() passed after 7.044 seconds.
+􁁛  Test creatingBitmapForNullPointer_terminatesProcess() passed after 7.043 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" passed after 7.042 seconds.
+􁁛  Test startIndexTrapsAfterNextReturnsNewView() passed after 7.041 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" passed after 7.042 seconds.
+􁁛  Test endIndexTrapsAfterNextReturnsNewView() passed after 7.041 seconds.
+􁁛  Test endIndexTrapsAfterOwnerIsDestroyed() passed after 7.042 seconds.
+􁁛  Test subscriptTrapsAfterNextReturnsNewView() passed after 7.042 seconds.
+􁁛  Test startIndexTrapsAfterOwnerIsDestroyed() passed after 7.041 seconds.
+􁁛  Test subscriptTrapsAfterTerminalNextReturnsNil() passed after 7.041 seconds.
+􁁛  Test "removed index cannot be subscripted" passed after 7.041 seconds.
+􁁛  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" passed after 7.081 seconds.
+􁁛  Test startIndexTrapsAfterTerminalNextReturnsNil() passed after 7.081 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" passed after 7.082 seconds.
+􁁛  Test copyOfViewTrapsAfterNext() passed after 7.081 seconds.
+􁁛  Test "インデックスによる区間不正はtrapすること、その3" passed after 7.081 seconds.
+􁁛  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.081 seconds.
+􁁛  Test removingFirstFromEmptyKeyOnlyRangeViewOfNonEmptySet_terminatesProcess() passed after 7.129 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 7.129 seconds.
+􁁛  Test "インデックスによる区間不正はtrapすること、その2" passed after 7.129 seconds.
+􁁛  Test intMinIndexRead_traps() passed after 7.129 seconds.
+􁁛  Test removingFirstFromEmptyMultiMap_terminatesProcess() passed after 7.130 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 7.129 seconds.
+􁁛  Test reversedIndexRange_terminatesWithoutInvalidMemoryAccess() passed after 7.132 seconds.
+􁁛  Test "endIndex cannot be subscripted" passed after 7.130 seconds.
+􁁛  Test negativeIndexRead_traps() passed after 7.129 seconds.
+􁁛  Test removingLastFromEmptyMappedValuesView_terminatesProcess() passed after 7.129 seconds.
+􁁛  Test removingFirstFromEmptyKeyValueRangeView_terminatesProcess() passed after 7.129 seconds.
+􁁛  Test copiedIteratorInvalidatesTheOtherCopiesCurrentView() passed after 7.130 seconds.
+􁁛  Test collectingViewsThenReadingAnEarlierViewTraps() passed after 7.129 seconds.
+􁁛  Test pastEndIndexRead_traps() passed after 7.129 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 7.130 seconds.
+􁁛  Test removingLastFromEmptyKeyValueRangeView_terminatesProcess() passed after 7.130 seconds.
+􁁛  Test removingFirstFromEmptyKeyOnlyRangeView_terminatesProcess() passed after 7.130 seconds.
+􁁛  Test removingFirstFromEmptyMappedValuesView_terminatesProcess() passed after 7.130 seconds.
+􁁛  Test endRightPointer_terminatesProcess() passed after 7.144 seconds.
+􁁛  Test endIndexRead_traps() passed after 7.144 seconds.
+􁁛  Test removingLastFromEmptyKeyValueRangeViewOfNonEmptyDictionary_terminatesProcess() passed after 7.144 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 7.184 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 7.184 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 7.184 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" passed after 7.183 seconds.
+􁁛  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.183 seconds.
+􁁛  Test endLeftPointer_terminatesProcess() passed after 7.206 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 7.205 seconds.
+􁁛  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 7.205 seconds.
+􁁛  Test nullRightPointer_terminatesProcess() passed after 7.206 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" passed after 7.206 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" passed after 7.206 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" passed after 7.205 seconds.
+􁁛  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() passed after 7.205 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 7.206 seconds.
+􁁛  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() passed after 7.205 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 7.206 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" passed after 7.206 seconds.
+􁁛  Test removingFirstFromEmptyMultiSet_terminatesProcess() passed after 7.206 seconds.
+􁁛  Test "インデックスによる区間不正はtrapすること、その1" passed after 7.208 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 7.206 seconds.
+􁁛  Test endIndexSubscript_terminatesProcess() passed after 7.206 seconds.
+􁁛  Test intMaxIndexRead_traps() passed after 7.209 seconds.
+􁁛  Test dimensionProductOverflow_traps_4DRepeating() passed after 5.979 seconds.
+􁁛  Test negativeDimension_traps_4DRepeating() passed after 5.940 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" passed after 7.247 seconds.
+􁁛  Test negativeSize1_traps_4D() passed after 7.246 seconds.
+􁁛  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() passed after 7.291 seconds.
+􁁛  Test negativeWidth_traps_2D() passed after 7.285 seconds.
+􁁛  Test negativeCapacity_traps_1D() passed after 7.311 seconds.
+􁁛  Test "RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" passed after 7.315 seconds.
+􁁛  Test removingAnAlreadyRemovedIndex_terminatesProcess() passed after 7.315 seconds.
+􁁛  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() passed after 7.322 seconds.
+􁁛  Test negativeDimension_traps_2DRepeating() passed after 6.001 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 7.329 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 7.326 seconds.
+􁁛  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" passed after 7.371 seconds.
+􁁛  Test negativeSize3_traps_4D() passed after 7.368 seconds.
+􁁛  Test negativeDepth_traps_3D() passed after 7.370 seconds.
+􁁛  Test "RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" passed after 7.341 seconds.
+􁁛  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2" passed after 7.362 seconds.
+􁁛  Test negativeSize0_traps_4D() passed after 7.341 seconds.
+􁁛  Test negativeWidth_traps_3D() passed after 7.336 seconds.
+􁁛  Test negativeSize2_traps_4D() passed after 7.343 seconds.
+􁁛  Test negativeHeight_traps_3D() passed after 7.348 seconds.
+􁁛  Test removingFirstFromEmptySet_terminatesProcess() passed after 7.319 seconds.
+􁁛  Test removingLastFromEmptySet_terminatesProcess() passed after 7.357 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 7.316 seconds.
+􁁛  Test productOverflow_traps_3D() passed after 7.336 seconds.
+􁁛  Test negativeHeight_traps_2D() passed after 7.315 seconds.
+􁁛  Test "RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2" passed after 7.311 seconds.
+􁁛  Test productOverflow_traps_2D() passed after 7.355 seconds.
+􁁛  Test productOverflow_traps_4D() passed after 7.316 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 7.305 seconds.
+􁁛  Suite RedBlackTreeViewDeathTests passed after 7.395 seconds.
+􁁛  Test dimensionProductOverflow_traps_3DClosure() passed after 6.123 seconds.
+􁁛  Suite RedBlackTreeInternalPointerDeathTests passed after 7.395 seconds.
+􁁛  Test erasingForeignRangeFromEmptySet_terminatesProcess() passed after 7.315 seconds.
+􁁛  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.391 seconds.
+􁁛  Test "RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" passed after 7.352 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 7.347 seconds.
+􁁛  Test negativeDimension_traps_1DClosure() passed after 6.126 seconds.
+􁁛  Test dimensionProductOverflow_traps_3DRepeating() passed after 6.085 seconds.
+􁁛  Test dimensionProductOverflow_traps_2DClosure() passed after 6.135 seconds.
+􁁛  Test staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() passed after 7.324 seconds.
+􁁛  Test negativeDimension_traps_1DRepeating() passed after 6.093 seconds.
+􁁛  Test dimensionProductOverflow_traps_2DRepeating() passed after 6.116 seconds.
+􁁛  Suite TreeFoundamentalDeathTests passed after 7.431 seconds.
+􁁛  Test dimensionProductOverflow_traps_4DClosure() passed after 6.159 seconds.
+􁁛  Test negativeDimension_traps_3DClosure() passed after 6.138 seconds.
+􁁛  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.454 seconds.
+􁁛  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.458 seconds.
+􁁛  Test negativeDimension_traps_4DClosure() passed after 6.062 seconds.
+􁁛  Suite NextPermutations_99_ViewInvalidationDeathTests passed after 7.460 seconds.
+􁁛  Suite RedBlackTreeMultiMapRangePredicatePropagationTests passed after 7.460 seconds.
+􁁛  Test negativeDimension_traps_3DRepeating() passed after 6.128 seconds.
+􁁛  Suite NextPermutations_99_DeathTests passed after 7.460 seconds.
+􁁛  Suite NextPermutationsSequenceExperimentDeathTests passed after 7.460 seconds.
+􁁛  Suite RedBlackTreeMultiSetRangePredicatePropagationTests passed after 7.483 seconds.
+􁁛  Test negativeDimension_traps_2DClosure() passed after 6.169 seconds.
+􁁛  Suite RedBlackTreeSetRangePredicatePropagationTests passed after 7.578 seconds.
+􁁛  Suite RedBlackTreeDictionaryRangePredicatePropagationTests passed after 7.578 seconds.
+􁁛  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.575 seconds.
+􁁛  Suite OptionalArrayDimensionDeathTests passed after 7.651 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates1D() passed after 7.643 seconds.
+􁁛  Test "文字列のインデックス範囲外の挙動と同様にする、その1" passed after 7.646 seconds.
+􁁛  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.652 seconds.
+􁁛  Test referenceRejectsInvalidCoordinates1D() passed after 7.753 seconds.
+􁁛  Suite RedBlackTreeSetDeathTests passed after 7.759 seconds.
+􁁛  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.766 seconds.
+􁁛  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.769 seconds.
+􁁛  Test "文字列のインデックス範囲外の挙動と同様にする、その2" passed after 7.808 seconds.
+􁁛  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.807 seconds.
+􁁛  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 7.946 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates1D() passed after 7.942 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates1D() passed after 7.971 seconds.
+􁁛  Suite RedBlackTreeMultiMapDeathTests passed after 7.990 seconds.
+􁁛  Test negativeSingleAxis_traps_2DRepeating() passed after 6.757 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates1D() passed after 8.007 seconds.
+􁁛  Suite RedBlackTreeDictionaryDeathTests passed after 8.021 seconds.
+􁁛  Suite RedBlackTreeMultiSetDeathTests passed after 8.128 seconds.
+􁁛  Test negativeSingleAxis_traps_2DClosure() passed after 6.816 seconds.
+􁁛  Test negativeSingleAxis_traps_3DClosure() passed after 7.357 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates2D() passed after 8.839 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates2D() passed after 8.839 seconds.
+􁁛  Test negativeSingleAxis_traps_3DRepeating() passed after 7.552 seconds.
+􁁛  Test referenceRejectsInvalidCoordinates2D() passed after 8.879 seconds.
+􁁛  Test emptyBufferRejectsCoordinateZero1D() passed after 8.881 seconds.
+􁁛  Test referenceRejectsCoordinateZeroInEmptyStorage() passed after 8.886 seconds.
+􁁛  Test "文字列のインデックス範囲外の挙動と同様にする、その5" passed after 8.943 seconds.
+􁁛  Test elementAtRejectsCoordinateZeroInEmptyStorage() passed after 8.967 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates2D() passed after 8.970 seconds.
+􁁛  Test "文字列のインデックス範囲外の挙動と同様にする、その3" passed after 8.973 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates2D() passed after 8.970 seconds.
+􁁛  Test "文字列のインデックス範囲外の挙動と同様にする、その4" passed after 9.059 seconds.
+􁁛  Test zeroAndNegativeAxes_traps_3D() passed after 7.801 seconds.
+􁁛  Test zeroAndNegativeAxes_traps_4D() passed after 7.801 seconds.
+􁁛  Test setElementRejectsCoordinateZeroInEmptyStorage() passed after 9.133 seconds.
+􁁛  Test zeroAndNegativeAxes_traps_2D() passed after 7.828 seconds.
+􁁛  Test negativeSingleAxis_traps_4DClosure() passed after 7.828 seconds.
+􁁛  Suite RedBlackTreeSetAdditionalDeathTests passed after 9.142 seconds.
+􁁛  Test negativeSingleAxis_traps_4DRepeating() passed after 7.972 seconds.
+􁁛  Suite BareArray_99_DeathTests passed after 9.307 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates3D() passed after 9.367 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates3D() passed after 9.399 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates3D() passed after 9.403 seconds.
+􁁛  Test referenceRejectsInvalidCoordinates3D() passed after 9.445 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates3D() passed after 9.495 seconds.
+􁁛  Test emptyBufferRejectsCoordinateZero2D() passed after 9.495 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates4D() passed after 9.warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+712 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates4D() passed after 9.741 seconds.
+􁁛  Suite BareArray_97_CoordinateValueAccessDeathTests passed after 9.748 seconds.
+􁁛  Test elementAtRejectsInvalidCoordinates4D() passed after 9.771 seconds.
+􁁛  Test referenceRejectsInvalidCoordinates4D() passed after 9.776 seconds.
+􁁛  Suite BareArray_96_BorrowedReferenceDeathTests passed after 9.782 seconds.
+􁁛  Test setElementRejectsInvalidCoordinates4D() passed after 9.808 seconds.
+􁁛  Test emptyBufferRejectsCoordinateZero3D() passed after 9.884 seconds.
+􁁛  Test emptyBufferRejectsCoordinateZero4D() passed after 10.205 seconds.
+􁁛  Suite OptionalArray_97_CoordinateValueAccessDeathTests passed after 10.212 seconds.
+􁁛  Test run with 213 tests in 20 suites passed after 10.213 seconds.
+  45.11s user 15.44s system 457% cpu 13.229 total
+exit=0

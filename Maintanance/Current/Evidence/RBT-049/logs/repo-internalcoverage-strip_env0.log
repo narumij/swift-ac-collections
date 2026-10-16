@@ -1,0 +1,24 @@
+cmd: ASAN_OPTIONS=strip_env=0 swift test --skip-build --sanitize address --build-system native --filter RedBlackTreeInternalCoverageTests
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/NextPermutationModule/Documentation': File not found.
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/ElementBufferModule/Documentation': File not found.
+warning: 'repo': Invalid Exclude '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/hime-rbt049.7yYvbAkYDS/repo/Sources/OptionalElementBufferModule/Documentation': File not found.
+[0/1] Planning build
+warning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system.
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite RedBlackTreeInternalCoverageTests started.
+􀟈  Test "_TrackingTagSealing.sealのカバレッジ確保" started.
+􀟈  Test _BaseNode_KeyProtocolのカバレッジ確保() started.
+􀟈  Test ___default_three_way_comparatorのカバレッジ確保() started.
+􀟈  Test __eager_compare_resultのカバレッジ確保() started.
+􀟈  Test _PairBasePayloadValue_MappedValueProtocolのカバレッジ確保() started.
+􁁛  Test __eager_compare_resultのカバレッジ確保() passed after 0.001 seconds.
+􁁛  Test _BaseNode_KeyProtocolのカバレッジ確保() passed after 0.001 seconds.
+􁁛  Test ___default_three_way_comparatorのカバレッジ確保() passed after 0.001 seconds.
+􁁛  Test _PairBasePayloadValue_MappedValueProtocolのカバレッジ確保() passed after 0.001 seconds.
+􁁛  Test "_TrackingTagSealing.sealのカバレッジ確保" passed after 0.097 seconds.
+􁁛  Suite RedBlackTreeInternalCoverageTests passed after 0.097 seconds.
+􁁛  Test run with 5 tests in 1 suite passed after 0.098 seconds.
+  0.94s user 0.25s system 97% cpu 1.218 total
+exit=0

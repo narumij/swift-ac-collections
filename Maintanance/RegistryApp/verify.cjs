@@ -77,7 +77,7 @@ console.log('PASS: rectangle collision checks, each-edge removal, new-node and r
 
 vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
 vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
-const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,10);assert(permanent.every(g=>g.documents.length));assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).sort((a,b)=>(b.displayInterest?.score??0)-(a.displayInterest?.score??0)).map(t=>t.id));
+const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,10);assert(permanent.every(g=>g.documents.length));assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).map(t=>t.id));
 const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('function switchMap('),script.indexOf("for(const id of ['dependencyTab'")),ctx);ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 

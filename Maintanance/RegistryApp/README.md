@@ -111,6 +111,8 @@ task間依存と合わせたグラフを検査し、接続したtaskは独立列
 
 2026-10-16、ユーザー依頼でAstraが会話から関心度を5段階で仮評価し、表示専用のdisplayInterestへ理由とともに保存。恒久タスクは高関心を左、子は未完了・高関心を上、独立タスクはDONEを右に保ち各区分内で高関心を左に置く。同点は元の順序を維持する。Registry上の優先度・権限・依存・状態を変更する判断ではない。依存図の構造は維持。カードのツールチップに仮評価理由を表示する。
 
+2026-10-17、`displayInterest`（関心度）と`milestoneSnapshot`を外した（ユーザー依頼、Astraの手順案に沿って姫が実施）。独立タスクと恒久図の並びは、DONEを右・下に置いたうえでRegistryの行の順になる。
+
 独立タスク欄は、依存関係も現存する親taskへの所属もないtaskを表示する。恒久task配下の子は恒久図から選ぶ。親子関係を依存辺へ置き換えない。
 
 
@@ -137,7 +139,7 @@ python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registr
 `--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略すると`PATH`上の`node`と、環境の`marked`を使う。
 
 - **作り直すもの：** task・依存辺・親子・常設区分（Registryから）、生成元のhash、baseline、HTML seed、採番待ち（`build-pending.py`）、内蔵文書（`build-documents.mjs`）。最後に`verify.cjs`を通す。
-- **持ち越すもの（Registryから作れない）：** マイルストーンとその関係、`milestoneSnapshot`、taskごとの`displayInterest`。引用が原文から消えたものは`STALE`として報告し、自動では直さない。原文の版（hash）が変わっただけのものは、確認対象として一覧に出す。マイルストーンを増やしたり変えたりするときは、`registry.json`を手で直してから`sync.py`を回す。
+- **持ち越すもの：** なし（2026-10-17から）。`registry.json`は毎回、空から作る。task・依存・マイルストーン接続はRegistryから、到達点のカードと列はゲートのファイル（`Maintanance/Milestones/`）から、現在地は`Milestones/HEAD.md`から作る。既存の`registry.json`は差分の報告にだけ読み、無くても作れる。
 - **失敗したとき：** Nodeが見つからない、文書の生成か`verify.cjs`が失敗した、のいずれでも、`registry.json`と`index.html`を実行前の状態に戻して`FAILED`と表示し、終了コード1で止まる。成功と区別できる。
 - **再実行：** 内容が変わっていなければ`registry.json`は書き換わらない（`generatedAt`も据え置く）。
 - **配布用HTML：** 配布先へは、`sync.py`が成功した後の`index.html`をそのままコピーする。配布先で直接編集しない。

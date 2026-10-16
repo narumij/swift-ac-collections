@@ -5,11 +5,10 @@ Usage (from the repository root):
   python3 Maintanance/RegistryApp/sync.py --check   # report drift only; writes nothing
   python3 Maintanance/RegistryApp/sync.py           # regenerate registry.json and the HTML seed
 
-What is derived (never edit by hand): tasks and edges, source hashes, baseline, the HTML seed.
-Milestone cards are read from the gate files in Maintanance/Milestones/<version>/ (カード情報;
-the 記録 part is never read). What is carried over from the current registry.json (not derivable from
-the Registry): milestoneSnapshot and per-task displayInterest.
-Task/milestone connections are generated exclusively from the Registry milestone connection table.
+registry.json is built from nothing on every run (2026-10-17): tasks, edges and the milestone connection
+table come from the Task Registry; milestone cards from the gate files in Maintanance/Milestones/; the
+current position from Milestones/HEAD.md. Nothing is carried over from the previous registry.json. The
+existing file is read only to report what changed, and it may be missing.
 """
 import datetime, hashlib, json, re, subprocess, sys
 from pathlib import Path
@@ -74,24 +73,6 @@ def git(*args):
     return subprocess.run(['git', *args], cwd=ROOT, capture_output=True, text=True).stdout.strip()
 
 
-def milestone_sources(old):
-    """Carried-over milestone data: whole quote must still exist; a changed file hash is reported for review."""
-    stale, changed = [], []
-    ms = {c['id'] for c in read_gates()[0]} | {m['id'] for m in old.get('milestones', [])}
-    items = [(m['id'], m.get('source')) for m in old.get('milestones', []) if m.get('source')]
-    items += [(f"{r['prerequisite']}->{r['successor']}", r.get('source')) for r in old.get('milestoneRelations', [])
-              if not (r['prerequisite'] in ms and r['successor'] in ms)]  # chain is rebuilt from gates
-    for name, src in items:
-        if not src or not src.get('path') or not src.get('quote'):
-            continue
-        p = ROOT / src['path']
-        if not p.exists() or src['quote'] not in p.read_text(encoding='utf-8'):
-            stale.append(f"{name}: {src['path']}")
-        elif src.get('sha256') and src['sha256'] != sha256(p):
-            changed.append(f"{name}: {src['path']}")
-    return stale, changed
-
-
 MILESTONES = ROOT / 'Maintanance/Milestones'
 
 
@@ -114,29 +95,6 @@ def head_version():
     """Current position from Milestones/HEAD.md ('# x.y.z'). Version gates up to it are passed."""
     m = re.search(r'^# (\d+\.\d+\.\d+)', (MILESTONES / 'HEAD.md').read_text(encoding='utf-8'), re.M)
     return vkey(m.group(1)) if m else (0, 0, 0)
-
-
-def relocate_sources(old):
-    """A relation source whose file moved or no longer holds the quote is searched for in
-    Maintanance/Milestones/ and Maintanance/MILESTONES.md; repointed only when exactly one file has it."""
-    pool = sorted(MILESTONES.glob('**/*.md')) + [ROOT / 'Maintanance/MILESTONES.md']
-    done = []
-    ms = {c['id'] for c in read_gates()[0]} | {m['id'] for m in old.get('milestones', [])}
-    for r in old.get('milestoneRelations', []):
-        if r['prerequisite'] in ms and r['successor'] in ms:
-            continue  # chain is rebuilt from gates
-        src = r.get('source') or {}
-        q, p = src.get('quote'), ROOT / src.get('path', '')
-        if not q or (p.exists() and q in p.read_text(encoding='utf-8')):
-            continue
-        hits = [f for f in pool if q in f.read_text(encoding='utf-8')]
-        same_name = [f for f in hits if f.name == p.name]
-        if len(same_name) == 1:  # the same file, moved
-            hits = same_name
-        if len(hits) == 1:
-            src['path'] = hits[0].relative_to(ROOT).as_posix()
-            done.append(f"{r['prerequisite']}->{r['successor']}: {src['path']}")
-    return done
 
 
 def sections(text, level):
@@ -317,24 +275,22 @@ def chain_relations(cards):
     return registry_milestone_relations() + chain
 
 
-def build(old):
+def build():
+    """The whole snapshot from the sources of truth; no input from an earlier registry.json."""
     tasks, edges = parse_registry()
-    interest = {t['id']: t['displayInterest'] for t in old.get('tasks', []) if 'displayInterest' in t}
-    for t in tasks:
-        if t['id'] in interest:
-            t['displayInterest'] = interest[t['id']]
-    data = dict(old)
-    data['source'] = dict(path='Maintanance/ProgressV2/TASK_REGISTRY_V2.md', head=git('rev-parse', '--short=8', 'HEAD'),
-                          sha256=sha256(REGISTRY), dirty=bool(git('status', '--porcelain', '--', str(REGISTRY))),
-                          generatedAt=datetime.datetime.now(JST).isoformat(), generator='sync.py',
-                          rulesSha256=sha256(RULES))
-    data['tasks'], data['edges'] = tasks, edges
-    data['milestones'] = read_gates()[0]
-    data['milestoneHead'] = '.'.join(str(x[1]) for x in head_version())  # current position for the Studio picker
-    data['milestoneRelations'] = chain_relations(data['milestones'])
-    data['baseline'] = dict(tasks=json.loads(json.dumps(tasks)), edges=json.loads(json.dumps(edges)),
-                            milestoneRelations=json.loads(json.dumps(data['milestoneRelations'])))
-    return data
+    milestones = read_gates()[0]
+    relations = chain_relations(milestones)
+    copy = lambda x: json.loads(json.dumps(x))
+    return dict(
+        schemaVersion=1,
+        source=dict(path='Maintanance/ProgressV2/TASK_REGISTRY_V2.md', head=git('rev-parse', '--short=8', 'HEAD'),
+                    sha256=sha256(REGISTRY), dirty=bool(git('status', '--porcelain', '--', str(REGISTRY))),
+                    generatedAt=datetime.datetime.now(JST).isoformat(), generator='sync.py',
+                    rulesSha256=sha256(RULES)),
+        tasks=tasks, edges=edges,
+        baseline=dict(tasks=copy(tasks), edges=copy(edges), milestoneRelations=copy(relations)),
+        milestones=milestones, milestoneRelations=relations,
+        milestoneHead='.'.join(str(x[1]) for x in head_version()))  # current position for the Studio picker
 
 
 def diff(old, new):
@@ -357,6 +313,13 @@ def diff(old, new):
     moved = sum(1 for k in set(ne) & set(oe) if ne[k]['sourceLine'] != oe[k]['sourceLine']) + sum(1 for i in set(o) & set(n) if o[i].get('sourceLine') != n[i].get('sourceLine'))
     if moved:
         out.append(f'~ sourceLine moved for {moved} rows (position only)')
+    om, nm = {m['id']: m for m in old.get('milestones', [])}, {m['id']: m for m in new.get('milestones', [])}
+    out += [f'+ milestone {i}' for i in sorted(set(nm) - set(om))] + [f'- milestone {i}' for i in sorted(set(om) - set(nm))]
+    out += [f'~ milestone {i}: ' + ', '.join(k for k in ('item', 'state', 'detail', 'gate') if om[i].get(k) != nm[i].get(k))
+            for i in sorted(set(om) & set(nm)) if any(om[i].get(k) != nm[i].get(k) for k in ('item', 'state', 'detail', 'gate'))]
+    rk = lambda r: (r['prerequisite'], r['successor'], r['relation'])
+    orr, nrr = {rk(r) for r in old.get('milestoneRelations', [])}, {rk(r) for r in new.get('milestoneRelations', [])}
+    out += [f'+ relation {a} -> {b} ({c})' for a, b, c in sorted(nrr - orr)] + [f'- relation {a} -> {b} ({c})' for a, b, c in sorted(orr - nrr)]
     if old['source'].get('sha256') != new['source']['sha256']:
         out.append(f"~ source sha256 {old['source'].get('sha256', '')[:12]} -> {new['source']['sha256'][:12]}")
     for k in ('rulesSha256', 'head', 'dirty'):
@@ -390,51 +353,35 @@ def tool(flag, env, default):
     return os.environ.get(env) or default
 
 
+EMPTY = dict(tasks=[], edges=[], source={})
+
+
 def main():
-    old = json.loads(JSON.read_text(encoding='utf-8'))
-    new = build(old)
-    changes = diff(old, new)
+    old = json.loads(JSON.read_text(encoding='utf-8')) if JSON.exists() else None  # for the change report only
+    new = build()
+    changes = diff(old or EMPTY, new)
+    if old is None:
+        changes.insert(0, '+ registry.json (generated from nothing)')
     seed = seed_of(HTML.read_text(encoding='utf-8'))
     if seed != old:
         changes.append('~ HTML seed differs from registry.json')
-    relocated = []  # Registry rows replace carried task/milestone sources
-    if relocated:
-        print('relocated relation sources (quote found in exactly one file):\n  ' + '\n  '.join(relocated))
-    stale, moved = [], []  # Sources are regenerated from current Registry rows
     gate_errors = read_gates()[1]
     if gate_errors:
         print('GATE file problems (fix the file under Maintanance/Milestones/):\n  ' + '\n  '.join(gate_errors))
-    print(f"tasks {len(new['tasks'])}, edges {len(new['edges'])}, milestones {len(new.get('milestones', []))} (from gate files)")
+    print(f"tasks {len(new['tasks'])}, edges {len(new['edges'])}, milestones {len(new['milestones'])} (from gate files)")
     print('\n'.join(changes) if changes else 'no drift between Task Registry, registry.json, and the HTML seed')
-    if moved:
-        print('milestone sources changed since snapshot (quote still present; review):\n  ' + '\n  '.join(moved))
-    if stale:
-        print('STALE milestone quotes (not auto-fixed; edit registry.json by hand):\n  ' + '\n  '.join(stale))
     if '--check' in sys.argv:
-        sys.exit(1 if changes or stale or moved or gate_errors else 0)
-
+        sys.exit(1 if changes or gate_errors else 0)
     if gate_errors:
         sys.exit('Gate files need fixing before synchronization; no files written')
-    if stale:
-        sys.exit('Milestone sources need review before synchronization; no files written')
-    if moved:
-        # Quote still present: the file only changed elsewhere. Refresh hash and line, then continue.
-        for r in new.get('milestoneRelations', []):
-            src = r.get('source') or {}
-            p = ROOT / src.get('path', '')
-            if src.get('quote') and p.exists():
-                text = p.read_text(encoding='utf-8')
-                src['sha256'] = sha256(p)
-                src['line'] = text[:text.find(src['quote'])].count('\n') + 1
-        new['baseline']['milestoneRelations'] = json.loads(json.dumps(new.get('milestoneRelations', [])))
-        print('refreshed hash/line for sources whose quote is still present')
 
     node = tool('--node', 'REGISTRY_STUDIO_NODE', shutil.which('node'))
     marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)
-    if same_content(old, new) and seed == old:
+    if old and same_content(old, new) and seed == old:
         new['source']['generatedAt'] = old['source'].get('generatedAt')  # no meaningless diff on rerun
     backup = Path(tempfile.mkdtemp(prefix='registry-studio-sync-'))
-    for f in (JSON, HTML):
+    saved = [f for f in (JSON, HTML) if f.exists()]
+    for f in saved:
         shutil.copy2(f, backup / f.name)
     try:
         JSON.write_text(json.dumps(new, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
@@ -445,8 +392,10 @@ def main():
         subprocess.run([node, str(APP / 'build-documents.mjs')] + ([marked] if marked else []), cwd=APP, check=True)
         subprocess.run([node, str(APP / 'verify.cjs')], cwd=APP, check=True)
     except (subprocess.CalledProcessError, OSError, ValueError) as e:
-        for f in (JSON, HTML):
+        for f in saved:
             shutil.copy2(backup / f.name, f)
+        if JSON not in saved and JSON.exists():
+            JSON.unlink()
         shutil.rmtree(backup)
         print(f'FAILED ({e}); restored registry.json and index.html to their state before this run')
         sys.exit(1)

@@ -113,7 +113,13 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 追記14（2026-10-17）：ユーザー「タスクレジストリから削除しよう」（ユーザー同席の直接指示。Registry更新は本来Astraの担当なので受入で確認を）。`TASK_REGISTRY_V2.md`から`QUALITY-001`の行と、QUALITY-001を後続とするTask precedence 5行（RBT-001・RBT-009・RBT-034・QUALITY-002・QUALITY-003）を削除。6行は`Milestones/0.9.0/10_QUALITY-0001.md`の記録へ逐語で移した。Studioでは5本をMS-QUALITYへmaterialでつなぎ直し（出典は移した行）、MS-HUMAN→QUALITY-001は削除（列でMS-HUMAN→…→MS-QUALITYとつながる）。`verify.cjs`の描画確認リストをMS-QUALITYへ。Registry本文207行の過去判断の記録「1.0ゲート（QUALITY-001）との境界」は記録なので未変更。sync完了・verify pass（タスク43、依存7）。
 - 追記15（2026-10-17）：仕様レビュー（姫）で版ゲートIDの衝突（0.1.10と0.11.0がともにGATE-0110）を指摘。ユーザー「GATE-0.5.4とかそのまましよう。ENDも同様でEND-0.5.4」。版ゲートIDを`GATE-x.y.z`、ENDを`END-x.y.z`（フォルダ名そのまま）に変更。6ゲートのIDと記録、`registry.json`の関係の端点、`verify.cjs`の固定ID5か所、`sync.py`の照合、READMEを追随。sync完了・verify pass。列：MS-DOC→END-0.5.3→GATE-0.5.4→…→GATE-1.0.0→END-1.0.0。レビューの残り（タスク→ゲートの線をカード情報へ、GATE→タスク付け替えの意味確認、verify固定IDの削減、旧ID記述の移行）は未着手。
 - 追記16（2026-10-17）：ユーザー「正本とカードをわけよう」。11ゲートと`GATE_TEMPLATE`で`## 正本`をカード情報から出し、`# 正本`として独立させた（カード情報：ID・名前・状態、正本、記録の三部）。`sync.py`の読み取りとエラー文を追随、READMEに記載。sync完了・verify pass。
-- 追記17（2026-10-17）：ユーザー「JSON生成を姫がつくれないかな」、Astraの手順（1.関心度と古いスナップショットを外し表示順への影響だけ確認、2.空から組み立てる、3.既存JSONは差分確認用だけ・無くても生成、最後に既存JSONなしで再生成して一致を検証）に沿って実施。`sync.py`：`build()`を空から組み立てる形に（schemaVersion・source・tasks・edges・baseline・milestones・milestoneRelations・milestoneHeadのみ）、`displayInterest`と`milestoneSnapshot`を廃止、使われていなかった`milestone_sources`・`relocate_sources`と旧引用照合の分岐を削除、既存JSONが無いときも生成・失敗時の復元を両対応、差分報告にゲートと線を追加。`index.html`：関心度による並べ替えと吹き出しの関心度表示を削除（並びはDONEを後ろ・Registry順）。`verify.cjs`：恒久図の順の確認を関心度なしに。表示順への影響：独立タスク12件と恒久図10件の並びがRegistry順に変わる（見取り図本体は不変）。検証：registry.jsonを削除して生成→コミット済みのものとtasks43・edges7・milestones18・relations31がすべて一致、違いは`milestoneSnapshot`が無いことだけ。2回目は`--check`でずれなし。Studio README更新。
+
+### `CP-20261017-003` — Registry Studio：registry.jsonを空から生成する
+
+- queue状態: `AWAITING_CODEX`（実施済み・commit済み`5f090e1a`。受入はAstra。CP-20261017-002のRECONCILED（追記16まで）には含まれない）
+- 発見元・ユーザー指示: ユーザー「JSON生成を姫がつくれないかな」
+- 実施・検証: Astraの手順（1.関心度と古いスナップショットを外し表示順への影響だけ確認、2.空から組み立てる、3.既存JSONは差分確認用だけ・無くても生成、最後に既存JSONなしで再生成して一致を検証）に沿って実施。`sync.py`：`build()`を空から組み立てる形に（schemaVersion・source・tasks・edges・baseline・milestones・milestoneRelations・milestoneHeadのみ）、`displayInterest`と`milestoneSnapshot`を廃止、使われていなかった`milestone_sources`・`relocate_sources`と旧引用照合の分岐を削除、既存JSONが無いときも生成・失敗時の復元を両対応、差分報告にゲートと線を追加。`index.html`：関心度による並べ替えと吹き出しの関心度表示を削除（並びはDONEを後ろ・Registry順）。`verify.cjs`：恒久図の順の確認を関心度なしに。表示順への影響：独立タスク12件と恒久図10件の並びがRegistry順に変わる（見取り図本体は不変）。検証：registry.jsonを削除して生成→コミット済みのものとtasks43・edges7・milestones18・relations31がすべて一致、違いは`milestoneSnapshot`が無いことだけ。2回目は`--check`でずれなし。Studio README更新。
+- Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。
 

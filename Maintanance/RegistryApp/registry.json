@@ -20,7 +20,14 @@
       "raw": "| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |",
       "sourceLine": 23,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 2,
+        "reason": "調査済み・基盤的な支援または完了済みの経緯",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "DOC-030",
@@ -32,7 +39,14 @@
       "raw": "| `DOC-030` | `ACTIVE` | Codex | [EXECUTION] 文書整備の恒久管理 | 文書の役割・整備方法・参照関係を維持する常設node。リンク切れの点検・修正と移動・改名時の参照元確認を含み、対象と方法は詳細正本の「リンクと参照先の保守」に従う。個別の文書作業の完了だけではDONE・履歴化しない。常時実行中や読み手への編集委任を意味せず、具体的な作業は現在の依頼と権限に従う。維持文書は配置維持の指定に従い残す | `Maintanance/DOCUMENT.md` / `Maintanance/Current/DOCUMENTATION_WORKFLOW.md` / `Maintanance/UserDocuments/SnippetSurvey/README.md` |",
       "sourceLine": 24,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-043",
@@ -44,7 +58,14 @@
       "raw": "| `OPS-043` | `ACTIVE` | Codex / Claude / Astra（各自の記録） | [EXECUTION] 協働のふりかえりと知見の蓄積 | 具体的な出来事と、その時点の観察・受け止め方を残す常設node。一回の回答や個別作業の完了だけではDONE・履歴化しない。人物評の固定や担当適性の判定とは区別する。評価の追記・任意観察は各文書の記入条件と現在の依頼に従い、他者の声を代筆・改変しない。常時実行中・定期記入義務・読み手への担当任命を意味せず、過去の感想を現行の規則・権限へ昇格させない | `Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md` / `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `Maintanance/USER_MANAGEMENT_INTERVIEW_ASTRA.md` / `Maintanance/CODEX_OBSERVATIONS.md` / `Maintanance/CLAUDE_OBSERVATIONS.md` / `Maintanance/ASTRA_OBSERVATIONS.md` |",
       "sourceLine": 25,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "TEST-005",
@@ -56,7 +77,14 @@
       "raw": "| `TEST-005` | `ACTIVE` | Claude（姫） | [EXECUTION] テスト整備の恒久管理 | Test as Specificationを中心にテストの構成・実行方法・fixture説明と整備の現在地を維持する常設node。個別試験・レビューの完了でDONE・履歴化しない。文書中の古い状態は現行Registry・品質要求・対象taskの詳細正本と照合し、記載だけで現行事実としない。具体的な作業は現在の依頼・受渡しと各文書の権限に従い、本行だけでは発注・再開・他担当による編集を認めない | `Maintanance/Testing/TESTING.md` / `Tests/CLAUDE.md` / `Maintanance/Testing/Fixtures.md` / `Maintanance/Testing/JudgmentCoordinates/README.md` |",
       "sourceLine": 26,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-044",
@@ -68,7 +96,14 @@
       "raw": "| `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` |",
       "sourceLine": 27,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-047",
@@ -80,7 +115,14 @@
       "raw": "| `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |",
       "sourceLine": 28,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-046",
@@ -92,7 +134,14 @@
       "raw": "| `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |",
       "sourceLine": 29,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-048",
@@ -104,7 +153,14 @@
       "raw": "| `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期到達点は既存graph試験の調査と読み取り専用再現。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。今回登録のみ | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
       "sourceLine": 30,
       "group": "協働と運用",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-049",
@@ -117,7 +173,14 @@
       "sourceLine": 31,
       "group": "協働と運用",
       "permanent": false,
-      "parentTask": "OPS-048"
+      "parentTask": "OPS-048",
+      "displayInterest": {
+        "score": 2,
+        "reason": "調査済み・基盤的な支援または完了済みの経緯",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-050",
@@ -130,7 +193,14 @@
       "sourceLine": 32,
       "group": "協働と運用",
       "permanent": false,
-      "parentTask": "OPS-048"
+      "parentTask": "OPS-048",
+      "displayInterest": {
+        "score": 2,
+        "reason": "調査済み・基盤的な支援または完了済みの経緯",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-051",
@@ -143,7 +213,14 @@
       "sourceLine": 33,
       "group": "協働と運用",
       "permanent": false,
-      "parentTask": "OPS-048"
+      "parentTask": "OPS-048",
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPS-052",
@@ -156,7 +233,14 @@
       "detail": "Maintanance/Current/TASK_REGISTRY_LAYOUT_ADVICE.md",
       "raw": "| `OPS-052` | `DONE` | Claude（姫）（助言） / Astra（受入） | [DISCOVERY] 依存見取り図の自動配置・AI調整負担削減への助言 | 2026-10-16助言受入。ユーザー指示で骨格最長路・枝の経路分類を限定反映し、全座標一致・ID置換不変を確認。交差最適化等は保留。ユーザーcommit指示により完了 | `Maintanance/Current/TASK_REGISTRY_LAYOUT_ADVICE.md` |",
       "sourceLine": 34,
-      "parentTask": "OPS-048"
+      "parentTask": "OPS-048",
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "TEST-006",
@@ -168,7 +252,14 @@
       "raw": "| `TEST-006` | `DONE` | Claude（移動済み） / Astra（参照更新・受入） | [EXECUTION] テスト整備文書のTesting集約と参照接続 | 2026-10-16 Astra受入済み。独立照合・必要な訂正・参照更新を完了。証拠は詳細正本の受入記録。ユーザーのcommit指示により完了 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Testing/TESTING.md` / `Maintanance/Testing/Fixtures.md` |",
       "sourceLine": 36,
       "group": "協働と運用",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 2,
+        "reason": "調査済み・基盤的な支援または完了済みの経緯",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "TEST-007",
@@ -180,7 +271,14 @@
       "raw": "| `TEST-007` | `DONE` | Astra（配置・紐付け） / User（本文変更の判断） | [EXECUTION] 判断座標草案のサルベージ | 2026-10-16 Astraが原文6文書を保持した写し・由来・未採用の姫所見をTestingへ配置しTEST-005へ接続。原文一致・参照を確認し受入済み。本文変更・現行規則への昇格なし。ユーザーのcommit指示により完了 | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/Testing/JudgmentCoordinates/README.md` |",
       "sourceLine": 37,
       "group": "協働と運用",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RELEASE-072",
@@ -192,7 +290,14 @@
       "raw": "| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
       "sourceLine": 43,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RELEASE-075",
@@ -204,7 +309,14 @@
       "raw": "| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
       "sourceLine": 44,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RELEASE-076",
@@ -216,7 +328,14 @@
       "raw": "| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |",
       "sourceLine": 45,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "DOC-026",
@@ -228,7 +347,14 @@
       "raw": "| `DOC-026` | `ACTIVE` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 2026-10-16、マイルストーン整理で有効化。0.7.0 release後、QUALITY-005の対象版登録可判断と登録実行の明示委任を確認して登録PRを準備・提出し、package page・互換性表示・module別DocC結果を確認する。重ねて凍結解除を求めない。登録は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
       "sourceLine": 46,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "DOC-027",
@@ -240,7 +366,14 @@
       "raw": "| `DOC-027` | `ACTIVE` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | 2026-10-16、マイルストーン整理で有効化。DOC-026完了後、SPIが提示する互換性badgeと確認済みmodule別DocC URLをREADME・Pagesへ反映する。依存条件で待ち、重ねて凍結解除を求めない。反映は未実施 | `Maintanance/Current/SPI_PUBLICATION_MILESTONE.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |",
       "sourceLine": 47,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RELEASE-078",
@@ -252,7 +385,14 @@
       "raw": "| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 旧棚卸しtaskの完了を待たず、着手時点の品質課題・証拠と0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、文書初版を重点とする0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。工程整備・自動化とSPI公開は0.7.0へ置き、0.6.0には対象版の品質確認を残す。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |",
       "sourceLine": 48,
       "group": "公開とリリース",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-001",
@@ -264,7 +404,14 @@
       "raw": "| `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |",
       "sourceLine": 54,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-011",
@@ -276,7 +423,14 @@
       "raw": "| `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |",
       "sourceLine": 55,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-034",
@@ -288,7 +442,14 @@
       "raw": "| `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
       "sourceLine": 56,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-026",
@@ -300,7 +461,14 @@
       "raw": "| `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。関連する現行APIの照合結果（旧RBT-014から保持、未確認）を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |",
       "sourceLine": 57,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-005",
@@ -312,7 +480,14 @@
       "raw": "| `RBT-005` | `DONE` | Codex | [DISCOVERY] swift-ac-memoize・Memoizationの依存状況調査 | 2026-10-16 Astraが2リポジトリのHEAD・作業差分・依存固定先・実利用を照合。現行LRU wrapperは限定型チェック成功、Memoization旧API経路は別の不整合として分離。調査受入済み。同日のユーザーcommit指示により完了。同日ユーザー判断で旧来の非公開化・削除検討は整理（EXCLUDED）として残作業から除外。調査成果は保持し、現行API・外部consumerは変更しない | `Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md` |",
       "sourceLine": 58,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 2,
+        "reason": "調査済み・基盤的な支援または完了済みの経緯",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-007",
@@ -324,7 +499,14 @@
       "raw": "| `RBT-007` | `ACTIVE` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | 2026-10-15、ユーザー指示により有効化。現行readiness、対象範囲、必要な検証を照合して進める。状態変更だけでは実装操作を開始しない | `Maintanance/Current/StrictMemorySafetyReadiness.md` |",
       "sourceLine": 59,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-008",
@@ -336,7 +518,14 @@
       "raw": "| `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | 性能と所有構造への影響から、ユーザー判断で最後の最後まで凍結。所有構造・生成コスト・アクセス性能を評価できる段階で、ユーザーの明示的な再開指示があった場合のみ再検討する。1.0必須ゲートや自動再開条件にはしない | `Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md` |",
       "sourceLine": 60,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 1,
+        "reason": "ユーザーが最後の最後まで凍結すると明示",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "RBT-009",
@@ -348,7 +537,14 @@
       "raw": "| `RBT-009` | `ACTIVE` | User / Codex | [DECISION] runtime-check実装の再審査 | 2026-10-16のユーザー棚卸し指示で1.0前の判断ゲートとして有効化。Design-RuntimeChecksの再審査材料を揃え、現行実装を1.0へ受け入れるかユーザーが一つ判断する。検査の変更・弱化は今回行わず、現行防御を維持する。資料収集や測定は対象・範囲を具体化してから実施する。 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |",
       "sourceLine": 61,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "QUALITY-001",
@@ -360,7 +556,14 @@
       "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
       "sourceLine": 62,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "QUALITY-002",
@@ -372,7 +575,14 @@
       "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml` |",
       "sourceLine": 63,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "QUALITY-003",
@@ -384,7 +594,14 @@
       "raw": "| `QUALITY-003` | `ACTIVE` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` |",
       "sourceLine": 64,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "QUALITY-005",
@@ -396,7 +613,14 @@
       "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
       "sourceLine": 65,
       "group": "RedBlackTreeと品質ゲート",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "PERM-062",
@@ -408,7 +632,14 @@
       "raw": "| `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md` |",
       "sourceLine": 71,
       "group": "Permutation",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "PERM-064",
@@ -420,7 +651,14 @@
       "raw": "| `PERM-064` | `ACTIVE` | Codex | [EXECUTION] Permutation benchmark表示名の現行型名への移行 | 2026-10-16、ユーザーの明示指示で復帰。移行先表示名を現行名称と照合し、本task内の先行互換工程のmain merge・remote performance CIのgreen後に4 titleとCI登録2件を変更する。task列挙・base/current比較・remote performance CIのgreenで受入。PERM-063は除外して工程を統合。実装は未着手 | `Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md` |",
       "sourceLine": 72,
       "group": "Permutation",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 4,
+        "reason": "繰り返し関心が示された管理・判断の保持と品質課題",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "PERM-060",
@@ -432,7 +670,14 @@
       "raw": "| `PERM-060` | `ACTIVE` | Codex（調査・整理） | [DISCOVERY] Sequenceによる失効View収集バグの再現と修正範囲整理 | 2026-10-16、ユーザーがバグとして課題復帰を指示。実験adapterのArray収集時の失効を現行条件で再現し、公開面への影響と必要な修正範囲を整理する。公開契約・所有方式・性能許容の新しい判断は分離してユーザーへ返す。未解決の修正・判断の引継ぎ先を残して調査結果を受け入れるまで。登録時点で再実行・修正は未実施 | `Maintanance/Current/PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md` |",
       "sourceLine": 73,
       "group": "Permutation",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 5,
+        "reason": "現在の対話の中心、または直近の文書・品質目標",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "PERM-079",
@@ -444,7 +689,14 @@
       "raw": "| `PERM-079` | `WAITING_USER` | User（再開判断） / Codex（判断後の調査・手順案） | [DECISION] 0.6.0リリース完了後のAtCoder 2025互換調査再開判断 | 2026-10-16ユーザー指定。0.6.0のリリース完了を確認した後、prepare/compatible/2の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない。再開可の場合に調査範囲・完了条件・担当を更新して着手する。mergeの許可・時期・送り先は別判断。0.6.0リリースの前提にはしない | `Maintanance/Current/AtCoder2025CompatibilityPlan.md` / `Maintanance/Current/RELEASE_0_6_0.md` |",
       "sourceLine": 74,
       "group": "Permutation",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "マイルストーン上の必要項目。表示順は依存構造を優先",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "OPT-065",
@@ -456,7 +708,14 @@
       "raw": "| `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |",
       "sourceLine": 80,
       "group": "OptionalElementBuffer",
-      "permanent": false
+      "permanent": false,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "HIST-001",
@@ -468,7 +727,14 @@
       "raw": "| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |",
       "sourceLine": 91,
       "group": "移行史",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     },
     {
       "id": "HIST-003",
@@ -480,7 +746,14 @@
       "raw": "| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |",
       "sourceLine": 93,
       "group": "移行史",
-      "permanent": true
+      "permanent": true,
+      "displayInterest": {
+        "score": 3,
+        "reason": "必要性は確認済みだが現在の話題の中心ではない",
+        "by": "Astra",
+        "date": "2026-10-16",
+        "provisional": true
+      }
     }
   ],
   "edges": [

@@ -31,7 +31,7 @@
 | `OPS-051` | `DONE` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザーが初期試作を受入・完了とし、残る改善は親OPS-048で扱うよう指示。HTML閲覧編集とJSON返却・正本反映の往復を確認済み。全環境・全UIの網羅検証を意味しない。受入範囲と継続事項は詳細正本を参照 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |
 
 
-| `OPS-053` | `ACTIVE` | Claude（追加仕様の再確認） / Astra（実施・受入） | [DISCOVERY] 文書保存管理の二重化解消の検討 | 2026-10-16初回の一本化は独立確認・受入済み。ユーザー指示で暫定保護・恒久希望の付与規則と配置維持タブをClaudeへ再確認依頼。返却・Astra受入まで。OPS-054は引き続き待機。恒久判断はユーザーに留保 | `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` |
+| `OPS-053` | `DONE` | Astra（実施・受入） / Claude（独立確認済み） | [DISCOVERY] 文書保存管理の二重化解消の検討 | 2026-10-16 R2受入、一覧抽出・理由・日付・記録日の指摘対応と検証を完了。ユーザー指示で完了。恒久決定時の記法確認は詳細正本へ留保。OPS-054の前提充足 | `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` |
 | `OPS-054` | `ACTIVE` | Astra | [DISCOVERY] Claude起動系文書の見直し検討 | ユーザー指定の検討task。登録のみ・未着手。OPS-053の検討結果受入後に開始。現行根拠・問題の有無・選択肢・推奨案と必要な判断を提示し、検討結果の受入まで。改訂・移動・保護解除は含めない | `Maintanance/Current/CLAUDE_STARTUP_DOCUMENT_REVIEW.md` |
 
 ### 公開とリリース

@@ -95,3 +95,11 @@ assert.equal(ctx.protectionDays('2026-10-16','2026-10-16'),'1日目');
 assert.equal(ctx.protectionDays('2026-10-15','2026-10-16'),'2日目');
 assert.equal(ctx.protectionDays('不明','2026-10-16'),'不明');
 ctx.switchMap('protection');assert(!controls.protectionView.hidden);assert(controls.dependencyView.hidden&&controls.permanentView.hidden);
+
+const protectionFixture={tasks:[{id:'TEST',detail:'`Maintanance/RegistryApp/index.html`（配置維持; 区分=暫定保護; 付与日=2026-10-16; 記録日=2026-10-16; 記録者=Astra; 理由=誤読（旧名）を防ぐ; A; B） / `README.md`（配置維持; 区分=恒久希望; 付与日=不明; 理由=次の文書）'}]};
+const protections=ctx.protectionRecords(protectionFixture);
+assert.equal(protections.length,2);assert.equal(protections[0].path,'Maintanance/RegistryApp/index.html');assert.equal(protections[0]['理由'],'誤読（旧名）を防ぐ; A; B');assert.equal(protections[0]['記録日'],'2026-10-16');assert.equal(protections[1].path,'README.md');
+for(const date of ['2026-1-5','2026-02-30','2026-13-01','2026-10-17'])assert.equal(ctx.protectionDays(date,'2026-10-16'),'日付要確認');
+assert.equal(ctx.protectionDays('2024-02-29','2024-03-01'),'2日目');
+assert(html.includes("'経過','記録日','記録者'"));
+console.log('PASS: protection paths, parentheses and semicolons, multiple marks, invalid dates, leap day and recording date column.');

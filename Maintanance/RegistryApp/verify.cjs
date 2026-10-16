@@ -48,6 +48,19 @@ assert.throws(()=>ctx.rewireRelation(base,edge,base.edges[0].prerequisite,base.e
 assert.throws(()=>ctx.rewireRelation(base,edge,'QUALITY-001','RBT-001'));
 const relation=base.milestoneRelations[0],moved=ctx.rewireRelation(base,relation,'GATE-0.6.0','OPS-048');ctx.check(moved);assert.deepEqual(moved.milestoneRelations[0].source,relation.source);assert.deepEqual(base,untouched);
 ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx.initializeRelationBaseline(ctx.doc);console.log('PASS: transactional rewiring, retained evidence/baseline, task and milestone endpoints, self/duplicate/dangling/cycle rejection.');
+// Display edges: END is not drawn, so a line into END is drawn into its release gate (2026-10-17).
+{ctx.doc=copy(original);ctx.initializeRelationBaseline(ctx.doc);ctx.formDirty=false;
+ const shown=ctx.graphData().edges.find(e=>e.shownFor);assert(shown&&shown.successor.startsWith('GATE-')&&shown.shownFor.startsWith('END-'));
+ const data=ctx.dataRelation(shown);assert.equal(data.successor,shown.shownFor);assert(!('shownFor' in data));assert.equal(ctx.gateEntry(shown.successor),shown.shownFor);
+ const before=copy(ctx.doc);ctx.dirty=false;ctx.confirm=()=>false;ctx.removeRelation(shown);assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
+ ctx.confirm=()=>true;ctx.removeRelation({...shown,prerequisite:'NO-SUCH'});assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
+ const chain=ctx.graphData().edges.find(e=>e.relation&&e.prerequisite.startsWith('GATE-'));ctx.removeRelation(chain);assert.deepEqual(ctx.doc,before);
+ ctx.removeRelation(shown);assert.equal(ctx.doc.milestoneRelations.length,before.milestoneRelations.length-1);assert.equal(ctx.dirty,true);
+ assert(!ctx.doc.milestoneRelations.some(r=>r.prerequisite===shown.prerequisite&&(r.successor===shown.successor||r.successor===shown.shownFor)));assert.deepEqual(ctx.doc.baseline,before.baseline);
+ ctx.doc=copy(original);const moved=ctx.rewireRelation(ctx.doc,data,'OPS-048',ctx.gateEntry(shown.successor));
+ assert(moved.milestoneRelations.some(r=>r.prerequisite==='OPS-048'&&r.successor===shown.shownFor));assert(!moved.milestoneRelations.some(r=>r.successor.startsWith('GATE-')&&!r.prerequisite.startsWith('END-')));
+ assert(!JSON.stringify(moved).includes('shownFor'));ctx.doc=copy(original);
+ console.log('PASS: display edges into release gates edit their END relation; cancel, no-op, chain refusal, removal, rewiring, nothing display-only saved.');}
 
 assert.equal(placed.pos.get('PERM-079')[0]-placed.pos.get('MS-060')[0],295);
 assert(Math.abs(placed.pos.get('MS-070')[0]-placed.pos.get('PERM-079')[0]-250*(3-Math.sqrt(5))/2)<1e-9);

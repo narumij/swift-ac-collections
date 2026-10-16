@@ -46,7 +46,7 @@ def permanent_ids():
 def parse_registry():
     lines = REGISTRY.read_text(encoding='utf-8').split('\n')
     perm = permanent_ids()
-    tasks, edges, section, group, parents = [], [], None, None, {}
+    tasks, edges, section, group, parents, bad = [], [], None, None, {}, []
     for no, line in enumerate(lines, 1):
         if line.startswith('## '):
             section, group = line[3:].strip(), None
@@ -60,13 +60,23 @@ def parse_registry():
                               detail=c[5], raw=line, sourceLine=no, group=group, permanent=unquote(c[0]) in perm))
         elif section == '恒久タスクの親子関係' and len(c) == 2:
             parents[unquote(c[1])] = unquote(c[0])
+            if not all(re.fullmatch(r'`[A-Z]+-\d+`', x) for x in c):
+                bad.append(f'Registry line {no}: 恒久タスクの親子関係 needs `PARENT-ID` | `CHILD-ID` only, got: {line}')
         elif section == 'Task precedence' and len(c) == 4 and group is None:
             edges.append(dict(successor=unquote(c[0]), prerequisite=unquote(c[1]), flow=unquote(c[2]),
                               constraint=c[3], raw=line, sourceLine=no))
+    ids = {t['id'] for t in tasks}
+    for child, parent in parents.items():
+        if child in ids and parent not in ids:
+            bad.append(f'恒久タスクの親子関係: parent {parent} of {child} is not in the Task Registry')
     for t in tasks:
         if t['id'] in parents:
             t['parentTask'] = parents[t['id']]
+    REGISTRY_PROBLEMS[:] = bad
     return tasks, edges
+
+
+REGISTRY_PROBLEMS = []  # filled by parse_registry(); build() stops on them
 
 
 def git(*args):
@@ -91,10 +101,20 @@ def folder_id(name):
     return name  # the folder name as it is (END-0.5.4); dots are kept so 0.1.10 and 0.11.0 stay distinct
 
 
+def head_name():
+    """Current position from Milestones/HEAD.md ('# x.y.z'). Raises ValueError when missing or malformed."""
+    path = MILESTONES / 'HEAD.md'
+    if not path.exists():
+        raise ValueError('Milestones/HEAD.md is missing')
+    m = re.search(r'^# (\d+\.\d+\.\d+)\s*$', path.read_text(encoding='utf-8'), re.M)
+    if not m:
+        raise ValueError("Milestones/HEAD.md needs a line '# x.y.z'")
+    return m.group(1)
+
+
 def head_version():
-    """Current position from Milestones/HEAD.md ('# x.y.z'). Version gates up to it are passed."""
-    m = re.search(r'^# (\d+\.\d+\.\d+)', (MILESTONES / 'HEAD.md').read_text(encoding='utf-8'), re.M)
-    return vkey(m.group(1)) if m else (0, 0, 0)
+    """Version gates up to HEAD are passed."""
+    return vkey(head_name())
 
 
 def sections(text, level):
@@ -145,8 +165,10 @@ def read_gates():
         if vm and (gid != 'GATE-' + '.'.join(vm.groups()) or not name.startswith('.'.join(vm.groups()) + ' ')):
             errors.append(f"{rel}: version gate needs ## ID `GATE-{'.'.join(vm.groups())}` and ## 名前 "
                           f"'{'.'.join(vm.groups())} リリース'"); continue
-        if gid == 'なし' or gid in task_ids:
-            continue
+        if gid == 'なし':
+            errors.append(f'{rel}: ## ID is なし; every gate needs its own ID'); continue
+        if gid in task_ids:
+            errors.append(f'{rel}: ## ID {gid} is also a Task Registry task'); continue
         canon = top.get('正本', '')  # its own top-level part since 2026-10-17 (not part of the card)
         link = re.search(r'\]\(([^)]+)\)', canon)
         if link:
@@ -276,10 +298,24 @@ def chain_relations(cards):
 
 
 def build():
-    """The whole snapshot from the sources of truth; no input from an earlier registry.json."""
+    """The whole snapshot from the sources of truth; no input from an earlier registry.json.
+    Returns (data, errors); data is None when the sources are invalid, so nothing gets written."""
     tasks, edges = parse_registry()
-    milestones = read_gates()[0]
-    relations = chain_relations(milestones)
+    if REGISTRY_PROBLEMS:
+        return None, list(REGISTRY_PROBLEMS)
+    try:
+        head = head_name()
+    except ValueError as e:
+        return None, [str(e)]
+    milestones, errors = read_gates()
+    if head not in [d.name for d in version_folders()]:
+        errors.append(f'Milestones/HEAD.md names {head}, but Milestones/{head}/ does not exist')
+    if errors:
+        return None, errors
+    try:
+        relations = chain_relations(milestones)
+    except ValueError as e:
+        return None, [str(e)]
     copy = lambda x: json.loads(json.dumps(x))
     return dict(
         schemaVersion=1,
@@ -290,7 +326,7 @@ def build():
         tasks=tasks, edges=edges,
         baseline=dict(tasks=copy(tasks), edges=copy(edges), milestoneRelations=copy(relations)),
         milestones=milestones, milestoneRelations=relations,
-        milestoneHead='.'.join(str(x[1]) for x in head_version()))  # current position for the Studio picker
+        milestoneHead=head), []  # current position for the Studio picker
 
 
 def diff(old, new):
@@ -357,23 +393,29 @@ EMPTY = dict(tasks=[], edges=[], source={})
 
 
 def main():
-    old = json.loads(JSON.read_text(encoding='utf-8')) if JSON.exists() else None  # for the change report only
-    new = build()
+    new, errors = build()
+    if errors:
+        print('Source problems (fix them; nothing was written):\n  ' + '\n  '.join(errors))
+        sys.exit(1)
+    old, note = None, None  # the previous registry.json is for the change report only
+    if JSON.exists():
+        try:
+            old = json.loads(JSON.read_text(encoding='utf-8'))
+        except json.JSONDecodeError:
+            note = '~ previous registry.json was unreadable; regenerated from the sources'
+    try:
+        seed = seed_of(HTML.read_text(encoding='utf-8'))
+    except json.JSONDecodeError:
+        seed = None
     changes = diff(old or EMPTY, new)
     if old is None:
-        changes.insert(0, '+ registry.json (generated from nothing)')
-    seed = seed_of(HTML.read_text(encoding='utf-8'))
+        changes.insert(0, note or '+ registry.json (generated from nothing)')
     if seed != old:
         changes.append('~ HTML seed differs from registry.json')
-    gate_errors = read_gates()[1]
-    if gate_errors:
-        print('GATE file problems (fix the file under Maintanance/Milestones/):\n  ' + '\n  '.join(gate_errors))
     print(f"tasks {len(new['tasks'])}, edges {len(new['edges'])}, milestones {len(new['milestones'])} (from gate files)")
     print('\n'.join(changes) if changes else 'no drift between Task Registry, registry.json, and the HTML seed')
     if '--check' in sys.argv:
-        sys.exit(1 if changes or gate_errors else 0)
-    if gate_errors:
-        sys.exit('Gate files need fixing before synchronization; no files written')
+        sys.exit(1 if changes else 0)
 
     node = tool('--node', 'REGISTRY_STUDIO_NODE', shutil.which('node'))
     marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)

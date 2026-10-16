@@ -57,7 +57,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261017-001` — 文書マイルストーンを版フォルダ`Milestones/`へ正本として分割
 
-- queue状態: `AWAITING_CODEX`（実施済み。OPS-047への接続はAstra）
+- queue状態: `RECONCILED`（2026-10-17 Astra、文書分割・配置移行をOPS-047へ受入・統合。以下の本文は返却時のまま。処理結果は末尾「Astra受入・統合（2026-10-17、マイルストーン移行）」）
 - 発見元・ユーザー指示: 2026-10-17未明。ユーザーが`Maintanance/Milestones/`（`HEAD.md`、版フォルダ、`MS_*.md`）を作成し、「これをさっきのフォルダに分割して正本形式で配置してほしい」（`Current/DOCUMENTATION_MILESTONES.md`）。
 - 種別候補: `EXECUTION`
 - 実施:
@@ -80,11 +80,11 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 配置の決まり（2026-10-17ユーザー判断、会話）: リリース文書（`RELEASE_*.md`）は「その文書を扱っている現在地」の版フォルダに置く（例：0.7.0の計画は`0.6.0/`）。到達点（`MS_*.md`）はゲートなので「目標の版」のフォルダに置いたまま（例：`MS_VALIDATION_REVIEW`は`0.7.0/`）。
 - 追記（同夜、2回目）: ユーザーがリリース文書8件をすべて`Milestones/Archived/`へ移し、各版に`GATE_<次の版>.md`を置いた（理想形を先に作り、のちにサルベージする方針）。`MS_CANDIDATE.md`は「候補が本当に確定したら記入するだけ」のファイルにする予定（ユーザー）。ユーザー依頼によりリンクを再度直した：11ファイル18か所、`registry.json`の出典を`Archived/`へ向け直してhash更新、`marks.json`も同様。`sync.py`再生成。`Archived/`（ルート）の2ファイルは過去の記録なので直していない。
 - commit: していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-17 Astra。文書分割・配置移行をOPS-047へ受入・統合。
 
 ### `CP-20261017-002` — MILESTONES.mdのゲート要素を版ごとのゲートへ移す
 
-- queue状態: `AWAITING_CODEX`（実施済み。OPS-047への接続はAstra）
+- queue状態: `RECONCILED`（2026-10-17 Astra、追記16までをOPS-047 / OPS-048へ受入・統合。以下の本文は返却時のまま。処理結果は末尾「Astra受入・統合（2026-10-17、マイルストーン移行）」）
 - 発見元・ユーザー指示: 2026-10-17未明。ユーザー「これ（MILESTONES.md）のうち、報告要素とゲート要素があって、ゲート要素をさっきみたいに抜き出して、配置して欲しい」。
 - 種別候補: `EXECUTION`
 - 実施:
@@ -96,7 +96,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 検証: 元の行・段落はすべて、`MILESTONES.md`か3つのゲートに逐語である（機械照合）。リンク切れ0件。`registry.json`の出典を向け直して`sync.py`で再生成（verify pass、`--check`ずれなし）。
 - 判断が要ること: 移した原文の「0.6.0」は、振り替え前の名前（今回の0.5.4）を指す場合と、これからの0.6.0を指す場合が混ざっている。特に0.7.0の条件「0.6.0完了と後続差分を材料にする」がどちらを指すかは決めていない。`0.5.5/GATE_TEMPLATE.md`（空）と`0.5.5/GATE_0_6_0.md`（未作成）には触っていない。
 - commit: していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-17 Astra。追記16までをOPS-047 / OPS-048へ受入・統合。
 - 追記（2026-10-17）：ユーザー「README配置して、今は切り替え中で方針は項ですってかきますか。で、各フォルダには次の目標をいれる」。`Milestones/README.md`を作った（切り替え中であること、方針：`<版>/`には次の目標`GATE_<次の版>.md`を入れる）。`MS_*.md`の置き場所（いまは到達先の版のフォルダ）とこの方針が食い違う点は、ユーザーに確認中。続けてユーザー「バージョンゲートは、そのフォルダの最終ゲートですってしよう」。READMEに追記（フォルダ内の`MS_*.md`は途中の到達点）。ユーザーが`MS_VALIDATION_REVIEW`を`0.6.0/`へ、`MS_DOCUMENT_EXPANSION`を`0.7.0/`へ、`SPI_PUBLICATION_MILESTONE`と`DOCUMENTATION_MILESTONES`を`Milestones/Archived/`へ移動。ユーザー「そもそもどのバージョンで実施するって記述を消そう」により、`MS_VALIDATION_REVIEW`から版の記述（「版:」行、「0.7.0のリリース前ゲートへ配置する。0.6.0の前提にはしない。」、「→ 0.7.0」）を消し、由来欄に削除を明記。移動で切れたリンクを直し、`registry.json`の出典を向け直して再同期（verify pass、ずれなし、リンク切れ0）。`MS_DOCUMENT_EXPANSION`・`MS_RBT_DOCUMENTS`の版の記述はまだ残す。続けてユーザーが方針を決定（フォルダ＝版、ファイル＝ゲート、フォルダ作成とゲートの新規作成・移動で版の遷移、ゲートは常にシーケンス・最終がバージョンゲート・他はナンバリングのソート順）。READMEの方針節へそのまま記載。既存`MS_*.md`への番号付けは未実施。ユーザー「逆でさ。いったん、スタジオとおなじにしたいの」により、番号付けではなくStudioのIDへ改名：`MS_RBT_DOCUMENTS`→`0.5.4/MS-DOC.md`、`MS_VALIDATION_REVIEW`→`0.6.0/MS-VALIDATION.md`、`MS_DOCUMENT_EXPANSION`→`0.7.0/MS-080.md`。ID欄・リンク・`GATE_TEMPLATE`・`registry.json`を追随、再同期（verify pass、ずれなし、リンク切れ0）。上の記録中の旧ファイル名は当時の名前。
 - 追記2（2026-10-17）：Studioの到達点を調べると、`4532e9df`（10-16 23:48）でMS-060の見出しが「0.6.0 リリース」から「0.5.4 リリース」へ書き換えられ、0.6.0がStudioから消えていた（0.5.4の挿入ではなく改名）。到達点データは`8a0c8769`〜`a5669c53`で不変、変わったのは`4532e9df`だけ。ユーザー「まずリリースしくじる前のスタジオにもどそう」により、`registry.json`の`milestones`・`milestoneRelations`（とbaseline）を`a5669c53`の内容へ戻した。調整は3点：(1) 出典pathを移動後のファイルへ向け直しsha・行を更新、(2) Task Registryにもう無いtaskへの関係3本（RELEASE-078→MS-060、DOC-034→MS-DOC、DOC-035→MS-060）は戻さない、(3) DOC-036→MS-VALIDATIONの引用は今日削った「→ 0.7.0」なしの現行文へ。`4532e9df`で足されたMS-RECOVERY（RELEASE-087→）は戻した結果なくなった（HEADの`registry.json`に残る）。`verify.cjs`の件数固定を8・17→7・16へ。sync完了・verify pass・ずれなし。Studioの到達点データの変更なので、Astraの受入が要る。
 - 追記3（2026-10-17）：ユーザー「マイルストーンで並列扱うと難しいから、シーケンシャル制限にしたい」、列の案に「1よい、2-bがいいな」。到達点を一本の列にした：MS-DOC→MS-060→MS-VALIDATION→MS-070→MS-SPI→MS-080→MS-HUMAN（→QUALITY-001）。Studioの関係は3本外し（MS-060→MS-070、MS-070→MS-080、MS-SPI→MS-HUMAN）、3本足した（MS-060→MS-VALIDATION、MS-SPI→MS-080、MS-080→MS-HUMAN、出典は`Milestones/README.md`の「いまの列」）。外したMS-060→MS-070の制約文（0.6.0完了証拠を0.7.0検討の前提とする）は`Archived/RELEASE_0_7_0.md`に残るがStudioの線からは消えた。各到達点のdetailをゲートのファイルへ。フォルダ：`0.5.4/10_RBT_DOCUMENTS.md`＋`GATE_0_6_0.md`（新）、`0.6.0/10_VALIDATION_REVIEW.md`＋`GATE_0_7_0.md`、`0.7.0/10_SPI.md`（新）＋`GATE_0_8_0.md`（旧`MS-080.md`の本文を統合して削除）、`0.8.0/10_HUMAN_REVIEW.md`（新）＋`GATE_1_0_0.md`（新、QUALITY-001）。READMEに制限と列、`GATE_TEMPLATE`を番号形式へ。`verify.cjs`に一本の列の検査を追加（分岐・合流・循環・離れ島で失敗。分岐を入れたデータで失敗することを確認）。sync完了・verify pass・ずれなし・リンク切れ0。
@@ -119,6 +119,19 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - queue状態: `AWAITING_CODEX`（実施済み・commit済み`5f090e1a`。受入はAstra。CP-20261017-002のRECONCILED（追記16まで）には含まれない）
 - 発見元・ユーザー指示: ユーザー「JSON生成を姫がつくれないかな」
 - 実施・検証: Astraの手順（1.関心度と古いスナップショットを外し表示順への影響だけ確認、2.空から組み立てる、3.既存JSONは差分確認用だけ・無くても生成、最後に既存JSONなしで再生成して一致を検証）に沿って実施。`sync.py`：`build()`を空から組み立てる形に（schemaVersion・source・tasks・edges・baseline・milestones・milestoneRelations・milestoneHeadのみ）、`displayInterest`と`milestoneSnapshot`を廃止、使われていなかった`milestone_sources`・`relocate_sources`と旧引用照合の分岐を削除、既存JSONが無いときも生成・失敗時の復元を両対応、差分報告にゲートと線を追加。`index.html`：関心度による並べ替えと吹き出しの関心度表示を削除（並びはDONEを後ろ・Registry順）。`verify.cjs`：恒久図の順の確認を関心度なしに。表示順への影響：独立タスク12件と恒久図10件の並びがRegistry順に変わる（見取り図本体は不変）。検証：registry.jsonを削除して生成→コミット済みのものとtasks43・edges7・milestones18・relations31がすべて一致、違いは`milestoneSnapshot`が無いことだけ。2回目は`--check`でずれなし。Studio README更新。
+- Codex reconciliation: 未処理
+
+### `CP-20261017-004` — マイルストーン移行の健全性回復（Astra調査A・B・Cの修正）
+
+- queue状態: `AWAITING_CODEX`（実施済み・未commit。受入はAstra。OPS-047 / OPS-048）
+- 発見元・ユーザー指示: Astra「マイルストーン移行後の健全性調査・姫への引継ぎ」（`Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md`）。ユーザー「先にコミットしてから、タスクやって」（先にAstraの文書を`dacd456f`でcommit）。
+- A（`index.html`）：ENDの代わりにGATEへ描く線は元のEND側の端点（`shownFor`）を保持。除去・つなぎ替えは元データの関係で行い、選んだ版ゲートはデータ上その手前のENDへ結ぶ（版ゲートへ入るのはENDだけ）。ゲートどうしの列は配置から作るので編集を断り案内を出す。除去で何も変わらなければ変更ありにしない。表示用の情報は保存JSONへ入らない。`verify.cjs`に、描画用に変換された線を入力して、取消・変更なし・列の拒否・除去・つなぎ替え・保存に表示用情報が無いことの検査を追加。
+- B（`CLAUDE_PENDING_TASKS.md`）：CP-20261017-001・002の元entryのqueue状態とreconciliation行を、末尾のAstra照合結果（RECONCILED）へ合わせた。本文は返却時のまま。採番待ち表示はCP-20261016-013（凍結）とCP-20261017-003だけになった。
+- C（`sync.py`）：HEAD.mdの欠落・不正、HEADの版フォルダ不在、ゲートIDが「なし」、ゲートIDとtask IDの衝突、恒久タスクの親子関係の崩れた行・存在しない親を、書き込み前に説明付きで止める（`build()`がerrorsを返し`main`は何も書かずに終了）。壊れた旧`registry.json`は読めない旨を出して正本から作り直す。JSONが無い場合も生成。
+- Registry：Astraの`dacd456f`で恒久タスクの親子関係の行に詳細正本のパスが混入し（`` `OPS-059`  / `Maintanance/Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md` ``）、OPS-059の親が読めずverifyが失敗していた。パスはOPS-047/048の詳細正本列に既にあるため、行を`2cfcd945`の形`` | `OPS-048` | `OPS-059` | ``へ戻した（上のCで今後は停止する）。
+- 検証：不正入力4種（HEAD不正・HEADの版フォルダ不在・ID「なし」・task ID衝突）と親子行の崩れは一時コピーで停止・生成物不変を確認。実リポジトリで壊れた旧JSON→作り直し（内容一致）、JSON不在→生成、2回目`--check`ずれなし。sync完了・verify pass。
+- 未実施：Safariでの実操作（Astraの受入確認項目）。理由：画面操作の手段がない。代わりにverifyで描画用の線を直接入力して確認。残存リスク：クリック経路（ダイアログ）の見た目と文言は未確認。解消：ユーザーかAstraがSafariで線をクリックし、除去・つなぎ替え・キャンセルを一度ずつ試す。
+- commit: していない。
 - Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。

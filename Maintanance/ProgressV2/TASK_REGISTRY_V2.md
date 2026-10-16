@@ -278,7 +278,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 | 親 | サブタスク |
 | --- | --- |
-| `OPS-048` | `OPS-059`  / `Maintanance/Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md` |
+| `OPS-048` | `OPS-059` |
 
 ## マイルストーン接続
 

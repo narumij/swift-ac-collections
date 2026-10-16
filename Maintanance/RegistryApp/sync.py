@@ -8,8 +8,8 @@ Usage (from the repository root):
 What is derived (never edit by hand): tasks and edges, source hashes, baseline, the HTML seed.
 Milestone cards are read from the gate files in Maintanance/Milestones/<version>/ (カード情報;
 the 記録 part is never read). What is carried over from the current registry.json (not derivable from
-the Registry): milestoneRelations, milestoneSnapshot, and per-task displayInterest. Relation quotes are
-checked against their source files and reported when stale.
+the Registry): milestone-to-milestone relation types, milestoneSnapshot, and per-task displayInterest.
+Task/milestone connections are generated exclusively from the Registry milestone connection table.
 """
 import datetime, hashlib, json, re, subprocess, sys
 from pathlib import Path
@@ -169,21 +169,21 @@ def read_gates():
     is 'なし' or a Task Registry task are not Studio milestones. Returns (cards, errors)."""
     cards, errors = [], []
     task_ids = {t['id'] for t in parse_registry()[0]}
-    def order(p):  # file name order within a folder (NN_* before GATE_*)
+    def order(p):  # file name order within a folder (NN_* before GATE-*)
         return p.name
     for path in [p for d in version_folders() for p in sorted(d.glob('*.md'), key=order)]:
-        if not re.fullmatch(r'\d+_.+\.md|GATE_\d+_\d+_\d+\.md', path.name):
-            continue  # only NN_*.md and GATE_x_y_z.md are gates; other files (e.g. GOAL.md) are ignored
+        if not re.fullmatch(r'\d+_.+\.md|GATE-\d+\.\d+\.\d+\.md', path.name):
+            continue  # only NN_*.md and GATE-x.y.z.md are gates; other files (e.g. GOAL.md) are ignored
         rel = path.relative_to(ROOT).as_posix()
         top = sections(path.read_text(encoding='utf-8'), '#')
         card = sections(top.get('カード情報', ''), '##')
         gid = card.get('ID', '').strip('` \n')
         name = card.get('名前', '').split('\n')[0].strip()
         state = card.get('状態', '')
-        version_gate = path.name.startswith('GATE_')
+        version_gate = path.name.startswith('GATE-')
         if not gid or not name or (not version_gate and not re.search(r'- \[( |x)\] DONE', state)):
             errors.append(f'{rel}: カード情報 needs ## ID, ## 名前 (and "- [ ] DONE" under ## 状態 for NN_ gates)'); continue
-        vm = re.fullmatch(r'GATE_(\d+)_(\d+)_(\d+)\.md', path.name)
+        vm = re.fullmatch(r'GATE-(\d+)\.(\d+)\.(\d+)\.md', path.name)
         if vm and (gid != 'GATE-' + '.'.join(vm.groups()) or not name.startswith('.'.join(vm.groups()) + ' ')):
             errors.append(f"{rel}: version gate needs ## ID `GATE-{'.'.join(vm.groups())}` and ## 名前 "
                           f"'{'.'.join(vm.groups())} リリース'"); continue
@@ -205,7 +205,7 @@ def read_gates():
                           state=gate_state(path, version_gate, state),
                           owner='ユーザー同席（AI単独では扱わない）', condition=cond, detail=detail, raw=cond,
                           gate=rel))
-    cards = add_ends(cards)
+    cards = add_ends(cards, errors)
     for gid in sorted({c['id'] for c in cards}):
         files = [c['gate'] for c in cards if c['id'] == gid]
         if len(files) > 1:
@@ -216,45 +216,72 @@ def read_gates():
 END_RULE = 'END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない'
 
 
-def add_ends(cards):
+def add_ends(cards, errors=None):
     """Each version folder gets a virtual END-xyz just before its release gate (no file)."""
     folders = [d.name for d in version_folders()]
     out = []
     for name in folders:
         mine = [c for c in cards if Path(c['gate']).parent.name == name]
-        mid = [c for c in mine if not Path(c['gate']).name.startswith('GATE_')]
-        rel = [c for c in mine if Path(c['gate']).name.startswith('GATE_')]
+        mid = [c for c in mine if not Path(c['gate']).name.startswith('GATE-')]
+        rel = [c for c in mine if Path(c['gate']).name.startswith('GATE-')]
         eid = 'END-' + folder_id(name)  # identifier only: no name or condition of its own
         out += mid + [dict(id=eid, kind='milestone', item=eid,
                            state='DONE' if vkey(name) < head_version() else 'ACTIVE', owner='',
                            condition='', raw='', detail='Maintanance/Milestones/README.md',
                            gate=f'Maintanance/Milestones/{name}/', virtual=True)] + rel
-    return out
+    # Folder placement defines the source; gate ID defines the destination.
+    errors = errors if errors is not None else []
+    groups = {name: [c for c in out if (Path(c['gate'].rstrip('/')).name if c.get('virtual')
+                                      else Path(c['gate']).parent.name) == name] for name in folders}
+    targets = {}
+    for name, group in groups.items():
+        gates = [c for c in group if c['id'].startswith('GATE-')]
+        if len(gates) > 1:
+            errors.append(f'{name}: multiple release gates'); continue
+        if gates:
+            target = gates[0]['id'][5:]
+            if target not in groups:
+                errors.append(f'{name}: destination folder missing: {target}')
+            else:
+                targets[name] = target
+    incoming = list(targets.values())
+    if len(incoming) != len(set(incoming)):
+        errors.append('Release gates merge into the same folder')
+    roots = [name for name in folders if name not in incoming]
+    ordered, seen = [], set()
+    current = roots[0] if len(roots) == 1 else None
+    while current is not None and current not in seen:
+        seen.add(current)
+        ordered.extend(groups[current])
+        current = targets.get(current)
+    if current is not None or len(seen) != len(folders):
+        errors.append('Release path must be one connected sequence without cycles')
+    return ordered if len(seen) == len(folders) else out
+
+
+def registry_milestone_relations():
+    """Task/milestone connections come exclusively from the Registry table."""
+    result, active = [], False
+    for no, line in enumerate(REGISTRY.read_text(encoding='utf-8').splitlines(), 1):
+        if line.startswith('## '):
+            active = line == '## マイルストーン接続'
+        if not active or not line.startswith('| `'):
+            continue
+        c = cells(line)
+        if len(c) != 4:
+            raise ValueError(f'Registry line {no}: invalid milestone connection row')
+        result.append(dict(prerequisite=unquote(c[0]), successor=unquote(c[1]),
+                           relation=unquote(c[2]), constraint=c[3].replace(r'\|', '|'),
+                           source=dict(path=REGISTRY.relative_to(ROOT).as_posix(), quote=line,
+                                       sha256=sha256(REGISTRY), line=no)))
+    return result
 
 
 def chain_relations(cards, carried, old_milestones=()):
     """Milestone-to-milestone relations follow the gate order (sequential restriction). Relations that
-    touch a task are carried over unchanged."""
+    touch a task are read from the Registry table."""
     ids = {c['id'] for c in cards}
-    known = ids | {m['id'] for m in old_milestones}
-    # drop old chain links and anything touching a milestone whose gate is gone
-    keep = [r for r in carried if not (r['prerequisite'] in known and r['successor'] in known)
-            and not ({r['prerequisite'], r['successor']} & (known - ids))]
-    # Only END -> GATE may enter a version gate, and tasks hang on ENDs (2026-10-17 user decision):
-    #   task -> GATE-xyz  becomes  task -> END of the folder holding GATE-xyz
-    #   GATE-xyz -> task  becomes  task -> END-xyz (work done while at version xyz)
-    end_before = {c['id']: p['id'] for p, c in zip(cards, cards[1:])
-                  if c['id'].startswith('GATE-') and p['id'].startswith('END-')}
-    end_ids = {c['id'] for c in cards if c['id'].startswith('END-')}
-    moved = []
-    for r in keep:
-        a, b = r['prerequisite'], r['successor']
-        if b in end_before and a not in ids:
-            r = dict(r, successor=end_before[b])
-        elif a.startswith('GATE-') and b not in ids and 'END-' + a[5:] in end_ids:
-            r = dict(r, prerequisite=b, successor='END-' + a[5:])
-        moved.append(r)
-    keep = moved
+    keep = registry_milestone_relations()
     same = {(r['prerequisite'], r['successor']): r for r in carried
             if r['prerequisite'] in ids and r['successor'] in ids}
     chain = []
@@ -276,7 +303,7 @@ def chain_relations(cards, carried, old_milestones=()):
             path, quote = ROOT / b['gate'], f"`{b['id']}`"
         text = path.read_text(encoding='utf-8')
         chain.append(dict(prerequisite=a['id'], successor=b['id'], relation=(r or {}).get('relation', 'stage'),
-                          constraint='ゲートの列（フォルダとファイル名の順）から導いた。',
+                          constraint='ゲートの配置元・行き先と、フォルダ内の番号順から導いた。',
                           source=dict(path=path.relative_to(ROOT).as_posix(), quote=quote, sha256=sha256(path),
                                       line=text[:text.find(quote)].count('\n') + 1)))
     return keep + chain
@@ -363,10 +390,10 @@ def main():
     seed = seed_of(HTML.read_text(encoding='utf-8'))
     if seed != old:
         changes.append('~ HTML seed differs from registry.json')
-    relocated = relocate_sources(old)
+    relocated = []  # Registry rows replace carried task/milestone sources
     if relocated:
         print('relocated relation sources (quote found in exactly one file):\n  ' + '\n  '.join(relocated))
-    stale, moved = milestone_sources(old)
+    stale, moved = [], []  # Sources are regenerated from current Registry rows
     gate_errors = read_gates()[1]
     if gate_errors:
         print('GATE file problems (fix the file under Maintanance/Milestones/):\n  ' + '\n  '.join(gate_errors))

@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "811b7a7a",
-    "sha256": "660c74a842ceebad6b0ba4a6e42ea0f842d22ed65a08e1effe9cd90e35f7be6f",
+    "head": "221e3ae9",
+    "sha256": "de30d60a049d69379b313c6f04afa1fa60656db486e8011f4445f039c85a1af6",
     "dirty": true,
-    "generatedAt": "2026-10-16T23:11:09.297730+09:00",
+    "generatedAt": "2026-10-16T23:28:23.867084+09:00",
     "generator": "sync.py",
-    "rulesSha256": "2b7d767dd13b45f17069381c2e9fe53e03165451c46eae8216178b76a2c6f19f"
+    "rulesSha256": "1b9b4515aec61241a4a85aecbd3c2f784bcb629c990e5825a7b4f6b31060606d"
   },
   "tasks": [
     {
@@ -858,6 +858,18 @@
       "sourceLine": 118,
       "group": "移行史",
       "permanent": false
+    },
+    {
+      "id": "OPS-060",
+      "state": "PROPOSED",
+      "owner": "User（判断） / Astra（材料整理）",
+      "item": "[DECISION] 今後のブランチ命名方針の協議",
+      "condition": "ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。",
+      "detail": "`Maintanance/Current/BRANCH_NAMING_DISCUSSION.md`",
+      "raw": "| `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |",
+      "sourceLine": 120,
+      "group": "移行史",
+      "permanent": false
     }
   ],
   "edges": [
@@ -867,7 +879,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
       "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-      "sourceLine": 126
+      "sourceLine": 128
     },
     {
       "successor": "QUALITY-001",
@@ -875,7 +887,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
       "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-      "sourceLine": 127
+      "sourceLine": 129
     },
     {
       "successor": "QUALITY-001",
@@ -883,7 +895,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
       "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-      "sourceLine": 128
+      "sourceLine": 130
     },
     {
       "successor": "QUALITY-001",
@@ -891,7 +903,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
       "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-      "sourceLine": 129
+      "sourceLine": 131
     },
     {
       "successor": "QUALITY-001",
@@ -899,7 +911,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
       "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-      "sourceLine": 130
+      "sourceLine": 132
     },
     {
       "successor": "QUALITY-001",
@@ -907,7 +919,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
       "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-      "sourceLine": 131
+      "sourceLine": 133
     },
     {
       "successor": "RELEASE-076",
@@ -915,7 +927,7 @@
       "flow": "SEQUENCE",
       "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
       "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-      "sourceLine": 132
+      "sourceLine": 134
     },
     {
       "successor": "DOC-026",
@@ -923,7 +935,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
       "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-      "sourceLine": 133
+      "sourceLine": 135
     },
     {
       "successor": "DOC-027",
@@ -931,7 +943,7 @@
       "flow": "SEQUENCE",
       "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
       "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-      "sourceLine": 134
+      "sourceLine": 136
     },
     {
       "successor": "DOC-034",
@@ -939,7 +951,7 @@
       "flow": "SEQUENCE",
       "constraint": "現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない",
       "raw": "| `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |",
-      "sourceLine": 136
+      "sourceLine": 138
     },
     {
       "successor": "DOC-044",
@@ -947,7 +959,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 137
+      "sourceLine": 139
     },
     {
       "successor": "DOC-044",
@@ -955,7 +967,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 138
+      "sourceLine": 140
     },
     {
       "successor": "DOC-044",
@@ -963,7 +975,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-042` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 139
+      "sourceLine": 141
     },
     {
       "successor": "DOC-044",
@@ -971,7 +983,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-043` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 140
+      "sourceLine": 142
     },
     {
       "successor": "DOC-034",
@@ -979,7 +991,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する",
       "raw": "| `DOC-034` | `DOC-044` | `PARALLEL_JOIN` | 本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する |",
-      "sourceLine": 141
+      "sourceLine": 143
     },
     {
       "successor": "DOC-037",
@@ -987,7 +999,7 @@
       "flow": "SEQUENCE",
       "constraint": "本文・同期・検証結果を揃えてユーザーへ受入判断を渡す",
       "raw": "| `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |",
-      "sourceLine": 142
+      "sourceLine": 144
     },
     {
       "successor": "DOC-035",
@@ -995,7 +1007,7 @@
       "flow": "SEQUENCE",
       "constraint": "ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない",
       "raw": "| `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |",
-      "sourceLine": 143
+      "sourceLine": 145
     },
     {
       "successor": "DOC-035",
@@ -1003,7 +1015,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない",
       "raw": "| `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |",
-      "sourceLine": 144
+      "sourceLine": 146
     }
   ],
   "baseline": {
@@ -1856,6 +1868,18 @@
         "sourceLine": 118,
         "group": "移行史",
         "permanent": false
+      },
+      {
+        "id": "OPS-060",
+        "state": "PROPOSED",
+        "owner": "User（判断） / Astra（材料整理）",
+        "item": "[DECISION] 今後のブランチ命名方針の協議",
+        "condition": "ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。",
+        "detail": "`Maintanance/Current/BRANCH_NAMING_DISCUSSION.md`",
+        "raw": "| `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |",
+        "sourceLine": 120,
+        "group": "移行史",
+        "permanent": false
       }
     ],
     "edges": [
@@ -1865,7 +1889,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
         "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-        "sourceLine": 126
+        "sourceLine": 128
       },
       {
         "successor": "QUALITY-001",
@@ -1873,7 +1897,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
         "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sourceLine": 127
+        "sourceLine": 129
       },
       {
         "successor": "QUALITY-001",
@@ -1881,7 +1905,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
         "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sourceLine": 128
+        "sourceLine": 130
       },
       {
         "successor": "QUALITY-001",
@@ -1889,7 +1913,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
         "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sourceLine": 129
+        "sourceLine": 131
       },
       {
         "successor": "QUALITY-001",
@@ -1897,7 +1921,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
         "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sourceLine": 130
+        "sourceLine": 132
       },
       {
         "successor": "QUALITY-001",
@@ -1905,7 +1929,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
         "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sourceLine": 131
+        "sourceLine": 133
       },
       {
         "successor": "RELEASE-076",
@@ -1913,7 +1937,7 @@
         "flow": "SEQUENCE",
         "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
         "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-        "sourceLine": 132
+        "sourceLine": 134
       },
       {
         "successor": "DOC-026",
@@ -1921,7 +1945,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
         "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-        "sourceLine": 133
+        "sourceLine": 135
       },
       {
         "successor": "DOC-027",
@@ -1929,7 +1953,7 @@
         "flow": "SEQUENCE",
         "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
         "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-        "sourceLine": 134
+        "sourceLine": 136
       },
       {
         "successor": "DOC-034",
@@ -1937,7 +1961,7 @@
         "flow": "SEQUENCE",
         "constraint": "現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない",
         "raw": "| `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |",
-        "sourceLine": 136
+        "sourceLine": 138
       },
       {
         "successor": "DOC-044",
@@ -1945,7 +1969,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 137
+        "sourceLine": 139
       },
       {
         "successor": "DOC-044",
@@ -1953,7 +1977,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 138
+        "sourceLine": 140
       },
       {
         "successor": "DOC-044",
@@ -1961,7 +1985,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-042` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 139
+        "sourceLine": 141
       },
       {
         "successor": "DOC-044",
@@ -1969,7 +1993,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-043` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 140
+        "sourceLine": 142
       },
       {
         "successor": "DOC-034",
@@ -1977,7 +2001,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する",
         "raw": "| `DOC-034` | `DOC-044` | `PARALLEL_JOIN` | 本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する |",
-        "sourceLine": 141
+        "sourceLine": 143
       },
       {
         "successor": "DOC-037",
@@ -1985,7 +2009,7 @@
         "flow": "SEQUENCE",
         "constraint": "本文・同期・検証結果を揃えてユーザーへ受入判断を渡す",
         "raw": "| `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |",
-        "sourceLine": 142
+        "sourceLine": 144
       },
       {
         "successor": "DOC-035",
@@ -1993,7 +2017,7 @@
         "flow": "SEQUENCE",
         "constraint": "ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない",
         "raw": "| `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |",
-        "sourceLine": 143
+        "sourceLine": 145
       },
       {
         "successor": "DOC-035",
@@ -2001,7 +2025,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない",
         "raw": "| `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |",
-        "sourceLine": 144
+        "sourceLine": 146
       }
     ],
     "milestoneRelations": [

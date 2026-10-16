@@ -117,6 +117,8 @@
 
 | `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |
 
+| `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |
+
 ## Task precedence
 
 内部task間の必須AND前提を記録する。`SEQUENCE`は前提成果がそろうまで後続を開始・継続しない。`PARALLEL_JOIN`は独立部分を並行でき、後続の完了までに合流する。いずれも状態・委任・再開条件を上書きしない。

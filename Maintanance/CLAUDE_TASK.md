@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**Current assignment: OPS-052（依存見取り図の自動配置への助言）。** OPS-050は返却・Astra受入済み、DONE。
+**No active Claude assignment.** OPS-052は返却・Astra受入済み、ユーザーcommit指示によりDONE。 OPS-050は返却・Astra受入済み、DONE。
 
 RBT-042〜046、PERM-078、OPT-074、OPS-045・DOC-031はすべて受入済み・`DONE`。
 依頼・返却・受入の原文は[CLAUDE_TASK_HISTORY_2026-10-16.md](Archived/CLAUDE_TASK_HISTORY_2026-10-16.md)へ移した。
@@ -89,3 +89,7 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 - 次の一歩は分類関数だけを入れ、現データで全位置が現行と完全一致することを確かめること。
 - 未検証：導出した骨格と分類が現行配置と一致するかは、コードを実行して確かめていない。
 - 編集したのは回答欄と本Return欄だけ。入力コード・依頼本文は変更していない。commitしていない。
+
+### OPS-052受入（Astra記入）
+
+2026-10-16、助言を受入。ユーザー指示による限定反映と検証・保留事項は助言正本のAstra受入欄へ記録。Claude原回答は維持。Registryはユーザーcommit指示によりDONE。

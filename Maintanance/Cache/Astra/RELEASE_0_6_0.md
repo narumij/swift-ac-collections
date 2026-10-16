@@ -1,6 +1,6 @@
 # 0.6.0 — AI用ゲートキャッシュ
 
-2026-10-16 / Astra。ユーザーの構築指示で作成。恒久OPS-047の維持対象。人間用：[Release 0.6.0](../Current/RELEASE_0_6_0.md)。
+2026-10-16 / Astra。ユーザーの構築指示で作成。恒久OPS-047の維持対象。人間用：[Release 0.6.0](../../Current/RELEASE_0_6_0.md)。
 
 ## ここから再開する
 
@@ -19,15 +19,15 @@
 
 ## 次の作業と読み先
 
-構築時点ではDOC-033〜035は登録のみ・未実行。DOC-037は材料待ち。状態表全体の複製はせず、[Registry](../ProgressV2/TASK_REGISTRY_V2.md)の該当行を操作直前に確認する。
+構築時点ではDOC-033〜035は登録のみ・未実行。DOC-037は材料待ち。状態表全体の複製はせず、[Registry](../../ProgressV2/TASK_REGISTRY_V2.md)の該当行を操作直前に確認する。
 
 | 仕事 | 入力・終了点 | 開く正本 |
 | --- | --- | --- |
-| DOC-033 現行契約照合 | 既存4型アウトラインを実装・API Matrix・Test as Specへ照合。確定範囲と未決点を渡す。構成判断を創作しない | [アウトライン調整](../UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md) |
-| DOC-034 本文完成 | DOC-033の確定範囲を使う。既存本文を補完、JP/EN/公開コメント同期、既存例検証、最終横断 | [本文完成](../Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md) |
+| DOC-033 現行契約照合 | 既存4型アウトラインを実装・API Matrix・Test as Specへ照合。確定範囲と未決点を渡す。構成判断を創作しない | [アウトライン調整](../../UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md) |
+| DOC-034 本文完成 | DOC-033の確定範囲を使う。既存本文を補完、JP/EN/公開コメント同期、既存例検証、最終横断 | [本文完成](../../Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md) |
 | DOC-037 ユーザー受入 | DOC-034の成果をユーザーへ。受入可・差戻し・保留を区別する | 同上 |
-| RELEASE-078 対象・開始条件の照合 | PROPOSED。範囲・担当・完了条件・依存を確認し有効化するまでは着手しない。旧名と提供区分、必要入力を整理し、release範囲は決定しない | [人間用0.6.0](../Current/RELEASE_0_6_0.md)、[品質要求](../Quality/QUALITY_REQUIREMENTS.md) |
-| DOC-035 全対象初版確認 | DOC-037の受入可とRELEASE-078の整理を入力。4モジュールの文書・導線・公開コメント・掲載例・DocC診断を確認。公開阻害事項を残して合格にしない | [初版確認](../Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md) |
+| RELEASE-078 対象・開始条件の照合 | PROPOSED。範囲・担当・完了条件・依存を確認し有効化するまでは着手しない。旧名と提供区分、必要入力を整理し、release範囲は決定しない | [人間用0.6.0](../../Current/RELEASE_0_6_0.md)、[品質要求](../../Quality/QUALITY_REQUIREMENTS.md) |
+| DOC-035 全対象初版確認 | DOC-037の受入可とRELEASE-078の整理を入力。4モジュールの文書・導線・公開コメント・掲載例・DocC診断を確認。公開阻害事項を残して合格にしない | [初版確認](../../Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md) |
 
 依存：DOC-033 → DOC-034 → DOC-037 → DOC-035。RELEASE-078 → DOC-035も必須。構築依頼は本文作業・release開始の新規委任ではない。
 
@@ -54,7 +54,7 @@ RBT-026（Mapped Values View契約）は全体を本文の前提に追加しな�
 
 ## リリースへ進む境界
 
-文書初版条件の成立後、含める範囲とrelease開始をユーザーが判断する。候補commit・branch方式・tag位置はこのキャッシュで確定しない。人間主体の[RELEASE_PROCESS](../User/RELEASE_PROCESS.md)へ接続する。branch作成・commit・tag等の操作許可、push・mergeの担当を要約から緩めない。
+文書初版条件の成立後、含める範囲とrelease開始をユーザーが判断する。候補commit・branch方式・tag位置はこのキャッシュで確定しない。人間主体の[RELEASE_PROCESS](../../User/RELEASE_PROCESS.md)へ接続する。branch作成・commit・tag等の操作許可、push・mergeの担当を要約から緩めない。
 
 ## 確認した範囲と残り
 

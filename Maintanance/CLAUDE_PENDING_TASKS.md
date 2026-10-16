@@ -134,3 +134,5 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15_2.md`（`CP-20261015-006`→`OPS-042`）
 
 - [2026-10-16の照合記録](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16.md)（CP-20261015-007 → PERM-072）
+
+<!-- 2026-10-16 Astra: ユーザー指示により、上記の作成時パス Maintanance/TestRebuild2026/ は Maintanance/History/TestRebuild2026/ へ移動済み。原依頼・成果報告の記載は当時のまま保持する。現在の配置と受入状況はHIST-003の詳細正本を参照。 -->

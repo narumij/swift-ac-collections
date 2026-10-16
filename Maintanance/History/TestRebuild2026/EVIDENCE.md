@@ -61,7 +61,7 @@
 
 **[事実]** 4型の共通XCTest基底`RedBlackTreeTestCase`（`Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeTestCase.swift`）は`b52872b1`（09-29）で追加された。
 
-**[記録]** [`TESTING_REFERENCE.md`](../Archived/TestDashboard/TESTING_REFERENCE.md)には、次の記述がある。
+**[記録]** [`TESTING_REFERENCE.md`](../../Archived/TestDashboard/TESTING_REFERENCE.md)には、次の記述がある。
 
 - 横展開はAPI Matrixと照らし合わせて過不足を見ること（同書65行付近）。
 - 4型の横展開（ValueSemantics、LazySequence、IntegerElement・Key、`_99_DeathTests`の境界trap）を完了したこと（同書408行付近）。
@@ -101,7 +101,7 @@
 
 ## 5. レビューと補完の往復（2026-10-15〜16）
 
-**[事実]** 公開4型について、Astraが静的レビューで課題を出し、Claudeがtestへ反映し、Astraが独立に再実行して受け入れた。経緯の正本は[`RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`](../Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md)、依頼と返却の原文は[`CLAUDE_TASK.md`](../CLAUDE_TASK.md)と各履歴である。
+**[事実]** 公開4型について、Astraが静的レビューで課題を出し、Claudeがtestへ反映し、Astraが独立に再実行して受け入れた。経緯の正本は[`RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`](../../Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md)、依頼と返却の原文は[`CLAUDE_TASK.md`](../../CLAUDE_TASK.md)と各履歴である。
 
 | 段階 | Registry ID | 指摘・反映 |
 | --- | --- | --- |

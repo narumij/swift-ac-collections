@@ -14,9 +14,9 @@
 
 ## HIST-003
 
-作成者はClaude（姫）、受入・入口接続はAstra。資料は[README](../TestRebuild2026/README.md)と[EVIDENCE](../TestRebuild2026/EVIDENCE.md)。CSVと図を含む5ファイルで、queueの「4ファイル」という記載とは数え方が異なる。今回確認したのは実在とcommitまでで、集計値・8件の不具合・図と説明の独立照合は未実施。
+作成者はClaude（姫）、受入・入口接続はAstra。資料は[README](../History/TestRebuild2026/README.md)と[EVIDENCE](../History/TestRebuild2026/EVIDENCE.md)。CSVと図を含む5ファイルで、queueの「4ファイル」という記載とは数え方が異なる。今回確認したのは実在とcommitまでで、集計値・8件の不具合・図と説明の独立照合は未実施。
 
-受入時には根拠を照合し、未確認を保持して文書入口へ接続する。History系へまとめる案はqueueに残っているが、移動先の正確な構成は未確定。現在位置を採番だけで変えず、配置案と対象を具体化して判断を得る。RefactoringFromAtCoder2025やFixturesを勝手に移さない。
+2026-10-16、ユーザーがHistoryフォルダの作成と2フォルダの移動を明示したため、Astraが`Maintanance/History/RefactoringFromAtCoder2025/`と`Maintanance/History/TestRebuild2026/`へ移動し、参照と文書入口を更新した。Fixturesは今回の移動対象に含めない。配置決定は完了したが、件数・根拠・図の独立照合と成果の受入は残る。
 
 ## TEST-006
 

@@ -68,4 +68,4 @@
 - 宣言数と実行数は、検査の強さを表さない。mutation試験は、一部の項目で一時的に行っただけである。
 - Linuxでの全体実行、Swift 6.2、ASanは、この記録の範囲では確かめていない。
 - Permutationの借用寿命は、compile-failを再実行できるfixtureになっていない。
-- テスト整備の現在地は[`Maintanance/Testing/TESTING.md`](../Testing/TESTING.md)、fixtureの説明は[`Maintanance/Testing/Fixtures.md`](../Testing/Fixtures.md)にある。どちらも恒久task `TEST-005`の維持文書である。
+- テスト整備の現在地は[`Maintanance/Testing/TESTING.md`](../../Testing/TESTING.md)、fixtureの説明は[`Maintanance/Testing/Fixtures.md`](../../Testing/Fixtures.md)にある。どちらも恒久task `TEST-005`の維持文書である。

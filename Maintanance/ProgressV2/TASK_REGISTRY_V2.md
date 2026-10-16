@@ -83,9 +83,9 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
+| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |
 
-| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [EXECUTION] テスト再建の記録作成・受入と入口接続 | CP-20261016-001を正式登録。17d40163で5ファイル作成済み。件数・根拠・図の独立照合と入口接続が残る。History系の配置案は未確定で、現位置を維持。採番だけで受入済みにはしない | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/TestRebuild2026/README.md` / `Maintanance/TestRebuild2026/EVIDENCE.md` |
+| `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [EXECUTION] テスト再建の記録作成・受入と入口接続 | CP-20261016-001を正式登録。17d40163で5ファイル作成済み。2026-10-16のユーザー指示でHistoryへ移動し入口を接続。件数・根拠・図の独立照合が残る。配置変更だけで受入済みにはしない | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |
 
 ## Task precedence
 

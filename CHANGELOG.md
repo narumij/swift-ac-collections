@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.4] - Unreleased
+## [0.5.5] - 2026-10-17
+
+### Changed
+- 候補CIに、Linux上でAddress Sanitizerを有効にしてdeath testを実行するjobを追加
+
+## [0.5.4] - 2026-10-17
 
 ### Added
 - RedBlackTreeCollectionsの4型と、NextPermutationModule・ElementBufferModule・OptionalElementBufferModuleの利用者向け文書初版を整備

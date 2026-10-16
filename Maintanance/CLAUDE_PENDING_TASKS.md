@@ -55,7 +55,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261016-014` — ASan＋Death Testの子プロセスSIGABRT：原因はASanの`strip_env`
 
-- queue状態: `AWAITING_CODEX`（調査済み。RBT-033の続きとしての接続・採否はAstra）
+- queue状態: `RECONCILED`（調査済み。RBT-033の続きとしての接続・採否はAstra）
 - 発見元・ユーザー指示: 2026-10-16夜。ユーザー「こっそりASanの調査してて」「リリースおわったらあすとらに報告できるようドキュメント準備してて」。その後「リリース候補確定でキャンセルになったから、未採番にして」。
 - 種別候補: `DISCOVERY`
 - 成果: [`Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md`](Current/Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md)（Probe・ログ4本つき）。
@@ -65,11 +65,11 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 未確認: Linux、全体suite、`RedBlackTreeInternalCoverageTests`、写しのcommit（22:20頃の作業ツリー）。報告時に対象commitで再実行するのがよい。
 - 担当候補・受入担当: 調査は姫 / RBT-033への接続、CI反映の採否、受入はAstra。
 - commit: していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。末尾の照合・統合節を参照。
 
 ### `CP-20261016-015` — 候補CIの比較元が前回release tagだったことによる移行の穴
 
-- queue状態: `AWAITING_CODEX`（読み取り調査済み。RELEASE-083・084への接続はAstra）
+- queue状態: `RECONCILED`（読み取り調査済み。RELEASE-083・084への接続はAstra）
 - 発見元・ユーザー指示: 2026-10-16夜。ユーザー「CIの移行ミスってる線でも調査ひつようかもな」「その線でまだ調べる余地あるなら、しらべてもらって、タスクに載せにくいなら未採番でも」。
 - 種別候補: `DISCOVERY`
 - 成果: [`Evidence/CANDIDATE-CI-BASELINE-GAP-2026-10-16/README.md`](Current/Evidence/CANDIDATE-CI-BASELINE-GAP-2026-10-16/README.md)。
@@ -81,11 +81,11 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - ユーザーの方針（2026-10-16夜、会話）: 0.5.3のPermutationは世代の確認がない旧実装で、方式差は「仕方ない」。ユーザーが赤のままmergeし、その後チューニングの余地を探し直す。（ユーザー特権の判断。記録の正本化はAstraへ）
 - 担当候補・受入担当: 調査は姫 / 接続・方針の整理はAstra / 比較元の規則と0.6.0の扱いはユーザー。
 - commit: していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。末尾の照合・統合節を参照。
 
 ### `CP-20261016-016` — Permutation性能の落ち穂ひろい（提案）
 
-- queue状態: `CANDIDATE`（提案の記録のみ。着手しない）
+- queue状態: `RECONCILED`（提案の記録のみ。着手しない）
 - 発見元・ユーザー指示: 2026-10-16夜。CP-015のあと、ユーザー「俺が赤でマージして、再度チューニング余地を探す道のりだな」「ある種りせっとだし」「できれば、パーミュテーションのパフォーマンス落ち穂ひろいタスク提案もついかしてほしいわ」。
 - 種別候補: `DISCOVERY`（取りこぼし探し。採否と実装は別）
 - 背景:
@@ -103,7 +103,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 担当候補・受入担当: 調査は姫かCodex / 受入はAstra / 採否はユーザー。
 - 停止条件: 契約を変えないと取り戻せない差だけが残ったら、理由を記録して止める。
 - 成果・検証: 未着手
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。末尾の照合・統合節を参照。
 
 過去のreconciliation済みentryは次を参照する。
 
@@ -126,3 +126,12 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - Studioの同期確認で内容の差はなく、生成時のHEAD・dirty表示のみ変化していた。今回再同期する。画面の実操作検証は今回含まない。
 
 同じ共有ファイルを含めてcommitするときは、stage直前の差分に他担当の編集中の行が混ざっていないかを確認する。今回は最終内容が整合しているため、既存commitの書き換えは行わない。
+
+## Astra照合・統合（2026-10-16、811b7a7aの返却を確認）
+
+原entry本文は保持する。処理結果は本節を最新とする。
+
+- CP-013：追加報告受領。OPS-059のSafari解決情報を訂正。凍結維持、修正の完了受入は保留。
+- CP-014：RECONCILED。RBT-033正本へmacOS保存実験の証拠を受入・統合。固定版・適用範囲検証はRBT-049 PROPOSED。Linux CIへ適用しない。
+- CP-015：RECONCILED。RELEASE-083/084へ統合。workflowとガイドを照合。契約差による停止は適切。未取得runの成功不在は断定しない。ユーザーの赤merge方針は伝達記録として保持。
+- CP-016：RECONCILED。PERM-080 PROPOSEDとして正式登録、未着手。0.6.0後の範囲確定待ち。

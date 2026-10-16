@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "6cb0c88d",
-    "sha256": "8f01217cc4faa10a7ed1108469e178a8282967897ec76dc6ee00c14df91bca68",
+    "head": "811b7a7a",
+    "sha256": "660c74a842ceebad6b0ba4a6e42ea0f842d22ed65a08e1effe9cd90e35f7be6f",
     "dirty": true,
-    "generatedAt": "2026-10-16T21:58:43.657421+09:00",
+    "generatedAt": "2026-10-16T23:11:09.297730+09:00",
     "generator": "sync.py",
-    "rulesSha256": "1cc4c6afe60fc3a7fbc923f687de6605f7416e7f0dc9824ab8014d239bfe7f87"
+    "rulesSha256": "2b7d767dd13b45f17069381c2e9fe53e03165451c46eae8216178b76a2c6f19f"
   },
   "tasks": [
     {
@@ -791,13 +791,73 @@
       "state": "FROZEN",
       "owner": "Astra（調整） / Claude（調査済み）",
       "item": "[DISCOVERY] Studio末端枝の配置とSafari表示差の調査",
-      "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。",
+      "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。",
       "detail": "`Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md`",
-      "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
+      "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
       "sourceLine": 108,
       "group": "移行史",
       "permanent": false,
       "parentTask": "OPS-048"
+    },
+    {
+      "id": "RELEASE-082",
+      "state": "DONE",
+      "owner": "Astra",
+      "item": "[EXECUTION] 0.6.0手元の候補確認",
+      "condition": "範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。",
+      "detail": "`Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md`",
+      "raw": "| `RELEASE-082` | `DONE` | Astra | [EXECUTION] 0.6.0手元の候補確認 | 範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。 | `Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md` |",
+      "sourceLine": 110,
+      "group": "移行史",
+      "permanent": false
+    },
+    {
+      "id": "RELEASE-083",
+      "state": "DONE",
+      "owner": "Claude（姫：原因調査） / Astra（受入）",
+      "item": "[DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案",
+      "condition": "Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。",
+      "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md`",
+      "raw": "| `RELEASE-083` | `DONE` | Claude（姫：原因調査） / Astra（受入） | [DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案 | Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md` |",
+      "sourceLine": 112,
+      "group": "移行史",
+      "permanent": false
+    },
+    {
+      "id": "RELEASE-084",
+      "state": "WAITING_EXTERNAL",
+      "owner": "Claude（姫：実装・検証） / Astra（受入）",
+      "item": "[EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応",
+      "condition": "ユーザーが候補CIの赤を引き受け0.6.0前の修正を後送すると確定。0.6.0 release完了後にbaselineと修正の必要性・範囲を再確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。",
+      "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
+      "raw": "| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.6.0前の修正を後送すると確定。0.6.0 release完了後にbaselineと修正の必要性・範囲を再確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
+      "sourceLine": 114,
+      "group": "移行史",
+      "permanent": false
+    },
+    {
+      "id": "PERM-080",
+      "state": "PROPOSED",
+      "owner": "Claude / Astra（範囲確定後）",
+      "item": "[DISCOVERY] 0.6.0後のPermutation性能改善候補調査",
+      "condition": "CP-016を提案登録。0.6.0 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。",
+      "detail": "`Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md`",
+      "raw": "| `PERM-080` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] 0.6.0後のPermutation性能改善候補調査 | CP-016を提案登録。0.6.0 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。 | `Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md` |",
+      "sourceLine": 116,
+      "group": "移行史",
+      "permanent": false
+    },
+    {
+      "id": "RBT-049",
+      "state": "PROPOSED",
+      "owner": "Claude / Astra（範囲確定後）",
+      "item": "[DISCOVERY] ASan strip_envの固定版検証",
+      "condition": "CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。",
+      "detail": "`Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
+      "raw": "| `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
+      "sourceLine": 118,
+      "group": "移行史",
+      "permanent": false
     }
   ],
   "edges": [
@@ -807,7 +867,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
       "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-      "sourceLine": 116
+      "sourceLine": 126
     },
     {
       "successor": "QUALITY-001",
@@ -815,7 +875,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
       "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-      "sourceLine": 117
+      "sourceLine": 127
     },
     {
       "successor": "QUALITY-001",
@@ -823,7 +883,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
       "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-      "sourceLine": 118
+      "sourceLine": 128
     },
     {
       "successor": "QUALITY-001",
@@ -831,7 +891,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
       "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-      "sourceLine": 119
+      "sourceLine": 129
     },
     {
       "successor": "QUALITY-001",
@@ -839,7 +899,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
       "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-      "sourceLine": 120
+      "sourceLine": 130
     },
     {
       "successor": "QUALITY-001",
@@ -847,7 +907,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
       "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-      "sourceLine": 121
+      "sourceLine": 131
     },
     {
       "successor": "RELEASE-076",
@@ -855,7 +915,7 @@
       "flow": "SEQUENCE",
       "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
       "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-      "sourceLine": 122
+      "sourceLine": 132
     },
     {
       "successor": "DOC-026",
@@ -863,7 +923,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
       "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-      "sourceLine": 123
+      "sourceLine": 133
     },
     {
       "successor": "DOC-027",
@@ -871,7 +931,7 @@
       "flow": "SEQUENCE",
       "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
       "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-      "sourceLine": 124
+      "sourceLine": 134
     },
     {
       "successor": "DOC-034",
@@ -879,7 +939,7 @@
       "flow": "SEQUENCE",
       "constraint": "現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない",
       "raw": "| `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |",
-      "sourceLine": 126
+      "sourceLine": 136
     },
     {
       "successor": "DOC-044",
@@ -887,7 +947,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 127
+      "sourceLine": 137
     },
     {
       "successor": "DOC-044",
@@ -895,7 +955,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 128
+      "sourceLine": 138
     },
     {
       "successor": "DOC-044",
@@ -903,7 +963,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-042` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 129
+      "sourceLine": 139
     },
     {
       "successor": "DOC-044",
@@ -911,7 +971,7 @@
       "flow": "SEQUENCE",
       "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
       "raw": "| `DOC-044` | `DOC-043` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-      "sourceLine": 130
+      "sourceLine": 140
     },
     {
       "successor": "DOC-034",
@@ -919,7 +979,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する",
       "raw": "| `DOC-034` | `DOC-044` | `PARALLEL_JOIN` | 本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する |",
-      "sourceLine": 131
+      "sourceLine": 141
     },
     {
       "successor": "DOC-037",
@@ -927,7 +987,7 @@
       "flow": "SEQUENCE",
       "constraint": "本文・同期・検証結果を揃えてユーザーへ受入判断を渡す",
       "raw": "| `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |",
-      "sourceLine": 132
+      "sourceLine": 142
     },
     {
       "successor": "DOC-035",
@@ -935,7 +995,7 @@
       "flow": "SEQUENCE",
       "constraint": "ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない",
       "raw": "| `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |",
-      "sourceLine": 133
+      "sourceLine": 143
     },
     {
       "successor": "DOC-035",
@@ -943,7 +1003,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない",
       "raw": "| `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |",
-      "sourceLine": 134
+      "sourceLine": 144
     }
   ],
   "baseline": {
@@ -1729,13 +1789,73 @@
         "state": "FROZEN",
         "owner": "Astra（調整） / Claude（調査済み）",
         "item": "[DISCOVERY] Studio末端枝の配置とSafari表示差の調査",
-        "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。",
+        "condition": "CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。",
         "detail": "`Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md`",
-        "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
+        "raw": "| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |",
         "sourceLine": 108,
         "group": "移行史",
         "permanent": false,
         "parentTask": "OPS-048"
+      },
+      {
+        "id": "RELEASE-082",
+        "state": "DONE",
+        "owner": "Astra",
+        "item": "[EXECUTION] 0.6.0手元の候補確認",
+        "condition": "範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。",
+        "detail": "`Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md`",
+        "raw": "| `RELEASE-082` | `DONE` | Astra | [EXECUTION] 0.6.0手元の候補確認 | 範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。 | `Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md` |",
+        "sourceLine": 110,
+        "group": "移行史",
+        "permanent": false
+      },
+      {
+        "id": "RELEASE-083",
+        "state": "DONE",
+        "owner": "Claude（姫：原因調査） / Astra（受入）",
+        "item": "[DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案",
+        "condition": "Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。",
+        "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md`",
+        "raw": "| `RELEASE-083` | `DONE` | Claude（姫：原因調査） / Astra（受入） | [DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案 | Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md` |",
+        "sourceLine": 112,
+        "group": "移行史",
+        "permanent": false
+      },
+      {
+        "id": "RELEASE-084",
+        "state": "WAITING_EXTERNAL",
+        "owner": "Claude（姫：実装・検証） / Astra（受入）",
+        "item": "[EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応",
+        "condition": "ユーザーが候補CIの赤を引き受け0.6.0前の修正を後送すると確定。0.6.0 release完了後にbaselineと修正の必要性・範囲を再確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。",
+        "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
+        "raw": "| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.6.0前の修正を後送すると確定。0.6.0 release完了後にbaselineと修正の必要性・範囲を再確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
+        "sourceLine": 114,
+        "group": "移行史",
+        "permanent": false
+      },
+      {
+        "id": "PERM-080",
+        "state": "PROPOSED",
+        "owner": "Claude / Astra（範囲確定後）",
+        "item": "[DISCOVERY] 0.6.0後のPermutation性能改善候補調査",
+        "condition": "CP-016を提案登録。0.6.0 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。",
+        "detail": "`Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md`",
+        "raw": "| `PERM-080` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] 0.6.0後のPermutation性能改善候補調査 | CP-016を提案登録。0.6.0 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。 | `Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md` |",
+        "sourceLine": 116,
+        "group": "移行史",
+        "permanent": false
+      },
+      {
+        "id": "RBT-049",
+        "state": "PROPOSED",
+        "owner": "Claude / Astra（範囲確定後）",
+        "item": "[DISCOVERY] ASan strip_envの固定版検証",
+        "condition": "CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。",
+        "detail": "`Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
+        "raw": "| `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
+        "sourceLine": 118,
+        "group": "移行史",
+        "permanent": false
       }
     ],
     "edges": [
@@ -1745,7 +1865,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
         "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-        "sourceLine": 116
+        "sourceLine": 126
       },
       {
         "successor": "QUALITY-001",
@@ -1753,7 +1873,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する",
         "raw": "| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sourceLine": 117
+        "sourceLine": 127
       },
       {
         "successor": "QUALITY-001",
@@ -1761,7 +1881,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する",
         "raw": "| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sourceLine": 118
+        "sourceLine": 128
       },
       {
         "successor": "QUALITY-001",
@@ -1769,7 +1889,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する",
         "raw": "| `QUALITY-001` | `RBT-034` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sourceLine": 119
+        "sourceLine": 129
       },
       {
         "successor": "QUALITY-001",
@@ -1777,7 +1897,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する",
         "raw": "| `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sourceLine": 120
+        "sourceLine": 130
       },
       {
         "successor": "QUALITY-001",
@@ -1785,7 +1905,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する",
         "raw": "| `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sourceLine": 121
+        "sourceLine": 131
       },
       {
         "successor": "RELEASE-076",
@@ -1793,7 +1913,7 @@
         "flow": "SEQUENCE",
         "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
         "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-        "sourceLine": 122
+        "sourceLine": 132
       },
       {
         "successor": "DOC-026",
@@ -1801,7 +1921,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
         "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-        "sourceLine": 123
+        "sourceLine": 133
       },
       {
         "successor": "DOC-027",
@@ -1809,7 +1929,7 @@
         "flow": "SEQUENCE",
         "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
         "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-        "sourceLine": 124
+        "sourceLine": 134
       },
       {
         "successor": "DOC-034",
@@ -1817,7 +1937,7 @@
         "flow": "SEQUENCE",
         "constraint": "現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない",
         "raw": "| `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |",
-        "sourceLine": 126
+        "sourceLine": 136
       },
       {
         "successor": "DOC-044",
@@ -1825,7 +1945,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 127
+        "sourceLine": 137
       },
       {
         "successor": "DOC-044",
@@ -1833,7 +1953,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 128
+        "sourceLine": 138
       },
       {
         "successor": "DOC-044",
@@ -1841,7 +1961,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-042` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 129
+        "sourceLine": 139
       },
       {
         "successor": "DOC-044",
@@ -1849,7 +1969,7 @@
         "flow": "SEQUENCE",
         "constraint": "型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない",
         "raw": "| `DOC-044` | `DOC-043` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |",
-        "sourceLine": 130
+        "sourceLine": 140
       },
       {
         "successor": "DOC-034",
@@ -1857,7 +1977,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する",
         "raw": "| `DOC-034` | `DOC-044` | `PARALLEL_JOIN` | 本文作成は先行済み。独立レビューの受入・必要な修正と再検証を本文完成前に合流する |",
-        "sourceLine": 131
+        "sourceLine": 141
       },
       {
         "successor": "DOC-037",
@@ -1865,7 +1985,7 @@
         "flow": "SEQUENCE",
         "constraint": "本文・同期・検証結果を揃えてユーザーへ受入判断を渡す",
         "raw": "| `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |",
-        "sourceLine": 132
+        "sourceLine": 142
       },
       {
         "successor": "DOC-035",
@@ -1873,7 +1993,7 @@
         "flow": "SEQUENCE",
         "constraint": "ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない",
         "raw": "| `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |",
-        "sourceLine": 133
+        "sourceLine": 143
       },
       {
         "successor": "DOC-035",
@@ -1881,7 +2001,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない",
         "raw": "| `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |",
-        "sourceLine": 134
+        "sourceLine": 144
       }
     ],
     "milestoneRelations": [
@@ -1941,7 +2061,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-          "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+          "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
           "line": 34
         }
       },
@@ -1965,7 +2085,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-          "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+          "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
           "line": 81
         }
       },
@@ -2073,7 +2193,7 @@
         "source": {
           "path": "Maintanance/Current/RELEASE_0_6_0.md",
           "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-          "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+          "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
           "line": 87
         }
       },
@@ -2128,7 +2248,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
-        "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+        "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
         "line": 23
       }
     },
@@ -2286,7 +2406,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
-        "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+        "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
         "line": 34
       }
     },
@@ -2310,7 +2430,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
-        "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+        "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
         "line": 81
       }
     },
@@ -2418,7 +2538,7 @@
       "source": {
         "path": "Maintanance/Current/RELEASE_0_6_0.md",
         "quote": "DOC-035の全公開対象の文書初版確認を、本書の文書初版条件の必須入力とする。",
-        "sha256": "ab1ac605cb67f943fb01b5479c3884c4df606a39e382ba46fc1ae015e0de480f",
+        "sha256": "f8637b6c742f6405f976a3aaefafaa454c00c5316f42f89ad53e0bdc3716f9ee",
         "line": 87
       }
     },

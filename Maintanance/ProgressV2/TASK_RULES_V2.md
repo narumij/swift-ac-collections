@@ -94,9 +94,9 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `OPS` | `059` |
 | `OPT` | `074` |
 | `PERF` | `005` |
-| `PERM` | `079` |
+| `PERM` | `080` |
 | `QUALITY` | `005` |
-| `RBT` | `048` |
+| `RBT` | `049` |
 | `RELEASE` | `084` |
 | `TEST` | `008` |
 

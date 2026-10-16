@@ -105,13 +105,17 @@
 
 | `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |
 
-| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
+| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
 
 | `RELEASE-082` | `DONE` | Astra | [EXECUTION] 0.6.0手元の候補確認 | 範囲・CHANGELOG・証拠適用範囲の確認完了、ユーザーcommit承認により完了。ユーザー指定順序は候補確認→commit/push→通常CI→コメント追いCI。試験合格・最終リリース判断とは別。 | `Maintanance/Current/RELEASE_0_6_0_CANDIDATE_CHECK.md` |
 
 | `RELEASE-083` | `DONE` | Claude（姫：原因調査） / Astra（受入） | [DISCOVERY] 候補CIの比較元ベンチマーク停止原因と最小修正案 | Astraが調査受入、ユーザーcommit承認により完了。0.5.3の測定8件欠落による停止を隔離再現、修正案は未適用。CI実ログ・Linux再現は未確認。修正方式・適用範囲と追いCIは後続。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md` |
 
-| `RELEASE-084` | `ACTIVE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | RELEASE-083受入済み調査に基づき、既知SHAの新規8件を明示し未知欠落は失敗。候補CIだけの限定修正。通常CI・測定契約・閾値・製品は変更しない。ローカル検証後に返却、remote操作とcommitは別。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
+| `RELEASE-084` | `WAITING_EXTERNAL` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの0.5.3比較元未登録測定への限定対応 | ユーザーが候補CIの赤を引き受け0.6.0前の修正を後送すると確定。0.6.0 release完了後にbaselineと修正の必要性・範囲を再確認して再開。未実装、比較除外・閾値変更なし。mergeはユーザー操作、CI合格とは扱わない。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
+
+| `PERM-080` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] 0.6.0後のPermutation性能改善候補調査 | CP-016を提案登録。0.6.0 release後に対象SHA・環境・PERM-064との順序と担当を確定してから開始。契約維持、実装は別判断。 | `Maintanance/Current/PERMUTATION_PERFORMANCE_GAP_REVIEW.md` |
+
+| `RBT-049` | `PROPOSED` | Claude / Astra（範囲確定後） | [DISCOVERY] ASan strip_envの固定版検証 | CP-014の保存証拠を受入。次回品質検証で版・環境を固定し再現と適用範囲を確認。Linux CIへ未適用、0.6.0必須条件にしない。 | `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |
 
 ## Task precedence
 

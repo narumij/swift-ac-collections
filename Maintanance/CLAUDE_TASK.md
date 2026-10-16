@@ -82,3 +82,9 @@ OPS-053・055〜057、DOC-040〜044、RBT-047、RELEASE-081の依頼・返却・
 ## RELEASE-084 — 候補CIの比較元対応を実装・検証
 
 2026-10-16、ユーザーの進行委任に基づく正式依頼。Registry登録済み。担当Claude（姫）、受入Astra。[修正正本とReturn](Current/RELEASE_CANDIDATE_BASELINE_FIX.md)に従って実装・限定検証をお願いします。既知baseline SHAだけの例外、想定外欠落の失敗、比較範囲の明示を守る。ci.ymlは変更しない。commit・GitHub操作は含めない。作成完了をもって指定範囲を受渡し。
+
+## 最新の受入と進行（2026-10-16 / Astra）
+
+RELEASE-084は停止報告を受入、実装は未着手。WAITING_USER。詳細正本のAstra受入節を参照。今回追加依頼はない。CP-014〜016は統合済み、提案taskは自動開始しない。OPS-059の凍結は維持する。
+
+2026-10-16ユーザー確定：RELEASE-084は0.6.0後へ後送、WAITING_EXTERNAL。今回の候補CIの赤を引き受けユーザーがmergeする方針。追加実装依頼なし。commit・push・merge・タグは未実施。詳細はRELEASE_CANDIDATE_BASELINE_FIX.mdの最新判断。

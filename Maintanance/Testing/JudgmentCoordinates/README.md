@@ -39,3 +39,9 @@
 ## 作業の記録
 
 [正式登録・受入記録](../../Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に今回の範囲と確認結果を残す。現在の状態は[Task Registry](../../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
+
+## 2026-10-16改訂草案の入口
+
+ユーザーが姫へ依頼した7点の改訂版は [JUDGMENT_COORDINATES.md](JUDGMENT_COORDINATES.md)。原版の写しと区別して読む。Astraが差分と入口接続をTEST-008として確認した。
+
+これは草案の受渡しであり、規則への昇格ではない。事例の未照合・旧表現などの留保は[確認記録](../../Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md)に残す。上の「姫の見直し所見」は改訂に至る経緯として保持する。

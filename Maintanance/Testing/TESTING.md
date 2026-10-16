@@ -8,6 +8,7 @@
 ## 関連する参考資料
 
 [判断座標の草案](JudgmentCoordinates/README.md)を恒久task TEST-005の紐付け資料として一時的に預かる。協働全体の参考草案であり、テスト専用の規則ではない。本文の変更・規則化は別の判断とする。
+ユーザーの依頼で姫が7点を反映した改訂版は[`JUDGMENT_COORDINATES.md`](JudgmentCoordinates/JUDGMENT_COORDINATES.md)（`CP-20261016-004`、照合待ち）。原本の写しは別に残る。
 
 ## 目的
 
@@ -81,7 +82,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 - 2026-10-16、ユーザー指示で本書と`Fixtures.md`を`Tests/`から`Maintanance/Testing/`へ移した。`Tests/CLAUDE.md`は、Claude Codeが
   作業folderから自動で読むため`Tests/`に残す。`DOCUMENT.md`・配置維持例外の表・Registry等の参照はAstraが更新済み（`TEST-006`）。
 
-最終更新: 2026-10-16 09:10 JST / Claude Opus 5.5
+最終更新: 2026-10-16 15:50 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

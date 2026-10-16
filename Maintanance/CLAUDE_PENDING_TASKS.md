@@ -161,7 +161,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261016-011` — AI用キャッシュ`Maintanance/Cache/`を`.gitignore`する
 
-- queue状態: `AWAITING_CODEX`（`.gitignore`は実施済み。残りはAstraへの依頼）
+- queue状態: `RECONCILED`（`.gitignore`は実施済み。残りはAstraへの依頼）
 - 発見元・ユーザー指示: 2026-10-16夜。ユーザー「Cacheは.gitignoreしたいね」「姫の未採番で、.gitignoreさきにやって、今後.gitignoreいるようあすとらさんに依頼しといて」。
 - 種別候補: `EXECUTION`
 - 実施したこと（姫）: `.gitignore`の末尾に3行を足した。
@@ -182,11 +182,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   3. RulesとCOMMONSに「キャッシュはgit管理外（README以外）」と書くかどうか判断してほしい。キャッシュは同じマシンの中でだけ引き継げる、という点も含めて。
 - 担当候補・受入担当: `.gitignore`は姫（実施済み）/ 上の依頼1〜3と受入はAstra。
 - 成果・検証: `.gitignore`の変更のみ。commitしていない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。既存OPS-044へ統合。f990b326のignore規則を独立確認。Astraの既存3キャッシュは手元を保持して追跡解除し、READMEの復元入口、Rules・COMMONSへGit管理外の境界を明記。新規採番なし。
 
 ### `CP-20261016-012` — RBT-048の追加確認：death testで修正案のfatalErrorに届くか
 
-- queue状態: `AWAITING_CODEX`（実施済み。RBT-048への接続はAstra）
+- queue状態: `RECONCILED`（実施済み。RBT-048への接続はAstra）
 - 発見元・ユーザー指示: 2026-10-16夜。ユーザー「デスセスとの追加調査やって」。RBT-048の「ユーザーの明示依頼があった場合だけ資料整理や追加確認を補助する」に当たる。
 - 種別候補: `DISCOVERY`
 - 対象範囲: 一時コピー2つ（現行・修正案適用）でexit testのprobe 13件と既存`DeathTests`全体を実行し、比較した。
@@ -198,7 +198,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - RBT-047のReturn 5「death testはskipされるものがある」は誤りだった。訂正をREADMEに置いた（原Returnは固定なので書き換えない）。
 - 担当候補・受入担当: 確認は姫 / RBT-048への接続・受入はAstra。判断はユーザー。
 - commit: していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。既存RBT-048へ追加判断材料として統合・受入。3実装hash、probe内容、13件×2と213件×2の成功ログ、旧56件成功を照合。再実行なし。原返却を保持して正本へ接続し、skip記述の訂正も接続。USER_ONLYを維持し、製品修正や方針承認はしていない。新規採番なし。
 
 過去のreconciliation済みentryは次を参照する。
 

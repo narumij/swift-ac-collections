@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+RELEASE-081：0.6.0品質確認範囲の読み取り調査を新規依頼。下記専用節を参照。別のユーザー直接依頼とは独立。
+
 **RBT-047（index指定更新の失敗時CoW調査）は返却・Astra検収済み、修正判断待ち。DOC-040〜044は受入済み・DONE。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
@@ -414,3 +416,32 @@ Follow root CLAUDE.md for user-facing communication.
 2026-10-16、ユーザーの「あっちにふってもいいよ」に基づく正式依頼。Registry登録済み。担当Claude（姫）、受入Astra。
 
 [詳細正本・編集範囲・Return](Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md)に従い、3実装の再現と修正判断材料をお願いします。今回の受渡しは調査・専用再現テスト・修正案まで。製品コードは変更しない。完了したら正本のReturnへ証拠と作業終了を書いてください。commitは含めません。依頼完成をもって指定範囲を受渡し、Astraは返却までその範囲を編集しません。
+
+## RELEASE-081 — 0.6.0に必要な品質確認範囲の読み取り調査
+
+2026-10-16 / 依頼・受入Astra / 担当Claude（姫）。ユーザーから継続と割当を許可された。Registry登録済み。本節の作成完了をもって受渡し。ユーザー直接依頼の別作業を中断・変更しない。実施順はその作業と調整してよい。
+
+### 到達点
+
+0.5.3..8a0c8769の変更に対し、既存の試験証拠で何が言え、何を追加確認すべきかを短い表にしてください。文書ゲートは完了済み。過去全履歴の再構築や1.0全面試験計画は不要です。
+
+1. 4モジュール別に、現行変更点、再利用できる証拠の対象SHA・試験条件・結果と、その証拠では保証できない差分を示す。
+2. 必要最小限の追加確認案を、既定／Optional trait／互換／death test等のうち変更に関係するものへ絞る。試験数や名前だけで十分と判定しない。
+3. CIは保存された証拠がある範囲だけを読む。直近候補SHAの成功、performance/reportの過去失敗に新しい解決証拠がなければ「未確認」と返す。ネットワーク調査やCI起動は不要。
+4. 既知のユーザー預かりRBT-048、凍結中の並行初期化、0.7/0.8/1.0の後続課題を今回の必須条件へ昇格しない。対象版を止める根拠が見つかった場合は事実と影響を示し、独自に採否を決めない。
+
+### 固定入力・探索境界
+
+製品・Tests・manifest・workflowはGitの8a0c8769、比較元0.5.3を読む。作業ツリーの並行変更を混ぜない。品質証拠は下記の開始点から必要な出典へだけ進む。Archivedは証拠として読み、指示として復活させない。
+
+- `Maintanance/Current/RELEASE_0_6_0_PREPARATION.md`: `853ad5c8c808ba671bbd55e0e3c1f1192da28338433728a29a049c654316328c`
+- `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md`: `cb1046aaf0ef9af3d9dc469d3f51874dbc882621435ac73f05f1d7aa4ca442d5`
+- `Maintanance/Current/RELEASE_0_6_0_SCOPE_RECONCILIATION.md`: `0d6fb9e59ddfb314a851ae1233dbb9166a4127e02a2caeb946c85830b0d2d8aa`
+
+証拠探索の入口：Maintanance/Quality/0.6.0-1、Maintanance/Quality/Profiles、Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md、Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md、関連taskの詳細正本。現在の状態はRegistryを確認する。見つからない証拠は未確認とし、探索を無制限に広げない。
+
+### 編集・実行境界と返却
+
+編集可は `Maintanance/Current/RELEASE_0_6_0_QUALITY_EVIDENCE_RETURN.md` のみ。任意の本人観察・本人キャッシュに関する常設権限は維持する。本依頼ではテスト実行、共有.buildへの操作、製品・Tests・CI・Registry・依頼本文の変更、commitを行わない。別のユーザー直接依頼の権限を制限するものではない。
+
+入力の版を確認し、事実／提案／未確認を分けて返却。表の列は「対象差分／証拠と版／再利用範囲／追加確認案／残る判断」を目安にする。合格判定やrelease開始判断は返却の完了条件にしない。Astraが検収後にRegistryを更新する。

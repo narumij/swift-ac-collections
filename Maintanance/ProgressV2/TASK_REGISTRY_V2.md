@@ -42,7 +42,7 @@
 
 | `DOC-033` | `DONE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。2026-10-16照合・技術訂正済み、結果と証拠を詳細正本から接続。本文へ引渡し済み、ユーザーcommit承認。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
 | `RBT-047` | `DONE` | Claude（姫：再現・調査） / Astra（受入） | [DISCOVERY] index指定更新の失敗時CoW複製の切分け | 2026-10-16調査返却をAstra検収。3実装の入力hash・再現テスト・ログ・差分案を照合。失敗時CoWを通常5経路・互換1経路で観測。製品修正は未実施、ユーザーのcommit承認により調査完了。修正方針判断はUSER_ONLYのRBT-048へ分離し、決定前に製品修正しない。Astraによる再実行と実測性能は未確認。 | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md` |
-| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
+| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
 | `DOC-034` | `DONE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
 | `DOC-035` | `DONE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
 | `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
@@ -62,6 +62,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `RELEASE-081` | `ACTIVE` | Astra（範囲案・検収） / Claude（姫：証拠調査） | [DISCOVERY] 0.6.0変更範囲案と必要品質確認の整理 | 2026-10-16ユーザーの継続・割当許可に基づく。0.5.3..8a0c8769の変更と既存証拠を照合し、再利用可・差分確認が必要・判断待ちを整理して開始判断材料へ渡す。候補採用・release開始・試験実行・製品変更は含めない。姫の別作業と分離した読み取り調査を依頼。 | `Maintanance/Current/RELEASE_0_6_0_PREPARATION.md` / `Maintanance/Current/RELEASE_0_6_0_QUALITY_EVIDENCE_RETURN.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
@@ -144,6 +145,8 @@
 ### 受入済みの前提成果
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
+
+- `RELEASE-081`の受入済み入力：`DOC-035`（8a0c8769）。文書初版結果を再利用する。継続・割当は2026-10-16ユーザーの明示依頼による。release開始許可は含まない。
 
 - `PERM-062`の受入済み入力：`PERM-065`。公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 

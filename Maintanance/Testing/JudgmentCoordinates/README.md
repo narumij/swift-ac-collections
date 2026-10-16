@@ -1,41 +1,29 @@
-# 判断座標の草案 — 一時保管と参照の入口
+# 判断の座標系 — Testingでの預かり
 
-ユーザーの見立てでは、これらは現在の`AGENTS.md`の原型となった資料である。Claude（姫）の持ち物ではなく、誰でも参照・手入れの提案をしてよい。本文の変更は、現在の委任と持ち主の判断に従う。
+<!-- 2026-10-16 ユーザーの見立て：判断座標の草案はAGENTS.mdの原型である。Fixtures.mdが情報共有・正本運用の原型であるのと同じく、由来をここに残す。 -->
 
-2026-10-16 / 回収・照合：Astra。ユーザーのサルベージ指示により、Archivedの原文を残したまま6文書をbyte単位で同一の写しとして回収した。中心は[判断の座標系](JUDGMENT_COORDINATES_DRAFT.md)。
+<!-- 姫の持ち物ではない。置き場所の都合で預かっている。誰でも読み・引き・手入れの提案をしてよい。 -->
 
-`Maintanance/`直下のfolderを増やさないため、しばらくTestingで預かる。内容がテスト専用という意味ではない。テスト整備の恒久task TEST-005へ紐付け、個別の回収作業はTEST-007として記録する。将来の配置・OPS-046等への紐付け変更はユーザーが判断する。
+2026-10-16 / Claude（姫）。ユーザーの依頼で、Archivedに埋もれていた判断座標の草案を、現行の資料へ戻した。
+恒久task **TEST-005（テスト整備）** に紐付ける。Registry上の作業は`TEST-007`。
 
-## 資料の扱い
+## なぜTestingにあるか
 
-草案・当時の評価・参考資料として参照する。回収は、AGENTS.md・CLAUDE.md・Registryの現行規則や権限への昇格を意味しない。本文にある担当名・当時の状態・規則への提案は、現在の指示として読み替えない。本文は今回変更していない。
+`Maintanance/`直下のfolderを減らしたいので、しばらくは`Testing/`で預かる（ユーザー、同日「しばらく我慢してTestingであずかっててほしい」）。
+内容はテスト専用ではなく、協働全体の判断の物差しである。直下の整理が済んだら、`OPS-046`（調整ノウハウ）などへの紐付けと置き場所を見直す。判断はユーザー。
 
-## 原文との対応
+## 資料
 
-元の[アーカイブ案内](../../Archived/JudgmentCoordinates/README.md)も保持する。
+- [判断の座標系（2026-10-16改訂）](JUDGMENT_COORDINATES.md)：原本の写しに、その後の運用で分かった7点を反映した版。変更箇所には「（10-16改訂）」と付けた。
 
-| 回収した資料 | 保存した原文 |
-| --- | --- |
-| [AGENTS_MD_COORDINATE_REVIEW.md](AGENTS_MD_COORDINATE_REVIEW.md) | [原文](../../Archived/JudgmentCoordinates/AGENTS_MD_COORDINATE_REVIEW.md) |
-| [CHANGE_KNOWLEDGE_LAG_DRAFT.md](CHANGE_KNOWLEDGE_LAG_DRAFT.md) | [原文](../../Archived/JudgmentCoordinates/CHANGE_KNOWLEDGE_LAG_DRAFT.md) |
-| [EFFECT_GRADIENT_REFERENCE.md](EFFECT_GRADIENT_REFERENCE.md) | [原文](../../Archived/JudgmentCoordinates/EFFECT_GRADIENT_REFERENCE.md) |
-| [JUDGMENT_COORDINATES_BUDDHISM_NOTE.md](JUDGMENT_COORDINATES_BUDDHISM_NOTE.md) | [原文](../../Archived/JudgmentCoordinates/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md) |
-| [JUDGMENT_COORDINATES_DRAFT.md](JUDGMENT_COORDINATES_DRAFT.md) | [原文](../../Archived/JudgmentCoordinates/JUDGMENT_COORDINATES_DRAFT.md) |
-| [MINIMAL_ORIENTATION_DRAFT.md](MINIMAL_ORIENTATION_DRAFT.md) | [原文](../../Archived/JudgmentCoordinates/MINIMAL_ORIENTATION_DRAFT.md) |
+## 読むときの境界
 
-## 姫の見直し所見（未採用）
+現在の規則・権限・指示ではない。`AGENTS.md`・Registry・`TASK_RULES_V2.md`と食い違えば、それらを優先する。規則へは昇格させない。
 
-以下は2026-10-16の依頼記録からそのまま転記した提案である。本文へ反映していない。件数や実施状況についての記述も姫の報告であり、今回独立に再調査して確定したものではない。採否はユーザーが決める。
+## 原本
 
-- 戻すときの入力（姫の所見、2026-10-16。採否は持ち主が決める）:
-  1. §3の持ち主の表は、人の名前ではなく役割で書く。文書の持ち主は、Registryの恒久taskと維持文書・紐付け資料を引く形に変え、表にはどちらにも書かれていないものだけを残す。
-  2. §2の軸1に「repositoryの外」を足す。一時ファイルの扱いは効果からは導けず、持ち主の事実として扱う必要がある。
-  3. §6のレスポンシビリティに「担当範囲を返すまで」を含める（OPT-074の返却漏れ）。
-  4. §7の「判断点が出たら止める」の差に、「影響する項目だけ止める」という実地の形を足す（RBT-042の範囲eraseの不具合）。
-  5. §8・§11の番号の使い回しとG-1の採番状態は、`TASK_RULES_V2.md`の「Task ID採番状態」で解消済みと書ける。
-  6. §8・§11のcommitとtaskの結びつき：10-15以降のcommit 149件のうち、件名にtask番号があるのは2件。まだ未決。
-  7. §9の検証案は未実施。代わりに、担当適性の面談と、型別補完の往復の観測がある。
+原本と統合元・補足資料は[`Archived/JudgmentCoordinates/`](../../Archived/JudgmentCoordinates/README.md)に、改変せず残す。
 
-## 作業の記録
-
-[正式登録・受入記録](../../Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に今回の範囲と確認結果を残す。現在の状態は[Task Registry](../../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
+- `JUDGMENT_COORDINATES_DRAFT.md`（本書の原本）
+- `EFFECT_GRADIENT_REFERENCE.md`・`MINIMAL_ORIENTATION_DRAFT.md`・`CHANGE_KNOWLEDGE_LAG_DRAFT.md`（統合元）
+- `JUDGMENT_COORDINATES_BUDDHISM_NOTE.md`（補足）・`AGENTS_MD_COORDINATE_REVIEW.md`（`AGENTS.md`評価）

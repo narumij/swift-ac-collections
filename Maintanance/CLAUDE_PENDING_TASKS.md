@@ -126,6 +126,24 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 未着手（記録のみ）
 - Codex reconciliation: 2026-10-16 / Astra。`TEST-007`としてACTIVEへ正式登録。実施済み部分と残作業は[照合記録](Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md)に分離。今回の処理は採番・接続であり成果の受入完了ではない。
 
+### `CP-20261016-004` — 判断座標の草案の改訂（`TEST-007`の本文修正）
+
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-16 13時頃の会話。ユーザーが「ひめ、採番すんだから、判断座標の更新したがってたやつ未採番でやっちゃって」と指示し、
+  中断後に「つづけて」と再開した。`TEST-007`の照合記録が「本文修正は配置と分け、ユーザー判断へ返す」としていた部分への、ユーザーの判断である。
+- 種別候補: `EXECUTION`
+- 対象範囲: `Maintanance/Testing/JudgmentCoordinates/`を新設し、原本の写し`JUDGMENT_COORDINATES.md`に`CP-20261016-003`の所見7点を反映。
+  由来・預かり・共有の扱いを書いた`README.md`を置く。
+- 対象外: Archivedの原本（改変しない）。統合元・補足の5文書の写し。`TASK_RULES_V2.md`・Registry・`DOCUMENT.md`・`TESTING.md`からのリンク（Astra）。規則への昇格。
+- 前提・既存task候補: `TEST-007`（配置・紐付け、Astra）。`TEST-005`。
+- 担当候補・受入担当: 姫（改訂）/ Astra（`TEST-007`への統合・入口接続・受入）。
+- 成果・検証: 2026-10-16 / Claude Opus 5.5。
+  - 7点を反映した。原本のパス`User/CONCEPT_DEFINITION.md`は現行の`Maintanance/Quality/CONCEPT_DEFINITION.md`に直した。
+  - 所見6のcommit件数は再集計した（10-15 00:00以降、`ff209700`まで155件中、件名にtask番号の形があるもの5件）。所見作成時の「149件中2件」から更新。
+  - 所見4の`RBT-042`の記述は、当時の作業記録との照合をしていない（姫の記憶と会話の要約による）。
+  - commitしていない。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

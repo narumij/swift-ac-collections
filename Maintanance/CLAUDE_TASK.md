@@ -31,9 +31,9 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-RELEASE-081：0.6.0品質確認範囲の読み取り調査を新規依頼。下記専用節を参照。別のユーザー直接依頼とは独立。
+RELEASE-081：品質証拠調査は返却・Astra受入済み、ユーザーcommit承認により完了。追加依頼なし。原回答は保持し、補正と統合は詳細正本のAstra受入節を参照。
 
-**RBT-047（index指定更新の失敗時CoW調査）は返却・Astra検収済み、修正判断待ち。DOC-040〜044は受入済み・DONE。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
+**RBT-047（index指定更新の失敗時CoW調査）は返却・Astra検収済み、修正判断待ち。DOC-040〜044は受入済み・DONE。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は限定試作・評価としてAstra受入済み・ユーザーcommit承認により完了（方式の採用ではない）。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
@@ -445,3 +445,11 @@ Follow root CLAUDE.md for user-facing communication.
 編集可は `Maintanance/Current/RELEASE_0_6_0_QUALITY_EVIDENCE_RETURN.md` のみ。任意の本人観察・本人キャッシュに関する常設権限は維持する。本依頼ではテスト実行、共有.buildへの操作、製品・Tests・CI・Registry・依頼本文の変更、commitを行わない。別のユーザー直接依頼の権限を制限するものではない。
 
 入力の版を確認し、事実／提案／未確認を分けて返却。表の列は「対象差分／証拠と版／再利用範囲／追加確認案／残る判断」を目安にする。合格判定やrelease開始判断は返却の完了条件にしない。Astraが検収後にRegistryを更新する。
+
+## OPS-056のAstra受入記録への接続（2026-10-16）
+
+原Returnを保持し、[詳細正本のAstra確認記録](Current/ASTRA_DECISION_TRACE_SUPPORT.md#astra確認記録)に独立確認・欠陥再現・評価を記載した。試作評価として受入、方式採用・UI統合はなし。追加作業の依頼ではない。
+
+## RELEASE-081 Astra受入（2026-10-16）
+
+返却原文を保持し、[詳細正本の受入・統合](Current/RELEASE_0_6_0_PREPARATION.md#astra受入統合2026-10-16)へ照合と補正を記録した。調査完了、ユーザーcommit承認によりDONE。追加試験・リリース開始の依頼ではない。

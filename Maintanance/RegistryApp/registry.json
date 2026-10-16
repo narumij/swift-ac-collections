@@ -1653,7 +1653,7 @@
       "raw": "レビュー結果と指摘への対応・保留の扱いを記録してゲートを確認する。現在は未通過。",
       "source": {
         "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
-        "sha256": "a0dbd4e621e10cf2382c0a4ac8076142fd6f382ae070c9b34a143587b290348c",
+        "sha256": "57c5af6e3da54bb20baf4984e896397e61d43268cb74ad8b73cf0fea1ece014d",
         "quote": "レビュー結果と指摘への対応・保留の扱いを記録してゲートを確認する。現在は未通過。",
         "line": 7
       }
@@ -1661,7 +1661,7 @@
     {
       "id": "MS-DOC",
       "kind": "milestone",
-      "item": "赤黒木の本文作成準備",
+      "item": "赤黒木の本文作成準備完了",
       "state": "到達未確認",
       "owner": "ユーザー判断・関係担当",
       "condition": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
@@ -1669,7 +1669,7 @@
       "raw": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
       "source": {
         "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
-        "sha256": "a0dbd4e621e10cf2382c0a4ac8076142fd6f382ae070c9b34a143587b290348c",
+        "sha256": "57c5af6e3da54bb20baf4984e896397e61d43268cb74ad8b73cf0fea1ece014d",
         "quote": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
         "line": 15
       }

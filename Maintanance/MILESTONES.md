@@ -66,7 +66,7 @@
 | SPI登録と公開導線の成立 | [SPI公開](Current/SPI_PUBLICATION_MILESTONE.md) | QUALITY-005 → DOC-026 → DOC-027 |
 | RedBlackTreeのチューニング再探索 | [再探索マイルストーン](Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md) | 旧RBT-035を移行。到達条件・時期・実作業は未確定 |
 | 0.7.0リリース前：Validation計画のレビュー | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#validation計画のレビュー旧doc-032) | 旧DOC-032。0.7.0ゲート、未通過。0.6.0の前提にせず、SPI登録後の人間レビュー実施とは区別する |
-| RedBlackTree文書の本文作成準備 | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成準備旧rbt-014) | 旧RBT-014。現行API・test・設計との照合 |
+| RedBlackTree文書の本文作成準備完了 | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成準備完了旧rbt-014) | 旧RBT-014。現行API・test・設計との照合 |
 
 ## 依存関係の見取り図
 

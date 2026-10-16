@@ -1106,5 +1106,266 @@
         "sourceLine": 110
       }
     ]
+  },
+  "milestones": [
+    {
+      "id": "MS-060",
+      "kind": "milestone",
+      "item": "0.6.0 リリース",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
+      "detail": "Maintanance/Current/RELEASE_0_6_0.md",
+      "raw": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_6_0.md",
+        "sha256": "8d48fee35b7f05bfd7bf0b603761152183aeb192ac0c3f6b4958f1338f9d21eb",
+        "quote": "全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を\n始める条件とする。",
+        "line": 21
+      }
+    },
+    {
+      "id": "MS-070",
+      "kind": "milestone",
+      "item": "0.7.0 リリース",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+      "detail": "Maintanance/Current/RELEASE_0_7_0.md",
+      "raw": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+        "line": 21
+      }
+    },
+    {
+      "id": "MS-SPI",
+      "kind": "milestone",
+      "item": "SPI登録・公開導線",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "DOC-026で登録し、実在するpackage page・互換性表示・module別DocC結果を確認する。続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+      "detail": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+      "raw": "DOC-026で登録し、実在するpackage page・互換性表示・module別DocC結果を確認する。続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+      "source": {
+        "path": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+        "sha256": "f8a81eb0c316b63238e54c095bd0f7023ea97d24cb482c5c65a9d4abad007529",
+        "quote": "DOC-026で登録し、実在するpackage page・互換性表示・module別DocC結果を確認する。続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+        "line": 11
+      }
+    },
+    {
+      "id": "MS-HUMAN",
+      "kind": "milestone",
+      "item": "公開文書の人間レビュー",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+      "detail": "Maintanance/MILESTONES.md",
+      "raw": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+      "source": {
+        "path": "Maintanance/MILESTONES.md",
+        "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+        "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+        "line": 133
+      }
+    },
+    {
+      "id": "MS-VALIDATION",
+      "kind": "milestone",
+      "item": "Validation計画レビュー",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "レビュー結果と指摘への対応・保留の扱いを記録してゲートを確認する。現在は未通過。",
+      "detail": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+      "raw": "レビュー結果と指摘への対応・保留の扱いを記録してゲートを確認する。現在は未通過。",
+      "source": {
+        "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+        "sha256": "a0dbd4e621e10cf2382c0a4ac8076142fd6f382ae070c9b34a143587b290348c",
+        "quote": "レビュー結果と指摘への対応・保留の扱いを記録してゲートを確認する。現在は未通過。",
+        "line": 7
+      }
+    },
+    {
+      "id": "MS-DOC",
+      "kind": "milestone",
+      "item": "赤黒木の本文作成準備",
+      "state": "到達未確認",
+      "owner": "ユーザー判断・関係担当",
+      "condition": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
+      "detail": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+      "raw": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
+      "source": {
+        "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+        "sha256": "a0dbd4e621e10cf2382c0a4ac8076142fd6f382ae070c9b34a143587b290348c",
+        "quote": "文書workflowと4公開型のoutlineを現行API・test・設計資料に照合し、本文作成へ渡せる状態を確認する到達点。",
+        "line": 15
+      }
+    }
+  ],
+  "milestoneRelations": [
+    {
+      "prerequisite": "MS-060",
+      "successor": "MS-070",
+      "relation": "stage",
+      "constraint": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+        "line": 21
+      }
+    },
+    {
+      "prerequisite": "MS-070",
+      "successor": "MS-SPI",
+      "relation": "stage",
+      "constraint": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
+      "source": {
+        "path": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+        "sha256": "f8a81eb0c316b63238e54c095bd0f7023ea97d24cb482c5c65a9d4abad007529",
+        "quote": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
+        "line": 7
+      }
+    },
+    {
+      "prerequisite": "MS-SPI",
+      "successor": "MS-HUMAN",
+      "relation": "after",
+      "constraint": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+      "source": {
+        "path": "Maintanance/MILESTONES.md",
+        "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+        "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+        "line": 133
+      }
+    },
+    {
+      "prerequisite": "MS-HUMAN",
+      "successor": "QUALITY-001",
+      "relation": "material",
+      "constraint": "公開文書の人間レビュー結果・修正後確認 ---------------+",
+      "source": {
+        "path": "Maintanance/MILESTONES.md",
+        "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+        "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
+        "line": 142
+      }
+    },
+    {
+      "prerequisite": "RELEASE-078",
+      "successor": "MS-060",
+      "relation": "material",
+      "constraint": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_6_0.md",
+        "sha256": "8d48fee35b7f05bfd7bf0b603761152183aeb192ac0c3f6b4958f1338f9d21eb",
+        "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
+        "line": 32
+      }
+    },
+    {
+      "prerequisite": "MS-DOC",
+      "successor": "MS-060",
+      "relation": "material",
+      "constraint": "赤黒木の本文準備も必要な文書入力へ接続する",
+      "source": {
+        "path": "Maintanance/MILESTONES.md",
+        "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+        "quote": "赤黒木の本文準備も必要な文書入力へ接続する",
+        "line": 46
+      }
+    },
+    {
+      "prerequisite": "MS-060",
+      "successor": "PERM-079",
+      "relation": "resume",
+      "constraint": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_6_0.md",
+        "sha256": "8d48fee35b7f05bfd7bf0b603761152183aeb192ac0c3f6b4958f1338f9d21eb",
+        "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
+        "line": 79
+      }
+    },
+    {
+      "prerequisite": "MS-VALIDATION",
+      "successor": "MS-070",
+      "relation": "required",
+      "constraint": "を0.7.0リリース前のゲートとする。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "を0.7.0リリース前のゲートとする。",
+        "line": 68
+      }
+    },
+    {
+      "prerequisite": "RELEASE-072",
+      "successor": "MS-070",
+      "relation": "required",
+      "constraint": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
+        "line": 55
+      }
+    },
+    {
+      "prerequisite": "RELEASE-075",
+      "successor": "MS-070",
+      "relation": "required",
+      "constraint": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
+        "line": 56
+      }
+    },
+    {
+      "prerequisite": "RELEASE-076",
+      "successor": "MS-070",
+      "relation": "required",
+      "constraint": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
+        "line": 57
+      }
+    },
+    {
+      "prerequisite": "MS-070",
+      "successor": "DOC-026",
+      "relation": "after",
+      "constraint": "0.7.0をリリースする。",
+      "source": {
+        "path": "Maintanance/Current/RELEASE_0_7_0.md",
+        "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+        "quote": "0.7.0をリリースする。",
+        "line": 76
+      }
+    },
+    {
+      "prerequisite": "DOC-027",
+      "successor": "MS-SPI",
+      "relation": "required",
+      "constraint": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+      "source": {
+        "path": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+        "sha256": "f8a81eb0c316b63238e54c095bd0f7023ea97d24cb482c5c65a9d4abad007529",
+        "quote": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+        "line": 11
+      }
+    }
+  ],
+  "milestoneSnapshot": {
+    "generator": "Astra / OPS-051",
+    "note": "正本から明示関係を抜き出した表示用snapshot。MS-*はアプリ内IDでTask Registryの採番ではない。",
+    "head": "8fce1fa6adb8f6fdf1f81761af310eea3e83888b"
   }
 }

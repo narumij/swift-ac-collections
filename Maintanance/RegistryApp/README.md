@@ -38,3 +38,13 @@ open -a Safari "/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance
 ```
 
 Astra側のopenはSafari名解決失敗、絶対path指定でもkLSNoExecutableErrとなり、起動を確認できなかった。ユーザーによる実機試用結果は未記録。
+
+## マイルストーンの骨格（追加試作）
+
+0.6.0 → 0.7.0 → SPI公開 → 人間レビュー → 1.0品質判断を上段の金色nodeで示す。1.0品質判断は既存QUALITY-001を表示上の到達点として用い、同じ判断を重複nodeにしない。Validation計画レビューと赤黒木本文準備を含む6件の表示用milestonesと、正本の引用・path・hash・行番号付きmilestoneRelations 13件を追加した。MS-*はアプリ内IDで新規Task IDではない。
+
+関係はstage（段階前提）、required（必須）、material（判断材料）、after（到達後の実施条件）、resume（到達後の再開判断）を区別する。単なる所属から必須依存は作らない。図の横順は実行順・実行許可を確定しない。全要件を網羅した図ではない。
+
+task間依存と合わせたグラフを検査し、接続したtaskは独立列から外す。マイルストーン選択時は正本と前後関係を読み取り専用で表示する。選択状態は一覧・グラフ・独立列で共有する。マイルストーン編集は未実装。
+
+旧JSONを開いた場合、そのデータにmilestonesがなければ旧taskグラフのみになる。最新版の内蔵データまたは同梱registry.jsonを使う。元Registryのsnapshot時点とマイルストーンを採取した時点は異なるため、各source情報を保持している。

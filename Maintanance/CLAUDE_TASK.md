@@ -31,7 +31,9 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**No active Claude assignment.** RBT-042〜046、PERM-078、OPT-074、OPS-045・DOC-031はすべて受入済み・`DONE`。
+**No active Claude assignment.** OPS-050は返却・Astra受入済み、ユーザーcommit指示によりDONE。
+
+RBT-042〜046、PERM-078、OPT-074、OPS-045・DOC-031はすべて受入済み・`DONE`。
 依頼・返却・受入の原文は[CLAUDE_TASK_HISTORY_2026-10-16.md](Archived/CLAUDE_TASK_HISTORY_2026-10-16.md)へ移した。
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
@@ -53,3 +55,22 @@ Current assignments must follow the current request and explicit delegation, not
 
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
+
+## OPS-050：Registryアプリの設計助言
+
+2026-10-16、ユーザー指示でAstraからClaude（姫）へ正式依頼。Registry登録済み。
+
+依頼本文・固定入力・編集境界・返却条件は[設計助言依頼](Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md)。同書のClaude回答欄へ回答する。原文保持層と意味モデルを分ける案の妥当性、運用経験からの注意点、より小さい代案を求める。Astra案への同意は条件ではない。アプリ実装・技術選定の確定・commitは含めない。
+
+### Return（Claude記入）
+
+2026-10-16 / Claude（姫、Opus 5.5）。完了。回答は[設計助言依頼](Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md)の「Claude回答」欄。
+
+- 回答前にユーザーと会話し、使い方（中間データ依頼→閲覧編集→受け入れ依頼、人間が使う、今は見る）を確かめた。発言は回答の0節に残した。
+- 主な提案：Markdownの読み書きはAIが担い、アプリはJSONを見せて変更依頼リストを書き出すだけにする。そのため原文保持層は分けず、task行ごとに原文文字列を持つ1層のJSONでよい。初版はHTML1枚の読み取り専用。
+- 編集したのは回答欄と本Return欄だけ。入力文書・Registry・既存実装は変更していない。commitしていない。
+- 未確認：AIが毎回同じ形のJSONを作れるか、グラフ描画の方式。
+
+### OPS-050受入（Astra記入）
+
+2026-10-16、助言成果を受入。回答原文は保持し、正本のAstra受入欄に検証と補足を記録。Registryはユーザーcommit指示によりDONE。技術選定・実装は未実施。

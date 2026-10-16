@@ -1,0 +1,19 @@
+{
+  "head": "76c08138345c669ecbe7deb911736928564bffc3",
+  "note": "Includes uncommitted OPS-048/049 registration; captured before acceptance state update.",
+  "sha256": {
+    "Maintanance/ProgressV2/TASK_REGISTRY_V2.md": "c2e2e6a6f0d0827e0b3aed7039611f984ac3108f0e7662010429bda8326119f1",
+    "Maintanance/Graph/TaskGraphLint/run.sh": "0b6a73f14b17f5f1274b0078d614f6369d236288dbd431e4d624154d14ac0e58",
+    "Maintanance/Graph/TaskGraphLint/run_fixtures.sh": "dffb9a5baf970fb0f25fc514ed55d2dd8d2409f27b11a0b0706e5faea30ffb74",
+    "Maintanance/Graph/InMemoryFixture/run.sql": "243e78133bd4a2a514571efd40adaf4dabb990fc6f5808979ba30a4b4d3a20dd",
+    "Maintanance/Graph/InMemoryFixture/neighbors.sql": "403f9745ecb112302b10b6ef9544dc08a4e41558fcef875052532245ca679a31",
+    "Maintanance/Graph/InMemoryFixture/rp17_staleness.sql": "794a5b7018736b63de6d994c30d635f73a7612efb55d5b0542811663c2c42e33",
+    "Maintanance/Graph/InMemoryFixture/schema.sql": "848b2b561f384e2b15c55b63df7ed521d12828b51701c3a2a147568b48d24193",
+    "Maintanance/Graph/InMemoryFixture/rbt017_fixture.sql": "f0eb341bb6c1ebeaf9d0cf099857921d1c3e001231dacd8ebc8dd3f6d803f718",
+    "Maintanance/Graph/InMemoryFixture/run_all.sh": "323fdcf0ad008c8d50a3a2993413106b0a634daf404669dbfcbeb86345784466",
+    "Maintanance/Graph/InMemoryFixture/rp08_spec_gap.sql": "c7842263a3313fbf2372632f8ba635842943dd4b74c392398ad8ee3f9ccc8743",
+    "Maintanance/Graph/InMemoryFixture/rp01_precedence.sql": "1b5304878329f06384ae9b959ffa83c9bf214a41d0f9eb014dba28f70eab8832",
+    "Maintanance/Graph/InMemoryFixture/rp05_spec_role.sql": "b70a31e6674e95089d2fb38cdd65f9918343792777e2bd59e21f46076e9c5af2",
+    "Maintanance/Graph/InMemoryFixture/rp15_document_match.sql": "187338aa564e2e2a7861f8cb00825a9d0def1bb4d1c1f9e81257829048175751"
+  }
+}

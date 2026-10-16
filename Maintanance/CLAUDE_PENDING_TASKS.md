@@ -97,7 +97,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261016-007` — Registry Studioの同期を1コマンドにする（`sync.py`）
 
-- queue状態: `RECONCILED`（OPS-057へ正式化、仕上げ依頼。受入は未実施）
+- queue状態: `RECONCILED`（OPS-057へ正式化。2026-10-16受入・commit済み）
 - 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「正本から画面への更新がまだ手作業寄り。同じ事実を複数箇所へ手で反映して、最後に整合を確かめる仕事を一番減らしたい」を受けた姫の提案A-1に、ユーザーが「A-1は未採番でやって」。
 - 種別候補: `EXECUTION`
 - 対象範囲: `Maintanance/RegistryApp/sync.py`の新規作成。Task Registryからtask・依存辺・親子関係・常設区分を読み、`registry.json`とHTMLのseedを作り直す。`--check`は書き込まずに差分だけを出す。
@@ -150,3 +150,14 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - [2026-10-16の照合記録](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16.md)（CP-20261015-007 → PERM-072）
 - [2026-10-16の照合記録（2）](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_2.md)（CP-20261016-001〜003 → HIST-003・TEST-006・TEST-007）
 
+
+## 同時変更の照合（2026-10-16 / Astra / OPS-044）
+
+ユーザーの依頼により、`c1f2c7f9` → `203f3be0` → `e42d9630` の変更を照合した。
+
+- `203f3be0`は姫の感想・評価と申請のcommitだが、Astraが編集中だったCP-004・008・009の照合結果も同じqueueファイル内で取り込まれている。commit範囲の重なりがあった。内容の作成担当は本文記録どおりで、commitの著者から判断担当を推定しない。
+- `e42d9630`でRegistry・Rules・詳細正本・入口・Hime領域を接続した。最終状態では004→TEST-008 DONE、008→OPS-058 PROPOSED、009→OPS-044へ統合が一致する。重複採番、処理結果の消失、提案の無断実施は確認されなかった。
+- OPS-057はRegistryでは受入済みDONEだったため、queueの旧「受入は未実施」表示を訂正した。元の依頼・返却本文は保持する。
+- Studioの同期確認で内容の差はなく、生成時のHEAD・dirty表示のみ変化していた。今回再同期する。画面の実操作検証は今回含まない。
+
+同じ共有ファイルを含めてcommitするときは、stage直前の差分に他担当の編集中の行が混ざっていないかを確認する。今回は最終内容が整合しているため、既存commitの書き換えは行わない。

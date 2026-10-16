@@ -116,14 +116,14 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261017-003` — Registry Studio：registry.jsonを空から生成する
 
-- queue状態: `RECONCILED`（2026-10-17 Astra受入。範囲と未確認は健全性調査正本の最新節。旧注記：）（実施済み・commit済み`5f090e1a`。受入はAstra。CP-20261017-002のRECONCILED（追記16まで）には含まれない）
+- queue状態: `RECONCILED`（2026-10-17 Astra受入。以下の返却本文は当時の記録。最新の範囲と未確認事項は健全性調査正本の「Astra受入・最新引継ぎ」を参照）
 - 発見元・ユーザー指示: ユーザー「JSON生成を姫がつくれないかな」
 - 実施・検証: Astraの手順（1.関心度と古いスナップショットを外し表示順への影響だけ確認、2.空から組み立てる、3.既存JSONは差分確認用だけ・無くても生成、最後に既存JSONなしで再生成して一致を検証）に沿って実施。`sync.py`：`build()`を空から組み立てる形に（schemaVersion・source・tasks・edges・baseline・milestones・milestoneRelations・milestoneHeadのみ）、`displayInterest`と`milestoneSnapshot`を廃止、使われていなかった`milestone_sources`・`relocate_sources`と旧引用照合の分岐を削除、既存JSONが無いときも生成・失敗時の復元を両対応、差分報告にゲートと線を追加。`index.html`：関心度による並べ替えと吹き出しの関心度表示を削除（並びはDONEを後ろ・Registry順）。`verify.cjs`：恒久図の順の確認を関心度なしに。表示順への影響：独立タスク12件と恒久図10件の並びがRegistry順に変わる（見取り図本体は不変）。検証：registry.jsonを削除して生成→コミット済みのものとtasks43・edges7・milestones18・relations31がすべて一致、違いは`milestoneSnapshot`が無いことだけ。2回目は`--check`でずれなし。Studio README更新。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-17 Codex照合。空からのJSON生成をOPS-047 / OPS-048へ受入・統合済み。実装は5f090e1a、受入記録は81204d22。 Safari実操作と調査正本の残事項は未完了。
 
 ### `CP-20261017-004` — マイルストーン移行の健全性回復（Astra調査A・B・Cの修正）
 
-- queue状態: `RECONCILED`（2026-10-17 Astra受入。範囲と未確認は健全性調査正本の最新節。旧注記：）（実施済み・未commit。受入はAstra。OPS-047 / OPS-048）
+- queue状態: `RECONCILED`（2026-10-17 Astra受入。以下の返却本文は当時の記録。最新の範囲と未確認事項は健全性調査正本の「Astra受入・最新引継ぎ」を参照）
 - 発見元・ユーザー指示: Astra「マイルストーン移行後の健全性調査・姫への引継ぎ」（`Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md`）。ユーザー「先にコミットしてから、タスクやって」（先にAstraの文書を`dacd456f`でcommit）。
 - A（`index.html`）：ENDの代わりにGATEへ描く線は元のEND側の端点（`shownFor`）を保持。除去・つなぎ替えは元データの関係で行い、選んだ版ゲートはデータ上その手前のENDへ結ぶ（版ゲートへ入るのはENDだけ）。ゲートどうしの列は配置から作るので編集を断り案内を出す。除去で何も変わらなければ変更ありにしない。表示用の情報は保存JSONへ入らない。`verify.cjs`に、描画用に変換された線を入力して、取消・変更なし・列の拒否・除去・つなぎ替え・保存に表示用情報が無いことの検査を追加。
 - B（`CLAUDE_PENDING_TASKS.md`）：CP-20261017-001・002の元entryのqueue状態とreconciliation行を、末尾のAstra照合結果（RECONCILED）へ合わせた。本文は返却時のまま。採番待ち表示はCP-20261016-013（凍結）とCP-20261017-003だけになった。
@@ -134,7 +134,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - commit: `39f81e5b`（A・B・C）。
 - 追記（2026-10-17）：ユーザー「独立タスクの並びが違うんだ」「単に色なんだよね」。関心度を外した後、独立タスクの帯をStudioの状態の順（STATES：ACTIVE→WAITING_USER→WAITING_EXTERNAL→FROZEN→USER_ONLY→PROPOSED→DONE…）でまとめ、同じ状態の中はRegistry順にした（`index.html`の`stateRank`）。sync完了・verify pass。commit `6cf18dc4`。
 - 追記（2026-10-17）：ユーザー「HEAD空を選べるようにしてほしい」。版の選択欄に「HEAD から（x.y.z 以降）」を追加（HEADの版フォルダとそれ以降のゲートと上流タスクだけ表示、HEADより前は外す）。続けてユーザー「初期はHEADがいいね」で、開いたときの表示を「HEAD から」に変更（「全体」も選べる）。`Milestones/README.md`の未実装の注記に一文追記。HEAD 0.5.4でMS-DOC・GATE-0.5.4が外れることを確認。sync完了・verify pass。未commit。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-17 Codex照合。健全性回復と表示対応をOPS-047 / OPS-048へ受入・統合済み。実装は39f81e5b・6cf18dc4・0789479b、受入記録は81204d22。 Safari実操作と調査正本の残事項は未完了。
 
 過去のreconciliation済みentryは次を参照する。
 
@@ -175,3 +175,12 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - CP-20261017-002：RECONCILED。追記16までのゲート移行・Studio対応をOPS-047 / OPS-048へ受入・統合。恒久タスクはACTIVEのまま。
 - 検証、Astraによる後続変更との区別、残る意味確認・古い説明の補正は[受入正本](Current/MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md)を参照。リリース通過やUSER_ONLYの判断は代行しない。
 - CP-20261016-013 / OPS-059は今回対象外、凍結維持。2026-10-17ユーザーが受入記録のコミットを承認。
+
+## 採番待ち受入の再照合（2026-10-17 / Codex）
+
+ユーザーの採番待ち受入依頼に基づき、HEAD 81204d22、作業ツリーcleanの時点からqueue・Registry・詳細正本・保存commitを照合した。新規採番対象はない。
+
+- CP-20261017-001/002は既存の受入を維持。003/004も健全性調査正本でAstra受入済みのため、残っていた「Codex reconciliation: 未処理」と状態欄の古い未commit注記を訂正した。原返却本文は保持し、今回あらためて実装検証を実施したとは扱わない。
+- CP-20261016-013はOPS-059へ登録済み。追加返却は受領済みだが修正受入は保留、FROZENを維持する。一般的な採番待ち受入依頼を凍結解除の明示指示には拡張しない。
+- Registryは既存の統合先・状態・詳細正本への接続が整合しているため変更不要。OPS-047/048のACTIVEは維持し、Safari実操作・接続意味・履歴参照の残事項を完了へ広げない。
+- 今回は記録の整合のみ。Studio再生成、commit、CI実走、リリース判定は行っていない。

@@ -42,7 +42,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261016-004` — 判断座標の草案の改訂（`TEST-007`の本文修正）
 
-- queue状態: `USER_AUTHORIZED`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-16 13時頃の会話。ユーザーが「ひめ、採番すんだから、判断座標の更新したがってたやつ未採番でやっちゃって」と指示し、
   中断後に「つづけて」と再開した。`TEST-007`の照合記録が「本文修正は配置と分け、ユーザー判断へ返す」としていた部分への、ユーザーの判断である。
 - 種別候補: `EXECUTION`
@@ -58,7 +58,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 訂正（同日）: 作業中にAstraが`ff209700`で6文書の写しと`README.md`を回収・commitしていた。姫はそれを確かめずに`README.md`を
     上書きし、`c3b0259a`でcommitした。誤りなので、Astraの`README.md`を`ff209700`の内容へ戻した。改訂版`JUDGMENT_COORDINATES.md`への
     案内をREADMEへ足すかはAstraに任せる。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。TEST-008へ登録。7点の改訂差分を確認しREADMEから接続。草案として受渡し完了。史実の全面検証・規則への昇格は含まない。留保はCurrent/JUDGMENT_COORDINATES_REVISION_RECEIPT.md。
 
 ### `CP-20261016-005` — Registry Studioの依存見取り図が全体fallbackで崩れる件（先頭の到達点へ入る枝）
 
@@ -115,7 +115,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261016-008` — 判断アーカイブ（Astraへの提案）
 
-- queue状態: `CANDIDATE`（提案の記録のみ。実施しない）
+- queue状態: `RECONCILED`（提案の記録のみ。実施しない）
 - 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「判断を追記で残すと、古い本文との優先関係が残る。『後ろに訂正を書いたから読めるはず』に頼っている」に対する姫の提案A-3を、ユーザーが「いいね。判断アーカイブだ。それは提案として追加の未採番にして」。
 - 種別候補: `DECISION`（運用の方針。採否はユーザーとAstra）
 - 提案:
@@ -126,7 +126,19 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 担当候補・受入担当: 採否はユーザー / 運用はAstra。
 - 停止条件: ユーザーが確定した文書（書き換えない約束のもの）には適用しない。その場合は別文書に訂正を置き、持ち主へ渡す。
 - 成果・検証: 未着手（提案の記録のみ）
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-16 Astra。OPS-058へPROPOSEDで正式登録。Current/DECISION_ARCHIVE_PROPOSAL.mdへ接続。提案の登録のみで、方式は未承認。
+
+### `CP-20261016-009` — 姫のAI用キャッシュ領域`Maintanance/Cache/Hime/`の申請
+
+- queue状態: `RECONCILED`（担当名の割当てを承認）
+- 発見元・ユーザー指示: 2026-10-16夕方。Rulesの「ゲートの人間用資料とAI用キャッシュ」（`Cache/<担当名>/`）について、ユーザー「`Maintanance/Cache/Hime/`じゃなくていいの？ネームドClaudeだから、未採番で申請すれば通るよ」。
+- 種別候補: `DECISION`（担当名の割当て）
+- 申請内容: Claude（姫）のAI用キャッシュの保存先を`Maintanance/Cache/Hime/`とする。一時用途は`Cache/Hime/Temporary/<task IDまたは固有名>/`。担当名は「Claude」ではなく呼び名の「Hime」にする（Astraが`Cache/Astra/`であるのと同じ考え方。将来ほかのClaudeが加わっても区別できる）。
+- 使い方: TEST-005・HIST-003などの常設taskや、RBT-026のような長い議論を引き継ぐとき、AI用ゲートとして使う。正本の代わりにせず、操作直前のRegistry確認は維持する。
+- 対象外: Rules・COMMONS.mdの本文変更。ほかの担当のキャッシュ。
+- 担当候補・受入担当: 申請は姫 / 承認・Rulesへの担当名の記載はAstra。
+- 成果・検証: 未着手
+- Codex reconciliation: 2026-10-16 Astra。既存OPS-044へ統合し担当名Himeを承認。Rulesに保存先を明記しCache/Hime/README.mdを作成。既存キャッシュ規則の範囲内で使用可能。原申請本文は保持し、新たな作業権限は追加しない。
 
 過去のreconciliation済みentryは次を参照する。
 

@@ -40,165 +40,18 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
-### `CP-20261016-004` — 判断座標の草案の改訂（`TEST-007`の本文修正）
+CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_3.md)へ保存。CP-013はOPS-059へ登録済み。以下の追加返却は受入待ちであり、新規採番不要。
 
-- queue状態: `RECONCILED`
-- 発見元・ユーザー指示: 2026-10-16 13時頃の会話。ユーザーが「ひめ、採番すんだから、判断座標の更新したがってたやつ未採番でやっちゃって」と指示し、
-  中断後に「つづけて」と再開した。`TEST-007`の照合記録が「本文修正は配置と分け、ユーザー判断へ返す」としていた部分への、ユーザーの判断である。
-- 種別候補: `EXECUTION`
-- 対象範囲: `Maintanance/Testing/JudgmentCoordinates/`を新設し、原本の写し`JUDGMENT_COORDINATES.md`に`CP-20261016-003`の所見7点を反映。
-  由来・預かり・共有の扱いを書いた`README.md`を置く。
-- 対象外: Archivedの原本（改変しない）。統合元・補足の5文書の写し。`TASK_RULES_V2.md`・Registry・`DOCUMENT.md`・`TESTING.md`からのリンク（Astra）。規則への昇格。
-- 前提・既存task候補: `TEST-007`（配置・紐付け、Astra）。`TEST-005`。
-- 担当候補・受入担当: 姫（改訂）/ Astra（`TEST-007`への統合・入口接続・受入）。
-- 成果・検証: 2026-10-16 / Claude Opus 5.5。
-  - 7点を反映した。原本のパス`User/CONCEPT_DEFINITION.md`は現行の`Maintanance/Quality/CONCEPT_DEFINITION.md`に直した。
-  - 所見6のcommit件数は再集計した（10-15 00:00以降、`ff209700`まで155件中、件名にtask番号の形があるもの5件）。所見作成時の「149件中2件」から更新。
-  - 所見4の`RBT-042`の記述は、当時の作業記録との照合をしていない（姫の記憶と会話の要約による）。
-  - 訂正（同日）: 作業中にAstraが`ff209700`で6文書の写しと`README.md`を回収・commitしていた。姫はそれを確かめずに`README.md`を
-    上書きし、`c3b0259a`でcommitした。誤りなので、Astraの`README.md`を`ff209700`の内容へ戻した。改訂版`JUDGMENT_COORDINATES.md`への
-    案内をREADMEへ足すかはAstraに任せる。
-- Codex reconciliation: 2026-10-16 Astra。TEST-008へ登録。7点の改訂差分を確認しREADMEから接続。草案として受渡し完了。史実の全面検証・規則への昇格は含まない。留保はCurrent/JUDGMENT_COORDINATES_REVISION_RECEIPT.md。
+### `CP-20261016-013` — Registry Studio：行き止まりの到達点の枝（MS-080）を近くに置く
 
-### `CP-20261016-005` — Registry Studioの依存見取り図が全体fallbackで崩れる件（先頭の到達点へ入る枝）
-
-- queue状態: `RECONCILED`（原返却は調査・試作のみ。下記にAstraの反映結果を追記）
-- 発見元・ユーザー指示: 2026-10-16 夕方の会話。ユーザー「HTMLの配置がえらい崩れたんだけど、ルールだけで前っぽく戻せないかな？」「未採番タスクにしといて」。
-- 種別候補: `EXECUTION`
-- 原因（調査済み）: 配置コードは`HEAD`から変わっておらず、データが増えたのが引き金。新しい`DOC-034 → MS-DOC`は、骨格の**先頭**（列0）へ入る供給の枝である。
-  列は`Math.max(0, target.index - distance)`で決まるので、先頭より左の列がなく、DOC-034が列0に置かれる。供給の枝は骨格nodeの右下（`x + golden`）に置く作りのため、
-  DOC-034 → MS-DOCの辺が右から左へ向き、`valid()`が不成立になる。その結果、全体が依存深さ順の配置（fallback）へ落ちた。
-  検査は、作業ツリーの`index.html`と`registry.json`の関数をJavaScriptCoreで実行して確かめた（`fallback=true`、逆向きの辺はDOC-034→MS-DOCの1本だけ）。
-- 提案するルール（1つ）: 「供給の枝は、合流先の列より左に置く。先頭より左が要るなら、骨格の前に列を1つ足す」。
-  実装は4か所の小さな変更：`Math.max(0, …)`の切り捨てをやめ、負の列になる枝を先頭の補助列（`leadGroup`）に集め、骨格の前に1列ぶん置いてから`x`を進める。
-- 試作の結果: 一時ディレクトリの写しで上の変更を入れ、同じデータで`fallback=false`になった。WebKitで描いた図では、MS-DOC → MS-060 → MS-070 → MS-SPI → MS-HUMAN → QUALITY-001の骨格が横に通り、
-  DOC-033 → DOC-034が骨格の前の列、DOC-035・DOC-036・RELEASE-078がMS-DOCの下に並ぶ。崩れる前の形に戻った。
-- 対象外: `index.html`・`verify.cjs`の変更（Astraの未commit作業中のため触らない）。交差数の最適化、線の接続点の散らし。
-- 前提・既存task候補: 恒久`OPS-048`（Registry Studio）、`OPS-052`（配置の助言、DONE）の続き。
-- 担当候補・受入担当: 実装はAstraか、委任があれば姫 / 受入はAstra。
-- 停止条件: 先頭の補助列を入れても`valid()`が不成立になるデータが出たら、全体fallbackではなく枝単位のfallback（OPS-052の提案3）を検討する。
-- 成果・検証: 未着手（調査と試作のみ。試作に使った一時ディレクトリ`registry-layout-check.*`は削除済み）。
-- Codex reconciliation: 2026-10-16、Astra。既存の恒久OPS-048へ統合。ユーザーの「修正お願いします」に基づき、先頭へ入る枝の補助列ルールを実装。原回答は保持。Nodeで現行40taskのfallback=false、重なり・辺方向・収容、ID置換不変性と従来fixtureの座標維持を検証。実画面はユーザー確認待ち。新規採番なし。
-
-### `CP-20261016-006` — リリースゲート手前の判断を一度に出す（Astraへの提案）
-
-- queue状態: `RECONCILED`（OPS-056へ正式化。原提案の方式採用・完了認定ではない）
-- 発見元・ユーザー指示: 2026-10-16 夕方の会話。ユーザー「判断を正本に記載するようになってて散らばってるため、追跡が難しい」「リリースゲートの手前の判断を一気にだせるぐらいがいいのかなぁ？」
-  「未採番で、あすとらさんに提案タスクとして、なんかやってみて」。
-- 種別候補: `DISCOVERY`
-- 対象範囲: 提案文書[`Current/GATE_DECISION_DIGEST_PROPOSAL.md`](Current/GATE_DECISION_DIGEST_PROPOSAL.md)の新規作成。`registry.json`からゲートの上流をさかのぼり、未決のユーザー判断・判断の言及・ゲートの直接条件を出す試作（MS-060で実行、結果を文書に転記）。
-- 対象外: `index.html`・`registry.json`・Registry・Rulesの変更。判断の印の書式の採用。試作スクリプトのrepository追加（文書に本文だけ載せた）。
-- 前提・既存task候補: 恒久`OPS-048`（Registry Studio）。`OPS-036`（Task履歴索引）は将来の拡張先。
-- 担当候補・受入担当: 試作・提案は姫 / 採否・実装・受入はAstra。
-- 成果・検証: 2026-10-16 / Claude Opus 5.5。MS-060の上流6件のうち、未決のユーザー判断1件（DOC-037）、判断の言及4件を出した。MS-070は12件中5件、QUALITY-001は24件中11件が未決。
-  限界は3つ（語の照合は「ユーザー指示」などの経緯と判断を分けられない／詳細正本の本文は見ていない／置き換え関係が分からない）で、文書に記した。
-  一時ディレクトリ`gate-decision-digest.*`は削除済み。commitしていない。
-- Codex reconciliation: 2026-10-16 Astra。ユーザーの採番・依頼指示によりOPS-056へ統合。原提案は保存し、Astraの要望を別正本へ記載。限定試作をCLAUDE_TASK.mdで正式依頼。
-
-### `CP-20261016-007` — Registry Studioの同期を1コマンドにする（`sync.py`）
-
-- queue状態: `RECONCILED`（OPS-057へ正式化。2026-10-16受入・commit済み）
-- 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「正本から画面への更新がまだ手作業寄り。同じ事実を複数箇所へ手で反映して、最後に整合を確かめる仕事を一番減らしたい」を受けた姫の提案A-1に、ユーザーが「A-1は未採番でやって」。
-- 種別候補: `EXECUTION`
-- 対象範囲: `Maintanance/RegistryApp/sync.py`の新規作成。Task Registryからtask・依存辺・親子関係・常設区分を読み、`registry.json`とHTMLのseedを作り直す。`--check`は書き込まずに差分だけを出す。
-  書き込みモードでは、続けて既存の`build-pending.py`を実行する。Nodeがあれば`build-documents.mjs`と`verify.cjs`も実行する。
-- 引き継ぐもの（Registryから導けないので、現行の`registry.json`から持ち越す）: マイルストーンとその関係、`milestoneSnapshot`、taskごとの`displayInterest`。マイルストーンの引用が原文にまだあるかは検査して報告する。
-- 対象外: `index.html`・`registry.json`・`verify.cjs`・`README.md`の変更（Astraの未commit作業中のため）。書き込みモードの実行。マイルストーン関係の自動導出。
-- 検証: 2026-10-16 / Claude Opus 5.5。
-  - 現行の`registry.json`に対し、生成したtask 44件はすべての欄が一致した（`sourceLine`・親子・常設・`displayInterest`を含む）。依存辺14本は、行番号以外のすべての欄が一致した。マイルストーン7件は持ち越しで一致した。
-  - `--check`の結果は「sourceLine moved for 14 rows」だった。現行`registry.json`の依存辺の行番号が、Registryの今の位置から4行ずれている。手作業の同期で起きる漏れの実例で、これを検知できた。
-  - 一時コピーのRegistryでDOC-034の状態とDOC-035←DOC-037のFlowを書き換えたところ、`~ task DOC-034: state, raw`、`~ edge DOC-035 <- DOC-037`、hashの変化が出た（一時ディレクトリ`sync-drift-test.*`、削除済み）。
-  - Nodeがこの環境にないため、書き込みモードの後段（`build-documents.mjs`・`verify.cjs`）は試していない。
-- 使い方の提案（採否はAstra）: 正本を直したら`sync.py`を1回実行し、`registry.json`とHTML内のデータは手で直さない。コミット前に`--check`が差分なしを返すことを確かめる。README（利用手順の正本）の手順2・3をこれに置き換えるかはAstraが判断する。
-- 担当候補・受入担当: 作成は姫 / 採否・READMEへの接続・受入はAstra。
-- Codex reconciliation: 2026-10-16 Astra。ユーザー指示によりOPS-057へ正式登録。既存試作を入力にCLAUDE_TASK.mdで仕上げ・通常更新の検証を依頼。
-
-### `CP-20261016-008` — 判断アーカイブ（Astraへの提案）
-
-- queue状態: `RECONCILED`（提案の記録のみ。実施しない）
-- 発見元・ユーザー指示: 2026-10-16夕方。Astraの悩み「判断を追記で残すと、古い本文との優先関係が残る。『後ろに訂正を書いたから読めるはず』に頼っている」に対する姫の提案A-3を、ユーザーが「いいね。判断アーカイブだ。それは提案として追加の未採番にして」。
-- 種別候補: `DECISION`（運用の方針。採否はユーザーとAstra）
-- 提案:
-  1. 本文はいつも「今効いている判断」に書き換える。古い文は、同じ文書の履歴の節か`Archived/`へ移す（CLAUDE_TASK.mdの圧縮と同じ考え方）。追記で訂正を重ねない。
-  2. 同じ判断は一か所に書き、ほかの場所からはリンクする。OPS-056の試作では、「0.6.0では既存スニペットを固定」が同じ文で3か所（RELEASE_0_8_0.md、RELEASE_0_6_0.md、Registry DOC-034行）にあった。
-  3. 書き換えるときは、移した先へのリンクを本文に一行残し、由来をたどれるようにする。
-- 前提・既存task候補: `OPS-056`（判断追跡の試作）、`OPS-044`（Registry運用）、`DOC-030`（文書整備）。
-- 担当候補・受入担当: 採否はユーザー / 運用はAstra。
-- 停止条件: ユーザーが確定した文書（書き換えない約束のもの）には適用しない。その場合は別文書に訂正を置き、持ち主へ渡す。
-- 成果・検証: 未着手（提案の記録のみ）
-- Codex reconciliation: 2026-10-16 Astra。OPS-058へPROPOSEDで正式登録。Current/DECISION_ARCHIVE_PROPOSAL.mdへ接続。提案の登録のみで、方式は未承認。
-
-### `CP-20261016-009` — 姫のAI用キャッシュ領域`Maintanance/Cache/Hime/`の申請
-
-- queue状態: `RECONCILED`（担当名の割当てを承認）
-- 発見元・ユーザー指示: 2026-10-16夕方。Rulesの「ゲートの人間用資料とAI用キャッシュ」（`Cache/<担当名>/`）について、ユーザー「`Maintanance/Cache/Hime/`じゃなくていいの？ネームドClaudeだから、未採番で申請すれば通るよ」。
-- 種別候補: `DECISION`（担当名の割当て）
-- 申請内容: Claude（姫）のAI用キャッシュの保存先を`Maintanance/Cache/Hime/`とする。一時用途は`Cache/Hime/Temporary/<task IDまたは固有名>/`。担当名は「Claude」ではなく呼び名の「Hime」にする（Astraが`Cache/Astra/`であるのと同じ考え方。将来ほかのClaudeが加わっても区別できる）。
-- 使い方: TEST-005・HIST-003などの常設taskや、RBT-026のような長い議論を引き継ぐとき、AI用ゲートとして使う。正本の代わりにせず、操作直前のRegistry確認は維持する。
-- 対象外: Rules・COMMONS.mdの本文変更。ほかの担当のキャッシュ。
-- 担当候補・受入担当: 申請は姫 / 承認・Rulesへの担当名の記載はAstra。
-- 成果・検証: 未着手
-- Codex reconciliation: 2026-10-16 Astra。既存OPS-044へ統合し担当名Himeを承認。Rulesに保存先を明記しCache/Hime/README.mdを作成。既存キャッシュ規則の範囲内で使用可能。原申請本文は保持し、新たな作業権限は追加しない。
-
-### `CP-20261016-010` — index指定の更新系で、失敗してもCoW複製が先に起きる件
-
-- queue状態: `RECONCILED`
-- 発見元・ユーザー指示: 2026-10-16夜。DOC-042レビュー中の製品観察（DOC-042返却に記載、Astra受入でも「バグ認定・製品修正・新規着手なし」と保持）。ユーザー「なんかいいのあれば未採番にしといて」。
-- 種別候補: `DISCOVERY`（直す価値と直し方の調査。バグ認定はしない）
-- 観察（コードを読んだだけ。実行・計測はしていない）: 次の3つは、先頭で`ensureUnique()`を呼び、その後でindexを確かめる。storageが共有されていると、`nil`を返す失敗の経路でも複製が起きる。
-  - `RedBlackTreeMultiSet.update(_:at:)`（`RedBlackTreeMultiSet.swift` 300行。無効index、または`==`で不一致のとき`nil`）
-  - `RedBlackTreeMultiMap.updateValue(_:at:)`（`RedBlackTreeMultiMap.swift` 348行と`+Deprecated.swift` 86行。無効indexで`nil`）
-  - 当初候補に入れた`RedBlackTreeSet.update(_:hint:)`・`RedBlackTreeDictionary.update(_:hint:)`は、成功すれば必ず挿入か置換をし、失敗は`fatalError`なので該当しない（2026-10-16夜に読んで除外）。`remove(at:)`も失敗は`fatalError`なので該当しない。
-- 注意: indexは複製後の木で`__purified_`し直す必要があるため、確認を先にすると「元の木で確認→複製→複製後の木でもう一度解決」の2段になる。過去の「空でもCoW」（2026-10-01、10-03に修正）と似た形。ユーザーは「バグかもね、具体箇所のスニペットがあれば認定できるかも」（2026-10-16夜）。
-- 対象範囲: 3メソッドについて、共有時に失敗したら複製が起きることのtestでの確認、直す場合の形と性能への影響の見積り。
-- 対象外: 製品コードの修正（調査の結論が出てから別に決める）。公開APIの変更。
-- 完了条件: 失敗時に複製が起きる経路の一覧と再現test案、直すか・直さないかの材料が揃うこと。
-- 前提・既存task候補: `TEST-005`（テスト整備）。性能の判断は`project_perf_check_via_ci`の流儀（push後のCI）。
-- 担当候補・受入担当: 修正はAstra（ユーザー「あすとらさんになおしてもらうさ」2026-10-16夜）。バグ認定はユーザー。姫は必要なら再現testを書く。
-- 停止条件: 複製後のindex解決の都合で、今の順序が必要だと分かったら、その理由を記録して止める。
-- 成果・検証: 未着手
-- Codex reconciliation: 2026-10-16 Astra。ユーザーの姫への委任許可に基づきRBT-047をACTIVEで登録し、再現・修正案調査をCLAUDE_TASK.mdで依頼。製品修正・バグ認定は未実施。元の担当候補は履歴として保持し、今回の調査担当を姫とする。
-
-### `CP-20261016-011` — AI用キャッシュ`Maintanance/Cache/`を`.gitignore`する
-
-- queue状態: `RECONCILED`（`.gitignore`は実施済み。残りはAstraへの依頼）
-- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「Cacheは.gitignoreしたいね」「姫の未採番で、.gitignoreさきにやって、今後.gitignoreいるようあすとらさんに依頼しといて」。
-- 種別候補: `EXECUTION`
-- 実施したこと（姫）: `.gitignore`の末尾に3行を足した。
-  ```
-  /Maintanance/Cache/**
-  !/Maintanance/Cache/*/
-  !/Maintanance/Cache/*/README.md
-  ```
-  - 各担当の`README.md`だけは追跡を続け、それ以外の新しいキャッシュはgitに載らない。
-  - 確認した結果: `Cache/Hime/CURRENT.md`はignoreされる。`Cache/Hime/README.md`はignoreされない。
-  - 作成直後に`CURRENT.md`が自動でstageされていた（RBT-047のtestと同じ現象。誰がstageしたかは未確認）。姫が自分のファイルとして`git rm --cached`で外した。
-- 対象外（姫は触っていない）:
-  - すでに追跡されている`Cache/Astra/`の3ファイル（`AI_GATE.md`・`RELEASE_0_6_0.md`・`USER_CONVERSATION.md`）。ignoreしても追跡は続く。
-  - `TASK_RULES_V2.md`のAI用キャッシュ節と`COMMONS.md`の文面。
-- Astraへの依頼:
-  1. 今後、キャッシュはgitに載らない前提で扱ってほしい（ユーザー指示）。
-  2. `Cache/Astra/`の3ファイルを追跡から外すか（`git rm --cached`）決めてほしい。外しても手元のファイルは残る。
-  3. RulesとCOMMONSに「キャッシュはgit管理外（README以外）」と書くかどうか判断してほしい。キャッシュは同じマシンの中でだけ引き継げる、という点も含めて。
-- 担当候補・受入担当: `.gitignore`は姫（実施済み）/ 上の依頼1〜3と受入はAstra。
-- 成果・検証: `.gitignore`の変更のみ。commitしていない。
-- Codex reconciliation: 2026-10-16 Astra。既存OPS-044へ統合。f990b326のignore規則を独立確認。Astraの既存3キャッシュは手元を保持して追跡解除し、READMEの復元入口、Rules・COMMONSへGit管理外の境界を明記。新規採番なし。
-
-### `CP-20261016-012` — RBT-048の追加確認：death testで修正案のfatalErrorに届くか
-
-- queue状態: `RECONCILED`（実施済み。RBT-048への接続はAstra）
-- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「デスセスとの追加調査やって」。RBT-048の「ユーザーの明示依頼があった場合だけ資料整理や追加確認を補助する」に当たる。
-- 種別候補: `DISCOVERY`
-- 対象範囲: 一時コピー2つ（現行・修正案適用）でexit testのprobe 13件と既存`DeathTests`全体を実行し、比較した。
-- 対象外: RBT-048の判断、製品修正、repositoryのtestの追加・変更、`INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`の編集。
-- 成果・検証: [`Evidence/RBT-048-death-probe/README.md`](Current/Evidence/RBT-048-death-probe/README.md)。
-  - 試した入力では、修正案の`fatalError`に届くものはなかった。現行でnilの入力がtrapに変わることもなかった。
-  - 既存のdeath test 213件は、現行・修正案とも全件pass。
-  - 届かないことの証明ではない。互換構成ではdeath testが無効になっている。
-  - RBT-047のReturn 5「death testはskipされるものがある」は誤りだった。訂正をREADMEに置いた（原Returnは固定なので書き換えない）。
-- 担当候補・受入担当: 確認は姫 / RBT-048への接続・受入はAstra。判断はユーザー。
+- queue状態: `AWAITING_CODEX`（実施済み。一度凍結したが、同夜ユーザーのSafariで反映を確認「お、うごいた」。OPS-048への接続はAstra）
+- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「MS-080がすんごいとおいんで、これもう少し近くによせるルール修正ないかな？」「こっそりなおして」。
+- 実施: `index.html`のレイアウト1か所（2行）。行き止まりの到達点の枝を「地図全体のいちばん下」ではなく「その枝が使う列のカードの下」に置く。MS-080はy=1153→457。差分は`Cache/Hime/ms080-layout.diff`と同じ。
+- 検証: `verify.cjs`全項目PASS（exit 0）、fallbackなし、`sync.py --check`はHEADの差だけ。WebKitで描いて確認した。MS-070→MS-080の線がQUALITY-005のカードを斜めに横切る点は残る。
+- 未解決: ユーザーのSafariでは位置が変わっていない。2026-10-16夜に調べた範囲: 作業ツリーの`index.html`に修正は入ったまま（Astraの`6cb0c88d`の後で上書きされていない）。描画経路は`graphLayout`1つだけで、localStorage等の保存状態や`layout-reference.json`（verify専用）は描画に使われていない。SafariのエンジンであるWebKitで同じファイルを描くと動いている。残る候補は、Safari側の古い表示か、開いているファイルの取り違え。ユーザーの画面は未確認。`index.html`の2行は未commitのまま残してある。戻すかどうかは再開時に決める。
+- 解決: 21:58台に`index.html`が再書き込みされた（更新時刻21:58:44、修正は残存）後、ユーザーのSafariで動いた。Safariが再読み込みでも古い内容を出し続けた理由は特定していない。
 - commit: していない。
-- Codex reconciliation: 2026-10-16 Astra。既存RBT-048へ追加判断材料として統合・受入。3実装hash、probe内容、13件×2と213件×2の成功ログ、旧56件成功を照合。再実行なし。原返却を保持して正本へ接続し、skip記述の訂正も接続。USER_ONLYを維持し、製品修正や方針承認はしていない。新規採番なし。
+- Codex reconciliation: 2026-10-16 Astra。OPS-059へFROZENで正式登録。Safariでの未解決と未commit差分を保持。受入・修正・再開は行わない。
 
 過去のreconciliation済みentryは次を参照する。
 

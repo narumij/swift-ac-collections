@@ -28,20 +28,12 @@
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。人間用資料とAI用キャッシュの対を維持し、後続の操作・判断変更で前提が変わったとき必要な範囲を更新する。既存ゲートへの適用は作業対象になった時に行う。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Cache/Astra/AI_GATE.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） |
 | `OPS-048` | `ACTIVE` | Astra | [EXECUTION] Task Registry閲覧・編集アプリの継続整備 | ユーザー指定の独立した恒久node。中間データ化、グラフ・条件の閲覧編集、差分確認とRegistryへの反映を段階的に整備する。個別工程完了でDONE・履歴化しない。初期試作OPS-051は2026-10-16ユーザー受入で完了。今後の表示・操作・照合反映の改善と残課題は本taskで継続管理する。具体的実行は現在の依頼に従い、0.6.0・0.7.0の必須ゲートにはしない。個別実施はその都度の依頼範囲に従う | `Maintanance/Current/TASK_REGISTRY_APP.md` |
-| `OPS-051` | `DONE` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザーが初期試作を受入・完了とし、残る改善は親OPS-048で扱うよう指示。HTML閲覧編集とJSON返却・正本反映の往復を確認済み。全環境・全UIの網羅検証を意味しない。受入範囲と継続事項は詳細正本を参照 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |
 
 
-| `OPS-053` | `DONE` | Astra（実施・受入） / Claude（独立確認済み） | [DISCOVERY] 文書保存管理の二重化解消の検討 | 2026-10-16 R2受入、一覧抽出・理由・日付・記録日の指摘対応と検証を完了。ユーザー指示で完了。恒久決定時の記法確認は詳細正本へ留保。OPS-054の前提充足 | `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` |
-| `OPS-054` | `DONE` | Astra | [DISCOVERY] Claude起動系文書の見直し検討 | 2026-10-16ユーザー受入・終了指示。起動経路の参照・矛盾修正、テスト入口の簡素化、承認済み日本語原稿の英語反映を完了。共通の一時作業物管理はOPS-055で整備済み | `Maintanance/Current/CLAUDE_STARTUP_DOCUMENT_REVIEW.md` |
 
-| `OPS-055` | `DONE` | Astra（作成・受入） / Claude（レビュー済み） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。Claude返却・Astra受入、指摘4点の対応済み。2026-10-16ユーザーが終了・commitを承認。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
-| `OPS-056` | `DONE` | Astra（受入済み） / Claude（姫：試作・評価済み） | [DISCOVERY] Astraの判断追跡負荷を軽くする限定試作 | 2026-10-16限定試作・評価としてAstra受入。現行snapshotで出力・分類を確認し、対象外taskへの部分置換波及を再現。正式方式の採用・UI統合・追加修正は行わず、既決のゲートキャッシュ運用を継続。原返却を保持。ユーザーcommit承認により完了。 | `Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md` |
-| `OPS-057` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] Registry Studio同期の一コマンド化 | 2026-10-16 Astra受入確認済み。親子属性削除・Rules版の差分検知、出典変更時停止を補修。現行同期・既存検証・--check PASS。ユーザーのcommit承認により完了。マイルストーン自動導出は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SYNC.md` |
 | `OPS-058` | `PROPOSED` | ユーザー（採否） / Astra（整理） | [DECISION] 判断アーカイブ運用の採否 | CP-20261016-008を提案として登録。現在有効な判断を本文に集約し旧判断を履歴へ分ける方式を採るか。未承認・未実施。確定済み文書の変更権限は広げない | `Maintanance/Current/DECISION_ARCHIVE_PROPOSAL.md` |
-| `TEST-008` | `DONE` | Claude（姫：改訂） / Astra（入口接続・確認） | [EXECUTION] 判断座標の改訂草案の受渡しと入口接続 | 2026-10-16 CP-20261016-004を照合。原版との差分で7点の反映を確認しREADMEから接続。草案としての受渡し完了であり、史実の全面検証・規則への昇格ではない。ユーザーの完了後commit指示による | `Maintanance/Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md` |
 
 | `DOC-033` | `DONE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。2026-10-16照合・技術訂正済み、結果と証拠を詳細正本から接続。本文へ引渡し済み、ユーザーcommit承認。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
-| `RBT-047` | `DONE` | Claude（姫：再現・調査） / Astra（受入） | [DISCOVERY] index指定更新の失敗時CoW複製の切分け | 2026-10-16調査返却をAstra検収。3実装の入力hash・再現テスト・ログ・差分案を照合。失敗時CoWを通常5経路・互換1経路で観測。製品修正は未実施、ユーザーのcommit承認により調査完了。修正方針判断はUSER_ONLYのRBT-048へ分離し、決定前に製品修正しない。Astraによる再実行と実測性能は未確認。 | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md` |
 | `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
 | `DOC-034` | `DONE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
 | `DOC-035` | `DONE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
@@ -62,7 +54,6 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RELEASE-081` | `DONE` | Astra（範囲案・検収） / Claude（姫：証拠調査済み） | [DISCOVERY] 0.6.0変更範囲案と必要品質確認の整理 | 2026-10-16 Astra受入・統合完了、ユーザーcommit承認により完了。差分と保存証拠を照合し、旧評価由来の記述を受入節で補正。候補採用・release開始・試験実行・製品変更は含めない。 | `Maintanance/Current/RELEASE_0_6_0_PREPARATION.md` / `Maintanance/Current/RELEASE_0_6_0_QUALITY_EVIDENCE_RETURN.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | 0.7.0の工程準備へ配置（2026-10-16ユーザー決定）。0.6.0の前提にはしない。ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/RELEASE_0_7_0.md` |
@@ -114,6 +105,8 @@
 
 | `HIST-003` | `ACTIVE` | Claude（作成） / Astra（受入・接続） | [DISCOVERY] テスト再建史の記録・維持（常設） | 常設node。個別assignmentではない。2026-10-16ユーザー指示で恒久化。初回の作成・Astra受入・入口接続は完了済みで、その完了記録は維持する | `Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md` / `Maintanance/History/TestRebuild2026/README.md` / `Maintanance/History/TestRebuild2026/EVIDENCE.md` |
 
+| `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。未commitのレイアウト差分は保持、Safari未解決で受入しない。再開・差分採否は明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
+
 ## Task precedence
 
 内部task間の必須AND前提を記録する。`SEQUENCE`は前提成果がそろうまで後続を開始・継続しない。`PARALLEL_JOIN`は独立部分を並行でき、後続の完了までに合流する。いずれも状態・委任・再開条件を上書きしない。
@@ -130,8 +123,6 @@
 | `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
-| `OPS-054` | `OPS-053` | `SEQUENCE` | 配置維持例外表の検討結果を受け入れてからClaude起動系文書を検討する。前段の提案実施完了は条件にしない |
-| `RBT-048` | `RBT-047` | `SEQUENCE` | 調査成果を判断材料とする。調査完了で自動的に判断を求めず、ユーザー指定の確認時機に従う |
 | `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |
 | `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
 | `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
@@ -143,6 +134,8 @@
 | `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |
 
 ### 受入済みの前提成果
+
+- `RBT-048`の受入済み入力は`RBT-047`。調査受入と原依存辺は[圧縮前記録](../Archived/TASK_REGISTRY_BEFORE_RELEASE_CLEANUP_2026-10-16.md)、判断材料は`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md`。修正方針のUSER_ONLYを維持し、受入済みから修正許可を推定しない。
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
 
@@ -207,6 +200,9 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
 
 ## 過去の記録への入口
+
+- [リリース前整理の原文](../Archived/TASK_REGISTRY_BEFORE_RELEASE_CLEANUP_2026-10-16.md)：OPS-051・053〜057、TEST-008、RBT-047、RELEASE-081の完了9件と親子関係を圧縮。正本は現行配置を維持。マイルストーンと現行依存に必要な完了nodeは残した。
+
 
 - [完了6件とアプリ親子関係の圧縮前記録](../Archived/TASK_REGISTRY_COMPLETED_VIEWER_2026-10-16.md)：`OPS-049`・`OPS-050`・`OPS-052`・`TEST-006`・`TEST-007`・`RBT-005`。調査・助言・受入の原文と証拠への経路を保存。圧縮時点ではOPS-051の受入待ちを維持（その後の受入は現行行を参照）。
 
@@ -276,8 +272,4 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 | 親 | サブタスク |
 | --- | --- |
-| `OPS-048` | `OPS-051` |
-
-| `OPS-048` | `OPS-056` |
-
-| `OPS-048` | `OPS-057` |
+| `OPS-048` | `OPS-059` |

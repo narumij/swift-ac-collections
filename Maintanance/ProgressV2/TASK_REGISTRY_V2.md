@@ -34,7 +34,7 @@
 | `OPS-053` | `DONE` | Astra（実施・受入） / Claude（独立確認済み） | [DISCOVERY] 文書保存管理の二重化解消の検討 | 2026-10-16 R2受入、一覧抽出・理由・日付・記録日の指摘対応と検証を完了。ユーザー指示で完了。恒久決定時の記法確認は詳細正本へ留保。OPS-054の前提充足 | `Maintanance/Current/PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md` |
 | `OPS-054` | `ACTIVE` | Astra | [DISCOVERY] Claude起動系文書の見直し検討 | 2026-10-16 OPS-053完了後、ユーザー指示で着手。初回のリンク・参照不備と矛盾修正を実施、確認待ち。現行根拠・問題の有無・選択肢・推奨案と必要な判断を提示し、検討結果の受入まで。今回のリンク・矛盾修正は明示委任済み。移動・保護解除は含めない | `Maintanance/Current/CLAUDE_STARTUP_DOCUMENT_REVIEW.md` |
 
-| `OPS-055` | `ACTIVE` | Claude（レビュー） / Astra（作成・受入） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。ユーザー指示によりClaudeへレビュー依頼。返却・Astra受入まで。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
+| `OPS-055` | `DONE` | Astra（作成・受入） / Claude（レビュー済み） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。Claude返却・Astra受入、指摘4点の対応済み。2026-10-16ユーザーが終了・commitを承認。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
 
 ### 公開とリリース
 

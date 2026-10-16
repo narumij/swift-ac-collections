@@ -1,4 +1,6 @@
-# Release 0.6.0
+# Release 0.6.0（今回の準備時の旧予定名）
+
+> 2026-10-16ユーザー判断で今回のreleaseを0.5.4へ振替。[現在のゲート](RELEASE_0_5_4.md)を優先する。以下は準備・判断の経緯。将来の0.6.0範囲は未定。
 
 人間用ゲート資料。AIの再開用要約は[0.6.0キャッシュ](../Cache/Astra/RELEASE_0_6_0.md)に置く。
 
@@ -125,3 +127,7 @@ RELEASE-084はWAITING_EXTERNALとして0.6.0リリース完了まで後送。完
 ## マージ結果と記録の後送（2026-10-16）
 
 ユーザーとの訂正により、手元の記録を先にpushせず、確認済み候補のPR #198をユーザーがmergeした。GitHub APIでmerged=true、main=283c196a4d6025b6f29b246d349a2e5d4cd7aca4、候補a5a39d12とのファイル差分ゼロをAstraが確認。上記の「記録をpushしてからmerge」は旧手順であり、この決定で置き換える。未反映の調査・受入記録は保存後、別branchでmainへ戻す。タグ作成・公開はまだ行っていない。
+
+## 文書・開始条件の完了証拠引継ぎ（2026-10-16圧縮）
+
+RELEASE-078の開始条件照合とDOC-035の全公開対象の文書初版確認は受入済み。完了nodeとその完了済み前提の辺を現行一覧・Studioから外し、[原Registry・依存](../Archived/TASK_REGISTRY_COMPLETED_DOCUMENT_GATES_2026-10-16.md)へ保存した。[開始条件の照合](RELEASE_0_6_0_SCOPE_RECONCILIATION.md)、[初版確認](PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md)、[本文とユーザー受入](RED_BLACK_TREE_DOCUMENT_COMPLETION.md)が証拠の入口。証拠を履歴化しても前提が未達へ戻るわけではない。候補CIの赤の引受判断、最終タグ・公開判断は別であり、文書完成からrelease完了とはしない。

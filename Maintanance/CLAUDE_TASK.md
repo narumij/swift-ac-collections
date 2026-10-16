@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-RELEASE-084：候補CIの比較元未登録測定への限定修正を依頼。正本の範囲を参照。
+RELEASE-084：停止報告を受入済み、0.6.0後へ後送。現在有効な実装依頼なし。立て直し協議RELEASE-085→プランRELEASE-086で範囲を確認してから改めて依頼する。
 
 RELEASE-083：調査返却・Astra受入済み、ユーザーcommit承認により完了。追加実装依頼なし。下記の正式依頼へ。別の直接依頼とは独立。
 

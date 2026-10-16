@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**現在の依頼：DOC-040〜044（赤黒木4型の本文独立レビュー、5件一括）。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
+**RBT-047（index指定更新の失敗時CoW調査）は返却・Astra検収済み、修正判断待ち。DOC-040〜044は受入済み・DONE。OPS-057はAstra受入済み・ユーザーcommit承認済み・完了。OPS-056は返却あり・Astra受入待ち。OPS-055は受入済み・DONE。** OPS-053 R2は受入済み・DONE。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
@@ -408,3 +408,9 @@ Follow root CLAUDE.md for user-facing communication.
 ### DOC-040〜044 Astra受入
 
 2026-10-16、5件の作業終了・返却を確認し、レビュー成果として受入。[受入と残修正](Current/RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md)を参照。原返却と固定入力は維持。ユーザーのcommit承認によりRegistryの5件はDONE。DOC-034本文完成は未確定。
+
+## RBT-047 — index指定更新の失敗時CoW調査
+
+2026-10-16、ユーザーの「あっちにふってもいいよ」に基づく正式依頼。Registry登録済み。担当Claude（姫）、受入Astra。
+
+[詳細正本・編集範囲・Return](Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md)に従い、3実装の再現と修正判断材料をお願いします。今回の受渡しは調査・専用再現テスト・修正案まで。製品コードは変更しない。完了したら正本のReturnへ証拠と作業終了を書いてください。commitは含めません。依頼完成をもって指定範囲を受渡し、Astraは返却までその範囲を編集しません。

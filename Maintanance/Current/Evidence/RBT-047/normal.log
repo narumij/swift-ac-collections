@@ -1,0 +1,108 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 651]
+[Planning deferred tasks]
+[1 / 1]
+[4 / 66] RedBlackTreeTests-product
+[9 / 71] ElementBufferModule
+[21 / 76] PermutationModule
+[33 / 83] ElementBufferModule
+[41 / 88] OptionalElementBufferModuleTests-product
+[47 / 89] RedBlackTreeCollections
+[52 / 93] ElementBufferModuleTests-product
+[55 / 111] RedBlackTreeCollections
+[60 / 109] OptionalElementBufferModuleTests-product
+[70 / 107] RedBlackTreeCollections
+[78 / 116] RedBlackTreeCollections
+[85 / 123] RedBlackTreeModule
+[98 / 130] AcCollections
+[106 / 134] AcCollections
+[111 / 134] RedBlackTreeTreeTests-product
+[114 / 135] AcCollectionsTests-product
+[119 / 135] RedBlackTreeLegacyTests-product
+[120 / 141] RedBlackTreeTreeTests-product
+[122 / 143] RedBlackTreeTreeTests-product
+[130 / 154] RedBlackTreeTreeTests-product
+[131 / 154] RedBlackTreeTests-product
+[135 / 153] RedBlackTreeLegacyTests-product
+[141 / 152] CppBehaviorReferenceTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[141 / 152] RedBlackTreeTests-product
+[148 / 152] RedBlackTreeTests-product
+Build complete! (35.05秒)
+Test Suite 'Selected tests' started at 2026-10-16 20:51:25.708.
+Test Suite 'RedBlackTreeTreeTests.xctest' started at 2026-10-16 20:51:25.710.
+Test Suite 'RedBlackTreeTreeTests.xctest' passed at 2026-10-16 20:51:25.710.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:25.710.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.003) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:25.797.
+Test Suite 'RedBlackTreeTests.xctest' started at 2026-10-16 20:51:25.798.
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' started at 2026-10-16 20:51:25.798.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' passed (0.003 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' passed at 2026-10-16 20:51:25.802.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'RedBlackTreeTests.xctest' passed at 2026-10-16 20:51:25.802.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:25.802.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:25.901.
+Test Suite 'RedBlackTreeLegacyTests.xctest' started at 2026-10-16 20:51:25.902.
+Test Suite 'RedBlackTreeLegacyTests.xctest' passed at 2026-10-16 20:51:25.902.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:25.902.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:25.999.
+Test Suite 'PermutationTests.xctest' started at 2026-10-16 20:51:26.000.
+Test Suite 'PermutationTests.xctest' passed at 2026-10-16 20:51:26.000.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:26.000.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:26.098.
+Test Suite 'OptionalElementBufferModuleTests.xctest' started at 2026-10-16 20:51:26.099.
+Test Suite 'OptionalElementBufferModuleTests.xctest' passed at 2026-10-16 20:51:26.099.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:26.099.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:26.199.
+Test Suite 'ElementBufferModuleTests.xctest' started at 2026-10-16 20:51:26.200.
+Test Suite 'ElementBufferModuleTests.xctest' passed at 2026-10-16 20:51:26.200.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:26.200.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:26.297.
+Test Suite 'CppBehaviorReferenceTests.xctest' started at 2026-10-16 20:51:26.298.
+Test Suite 'CppBehaviorReferenceTests.xctest' passed at 2026-10-16 20:51:26.298.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:26.298.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:51:26.397.
+Test Suite 'AcCollectionsTests.xctest' started at 2026-10-16 20:51:26.398.
+Test Suite 'AcCollectionsTests.xctest' passed at 2026-10-16 20:51:26.398.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:51:26.398.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+swift test --filter IndexUpdateFailureCoWInvestigationTests 2>&1  37.07s user 11.21s system 106% cpu 45.474 total

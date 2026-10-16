@@ -140,6 +140,25 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 未着手
 - Codex reconciliation: 2026-10-16 Astra。既存OPS-044へ統合し担当名Himeを承認。Rulesに保存先を明記しCache/Hime/README.mdを作成。既存キャッシュ規則の範囲内で使用可能。原申請本文は保持し、新たな作業権限は追加しない。
 
+### `CP-20261016-010` — index指定の更新系で、失敗してもCoW複製が先に起きる件
+
+- queue状態: `RECONCILED`
+- 発見元・ユーザー指示: 2026-10-16夜。DOC-042レビュー中の製品観察（DOC-042返却に記載、Astra受入でも「バグ認定・製品修正・新規着手なし」と保持）。ユーザー「なんかいいのあれば未採番にしといて」。
+- 種別候補: `DISCOVERY`（直す価値と直し方の調査。バグ認定はしない）
+- 観察（コードを読んだだけ。実行・計測はしていない）: 次の3つは、先頭で`ensureUnique()`を呼び、その後でindexを確かめる。storageが共有されていると、`nil`を返す失敗の経路でも複製が起きる。
+  - `RedBlackTreeMultiSet.update(_:at:)`（`RedBlackTreeMultiSet.swift` 300行。無効index、または`==`で不一致のとき`nil`）
+  - `RedBlackTreeMultiMap.updateValue(_:at:)`（`RedBlackTreeMultiMap.swift` 348行と`+Deprecated.swift` 86行。無効indexで`nil`）
+  - 当初候補に入れた`RedBlackTreeSet.update(_:hint:)`・`RedBlackTreeDictionary.update(_:hint:)`は、成功すれば必ず挿入か置換をし、失敗は`fatalError`なので該当しない（2026-10-16夜に読んで除外）。`remove(at:)`も失敗は`fatalError`なので該当しない。
+- 注意: indexは複製後の木で`__purified_`し直す必要があるため、確認を先にすると「元の木で確認→複製→複製後の木でもう一度解決」の2段になる。過去の「空でもCoW」（2026-10-01、10-03に修正）と似た形。ユーザーは「バグかもね、具体箇所のスニペットがあれば認定できるかも」（2026-10-16夜）。
+- 対象範囲: 3メソッドについて、共有時に失敗したら複製が起きることのtestでの確認、直す場合の形と性能への影響の見積り。
+- 対象外: 製品コードの修正（調査の結論が出てから別に決める）。公開APIの変更。
+- 完了条件: 失敗時に複製が起きる経路の一覧と再現test案、直すか・直さないかの材料が揃うこと。
+- 前提・既存task候補: `TEST-005`（テスト整備）。性能の判断は`project_perf_check_via_ci`の流儀（push後のCI）。
+- 担当候補・受入担当: 修正はAstra（ユーザー「あすとらさんになおしてもらうさ」2026-10-16夜）。バグ認定はユーザー。姫は必要なら再現testを書く。
+- 停止条件: 複製後のindex解決の都合で、今の順序が必要だと分かったら、その理由を記録して止める。
+- 成果・検証: 未着手
+- Codex reconciliation: 2026-10-16 Astra。ユーザーの姫への委任許可に基づきRBT-047をACTIVEで登録し、再現・修正案調査をCLAUDE_TASK.mdで依頼。製品修正・バグ認定は未実施。元の担当候補は履歴として保持し、今回の調査担当を姫とする。
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

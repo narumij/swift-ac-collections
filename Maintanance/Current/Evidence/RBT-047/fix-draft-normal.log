@@ -1,0 +1,1324 @@
+Fetching https://github.com/swiftlang/swift-docc-symbolkit from cache
+Fetching https://github.com/apple/swift-numerics.git from cache
+Fetching https://github.com/swiftlang/swift-docc-plugin from cache
+Fetching https://github.com/apple/swift-algorithms.git from cache
+Fetched https://github.com/apple/swift-algorithms.git from cache (0.54s)
+Fetched https://github.com/swiftlang/swift-docc-plugin from cache (0.73s)
+Computing version for https://github.com/apple/swift-algorithms.git
+Fetched https://github.com/swiftlang/swift-docc-symbolkit from cache (0.73s)
+Fetched https://github.com/apple/swift-numerics.git from cache (0.75s)
+Computed https://github.com/apple/swift-algorithms.git at 1.2.1 (1.21s)
+Computing version for https://github.com/swiftlang/swift-docc-plugin.git
+Computed https://github.com/swiftlang/swift-docc-plugin.git at 1.5.0 (0.41s)
+Computing version for https://github.com/apple/swift-numerics.git
+Computed https://github.com/apple/swift-numerics.git at 1.1.1 (0.33s)
+Computing version for https://github.com/swiftlang/swift-docc-symbolkit
+Computed https://github.com/swiftlang/swift-docc-symbolkit at 1.0.0 (0.45s)
+Creating working copy for https://github.com/swiftlang/swift-docc-plugin
+Working copy of https://github.com/swiftlang/swift-docc-plugin resolved at 1.5.0
+Creating working copy for https://github.com/swiftlang/swift-docc-symbolkit
+Working copy of https://github.com/swiftlang/swift-docc-symbolkit resolved at 1.0.0
+Creating working copy for https://github.com/apple/swift-algorithms.git
+Working copy of https://github.com/apple/swift-algorithms.git resolved at 1.2.1
+Creating working copy for https://github.com/apple/swift-numerics.git
+Working copy of https://github.com/apple/swift-numerics.git resolved at 1.1.1
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 651]
+[Planning deferred tasks]
+[155 / 364]
+[167 / 381] RealModule
+[175 / 402] NextPermutationModule
+[182 / 402] RealModule
+[183 / 402]
+[199 / 402] ElementBufferModule
+[213 / 402]
+[216 / 402] _malloc_free
+[221 / 402] PermutationModule
+[227 / 410] RedBlackTreeCollections
+[236 / 445]
+[250 / 450] NextPermutationModule
+[260 / 459] PermutationModule
+[268 / 459] Algorithms
+[269 / 459]
+[272 / 459] Algorithms
+[274 / 459]
+[279 / 460]
+[280 / 460] Algorithms
+[281 / 460] OptionalElementBufferModuleTests-product
+[285 / 502]
+[290 / 502]
+[291 / 502]
+[302 / 511] Algorithms
+[308 / 512]
+[311 / 512]
+[316 / 512]
+[319 / 512]
+[322 / 522]
+[323 / 522]
+[335 / 522]
+[339 / 522] RedBlackTreeCollections
+[341 / 522] RedBlackTreeCollections
+[343 / 522]
+[344 / 522] RedBlackTreeCollections
+[345 / 522]
+[346 / 522]
+[347 / 522]
+[348 / 522]
+[349 / 522] RedBlackTreeCollections
+[350 / 522] RedBlackTreeCollections
+[351 / 522]
+[353 / 522]
+[354 / 522]
+[359 / 522] PermutationTests-product
+[360 / 522] PermutationTests-product
+[361 / 522] PermutationTests-product
+[374 / 522] ElementBufferModuleTests-product
+[378 / 522] RedBlackTreeCollections
+[379 / 522] RedBlackTreeCollections
+[381 / 522] RedBlackTreeCollections
+[383 / 522] RedBlackTreeCollections
+[393 / 522] RedBlackTreeModule
+[398 / 522] ElementBufferModuleTests-product
+[399 / 522] OptionalElementBufferModuleTests-product
+[402 / 522] ElementBufferModuleTests-product
+[405 / 522] ElementBufferModuleTests-product
+[405 / 522]
+[411 / 524] RedBlackTreeCollections
+[416 / 525] PermutationTests-product
+[417 / 525] RedBlackTreeFixture
+[421 / 529] RedBlackTreeModule
+[442 / 530]
+[448 / 532] OptionalElementBufferModuleTests-product
+[450 / 532] AcCollections
+[452 / 534] AcCollections
+[464 / 543] RedBlackTreeLegacyTests-product
+[466 / 543] RedBlackTreeLegacyTests-product
+[468 / 553] RedBlackTreeLegacyTests-product
+[470 / 553] RedBlackTreeTreeTests-product
+[472 / 562] RedBlackTreeTests-product
+[481 / 562] RedBlackTreeTreeTests-product
+[482 / 562] RedBlackTreeTreeTests-product
+[483 / 562] RedBlackTreeTreeTests-product
+[486 / 562] RedBlackTreeTreeTests-product
+[490 / 562] RedBlackTreeTreeTests-product
+[492 / 562] RedBlackTreeTests-product
+[493 / 562] RedBlackTreeTests-product
+[495 / 562] RedBlackTreeTests-product
+[496 / 562] RedBlackTreeTests-product
+[497 / 562] RedBlackTreeTreeTests-product
+[499 / 562] RedBlackTreeTreeTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[500 / 562] RedBlackTreeTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:65:11: [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m63 |[0;0m 
+ [0;36m64 |[0;0m     func testFromZero() throws {
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:67:11: [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m68 |[0;0m 
+ [0;36m69 |[0;0m       for i in 1..<100 {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[501 / 562] RedBlackTreeTreeTests-product
+[508 / 562] RedBlackTreeTreeTests-product
+[510 / 562] CppBehaviorReferenceTests-product
+[513 / 562]
+[517 / 562] ElementBufferModuleTests-product
+[528 / 562]
+[530 / 564] RedBlackTreeLegacyTests-product
+[531 / 564] RedBlackTreeLegacyTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[533 / 564]
+[536 / 564] CppBehaviorReferenceTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift:122:11: [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m120 |[0;0m 
+[0;36m121 |[0;0m     func test_subrangeValuesSingleIndexOperations_doNotCompareKeys() {
+[0;36m122 |[0;0m       var dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m123 |[0;0m         uniqueKeysWithValues: (0..<5).map { (ComparisonCountingKey(value: $0), "\($0)") })
+[0;36m124 |[0;0m       let lower = dictionary.index(after: dictionary.startIndex)
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[541 / 577] AcCollectionsTests-product
+[542 / 577] CppBehaviorReferenceTests-product
+[549 / 577] CppBehaviorReferenceTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap_TestHelpers.swift:17:55: [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+[0;36m10 |[0;0m }
+[0;36m11 |[0;0m 
+[0;36m12 |[0;0m func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B, file: StaticString = #file, line: UInt = #line)
+   [0;36m|[0;0m                                                                              `- [1;39mnote: [1;39mdid you mean for parameter 'file' to default to '#filePath'?[0;0m
+[0;36m13 |[0;0m where
+[0;36m14 |[0;0m   A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
+[0;36m15 |[0;0m   C: Equatable, D: Equatable
+[0;36m16 |[0;0m {
+[0;36m17 |[0;0m   XCTAssertTrue(lhs.elementsEqual(rhs, by: ==), file: file, line: line)
+   [0;36m|[0;0m                                                       |- [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39madd parentheses to silence this warning[0;0m
+[0;36m18 |[0;0m }
+[0;36m19 |[0;0m 
+
+XCTest.XCTAssertTrue.file:1:1: [1;39mnote: [1;39m'file' declared here[0;0m
+[0;36m1 |[0;0m file: StaticString
+  [0;36m|[0;0m `- [1;39mnote: [1;39m'file' declared here[0;0m
+[551 / 577] CppBehaviorReferenceTests-product
+[555 / 577] CppBehaviorReferenceTests-product
+[561 / 577] CppBehaviorReferenceTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt047-fix-check.RcCQrngKHU/repo/Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_3_IndexSequenceTests.swift:127:9: [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m125 |[0;0m   /// formIndex(after:)/(before:) がindex(after:)/(before:)と同じ順序で全要素を辿り、境界で正しく停止すること
+[0;36m126 |[0;0m   func testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal() {
+[0;36m127 |[0;0m     var set = RedBlackTreeSet<Int>(0..<5)
+    [0;36m|[0;0m         `- [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m128 |[0;0m 
+[0;36m129 |[0;0m     var forward: [Int] = []
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[561 / 577] RedBlackTreeTests-product
+[561 / 577] AcCollectionsTests-product
+[565 / 577] CppBehaviorReferenceTests-product
+[567 / 577] CppBehaviorReferenceTests-product
+[571 / 577] RedBlackTreeTests-product
+[573 / 577] RedBlackTreeTests-product
+Build complete! (26.07秒)
+Test Suite 'Selected tests' started at 2026-10-16 20:54:48.534.
+Test Suite 'RedBlackTreeTreeTests.xctest' started at 2026-10-16 20:54:48.535.
+Test Suite 'RedBlackTreeTreeTests.xctest' passed at 2026-10-16 20:54:48.535.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:54:48.535.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:54:48.648.
+Test Suite 'RedBlackTreeTests.xctest' started at 2026-10-16 20:54:48.649.
+Test Suite 'ConvenienceTests' started at 2026-10-16 20:54:48.649.
+Test Case '-[RedBlackTreeTests.ConvenienceTests test_Multiset_LE_GE]' started.
+Test Case '-[RedBlackTreeTests.ConvenienceTests test_Multiset_LE_GE]' passed (0.001 seconds).
+Test Case '-[RedBlackTreeTests.ConvenienceTests test_Multiset_LT_GT]' started.
+Test Case '-[RedBlackTreeTests.ConvenienceTests test_Multiset_LT_GT]' passed (0.000 seconds).
+Test Suite 'ConvenienceTests' passed at 2026-10-16 20:54:48.651.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' started at 2026-10-16 20:54:48.651.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedEndIndex_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedEndIndex_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedEndIndex_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedEndIndex_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedMismatch_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedMismatch_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedRemovedIndex_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedRemovedIndex_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' passed at 2026-10-16 20:54:48.654.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'RedBlackTreeComparatorsTests' started at 2026-10-16 20:54:48.654.
+Test Case '-[RedBlackTreeTests.RedBlackTreeComparatorsTests testMultisetEqualRange]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeComparatorsTests testMultisetEqualRange]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeComparatorsTests testMultisetKeyAndValueComp]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeComparatorsTests testMultisetKeyAndValueComp]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeComparatorsTests' passed at 2026-10-16 20:54:48.654.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapBoundDistanceTests' started at 2026-10-16 20:54:48.654.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundDistanceTests testDistanceBetweenBoundExpressions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundDistanceTests testDistanceBetweenBoundExpressions]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapBoundDistanceTests' passed at 2026-10-16 20:54:48.655.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapBoundExpressionTests' started at 2026-10-16 20:54:48.655.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testAfter]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testAfter]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEndIsInvalid]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEndIsInvalid]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEraseBoundsOnEmptyMultiMapDoesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEraseBoundsOnEmptyMultiMapDoesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEraseIndexRangeOnEmptyMultiMapDoesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testEraseIndexRangeOnEmptyMultiMapDoesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testIsValidBoundsInvalidDoesNotCrash]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testIsValidBoundsInvalidDoesNotCrash]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testLastIsValid]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundExpressionTests testLastIsValid]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapBoundExpressionTests' passed at 2026-10-16 20:54:48.656.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapBoundPublicBehaviorTests' started at 2026-10-16 20:54:48.656.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testAfterResolvesUntilTheEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testAfterResolvesUntilTheEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testBoundRangeOperators]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testBoundRangeOperators]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testDuplicateKeyRangeViewsKeepValueOrderAndCount]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testDuplicateKeyRangeViewsKeepValueOrderAndCount]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEndResolvesToNoElement]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEndResolvesToNoElement]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEqualRange]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEqualRange]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseBound]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseBound]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseDuplicateKeyBoundsRemovesTheWholeGroup]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseDuplicateKeyBoundsRemovesTheWholeGroup]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseReversedBoundsRemovesNothing]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseReversedBoundsRemovesNothing]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLessGreaterHelpers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLessGreaterHelpers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLessThanAndOrEqualMulti]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLessThanAndOrEqualMulti]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLowerUpperBoundFind]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLowerUpperBoundFind]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLowerUpperBoundOnDuplicateKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testLowerUpperBoundOnDuplicateKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testRemoveBoundsWhere]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testRemoveBoundsWhere]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testReversedBoundsViewIsEmpty]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testReversedBoundsViewIsEmpty]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testSubscriptBoundsModifyPopFirst]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testSubscriptBoundsModifyPopFirst]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testSubscriptBoundsView]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testSubscriptBoundsView]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testViewCount]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapBoundPublicBehaviorTests testViewCount]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapBoundPublicBehaviorTests' passed at 2026-10-16 20:54:48.660.
+	 Executed 19 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'RedBlackTreeMultiMapCodableTests' started at 2026-10-16 20:54:48.660.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_decodeEmptyArray_isEmpty]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_decodeEmptyArray_isEmpty]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_decodeFromUnsortedJSON_preservesAllPairsInKeyOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_decodeFromUnsortedJSON_preservesAllPairsInKeyOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_roundTripPreservesDuplicateKeysAndValues]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCodableTests test_codable_roundTripPreservesDuplicateKeysAndValues]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapCodableTests' passed at 2026-10-16 20:54:48.661.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapCopyOnWriteTests' started at 2026-10-16 20:54:48.661.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testEraseWhereOnStandaloneRangeViewCopiesOnceButLeavesBaseUntouched]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testEraseWhereOnStandaloneRangeViewCopiesOnceButLeavesBaseUntouched]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet1]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet1]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet10]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet10]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet11]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet11]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3000]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3000]' passed (0.177 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3_2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3_2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3_3]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet3_3]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet4]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet4]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet5]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet5]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet6]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet6]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet7]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet7]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet8]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet8]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet9]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapCopyOnWriteTests testSet9]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapCopyOnWriteTests' passed at 2026-10-16 20:54:48.842.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.181 (0.182) seconds
+Test Suite 'RedBlackTreeMultiMapDebugOnlyAPITests' started at 2026-10-16 20:54:48.842.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapDebugOnlyAPITests test_rangeViewPopFirstAndPopLast_removeAtMostTheRequestedCountInsideTheView]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapDebugOnlyAPITests test_rangeViewPopFirstAndPopLast_removeAtMostTheRequestedCountInsideTheView]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapDebugOnlyAPITests' passed at 2026-10-16 20:54:48.843.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapElementRangeTests' started at 2026-10-16 20:54:48.843.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_closedElementRange_includesUpperBoundDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_closedElementRange_includesUpperBoundDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_elementRange_isEmptyWhenNoKeyMatches]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_elementRange_isEmptyWhenNoKeyMatches]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_elementRange_supportsForwardAndReverseIteration]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_elementRange_supportsForwardAndReverseIteration]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_halfOpenElementRange_usesKeyBoundsAndPreservesDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapElementRangeTests test_halfOpenElementRange_usesKeyBoundsAndPreservesDuplicates]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapElementRangeTests' passed at 2026-10-16 20:54:48.844.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapEraseIndexTests' started at 2026-10-16 20:54:48.844.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapEraseIndexTests testEraseIndexReturnsFollowingIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapEraseIndexTests testEraseIndexReturnsFollowingIndex]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapEraseIndexTests' passed at 2026-10-16 20:54:48.844.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapFindTests' started at 2026-10-16 20:54:48.844.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFindTests testFindReturnsFirstEquivalentKeyOrEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFindTests testFindReturnsFirstEquivalentKeyOrEndIndex]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapFindTests' passed at 2026-10-16 20:54:48.844.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapFuzzTests' started at 2026-10-16 20:54:48.844.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFuzzTests test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFuzzTests test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant]' passed (4.572 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFuzzTests test_randomizedInsertAndEraseMatchesReferenceMultiMapAndMaintainsTreeInvariant]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapFuzzTests test_randomizedInsertAndEraseMatchesReferenceMultiMapAndMaintainsTreeInvariant]' passed (1.953 seconds).
+Test Suite 'RedBlackTreeMultiMapFuzzTests' passed at 2026-10-16 20:54:55.369.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 6.525 (6.525) seconds
+Test Suite 'RedBlackTreeMultiMapIndexRangeTests' started at 2026-10-16 20:54:55.369.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_distanceCountsDuplicatePositionsInBothDirections]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_distanceCountsDuplicatePositionsInBothDirections]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_formIndex_offsetBy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_formIndex_offsetBy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_formIndex_offsetBy_limitedBy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_formIndex_offsetBy_limitedBy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_index_offsetBy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_index_offsetBy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_index_offsetBy_limitedBy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_index_offsetBy_limitedBy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_indexAndFormIndex_moveForwardAndBackwardSymmetrically]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests test_indexAndFormIndex_moveForwardAndBackwardSymmetrically]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexOutlivingItsOriginResolvesInSurvivingCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexOutlivingItsOriginResolvesInSurvivingCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndDistinguishElementFromEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndDistinguishElementFromEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndRejectStaleIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndRejectStaleIndex]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndResolveIndicesInCopiedTree]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsElementAndIsEndResolveIndicesInCopiedTree]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsEndRecognizesEmptyMultiMapEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexRangeTests testIsEndRecognizesEmptyMultiMapEndIndex]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapIndexRangeTests' passed at 2026-10-16 20:54:55.372.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiMapIndexValidityXCTests' started at 2026-10-16 20:54:55.372.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testEmptyArrayLiteralUsesReadOnlyStorage]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testEmptyArrayLiteralUsesReadOnlyStorage]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testEmptyDictionaryLiteralUsesReadOnlyStorage]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testEmptyDictionaryLiteralUsesReadOnlyStorage]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testIndexFromFreedOriginIsDetachedAndRejectedByGenerationInSurvivingCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testIndexFromFreedOriginIsDetachedAndRejectedByGenerationInSurvivingCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testIndexFromFreedOriginIsDetachedWhileCopySurvives]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testIndexFromFreedOriginIsDetachedWhileCopySurvives]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testSubrangeRejectsRawIndicesOutsideItsBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testSubrangeRejectsRawIndicesOutsideItsBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testUnsafeRawIndicesAreValidOnlyForLiveNodes]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIndexValidityXCTests testUnsafeRawIndicesAreValidOnlyForLiveNodes]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapIndexValidityXCTests' passed at 2026-10-16 20:54:55.373.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapInitializationTests' started at 2026-10-16 20:54:55.373.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_empty_reserveCapacity_shouldIncreaseCapacity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_empty_reserveCapacity_shouldIncreaseCapacity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_groupingInitialization_acceptsAnySequence]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_groupingInitialization_acceptsAnySequence]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_groupingInitialization_groupsElementsWithoutCollapsingEqualKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_groupingInitialization_groupsElementsWithoutCollapsingEqualKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_literalInitialization_preservesEveryValueForDuplicateKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_literalInitialization_preservesEveryValueForDuplicateKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_minimumCapacityInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_minimumCapacityInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_reserveCapacity_shouldIncreaseCapacity2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests test_reserveCapacity_shouldIncreaseCapacity2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testEmptyInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testEmptyInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testInitWithMinimumCapacity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testInitWithMinimumCapacity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testSequenceInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testSequenceInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testSequenceInitializationWithAnySequence]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInitializationTests testSequenceInitializationWithAnySequence]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapInitializationTests' passed at 2026-10-16 20:54:55.376.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'RedBlackTreeMultiMapInsertContentsOfTests' started at 2026-10-16 20:54:55.376.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertContentsOfTests testInsertAndInsertingContentsOfMultiMap]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertContentsOfTests testInsertAndInsertingContentsOfMultiMap]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapInsertContentsOfTests' passed at 2026-10-16 20:54:55.376.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapInsertionTests' started at 2026-10-16 20:54:55.376.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_eraseExactly_onEmptyMapReturnsNilWithoutTrapping]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_eraseExactly_onEmptyMapReturnsNilWithoutTrapping]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_indexInserting_allowsDuplicateKeysAndErasesByIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_indexInserting_allowsDuplicateKeysAndErasesByIndex]' passed (0.001 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insert_preservesInsertionOrderForEquivalentKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insert_preservesInsertionOrderForEquivalentKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertContentsOf_preservesEveryKeyValuePair]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertContentsOf_preservesEveryKeyValuePair]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertWithHint_handlesEquivalentGoodAndBadHints]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertWithHint_handlesEquivalentGoodAndBadHints]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertWithHint_placesNewPairAtHintPositionWithinEquivalentKeyGroup]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_insertWithHint_placesNewPairAtHintPositionWithinEquivalentKeyGroup]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_atRemovedIndexReturnsNilAndKeepsSurvivors]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_atRemovedIndexReturnsNilAndKeepsSurvivors]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_preservesValueSemanticsAfterCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_preservesValueSemanticsAfterCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_rejectsEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_rejectsEndIndex]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_replacesOnlyTheSpecifiedDuplicatePosition]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapInsertionTests test_updateValue_replacesOnlyTheSpecifiedDuplicatePosition]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapInsertionTests' passed at 2026-10-16 20:54:55.378.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiMapIntegerKeyTests' started at 2026-10-16 20:54:55.378.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt128KeysSupportValuesBeyondInt64]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt128KeysSupportValuesBeyondInt64]' passed (0.001 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt32KeysSupportFullWidthValues]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt32KeysSupportFullWidthValues]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt32KeysSupportInt128Values]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapIntegerKeyTests testInt32KeysSupportInt128Values]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapIntegerKeyTests' passed at 2026-10-16 20:54:55.381.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'RedBlackTreeMultiMapLazySequenceTests' started at 2026-10-16 20:54:55.381.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyEvaluation_stopsAtPrefix]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyEvaluation_stopsAtPrefix]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyFilter_defersEvaluationUntilIteration]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyFilter_defersEvaluationUntilIteration]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyIteration_preservesSortedOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyIteration_preservesSortedOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyMap_defersEvaluationUntilIteration]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyMap_defersEvaluationUntilIteration]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyOperations_canBeChained]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyOperations_canBeChained]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyOperations_handleEmptyAndSingleElementMultiMaps]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazyOperations_handleEmptyAndSingleElementMultiMaps]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazySequence_keepsOriginalValueAfterMultiMapMutation]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapLazySequenceTests test_lazySequence_keepsOriginalValueAfterMultiMapMutation]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapLazySequenceTests' passed at 2026-10-16 20:54:55.382.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapProtocolConformanceTests' started at 2026-10-16 20:54:55.382.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_comparable_ordersByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_comparable_ordersByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_comparable_rangeViewsFromDifferentTreesOrderByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_comparable_rangeViewsFromDifferentTreesOrderByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customDebugStringConvertible_debugDescription]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customDebugStringConvertible_debugDescription]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_duplicateKeyPairsAreEachRepresentedAsKeyValueTuples]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_duplicateKeyPairsAreEachRepresentedAsKeyValueTuples]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_emptyMultiMapHasNoChildren]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_emptyMultiMapHasNoChildren]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_mirrorContainsElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customReflectable_mirrorContainsElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customStringConvertible_description]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_customStringConvertible_description]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_elementsEqual_falseWhenValuesDiffer]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_elementsEqual_falseWhenValuesDiffer]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_elementsEqual_trueForSameKeyValuePairsInKeyOrderIncludingDuplicateKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_elementsEqual_trueForSameKeyValuePairsInKeyOrderIncludingDuplicateKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_mapsAreEqual]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_mapsAreEqual]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_mapsAreNotEqual]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_mapsAreNotEqual]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_rangeViewsFromDifferentTreesCompareByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_equatable_rangeViewsFromDifferentTreesCompareByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_expressibleByArrayLiteral]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_expressibleByArrayLiteral]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_expressibleByDictionaryLiteral]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_expressibleByDictionaryLiteral]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_hashable_allowsSetOfMaps]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_hashable_allowsSetOfMaps]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_isTriviallyIdentical_copyIsIdentical]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_isTriviallyIdentical_copyIsIdentical]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_isTriviallyIdentical_mutationBreaksIdentity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_isTriviallyIdentical_mutationBreaksIdentity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_sendable_compiles]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapProtocolConformanceTests test_sendable_compiles]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapProtocolConformanceTests' passed at 2026-10-16 20:54:55.386.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'RedBlackTreeMultiMapRangeViewTests' started at 2026-10-16 20:54:55.386.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_boundedRangeView_distinguishesEqualKeysByPosition]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_boundedRangeView_distinguishesEqualKeysByPosition]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_closedAndPartialRangeViews_useIndexBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_closedAndPartialRangeViews_useIndexBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_containsSubrange_acceptsIndexRangeExpressionValue]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_containsSubrange_acceptsIndexRangeExpressionValue]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_emptyRangeView_recognizesItsOwnEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_emptyRangeView_recognizesItsOwnEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_equalRangeView_containsEveryEntryForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_equalRangeView_containsEveryEntryForKey]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_eraseRangeAndPredicate_modifyOnlySelectedEntries]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_eraseRangeAndPredicate_modifyOnlySelectedEntries]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_eraseUnboundedRange_removesEveryEntry]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_eraseUnboundedRange_removesEveryEntry]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_mutatingRangeView_removesOnlyEntryInsideView]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_mutatingRangeView_removesOnlyEntryInsideView]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_rangeValuesSwapAt_changesOnlyValuesInsideRange]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_rangeValuesSwapAt_changesOnlyValuesInsideRange]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_rangeValuesSwapAt_preservesValueSemanticsAfterCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_rangeValuesSwapAt_preservesValueSemanticsAfterCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_unboundedRangeView_containsEveryEntryInOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_unboundedRangeView_containsEveryEntryInOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_unboundedRangeViewModify_mutatesThroughTheSubscript]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRangeViewTests test_unboundedRangeViewModify_mutatesThroughTheSubscript]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapRangeViewTests' passed at 2026-10-16 20:54:55.389.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'RedBlackTreeMultiMapRemovalStressTests' started at 2026-10-16 20:54:55.389.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testEraseByBoundRangeMatchesReferenceFilterForEveryBoundaryPair]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testEraseByBoundRangeMatchesReferenceFilterForEveryBoundaryPair]' passed (0.002 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingEveryElementWhileIteratingAMultiMapEmptiesIt]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingEveryElementWhileIteratingAMultiMapEmptiesIt]' passed (1.246 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingEveryElementWhileIteratingAnElementRangeEmptiesIt]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingEveryElementWhileIteratingAnElementRangeEmptiesIt]' passed (1.244 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingMaterializedElementRangeEmptiesMultiMap]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalStressTests testRemovingMaterializedElementRangeEmptiesMultiMap]' passed (1.246 seconds).
+Test Suite 'RedBlackTreeMultiMapRemovalStressTests' passed at 2026-10-16 20:54:59.127.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 3.738 (3.738) seconds
+Test Suite 'RedBlackTreeMultiMapRemovalTests' started at 2026-10-16 20:54:59.127.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseMulti_removesEveryEntryForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseMulti_removesEveryEntryForKey]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseUnique_removesOneEntryForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseUnique_removesOneEntryForKey]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseWhere_removesEveryMatchingEntry]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseWhere_removesEveryMatchingEntry]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_popFirstAndPopLast_onEmptyMultiMap_doNotTriggerCopyOnWrite]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_popFirstAndPopLast_onEmptyMultiMap_doNotTriggerCopyOnWrite]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_popFirstAndPopLast_removeOneExtremeEntry]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_popFirstAndPopLast_removeOneExtremeEntry]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeAll_clearsEntriesAndHonorsCapacityChoice]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeAll_clearsEntriesAndHonorsCapacityChoice]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeAt_removesOnlyTheSelectedDuplicate]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeAt_removesOnlyTheSelectedDuplicate]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeFirstAndRemoveLast_followKeyOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_removeFirstAndRemoveLast_followKeyOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_sameReferenceValueInManyEntriesIsReleasedAfterTheLastOwner]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_sameReferenceValueInManyEntriesIsReleasedAfterTheLastOwner]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapRemovalTests test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapRemovalTests' passed at 2026-10-16 20:54:59.130.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiMapSearchTests' started at 2026-10-16 20:54:59.130.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_containsAndCount_describeKeyMultiplicity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_containsAndCount_describeKeyMultiplicity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_firstIndex_findsFirstEntryForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_firstIndex_findsFirstEntryForKey]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_firstLastMinAndMax_followKeyOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_firstLastMinAndMax_followKeyOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_keySubscript_returnsEveryValueForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_keySubscript_returnsEveryValueForKey]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_lowerUpperAndEqualRange_spanEveryEntryForKey]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSearchTests test_lowerUpperAndEqualRange_spanEveryEntryForKey]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapSearchTests' passed at 2026-10-16 20:54:59.131.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapSequenceTests' started at 2026-10-16 20:54:59.131.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests test_sequencePredicates_observeEntriesInKeyOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests test_sequencePredicates_observeEntriesInKeyOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests test_sortedAndReversed_followElementOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests test_sortedAndReversed_followElementOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testEmptyMultiMap]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testEmptyMultiMap]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testSequenceConformance]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testSequenceConformance]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testSequenceConformance2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapSequenceTests testSequenceConformance2]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapSequenceTests' passed at 2026-10-16 20:54:59.132.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapTransformingAndCombiningTests' started at 2026-10-16 20:54:59.132.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_compactMapValues_omitsNilResultsWithoutCollapsingKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_compactMapValues_omitsNilResultsWithoutCollapsingKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_insertingContentsOf_returnsChangedCopyAndPreservesOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_insertingContentsOf_returnsChangedCopyAndPreservesOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_mapValues_transformsEveryValueAndPreservesDuplicateKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_mapValues_transformsEveryValueAndPreservesDuplicateKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_meld_combinesEveryEntryInPlace]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_meld_combinesEveryEntryInPlace]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_melding_returnsCombinedCopyAndPreservesOperands]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_melding_returnsCombinedCopyAndPreservesOperands]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_transformations_rethrowClosureErrorWithoutKeepingPartialResults]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTransformingAndCombiningTests test_transformations_rethrowClosureErrorWithoutKeepingPartialResults]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapTransformingAndCombiningTests' passed at 2026-10-16 20:54:59.133.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapTraversalComparisonCountTests' started at 2026-10-16 20:54:59.133.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTraversalComparisonCountTests testFullAndRangeTraversalDoNotCompareKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapTraversalComparisonCountTests testFullAndRangeTraversalDoNotCompareKeys]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapTraversalComparisonCountTests' passed at 2026-10-16 20:54:59.134.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiMapUtilityTests' started at 2026-10-16 20:54:59.134.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_copyOnWrite_mutatingCopyPreservesOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_copyOnWrite_mutatingCopyPreservesOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_isEmptyCountAndCapacity_describeStoredEntries]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_isEmptyCountAndCapacity_describeStoredEntries]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_keysAndValues_followEntryOrderIncludingDuplicateKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_keysAndValues_followEntryOrderIncludingDuplicateKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_valuesSwapAt_changesValuesWithoutChangingKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_valuesSwapAt_changesValuesWithoutChangingKeys]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_valuesSwapAt_preservesValueSemanticsAfterCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapUtilityTests test_valuesSwapAt_preservesValueSemanticsAfterCopy]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapUtilityTests' passed at 2026-10-16 20:54:59.135.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiMapValueSemanticsTests' started at 2026-10-16 20:54:59.135.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapValueSemanticsTests test_copyOnWrite_mutatingCopyPreservesOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapValueSemanticsTests test_copyOnWrite_mutatingCopyPreservesOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapValueSemanticsTests test_copyOnWrite_mutatingInsideClosuresKeepsCopiesIndependent]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiMapValueSemanticsTests test_copyOnWrite_mutatingInsideClosuresKeepsCopiesIndependent]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiMapValueSemanticsTests' passed at 2026-10-16 20:54:59.135.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetBidirectionalCollectionTests' started at 2026-10-16 20:54:59.135.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_distanceAndOffsetIncludeDuplicatePositions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_distanceAndOffsetIncludeDuplicatePositions]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_formIndex_supportsForwardAndBackwardMovement]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_formIndex_supportsForwardAndBackwardMovement]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_indexBefore_traversesDuplicatesInReverseOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_indexBefore_traversesDuplicatesInReverseOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_indicesTraverseDuplicatesInSortedOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_indicesTraverseDuplicatesInSortedOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_limitedOffset_stopsAtLimit]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBidirectionalCollectionTests test_limitedOffset_stopsAtLimit]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetBidirectionalCollectionTests' passed at 2026-10-16 20:54:59.137.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetBoundDistanceTests' started at 2026-10-16 20:54:59.137.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundDistanceTests testDistanceBetweenBoundExpressions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundDistanceTests testDistanceBetweenBoundExpressions]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetBoundDistanceTests' passed at 2026-10-16 20:54:59.137.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetBoundExpressionTests' started at 2026-10-16 20:54:59.137.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testAfter]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testAfter]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEndIsInvalid]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEndIsInvalid]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEraseBoundsOnEmptyMultiSetDoesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEraseBoundsOnEmptyMultiSetDoesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEraseIndexRangeOnEmptyMultiSetDoesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testEraseIndexRangeOnEmptyMultiSetDoesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testIsValidBoundsInvalidDoesNotCrash]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testIsValidBoundsInvalidDoesNotCrash]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testLastIsValid]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundExpressionTests testLastIsValid]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetBoundExpressionTests' passed at 2026-10-16 20:54:59.138.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetBoundPublicBehaviorTests' started at 2026-10-16 20:54:59.138.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testAfterResolvesUntilTheEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testAfterResolvesUntilTheEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testBoundRangeOperators]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testBoundRangeOperators]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEndResolvesToNoElement]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEndResolvesToNoElement]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEqualRangeMulti]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEqualRangeMulti]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraesBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraesBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseBound]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseBound]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseRangeWhere]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseRangeWhere]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseReversedBoundsRemovesNothing]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseReversedBoundsRemovesNothing]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLessGreaterHelpers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLessGreaterHelpers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLessThanAndOrEqualMulti]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLessThanAndOrEqualMulti]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLowerUpperBoundFind]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testLowerUpperBoundFind]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testReversedBoundsViewIsEmpty]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testReversedBoundsViewIsEmpty]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testSubscriptBoundsModifyPopFirst]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testSubscriptBoundsModifyPopFirst]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testSubscriptBoundsView]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testSubscriptBoundsView]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testViewCount]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetBoundPublicBehaviorTests testViewCount]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetBoundPublicBehaviorTests' passed at 2026-10-16 20:54:59.141.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiSetCodableTests' started at 2026-10-16 20:54:59.141.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_decodeEmptyArray_isEmpty]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_decodeEmptyArray_isEmpty]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_decodeFromUnsortedJSON_producesSortedMultiSetWithDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_decodeFromUnsortedJSON_producesSortedMultiSetWithDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_roundTripsElementsInOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCodableTests test_codable_roundTripsElementsInOrder]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetCodableTests' passed at 2026-10-16 20:54:59.142.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetCopyOnWriteTests' started at 2026-10-16 20:54:59.142.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet1]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet1]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3000]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3000]' passed (0.176 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3_2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet3_2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet4]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet4]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet5]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet5]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet6]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetCopyOnWriteTests testSet6]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetCopyOnWriteTests' passed at 2026-10-16 20:54:59.319.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.177 (0.178) seconds
+Test Suite 'RedBlackTreeMultiSetFilterTests' started at 2026-10-16 20:54:59.319.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFilterTests testFilterKeepsIncludedOccurrences]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFilterTests testFilterKeepsIncludedOccurrences]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFilterTests testFilterRethrowsPredicateErrorWithoutKeepingPartialResult]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFilterTests testFilterRethrowsPredicateErrorWithoutKeepingPartialResult]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetFilterTests' passed at 2026-10-16 20:54:59.320.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetFindTests' started at 2026-10-16 20:54:59.320.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFindTests testFindReturnsFirstEquivalentOrEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFindTests testFindReturnsFirstEquivalentOrEndIndex]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetFindTests' passed at 2026-10-16 20:54:59.320.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetFormIndexLimitedTests' started at 2026-10-16 20:54:59.320.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFormIndexLimitedTests testFormIndexOffsetByLimitedBy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFormIndexLimitedTests testFormIndexOffsetByLimitedBy]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetFormIndexLimitedTests' passed at 2026-10-16 20:54:59.321.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetFuzzTests' started at 2026-10-16 20:54:59.321.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFuzzTests test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFuzzTests test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant]' passed (3.866 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFuzzTests test_randomizedInsertAndEraseMatchesReferenceMultisetAndMaintainsTreeInvariant]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetFuzzTests test_randomizedInsertAndEraseMatchesReferenceMultisetAndMaintainsTreeInvariant]' passed (1.524 seconds).
+Test Suite 'RedBlackTreeMultiSetFuzzTests' passed at 2026-10-16 20:55:04.711.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 5.390 (5.390) seconds
+Test Suite 'RedBlackTreeMultiSetIndexRangeTests' started at 2026-10-16 20:55:04.711.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIndexOutlivingItsOriginResolvesInSurvivingCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIndexOutlivingItsOriginResolvesInSurvivingCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndDistinguishElementFromEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndDistinguishElementFromEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndRejectStaleIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndRejectStaleIndex]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndResolveIndicesInCopiedTree]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsElementAndIsEndResolveIndicesInCopiedTree]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsEndRecognizesEmptyMultiSetEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexRangeTests testIsEndRecognizesEmptyMultiSetEndIndex]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetIndexRangeTests' passed at 2026-10-16 20:55:04.712.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetIndexValidityXCTests' started at 2026-10-16 20:55:04.712.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testElementRangeRejectsRawIndicesOutsideItsBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testElementRangeRejectsRawIndicesOutsideItsBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testEmptyArrayLiteralUsesReadOnlyStorage]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testEmptyArrayLiteralUsesReadOnlyStorage]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testIndexFromFreedOriginIsDetachedAndRejectedByGenerationInSurvivingCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testIndexFromFreedOriginIsDetachedAndRejectedByGenerationInSurvivingCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testIndexFromFreedOriginIsDetachedWhileCopySurvives]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testIndexFromFreedOriginIsDetachedWhileCopySurvives]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testRangeViewIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testRangeViewIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testRangeViewIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testRangeViewIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testUnsafeRawIndicesAreValidOnlyForLiveNodes]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIndexValidityXCTests testUnsafeRawIndicesAreValidOnlyForLiveNodes]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetIndexValidityXCTests' passed at 2026-10-16 20:55:04.714.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RedBlackTreeMultiSetInitializationTests' started at 2026-10-16 20:55:04.714.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_emptyInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_emptyInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_minimumCapacityInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_minimumCapacityInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_rangeInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_rangeInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reserveCapacity_shouldIncreaseCapacity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reserveCapacity_shouldIncreaseCapacity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reserveCapacity_shouldIncreaseCapacity2]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reserveCapacity_shouldIncreaseCapacity2]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reverseRangeInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_reverseRangeInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_sequenceInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInitializationTests test_sequenceInitialization]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetInitializationTests' passed at 2026-10-16 20:55:04.715.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetInsertingContentsOfTests' started at 2026-10-16 20:55:04.715.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertingContentsOfTests testInsertingContentsOfMultiSetAndSet]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertingContentsOfTests testInsertingContentsOfMultiSetAndSet]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetInsertingContentsOfTests' passed at 2026-10-16 20:55:04.715.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetInsertionTests' started at 2026-10-16 20:55:04.715.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_onEmptyMultiSetReturnsNilWithoutCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_onEmptyMultiSetReturnsNilWithoutCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_removesOnlyTheIndexedOccurrence]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_removesOnlyTheIndexedOccurrence]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_returnsNilForStaleOrEndIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_eraseExactly_returnsNilForStaleOrEndIndex]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_indexInserting_alwaysInsertsNewOccurrence]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_indexInserting_alwaysInsertsNewOccurrence]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insert_alwaysAddsDuplicateMembers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insert_alwaysAddsDuplicateMembers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insert_preservesReferenceIdentityOfDuplicateMembers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insert_preservesReferenceIdentityOfDuplicateMembers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertContentsOf_fromSetAndMultiSet_preservesEachSourcesMultiplicity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertContentsOf_fromSetAndMultiSet_preservesEachSourcesMultiplicity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertContentsOf_preservesMultiplicity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertContentsOf_preservesMultiplicity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_acceptsStartAndEndIndexBoundaries]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_acceptsStartAndEndIndexBoundaries]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_handlesDuplicateGoodAndBadHints]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_handlesDuplicateGoodAndBadHints]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_placesNewMemberAtHintPositionWithinEquivalentGroup]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_insertWithHint_placesNewMemberAtHintPositionWithinEquivalentGroup]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_atRemovedIndexReturnsNilAndKeepsSurvivors]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_atRemovedIndexReturnsNilAndKeepsSurvivors]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_preservesValueSemanticsAfterCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_preservesValueSemanticsAfterCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_rejectsEndIndexAndNonEquivalentMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_rejectsEndIndexAndNonEquivalentMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_replacesOnlySpecifiedEquivalentMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetInsertionTests test_update_replacesOnlySpecifiedEquivalentMember]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetInsertionTests' passed at 2026-10-16 20:55:04.718.
+	 Executed 15 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiSetIntegerElementTests' started at 2026-10-16 20:55:04.718.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIntegerElementTests test_Int128_supportsValuesBeyondInt64AndCopyOnWrite]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIntegerElementTests test_Int128_supportsValuesBeyondInt64AndCopyOnWrite]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIntegerElementTests test_Int32_supportsFullWidthValuesAndCopyOnWrite]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetIntegerElementTests test_Int32_supportsFullWidthValuesAndCopyOnWrite]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetIntegerElementTests' passed at 2026-10-16 20:55:04.719.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetLazySequenceTests' started at 2026-10-16 20:55:04.719.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyEvaluation_stopsAtPrefix]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyEvaluation_stopsAtPrefix]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyFilter_defersEvaluationUntilIteration]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyFilter_defersEvaluationUntilIteration]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyIteration_preservesSortedOrder]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyIteration_preservesSortedOrder]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyMap_defersEvaluationUntilIteration]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyMap_defersEvaluationUntilIteration]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyOperations_canBeChained]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyOperations_canBeChained]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyOperations_handleEmptyAndSingleElementSets]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazyOperations_handleEmptyAndSingleElementSets]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazySequence_keepsOriginalValueAfterSetMutation]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetLazySequenceTests test_lazySequence_keepsOriginalValueAfterSetMutation]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetLazySequenceTests' passed at 2026-10-16 20:55:04.720.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RedBlackTreeMultiSetProtocolConformanceTests' started at 2026-10-16 20:55:04.720.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_codable_roundTrip]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_codable_roundTrip]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_comparable_ordersByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_comparable_ordersByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_comparable_rangeViewsFromDifferentTreesOrderByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_comparable_rangeViewsFromDifferentTreesOrderByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customDebugStringConvertible_debugDescription]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customDebugStringConvertible_debugDescription]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_childrenAreUnlabeled]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_childrenAreUnlabeled]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_duplicateElementsAreEachRepresented]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_duplicateElementsAreEachRepresented]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_emptyMultiSetHasNoChildren]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_emptyMultiSetHasNoChildren]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_mirrorContainsElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customReflectable_mirrorContainsElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customStringConvertible_description]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_customStringConvertible_description]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_elementsEqual_falseWhenMultiplicityDiffers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_elementsEqual_falseWhenMultiplicityDiffers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_elementsEqual_trueForSameElementsInOrderIncludingDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_elementsEqual_trueForSameElementsInOrderIncludingDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_rangeViewsFromDifferentTreesCompareByElements]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_rangeViewsFromDifferentTreesCompareByElements]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_setsAreEqual]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_setsAreEqual]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_setsAreNotEqual]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_equatable_setsAreNotEqual]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_expressibleByArrayLiteral_allowsDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_expressibleByArrayLiteral_allowsDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_hashable_allowsSetOfSets]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_hashable_allowsSetOfSets]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_isTriviallyIdentical_copyIsIdentical]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_isTriviallyIdentical_copyIsIdentical]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_isTriviallyIdentical_mutationBreaksIdentity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_isTriviallyIdentical_mutationBreaksIdentity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_sendable_compiles]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetProtocolConformanceTests test_sendable_compiles]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetProtocolConformanceTests' passed at 2026-10-16 20:55:04.725.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'RedBlackTreeMultiSetRangeViewTests' started at 2026-10-16 20:55:04.725.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_boundedRangeView_preservesDuplicatePositions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_boundedRangeView_preservesDuplicatePositions]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_closedAndPartialRangeViews_useIndexBounds]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_closedAndPartialRangeViews_useIndexBounds]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_containsSubrange_acceptsEqualRangeIndexRangeValue]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_containsSubrange_acceptsEqualRangeIndexRangeValue]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_emptyRangeView_recognizesItsOwnEnd]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_emptyRangeView_recognizesItsOwnEnd]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_eraseRangeAndPredicate_modifyOnlySelectedPositions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_eraseRangeAndPredicate_modifyOnlySelectedPositions]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_eraseUnboundedRange_removesEveryMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_eraseUnboundedRange_removesEveryMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_mutatingRangeView_removesOnlyMemberInsideView]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_mutatingRangeView_removesOnlyMemberInsideView]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_unboundedRangeView_containsEveryPosition]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_unboundedRangeView_containsEveryPosition]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_unboundedRangeViewModify_mutatesThroughTheSubscript]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRangeViewTests test_unboundedRangeViewModify_mutatesThroughTheSubscript]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetRangeViewTests' passed at 2026-10-16 20:55:04.726.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RedBlackTreeMultiSetRemovalStressTests' started at 2026-10-16 20:55:04.726.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testEraseByBoundRangeMatchesReferenceFilterForEveryBoundaryPair]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testEraseByBoundRangeMatchesReferenceFilterForEveryBoundaryPair]' passed (0.002 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingEveryElementWhileIteratingAnElementRangeEmptiesIt]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingEveryElementWhileIteratingAnElementRangeEmptiesIt]' passed (1.239 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingEveryElementWhileIteratingEmptiesMultiSet]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingEveryElementWhileIteratingEmptiesMultiSet]' passed (1.243 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingMaterializedElementRangeEmptiesMultiSet]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalStressTests testRemovingMaterializedElementRangeEmptiesMultiSet]' passed (1.238 seconds).
+Test Suite 'RedBlackTreeMultiSetRemovalStressTests' passed at 2026-10-16 20:55:08.449.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 3.722 (3.722) seconds
+Test Suite 'RedBlackTreeMultiSetRemovalTests' started at 2026-10-16 20:55:08.449.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_erase_returnsTheFollowingIndex]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_erase_returnsTheFollowingIndex]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseMulti_handlesFullWidthIntValues]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseMulti_handlesFullWidthIntValues]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseMulti_removesAllMatchingMembers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseMulti_removesAllMatchingMembers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseUnique_removesOneMatchingMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseUnique_removesOneMatchingMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseUsingLowerAndUpperBound_removesOnlyThatDuplicateValue]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseUsingLowerAndUpperBound_removesOnlyThatDuplicateValue]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseWhere_removesEveryMatchingMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseWhere_removesEveryMatchingMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_eraseWhere_rethrowsPredicateErrorAndKeepsSharedOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_popFirstAndPopLast_onEmptyMultiSet_doNotTriggerCopyOnWrite]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_popFirstAndPopLast_onEmptyMultiSet_doNotTriggerCopyOnWrite]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_popFirstAndPopLast_removeOneExtremeMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_popFirstAndPopLast_removeOneExtremeMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAll_clearsElementsAndHonorsCapacityChoice]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAll_clearsElementsAndHonorsCapacityChoice]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAt_removesOnlyTheSelectedDuplicate]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAt_removesOnlyTheSelectedDuplicate]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAtAndErase_removeTheSelectedEquivalentInstance]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeAtAndErase_removeTheSelectedEquivalentInstance]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeFirstAndRemoveLast_removeOneExtremeMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_removeFirstAndRemoveLast_removeOneExtremeMember]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetRemovalTests test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetRemovalTests' passed at 2026-10-16 20:55:08.452.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RedBlackTreeMultiSetReversedTests' started at 2026-10-16 20:55:08.452.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetReversedTests testReversedReturnsDescendingArray]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetReversedTests testReversedReturnsDescendingArray]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetReversedTests' passed at 2026-10-16 20:55:08.452.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetSearchTests' started at 2026-10-16 20:55:08.452.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_containsAndCount_distinguishMultiplicity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_containsAndCount_distinguishMultiplicity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_equalRange_enclosesAllDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_equalRange_enclosesAllDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_firstIndex_returnsFirstMatchingPosition]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_firstIndex_returnsFirstMatchingPosition]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_firstLastMinAndMax_coverEmptyAndNonEmptyMultisets]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_firstLastMinAndMax_coverEmptyAndNonEmptyMultisets]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_lowerAndUpperBound_encloseAllDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSearchTests test_lowerAndUpperBound_encloseAllDuplicates]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetSearchTests' passed at 2026-10-16 20:55:08.453.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetSequenceTests' started at 2026-10-16 20:55:08.453.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_anySequenceInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_anySequenceInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_filter]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_filter]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_for]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_for]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_forEach]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_forEach]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_reduce]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_empty_set_reduce]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_emptyInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_emptyInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_minimumCapacityInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_minimumCapacityInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_rangeInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_rangeInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_reverseRangeInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_reverseRangeInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_sequenceInitialization]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_sequenceInitialization]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_filter]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_filter]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_for]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_for]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_forEach]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_forEach]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_reduce]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSequenceTests test_set_reduce]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetSequenceTests' passed at 2026-10-16 20:55:08.456.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'RedBlackTreeMultiSetSetAlgebraTests' started at 2026-10-16 20:55:08.456.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_difference_subtractsMultiplicitiesWithoutGoingBelowZero]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_difference_subtractsMultiplicitiesWithoutGoingBelowZero]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formDifference_subtractsMultiplicitiesInPlace]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formDifference_subtractsMultiplicitiesInPlace]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formIntersection_keepsMinimumMultiplicityInPlace]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formIntersection_keepsMinimumMultiplicityInPlace]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formOperations_changeOnlyTheReceiver]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formOperations_changeOnlyTheReceiver]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formSymmetricDifference_keepsAbsoluteMultiplicityDifferenceInPlace]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formSymmetricDifference_keepsAbsoluteMultiplicityDifferenceInPlace]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formUnion_addsMultiplicitiesInPlace]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_formUnion_addsMultiplicitiesInPlace]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_intersection_keepsMinimumMultiplicity]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_intersection_keepsMinimumMultiplicity]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_symmetricDifference_keepsAbsoluteMultiplicityDifference]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_symmetricDifference_keepsAbsoluteMultiplicityDifference]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_union_addsMultiplicities]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetSetAlgebraTests test_union_addsMultiplicities]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetSetAlgebraTests' passed at 2026-10-16 20:55:08.458.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'RedBlackTreeMultiSetTraversalComparisonCountTests' started at 2026-10-16 20:55:08.458.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetTraversalComparisonCountTests testFullAndRangeTraversalDoNotCompareKeys]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetTraversalComparisonCountTests testFullAndRangeTraversalDoNotCompareKeys]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetTraversalComparisonCountTests' passed at 2026-10-16 20:55:08.458.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'RedBlackTreeMultiSetUtilityTests' started at 2026-10-16 20:55:08.458.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_copyOnWrite_mutatingCopyPreservesOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_copyOnWrite_mutatingCopyPreservesOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_indexRangeSubscript_preservesDuplicatePositions]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_indexRangeSubscript_preservesDuplicatePositions]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_insertingContentsOf_returnsChangedCopy]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_insertingContentsOf_returnsChangedCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_isEmptyCountAndCapacity_describeStoredMembers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_isEmptyCountAndCapacity_describeStoredMembers]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_meldAndMelding_preserveEveryMember]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetUtilityTests test_meldAndMelding_preserveEveryMember]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetUtilityTests' passed at 2026-10-16 20:55:08.459.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultiSetValueSemanticsTests' started at 2026-10-16 20:55:08.459.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_copyOnWrite_mutatingCopyPreservesOriginal]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_copyOnWrite_mutatingCopyPreservesOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_copyOnWrite_mutatingInsideClosuresKeepsCopiesIndependent]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_copyOnWrite_mutatingInsideClosuresKeepsCopiesIndependent]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_sameReferenceStoredMultipleTimesIsReleasedAfterTheLastOwner]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultiSetValueSemanticsTests test_sameReferenceStoredMultipleTimesIsReleasedAfterTheLastOwner]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultiSetValueSemanticsTests' passed at 2026-10-16 20:55:08.460.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeMultisetSubSequenceTests' started at 2026-10-16 20:55:08.460.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_closedElementRange_includesUpperBoundDuplicates]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_closedElementRange_includesUpperBoundDuplicates]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_elementRange_bounds_arePositionsInTheOriginalMultiset]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_elementRange_bounds_arePositionsInTheOriginalMultiset]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_elementRange_isEmptyWhenNoMemberMatches]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_elementRange_isEmptyWhenNoMemberMatches]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_halfOpenElementRange_preservesEveryMatchingDuplicate]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_halfOpenElementRange_preservesEveryMatchingDuplicate]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_singleValueClosedRange_selectsAllEquivalentMembers]' started.
+Test Case '-[RedBlackTreeTests.RedBlackTreeMultisetSubSequenceTests test_singleValueClosedRange_selectsAllEquivalentMembers]' passed (0.000 seconds).
+Test Suite 'RedBlackTreeMultisetSubSequenceTests' passed at 2026-10-16 20:55:08.461.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RedBlackTreeTests.xctest' passed at 2026-10-16 20:55:08.461.
+	 Executed 372 tests, with 0 failures (0 unexpected) in 19.790 (19.812) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:08.461.
+	 Executed 372 tests, with 0 failures (0 unexpected) in 19.790 (19.813) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:08.595.
+Test Suite 'RedBlackTreeLegacyTests.xctest' started at 2026-10-16 20:55:08.596.
+Test Suite 'RedBlackTreeLegacyTests.xctest' passed at 2026-10-16 20:55:08.596.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:08.596.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:08.723.
+Test Suite 'PermutationTests.xctest' started at 2026-10-16 20:55:08.724.
+Test Suite 'PermutationTests.xctest' passed at 2026-10-16 20:55:08.724.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:08.724.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:08.851.
+Test Suite 'OptionalElementBufferModuleTests.xctest' started at 2026-10-16 20:55:08.852.
+Test Suite 'OptionalElementBufferModuleTests.xctest' passed at 2026-10-16 20:55:08.852.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:08.852.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:08.979.
+Test Suite 'ElementBufferModuleTests.xctest' started at 2026-10-16 20:55:08.980.
+Test Suite 'ElementBufferModuleTests.xctest' passed at 2026-10-16 20:55:08.980.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:08.980.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:09.107.
+Test Suite 'CppBehaviorReferenceTests.xctest' started at 2026-10-16 20:55:09.108.
+Test Suite 'CppBehaviorReferenceTests.xctest' passed at 2026-10-16 20:55:09.108.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:09.108.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:55:09.237.
+Test Suite 'AcCollectionsTests.xctest' started at 2026-10-16 20:55:09.238.
+Test Suite 'AcCollectionsTests' started at 2026-10-16 20:55:09.238.
+Test Case '-[AcCollectionsTests.AcCollectionsTests test_importAcCollections_exposesRedBlackTreeMultiSetAndMultiMap]' started.
+Test Case '-[AcCollectionsTests.AcCollectionsTests test_importAcCollections_exposesRedBlackTreeMultiSetAndMultiMap]' passed (0.001 seconds).
+Test Suite 'AcCollectionsTests' passed at 2026-10-16 20:55:09.239.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'AcCollectionsTests.xctest' passed at 2026-10-16 20:55:09.239.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:55:09.239.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite RedBlackTreeMultiSetDeathTests started.
+􀟈  Suite RedBlackTreeMultiSetInternalTests started.
+􀟈  Suite RedBlackTreeMultiMapInternalTests started.
+􀟈  Suite RedBlackTreeMultiMapDeathTests started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test boundExpressionIndexValidity() started.
+􀟈  Suite RedBlackTreeMultiMapRangePredicatePropagationTests started.
+􀟈  Suite RedBlackTreeMultiSetRangePredicatePropagationTests started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test boundExpressionIndexValidity() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingFirstFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test removingFirstFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingLastFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test removingLastFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" started.
+􀟈  Test removingEndIndex_terminatesProcess() started.
+􀟈  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() started.
+􀟈  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" started.
+􀟈  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test removingEmptyStartIndex_terminatesProcess() started.
+􀟈  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() started.
+􀟈  Test emptyStartIndexSubscript_terminatesProcess() started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" started.
+􀟈  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test endIndexSubscript_terminatesProcess() started.
+􀟈  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􀟈  Test predicateErrorPropagatesFromIndexRangeExpression() started.
+􀟈  Test predicateErrorPropagatesFromIndexRange() started.
+􁁛  Test boundExpressionIndexValidity() passed after 0.030 seconds.
+􁁛  Test boundExpressionIndexValidity() passed after 0.050 seconds.
+􁁛  Suite RedBlackTreeMultiSetInternalTests passed after 0.733 seconds.
+􁁛  Suite RedBlackTreeMultiMapInternalTests passed after 0.759 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること" passed after 0.758 seconds.
+􁁛  Test removingFirstFromEmptyMultiMap_terminatesProcess() passed after 0.758 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 0.759 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" passed after 0.760 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 0.770 seconds.
+􁁛  Test insertNewLeastWithStartIndexHint_exitsSuccessfully() passed after 0.770 seconds.
+􁁛  Test removingFirstFromEmptyMultiSet_terminatesProcess() passed after 0.770 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test "MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test removingLastFromEmptyMultiSet_terminatesProcess() passed after 0.770 seconds.
+􁁛  Test "MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること" passed after 0.770 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 0.770 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" passed after 0.771 seconds.
+􁁛  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 0.771 seconds.
+􁁛  Test removingEndIndex_terminatesProcess() passed after 0.770 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること" passed after 0.816 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること" passed after 0.816 seconds.
+􁁛  Test removingLastFromEmptyMultiMap_terminatesProcess() passed after 0.816 seconds.
+􁁛  Test insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() passed after 0.875 seconds.
+􁁛  Test erasingForeignRangeFromEmptyMultiMap_terminatesProcess() passed after 0.874 seconds.
+􁁛  Test "MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること" passed after 0.874 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること" passed after 0.874 seconds.
+􁁛  Test "MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" passed after 0.874 seconds.
+􁁛  Test insertWithHintIntoEmptyMultiSet_exitsSuccessfully() passed after 0.874 seconds.
+􁁛  Test erasingForeignRangeFromEmptyMultiSet_terminatesProcess() passed after 0.875 seconds.
+􁁛  Test "MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること" passed after 0.911 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" passed after 0.921 seconds.
+􁁛  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 0.922 seconds.
+􁁛  Test emptyStartIndexSubscript_terminatesProcess() passed after 0.922 seconds.
+􁁛  Test "MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること" passed after 0.922 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること" passed after 0.922 seconds.
+􁁛  Test "MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること" passed after 0.922 seconds.
+􁁛  Test "MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること" passed after 0.922 seconds.
+􁁛  Test removingEmptyStartIndex_terminatesProcess() passed after 0.922 seconds.
+􁁛  Test endIndexSubscript_terminatesProcess() passed after 0.922 seconds.
+􁁛  Test indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() passed after 0.922 seconds.
+􁁛  Test "MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること" passed after 0.922 seconds.
+􁁛  Test indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() passed after 0.922 seconds.
+􁁛  Test endIndexSubscript_terminatesProcess() passed after 0.922 seconds.
+􁁛  Test insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() passed after 0.922 seconds.
+􁁛  Test "MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること" passed after 0.922 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 0.895 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRange() passed after 0.905 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 0.895 seconds.
+􁁛  Test predicateErrorPropagatesFromIndexRangeExpression() passed after 0.905 seconds.
+􁁛  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.923 seconds.
+􁁛  Suite RedBlackTreeMultiSetRangePredicatePropagationTests passed after 0.923 seconds.
+􁁛  Suite RedBlackTreeMultiMapRangePredicatePropagationTests passed after 0.923 seconds.
+􁁛  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.923 seconds.
+􁁛  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.923 seconds.
+􁁛  Test indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.923 seconds.
+􁁛  Test indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.931 seconds.
+􁁛  Suite RedBlackTreeMultiMapDeathTests passed after 0.932 seconds.
+􁁛  Test formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() passed after 0.937 seconds.
+􁁛  Suite RedBlackTreeMultiSetDeathTests passed after 0.938 seconds.
+􁁛  Test run with 56 tests in 6 suites passed after 0.938 seconds.
+swift test -Xswiftc -DRBT047_EXPECT_NO_COPY_ON_FAILURE --filter  2>&1  169.95s user 27.14s system 323% cpu 1:00.95 total

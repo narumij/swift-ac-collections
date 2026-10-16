@@ -41,11 +41,13 @@
 | `TEST-008` | `DONE` | Claude（姫：改訂） / Astra（入口接続・確認） | [EXECUTION] 判断座標の改訂草案の受渡しと入口接続 | 2026-10-16 CP-20261016-004を照合。原版との差分で7点の反映を確認しREADMEから接続。草案としての受渡し完了であり、史実の全面検証・規則への昇格ではない。ユーザーの完了後commit指示による | `Maintanance/Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md` |
 
 | `DOC-033` | `DONE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。2026-10-16照合・技術訂正済み、結果と証拠を詳細正本から接続。本文へ引渡し済み、ユーザーcommit承認。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
+| `RBT-047` | `DONE` | Claude（姫：再現・調査） / Astra（受入） | [DISCOVERY] index指定更新の失敗時CoW複製の切分け | 2026-10-16調査返却をAstra検収。3実装の入力hash・再現テスト・ログ・差分案を照合。失敗時CoWを通常5経路・互換1経路で観測。製品修正は未実施、ユーザーのcommit承認により調査完了。修正方針判断はUSER_ONLYのRBT-048へ分離し、決定前に製品修正しない。Astraによる再実行と実測性能は未確認。 | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md` |
+| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
 | `DOC-034` | `DONE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
-| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-037のユーザー受入可を確認し、RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
+| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。未実行。2026-10-16 DOC-037のユーザー受入可が明示され、当該前提は充足。RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。拡充と文書全体の再検討は0.8.0へ送る。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
 | `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
 
-| `DOC-037` | `WAITING_USER` | User | [DECISION] 赤黒木本文の受入判断 | 2026-10-16ユーザー指定。DOC-034の本文・同期・検証結果を受け、赤黒木本文を受け入れるか判断する。受入可の明示記録後にDOC-035へ進む。差戻し・保留なら進めない。DOC-034の修正・検証結果が揃い、受入判断可能。例の追加は0.8.0へ留保、ブラウザ目視は未実施 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+| `DOC-037` | `DONE` | User | [DECISION] 赤黒木本文の受入判断 | 2026-10-16ユーザーが赤黒木4型本文（f6e181b2）を受入可と明示。確認質問への「いえーす」を正本に記録。DOC-035の受入前提を充足。例追加の0.8.0留保とブラウザ目視未実施は維持。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
 
 | `DOC-038` | `PROPOSED` | Astra | [EXECUTION] 0.8.0ドキュメントのコードスニペット追加 | 2026-10-16ユーザー指定で0.8.0へ配置。追加箇所・対象版・検証条件を確定して有効化後に実施する。過去アンケートは現行契約へ照合して利用。今回の0.6.0では既存スニペットを増減しない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
 | `DOC-039` | `PROPOSED` | Astra | [DISCOVERY] 0.8.0ドキュメントの再検討 | 2026-10-16ユーザー指定で0.8.0へ配置。構成・説明・導線の見直し範囲と入力を確定して有効化後、改善案と判断点を整理する。方針変更や未決の反映を先取りしない。未実行 | `Maintanance/Current/RELEASE_0_8_0.md` |
@@ -128,6 +130,7 @@
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 | `OPS-054` | `OPS-053` | `SEQUENCE` | 配置維持例外表の検討結果を受け入れてからClaude起動系文書を検討する。前段の提案実施完了は条件にしない |
+| `RBT-048` | `RBT-047` | `SEQUENCE` | 調査成果を判断材料とする。調査完了で自動的に判断を求めず、ユーザー指定の確認時機に従う |
 | `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |
 | `DOC-044` | `DOC-040` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |
 | `DOC-044` | `DOC-041` | `SEQUENCE` | 型別のレビュー返却を入力に横断する。RegistryのDONE変更をClaudeへ委任する意味ではない |

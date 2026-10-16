@@ -96,7 +96,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `PERF` | `005` |
 | `PERM` | `079` |
 | `QUALITY` | `005` |
-| `RBT` | `046` |
+| `RBT` | `048` |
 | `RELEASE` | `080` |
 | `TEST` | `008` |
 

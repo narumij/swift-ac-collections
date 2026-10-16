@@ -23,6 +23,8 @@ swift-ac-collections は、
 
 ### Swift Package Manager での利用
 
+現行パッケージのビルドにはSwift 6.4以降が必要です。個別APIのOS条件はAPIドキュメントを確認してください。
+
 `Package.swift` の `dependencies` に以下を追加してください:
 
 ```swift
@@ -66,7 +68,7 @@ dependencies: [
 
 traitを有効にした後は、通常どおり`AcCollections`をimportすると1Dから4Dの
 `OptionalElementBuffer`を利用できます。SwiftPMのtrait設定については、
-[Swift Package Managerの案内](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
+[Swift Package Managerの案内](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
 
 @Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
 
@@ -106,23 +108,17 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 
 ## ドキュメント
 
+各モジュールの現行ソース版ガイド：
+
+- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
+- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
+- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
+- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
+
 生成済みのAPIドキュメントは
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
 
-Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
-
-```console
-swift package -c release generate-documentation \
-  --target RedBlackTreeCollections \
-  --warnings-as-errors
-```
-
-ブラウザでローカルプレビューするには、次を実行します。
-
-```console
-swift package -c release --disable-sandbox preview-documentation \
-  --target RedBlackTreeCollections
-```
+生成・検証・ローカルプレビューの方法は、[文書整備の手引き](Maintanance/DOCUMENT.md#swift-doccの確認)を参照してください。
 
 ## アンダースコア付き宣言について
 
@@ -149,7 +145,9 @@ dependencies: [
 
 ## ライセンス
 
-このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
+このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。
+
+**例外として、`Maintanance/` 以下の全内容は、リポジトリ共通のApache許諾の対象外です。** narumijが保有する権利を留保し、法的に許諾が必要な再利用には事前許諾を求めます。第三者由来の部分（転載・翻案したコード断片など）はこの権利主張から除外し、元の適用条件を維持します。AIの記憶補助手法についての意思表示、既存許諾・第三者の権利・GitHub機能に関する例外は、[Maintananceの権利表示](Maintanance/LICENSE.md)を参照してください。
 
 RedBlackTreeCollectionsの`__tree`は LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。

@@ -11,7 +11,7 @@ import XCTest
   /// シングルトンバッファ(`_emptyTreeStorage`、型消去済みで容量0)の生成・コピー・detach・復帰条件
   /// をまとめて検証する。これらはpublicな保証ではなく内部のアロケーション契約であり、ポインタ同一性
   /// 自体を外部仕様として扱わない。詳細は`Design-CopyOnWrite.md`/`Design-NodeStorage.md`、
-  /// 要約は`Tests/TESTING.md`を参照。
+  /// 要約は`Maintanance/Testing/TESTING.md`を参照。
   final class RedBlackTreeInternal_EmptySingletonTests: RedBlackTreeTestCase {
 
     private func assertIsSingleton<Base: ___TreeBase>(

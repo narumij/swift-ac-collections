@@ -1,0 +1,572 @@
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:87:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+ 85 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+ 86 | 
+ 87 | print(set[.start.advanced(by: 1)])
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+ 88 | // Optional(3)
+ 89 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:85:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+ 83 | print("RedBlackTreeSet.ja.md:11")
+ 84 | do {
+ 85 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+ 86 | 
+ 87 | print(set[.start.advanced(by: 1)])
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:95:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+ 93 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+ 94 | 
+ 95 | print(set[.lowerBound(5)])
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+ 96 | // Optional(5)
+ 97 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:98:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+ 96 | // Optional(5)
+ 97 | 
+ 98 | print(set[.upperBound(5)])
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+ 99 | // nil (equivalent to end)
+100 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:101:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+ 99 | // nil (equivalent to end)
+100 | 
+101 | print(set[.find(2)])
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+102 | // nil (not found)
+103 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:93:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+ 91 | print("RedBlackTreeSet.ja.md:12")
+ 92 | do {
+ 93 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+ 94 | 
+ 95 | print(set[.lowerBound(5)])
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:181:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+179 | do {
+180 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+181 | print(set[.start.advanced(by: 1)]) // Optional containing 3
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+182 | 
+183 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:180:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+178 | print("RedBlackTreeSet.md:11")
+179 | do {
+180 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+181 | print(set[.start.advanced(by: 1)]) // Optional containing 3
+182 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:187:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+185 | do {
+186 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+187 | print(set[.lowerBound(5)]) // Optional containing 5
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+188 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+189 | print(set[.find(2)]) // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:188:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+186 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+187 | print(set[.lowerBound(5)]) // Optional containing 5
+188 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+189 | print(set[.find(2)]) // -> nil (not found)
+190 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:189:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+187 | print(set[.lowerBound(5)]) // Optional containing 5
+188 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+189 | print(set[.find(2)]) // -> nil (not found)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+190 | 
+191 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:186:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+184 | print("RedBlackTreeSet.md:12")
+185 | do {
+186 | var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+187 | print(set[.lowerBound(5)]) // Optional containing 5
+188 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:231:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+229 | do {
+230 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+231 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+232 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+233 | print(dict[.find(2)])       // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:232:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+230 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+231 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+232 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+233 | print(dict[.find(2)])       // -> nil (not found)
+234 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:233:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+231 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+232 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+233 | print(dict[.find(2)])       // -> nil (not found)
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+234 | 
+235 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:230:5: warning: variable 'dict' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+228 | print("RedBlackTreeDictionary.ja.md:6")
+229 | do {
+230 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+    |     `- warning: variable 'dict' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+231 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+232 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:275:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+273 | do {
+274 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+275 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+276 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+277 | print(dict[.find(2)])       // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:276:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+274 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+275 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+276 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+277 | print(dict[.find(2)])       // -> nil (not found)
+278 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:277:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+275 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+276 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+277 | print(dict[.find(2)])       // -> nil (not found)
+    |       |   |- note: provide a default value to avoid this warning
+    |       |   |- note: force-unwrap the value to avoid this warning
+    |       |   `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+278 | 
+279 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:274:5: warning: variable 'dict' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+272 | print("RedBlackTreeDictionary.md:6")
+273 | do {
+274 | var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+    |     `- warning: variable 'dict' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+275 | print(dict[.lowerBound(4)]) // Optional containing (4, "d")
+276 | print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:356:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+354 | do {
+355 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+356 | print(set[.start.advanced(by: 1)]) // Optional containing 1
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+357 | 
+358 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:355:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+353 | print("RedBlackTreeMultiSet.ja.md:11")
+354 | do {
+355 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+356 | print(set[.start.advanced(by: 1)]) // Optional containing 1
+357 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:362:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+360 | do {
+361 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+362 | print(set[.lowerBound(5)]) // Optional containing 5
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+363 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+364 | print(set[.find(2)]) // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:363:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+361 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+362 | print(set[.lowerBound(5)]) // Optional containing 5
+363 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+364 | print(set[.find(2)]) // -> nil (not found)
+365 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:364:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+362 | print(set[.lowerBound(5)]) // Optional containing 5
+363 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+364 | print(set[.find(2)]) // -> nil (not found)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+365 | 
+366 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:361:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+359 | print("RedBlackTreeMultiSet.ja.md:12")
+360 | do {
+361 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+362 | print(set[.lowerBound(5)]) // Optional containing 5
+363 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:443:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+441 | do {
+442 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+443 | print(set[.start.advanced(by: 1)]) // Optional containing 1
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+444 | 
+445 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:442:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+440 | print("RedBlackTreeMultiSet.md:11")
+441 | do {
+442 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+443 | print(set[.start.advanced(by: 1)]) // Optional containing 1
+444 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:449:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+447 | do {
+448 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+449 | print(set[.lowerBound(5)]) // Optional containing 5
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+450 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+451 | print(set[.find(2)]) // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:450:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+448 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+449 | print(set[.lowerBound(5)]) // Optional containing 5
+450 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+451 | print(set[.find(2)]) // -> nil (not found)
+452 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:451:7: warning: expression implicitly coerced from 'Int?' to 'Any'
+449 | print(set[.lowerBound(5)]) // Optional containing 5
+450 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+451 | print(set[.find(2)]) // -> nil (not found)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from 'Int?' to 'Any'
+452 | 
+453 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:448:5: warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+446 | print("RedBlackTreeMultiSet.md:12")
+447 | do {
+448 | var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+    |     `- warning: variable 'set' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+449 | print(set[.lowerBound(5)]) // Optional containing 5
+450 | print(set[.upperBound(5)]) // -> nil (equivalent to end)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:470:4: warning: subscript is accessed but result is unused [#NoUsage]
+468 | let i=map.lowerBound(key)
+469 | let j=map.index(after:i)
+470 | map[1]
+    |    `- warning: subscript is accessed but result is unused [#NoUsage]
+471 | 
+472 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:466:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+464 | print("RedBlackTreeMultiMap.ja.md:3")
+465 | do {
+466 | var map: RedBlackTreeMultiMap<Int,String> = [1:"red",1:"green",1:"blue",2:"orange"]
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+467 | let key=1
+468 | let i=map.lowerBound(key)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:469:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+467 | let key=1
+468 | let i=map.lowerBound(key)
+469 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+470 | map[1]
+471 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:475:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+473 | print("RedBlackTreeMultiMap.ja.md:4")
+474 | do {
+475 | var map: RedBlackTreeMultiMap<Int,String> = [1:"red",1:"green",1:"blue",2:"orange"]
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+476 | let key=1
+477 | let i=map.lowerBound(key)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:478:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+476 | let key=1
+477 | let i=map.lowerBound(key)
+478 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+479 | let elements = map[map.equalRange(key)]
+480 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:481:5: warning: immutable value 'key' was never used; consider replacing with '_' or removing it [#NoUsage]
+479 | let elements = map[map.equalRange(key)]
+480 | 
+481 | for key in elements.keys {
+    |     `- warning: immutable value 'key' was never used; consider replacing with '_' or removing it [#NoUsage]
+482 |   // ...
+483 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:485:5: warning: immutable value 'value' was never used; consider replacing with '_' or removing it [#NoUsage]
+483 | }
+484 | 
+485 | for value in elements.values {
+    |     `- warning: immutable value 'value' was never used; consider replacing with '_' or removing it [#NoUsage]
+486 |   // ...
+487 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:495:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+493 | let key=1
+494 | let i=map.lowerBound(key)
+495 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+496 | map[key].popFirst()
+497 | map[key].erase()
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:544:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+542 | var map: RedBlackTreeMultiMap<Int, String> =
+543 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+544 | print(map[.start.advanced(by: 1)]) // Optional containing (1, "d")
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+545 | 
+546 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:542:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+540 | print("RedBlackTreeMultiMap.ja.md:12")
+541 | do {
+542 | var map: RedBlackTreeMultiMap<Int, String> =
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+543 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+544 | print(map[.start.advanced(by: 1)]) // Optional containing (1, "d")
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:551:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+549 | var map: RedBlackTreeMultiMap<Int, String> =
+550 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+551 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+552 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+553 | print(map[.find(2)])       // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:552:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+550 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+551 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+552 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+553 | print(map[.find(2)])       // -> nil (not found)
+554 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:553:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+551 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+552 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+553 | print(map[.find(2)])       // -> nil (not found)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+554 | 
+555 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:549:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+547 | print("RedBlackTreeMultiMap.ja.md:13")
+548 | do {
+549 | var map: RedBlackTreeMultiMap<Int, String> =
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+550 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+551 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:572:4: warning: subscript is accessed but result is unused [#NoUsage]
+570 | let i=map.lowerBound(key)
+571 | let j=map.index(after:i)
+572 | map[1]
+    |    `- warning: subscript is accessed but result is unused [#NoUsage]
+573 | 
+574 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:568:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+566 | print("RedBlackTreeMultiMap.md:3")
+567 | do {
+568 | var map: RedBlackTreeMultiMap<Int,String> = [1:"red",1:"green",1:"blue",2:"orange"]
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+569 | let key=1
+570 | let i=map.lowerBound(key)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:571:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+569 | let key=1
+570 | let i=map.lowerBound(key)
+571 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+572 | map[1]
+573 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:577:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+575 | print("RedBlackTreeMultiMap.md:4")
+576 | do {
+577 | var map: RedBlackTreeMultiMap<Int,String> = [1:"red",1:"green",1:"blue",2:"orange"]
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+578 | let key=1
+579 | let i=map.lowerBound(key)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:580:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+578 | let key=1
+579 | let i=map.lowerBound(key)
+580 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+581 | let elements = map[map.equalRange(key)]
+582 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:583:5: warning: immutable value 'key' was never used; consider replacing with '_' or removing it [#NoUsage]
+581 | let elements = map[map.equalRange(key)]
+582 | 
+583 | for key in elements.keys {
+    |     `- warning: immutable value 'key' was never used; consider replacing with '_' or removing it [#NoUsage]
+584 |   // ...
+585 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:587:5: warning: immutable value 'value' was never used; consider replacing with '_' or removing it [#NoUsage]
+585 | }
+586 | 
+587 | for value in elements.values {
+    |     `- warning: immutable value 'value' was never used; consider replacing with '_' or removing it [#NoUsage]
+588 |   // ...
+589 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:597:5: warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+595 | let key=1
+596 | let i=map.lowerBound(key)
+597 | let j=map.index(after:i)
+    |     `- warning: initialization of immutable value 'j' was never used; consider replacing with assignment to '_' or removing it [#NoUsage]
+598 | map[key].popFirst()
+599 | map[key].erase()
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:646:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+644 | var map: RedBlackTreeMultiMap<Int, String> =
+645 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+646 | print(map[.start.advanced(by: 1)]) // Optional containing (1, "d")
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+647 | 
+648 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:644:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+642 | print("RedBlackTreeMultiMap.md:12")
+643 | do {
+644 | var map: RedBlackTreeMultiMap<Int, String> =
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+645 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+646 | print(map[.start.advanced(by: 1)]) // Optional containing (1, "d")
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:653:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+651 | var map: RedBlackTreeMultiMap<Int, String> =
+652 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+653 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+654 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+655 | print(map[.find(2)])       // -> nil (not found)
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:654:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+652 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+653 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+654 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+655 | print(map[.find(2)])       // -> nil (not found)
+656 | 
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:655:7: warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+653 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+654 | print(map[.upperBound(5)]) // -> nil (equivalent to end)
+655 | print(map[.find(2)])       // -> nil (not found)
+    |       |  |- note: provide a default value to avoid this warning
+    |       |  |- note: force-unwrap the value to avoid this warning
+    |       |  `- note: explicitly cast to 'Any' with 'as Any' to silence this warning
+    |       `- warning: expression implicitly coerced from '(key: Int, value: String)?' to 'Any'
+656 | 
+657 | }
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/DOC-034-review-fixes-2026-10-16/existing-examples.swift:651:5: warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+649 | print("RedBlackTreeMultiMap.md:13")
+650 | do {
+651 | var map: RedBlackTreeMultiMap<Int, String> =
+    |     `- warning: variable 'map' was never mutated; consider changing to 'let' constant [#VariableNeverMutated]
+652 |   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+653 | print(map[.lowerBound(5)]) // Optional containing (5, "e")
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>

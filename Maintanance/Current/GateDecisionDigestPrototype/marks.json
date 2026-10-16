@@ -1,0 +1,28 @@
+{
+  "note": "候補の印（試作）。正本には書き込まず、正本の原文を引用で指すだけの写し。判断の本文の正本は sources の各文書。",
+  "marks": [
+    {
+      "id": "D-2026-10-16-snippet-fixed",
+      "topic": "0.6.0の既存スニペット",
+      "kind": "decision",
+      "decider": "User",
+      "date": "2026-10-16",
+      "targets": ["MS-060", "DOC-034", "DOC-035", "MS-080", "DOC-038", "DOC-039"],
+      "clauses": [
+        {"key": "fix-count", "text": "0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない"},
+        {"key": "verify",    "text": "既存例の現行契約との照合・検証と、誤りの訂正は行う"},
+        {"key": "record",    "text": "増減が必要な場合は無断で変更せず記録する"},
+        {"key": "defer",     "text": "コードスニペット追加と文書全体の再検討は0.8.0へ送る"}
+      ],
+      "sources": [
+        {"path": "Maintanance/Current/RELEASE_0_8_0.md", "section": "0.6.0との境界",
+         "quote": "今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。"},
+        {"path": "Maintanance/Current/RELEASE_0_6_0.md", "section": "0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）",
+         "quote": "今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。"},
+        {"path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md", "section": "DOC-034行",
+         "quote": "今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。"}
+      ],
+      "supersedes": []
+    }
+  ]
+}

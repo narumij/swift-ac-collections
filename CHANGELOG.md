@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - Unreleased
+
+### Added
+- RedBlackTreeCollectionsの4型と、NextPermutationModule・ElementBufferModule・OptionalElementBufferModuleの利用者向け文書初版を整備
+- `borrowedNextPermutations()`による、`Span`を借用して結果を読む列挙APIを追加
+
+### Changed
+- パッケージの最低Swiftバージョンを6.4へ変更
+- Permutationの通常APIを、実行時に寿命を検査する一時ビューを返す`NextPermutations`へ変更。結果を保持する場合は次の列挙へ進む前にコピーする（source-breaking）
+- 主モジュールを`NextPermutationModule`へ変更。旧`PermutationModule`は互換の再公開入口として維持
+- BareArray／OptionalArray系をElementBuffer／OptionalElementBuffer系へ改名し、モジュール名も変更。旧arrayモジュール入口と旧Viewアクセスを削除（source-breaking）
+- ElementBuffer系に直接値アクセスと`MutableRef`による借用更新を整備。ElementBufferの`reference(at:)`はSwift 6.4以降で提供
+- OptionalElementBufferの共通入口からの利用を`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによるopt-inとし、実験的提供の制約を文書化
+- `Maintanance/`の権利表示をライブラリ本体のApache License 2.0と区別。既存許諾・第三者部分等の扱いは同フォルダのLICENSE.mdを参照
+
+### Fixed
+- 赤黒木4型の範囲`erase(_:where:)`で、predicateが投げたエラーを呼出元へ伝播するよう修正
+- OptionalElementBuffer系の更新APIを修正し、仕様テストを補完
+
 ## [0.5.3] - 2026-10-10
 
 ### Changed

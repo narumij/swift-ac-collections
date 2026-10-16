@@ -21,7 +21,8 @@
 /// Passing `nil` to `setElement(_:at:)` destroys the set element and returns the slot to the unset state.
 /// This type cannot be copied. `setElement(_:at:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
-/// The array is `Sendable` when `Element` is `Sendable`.
+/// The array is `Sendable` when `Element` is `Sendable`, but its storage is not synchronized.
+/// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @safe public struct OptionalElementBuffer<Element>: ~Copyable {
 
@@ -133,7 +134,8 @@ extension OptionalElementBuffer {
 /// Coordinates are ordered `(x, y)`, with `width` as the innermost axis and `height` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
-/// The array is `Sendable` when `Element` is `Sendable`.
+/// The array is `Sendable` when `Element` is `Sendable`, but its storage is not synchronized.
+/// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer2D<Element>: ~Copyable {
@@ -244,7 +246,8 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
 /// Coordinates are ordered `(x, y, z)`, with `width` as the innermost axis and `depth` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:_:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
-/// The array is `Sendable` when `Element` is `Sendable`.
+/// The array is `Sendable` when `Element` is `Sendable`, but its storage is not synchronized.
+/// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer3D<Element>: ~Copyable {
@@ -372,7 +375,8 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
 /// `size3` as the outermost axis.
 /// This type cannot be copied. `setElement(_:at:_:_:_:)` and `removeAll()` are nonmutating, so
 /// you can also update the contents of a buffer stored in a `let` binding.
-/// The array is `Sendable` when `Element` is `Sendable`.
+/// The array is `Sendable` when `Element` is `Sendable`, but its storage is not synchronized.
+/// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
 @safe public struct OptionalElementBuffer4D<Element>: ~Copyable {

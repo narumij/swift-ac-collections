@@ -1,0 +1,22 @@
+{
+  "examples": [
+    "Sources/AcCollections/AcCollections.docc/AcCollections.md:1",
+    "Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md:1",
+    "Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md:1",
+    "Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md:1",
+    "Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md:2",
+    "Sources/ElementBufferModule/ElementBuffer.swift:1"
+  ],
+  "snippetCounts": {
+    "Sources/AcCollections/AcCollections.docc/AcCollections.md": 1,
+    "Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md": 1,
+    "Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md": 1,
+    "Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md": 2,
+    "Sources/ElementBufferModule/ElementBuffer.swift": 1,
+    "README.md": 5,
+    "README.ja.md": 5,
+    "Sources/OptionalElementBufferModule/OptionalElementBuffer.swift": 0
+  },
+  "rbtPriorEvidence": "DOC-034: 78 examples, source unchanged since f6e181b2",
+  "checks": "compile/run, stated values and output, snippet counts, documentation-only source change, README source links"
+}

@@ -17,7 +17,19 @@
 | [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | 採用済みSQLite索引のメンテナンス手順。索引を扱うときだけ参照 |
 | [TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md) | 抽出規則、試作時の確認結果、限界を残す補助資料 |
 | [AGENT_TASK_FIT_INTERVIEW.md](AGENT_TASK_FIT_INTERVIEW.md) | 担当適性と委任範囲を検討するための観測資料。割当の根拠そのものにはしない |
+| [COORDINATION_KNOW_HOW.md](COORDINATION_KNOW_HOW.md) | 調整実務の発見・失敗・訂正と再利用できる方法。必要時に参照し、規則とは区別する |
+| [MILESTONES.md](../MILESTONES.md) | 恒久task OPS-047が維持する到達点と個別正本への入口 |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
+
+## 恒久taskとの関係
+
+Task Registry運用の恒久taskは `OPS-044`。入口、Registry、制度・採番、圧縮手順、索引メンテナンス手順、本書を維持文書として紐付ける。配置維持の対象は `TASK_RULES_V2.md` の表で確認する。個別taskの完了だけでは、これらの文書を履歴へ移さない。
+
+索引の試作メモは規則の由来・限界を調べる補助資料として紐付ける。`Utilities/Maintenance/TaskHistoryIndex.py` は関連する実装、`Maintanance/TaskHistoryIndex/` は再生成可能な索引の置き場であり、維持文書と区別する。担当適性資料と個別調査資料は、その用途と関係taskで扱い、このfolderにあることだけで恒久保存・配置固定とはしない。
+
+常設nodeの登録は、定期作業の自動開始、現在の読み手への任命、ユーザー判断の代行を意味しない。状態・委任の正本はRegistryに置き、本書に状態表を複製しない。
+
+調整ノウハウの継続蓄積は恒久task `OPS-046`。`COORDINATION_KNOW_HOW.md`を維持文書として紐付け、個別追記の完了だけでは履歴化しない。協働のふりかえり（OPS-043）と、Registry運用の維持（OPS-044）とは目的を分ける。
 
 ## 作成の基準
 
@@ -94,3 +106,7 @@ V2初稿では、元データとの照合で、50件のID・状態・担当・�
 現在の製品中間ゴールは資料から特定できず、限定的な読み取り依頼は進められた。次の製品仕事を選ぶ際には最新の決定を確認する。記載がないことだけで、目標が未決定、または新たなユーザー判断が必須とは確定しない。
 
 確認範囲は、通常入口からの読み取りと採番手順の理解までである。返却では、ファイル変更・採番・task操作・commitは行っていない。実際の更新操作、製品作業での有効性、起動時間や利用量の改善は未検証である。今回の返却から、制度本文の追加修正は必要と判断しなかった。
+
+マイルストーン管理は恒久task OPS-047。Maintanance直下のMILESTONES.mdを維持文書とし、個別到達の完了だけでは履歴化しない。
+
+Task Registry閲覧・編集アプリの継続整備はAstra担当の恒久task OPS-048。[構想・段階・記録先](../Current/TASK_REGISTRY_APP.md)を参照する。既存GRAPH-001の独立試験とは担当と目的を区別する。

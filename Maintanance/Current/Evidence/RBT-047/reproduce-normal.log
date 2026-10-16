@@ -1,0 +1,248 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 651]
+[Planning deferred tasks]
+[1 / 1]
+[6 / 72] OptionalElementBufferModule
+[13 / 82] NextPermutationModule
+[15 / 91] RealModule
+[16 / 91] RealModule
+[25 / 94] ElementBufferModule
+[28 / 94] RealModule
+[35 / 98] NextPermutationModule
+[43 / 97] NextPermutationModule
+[49 / 101] NextPermutationModule
+[50 / 99] Algorithms
+[56 / 108] Algorithms
+[58 / 126] OptionalElementBufferModuleTests-product
+[60 / 137] Algorithms
+[63 / 137] RedBlackTreeCollections
+[64 / 137] RedBlackTreeCollections
+[65 / 137] RedBlackTreeCollections
+[66 / 137] RedBlackTreeCollections
+[68 / 137] RedBlackTreeCollections
+[69 / 137] Algorithms
+[71 / 139] RedBlackTreeCollections
+[75 / 139] OptionalElementBufferModuleTests-product
+[76 / 139] OptionalElementBufferModuleTests-product
+[79 / 139] OptionalElementBufferModuleTests-product
+[81 / 139] ElementBufferModuleTests-product
+[83 / 139] RedBlackTreeCollections
+[86 / 139] ElementBufferModuleTests-product
+[88 / 139] ElementBufferModuleTests-product
+[90 / 139] Algorithms
+[91 / 139] Algorithms
+[91 / 139] ElementBufferModuleTests-product
+[91 / 139] Algorithms
+[91 / 139] RedBlackTreeCollections
+[97 / 143] Algorithms
+[104 / 144] OptionalElementBufferModuleTests-product
+[106 / 146] ElementBufferModuleTests-product
+[114 / 152] RedBlackTreeFixture
+[118 / 154] RedBlackTreeFixture
+[125 / 157] RedBlackTreeTests-product
+[126 / 158] OptionalElementBufferModuleTests-product
+[127 / 158] ElementBufferModuleTests-product
+[131 / 161] AcCollections
+[143 / 179] RedBlackTreeLegacyTests-product
+[144 / 188] RedBlackTreeTreeTests-product
+[147 / 201]
+[148 / 201] AcCollectionsTests-product
+[151 / 201] RedBlackTreeTreeTests-product
+[154 / 201] RedBlackTreeTreeTests-product
+[156 / 210] RedBlackTreeTreeTests-product
+[159 / 210] RedBlackTreeTreeTests-product
+[162 / 212] RedBlackTreeTests-product
+[163 / 212] RedBlackTreeTreeTests-product
+[165 / 212] RedBlackTreeTests-product
+[166 / 212] RedBlackTreeTests-product
+[169 / 212] RedBlackTreeTreeTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:65:11: [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m63 |[0;0m 
+ [0;36m64 |[0;0m     func testFromZero() throws {
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:67:11: [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m68 |[0;0m 
+ [0;36m69 |[0;0m       for i in 1..<100 {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[170 / 212] RedBlackTreeLegacyTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[171 / 212] RedBlackTreeLegacyTests-product
+[174 / 212] RedBlackTreeTests-product
+[176 / 214] RedBlackTreeTests-product
+[178 / 214] RedBlackTreeTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[181 / 216] RedBlackTreeLegacyTests-product
+[184 / 216] RedBlackTreeLegacyTests-product
+[185 / 216] PermutationTests-product
+[186 / 216] RedBlackTreeLegacyTests-product
+[188 / 218] PermutationTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift:122:11: [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m120 |[0;0m 
+[0;36m121 |[0;0m     func test_subrangeValuesSingleIndexOperations_doNotCompareKeys() {
+[0;36m122 |[0;0m       var dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m123 |[0;0m         uniqueKeysWithValues: (0..<5).map { (ComparisonCountingKey(value: $0), "\($0)") })
+[0;36m124 |[0;0m       let lower = dictionary.index(after: dictionary.startIndex)
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[191 / 218] PermutationTests-product
+[193 / 218] ElementBufferModuleTests-product
+[195 / 220] CppBehaviorReferenceTests-product
+[198 / 220] CppBehaviorReferenceTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_3_IndexSequenceTests.swift:127:9: [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m125 |[0;0m   /// formIndex(after:)/(before:) がindex(after:)/(before:)と同じ順序で全要素を辿り、境界で正しく停止すること
+[0;36m126 |[0;0m   func testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal() {
+[0;36m127 |[0;0m     var set = RedBlackTreeSet<Int>(0..<5)
+    [0;36m|[0;0m         `- [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m128 |[0;0m 
+[0;36m129 |[0;0m     var forward: [Int] = []
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[199 / 221] AcCollectionsTests-product
+[205 / 222] AcCollectionsTests-product
+[209 / 225] RedBlackTreeTreeTests-product
+[211 / 225] RedBlackTreeTreeTests-product
+[212 / 223] AcCollectionsTests-product
+[214 / 223] PermutationTests-product
+[216 / 223] RedBlackTreeTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap_TestHelpers.swift:17:55: [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+[0;36m10 |[0;0m }
+[0;36m11 |[0;0m 
+[0;36m12 |[0;0m func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B, file: StaticString = #file, line: UInt = #line)
+   [0;36m|[0;0m                                                                              `- [1;39mnote: [1;39mdid you mean for parameter 'file' to default to '#filePath'?[0;0m
+[0;36m13 |[0;0m where
+[0;36m14 |[0;0m   A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
+[0;36m15 |[0;0m   C: Equatable, D: Equatable
+[0;36m16 |[0;0m {
+[0;36m17 |[0;0m   XCTAssertTrue(lhs.elementsEqual(rhs, by: ==), file: file, line: line)
+   [0;36m|[0;0m                                                       |- [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39madd parentheses to silence this warning[0;0m
+[0;36m18 |[0;0m }
+[0;36m19 |[0;0m 
+
+XCTest.XCTAssertTrue.file:1:1: [1;39mnote: [1;39m'file' declared here[0;0m
+[0;36m1 |[0;0m file: StaticString
+  [0;36m|[0;0m `- [1;39mnote: [1;39m'file' declared here[0;0m
+[220 / 227] AcCollectionsTests-product
+[222 / 227] RedBlackTreeTests-product
+[226 / 228] CppBehaviorReferenceTests-product
+Build complete! (23.05秒)
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.137.
+Test Suite 'RedBlackTreeTreeTests.xctest' started at 2026-10-16 20:52:03.139.
+Test Suite 'RedBlackTreeTreeTests.xctest' passed at 2026-10-16 20:52:03.139.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:03.139.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.217.
+Test Suite 'RedBlackTreeTests.xctest' started at 2026-10-16 20:52:03.218.
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' started at 2026-10-16 20:52:03.218.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedEndIndex_doesNotCopy]' started.
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift:114: error: -[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedEndIndex_doesNotCopy] : XCTAssertEqual failed: ("1") is not equal to ("0") - endIndexでnilなら複製しないはず
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedEndIndex_doesNotCopy]' failed (0.370 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy]' started.
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift:127: error: -[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy] : XCTAssertEqual failed: ("1") is not equal to ("0") - 削除済みindexでnilなら複製しないはず
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy]' failed (0.001 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiMapUpdateValue_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedEndIndex_doesNotCopy]' started.
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift:63: error: -[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedEndIndex_doesNotCopy] : XCTAssertEqual failed: ("1") is not equal to ("0") - endIndexでnilなら複製しないはず
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedEndIndex_doesNotCopy]' failed (0.001 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedMismatch_doesNotCopy]' started.
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift:51: error: -[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedMismatch_doesNotCopy] : XCTAssertEqual failed: ("1") is not equal to ("0") - ==不一致でnilなら複製しないはず
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedMismatch_doesNotCopy]' failed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedRemovedIndex_doesNotCopy]' started.
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift:76: error: -[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedRemovedIndex_doesNotCopy] : XCTAssertEqual failed: ("1") is not equal to ("0") - 削除済みindexでnilなら複製しないはず
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedRemovedIndex_doesNotCopy]' failed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal]' passed (0.000 seconds).
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' started.
+Test Case '-[RedBlackTreeTests.IndexUpdateFailureCoWInvestigationTests test_multiSetUpdate_unsharedFailure_doesNotCopy]' passed (0.000 seconds).
+Test Suite 'IndexUpdateFailureCoWInvestigationTests' failed at 2026-10-16 20:52:03.591.
+	 Executed 9 tests, with 5 failures (0 unexpected) in 0.373 (0.373) seconds
+Test Suite 'RedBlackTreeTests.xctest' failed at 2026-10-16 20:52:03.591.
+	 Executed 9 tests, with 5 failures (0 unexpected) in 0.373 (0.373) seconds
+Test Suite 'Selected tests' failed at 2026-10-16 20:52:03.591.
+	 Executed 9 tests, with 5 failures (0 unexpected) in 0.373 (0.374) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.691.
+Test Suite 'RedBlackTreeLegacyTests.xctest' started at 2026-10-16 20:52:03.692.
+Test Suite 'RedBlackTreeLegacyTests.xctest' passed at 2026-10-16 20:52:03.692.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:03.692.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.791.
+Test Suite 'PermutationTests.xctest' started at 2026-10-16 20:52:03.792.
+Test Suite 'PermutationTests.xctest' passed at 2026-10-16 20:52:03.792.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:03.792.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.890.
+Test Suite 'OptionalElementBufferModuleTests.xctest' started at 2026-10-16 20:52:03.891.
+Test Suite 'OptionalElementBufferModuleTests.xctest' passed at 2026-10-16 20:52:03.891.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:03.891.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:03.989.
+Test Suite 'ElementBufferModuleTests.xctest' started at 2026-10-16 20:52:03.990.
+Test Suite 'ElementBufferModuleTests.xctest' passed at 2026-10-16 20:52:03.990.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:03.990.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:04.089.
+Test Suite 'CppBehaviorReferenceTests.xctest' started at 2026-10-16 20:52:04.089.
+Test Suite 'CppBehaviorReferenceTests.xctest' passed at 2026-10-16 20:52:04.090.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:04.090.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'Selected tests' started at 2026-10-16 20:52:04.188.
+Test Suite 'AcCollectionsTests.xctest' started at 2026-10-16 20:52:04.189.
+Test Suite 'AcCollectionsTests.xctest' passed at 2026-10-16 20:52:04.189.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-10-16 20:52:04.189.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Note: Some test targets reported failures:
+  - RedBlackTreeTests (XCTest)
+swift test -Xswiftc -DRBT047_EXPECT_NO_COPY_ON_FAILURE --filter  2>&1  103.76s user 14.84s system 433% cpu 27.346 total

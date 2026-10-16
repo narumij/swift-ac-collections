@@ -1,0 +1,27 @@
+{
+  "note": "試験用の仮想例。実在の判断ではない。digest.py --test でだけ読み込む。",
+  "marks": [
+    {
+      "id": "TEST-partial-narrow",
+      "topic": "0.6.0の既存スニペット",
+      "kind": "decision",
+      "decider": "User",
+      "date": "2026-10-20",
+      "targets": ["DOC-034"],
+      "clauses": [{"key": "fix-count", "text": "（仮想）誤りの訂正に伴う1件の差し替えに限り、掲載数を保ったまま入れ替えてよい"}],
+      "sources": [{"path": "(仮想)", "section": "試験用", "quote": ""}],
+      "supersedes": [{"mark": "D-2026-10-16-snippet-fixed", "clauses": ["fix-count"]}]
+    },
+    {
+      "id": "TEST-unlinked-newer",
+      "topic": "0.6.0の既存スニペット",
+      "kind": "decision",
+      "decider": "User",
+      "date": "2026-10-21",
+      "targets": ["DOC-035"],
+      "clauses": [{"key": "x", "text": "（仮想）0.6.0でもスニペットを1件追加する"}],
+      "sources": [{"path": "(仮想)", "section": "試験用", "quote": ""}],
+      "supersedes": []
+    }
+  ]
+}

@@ -24,10 +24,15 @@
 
 /// # RedBlackTreeMultiMap
 ///
-/// `RedBlackTreeMultiMap` is a **sorted multimap (allowing duplicate keys)**
-/// implemented using a red-black tree.
-/// Keys are always kept in sorted order.
-/// The order of elements with the same key is the insertion order.
+/// ## Declaration
+///
+/// Use `RedBlackTreeMultiMap` with `import AcCollections`.
+///
+/// ## Overview
+///
+/// A red-black-tree multimap that orders pairs by key and retains multiple values for the same key. Each pair is a separate element. Ordinary insertion preserves insertion order within an equivalent-key group; a valid hint satisfying the ordering conditions can insert within that group.
+///
+/// Unlike `Dictionary` or `RedBlackTreeDictionary`, it retains duplicate keys. Unlike `Dictionary<Key, [Value]>`, it represents each pair as an individual tree position. It suits ordered searches, traversal, and removal of groups of values.
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> = []
@@ -38,20 +43,31 @@
 /// map.insert(key: 5, value: "e") // -> [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
 /// ```
 ///
-/// ## Removal
+/// ## Creating a Multimap
 ///
-/// Both single-element removal and range removal are supported.
+/// Create an empty instance, use a literal, or initialize from an input sequence. `init(minimumCapacity:)` sets initial capacity and `reserveCapacity(_:)` reserves storage. `capacity` is distinct from the element count. Array literals, dictionary literals, and `init(keysWithValues:)` retain duplicate keys. `init(grouping:by:)` assigns a key to each source value and retains individual pairs rather than grouping values into arrays.
+///
+/// ## Searching and Accessing Elements
+///
+/// `contains(key:)` checks membership and `count(forKey:)` returns the number of matches. `first` / `last` and `min()` / `max()` access the endpoints. `firstIndex(of:)` returns `nil` when absent; `find(_:)` returns `endIndex`. `lowerBound(_:)` finds the first key greater than or equal to its argument, and `upperBound(_:)` the first strictly greater key; both return the end if none exists. `equalRange(_:)` returns the half-open range of all matching pairs. Move forward or backward from search results within the endpoint preconditions; the end cannot be dereferenced as an element.
+///
+/// ## Key Access and Views
+///
+/// Key subscripting returns a `RedBlackTreeMappedValuesView`, not a single value or pair view. It represents values for one key without copying them into an array. To traverse pairs, use `map[map.equalRange(key)]`, a `RedBlackTreeKeyValueRangeView`; its `keys` traverses keys lazily and its `values` exposes mapped values.
+///
+/// Keys determine ordering and are not mutable through the view. `Value` need not be Comparable. A mapped view supports value updates, `swapAt(_:_:)`, and removal; removing a value also removes its pair. Supply two element indices within the view to swap. Mutation directly through `map[key]` changes the base; mutation of a separately stored view does not.
+///
+/// ## Insertion, Updating, and Removal
+///
+/// `insert(key:value:)` / `insert(_:)` add a pair even when its key already exists. `insert(_:hint:)` can insert immediately before a valid hint when the ordering conditions fit. A valid hint that does not satisfy those ordering conditions affects only performance; insertion still uses the normal ordered position. An invalid hint violates a precondition. `updateValue(_:at:)` replaces only the mapped value at an index and returns its old value, or `nil` for an invalid index.
+///
+/// `eraseUnique(_:)` removes one matching pair; `eraseMulti(_:)` removes all. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty map. Predicate removal, range/view removal, and `removeAll(keepingCapacity:)` are supported. For sequential removal use the next index returned by `erase(_:) -> Index`. `index(inserting:)` returns an insertion result and index. `erase(exactly:)` removes the indexed element and returns the next index, or `nil` if the index is not accessible in this map.
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
 /// map.eraseUnique(3) // -> [1: "b", 1: "d", 4: "c", 5: "e"]
 /// ```
-///
-/// Avoid performing repeated removals via indices in a `for` loop.
-/// Since indices are tightly coupled with tree nodes, removing an element
-/// invalidates the operation that retrieves the next index.
-/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
@@ -65,9 +81,6 @@
 /// map.erase(map.lowerBound(4)..<map.endIndex) // -> [1: "b", 1: "d", 3: "a"]
 /// ```
 ///
-/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-/// You can remove elements while receiving the next index.
-///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
@@ -77,26 +90,58 @@
 /// }
 /// ```
 ///
-/// ## Index Alternative Syntax
+/// ## Combining Multimaps
 ///
-/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
-/// It allows specifying elements or boundaries without handling indices directly.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. Inputs can be multimaps or sequences of pairs; every pair is retained, including duplicate keys.
+///
+/// ## Transforming and Iterating
+///
+/// Elements are `(key: Key, value: Value)` pairs, iterated in ascending key order. `filter(_:)` retains selected pairs; `mapValues(_:)` transforms their values; `compactMapValues(_:)` omits pairs whose transformed value is `nil`. Retained pairs preserve key order and duplicates. `sorted()` / `reversed()` return ascending / descending arrays.
+///
+/// ## Indices and Bound Expressions
+///
+/// An index represents an element position, not an integer offset. Indices support forward and backward movement within their endpoint preconditions. Inserting or deleting other elements preserves an index while its element exists. Deleting that element invalidates the index; reusing its slot does not revive it. In the normal configuration, corresponding positions can be shared across copy-on-write branches, but validity depends on the target’s generation and deletion state. Using an unrelated tree’s index violates a precondition and is not guaranteed to be detected.
+///
+/// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
+///
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan` / `.lessThanOrEqual`, `.greaterThan` / `.greaterThanOrEqual`, `.before` / `.after`, and `.advanced(by:limit:)`. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
-/// print(map[.start.advanced(by: 1)]) // -> (1, "d")
+/// print(map[.start.advanced(by: 1)]) // Optional containing (1, "d")
 /// ```
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
-/// print(map[.lowerBound(5)]) // -> (5, "e")
+/// print(map[.lowerBound(5)]) // Optional containing (5, "e")
 /// print(map[.upperBound(5)]) // -> nil (equivalent to end)
 /// print(map[.find(2)])       // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeMultiMap` is not thread-safe.
+/// ## Performance
+///
+/// These bounds assume constant-time comparisons and element operations, and exclude copying shared storage for copy-on-write. Copying retains deletion history and is not always bounded by the current count alone. Creating a view does not copy elements into an array, but a later mutation can require copy-on-write.
+///
+/// | Operation | Complexity |
+/// | --- | --- |
+/// | `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+/// | Lookup, lower/upper bound, insertion, lookup and removal of one element | O(log n) |
+/// | Removal at a known index; rebalancing | Amortized O(1) |
+/// | Lookup and removal/processing of K matching elements | O(log n + K) |
+/// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
+/// | `meld`, `melding` | O(n+m), new storage |
+/// | `filter`, `mapValues`, `compactMapValues` | O(n), plus closure costs |
+///
+///
+/// ## Red-Black Tree
+///
+/// A red-black tree is a self-balancing binary search tree that maintains logarithmic height through recoloring and rotations. Logical element order differs from physical memory layout. In duplicate-supporting types, each element still occupies its own node. Nodes are managed in grouped storage rather than requiring a separate allocation for every node.
+///
+/// ## Important
+///
+/// This type is not thread-safe and does not protect concurrent access to the same variable. This guide describes the normal configuration.
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 

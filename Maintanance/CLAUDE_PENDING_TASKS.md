@@ -40,25 +40,18 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
-### `CP-20261015-007` — `PERM-072` Astra最終提案への姫回答
+CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_3.md)へ保存。CP-013はOPS-059へ登録済み。以下の追加返却は受入待ちであり、新規採番不要。
 
-- queue状態: `AWAITING_CODEX`
-- 発見元・ユーザー指示: 2026-10-15 18:30頃の会話。ユーザーが`Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`を示し、
-  CLAUDE_TASK.mdでの依頼を経ずに「未採番タスクで処理して」と指示した。
-- 種別候補: `EXECUTION`
-- 対象範囲: 同文書の「Claude姫回答欄」2行の記入だけ。
-- 対象外: 提案本文、ユーザー・V3の回答欄、集約欄、Registry、名称決定正本、source・test・DocC。
-- 完了条件: 2対象に回答と理由・条件がある。
-- 前提・既存task候補: Registry ID`PERM-072`（`ACTIVE`）が既に存在する。このentryは依頼票の代わりに、権限と範囲を残すためのもの。
-- 担当候補・受入担当: 姫（Claude）回答 / Codex集約。
-- 停止条件: 提案本文の変更が必要に見えた場合は、回答欄に書かず報告する。
-- 成果・検証: 2026-10-15 18:33 JST / Claude Opus 5.5。`NextPermutationModule`は同意、`Permutation`維持は判断保留。
-  `Permutation`型の宣言は、`Sources`・`Tests`・`.build/checkouts`の依存10件を検索して、`NextPermutations.swift:186`の一つだけだった。
-  独立性への影響: 回答前にユーザー回答欄（module名は同意、`Permutation`は不同意）を読んでいる。V3回答欄は未回答の状態だった。commitしていない。
-- 追加回答: 2026-10-15 18:45 JST、Astraが追加した「一時View名の訂正・追加回答」欄へ、ユーザーの「こんくらーべー」の求めで回答。
-  `NextPermutations.Permutation`維持に同意。根拠は現行の型説明（一時view・失効・`Array`へのcopy）とprecondition messageの確認。
-  回答前にユーザーの追加回答（同意）とV3の既存回答（判断保留）を読んでいる。
-- Codex reconciliation: 未処理
+### `CP-20261016-013` — Registry Studio：行き止まりの到達点の枝（MS-080）を近くに置く
+
+- queue状態: `AWAITING_CODEX`（実施済み。一度凍結したが、同夜ユーザーのSafariで反映を確認「お、うごいた」。OPS-048への接続はAstra）
+- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「MS-080がすんごいとおいんで、これもう少し近くによせるルール修正ないかな？」「こっそりなおして」。
+- 実施: `index.html`のレイアウト1か所（2行）。行き止まりの到達点の枝を「地図全体のいちばん下」ではなく「その枝が使う列のカードの下」に置く。MS-080はy=1153→457。差分は`Cache/Hime/ms080-layout.diff`と同じ。
+- 検証: `verify.cjs`全項目PASS（exit 0）、fallbackなし、`sync.py --check`はHEADの差だけ。WebKitで描いて確認した。MS-070→MS-080の線がQUALITY-005のカードを斜めに横切る点は残る。
+- 未解決: ユーザーのSafariでは位置が変わっていない。2026-10-16夜に調べた範囲: 作業ツリーの`index.html`に修正は入ったまま（Astraの`6cb0c88d`の後で上書きされていない）。描画経路は`graphLayout`1つだけで、localStorage等の保存状態や`layout-reference.json`（verify専用）は描画に使われていない。SafariのエンジンであるWebKitで同じファイルを描くと動いている。残る候補は、Safari側の古い表示か、開いているファイルの取り違え。ユーザーの画面は未確認。`index.html`の2行は未commitのまま残してある。戻すかどうかは再開時に決める。
+- 解決: 21:58台に`index.html`が再書き込みされた（更新時刻21:58:44、修正は残存）後、ユーザーのSafariで動いた。Safariが再読み込みでも古い内容を出し続けた理由は特定していない。
+- commit: していない。
+- Codex reconciliation: 2026-10-16 Astra。OPS-059へFROZENで正式登録。Safariでの未解決と未commit差分を保持。受入・修正・再開は行わない。
 
 過去のreconciliation済みentryは次を参照する。
 
@@ -66,3 +59,18 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-14.md`
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15.md`
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15_2.md`（`CP-20261015-006`→`OPS-042`）
+
+- [2026-10-16の照合記録](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16.md)（CP-20261015-007 → PERM-072）
+- [2026-10-16の照合記録（2）](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_2.md)（CP-20261016-001〜003 → HIST-003・TEST-006・TEST-007）
+
+
+## 同時変更の照合（2026-10-16 / Astra / OPS-044）
+
+ユーザーの依頼により、`c1f2c7f9` → `203f3be0` → `e42d9630` の変更を照合した。
+
+- `203f3be0`は姫の感想・評価と申請のcommitだが、Astraが編集中だったCP-004・008・009の照合結果も同じqueueファイル内で取り込まれている。commit範囲の重なりがあった。内容の作成担当は本文記録どおりで、commitの著者から判断担当を推定しない。
+- `e42d9630`でRegistry・Rules・詳細正本・入口・Hime領域を接続した。最終状態では004→TEST-008 DONE、008→OPS-058 PROPOSED、009→OPS-044へ統合が一致する。重複採番、処理結果の消失、提案の無断実施は確認されなかった。
+- OPS-057はRegistryでは受入済みDONEだったため、queueの旧「受入は未実施」表示を訂正した。元の依頼・返却本文は保持する。
+- Studioの同期確認で内容の差はなく、生成時のHEAD・dirty表示のみ変化していた。今回再同期する。画面の実操作検証は今回含まない。
+
+同じ共有ファイルを含めてcommitするときは、stage直前の差分に他担当の編集中の行が混ざっていないかを確認する。今回は最終内容が整合しているため、既存commitの書き換えは行わない。

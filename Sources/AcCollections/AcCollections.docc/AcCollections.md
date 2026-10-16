@@ -4,7 +4,7 @@ Import the collection modules in this package through a single facade.
 
 ## Overview
 
-`AcCollections` re-exports the red-black-tree collections, permutation sequence, and element
+`AcCollections` re-exports the red-black-tree collections, permutation iterators, and element
 buffers. Client code can use their public APIs with a single import:
 
 ```swift

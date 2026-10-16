@@ -21,6 +21,8 @@ These sorted sets and dictionaries are designed to
 
 ### Using Swift Package Manager
 
+Building the current package requires Swift 6.4 or later. Check the API documentation for OS availability of individual APIs.
+
 Add the following to the `dependencies` section of your `Package.swift`:
 
 ```swift
@@ -66,7 +68,7 @@ dependencies: [
 
 After enabling the trait, import `AcCollections` normally to use the one- through four-dimensional
 `OptionalElementBuffer` types. For more about configuring dependency traits, see
-[Adding dependencies to a Swift package](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
+[Adding dependencies to a Swift package](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
 
 ## Branch Strategy
 
@@ -102,24 +104,17 @@ Use range-based removal APIs for consecutive deletions.
 
 ## Documentation
 
+Current guides in this checkout:
+
+- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
+- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
+- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
+- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
+
 The generated API documentation is available on
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
 
-Build the API documentation, including validation of documentation comments,
-with Swift-DocC:
-
-```console
-swift package -c release generate-documentation \
-  --target RedBlackTreeCollections \
-  --warnings-as-errors
-```
-
-To preview it locally in a browser, run:
-
-```console
-swift package -c release --disable-sandbox preview-documentation \
-  --target RedBlackTreeCollections
-```
+For generation, validation, and local preview instructions, see the [documentation maintenance guide](Maintanance/DOCUMENT.md#swift-doccの確認) (in Japanese).
 
 ## Underscored Declarations
 
@@ -147,6 +142,8 @@ dependencies: [
 ## License
 
 This library is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+**Exception: `Maintanance/` and all its subdirectories are excluded from the repository-wide Apache grant.** Rights held by narumij in their contents are reserved and require prior permission for reuse to the extent permission is legally required; third-party portions (including copied or adapted code snippets) are excluded from this claim and retain their applicable terms. See [Maintanance rights notice](Maintanance/LICENSE.md), including the statement on AI memory-support methods and the exceptions for existing grants, third-party rights, and GitHub functionality.
 
 RedBlackTreeCollections' `__tree` is adapted from the LLVM implementation. For the original license, see  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt).

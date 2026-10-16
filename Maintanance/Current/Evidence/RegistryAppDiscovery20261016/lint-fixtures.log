@@ -1,0 +1,4 @@
+Command: sh Maintanance/Graph/TaskGraphLint/run_fixtures.sh
+TASK_GRAPH_LINT_FIXTURES: PASS
+
+Exit: 0

@@ -1,0 +1,72 @@
+diff -ru a/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap+Deprecated.swift b/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap+Deprecated.swift
+--- a/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap+Deprecated.swift	2026-10-09 15:48:41
++++ b/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap+Deprecated.swift	2026-10-16 20:53:54
+@@ -84,10 +84,13 @@
+     @inlinable
+     @discardableResult
+     public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
+-      __tree_.ensureUnique()
+-      let unsealed = __tree_.__purified_(ptr).accessible
+-      guard let p = unsealed.pointer
++      // Check on the current storage first so that a failing call never copies shared storage.
++      guard __tree_.__purified_(ptr).accessible.pointer != nil
+       else { return nil }
++      __tree_.ensureUnique()
++      // Resolve again after a possible copy. Do not carry a pointer across copy-on-write.
++      guard let p = __tree_.__purified_(ptr).accessible.pointer
++      else { fatalError(.invalidIndex) }
+       let old = __tree_[_unsafe_raw: p]
+       __tree_[_unsafe_raw: p].tuple.value = newValue
+       return Base.__element_(old)
+diff -ru a/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap.swift b/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap.swift
+--- a/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap.swift	2026-10-16 20:34:04
++++ b/Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap.swift	2026-10-16 20:53:54
+@@ -346,10 +346,13 @@
+     @inlinable
+     @discardableResult
+     public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Value? {
+-      __tree_.ensureUnique()
+-      let unsealed = __tree_.__purified_(ptr).accessible
+-      guard let p = unsealed.pointer
++      // Check on the current storage first so that a failing call never copies shared storage.
++      guard __tree_.__purified_(ptr).accessible.pointer != nil
+       else { return nil }
++      __tree_.ensureUnique()
++      // Resolve again after a possible copy. Do not carry a pointer across copy-on-write.
++      guard let p = __tree_.__purified_(ptr).accessible.pointer
++      else { fatalError(.invalidIndex) }
+       let old = Base.__mapped_value_(p)
+       Base.__mapped_value_ptr(p).pointee = newValue
+       return old
+diff -ru a/Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift b/Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift
+--- a/Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift	2026-10-16 20:34:04
++++ b/Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift	2026-10-16 20:53:54
+@@ -298,20 +298,23 @@
+     /// - Returns: The replaced element, or `nil` if the index is invalid or the values are unequal under `==`.
+     @inlinable
+     public mutating func update(_ newMember: Element, at i: Index) -> Element? {
+-      __tree_.ensureUnique()
++      // Check on the current storage first so that a failing call never copies shared storage.
+       let __i = __tree_.__purified_(i)
+       guard
+         __i.accessible.error == nil,
+-        let i = __i.pointer
++        let __p = __i.pointer,
++        Base.__key_(__p) == newMember
+       else {
+         return nil
+       }
+ 
+-      let oldMember = Base.__key_(i)
+-      guard oldMember == newMember else {
+-        return nil
++      __tree_.ensureUnique()
++      // Resolve again after a possible copy. Do not carry `__p` across copy-on-write.
++      guard let i = __tree_.__purified_(i).accessible.pointer else {
++        fatalError(.invalidIndex)
+       }
+ 
++      let oldMember = Base.__key_(i)
+       Base.__key_ptr(i).pointee = newMember
+       return oldMember
+     }

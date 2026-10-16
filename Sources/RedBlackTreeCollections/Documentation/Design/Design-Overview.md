@@ -187,7 +187,7 @@ IteratorのCoWスナップショット、失敗の表現を説明する。
 通常構成で利用できる現行APIを、Set、MultiSet、MultiMap、Dictionaryで横断して
 確認するための一覧。DeprecatedおよびAtCoder 2025互換APIは含まない。
 
-### [品質プロファイル](../Quality-Profile.md)
+### [品質プロファイル](../../../../Maintanance/Quality/Profiles/RedBlackTreeCollections.md)
 
 公開APIと原木内部のTest as Specification、メモリ・Index寿命、性能退行、および
 変更時の最小品質ゲートを定める。設計上の契約をどの種類のテストで観測するかを確認する。

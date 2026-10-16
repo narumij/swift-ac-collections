@@ -16,12 +16,12 @@
 
 手放した占有権は、相手へ丸ごと移るわけではない。固定されて誰も一方的には変更できない部分と、次の担当が変更できる部分を区別する。依頼後に依頼書を作り足すことや、返却物を受け取っただけで書き換えることはしない。
 
-Status: PERM-076 returned and locally accepted by Astra; user authorized grouped commits; implementation saved in 1f87e37a, documentation and completion records saved together. No worker is currently assigned further implementation.
+Status: No active worker assignment. PERM-073–PERM-076 completed; see the archived records below.
 
 Worker Codexとは、調整役Codexの負担を軽減するため、調整役から切り出した限定作業を受け取るフレッシュなCodex会話を指す。調整役は全体の調整と成果の受入・統合を引き続き担う。Claudeは継続的に協働する主要メンバーであり、Claudeとの分担はこのWorker用依頼書とは別に扱う。
 
 この固定パスは、調整役Codexが限定した依頼と返却先を記録し、ユーザーが別のXcode会話へ渡すために保持する。
-現在の依頼は下記の実装1件。フレッシュ会話1体へ割り当てる。過去のassignmentや未採用bootstrap候補は再開しない。
+現在の未完了Worker依頼はない。過去のassignmentや未採用bootstrap候補は再開しない。
 
 新しい依頼を記録するときは、目的、許可範囲、対象外、入力、受入条件、検証、停止条件、返却先をこの文書内で完結させる。
 Workerは記録された範囲だけを実施し、調整役Codexが証拠を独立に確認して受入・統合する。
@@ -29,22 +29,6 @@ Workerは記録された範囲だけを実施し、調整役Codexが証拠を独
 過去のBareArray本文レビューと、除外したbootstrap候補は
 [`Archived/Worker/`](Archived/Worker/)に履歴として保存している。
 
-## 完了した調査割当（2026-10-15、Astra）
+## 完了した依頼
 
-立案完了、調査フェーズ。3件を3体で並行調査する。依頼書は個別に完結し、返却先も分離している。
-
-| ワーカー | 固定ID | 担当 | 依頼書 |
-| --- | --- | --- | --- |
-| 1 | `PERM-073` | 構成・互換入口 | [ワーカー1依頼書](Current/PERMUTATION_MIGRATION_WORKER_1.md) |
-| 2 | `PERM-074` | 性能CI・benchmark | [ワーカー2依頼書](Current/PERMUTATION_MIGRATION_WORKER_2.md) |
-| 3 | `PERM-075` | 文書・導入経路 | [ワーカー3依頼書](Current/PERMUTATION_MIGRATION_WORKER_3.md) |
-
-全件の返却をAstraが照合・統合し、ユーザーと計画を相談する。調査3件は相互の必須前提を持たない。
-
-## 調査受入（2026-10-15、Astra）
-
-ユーザーの起動・終了報告を受け、3件の返却を独立照合して受け入れた。調査は完了し、2026-10-15ユーザーがコミットを許可。成果・受入記録と完了記録を同じコミットへ保存する。依頼文の先行互換条件の適用範囲の訂正とcandidate CI経路の補足は[受入・統合記録](Current/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)に置く。原回答は固定する。後続の実装依頼は次節に分離する。
-
-## 現在の実装割当（2026-10-15、Astra）
-
-`PERM-076`：新旧moduleの実装・ローカル検証を1体へまとめる。[この依頼書](Current/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)だけを新しいXcode会話へ渡す。返却先は依頼書から辿れる。2026-10-15返却・ローカル受入済み。[受入記録](Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md)を参照。ユーザーがコミットを許可し、実装は`1f87e37a`へ保存済み。文書・受入・DONE記録を後続コミットへ保存する。benchmark名変更・remote CIは後続で扱う。
+Permutation移行の調査3件（PERM-073〜075）と実装1件（PERM-076）の依頼・返却・受入証拠は[履歴と移動対応表](Archived/PermutationMigration_2026-10-16/README.md)へ移した。[本書の圧縮前記録](Archived/PermutationMigration_2026-10-16/WORKER_TASK_BEFORE_2026-10-16.md)からも確認できる。旧名互換入口と後段のbenchmark整理方針は[現行移行計画](Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)に残す。

@@ -23,7 +23,7 @@ Task Registryと選択taskの詳細正本で確認する。
 - `Maintanance/History/RefactoringFromAtCoder2025/README.md`
 - `../Current/StrictMemorySafetyReadiness.md`
 - `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`
-- `../Tests/TESTING.md`
+- `Maintanance/Testing/TESTING.md`
 - `User/RELEASE_PROCESS.md`
 - version固有のrelease正本
 - module別の品質評価、監査、Test as Specification
@@ -388,7 +388,7 @@ AIが誤りやすい点:
 
 - `../README.ja.md`: 製品目的、公開上の位置づけ、branchの概略
 - `../Package.swift`: target、trait、configuration、条件コンパイルの現在値
-- `../Tests/TESTING.md`: testの現在地とTest as Specification
+- `Maintanance/Testing/TESTING.md`: testの現在地とTest as Specification
 - `Maintanance/History/RefactoringFromAtCoder2025/README.md`: 技術的な変遷と証拠の継承
 - `../Current/StrictMemorySafetyReadiness.md`: unsafe、所有、strict memory safetyの調査と段階適用
 - `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`: 性能回帰の再現、二分探索、生成コード調査

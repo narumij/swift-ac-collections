@@ -5,6 +5,10 @@
 作業記録と旧handoffは `Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md` にある。
 参照資料は必要な箇所だけ検索し、通常は通読しない。
 
+## 関連する参考資料
+
+[判断座標の草案](JudgmentCoordinates/README.md)を恒久task TEST-005の紐付け資料として一時的に預かる。協働全体の参考草案であり、テスト専用の規則ではない。本文の変更・規則化は別の判断とする。
+
 ## 目的
 
 - テストを継続的に整理し、公開APIの仕様不足や実装不具合を発見する。
@@ -32,7 +36,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   一般利用・競技利用のValidationは未検証として品質評価へ分離している。旧`OptionalArrayModule`の
   compatibility smoke testは、facade targetの終了に合わせて削除した。
 - ElementBufferModule: 番号付き仕様群（`BareArray_0_`〜`BareArray_7_`）、Death Test、借用参照のDeath Testを維持する。
-  旧subscript・Viewのdeprecated指定は削除済みで、Sourcesにdeprecated指定はない。1.0提供対象外で、保守範囲は
+  旧subscript・Viewのdeprecated指定は削除済みで、Sourcesにdeprecated指定はない。1.0提供対象で、Swift 6.2では1.0競技供用、Swift 6.4では1.0一般供用として評価する。品質成立済みを意味せず、
   `Maintanance/Quality/QUALITY_REQUIREMENTS.md`に従う。旧`BareArrayModule`のcompatibility smoke testは、facade targetの終了に
   合わせて削除した。2026-10-13時点の詳細記録は移動分にある。
 - PermutationModule（`NextPermutationModule`）: runtime-check View通常版は番号付き7群・XCTest 29件・Swift Testing 16件
@@ -75,7 +79,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が2件ある（`RedBlackTreeInternal_ComparatorsTests.swift:178`・`:219`、2026-10-16確認）。仕様には影響しない。
 - 2026-10-16、ユーザー指示で本書と`Fixtures.md`を`Tests/`から`Maintanance/Testing/`へ移した。`Tests/CLAUDE.md`は、Claude Codeが
-  作業folderから自動で読むため`Tests/`に残す。`DOCUMENT.md`・配置維持例外の表・Registryの参照更新はAstra・Codex待ち（`CP-20261016-002`）。
+  作業folderから自動で読むため`Tests/`に残す。`DOCUMENT.md`・配置維持例外の表・Registry等の参照はAstraが更新済み（`TEST-006`）。
 
 最終更新: 2026-10-16 09:10 JST / Claude Opus 5.5
 

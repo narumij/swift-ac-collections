@@ -1,0 +1,48 @@
+warning: /Users/narumij/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/narumij/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 651]
+[Planning deferred tasks]
+[1 / 79] RedBlackTreeModule
+[6 / 60] NextPermutationModule
+[18 / 65] PermutationModule
+[34 / 75] OptionalElementBufferModuleTests-product
+[38 / 76] ElementBufferModuleTests-product
+[44 / 76] RedBlackTreeCollections
+[45 / 77] OptionalElementBufferModuleTests-product
+[48 / 95] PermutationTests-product
+[61 / 90] ElementBufferModuleTests-product
+[63 / 91] RedBlackTreeCollections
+[69 / 99] RedBlackTreeCollections
+[76 / 106] RedBlackTreeModule
+[89 / 115] RedBlackTreeTreeTests-product
+[89 / 115] AcCollections
+[97 / 119] AcCollectionsTests-product
+[102 / 119] RedBlackTreeTreeTests-product
+[105 / 120] AcCollectionsTests-product
+[108 / 120] CppBehaviorReferenceTests-product
+[111 / 126] RedBlackTreeTreeTests-product
+[116 / 131] AcCollectionsTests-product
+[120 / 138] RedBlackTreeTests-product
+[126 / 138] RedBlackTreeLegacyTests-product
+[128 / 138] CppBehaviorReferenceTests-product
+[133 / 137] RedBlackTreeTests-product
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: warning: immutable value 'set' was never used; consider replacing with '_' or removing it [#NoUsage]
+176 |   #if DEBUG
+177 |     func testSetKeyAndValueComp() {
+178 |       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    |           `- warning: immutable value 'set' was never used; consider replacing with '_' or removing it [#NoUsage]
+179 |       typealias SUT = RedBlackTreeSet<Int>.Base
+180 |       let keyComp = SUT.value_comp
+
+/Users/narumij/Documents/GitHub/swift-ac-collections/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: warning: immutable value 'multi' was never used; consider replacing with '_' or removing it [#NoUsage]
+217 |   #if DEBUG
+218 |     func testMultisetKeyAndValueComp() {
+219 |       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    |           `- warning: immutable value 'multi' was never used; consider replacing with '_' or removing it [#NoUsage]
+220 |       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+221 |       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+Build complete! (9.30秒)

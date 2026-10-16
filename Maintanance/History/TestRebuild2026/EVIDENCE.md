@@ -20,7 +20,7 @@
 | --- | --- |
 | 対象ファイル | `Tests/RedBlackTreeTests/RedBlackTree{Set,MultiSet,Dictionary,MultiMap,View}/`の`RedBlackTree<型>_<番号>_*.swift`。`_97`〜`_99`（一時・内部・Death Test）は除く |
 | 宣言 | 行頭の`func test…`とSwift Testingの`@Test`を各1件 |
-| 観測点 | 指定日の23:59:59 JSTまでの最後のcommit（`git rev-list -1 --before`） |
+| 観測点 | 指定日の23:59:59 JSTまでの最後のcommit（`git rev-list -1 --before`）。10-16は作成時点の`6be79ddb`を終点とし、当日終了時点ではない |
 | 含まないもの | `#if`による構成差、parameterized testの展開、実行の成否 |
 
 **[事実]** 主な値：
@@ -34,7 +34,7 @@
 | `ee258340`（2026-10-07） | 240 | 150（17） | 140 | 136 | 38 |
 | `6be79ddb`（2026-10-16） | 248 | 160 | 154 | 147 | 41 |
 
-**[事実]** 2026-10-07から10-13までの5地点は、5系列とも同じ値だった。
+**[事実]** 2026-10-07から10-13までの4地点は、5系列とも同じ値だった。
 
 ### 1.2 repository全体の宣言数と実行数
 

@@ -158,7 +158,7 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 | Markdown | 現在位置に残す理由 |
 | --- | --- |
-| `Tests/TESTING.md` / `Tests/CLAUDE.md` / `Tests/RedBlackTreeFixture/Fixtures.md` | テスト整備の恒久task `TEST-005` の維持文書。個別作業の完了を理由に移動・改名・アーカイブしない |
+| `Maintanance/Testing/TESTING.md` / `Tests/CLAUDE.md` / `Maintanance/Testing/Fixtures.md` | テスト整備の恒久task `TEST-005` の維持文書。個別作業の完了を理由に移動・改名・アーカイブしない |
 | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` | Task Registry運用の恒久task `OPS-044` の維持文書。個別作業や圧縮の完了を理由に移動・改名・アーカイブしない |
 | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` / `Maintanance/MILESTONES.md` | 恒久task OPS-046・OPS-047の維持文書。個別作業の完了によって移動・履歴化しない。配置変更はユーザーの明示指示に従う |
 | `Maintanance/DOCUMENT.md` | 文書整備の恒久task `DOC-030` の維持文書。個別作業の完了や文書整理で移動・改名・アーカイブせず、配置変更はユーザーの明示指示に従う |

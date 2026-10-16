@@ -156,7 +156,7 @@ assertionの強さ、実際のpassを直接表さない。
 | 2026-01-05〜28 | pool、bucket、pointer Index、CoWを反復変更 | 多数の既存テストについて条件、期待値、CoW検査、共通TestCaseを変更。旧実装固有の検査も削減 | 全保証を固定せず、新構造へ追従できる範囲に検証面を調整 | `f4ef9301`、`928215c6`、`8c334f60`、`94d13f98` |
 | 2026-09-29〜30 | 旧array treeと現行unsafe treeの責務を整理 | 旧Keystoneを削除し、unsafe版を現行Fixtureへ移して実行対象化 | 旧内部表現の保証を捨て、木の不変条件を新構造側へ架け替え | `1357bd3c`、`ecb3085d` |
 | 2026-10-02〜03 | Fixtureを独立targetへ分離し、現行内部テスト群を整備 | Keystoneへ`#if false`を再導入。新しいFoundamental test群とFixture targetを成立させる | 深いブートストラップ検査を保存資料へ退け、日常の実行保証を新しい検証系へ移管 | `64118cd6`、`60604ff6`、`2b5ff728`、`0483012f` |
-| 現行 | pointer identity、bucket Storage、CoW、公開4型が収束 | Keystoneは保存中。公開仕様、内部構造、互換性のテスト群は役割別に存在 | 一つの旧テストを復活させるのでなく、保証を公開契約と現行内部境界へ再配置 | 現行`Tests/RedBlackTreeTests/`、`Tests/TESTING.md` |
+| 現行 | pointer identity、bucket Storage、CoW、公開4型が収束 | Keystoneは保存中。公開仕様、内部構造、互換性のテスト群は役割別に存在 | 一つの旧テストを復活させるのでなく、保証を公開契約と現行内部境界へ再配置 | 現行`Tests/RedBlackTreeTests/`、`Maintanance/Testing/TESTING.md` |
 
 **[事実]** `cc0ca3ad`で追加されたunsafe版Keystoneの外側には`#if false`があり、当初は実行対象では
 なかった。`ecb3085d`で現行の`UnsafeTreeV2/Instance/`へ再構成された版には外側の`#if false`がなく、

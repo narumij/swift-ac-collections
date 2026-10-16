@@ -21,7 +21,7 @@
 | [スニペット候補アンケート](UserDocuments/SnippetSurvey/README.md) | DOC-030に紐付く利用者文書の準備資料。過去の候補を現行APIへ照合して使う |
 | [赤黒木4型アウトライン通読所見](UserDocuments/RedBlackTreeCollections/Head/Outlines/ASTRA_OUTLINE_READING_NOTES_2026-10-16.md) | DOC-030の参考資料。本文作成前の構成確認と照合点（Astra） |
 | [赤黒木4型アウトライン調整プラン](UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md) | DOC-030の準備資料。横断比較・契約照合・例示・構成調整から本文へ渡す計画案（Astra） |
-| [テスト整備](../Tests/TESTING.md) | Claude（姫）が担うAI向けのテスト整備文書 |
+| [テスト整備](Testing/TESTING.md) | Claude（姫）が担うAI向けのテスト整備文書 |
 | [RedBlackTree設計資料](../Sources/RedBlackTreeCollections/Documentation/) | 赤黒木の設計・API・品質に関する資料。他moduleは対象taskの詳細正本から辿る |
 | [圧縮・アーカイブ手順](ProgressV2/TASK_REGISTRY_ARCHIVE.md) | 原文を保存し、現行から履歴へ辿れるようにする手順 |
 
@@ -62,8 +62,8 @@
 
 | ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
 | --- | --- | --- |
-| [Fixtures.md](../Tests/RedBlackTreeFixture/Fixtures.md) | AIがテストを整備するためのfixtureの説明 | `TEST-005`の関連維持文書。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
-| [Tests/TESTING.md](../Tests/TESTING.md) | Claude（姫）が担う、AI向けのテスト継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | `TEST-005`の中心文書（Claude担当）。`DOC-030`では文書の参照関係を扱う |
+| [Fixtures.md](Testing/Fixtures.md) | AIがテストを整備するためのfixtureの説明 | `TEST-005`の関連維持文書。文書の導線は`DOC-030`、内容更新は対象のテスト作業 |
+| [Testing/TESTING.md](Testing/TESTING.md) | Claude（姫）が担う、AI向けのテスト継続整備と現在地の入口。状態記述はRegistry・対象の詳細正本と照合する | `TEST-005`の中心文書（Claude担当）。`DOC-030`では文書の参照関係を扱う |
 | [AGENTS.md](../AGENTS.md)、[CLAUDE.md](../CLAUDE.md) | 協働の規則。各文書の変更権限に従う | `DOC-030`では参照関係を把握する。本文の変更権限は得ない |
 | [Tests/CLAUDE.md](../Tests/CLAUDE.md) | AIがテスト作業を行う際の規則 | `TEST-005`の関連維持文書。`DOC-030`では参照関係を把握し、内容更新は現在の依頼と変更権限に従う |
 

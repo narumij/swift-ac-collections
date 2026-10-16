@@ -156,7 +156,7 @@ Fixtureは契約を観測するための参照実装であり、製品ストレ�
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 公開APIの存在と4型への展開 | `API-Matrix.md` |
 | 外部または内部から観察可能な仕様 | Test as Specification |
-| テストで使用するFixture | `Tests/RedBlackTreeFixture/Fixtures.md` |
+| テストで使用するFixture | `Maintanance/Testing/Fixtures.md` |
 | 設計理由、所有権、計算量、および内部構造 | `Design/*` |
 | 実際に検証するtoolchain、Sanitizer、および構成 | GitHub Actions |
 | 特定候補commitでの検証結果 | 対象releaseまたは検証作業の記録 |

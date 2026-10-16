@@ -60,6 +60,26 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     案内をREADMEへ足すかはAstraに任せる。
 - Codex reconciliation: 未処理
 
+### `CP-20261016-005` — Registry Studioの依存見取り図が全体fallbackで崩れる件（先頭の到達点へ入る枝）
+
+- queue状態: `RECONCILED`（原返却は調査・試作のみ。下記にAstraの反映結果を追記）
+- 発見元・ユーザー指示: 2026-10-16 夕方の会話。ユーザー「HTMLの配置がえらい崩れたんだけど、ルールだけで前っぽく戻せないかな？」「未採番タスクにしといて」。
+- 種別候補: `EXECUTION`
+- 原因（調査済み）: 配置コードは`HEAD`から変わっておらず、データが増えたのが引き金。新しい`DOC-034 → MS-DOC`は、骨格の**先頭**（列0）へ入る供給の枝である。
+  列は`Math.max(0, target.index - distance)`で決まるので、先頭より左の列がなく、DOC-034が列0に置かれる。供給の枝は骨格nodeの右下（`x + golden`）に置く作りのため、
+  DOC-034 → MS-DOCの辺が右から左へ向き、`valid()`が不成立になる。その結果、全体が依存深さ順の配置（fallback）へ落ちた。
+  検査は、作業ツリーの`index.html`と`registry.json`の関数をJavaScriptCoreで実行して確かめた（`fallback=true`、逆向きの辺はDOC-034→MS-DOCの1本だけ）。
+- 提案するルール（1つ）: 「供給の枝は、合流先の列より左に置く。先頭より左が要るなら、骨格の前に列を1つ足す」。
+  実装は4か所の小さな変更：`Math.max(0, …)`の切り捨てをやめ、負の列になる枝を先頭の補助列（`leadGroup`）に集め、骨格の前に1列ぶん置いてから`x`を進める。
+- 試作の結果: 一時ディレクトリの写しで上の変更を入れ、同じデータで`fallback=false`になった。WebKitで描いた図では、MS-DOC → MS-060 → MS-070 → MS-SPI → MS-HUMAN → QUALITY-001の骨格が横に通り、
+  DOC-033 → DOC-034が骨格の前の列、DOC-035・DOC-036・RELEASE-078がMS-DOCの下に並ぶ。崩れる前の形に戻った。
+- 対象外: `index.html`・`verify.cjs`の変更（Astraの未commit作業中のため触らない）。交差数の最適化、線の接続点の散らし。
+- 前提・既存task候補: 恒久`OPS-048`（Registry Studio）、`OPS-052`（配置の助言、DONE）の続き。
+- 担当候補・受入担当: 実装はAstraか、委任があれば姫 / 受入はAstra。
+- 停止条件: 先頭の補助列を入れても`valid()`が不成立になるデータが出たら、全体fallbackではなく枝単位のfallback（OPS-052の提案3）を検討する。
+- 成果・検証: 未着手（調査と試作のみ。試作に使った一時ディレクトリ`registry-layout-check.*`は削除済み）。
+- Codex reconciliation: 2026-10-16、Astra。既存の恒久OPS-048へ統合。ユーザーの「修正お願いします」に基づき、先頭へ入る枝の補助列ルールを実装。原回答は保持。Nodeで現行40taskのfallback=false、重なり・辺方向・収容、ID置換不変性と従来fixtureの座標維持を検証。実画面はユーザー確認待ち。新規採番なし。
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

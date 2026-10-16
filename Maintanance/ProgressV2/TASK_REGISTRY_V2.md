@@ -36,6 +36,13 @@
 
 | `OPS-055` | `DONE` | Astra（作成・受入） / Claude（レビュー済み） | [EXECUTION] 共通作業規則と一時作業物の掃除手順を整備 | 2026-10-16ユーザー指示。COMMONS.mdを作成し、一時作業物の記録・引継ぎ・日終わりの掃除を共通化。作成・必要時の参照接続・リンク確認済み。Claude返却・Astra受入、指摘4点の対応済み。2026-10-16ユーザーが終了・commitを承認。実際の掃除や自動定期実行の開始は含まない | `Maintanance/ProgressV2/COMMONS.md` |
 
+| `DOC-033` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木4型アウトラインと現行契約の照合 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。既存4型アウトラインを実装・API Matrix・Test as Specへ照合し、技術訂正と不足を整理する。既決の構成は維持し、構成・必須事項の変更判断が必要なら一つずつユーザーへ返す。本文へ渡せる確定範囲と保留を記録する。 | `Maintanance/UserDocuments/RedBlackTreeCollections/Head/Outlines/OUTLINE_ADJUSTMENT_PLAN.md` |
+| `DOC-034` | `ACTIVE` | Astra | [EXECUTION] 赤黒木4型の本文完成と派生成果の同期 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-033の照合済み・構成確定範囲から既存本文を補完し、4型の日本語・英語本文・公開コメントを同期。必須例を検証し、最終横断レビューの指摘を閉じる。未確定の公開契約を創作しない。 | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+| `DOC-035` | `ACTIVE` | Astra | [EXECUTION] 0.6.0全公開対象の文書初版確認 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。DOC-037のユーザー受入可を確認し、RELEASE-078で整理した対象・不足とDOC-034の成果を用い、4モジュールの現行公開文書・導線・例・DocC診断を照合。必要な文書修正と再確認、未解決の公開阻害事項を記録する。生成成功だけで初版完成としない。 | `Maintanance/Current/PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md` |
+| `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Current/DOCUMENTATION_MILESTONES.md` |
+
+| `DOC-037` | `WAITING_USER` | User | [DECISION] 赤黒木本文の受入判断 | 2026-10-16ユーザー指定。DOC-034の本文・同期・検証結果を受け、赤黒木本文を受け入れるか判断する。受入可の明示記録後にDOC-035へ進む。差戻し・保留なら進めない。DOC-034は未完了のため判断材料待ち | `Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md` |
+
 ### 公開とリリース
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
@@ -108,6 +115,10 @@
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 | `OPS-054` | `OPS-053` | `SEQUENCE` | 配置維持例外表の検討結果を受け入れてからClaude起動系文書を検討する。前段の提案実施完了は条件にしない |
+| `DOC-034` | `DOC-033` | `SEQUENCE` | 現行契約と構成の照合済み範囲を受け取って本文を仕上げる。構成判断未決箇所は確定しない |
+| `DOC-037` | `DOC-034` | `SEQUENCE` | 本文・同期・検証結果を揃えてユーザーへ受入判断を渡す |
+| `DOC-035` | `DOC-037` | `SEQUENCE` | ユーザーの受入可が明示された後に進む。判断taskのDONEだけで受入可とみなさない |
+| `DOC-035` | `RELEASE-078` | `SEQUENCE` | 対象版の提供区分と必要文書入力の整理を受ける。PROPOSEDの有効化やリリース開始を自動認定しない |
 
 ### 受入済みの前提成果
 

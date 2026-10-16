@@ -8,7 +8,7 @@
 4型の利用者向け文書を、現行の公開契約に沿って過不足なく書けるアウトラインに整える。全型を同じ長さ・同じ項目数に揃えることは目的にしない。
 
 現在は[Astraの通読所見](ASTRA_OUTLINE_READING_NOTES_2026-10-16.md)まで。実装・テストとの照合は未実施。
-[文書作成手順](../../../../Current/DOCUMENTATION_WORKFLOW.md)に従い、構成と必須事項はユーザーの判断を尊重し、技術的事実は実物で確かめる。本文作成準備の到達点は[文書マイルストーン](../../../../Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成準備旧rbt-014)へ接続する。
+[文書作成手順](../../../../Current/DOCUMENTATION_WORKFLOW.md)に従い、構成と必須事項はユーザーの判断を尊重し、技術的事実は実物で確かめる。本文作成準備の到達点は[文書マイルストーン](../../../../Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成完了旧rbt-014)へ接続する。
 
 ## 進め方
 
@@ -71,3 +71,5 @@ RBT-026のMapped Values View契約再検討が関係する場合、現行仕様�
 - [RedBlackTreeMultiMap](RedBlackTreeMultiMap.outline.md)
 
 今回の依頼では計画の配置までを行い、アウトライン本文・製品実装・テストは変更していない。
+
+2026-10-16、ユーザーのタスク構築指示でDOC-033へ接続。調整・照合は本文完成DOC-034の前段。MS-DOCは準備ではなく本文完成を指す。登録のみで今回の照合は未実施。

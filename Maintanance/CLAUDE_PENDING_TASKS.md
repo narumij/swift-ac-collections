@@ -131,7 +131,8 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - Registry：Astraの`dacd456f`で恒久タスクの親子関係の行に詳細正本のパスが混入し（`` `OPS-059`  / `Maintanance/Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md` ``）、OPS-059の親が読めずverifyが失敗していた。パスはOPS-047/048の詳細正本列に既にあるため、行を`2cfcd945`の形`` | `OPS-048` | `OPS-059` | ``へ戻した（上のCで今後は停止する）。
 - 検証：不正入力4種（HEAD不正・HEADの版フォルダ不在・ID「なし」・task ID衝突）と親子行の崩れは一時コピーで停止・生成物不変を確認。実リポジトリで壊れた旧JSON→作り直し（内容一致）、JSON不在→生成、2回目`--check`ずれなし。sync完了・verify pass。
 - 未実施：Safariでの実操作（Astraの受入確認項目）。理由：画面操作の手段がない。代わりにverifyで描画用の線を直接入力して確認。残存リスク：クリック経路（ダイアログ）の見た目と文言は未確認。解消：ユーザーかAstraがSafariで線をクリックし、除去・つなぎ替え・キャンセルを一度ずつ試す。
-- commit: していない。
+- commit: `39f81e5b`（A・B・C）。
+- 追記（2026-10-17）：ユーザー「独立タスクの並びが違うんだ」「単に色なんだよね」。関心度を外した後、独立タスクの帯をStudioの状態の順（STATES：ACTIVE→WAITING_USER→WAITING_EXTERNAL→FROZEN→USER_ONLY→PROPOSED→DONE…）でまとめ、同じ状態の中はRegistry順にした（`index.html`の`stateRank`）。sync完了・verify pass。未commit。
 - Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。

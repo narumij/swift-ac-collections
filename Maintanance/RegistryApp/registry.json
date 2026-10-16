@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "39f81e5b",
+    "head": "937e9963",
     "sha256": "f0cd712a72bc0c0f979548f098d02036567c940315f1d54e99e61e5a41b33f23",
-    "dirty": true,
-    "generatedAt": "2026-10-17T03:40:16.845182+09:00",
+    "dirty": false,
+    "generatedAt": "2026-10-17T03:42:06.946222+09:00",
     "generator": "sync.py",
     "rulesSha256": "e354cbe7f3452f00ec86066f746808526e37f0dcb9eb8c2fbe5f89d35e984590"
   },

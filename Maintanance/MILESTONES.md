@@ -61,10 +61,11 @@
 | 到達点 | 条件と判断の正本 | 関連作業 |
 | --- | --- | --- |
 | 0.6.0の範囲確定とリリース | [0.6.0](Current/RELEASE_0_6_0.md) | RELEASE-078による開始条件照合。実施工程はユーザーのリリース手順 |
+| 0.6.0完了後の互換調査再開判断 | [互換計画](Current/AtCoder2025CompatibilityPlan.md) | PERM-079。リリース完了を確認後、ユーザーが調査再開可否を判断。自動開始・merge許可にはせず、0.6.0の前提にも置かない |
 | 0.7.0の範囲確定とリリース | [0.7.0](Current/RELEASE_0_7_0.md) | 0.6.0完了と後続差分を材料にする。主要タスクは工程準備・公開運用整備とrelease後のSPI登録・公開導線整備 |
 | SPI登録と公開導線の成立 | [SPI公開](Current/SPI_PUBLICATION_MILESTONE.md) | QUALITY-005 → DOC-026 → DOC-027 |
 | RedBlackTreeのチューニング再探索 | [再探索マイルストーン](Current/RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md) | 旧RBT-035を移行。到達条件・時期・実作業は未確定 |
-| Validation計画のレビュー | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#validation計画のレビュー旧doc-032) | 旧DOC-032。公開後の人間レビューとは区別する |
+| 0.7.0リリース前：Validation計画のレビュー | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#validation計画のレビュー旧doc-032) | 旧DOC-032。0.7.0ゲート、未通過。0.6.0の前提にせず、SPI登録後の人間レビュー実施とは区別する |
 | RedBlackTree文書の本文作成準備 | [文書マイルストーン](Current/DOCUMENTATION_MILESTONES.md#redblacktree文書の本文作成準備旧rbt-014) | 旧RBT-014。現行API・test・設計との照合 |
 
 ## 依存関係の見取り図

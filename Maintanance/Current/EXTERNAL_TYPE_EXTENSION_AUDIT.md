@@ -13,7 +13,7 @@
 | 特殊化`Result`のpublic比較overloadとpublic `Result._NodePtr` | 完了 | 比較overloadをpackage／testへ閉じ、typealiasを`@usableFromInline package`へ縮小。性能job成功まで確認 | 完了済み。再開しない |
 | Debug限定Comparable群 | 凍結 | `Result: @retroactive Comparable`は削除済み。残る`_LazyTieWrap`、`_NodePtrSealing`、`_LazyTie`を別clusterとして保持 | Indexの`Comparable`方針確定後 |
 | Balanced群 | 凍結 | Debug限定protocol、適合、診断用APIの処遇が未決 | Index契約またはexecutable API Matrix方針の確定後 |
-| Memoize群 | 凍結 | repository内部のproduction利用はないが外部consumerが存在 | 外部consumer 2件の移行後 |
+| Memoize群 | EXCLUDED（整理） | 2026-10-16ユーザー判断で非公開化・削除検討を残作業から除外。依存調査の成果は保持し、現行APIは変更しない | 待ち条件・後続必須作業として残さない |
 | SignedDistance protocol cluster | 凍結 | access-only縮小は言語制約上成立しないことを実験済み | public protocol clusterまたはIndex設計を扱う明示的な再開指示 |
 
 ## Completed Result cleanup
@@ -37,10 +37,11 @@
 Debugだけに存在する抽象化とinstrumentationである。削除、TestSupport移動、仕様修正のいずれにするかを
 executable API MatrixまたはIndex契約の方針と合わせて決める。
 
-### Memoize群
+### Memoize群（整理により対象外）
 
-`swift-ac-memoize`と`Memoization`の移行が終わるまで互換維持対象とする。repository内参照がtestだけで
-あることを、単独で非公開化する根拠にしない。
+2026-10-16のユーザー委任による[依存調査](MEMOIZE_DEPENDENCY_INVESTIGATION.md)で、現行LRUに実利用があることと、Memoizationの旧実験経路には既に存在しないAPIが残ることを確認した。旧記載の「外部consumer 2件の移行後」という一律の待ち条件を訂正する。repository内参照がtestだけであることを、単独で非公開化する根拠にしない。現行LRUの削除・公開縮小や外部移行は今回実施していない。
+
+2026-10-16、調査結果を受けたユーザー判断により、非公開化・削除検討自体を`EXCLUDED`として整理した。未完の監査判断や移行ゲートとして扱わない。APIを削除したという完了記録ではない。
 
 ## Rules retained from the audit
 

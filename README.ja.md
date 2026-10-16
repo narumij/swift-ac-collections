@@ -136,7 +136,9 @@ dependencies: [
 
 ## ライセンス
 
-このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
+このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。
+
+**例外として、`Maintanance/` 以下の全内容は、リポジトリ共通のApache許諾の対象外です。** narumijが保有する権利を留保し、法的に許諾が必要な再利用には事前許諾を求めます。第三者由来の部分（転載・翻案したコード断片など）はこの権利主張から除外し、元の適用条件を維持します。AIの記憶補助手法についての意思表示、既存許諾・第三者の権利・GitHub機能に関する例外は、[Maintananceの権利表示](Maintanance/LICENSE.md)を参照してください。
 
 RedBlackTreeCollectionsの`__tree`は LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。

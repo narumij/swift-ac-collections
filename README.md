@@ -134,6 +134,8 @@ dependencies: [
 
 This library is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
+**Exception: `Maintanance/` and all its subdirectories are excluded from the repository-wide Apache grant.** Rights held by narumij in their contents are reserved and require prior permission for reuse to the extent permission is legally required; third-party portions (including copied or adapted code snippets) are excluded from this claim and retain their applicable terms. See [Maintanance rights notice](Maintanance/LICENSE.md), including the statement on AI memory-support methods and the exceptions for existing grants, third-party rights, and GitHub functionality.
+
 RedBlackTreeCollections' `__tree` is adapted from the LLVM implementation. For the original license, see  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt).
 

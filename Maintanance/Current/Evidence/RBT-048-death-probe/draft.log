@@ -1,0 +1,253 @@
+Fetching https://github.com/swiftlang/swift-docc-plugin from cache
+Fetching https://github.com/apple/swift-algorithms.git from cache
+Fetching https://github.com/apple/swift-numerics.git from cache
+Fetching https://github.com/swiftlang/swift-docc-symbolkit from cache
+Fetched https://github.com/swiftlang/swift-docc-plugin from cache (0.49s)
+Fetched https://github.com/swiftlang/swift-docc-symbolkit from cache (0.57s)
+Fetched https://github.com/apple/swift-algorithms.git from cache (0.58s)
+Computing version for https://github.com/apple/swift-algorithms.git
+Fetched https://github.com/apple/swift-numerics.git from cache (0.59s)
+Computed https://github.com/apple/swift-algorithms.git at 1.2.1 (1.05s)
+Computing version for https://github.com/swiftlang/swift-docc-plugin.git
+Computed https://github.com/swiftlang/swift-docc-plugin.git at 1.5.0 (0.39s)
+Computing version for https://github.com/apple/swift-numerics.git
+Computed https://github.com/apple/swift-numerics.git at 1.1.1 (0.42s)
+Computing version for https://github.com/swiftlang/swift-docc-symbolkit
+Computed https://github.com/swiftlang/swift-docc-symbolkit at 1.0.0 (0.52s)
+Creating working copy for https://github.com/swiftlang/swift-docc-symbolkit
+Working copy of https://github.com/swiftlang/swift-docc-symbolkit resolved at 1.0.0
+Creating working copy for https://github.com/swiftlang/swift-docc-plugin
+Working copy of https://github.com/swiftlang/swift-docc-plugin resolved at 1.5.0
+Creating working copy for https://github.com/apple/swift-numerics.git
+Working copy of https://github.com/apple/swift-numerics.git resolved at 1.1.1
+Creating working copy for https://github.com/apple/swift-algorithms.git
+Working copy of https://github.com/apple/swift-algorithms.git resolved at 1.2.1
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 651]
+[Planning deferred tasks]
+[155 / 364]
+[167 / 381] RealModule
+[179 / 402]
+[183 / 402]
+[197 / 402]
+[212 / 402] RealModule-product
+[214 / 402] _malloc_free
+[217 / 402] OptionalElementBufferModule
+[221 / 402] NextPermutationModule
+[224 / 402] NextPermutationModule
+[238 / 406] OptionalElementBufferModule
+[248 / 450] PermutationModule
+[262 / 459] Algorithms
+[264 / 459] ElementBufferModule
+[267 / 459]
+[268 / 459]
+[270 / 459]
+[273 / 459] Algorithms
+[275 / 459]
+[281 / 501]
+[285 / 502] Algorithms
+[285 / 502]
+[286 / 502] Algorithms
+[303 / 503]
+[304 / 503]
+[308 / 503] ElementBufferModuleTests-product
+[309 / 512]
+[311 / 512]
+[316 / 512]
+[316 / 517] PermutationTests-product
+[319 / 522]
+[322 / 522]
+[323 / 522]
+[332 / 522]
+[338 / 522] RedBlackTreeCollections
+[341 / 522] RedBlackTreeCollections
+[343 / 522]
+[344 / 522] RedBlackTreeCollections
+[345 / 522]
+[346 / 522]
+[347 / 522] RedBlackTreeCollections
+[349 / 522] RedBlackTreeCollections
+[350 / 522] RedBlackTreeCollections
+[350 / 522]
+[351 / 522]
+[353 / 522]
+[354 / 522] RedBlackTreeCollections
+[361 / 522] PermutationTests-product
+[364 / 522] RedBlackTreeCollections
+[374 / 522] PermutationTests-product
+[385 / 522] OptionalElementBufferModuleTests-product
+[389 / 522] OptionalElementBufferModuleTests-product
+[391 / 522] OptionalElementBufferModuleTests-product
+[392 / 522] OptionalElementBufferModuleTests-product
+[399 / 522] ElementBufferModuleTests-product
+[401 / 522] ElementBufferModuleTests-product
+[403 / 522] ElementBufferModuleTests-product
+[405 / 522] ElementBufferModuleTests-product
+[406 / 522] ElementBufferModuleTests-product
+[410 / 524] RedBlackTreeFixture
+[411 / 524] ElementBufferModuleTests-product
+[417 / 525] OptionalElementBufferModuleTests-product
+[417 / 525] RedBlackTreeModule
+[421 / 529] RedBlackTreeModule
+[440 / 530]
+[442 / 530] RedBlackTreeFixture
+[448 / 532] RedBlackTreeLegacyTests-product
+[452 / 543] AcCollections
+[453 / 543] RedBlackTreeLegacyTests-product
+[454 / 543] AcCollections
+[462 / 543] RedBlackTreeLegacyTests-product
+[465 / 553] RedBlackTreeLegacyTests-product
+[469 / 553] RedBlackTreeLegacyTests-product
+[475 / 562] RedBlackTreeTreeTests-product
+[477 / 562] RedBlackTreeTreeTests-product
+[478 / 562] RedBlackTreeTreeTests-product
+[480 / 562] RedBlackTreeTreeTests-product
+[486 / 562] RedBlackTreeTreeTests-product
+[488 / 562] RedBlackTreeTests-product
+[490 / 562] RedBlackTreeTests-product
+[491 / 562] RedBlackTreeTests-product
+[493 / 562] RedBlackTreeTreeTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[496 / 562] RedBlackTreeTests-product
+[500 / 562] RedBlackTreeTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:65:11: [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m63 |[0;0m 
+ [0;36m64 |[0;0m     func testFromZero() throws {
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'null_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/BufferHeaderTests.swift:67:11: [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m65 |[0;0m       let null_back = UnsafeNode.nullptr.pointee
+ [0;36m66 |[0;0m       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+ [0;36m67 |[0;0m       let end_back = header.end_ptr.pointee
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39minitialization of immutable value 'end_back' was never used; consider replacing with assignment to '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m68 |[0;0m 
+ [0;36m69 |[0;0m       for i in 1..<100 {
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[506 / 562] OptionalElementBufferModuleTests-product
+[507 / 562] ElementBufferModuleTests-product
+[508 / 562] AcCollections-product
+[512 / 562] RedBlackTreeLegacyTests-product
+[515 / 562] RedBlackTreeTreeTests-product
+[521 / 562] OptionalElementBufferModuleTests-product
+[530 / 564] ElementBufferModuleTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift:122:11: [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m120 |[0;0m 
+[0;36m121 |[0;0m     func test_subrangeValuesSingleIndexOperations_doNotCompareKeys() {
+[0;36m122 |[0;0m       var dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mvariable 'dictionary' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m123 |[0;0m         uniqueKeysWithValues: (0..<5).map { (ComparisonCountingKey(value: $0), "\($0)") })
+[0;36m124 |[0;0m       let lower = dictionary.index(after: dictionary.startIndex)
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[531 / 564] RedBlackTreeTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:178:11: [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m176 |[0;0m   #if DEBUG
+[0;36m177 |[0;0m     func testSetKeyAndValueComp() {
+[0;36m178 |[0;0m       let set: RedBlackTreeSet = [3, 1, 4, 5]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'set' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m179 |[0;0m       typealias SUT = RedBlackTreeSet<Int>.Base
+[0;36m180 |[0;0m       let keyComp = SUT.value_comp
+
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_ComparatorsTests.swift:219:11: [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m217 |[0;0m   #if DEBUG
+[0;36m218 |[0;0m     func testMultisetKeyAndValueComp() {
+[0;36m219 |[0;0m       let multi: RedBlackTreeMultiSet = [1, 2, 3]
+    [0;36m|[0;0m           `- [1;33mwarning: [1;39mimmutable value 'multi' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m220 |[0;0m       typealias SUT = RedBlackTreeMultiSet<Int>.Base
+[0;36m221 |[0;0m       let keyComp = SUT.value_comp
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[534 / 564] ElementBufferModuleTests-product
+[536 / 564] CppBehaviorReferenceTests-product
+[542 / 577] CppBehaviorReferenceTests-product
+[547 / 577] AcCollectionsTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_3_IndexSequenceTests.swift:127:9: [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m125 |[0;0m   /// formIndex(after:)/(before:) がindex(after:)/(before:)と同じ順序で全要素を辿り、境界で正しく停止すること
+[0;36m126 |[0;0m   func testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal() {
+[0;36m127 |[0;0m     var set = RedBlackTreeSet<Int>(0..<5)
+    [0;36m|[0;0m         `- [1;33mwarning: [1;39mvariable 'set' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+[0;36m128 |[0;0m 
+[0;36m129 |[0;0m     var forward: [Int] = []
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[552 / 577] CppBehaviorReferenceTests-product
+[553 / 577] CppBehaviorReferenceTests-product
+[559 / 577] CppBehaviorReferenceTests-product
+[561 / 577] CppBehaviorReferenceTests-product
+[561 / 577] AcCollectionsTests-product
+[565 / 577] CppBehaviorReferenceTests-product
+[567 / 577] CppBehaviorReferenceTests-product
+/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/rbt048-death-probe.U7T7SZyQY2/draft/Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap_TestHelpers.swift:17:55: [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+[0;36m10 |[0;0m }
+[0;36m11 |[0;0m 
+[0;36m12 |[0;0m func AssertEquenceEqual<A, B, C, D>(_ lhs: A, _ rhs: B, file: StaticString = #file, line: UInt = #line)
+   [0;36m|[0;0m                                                                              `- [1;39mnote: [1;39mdid you mean for parameter 'file' to default to '#filePath'?[0;0m
+[0;36m13 |[0;0m where
+[0;36m14 |[0;0m   A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
+[0;36m15 |[0;0m   C: Equatable, D: Equatable
+[0;36m16 |[0;0m {
+[0;36m17 |[0;0m   XCTAssertTrue(lhs.elementsEqual(rhs, by: ==), file: file, line: line)
+   [0;36m|[0;0m                                                       |- [1;33mwarning: [1;39mparameter 'file' with default argument '#file' passed to parameter 'file', whose default argument is '#filePath'[0;0m
+   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39madd parentheses to silence this warning[0;0m
+[0;36m18 |[0;0m }
+[0;36m19 |[0;0m 
+
+XCTest.XCTAssertTrue.file:1:1: [1;39mnote: [1;39m'file' declared here[0;0m
+[0;36m1 |[0;0m file: StaticString
+  [0;36m|[0;0m `- [1;39mnote: [1;39m'file' declared here[0;0m
+[571 / 577] RedBlackTreeTests-product
+[573 / 577] RedBlackTreeTests-product
+Build complete! (28.62秒)
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite RBT048DeathProbeTests started.
+􀟈  Test mm_P7_sharedForeignIndex_unspecified() started.
+􀟈  Test mm_P6_sharedRemovedThenSlotReused() started.
+􀟈  Test ms_P3_sharedMismatch() started.
+􀟈  Test mm_P1_sharedEndIndex() started.
+􀟈  Test ms_P5_staleIndexAcrossEarlierCopy() started.
+􀟈  Test ms_P1_sharedEndIndex() started.
+􀟈  Test ms_P6_sharedRemovedThenSlotReused() started.
+􀟈  Test ms_P2_sharedRemovedIndex() started.
+􀟈  Test mm_P4_sharedIndexTakenFromCopy() started.
+􀟈  Test ms_P7_sharedForeignIndex_unspecified() started.
+􀟈  Test mm_P2_sharedRemovedIndex() started.
+􀟈  Test ms_P4_sharedIndexTakenFromCopy() started.
+􀟈  Test mm_P5_staleIndexAcrossEarlierCopy() started.
+􁁛  Test mm_P4_sharedIndexTakenFromCopy() passed after 0.170 seconds.
+􁁛  Test mm_P1_sharedEndIndex() passed after 0.171 seconds.
+􁁛  Test mm_P2_sharedRemovedIndex() passed after 0.171 seconds.
+􁁛  Test ms_P1_sharedEndIndex() passed after 0.171 seconds.
+􁁛  Test ms_P5_staleIndexAcrossEarlierCopy() passed after 0.171 seconds.
+􁁛  Test ms_P3_sharedMismatch() passed after 0.171 seconds.
+􁁛  Test mm_P7_sharedForeignIndex_unspecified() passed after 0.177 seconds.
+􁁛  Test mm_P6_sharedRemovedThenSlotReused() passed after 0.179 seconds.
+􁁛  Test ms_P7_sharedForeignIndex_unspecified() passed after 0.179 seconds.
+􁁛  Test mm_P5_staleIndexAcrossEarlierCopy() passed after 0.181 seconds.
+􁁛  Test ms_P2_sharedRemovedIndex() passed after 0.181 seconds.
+􁁛  Test ms_P6_sharedRemovedThenSlotReused() passed after 0.181 seconds.
+􁁛  Test ms_P4_sharedIndexTakenFromCopy() passed after 0.187 seconds.
+􁁛  Suite RBT048DeathProbeTests passed after 0.188 seconds.
+􁁛  Test run with 13 tests in 1 suite passed after 0.188 seconds.

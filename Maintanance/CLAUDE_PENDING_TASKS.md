@@ -159,6 +159,47 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 未着手
 - Codex reconciliation: 2026-10-16 Astra。ユーザーの姫への委任許可に基づきRBT-047をACTIVEで登録し、再現・修正案調査をCLAUDE_TASK.mdで依頼。製品修正・バグ認定は未実施。元の担当候補は履歴として保持し、今回の調査担当を姫とする。
 
+### `CP-20261016-011` — AI用キャッシュ`Maintanance/Cache/`を`.gitignore`する
+
+- queue状態: `AWAITING_CODEX`（`.gitignore`は実施済み。残りはAstraへの依頼）
+- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「Cacheは.gitignoreしたいね」「姫の未採番で、.gitignoreさきにやって、今後.gitignoreいるようあすとらさんに依頼しといて」。
+- 種別候補: `EXECUTION`
+- 実施したこと（姫）: `.gitignore`の末尾に3行を足した。
+  ```
+  /Maintanance/Cache/**
+  !/Maintanance/Cache/*/
+  !/Maintanance/Cache/*/README.md
+  ```
+  - 各担当の`README.md`だけは追跡を続け、それ以外の新しいキャッシュはgitに載らない。
+  - 確認した結果: `Cache/Hime/CURRENT.md`はignoreされる。`Cache/Hime/README.md`はignoreされない。
+  - 作成直後に`CURRENT.md`が自動でstageされていた（RBT-047のtestと同じ現象。誰がstageしたかは未確認）。姫が自分のファイルとして`git rm --cached`で外した。
+- 対象外（姫は触っていない）:
+  - すでに追跡されている`Cache/Astra/`の3ファイル（`AI_GATE.md`・`RELEASE_0_6_0.md`・`USER_CONVERSATION.md`）。ignoreしても追跡は続く。
+  - `TASK_RULES_V2.md`のAI用キャッシュ節と`COMMONS.md`の文面。
+- Astraへの依頼:
+  1. 今後、キャッシュはgitに載らない前提で扱ってほしい（ユーザー指示）。
+  2. `Cache/Astra/`の3ファイルを追跡から外すか（`git rm --cached`）決めてほしい。外しても手元のファイルは残る。
+  3. RulesとCOMMONSに「キャッシュはgit管理外（README以外）」と書くかどうか判断してほしい。キャッシュは同じマシンの中でだけ引き継げる、という点も含めて。
+- 担当候補・受入担当: `.gitignore`は姫（実施済み）/ 上の依頼1〜3と受入はAstra。
+- 成果・検証: `.gitignore`の変更のみ。commitしていない。
+- Codex reconciliation: 未処理
+
+### `CP-20261016-012` — RBT-048の追加確認：death testで修正案のfatalErrorに届くか
+
+- queue状態: `AWAITING_CODEX`（実施済み。RBT-048への接続はAstra）
+- 発見元・ユーザー指示: 2026-10-16夜。ユーザー「デスセスとの追加調査やって」。RBT-048の「ユーザーの明示依頼があった場合だけ資料整理や追加確認を補助する」に当たる。
+- 種別候補: `DISCOVERY`
+- 対象範囲: 一時コピー2つ（現行・修正案適用）でexit testのprobe 13件と既存`DeathTests`全体を実行し、比較した。
+- 対象外: RBT-048の判断、製品修正、repositoryのtestの追加・変更、`INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`の編集。
+- 成果・検証: [`Evidence/RBT-048-death-probe/README.md`](Current/Evidence/RBT-048-death-probe/README.md)。
+  - 試した入力では、修正案の`fatalError`に届くものはなかった。現行でnilの入力がtrapに変わることもなかった。
+  - 既存のdeath test 213件は、現行・修正案とも全件pass。
+  - 届かないことの証明ではない。互換構成ではdeath testが無効になっている。
+  - RBT-047のReturn 5「death testはskipされるものがある」は誤りだった。訂正をREADMEに置いた（原Returnは固定なので書き換えない）。
+- 担当候補・受入担当: 確認は姫 / RBT-048への接続・受入はAstra。判断はユーザー。
+- commit: していない。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

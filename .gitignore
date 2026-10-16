@@ -17,3 +17,7 @@ Benchmarks/.build/
 /_ReleaseTask/
 /Reviews/
 /Maintanance/TaskHistoryIndex/
+# AI caches (2026-10-16 user decision). Keep only each area's README tracked.
+/Maintanance/Cache/**
+!/Maintanance/Cache/*/
+!/Maintanance/Cache/*/README.md

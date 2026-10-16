@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "76c08138345c669ecbe7deb911736928564bffc3",
-    "sha256": "38d9c53ad456972bae53feb97b8b08a3c1e64969d9bcbc9eeb9e74bb0a68408b",
+    "head": "23f35fc6ad7565171e215fd4baf63d059a675121",
+    "sha256": "52f42a558a7d89cd6b1ffc83aaa12b05269710a1e948fd26df511ed87b00560f",
     "dirty": true,
-    "generatedAt": "2026-10-16T13:49:23.745842+09:00",
+    "generatedAt": "2026-10-16T14:29:29.994348+09:00",
     "generator": "Astra / OPS-051",
     "rulesSha256": "0b104722c2eec1c347d38a4f557138185e6c1178c97ea648a0e7eaafb50f1d08"
   },
@@ -108,36 +108,36 @@
     },
     {
       "id": "OPS-049",
-      "state": "WAITING_USER",
+      "state": "DONE",
       "owner": "Astra",
       "item": "[DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査",
-      "condition": "恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・commit許可待ち。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手",
+      "condition": "恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・ユーザーcommit指示により完了。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手",
       "detail": "`Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md`",
-      "raw": "| `OPS-049` | `WAITING_USER` | Astra | [DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査 | 恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・commit許可待ち。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手 | `Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md` |",
+      "raw": "| `OPS-049` | `DONE` | Astra | [DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査 | 恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・ユーザーcommit指示により完了。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手 | `Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md` |",
       "sourceLine": 31,
       "group": "協働と運用",
       "permanent": false
     },
     {
       "id": "OPS-050",
-      "state": "WAITING_USER",
+      "state": "DONE",
       "owner": "Claude（姫）（助言） / Astra（受入・統合）",
       "item": "[DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言",
-      "condition": "恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。commit許可待ち。実装・技術選定の確定は含めない",
+      "condition": "恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。ユーザーcommit指示により完了。実装・技術選定の確定は含めない",
       "detail": "`Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md`",
-      "raw": "| `OPS-050` | `WAITING_USER` | Claude（姫）（助言） / Astra（受入・統合） | [DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言 | 恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。commit許可待ち。実装・技術選定の確定は含めない | `Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md` |",
+      "raw": "| `OPS-050` | `DONE` | Claude（姫）（助言） / Astra（受入・統合） | [DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言 | 恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。ユーザーcommit指示により完了。実装・技術選定の確定は含めない | `Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md` |",
       "sourceLine": 32,
       "group": "協働と運用",
       "permanent": false
     },
     {
       "id": "OPS-051",
-      "state": "ACTIVE",
+      "state": "WAITING_USER",
       "owner": "Astra",
       "item": "[EXECUTION] Safari向けRegistry閲覧編集の初期試作",
-      "condition": "恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持し、読込/保存/検証を確認する",
+      "condition": "恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定",
       "detail": "`Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md`",
-      "raw": "| `OPS-051` | `ACTIVE` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持し、読込/保存/検証を確認する | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |",
+      "raw": "| `OPS-051` | `WAITING_USER` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |",
       "sourceLine": 33,
       "group": "協働と運用",
       "permanent": false
@@ -339,9 +339,9 @@
       "state": "ACTIVE",
       "owner": "User / Codex",
       "item": "[DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート",
-      "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠、SPI登録・公開導線を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
+      "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
       "detail": "`Maintanance/Quality/Profiles/RedBlackTreeCollections.md`",
-      "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠、SPI登録・公開導線を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
+      "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
       "sourceLine": 61,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false
@@ -375,9 +375,9 @@
       "state": "ACTIVE",
       "owner": "User / Codex",
       "item": "[DECISION] SPI登録前の公開準備判定",
-      "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
+      "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
       "detail": "`Maintanance/Current/SPI_REGISTRATION_GATE.md`",
-      "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
+      "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
       "sourceLine": 64,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false
@@ -517,28 +517,12 @@
       "sourceLine": 105
     },
     {
-      "successor": "QUALITY-001",
-      "prerequisite": "DOC-026",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "1.0採用品質を判定する前に、0.7.0をSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する",
-      "raw": "| `QUALITY-001` | `DOC-026` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、0.7.0をSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する |",
-      "sourceLine": 106
-    },
-    {
-      "successor": "QUALITY-001",
-      "prerequisite": "DOC-027",
-      "flow": "PARALLEL_JOIN",
-      "constraint": "1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する",
-      "raw": "| `QUALITY-001` | `DOC-027` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する |",
-      "sourceLine": 107
-    },
-    {
       "successor": "RELEASE-076",
       "prerequisite": "RELEASE-075",
       "flow": "SEQUENCE",
       "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
       "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-      "sourceLine": 108
+      "sourceLine": 106
     },
     {
       "successor": "DOC-026",
@@ -546,7 +530,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
       "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-      "sourceLine": 109
+      "sourceLine": 107
     },
     {
       "successor": "DOC-027",
@@ -554,7 +538,7 @@
       "flow": "SEQUENCE",
       "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
       "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-      "sourceLine": 110
+      "sourceLine": 108
     }
   ],
   "baseline": {
@@ -657,36 +641,36 @@
       },
       {
         "id": "OPS-049",
-        "state": "WAITING_USER",
+        "state": "DONE",
         "owner": "Astra",
         "item": "[DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査",
-        "condition": "恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・commit許可待ち。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手",
+        "condition": "恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・ユーザーcommit指示により完了。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手",
         "detail": "`Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md`",
-        "raw": "| `OPS-049` | `WAITING_USER` | Astra | [DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査 | 恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・commit許可待ち。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手 | `Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md` |",
+        "raw": "| `OPS-049` | `DONE` | Astra | [DISCOVERY] Registryアプリ向け既存graph試験の知見・再利用範囲調査 | 恒久OPS-048配下。共有済み文書・成果と現行Registryを照合し、再利用可能な知見、不足表現、読み取り専用試作の最小範囲・検証方法を返す。Claude専用DBは調べず、旧Codex DB試験を再開しない。2026-10-16調査受入済み・ユーザーcommit指示により完了。現行lintと共有fixture成功、再利用範囲・原文保持の不足・最小試作案を記録。アプリ実装は未着手 | `Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md` |",
         "sourceLine": 31,
         "group": "協働と運用",
         "permanent": false
       },
       {
         "id": "OPS-050",
-        "state": "WAITING_USER",
+        "state": "DONE",
         "owner": "Claude（姫）（助言） / Astra（受入・統合）",
         "item": "[DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言",
-        "condition": "恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。commit許可待ち。実装・技術選定の確定は含めない",
+        "condition": "恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。ユーザーcommit指示により完了。実装・技術選定の確定は含めない",
         "detail": "`Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md`",
-        "raw": "| `OPS-050` | `WAITING_USER` | Claude（姫）（助言） / Astra（受入・統合） | [DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言 | 恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。commit許可待ち。実装・技術選定の確定は含めない | `Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md` |",
+        "raw": "| `OPS-050` | `DONE` | Claude（姫）（助言） / Astra（受入・統合） | [DISCOVERY] Registryアプリの中間構造・閲覧編集設計への助言 | 恒久OPS-048配下。ユーザー指示で姫へ正式依頼。原文保持と意味モデルの分離、条件表示、最小試作、技術候補と往復編集の注意点を根拠付きで返す。2026-10-16姫の助言をAstraが受入。単一JSON・AI入出力・読み取り専用HTML案と検証上の補足を記録。ユーザーcommit指示により完了。実装・技術選定の確定は含めない | `Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md` |",
         "sourceLine": 32,
         "group": "協働と運用",
         "permanent": false
       },
       {
         "id": "OPS-051",
-        "state": "ACTIVE",
+        "state": "WAITING_USER",
         "owner": "Astra",
         "item": "[EXECUTION] Safari向けRegistry閲覧編集の初期試作",
-        "condition": "恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持し、読込/保存/検証を確認する",
+        "condition": "恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定",
         "detail": "`Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md`",
-        "raw": "| `OPS-051` | `ACTIVE` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持し、読込/保存/検証を確認する | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |",
+        "raw": "| `OPS-051` | `WAITING_USER` | Astra | [EXECUTION] Safari向けRegistry閲覧編集の初期試作 | 恒久OPS-048配下。2026-10-16ユーザー指示。JSON読込・一覧・明示依存グラフ・状態/担当/条件/依存の編集・JSON保存をローカルHTMLで試作する。Markdown反映はAIへの別依頼とし、試作から直接変更しない。生成元と変更前後を保持。試作実装とデータ処理検証済み。ユーザーによる依存除去・JSON保存・Astraへの取込の一往復を確認済み（2026-10-16）。UI全体の受入は未確定 | `Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md` |",
         "sourceLine": 33,
         "group": "協働と運用",
         "permanent": false
@@ -888,9 +872,9 @@
         "state": "ACTIVE",
         "owner": "User / Codex",
         "item": "[DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート",
-        "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠、SPI登録・公開導線を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
+        "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。",
         "detail": "`Maintanance/Quality/Profiles/RedBlackTreeCollections.md`",
-        "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠、SPI登録・公開導線を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
+        "raw": "| `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI登録・公開導線はSPI公開→人間レビューの経路で扱い、DOC-026・027からの直接依存は置かない（2026-10-16ユーザー編集）。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Maintanance/Quality/Profiles/RedBlackTreeCollections.md` |",
         "sourceLine": 61,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false
@@ -924,9 +908,9 @@
         "state": "ACTIVE",
         "owner": "User / Codex",
         "item": "[DECISION] SPI登録前の公開準備判定",
-        "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
+        "condition": "2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。",
         "detail": "`Maintanance/Current/SPI_REGISTRATION_GATE.md`",
-        "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
+        "raw": "| `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。0.7.0 release完了を本判定の前提とする（2026-10-16ユーザーのグラフ編集）。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |",
         "sourceLine": 64,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false
@@ -1066,28 +1050,12 @@
         "sourceLine": 105
       },
       {
-        "successor": "QUALITY-001",
-        "prerequisite": "DOC-026",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "1.0採用品質を判定する前に、0.7.0をSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する",
-        "raw": "| `QUALITY-001` | `DOC-026` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、0.7.0をSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する |",
-        "sourceLine": 106
-      },
-      {
-        "successor": "QUALITY-001",
-        "prerequisite": "DOC-027",
-        "flow": "PARALLEL_JOIN",
-        "constraint": "1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する",
-        "raw": "| `QUALITY-001` | `DOC-027` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する |",
-        "sourceLine": 107
-      },
-      {
         "successor": "RELEASE-076",
         "prerequisite": "RELEASE-075",
         "flow": "SEQUENCE",
         "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
         "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-        "sourceLine": 108
+        "sourceLine": 106
       },
       {
         "successor": "DOC-026",
@@ -1095,7 +1063,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
         "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-        "sourceLine": 109
+        "sourceLine": 107
       },
       {
         "successor": "DOC-027",
@@ -1103,7 +1071,165 @@
         "flow": "SEQUENCE",
         "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
         "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-        "sourceLine": 110
+        "sourceLine": 108
+      }
+    ],
+    "milestoneRelations": [
+      {
+        "prerequisite": "MS-060",
+        "successor": "MS-070",
+        "relation": "stage",
+        "constraint": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "0.6.0 releaseが完了し、その完了証拠と0.6.0へ含めた範囲・後続へ残した範囲が現行記録から確認できることを、\n0.7.0のrelease検討を始める前提とする。",
+          "line": 21
+        }
+      },
+      {
+        "prerequisite": "MS-070",
+        "successor": "MS-SPI",
+        "relation": "stage",
+        "constraint": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
+        "source": {
+          "path": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+          "sha256": "f8a81eb0c316b63238e54c095bd0f7023ea97d24cb482c5c65a9d4abad007529",
+          "quote": "0.7.0をリリースしてから登録し、結果確認と導線整備までを0.7.0の公開整備として扱う。",
+          "line": 7
+        }
+      },
+      {
+        "prerequisite": "MS-SPI",
+        "successor": "MS-HUMAN",
+        "relation": "after",
+        "constraint": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+        "source": {
+          "path": "Maintanance/MILESTONES.md",
+          "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+          "quote": "人間レビューはSPI公開後、文書が落ち着いてから1.0品質判断までの間に置く。",
+          "line": 133
+        }
+      },
+      {
+        "prerequisite": "MS-HUMAN",
+        "successor": "QUALITY-001",
+        "relation": "material",
+        "constraint": "公開文書の人間レビュー結果・修正後確認 ---------------+",
+        "source": {
+          "path": "Maintanance/MILESTONES.md",
+          "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+          "quote": "公開文書の人間レビュー結果・修正後確認 ---------------+",
+          "line": 142
+        }
+      },
+      {
+        "prerequisite": "RELEASE-078",
+        "successor": "MS-060",
+        "relation": "material",
+        "constraint": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_6_0.md",
+          "sha256": "8d48fee35b7f05bfd7bf0b603761152183aeb192ac0c3f6b4958f1338f9d21eb",
+          "quote": "RELEASE-078で現行提供区分・文書状態と旧開始条件を照合し、その結果を本書の判断材料に接続する。",
+          "line": 32
+        }
+      },
+      {
+        "prerequisite": "MS-DOC",
+        "successor": "MS-060",
+        "relation": "material",
+        "constraint": "赤黒木の本文準備も必要な文書入力へ接続する",
+        "source": {
+          "path": "Maintanance/MILESTONES.md",
+          "sha256": "b675e5396fcb5297808f546d583d56e98e03c1c9b7e78d05d13c17676733cc06",
+          "quote": "赤黒木の本文準備も必要な文書入力へ接続する",
+          "line": 46
+        }
+      },
+      {
+        "prerequisite": "MS-060",
+        "successor": "PERM-079",
+        "relation": "resume",
+        "constraint": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_6_0.md",
+          "sha256": "8d48fee35b7f05bfd7bf0b603761152183aeb192ac0c3f6b4958f1338f9d21eb",
+          "quote": "0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。",
+          "line": 79
+        }
+      },
+      {
+        "prerequisite": "MS-VALIDATION",
+        "successor": "MS-070",
+        "relation": "required",
+        "constraint": "を0.7.0リリース前のゲートとする。",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "を0.7.0リリース前のゲートとする。",
+          "line": 68
+        }
+      },
+      {
+        "prerequisite": "RELEASE-072",
+        "successor": "MS-070",
+        "relation": "required",
+        "constraint": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "| RELEASE-072 | 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する |",
+          "line": 55
+        }
+      },
+      {
+        "prerequisite": "RELEASE-075",
+        "successor": "MS-070",
+        "relation": "required",
+        "constraint": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "| RELEASE-075 | 判定基準、証拠取得、停止・復旧などの不足仕様を充当する |",
+          "line": 56
+        }
+      },
+      {
+        "prerequisite": "RELEASE-076",
+        "successor": "MS-070",
+        "relation": "required",
+        "constraint": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "| RELEASE-076 | 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する |",
+          "line": 57
+        }
+      },
+      {
+        "prerequisite": "MS-070",
+        "successor": "QUALITY-005",
+        "relation": "after",
+        "constraint": "0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。",
+        "source": {
+          "path": "Maintanance/Current/RELEASE_0_7_0.md",
+          "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
+          "quote": "2. 対象版の公開準備をQUALITY-005で判定し、ユーザーの登録可判断と実行委任を得る。",
+          "line": 77
+        }
+      },
+      {
+        "prerequisite": "DOC-027",
+        "successor": "MS-SPI",
+        "relation": "required",
+        "constraint": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+        "source": {
+          "path": "Maintanance/Current/SPI_PUBLICATION_MILESTONE.md",
+          "sha256": "f8a81eb0c316b63238e54c095bd0f7023ea97d24cb482c5c65a9d4abad007529",
+          "quote": "続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。",
+          "line": 11
+        }
       }
     ]
   },
@@ -1340,14 +1466,14 @@
     },
     {
       "prerequisite": "MS-070",
-      "successor": "DOC-026",
+      "successor": "QUALITY-005",
       "relation": "after",
-      "constraint": "0.7.0をリリースする。",
+      "constraint": "0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。",
       "source": {
         "path": "Maintanance/Current/RELEASE_0_7_0.md",
         "sha256": "dcb9049985963564de0b70824e349bab56ce0725e8a60be7521a339fb369f747",
-        "quote": "0.7.0をリリースする。",
-        "line": 76
+        "quote": "2. 対象版の公開準備をQUALITY-005で判定し、ユーザーの登録可判断と実行委任を得る。",
+        "line": 77
       }
     },
     {

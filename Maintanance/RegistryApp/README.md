@@ -2,7 +2,7 @@
 
 ## 開き方
 
-index.htmlをSafariで開く。38タスク・11依存辺の生成時snapshotを内蔵しているので、最初の読込操作は不要。別のデータは「JSONを開く」で選ぶ。
+index.htmlをSafariで開く。38タスク・9依存辺の生成時snapshotを内蔵しているので、最初の読込操作は不要。別のデータは「JSONを開く」で選ぶ。
 
 1. 左の一覧またはグラフからタスクを選ぶ。詳細はグラフの下にある。
 2. 状態・担当・項目・条件を直し、「変更を適用」を押す。
@@ -22,7 +22,7 @@ AIが新しいJSONを作るときは全taskの全6列、全依存の4列、原�
 
 ## 検証範囲
 
-JS構文とデータ処理：38件・11辺、変更前後、baseline維持、JSON往復、重複・自己依存・参照切れ・Flow不正・循環、未知状態・追加属性保持を確認済み。verify.cjsをNode.jsで再実行できる。
+JS構文とデータ処理：38件・9辺、変更前後、baseline維持、JSON往復、重複・自己依存・参照切れ・Flow不正・循環、未知状態・追加属性保持を確認済み。verify.cjsをNode.jsで再実行できる。
 
 Safari UIは未検証。操作権限がなく実機試験できず、自動試験用WebKit本体も環境に未導入だった。DOM描画、実ダウンロード、画面レイアウトはユーザー試用で確認する。HTML file inputとdownloadを使う設計で、Safari専用の直接上書きAPIを必要としない。
 公式参考：https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/
@@ -48,3 +48,5 @@ Astra側のopenはSafari名解決失敗、絶対path指定でもkLSNoExecutableE
 task間依存と合わせたグラフを検査し、接続したtaskは独立列から外す。マイルストーン選択時は正本と前後関係を読み取り専用で表示する。選択状態は一覧・グラフ・独立列で共有する。マイルストーン編集は未実装。
 
 旧JSONを開いた場合、そのデータにmilestonesがなければ旧taskグラフのみになる。最新版の内蔵データまたは同梱registry.jsonを使う。元Registryのsnapshot時点とマイルストーンを採取した時点は異なるため、各source情報を保持している。
+
+2026-10-16：ユーザーによる関係除去とJSON保存・返却を初めて確認し、直接依存2本の除去を正本へ取り込んだ。配布snapshotも更新済み。線のクリックでtask依存・マイルストーン関係を除去できる。UI全体の検証完了を意味しない。

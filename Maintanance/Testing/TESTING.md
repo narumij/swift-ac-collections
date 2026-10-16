@@ -1,6 +1,6 @@
 # テストメンテナンス・ダッシュボード
 
-現在情報だけを保持する。作業規則は `Tests/CLAUDE.md`、CodexからClaudeへの依頼は
+現在情報だけを保持する。作業入口は `Tests/CLAUDE.md`、テスト固有の手順正本は [TEST_WORKFLOW.md](TEST_WORKFLOW.md)、CodexからClaudeへの依頼は
 `Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md`、2026-10-15までに完了した
 作業記録と旧handoffは `Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md` にある。
 参照資料は必要な箇所だけ検索し、通常は通読しない。
@@ -75,7 +75,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 - 赤黒木Test as Specの補完（RBT-042〜046）は完了・受入済み。範囲版`erase(_:where:)`がpredicateのエラーをtrapにする問題は
   Astraが4型で修正し、回帰テスト8件がある。重複keyでの`.lessThanOrEqual(k)`がどの値を指すかは規定しない（RBT-041で整理）。
-  経緯は`Maintanance/Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`、各返却は`Maintanance/CLAUDE_TASK.md`。
+  経緯は`Maintanance/Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`、各返却は`Maintanance/Archived/CLAUDE_TASK_HISTORY_2026-10-16.md`（履歴として参照）。
 - ElementBuffer系の仕様testのファイル名は改名前の`BareArray_*`・`OptionalArray_*`のまま。監査の正本がこの名前を
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が2件ある（`RedBlackTreeInternal_ComparatorsTests.swift:178`・`:219`、2026-10-16確認）。仕様には影響しない。

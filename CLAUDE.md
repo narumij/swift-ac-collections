@@ -14,7 +14,9 @@ For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and foll
 # Task selection and start authority
 
 Readiness and Claude ownership do not authorize autonomous task selection or start. Begin work only
-after the user or Codex selects the task for Claude. A direct user request before stable Registry ID
+after the user or a coordinator acting within the user's delegation selects the task for Claude. For coordinator assignments, follow the ownership and handoff rules in
+[CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md); the task must already be registered and the request must name its stable ID.
+Check the selected task's current state and conditions before starting or changing it. A recorded active assignment does not override the user's current request or grant authority to resume frozen work. A direct user request before stable Registry ID
 assignment is governed by the bounded exception below.
 
 # Work awaiting a Registry ID
@@ -41,7 +43,7 @@ at session startup or used to select work autonomously.
 
 # Communication
 
-Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.
+Communicate with the user in Japanese. To reduce usage, use English by default for internal instructions and coordinator-to-Claude work requests. This is a project-wide writing convention, not a test-only requirement; preserve Japanese quotations and canonical terms when needed for accuracy. Explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.
 
 For assignments managed through `Maintanance/CLAUDE_TASK.md`, do not send progress
 updates, startup summaries, or completion details to the user. Put all handoff details
@@ -52,26 +54,23 @@ decision that only the user can make is required.
 
 # Workspace Boundary
 
-Work only inside `/Users/narumij/Documents/GitHub/swift-ac-collections`.
+Keep intentional edits within `/Users/narumij/Documents/GitHub/swift-ac-collections`,
+except for external files explicitly designated by the user and task-owned temporary
+files. Access remains subject to the environment's permissions.
 
-Do not read, search, create, modify, or delete files outside this repository,
-except for a dedicated disposable directory created by this task under the
-system temporary directory. In particular, do not inspect parent directories,
-the user's home directory, Xcode caches, DerivedData, global SwiftPM caches, or
-unrelated contents of system temporary directories.
+Read tools, SDKs, dependencies, and build results outside the repository when needed
+for the assigned work. Keep searches scoped to that purpose; do not explore the
+user's home directory, unrelated documents, or other tasks' temporary files broadly.
 
-If a command requests permission to access any other path outside the repository,
-cancel it. Ask the user before accessing any external path other than the
-task-owned temporary directory, even for read-only investigation.
+Normal build and test output in `.build`, DerivedData, and standard tool caches is
+allowed. This does not authorize manual modification or cleanup of shared caches,
+SDKs, dependencies, or other projects' output.
 
-Prefer terminal output over temporary files. If temporary output is unavoidable,
-create a uniquely named task directory with `mktemp -d` under the system temporary
-directory, use only that resolved path, and remove it before the final report.
-Do not inspect neighboring temporary files or use broad wildcards when cleaning up.
+For temporary work files, handoff, or end-of-day cleanup, consult only the relevant
+section of [COMMONS.md](Maintanance/ProgressV2/COMMONS.md). It is shared by all agents
+and is not mandatory startup reading. Record task-owned temporary paths and retention
+state so end-of-day cleanup can collect them without touching other work.
 
-Do not place scratch files, captured compiler output, generated comparison
-sources, assembly, or reversible experiment artifacts anywhere inside the
-repository, including `.build`, the repository root, source directories, test
-directories, and maintenance directories. Files intentionally retained as test
-fixtures, benchmark source, or recorded raw benchmark evidence are not scratch
-files; name and report them explicitly.
+Intentionally retained fixtures, benchmark sources, and raw evidence belong in their
+assigned repository locations and must be identified in the report. Do not scatter
+disposable experiment files through source, test, or maintenance directories.

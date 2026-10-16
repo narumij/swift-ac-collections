@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-**現在の依頼なし。OPS-053 R2は返却・Astra受入済み。指摘対応を完了し、ユーザー指示によりDONE。**
+**Active: OPS-055 — COMMONS.md review (Claude／姫).** OPS-053 R2は受入済み・DONE。今回の編集範囲は末尾のOPS-055 Returnのみ。
 
 OPS-050・OPS-052は返却・Astra受入済み、`DONE`。
 
@@ -201,3 +201,60 @@ Nodeのverify.cjsで既存検証に加え、HTMLパス・ルートパス・複�
 指摘5の恒久決定後の区分・決定記録形式は、最初のユーザーによる恒久決定時に確認する。今回は恒久指定を追加せず、恒久希望から自動昇格しない。現在の一本化・暫定保護の運用を完了する妨げとはしない。
 
 ユーザーの「それ済んだら完了にしよう」「コミットしてね」によりOPS-053をDONEとする。OPS-054の前提は充足したが、今回は着手していない。
+
+
+## OPS-055 — Shared temporary-work and end-of-day cleanup review
+
+Requested by the user on 2026-10-16. Author and acceptance: Astra. Reviewer: Claude (姫).
+This request and the inputs are fixed on handoff. Review only; do not perform cleanup.
+
+### Purpose and scope
+
+Independently check whether COMMONS.md implements the user's intent: shared rules for
+Astra, Codex, Claude, and workers; temporary work is allowed; identifiable records enable
+end-of-day cleanup; other work is protected; useful evidence survives. Read the relevant
+sections only. Do not assume agreement or expand into a full startup-document redesign (OPS-054).
+
+Check these four areas:
+
+1. Deletion authority: a record of a path or a DONE task must not alone authorize deletion.
+   Cross-agent cleanup needs recorded permission/readiness; unrelated files and shared caches
+   must remain outside scope. Identify ambiguities between cleanup delegation and ownership.
+2. In-progress protection: interrupted work, unknown ownership, retained evidence, missing paths,
+   and paths replaced by links must not cause accidental deletion. Review the procedure on paper;
+   do not inspect or delete actual temporary files.
+3. Recording burden: can a creator record a path once in the task canonical record or assigned
+   return/queue, and can a later cleaner discover it within the requested scope? Identify gaps
+   or unnecessary duplication without inventing a second Registry or automatic scheduler.
+4. On-demand loading: verify links and agreement among COMMONS.md, root CLAUDE.md, and the
+   Progress V2 entry. It should not become mandatory startup reading. Existing task authority,
+   numbering, and user decisions must remain in their current canonical sources.
+
+Report concrete findings, severity, examples, and minimal suggested corrections. Separate factual
+contradictions from proposals requiring user judgment. No code tests or actual cleanup required.
+
+### Fixed inputs
+
+Compare SHA-256 with the working-tree contents, not HEAD. These include uncommitted work.
+If an input differs, stop review of the affected input and report the mismatch.
+
+- `Maintanance/ProgressV2/COMMONS.md` — SHA-256 `f9eaba1ec7e0e7e60310c6007f4d3135f68cbb448e502fd1f3b2f600655a83f3`
+- `CLAUDE.md` — SHA-256 `ff299016a05269df9e86a5f0a2c2cbfb8d034c35ca62fcdd3909414df558d21c`
+- `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` — SHA-256 `ff809bd3dcae5ad455435752fa6faad1bcba30d12b6adff6b9d25ebe25281336`
+- `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` — SHA-256 `cb155d8bd6e88ac1469985f8bbc596eb5be75ca5d572fa07c6f6464c6bdeba96`
+- `Maintanance/ProgressV2/TASK_RULES_V2.md` — SHA-256 `d75ee8b0cb9d69491f272e7056e02fe3fe9136ae4da717b344f01c369bdf2f5b`
+
+### Ownership and return
+
+Edit only the OPS-055 Return below. The standing permission to append your own observations
+remains valid. Do not change inputs, earlier returns, Registry, rules, or task states; do not
+start OPS-054, assign IDs, clean files, or commit. A later explicit user authorization overrides
+only its stated scope; record that authorization in the return.
+
+Return the reviewed scope, hash/link checks, findings or no findings, remaining uncertainty,
+and a completion statement. Astra will verify and accept; preserve the original return.
+Follow root CLAUDE.md for user-facing communication.
+
+### OPS-055 Return（Claude記入欄）
+
+未返却。

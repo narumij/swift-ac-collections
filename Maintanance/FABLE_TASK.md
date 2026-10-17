@@ -31,7 +31,7 @@ Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記�
 
 ## Current job status
 
-現在の依頼はない。
+OPS-044：採番待ち3件の照合案を作る管理試験をFableへ依頼中。対象・編集範囲・Returnは[試験正本](Current/FABLE_MANAGEMENT_TRIAL.md)。最終受入・Registry反映はAstra。
 
 ユーザーがFableへ直接依頼した採番前の作業は、[採番待ちqueue](FABLE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -46,3 +46,7 @@ For the authority of historical records, follow [AGENTS.md — 現在の仕事�
 ## 受入済み依頼の履歴
 
 まだない。受入済みの節は、上記の委任に従って`Archived/FABLE_TASK_HISTORY_<日付>.md`へ移し、ここにリンクを残す。
+
+## OPS-044 — Bounded management trial (2026-10-17)
+
+The user approved one trial of pending-entry reconciliation. Follow [the canonical assignment](Current/FABLE_MANAGEMENT_TRIAL.md): CP-20261017-007, CP-20261017-008, and FP-20261017-001 only. Produce an evidence-backed update proposal in its Return section. Do not edit the Registry or queues, allocate IDs, accept your own work, or expand the task. The registered parent is OPS-044 and remains ACTIVE. Assignment complete: the specified output scope is handed to Fable until Return. No commit or external operation is delegated.

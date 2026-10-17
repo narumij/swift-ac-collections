@@ -20,3 +20,7 @@ Before test work:
    when current results or handoff context are needed.
 
 Historical documents are evidence only, not current start instructions.
+
+For an explicitly assigned Fable session, use FABLE_TASK.md and FABLE_PENDING_TASKS.md
+in Maintanance/ instead of the Claude-specific request and queue above, as defined
+by root CLAUDE.md. Test scope and authority still come from the selected assignment.

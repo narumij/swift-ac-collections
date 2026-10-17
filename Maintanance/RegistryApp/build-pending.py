@@ -1,6 +1,6 @@
 """Build a read-only pending-queue snapshot; never allocate task IDs."""
 from pathlib import Path
-import re, json, hashlib, datetime
+import re, json, hashlib, datetime, os
 app = Path(__file__).resolve().parent
 # Each agent keeps its own queue with its own temporary-ID prefix. Add a row here to show another queue.
 queues = [
@@ -25,7 +25,7 @@ for queue in queues:
     sources.append(dict(path=queue['path'], owner=queue['owner'], sha256=hashlib.sha256(source.read_bytes()).hexdigest()))
 data = dict(source=' · '.join(s['path'] for s in sources), sources=sources,
             generatedAt=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat(), entries=entries)
-html = app / 'index.html'
+html = Path(os.environ.get('REGISTRY_STUDIO_APP', app.parent / 'Cache/RegistryStudio')) / 'index.html'
 s = html.read_text()
 block = '<script id="pendingSeed" type="application/json">' + json.dumps(data, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
 if '<script id="pendingSeed"' in s:

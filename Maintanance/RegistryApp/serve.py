@@ -10,6 +10,7 @@ from pathlib import Path
 
 APP = Path(__file__).resolve().parent
 ROOT = APP.parent.parent
+OUTPUT = ROOT / "Maintanance/Cache/RegistryStudio"
 SYNC_LOCK = threading.Lock()
 
 
@@ -35,7 +36,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, {'error': 'Not found'})
         name = 'registry.json' if self.path == '/registry.json' else 'index.html'
         mime = 'application/json; charset=utf-8' if name.endswith('.json') else 'text/html; charset=utf-8'
-        self.reply(200, (APP / name).read_bytes(), mime)
+        self.reply(200, (OUTPUT / name).read_bytes(), mime)
 
     def do_POST(self):
         origin = f'http://127.0.0.1:{self.server.server_port}'
@@ -64,6 +65,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=8088)
     args = parser.parse_args()
+    subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, check=True)
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
     print(f'Registry Studio: http://127.0.0.1:{args.port}/  (Ctrl+C to stop)', flush=True)
     try:

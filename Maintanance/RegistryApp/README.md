@@ -1,3 +1,5 @@
+> 2026-10-17：生成物の出力先は `Maintanance/Cache/RegistryStudio/`（Git管理外）。以下の閲覧用 `index.html` と `registry.json` はこの出力先を指す。編集するHTMLソースは `RegistryApp/index.template.html`。`sync.py` がテンプレートから毎回生成する。サーバー起動時にも生成し、更新ボタンも同じ出力先を更新する。旧配置の生成物は削除済み。
+
 # レジストリスタジオ（仮）— 利用手順の正本
 
 
@@ -63,7 +65,7 @@ Safari UIは未検証。操作権限がなく実機試験できず、自動試�
 Safariで開く場合は起動スニペットを渡し、ユーザーが実行する。通常の現状提示では上の手順に従い、更新済みHTMLへのリンクを提示する。
 
 ```sh
-open -a Safari "/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/RegistryApp/index.html"
+open -a Safari "/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Cache/RegistryStudio/index.html"
 ```
 
 Astra側のopenはSafari名解決失敗、絶対path指定でもkLSNoExecutableErrとなり、起動を確認できなかった。その後、ユーザーによる画面調整とJSON保存・返却・正本反映の往復を確認している。UI全体の検証完了を意味しない。

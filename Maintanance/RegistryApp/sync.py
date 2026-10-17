@@ -16,7 +16,8 @@ from pathlib import Path
 
 import os, shutil, tempfile
 ROOT = Path(__file__).resolve().parent.parent.parent
-APP = Path(os.environ.get('REGISTRY_STUDIO_APP', Path(__file__).resolve().parent))
+CODE = Path(__file__).resolve().parent
+APP = Path(os.environ.get('REGISTRY_STUDIO_APP', ROOT / 'Maintanance/Cache/RegistryStudio'))
 REGISTRY = ROOT / 'Maintanance/ProgressV2/TASK_REGISTRY_V2.md'
 RULES = ROOT / 'Maintanance/ProgressV2/TASK_RULES_V2.md'
 JSON = APP / 'registry.json'
@@ -368,7 +369,7 @@ def tool(flag, env, default):
 # Order: --flag > environment variable > saved local record (reused only if it still works) > PATH >
 # known install locations. The record is environment-specific and untracked; the README describes
 # how to check it, not where the binaries are.
-TOOLS_RECORD = APP / 'local-tools.json'
+TOOLS_RECORD = CODE / 'local-tools.json'
 NODE_CANDIDATES = [
     '~/.cache/codex-runtimes/*/dependencies/node/bin/node',
     '/opt/homebrew/bin/node', '/usr/local/bin/node',
@@ -479,7 +480,7 @@ def main():
             note = '~ previous registry.json was unreadable; regenerated from the sources'
     try:
         seed = seed_of(HTML.read_text(encoding='utf-8'))
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, FileNotFoundError):
         seed = None
     changes = diff(old or EMPTY, new)
     if old is None:
@@ -495,23 +496,27 @@ def main():
     print('\n'.join(tool_notes))
     if old and same_content(old, new) and seed == old:
         new['source']['generatedAt'] = old['source'].get('generatedAt')  # no meaningless diff on rerun
+    APP.mkdir(parents=True, exist_ok=True)
+    child_env = dict(os.environ, REGISTRY_STUDIO_APP=str(APP.resolve()))
     backup = Path(tempfile.mkdtemp(prefix='registry-studio-sync-'))
     saved = [f for f in (JSON, HTML) if f.exists()]
     for f in saved:
         shutil.copy2(f, backup / f.name)
     try:
+        shutil.copy2(CODE / 'index.template.html', HTML)
         JSON.write_text(json.dumps(new, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         embed(new)
-        subprocess.run([sys.executable, str(APP / 'build-pending.py')], cwd=ROOT, check=True)
+        subprocess.run([sys.executable, str(CODE / 'build-pending.py')], cwd=ROOT, check=True, env=child_env)
         if not node:
             raise FileNotFoundError('node not found; documents cannot be rebuilt or verified. Pass --node PATH once (it is then saved to local-tools.json), or see RegistryApp/README.md')
-        subprocess.run([node, str(APP / 'build-documents.mjs')] + ([marked] if marked else []), cwd=APP, check=True)
-        subprocess.run([node, str(APP / 'verify.cjs')], cwd=APP, check=True)
+        subprocess.run([node, str(CODE / 'build-documents.mjs')] + ([marked] if marked else []), cwd=CODE, check=True, env=child_env)
+        subprocess.run([node, str(CODE / 'verify.cjs')], cwd=CODE, check=True, env=child_env)
     except (subprocess.CalledProcessError, OSError, ValueError) as e:
         for f in saved:
             shutil.copy2(backup / f.name, f)
-        if JSON not in saved and JSON.exists():
-            JSON.unlink()
+        for f in (JSON, HTML):
+            if f not in saved and f.exists():
+                f.unlink()
         shutil.rmtree(backup)
         print(f'FAILED ({e}); restored registry.json and index.html to their state before this run')
         sys.exit(1)

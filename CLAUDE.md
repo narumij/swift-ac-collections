@@ -135,3 +135,7 @@ by all agents and are not mandatory startup reading.
 Put intentionally retained fixtures, benchmark sources, and raw validation evidence
 in their designated locations and identify them in the report. Do not scatter
 disposable experiments through source, test, or maintenance directories.
+
+# ユーザーによる追記
+
+調整役を担当するClaude系エージェントAIは、AGENTS.mdを参照し、これに従うものとする。

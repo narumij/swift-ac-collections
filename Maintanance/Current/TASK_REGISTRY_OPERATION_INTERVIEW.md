@@ -26,3 +26,7 @@
 ## 改善案2の反映（2026-10-17）
 
 ユーザー指示「インタビュー改善案2をお願い。Studio起動に必要なnode・markedを毎回探し直さなくて済むようにして。共通READMEには確認方法と記録先、環境固有のパスはローカル記録へ。保存済みパスが使えるか確認して再利用し、使えないときだけ探索する形で」。Fableが`sync.py`に解決順（flag/env → 保存済み記録の検証つき再利用 → PATH → 既知の置き場所の探索）と`--show-tools`、成功時の`local-tools.json`（Git管理外）への保存を実装し、Studio READMEに確認方法・優先順位・記録先・やり直し方を記載した。環境固有のパスはREADMEに書いていない。OPS-065として記録。
+
+## 改善案1・4のタスク登録（2026-10-17）
+
+ユーザー指示により、改善案1を[OPS-066](CANONICAL_CONFIRMED_SCOPE_SUMMARY.md)（PROPOSED、Astra、登録のみ）、改善案4を[OPS-067](COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md)（USER_ONLY、ユーザー判断）へ接続した。実施や制度変更は今回行わない。

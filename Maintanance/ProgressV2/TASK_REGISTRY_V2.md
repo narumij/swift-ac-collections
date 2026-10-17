@@ -108,6 +108,8 @@
 | `OPS-063` | `ACTIVE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/ASTRA.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/FABLE.md` |
 | `OPS-064` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |
 | `OPS-065` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio同期のnode・marked解決を記録して再利用 | 2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |
+| `OPS-066` | `PROPOSED` | Astra | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。受入済み対象・証拠commit・未確認事項・次の確認点を正本冒頭へ短く置く。対象を絞って試行する候補として登録。今回は登録のみ、本文改修は未着手。Registry状態の複製や全正本の一括移行はしない。 | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |
+| `OPS-067` | `USER_ONLY` | User | [DECISION] 担当・委任定義の集約方針を判断する | 2026-10-17ユーザー依頼。インタビュー改善案4。担当・委任の定義を一か所へ寄せる方針と集約先・適用範囲をユーザーが判断する。今回は登録のみ。AIは本体の実行・委任・判断代行をしない。上位文書変更や現行権限の拡張は未承認。 | `Maintanance/Current/COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -294,6 +296,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-064` |
 | `OPS-048` | `OPS-065` |
 | `OPS-043` | `OPS-063` |
+| `DOC-030` | `OPS-066` |
+| `OPS-044` | `OPS-067` |
 
 ## マイルストーン接続
 

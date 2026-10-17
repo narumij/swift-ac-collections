@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 候補CIに、Linux上でAddress Sanitizerを有効にしてdeath testを実行するjobを追加
 
+<!-- ユーザー手作業の為反映もれあり -->
+<!-- TODO: 事後的に不足を埋めること -->
+
 ## [0.5.4] - 2026-10-17
 
 ### Added

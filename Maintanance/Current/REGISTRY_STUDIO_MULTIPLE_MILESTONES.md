@@ -30,4 +30,49 @@ verify.cjsの該当検査を、版フォルダの実ファイル順と内部ID�
 
 ## Return（姫記入）
 
-未返却。
+2026-10-18 / 姫・Opus 5.5。入力`037a3b0645d32e76cebf8166278a316efb45ea24`（依頼の入力`5c274e38`の後、OPS-079登録commitのみ）。作業ツリーの`USER_PENDING_TASKS.md`（ユーザーの変更）には触れていない。
+
+**再現（修正前）**：隔離したgit worktree（入力commit、一時ディレクトリ）の`0.6.0/`に、`10_SPI.md`を写した2枚目`20_EXTRA.md`（ID `MS-EXTRA`）を置いてsyncした。生成器は`START-0.6.0→MS-SPI→MS-EXTRA→END-0.6.0`と正しい鎖を作ったが、`verify.cjs:15`の「MS-SPI ends at END-0.6.0」で失敗し、生成物が復元された。ログは`Evidence/OPS-079/before_fix_two_cards.log`。原因は、私がOPS-078で入れた「各カードにSTART→カードとカード→ENDを要求する」検査（カード1枚の前提）。
+
+**変更**（`verify.cjs`と`README.md`だけ）：
+
+1. `expectedMilestoneChains(data)`：生成された接続を見ずに期待値を作る。カードの集合（`milestones`の`gate`）とファイル名順から、版ごとに`START → 中間カード（ファイル名順）→ END`を作る。番号の接頭辞もMS接頭辞も前提にしない。版は仮想STARTから取るので、カード0枚の版も入る。
+2. `milestoneChainErrors(data)`：期待する隣接がすべてあることを確かめる（欠落）。鎖の中のノード同士に、隣でない接続（逆順・飛ばし・START→ENDの直結）がないことも確かめる。
+3. 15行の旧検査を`milestoneChainErrors(original)`が空であることの検査に置き換えた。
+4. 102行のゲート表示検査：最初のカードを期待の鎖の2番目から取る（MS接頭辞や生成された接続に頼らない）。カード0枚の版はENDが描かれないので対象外。
+5. 隔離fixture（verify内の合成データ、版`9.9.9`）で次を確かめた。
+   - 通るもの：0枚、1枚、4枚（番号なしの`GOAL.md`、ID `GOAL-X`・`Q-1`を含む）、改名で並びが変わった場合（IDは同じ）。
+   - 拒むもの：改名前の並びのままの接続、欠落、逆順、START→ENDの直結、カードを飛ばすSTART→2枚目。
+6. READMEの検証説明に一文を足した。
+
+**実行結果**：
+- 現配置：`sync.py`成功、`--check`でずれなし。
+- PASS行は22→23（fixtureの1行が増えた。旧verifyも同じ配置で22行。一時コピーで数え、削除済み）。
+- 隔離worktreeで新しいverifyを使い、次の3つを確かめた（`Evidence/OPS-079/`）。
+  - 2枚：成功、鎖は上のとおり。
+  - `10_SPI.md`→`30_SPI.md`へ改名：成功、`START→MS-EXTRA→MS-SPI→END`へ並び替わった。
+  - 2枚目を番号なしの`EXTRA.md`にした場合：後述。
+- 実配置のMilestonesは触っていない（`git status`で差分なし）。
+- worktreeは`git worktree remove`で削除した。
+- Safariは未確認。
+
+**生成器の不具合（範囲外、直していない）**：`sync.py` 155行は`\d+_.+\.md|GATE-…`に合うファイルだけをカードとして読み、それ以外を「GOAL.mdなどは無視」として飛ばす。DESIGN（Milestones/DESIGN.md 44・53行）では、ゲート以外のファイルはすべて中間マイルストーンで、番号は推奨にすぎない。
+
+- 再現：worktreeで2枚目を`EXTRA.md`に改名すると、`MS-EXTRA`が生成データから消え、syncは成功してしまう（`generator_unnumbered.txt`）。
+- 現配置でも`1.0.0/GOAL.md`はカード情報（ID付き）を持つが、生成されていない。
+- verifyは生成されたカードの集合から期待値を作るため、この取りこぼしは検出しない。ファイル一覧からの検査を足すと、今の`GOAL.md`で落ちる。
+- 直すには`sync.py`のカード選択の変更が要り、本依頼の編集範囲外。`GOAL.md`をカードとして扱うかどうか（1.0.0の版計画）も、ユーザーの判断に関わる。
+
+**残課題**：上の生成器の件。161行の「保護18件」の決め打ちは対象外のまま。
+
+**作業物**：一時worktreeと一時コピーは削除済み。`/private/tmp/swift-ac-test-count.*`のprunableなworktreeが一覧に出るが、私のものではないので触っていない。
+
+commitはしていない。
+
+## Astra受入（2026-10-18）
+
+姫のverify.cjs差分と4件の証拠を確認。生成済みカードの名前順から独立に期待する隣接を作り、0・1・複数枚・並び替え・不正辺を検査する変更を受入。現配置でsync/verifyを独立実行し23 PASS、missing: none、--checkずれなし。隔離worktreeの再現は保存証拠を受領し、受入側では再実行していない。Safari未確認。
+
+最新のユーザー編集DESIGNには「GOAL.mdは置物として無視」が追記された。DESIGN自体は変更せず、Astraが受入時にverifyの期待値からGOAL.mdを除外し、その除外fixtureを追加。番号なしカードのfixture名はGOAL.mdからEXTRA.mdへ訂正した。姫の原Returnは旧仕様時点の返却として保持する。GOALを生成しないことは不具合ではなく、版計画判断も不要。
+
+OPS-079は依頼範囲の検査修正としてDONE。番号なし通常カードEXTRA.mdの生成器による取りこぼしは残る。修正には別の委任範囲が必要なためOPS-048の次の修正候補に記録し、仕様全体への適合完了とはしない。生成器が読み落としたカードは現verifyの入力にも存在せず検出できない限界を保持する。実マイルストーン配置は変更していない。

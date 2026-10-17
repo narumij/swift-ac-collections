@@ -118,6 +118,7 @@
 | `OPS-073` | `PROPOSED` | 未定 / User（採否） | [DISCOVERY] 情報・知識・判断・契約の寿命を区別する | CP-012から登録。定義・失敗例・見直し契機の最小案を返す。登録のみ、既存判断や委任を失効させない | `Maintanance/Current/RECORD_LIFETIME_STUDY.md` |
 | `OPS-074` | `ACTIVE` | 姫（点検） / Astra（受入） | [EXECUTION] 正本の棚卸し追記を段階実施する | CP-013第1区切りを補正付き受入。2026-10-17第2区切り受領、姫へ追加対応を依頼。固定入力とSHA・パス・行範囲・主張の対応、旧集計の確認範囲を補完して返す。完了受入は返却後。深い点検は後回し。本文改変・Registry変更・他担当の作業中文書は対象外 | `Maintanance/Current/CANONICAL_INVENTORY_APPEND.md` |
 | `OPS-075` | `PROPOSED` | User（判断） / 指名された調整担当（材料整理） | [DECISION] 姫を称号から屋号へ変えるか判断する | CP-009を正式登録。時期の目安はFableが安くなったとき、再開はユーザー指定時。現行称号・モデル別委任を維持し、登録のみで移行しない | `Maintanance/Current/HIME_TRADE_NAME_DECISION.md` |
+| `OPS-076` | `PROPOSED` | 姫（実施予定） / Astra（受入） | [EXECUTION] 根拠と更新条件の追記を現行正本へ全体展開する | OPS-074追加返却の固定版再現・受入後、対象と占有を確認して区切りごとに正式依頼する。浅い事実確認と追記のみ。本文短縮・判断失効・制度採用は含めない。今回は登録のみ | `Maintanance/Current/CANONICAL_EVIDENCE_ROLLOUT.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -138,6 +139,7 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `OPS-076` | `OPS-074` | `SEQUENCE` | 追加返却を固定版で再現・受入してから対象と編集範囲を確定して依頼する。受入だけでは自動開始しない |
 | `OPS-068` | `OPS-058` | `SEQUENCE` | ユーザーが限定試行の方針・対象・受入条件を承認し、入力と編集範囲を固定して正式依頼するまで着手しない |
 | `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |
 | `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |
@@ -317,6 +319,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-070` | `OPS-072` |
 | `OPS-071` | `OPS-073` |
 | `OPS-070` | `OPS-074` |
+| `OPS-070` | `OPS-076` |
 | `OPS-044` | `OPS-075` |
 
 ## マイルストーン接続

@@ -112,6 +112,7 @@
 | `OPS-067` | `USER_ONLY` | User | [DECISION] 担当・委任定義の集約方針を判断する | 2026-10-17ユーザー依頼。インタビュー改善案4。担当・委任の定義を一か所へ寄せる方針と集約先・適用範囲をユーザーが判断する。今回は登録のみ。AIは本体の実行・委任・判断代行をしない。上位文書変更や現行権限の拡張は未承認。 | `Maintanance/Current/COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md` |
 | `OPS-068` | `PROPOSED` | Claude（作業予定） / Astra（受入） | [EXECUTION] 現行判断と旧判断を分ける文書整理の限定試行 | 2026-10-17ユーザー指定で登録。OPS-058の方針承認後、対象・入力・編集範囲を固定してCLAUDE_TASKで正式依頼する。現行判断・履歴・参照を整理し、判断の欠落や意味変更がないかAstraが受け入れる。未発注・未着手 | `Maintanance/Current/DECISION_ARCHIVE_PILOT.md` |
 | `OPS-069` | `PROPOSED` | Astra（実装・検証予定） | [EXECUTION] Studioに版のSTARTと開始側タスクの上段配置を追加 | 2026-10-17ユーザー依頼。STARTは版の作業区間の入口で、release完了や着手許可ではない。STARTから始まる仕事を骨格の上、ENDへ合流する仕事を下へ接続に基づいて配置する。生成・編集・検証を一体で改修し、PERM-079の既存再開条件を保持する。今回は登録のみ、未着手 | `Maintanance/Current/REGISTRY_STUDIO_VERSION_START.md` |
+| `OPS-070` | `PROPOSED` | Astra（影響整理・案） / User（導入判断） | [DISCOVERY] 仮契約概念の導入検討 | 2026-10-17ユーザー依頼。知らなくて当たり前の未知を含む仕事を仮契約として扱い、判明した事実に応じたタスク再分解を自走できる案の影響を整理する。既存の状態・委任・受入・依存・整理との整合、適用境界と試行案を示す。今回は登録のみ。制度導入・権限拡張・既存taskの一括変更は未承認 | `Maintanance/Current/PROVISIONAL_TASK_AGREEMENT_STUDY.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -304,6 +305,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `DOC-030` | `OPS-058` |
 | `OPS-058` | `OPS-068` |
 | `OPS-044` | `OPS-067` |
+| `OPS-044` | `OPS-070` |
 
 ## マイルストーン接続
 

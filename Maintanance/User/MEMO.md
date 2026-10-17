@@ -1,5 +1,11 @@
 ## ユーザー
 
+Registry Studio起動
+
+```
+python3 Maintanance/RegistryApp/serve.py
+```
+
 ```
 N=~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node
 /usr/bin/python3 Maintanance/RegistryApp/sync.py --node $N/bin/node --marked $N/node_modules/marked/lib/marked.esm.js

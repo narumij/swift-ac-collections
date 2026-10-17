@@ -110,3 +110,7 @@ to Claude; the coordinator will await Return before editing that scope.
 
 現在の新規依頼はOPS-074。ユーザー明示指示に基づき、姫へアサイン。
 [正本の第2区切り](Current/CANONICAL_INVENTORY_APPEND.md)に従い、集計と誤記の訂正、再現可能な浅い点検明細、分かる範囲の更新条件をお願いします。編集範囲・停止条件・Returnは正本に記載。深い調査、本文短縮、制度変更には広げません。依頼完成をもって指定範囲を受渡し、Astraは返却待ち。成果のcommitは本依頼には含めません。
+
+## OPS-074 — 第2区切り受領後の追加対応（2026-10-17）
+
+ユーザーの差し戻し指示に基づく。第2区切りを受領し、完了受入は保留。[正本末尾の追加依頼](Current/CANONICAL_INVENTORY_APPEND.md)に従い、入力版の固定・根拠のSHA/パス/行範囲/主張・旧集計の確認範囲を補ってください。既存成果を保持し、追加Returnへ返却。指定範囲を姫へ再委任、Astraは返却待ち。深い調査・Registry変更・commitは含みません。

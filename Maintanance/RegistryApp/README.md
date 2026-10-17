@@ -53,7 +53,7 @@ AIが新しいJSONを作るときは全taskの全6列、全依存の4列、原�
 
 ## 検証範囲
 
-JS構文とデータ処理：現行snapshotの件数・辺、変更前後、baseline維持、JSON往復、重複・自己依存・参照切れ・Flow不正・循環、未知状態・追加属性保持を確認済み。verify.cjsをNode.jsで再実行できる。
+JS構文とデータ処理：現行snapshotの件数・辺、変更前後、baseline維持、JSON往復、重複・自己依存・参照切れ・Flow不正・循環、未知状態・追加属性保持を確認済み。verify.cjsをNode.jsで再実行できる。到達点カードの所属（どの版か）・件数のように正本の配置で変わる値は、決め打ちせず生成データから求めて検査する（OPS-078。カードを版フォルダ間で動かしても検証が落ちない）。
 
 Safari UIは未検証。操作権限がなく実機試験できず、自動試験用WebKit本体も環境に未導入だった。DOM描画、実ダウンロード、画面レイアウトはユーザー試用で確認する。HTML file inputとdownloadを使う設計で、Safari専用の直接上書きAPIを必要としない。
 公式参考：https://webkit.org/blog/12257/the-file-system-access-api-with-origin-private-file-system/

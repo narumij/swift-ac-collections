@@ -130,3 +130,7 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-076 — 第4区切り受入・依頼終了（2026-10-17 / Astra）
 
 [正本の受入記録](Current/CANONICAL_EVIDENCE_ROLLOUT.md)のとおり12件を受入し、初回整備を完了。上記第4区切りの依頼は終了。継続保守は[OPS-077](Current/JUDGMENT_EVIDENCE_MAINTENANCE.md)で扱うが、今回は新規の実作業依頼なし。
+
+## OPS-078 — Studio verify の固定データ依存を直す（2026-10-18 / Fable代理）
+
+ユーザー指示「タスク化して、姫に依頼しておいて」に基づき、Fable（調整代理）が登録・発行。ユーザー報告のバグ（到達点ファイルを版フォルダ間で入れ替えると verify.cjs の固定値の検査が落ちて sync が復元される、再現 4/4）の修正をお願いします。目的・やること・編集範囲・停止条件・完了条件・Return は[正本](Current/REGISTRY_STUDIO_VERIFY_FIXTURE_COUPLING.md)に記載。編集は `RegistryApp/verify.cjs`（必要なら生成器）と README の一文、正本の Return まで。画面・Registry 行・Milestones の恒久変更・commit は含めません。試験で入れ替えた Milestones のファイルは必ず元へ戻してください。依頼完成をもって受渡し、受入は Astra、Fable 代理は返却の照合と Registry 反映まで。

@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "3f0bff28",
-    "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+    "head": "25518fdd",
+    "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
     "dirty": true,
-    "generatedAt": "2026-10-17T15:29:00.620805+09:00",
+    "generatedAt": "2026-10-17T15:33:57.117896+09:00",
     "generator": "sync.py",
     "rulesSha256": "3ef04eb6d750e075dea87ac4e93a358a0b47a6efcfa9a1523d2abd95d0c98b32"
   },
@@ -519,12 +519,12 @@
     },
     {
       "id": "OPS-064",
-      "state": "ACTIVE",
-      "owner": "Fable（実装・検証） / 受入はユーザーかAstra",
+      "state": "DONE",
+      "owner": "Fable（実装・検証） / User（受入）",
       "item": "[EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする",
-      "condition": "2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE",
+      "condition": "2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。同日ユーザーがStudioで確認し受入（「確認ずみ」）",
       "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-      "raw": "| `OPS-064` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+      "raw": "| `OPS-064` | `DONE` | Fable（実装・検証） / User（受入） | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。同日ユーザーがStudioで確認し受入（「確認ずみ」） | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
       "sourceLine": 109,
       "group": "調整・運用の個別課題",
       "permanent": false,
@@ -532,12 +532,12 @@
     },
     {
       "id": "OPS-065",
-      "state": "ACTIVE",
-      "owner": "Fable（実装・検証） / 受入はユーザーかAstra",
+      "state": "DONE",
+      "owner": "Fable（実装・検証・受入、ユーザー指示による自己受入）",
       "item": "[EXECUTION] Studio同期のnode・marked解決を記録して再利用",
-      "condition": "2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。受入後にDONE",
+      "condition": "2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。同日ユーザー「自分でやって」により自己受入",
       "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-      "raw": "| `OPS-065` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio同期のnode・marked解決を記録して再利用 | 2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+      "raw": "| `OPS-065` | `DONE` | Fable（実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] Studio同期のnode・marked解決を記録して再利用 | 2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。同日ユーザー「自分でやって」により自己受入 | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
       "sourceLine": 110,
       "group": "調整・運用の個別課題",
       "permanent": false,
@@ -546,11 +546,11 @@
     {
       "id": "OPS-066",
       "state": "ACTIVE",
-      "owner": "Fable（試行） / 受入はユーザーかAstra",
+      "owner": "Fable（試行） / Astra（受入、ユーザー指定）",
       "item": "[EXECUTION] 正本冒頭に確定範囲と未確認事項を示す",
       "condition": "2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断",
       "detail": "`Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md`",
-      "raw": "| `OPS-066` | `ACTIVE` | Fable（試行） / 受入はユーザーかAstra | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断 | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |",
+      "raw": "| `OPS-066` | `ACTIVE` | Fable（試行） / Astra（受入、ユーザー指定） | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断 | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |",
       "sourceLine": 111,
       "group": "調整・運用の個別課題",
       "permanent": false,
@@ -1200,12 +1200,12 @@
       },
       {
         "id": "OPS-064",
-        "state": "ACTIVE",
-        "owner": "Fable（実装・検証） / 受入はユーザーかAstra",
+        "state": "DONE",
+        "owner": "Fable（実装・検証） / User（受入）",
         "item": "[EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする",
-        "condition": "2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE",
+        "condition": "2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。同日ユーザーがStudioで確認し受入（「確認ずみ」）",
         "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-        "raw": "| `OPS-064` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+        "raw": "| `OPS-064` | `DONE` | Fable（実装・検証） / User（受入） | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。同日ユーザーがStudioで確認し受入（「確認ずみ」） | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
         "sourceLine": 109,
         "group": "調整・運用の個別課題",
         "permanent": false,
@@ -1213,12 +1213,12 @@
       },
       {
         "id": "OPS-065",
-        "state": "ACTIVE",
-        "owner": "Fable（実装・検証） / 受入はユーザーかAstra",
+        "state": "DONE",
+        "owner": "Fable（実装・検証・受入、ユーザー指示による自己受入）",
         "item": "[EXECUTION] Studio同期のnode・marked解決を記録して再利用",
-        "condition": "2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。受入後にDONE",
+        "condition": "2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。同日ユーザー「自分でやって」により自己受入",
         "detail": "`Maintanance/Current/TASK_REGISTRY_APP.md`",
-        "raw": "| `OPS-065` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio同期のnode・marked解決を記録して再利用 | 2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
+        "raw": "| `OPS-065` | `DONE` | Fable（実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] Studio同期のnode・marked解決を記録して再利用 | 2026-10-17ユーザー指示（インタビュー改善案2）。sync.pyが flag/env → 保存済み記録（使えるか確認して再利用） → PATH → 既知の置き場所の探索 の順で解決し、成功時に`RegistryApp/local-tools.json`（Git管理外）へ保存。`--show-tools`で確認。READMEには確認方法と記録先のみ、環境固有のパスは書かない。同日ユーザー「自分でやって」により自己受入 | `Maintanance/Current/TASK_REGISTRY_APP.md` |",
         "sourceLine": 110,
         "group": "調整・運用の個別課題",
         "permanent": false,
@@ -1227,11 +1227,11 @@
       {
         "id": "OPS-066",
         "state": "ACTIVE",
-        "owner": "Fable（試行） / 受入はユーザーかAstra",
+        "owner": "Fable（試行） / Astra（受入、ユーザー指定）",
         "item": "[EXECUTION] 正本冒頭に確定範囲と未確認事項を示す",
         "condition": "2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断",
         "detail": "`Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md`",
-        "raw": "| `OPS-066` | `ACTIVE` | Fable（試行） / 受入はユーザーかAstra | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断 | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |",
+        "raw": "| `OPS-066` | `ACTIVE` | Fable（試行） / Astra（受入、ユーザー指定） | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。受入後にDONEか対象拡大の別taskか判断 | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |",
         "sourceLine": 111,
         "group": "調整・運用の個別課題",
         "permanent": false,
@@ -1378,7 +1378,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 310
         }
       },
@@ -1389,7 +1389,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 311
         }
       },
@@ -1400,7 +1400,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 312
         }
       },
@@ -1411,7 +1411,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 313
         }
       },
@@ -1422,7 +1422,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 314
         }
       },
@@ -1433,7 +1433,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-005` | `END-0.7.0` | 到達後。0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。END-0.7.0の前提ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 315
         }
       },
@@ -1444,7 +1444,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 316
         }
       },
@@ -1455,7 +1455,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 317
         }
       },
@@ -1466,7 +1466,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 318
         }
       },
@@ -1477,7 +1477,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 319
         }
       },
@@ -1488,7 +1488,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 320
         }
       },
@@ -1499,7 +1499,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 321
         }
       },
@@ -1510,7 +1510,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 322
         }
       },
@@ -1521,7 +1521,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 323
         }
       },
@@ -1532,7 +1532,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+          "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
           "line": 324
         }
       },
@@ -1940,7 +1940,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 310
       }
     },
@@ -1951,7 +1951,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 311
       }
     },
@@ -1962,7 +1962,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 312
       }
     },
@@ -1973,7 +1973,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 313
       }
     },
@@ -1984,7 +1984,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 314
       }
     },
@@ -1995,7 +1995,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-005` | `END-0.7.0` | 到達後。0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。END-0.7.0の前提ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 315
       }
     },
@@ -2006,7 +2006,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 316
       }
     },
@@ -2017,7 +2017,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 317
       }
     },
@@ -2028,7 +2028,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 318
       }
     },
@@ -2039,7 +2039,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 319
       }
     },
@@ -2050,7 +2050,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 320
       }
     },
@@ -2061,7 +2061,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 321
       }
     },
@@ -2072,7 +2072,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 322
       }
     },
@@ -2083,7 +2083,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 323
       }
     },
@@ -2094,7 +2094,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "82a1dc1d9ecb995e0c1b54b9de6bac58c1ebdafe0db5e5b312ffec6710eb8974",
+        "sha256": "ce0059af9311321e43074ad81981d565d7763b8a71087bc77addc14930354435",
         "line": 324
       }
     },

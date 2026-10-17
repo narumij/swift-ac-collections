@@ -347,3 +347,23 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  const saved=JSON.parse(JSON.stringify(d));ctx.check(saved);assert.deepEqual(saved.baseline.milestones,original.milestones,'baseline milestones kept');
  const g=ctx.graphData();const placed=ctx.graphLayout(g.nodes,g.edges);assertGeometry(placed,g.nodes,g.edges);ctx.doc=copy(original);
  console.log('PASS: milestone plan (add card, reorder by renumbered file names, move between versions, rename/condition, add unconnected version, changes listed, refusals unchanged, task lines kept, layout).');}
+
+// Canonical drift stays separate from user edits; overlap is field-specific.
+{
+ const source=script.slice(script.indexOf('function canonicalDifferences('),script.indexOf('function renderCanonicalNotice('));
+ const c={};vm.createContext(c);vm.runInContext(source,c);
+ const data={tasks:[{id:'T-1',item:'one',state:'ACTIVE',owner:'A'}],milestones:[],edges:[],milestoneRelations:[]};
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const before=JSON.stringify(data),user=clone(data);let latest=clone(data);
+ user.tasks[0].owner='B';latest.tasks[0].state='DONE';
+ let rows=c.canonicalDifferences(data,user,latest);
+ assert.equal(rows.length,1);assert.equal(rows[0].conflict,false);
+ user.tasks[0].state='USER_ONLY';assert.equal(c.canonicalDifferences(data,user,latest)[0].conflict,true);
+ user.tasks[0].state='DONE';assert.equal(c.canonicalDifferences(data,user,latest)[0].conflict,false);
+ latest.tasks=[];assert.equal(c.canonicalDifferences(data,user,latest)[0].conflict,true);
+ latest.tasks=[...data.tasks,{id:'T-2',item:'added'}];rows=c.canonicalDifferences(data,data,latest);assert.equal(rows.length,1);assert.match(rows[0].label,/追加/);
+ latest=clone(data);latest.tasks[0].sourceLine=99;assert.equal(c.canonicalDifferences(data,data,latest).length,0);
+ assert.equal(JSON.stringify(data),before);
+ const old=clone(data);delete old.milestones;latest.milestones=[{id:'MS-X',item:'gate'}];assert.equal(c.canonicalDifferences(old,data,latest)[0].unknown,true);
+ console.log('PASS: canonical additions/deletions, field overlap, same-result convergence, metadata ignored, missing baseline reported, inputs preserved.');
+}

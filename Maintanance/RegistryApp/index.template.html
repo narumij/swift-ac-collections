@@ -30,7 +30,7 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-row{display:fl
 .pending-card{flex:0 0 250px;display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px;border-style:dashed}.pending-card strong,.pending-card small{font-size:12px}.pending-card span{font-size:12px;line-height:1.5}.pending-card small{color:var(--muted)}
 #protectionList table{border-collapse:collapse;width:100%;font-size:12px}#protectionList td,#protectionList th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}#protectionList td:first-child{overflow-wrap:anywhere}#protectionList a{color:var(--accent)}
 </style>
-<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p></header>
+<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header>
 <div id="status" class="status" role="status" hidden></div>
 <div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab" aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden><h2>カード一覧 <span id="cardsCount" class="count"></span></h2><p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p><div id="planTools"></div><div id="cardList"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
 <dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
@@ -46,7 +46,7 @@ const STATES=['ACTIVE','WAITING_USER','WAITING_EXTERNAL','FROZEN','USER_ONLY','P
 let doc=JSON.parse($('seed').textContent),selected=doc.tasks[0]?.id,dirty=false,formDirty=false;
 // Edit version (OPS-082 trial): `workspace` is the saved version being continued; `canonical` is the newest canonical source from sync.
 // The edit version keeps its own source/baseline (its base); a newer canonical is only reported, never merged in here.
-let workspace=null;const canonical=copy(doc.source);
+let workspace=null;const canonical=copy(doc.source); const canonicalSnapshot=copy(doc);
 // Card-list add forms (OPS-086 fix): their unapplied input lives here so selection, tab switches and re-renders keep it.
 // It is not edit data: never saved, but refresh/leaving are guarded while it is pending.
 let planDraft={version:null,name:'',versionName:''};const planDraftPending=()=>!!(planDraft.name.trim()||planDraft.versionName.trim());
@@ -134,7 +134,36 @@ function stateBand(state){const b=el('span',state,'state-band');const c=stateSty
 function el(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
 function report(msg,error=false){$('status').hidden=!msg;$('status').textContent=msg;$('status').classList.toggle('error',error);}
 function delta(){let result=[];for(const t of doc.tasks){let b=doc.baseline.tasks.find(x=>x.id===t.id);for(const k of ['state','owner','item','condition'])if(t[k]!==b[k])result.push({task:t.id,field:k,old:b[k],new:t[k]});}if(JSON.stringify(doc.edges)!==JSON.stringify(doc.baseline.edges))result.push({field:'edges',old:doc.baseline.edges,new:doc.edges});if(JSON.stringify(doc.milestoneRelations||[])!==JSON.stringify(doc.baseline.milestoneRelations||doc.milestoneRelations||[]))result.push({field:'milestoneRelations',old:doc.baseline.milestoneRelations,new:doc.milestoneRelations});if(JSON.stringify(doc.proposals||[])!==JSON.stringify(doc.baseline.proposals||[]))result.push({field:'proposals',old:doc.baseline.proposals||[],new:doc.proposals||[]});const plan=typeof milestonePlanChanges==='function'?milestonePlanChanges(doc):[];if(plan.length)result.push({field:'milestones',changes:plan});return result;}
-function banner(){$('sourceInfo').textContent='生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')+' · '+delta().length+'件の変更'+(dirty?' ／ ファイル未保存':'')+(formDirty?' ／ 入力を編集中：下の「変更を適用」で確定':'')+(workspace?'\n編集版 '+workspace.saveId+' を再開中'+(workspace.heads>1?'（別の系列の保存もあります）':''):'')+(doc.source.sha256!==canonical.sha256?'\n正本が更新されています：この編集版の土台 '+doc.source.sha256.slice(0,12)+' → 最新の正本 '+canonical.sha256.slice(0,12)+'（取り込み時にAIが比べます）':'');}
+function banner(){renderCanonicalNotice();$('sourceInfo').textContent='生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')+' · '+delta().length+'件の変更'+(dirty?' ／ ファイル未保存':'')+(formDirty?' ／ 入力を編集中：下の「変更を適用」で確定':'')+(workspace?'\n編集版 '+workspace.saveId+' を再開中'+(workspace.heads>1?'（別の系列の保存もあります）':''):'')+(doc.source.sha256!==canonical.sha256?'\n正本が更新されています：この編集版の土台 '+doc.source.sha256.slice(0,12)+' → 最新の正本 '+canonical.sha256.slice(0,12)+'（取り込み時にAIが比べます）':'');}
+// Compare semantic fields only: line numbers, generation times and raw quotes are not edits.
+function canonicalDifferences(base,current,latest){
+ const rows=[];
+ const groups=[['tasks','タスク',['item','state','owner','condition','detail']],['milestones','マイルストーン',['item','state','owner','condition','detail','gate','version','name','path']],['edges','依存',['flow','constraint']],['milestoneRelations','接続',['constraint']]];
+ const equal=(a,b)=>JSON.stringify(a??null)===JSON.stringify(b??null);
+ for(const [group,label,fields] of groups){
+  if(!Array.isArray(base[group])){if((latest[group]||[]).length)rows.push({label:label+'：保存版に比較用の土台がありません',unknown:true});continue;}
+  const key=x=>x.id||x.prerequisite+' → '+x.successor;
+  const map=xs=>new Map((xs||[]).map(x=>[key(x),x]));
+  const b=map(base[group]),u=map(current[group]),n=map(latest[group]);
+  const value=x=>x?fields.map(k=>x[k]??null):null;
+  for(const id of new Set([...b.keys(),...n.keys()])){
+   const before=b.get(id),now=n.get(id),edit=u.get(id);
+   if(equal(value(before),value(now)))continue;
+   const changed=before&&now?fields.filter(k=>!equal(before[k],now[k])):[];
+   const conflict=before&&now&&edit?changed.some(k=>!equal(edit[k],before[k])&&!equal(edit[k],now[k])):!equal(value(edit),value(before))&&!equal(value(edit),value(now));
+   rows.push({label:label+' '+id+' '+(!before?'追加':!now?'削除':'変更'),conflict,changes:changed.map(k=>({field:k,before:before[k]??null,after:now[k]??null})),title:now?.item||before?.item||''});
+  }
+ }
+ return rows;
+}
+function renderCanonicalNotice(){
+ const rows=canonicalDifferences(doc.baseline,doc,canonicalSnapshot),changed=rows.filter(r=>!r.unknown),unknown=rows.some(r=>r.unknown),sourceChanged=doc.source.sha256!==canonical.sha256;
+ $('canonicalNotice').hidden=!rows.length&&!sourceChanged;
+ const conflicts=changed.filter(r=>r.conflict).length;
+ $('canonicalSummary').textContent=(changed.length||sourceChanged?'正本に更新があります':'正本との差を一部比較できません')+' · '+changed.length+'件'+(conflicts?' ／ 競合の可能性 '+conflicts+'件':'')+(unknown?' ／ 比較できない範囲あり':'');
+ $('canonicalDiff').textContent=rows.map(r=>r.label+(r.title?' · '+r.title:'')+(r.conflict?' 【競合の可能性あり】':'')+(r.changes?.length?'\n'+r.changes.map(c=>'  '+c.field+': '+JSON.stringify(c.before)+' → '+JSON.stringify(c.after)).join('\n'):'')).join('\n\n')||'生成元に差があります。比較対象のタスク・マイルストーン・接続の項目には変更がありません。';
+}
+
 function options(select,values,value){for(const v of values){const o=el('option',v);o.value=v;select.append(o);}select.value=value;}
 function renderStateLegend(){
  const meanings={ACTIVE:'有効（常設を含む）',PROPOSED:'提案中',WAITING_EXTERNAL:'外部待ち',WAITING_USER:'ユーザー待ち',USER_ONLY:'ユーザー専任',DONE:'完了',EXCLUDED:'対象外',FROZEN:'凍結',ARCHIVED:'履歴化'};
@@ -372,8 +401,8 @@ function permanentMapData(data){
  return data.tasks.filter(t=>t.permanent).map(task=>({task,children:kids(task.id),descendants:walk(task.id,0,new Set([task.id])),documents:taskDocumentPaths(task)}));}  // sub-tasks keep their own canonical documents (2026-10-17, OPS-064)
 // Card list (OPS-085): every formal task, milestone and proposal of the loaded edit version, independent of lines and version views.
 function cardListGroups(data){
- const done=new Set(['DONE','EXCLUDED','ARCHIVED']),tasks=data.tasks||[];
- return [['マイルストーン',data.milestones||[]],['恒久タスク',tasks.filter(t=>t.permanent)],['タスク（未完了）',tasks.filter(t=>!t.permanent&&!done.has(t.state))],['完了・除外',tasks.filter(t=>!t.permanent&&done.has(t.state))],['追加案',typeof proposalNodes==='function'?proposalNodes(data):[]]].map(([title,cards])=>({title,cards:[...cards].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0)}));
+ const done=new Set(['DONE','EXCLUDED','ARCHIVED']),user=new Set(['WAITING_USER','USER_ONLY']),tasks=data.tasks||[];
+ return [['マイルストーン',data.milestones||[]],['恒久タスク',tasks.filter(t=>t.permanent)],['ユーザー判断',tasks.filter(t=>!t.permanent&&user.has(t.state))],['タスク（未完了）',tasks.filter(t=>!t.permanent&&!done.has(t.state)&&!user.has(t.state))],['完了・除外',tasks.filter(t=>!t.permanent&&done.has(t.state))],['追加案',typeof proposalNodes==='function'?proposalNodes(data):[]]].map(([title,cards])=>({title,cards:[...cards].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0)}));
 }
 // Only documents bundled with this page are offered; proposals have none (their canonical documents are made at import).
 function cardDocumentPaths(t,bundle){return t.proposal?[]:taskDocumentPaths(t).filter(p=>bundle&&bundle.files&&bundle.files[p]);}
@@ -651,7 +680,15 @@ const later=JSON.stringify(doc)!==sent;workspace={saveId:result.save.saveId,seri
  const a=el('a');const url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)+'\n'],{type:'application/json'}));a.href=url;a.download='registry-edited-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);dirty=false;banner();report('保存用ファイルを作成しました。ダウンロード先を確認してください。');}catch(e){report(e.message,true);}};
 window.addEventListener('beforeunload',e=>{if(dirty||formDirty||planDraftPending()){e.preventDefault();e.returnValue='';}});check(doc);render();
 // Resume the latest saved edit version when served (OPS-082). Skipped if the user already started editing.
-async function resumeWorkspace(){if(location.protocol==='file:'||typeof fetch!=='function')return;try{const response=await fetch('/workspace');if(!response.ok)return;const result=await response.json();if(!result||!result.save||dirty||formDirty)return;const d=result.save,meta=d.studioSave;delete d.studioSave;check(d);initializeRelationBaseline(d);doc=d;workspace={saveId:meta.saveId,series:meta.series,heads:result.heads};if(!graphData().nodes.some(n=>n.id===selected))selected=doc.tasks[0]?.id;render();}catch(e){report('保存した編集版を開けませんでした：'+e.message,true);}}
-$('restart').onclick=()=>{if(dirty||formDirty){report('未保存の変更があります。先に保存してください。',true);return;}if(!confirm('最新の正本から新しい編集版を始めますか？ 保存済みの編集版は消えず、AIの取り込み対象として残ります。'))return;doc=JSON.parse($('seed').textContent);initializeRelationBaseline(doc);workspace=null;selected=doc.tasks[0]?.id;render();report('最新の正本から新しい編集版を始めました。保存すると新しい系列になります。');};
+let workspaceGeneration=0;
+async function resumeWorkspace(){const generation=workspaceGeneration;if(location.protocol==='file:'||typeof fetch!=='function')return;try{const response=await fetch('/workspace');if(!response.ok)return;const result=await response.json();if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;delete d.studioSave;check(d);initializeRelationBaseline(d);doc=d;workspace={saveId:meta.saveId,series:meta.series,heads:result.heads};if(!graphData().nodes.some(n=>n.id===selected))selected=doc.tasks[0]?.id;render();}catch(e){report('保存した編集版を開けませんでした：'+e.message,true);}}
+$('restart').onclick=()=>{
+ if($('save').disabled){report('保存処理が終わってから、正本に戻ってください。',true);return;}
+ const pending=dirty||formDirty||planDraftPending();
+ if(!confirm((pending?'未保存の編集と、まだ適用・追加していない入力を破棄して、':'')+'画面を開いた時点の正本から新しく始めますか？ 保存済みの履歴は削除されません。'))return;
+ workspaceGeneration++;doc=JSON.parse($('seed').textContent);initializeRelationBaseline(doc);
+ workspace=null;dirty=false;formDirty=false;planDraft={version:null,name:'',versionName:''};selected=doc.tasks[0]?.id;
+ render();report('正本から新しく始めました。未保存の編集・入力は破棄しました。保存済みの履歴は残っています。');
+};
 const resumed=resumeWorkspace();
 </script></html>

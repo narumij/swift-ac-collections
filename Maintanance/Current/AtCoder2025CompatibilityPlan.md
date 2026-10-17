@@ -354,3 +354,11 @@ AtCoderへ貼り付ける単一ファイルの生成はPackage切替とは別問
 - 修正案：本文の`Sources/PermutationModule/…`は`1f87e37a`（2026-10-15）で`Sources/NextPermutationModule/…`へ移動済み（現行：`Sources/NextPermutationModule/NextPermutations.swift`）。
 - 点検事実：`ls Sources/NextPermutationModule/NextPermutations.swift`。
 - 中身の主張（API・手順）は今回見ていない（深い点検は後回し）。結果一覧：`Evidence/CP-20261017-013/SHALLOW_CHECK.md`。
+
+## 棚卸し追記2（2026-10-17 / 姫・Opus 5.5 / OPS-074第2区切り）
+
+追記時の占有確認：関連taskのPERM-079は`WAITING_USER`で作業中ではない。本文は変更しない。
+
+- 更新のきっかけ：`Sources/NextPermutationModule/`のファイル配置、または互換再開（PERM-079）の判断。
+- 見直す範囲：本文中の`Sources/PermutationModule/…`のうち、将来の手順として使う部分だけ。過去の実験・当時の配置の記述は当時の事実として見直さない（Astra補正3）。
+- 変更がない間：「`1f87e37a`で移動、現行`Sources/NextPermutationModule/NextPermutations.swift`実在」は入力版`1bdbbd4f`での確認済み結果。明細：`Evidence/OPS-074/README.md`の#3・#4。

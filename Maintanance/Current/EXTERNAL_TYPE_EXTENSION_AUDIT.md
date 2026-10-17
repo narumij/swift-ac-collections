@@ -74,3 +74,11 @@ executable API MatrixまたはIndex契約の方針と合わせて決める。
 - 修正案：本文の`Sources/PermutationModule/…`は`1f87e37a`（2026-10-15）で`Sources/NextPermutationModule/…`へ移動済み（現行：`Sources/NextPermutationModule/NextPermutations.swift`）。
 - 点検事実：`ls Sources/NextPermutationModule/NextPermutations.swift`。
 - 中身の主張（API・手順）は今回見ていない（深い点検は後回し）。結果一覧：`Evidence/CP-20261017-013/SHALLOW_CHECK.md`。
+
+## 棚卸し追記2（2026-10-17 / 姫・Opus 5.5 / OPS-074第2区切り）
+
+追記時の占有確認：Registryに紐づくtaskなし。本文は変更しない。
+
+- 更新のきっかけ：Main sourcesに挙げたパスの移動・改名、または凍結clusterの再開指示。
+- 見直す範囲：Main sourcesの`Sources/PermutationModule/NextPermutations.swift`の1行（現行`Sources/NextPermutationModule/NextPermutations.swift`）。他の4パスは入力版`1bdbbd4f`で実在。
+- 変更がない間：上記は存在の確認だけで、監査の中身（Debug限定Comparable等）の現状は今回見ていない。明細：`Evidence/OPS-074/README.md`の#5。

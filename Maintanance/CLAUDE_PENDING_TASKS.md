@@ -157,6 +157,18 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - commit: `8631a031`（candidate.yml）。
 - Codex reconciliation: 未処理
 
+### `CP-20261017-008` — Fable用の依頼票と採番待ちqueueを新設
+
+- queue状態: `AWAITING_CODEX`（実施済み・未commit）
+- 発見元・ユーザー指示: 2026-10-17、ユーザー「CLAUDE_TASKとCLAUDE_PENDING_TASKをコピーして、それぞれFABLE_TASKとFABLE_PENDING_TASKを用意して欲しい。依頼とか待ちが無い状態に。記載矛盾は直して」。実施はFable（Claude Fable 5.1、本リポジトリ初参加、称号なし。姫はネームドOpusで別）。
+- 種別候補: `EXECUTION`
+- 実施: `Maintanance/FABLE_TASK.md`・`Maintanance/FABLE_PENDING_TASKS.md`を新規作成。規則・占有権・templateは原本と同文で、宛先をClaude→Fableに置換。Claude固有の履歴（Current job status、受入済み節、Archived履歴リンク、照合節、CP-013〜007のentry、2026-10-08の委任終了Status）は含めず、「現在の依頼はない／採番待ちのentryはない」とした。仮IDはCP-との衝突を避けるため`FP-YYYYMMDD-NNN`（Fable判断、要確認）。感想先`FABLE_OBSERVATIONS.md`は未作成で、初回記入時に作成と明記。
+- 対象外: `CLAUDE_TASK.md`本文、root `CLAUDE.md`・`AGENTS.md`・Task Rulesへの入口追加、Registry。
+- 検証: 新ファイル内の相対リンク先の実在を確認。
+- commit: していない。
+- Codex reconciliation: 未処理（運用上の位置づけ、FP-接頭辞、入口文書への記載要否の判断をお願いします）
+
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

@@ -257,7 +257,10 @@ function independentGroups(data){
  const attached=new Set((data.milestones||[]).map(m=>m.id));
  for(let grew=true;grew;){grew=false;for(const e of links)if(attached.has(e.successor)&&!attached.has(e.prerequisite)){attached.add(e.prerequisite);grew=true;}}
  const permanentIds=new Set(data.tasks.filter(t=>t.permanent).map(t=>t.id));
- const regular=data.tasks.filter(t=>!t.permanent&&!attached.has(t.id)&&!permanentIds.has(t.parentTask));
+ // Sub-tasks at any depth under a permanent task are drawn in the permanent map (2026-10-17, OPS-070 children).
+ const byId=new Map(data.tasks.map(t=>[t.id,t]));
+ const underPermanent=t=>{const seen=new Set();for(let p=t.parentTask;p&&!seen.has(p);p=byId.get(p)?.parentTask){if(permanentIds.has(p))return true;seen.add(p);}return false;};
+ const regular=data.tasks.filter(t=>!t.permanent&&!attached.has(t.id)&&!underPermanent(t));
  const used=new Set(links.flatMap(e=>[e.successor,e.prerequisite]));
  return {regular:regular.sort((a,b)=>stateRank(a.state)-stateRank(b.state)),permanent:data.tasks.filter(t=>t.permanent&&!used.has(t.id))};
 }
@@ -270,20 +273,27 @@ function independent(){
  }
  fill('independent','independentCount',groups.regular);
 }
-function permanentMapData(data){return data.tasks.filter(t=>t.permanent).map(task=>({task,children:data.tasks.filter(t=>t.parentTask===task.id).sort((a,b)=>Number(a.state==='DONE')-Number(b.state==='DONE')).map(child=>({...child,documents:taskDocumentPaths(child)})),documents:taskDocumentPaths(task)}));}  // sub-tasks keep their own canonical documents (2026-10-17, OPS-064)
+function permanentMapData(data){
+ const kids=id=>data.tasks.filter(t=>t.parentTask===id).sort((a,b)=>Number(a.state==='DONE')-Number(b.state==='DONE')).map(child=>({...child,documents:taskDocumentPaths(child)}));
+ // descendants: depth-first, each sub-task followed by its own sub-tasks (depth 0 = direct child).
+ const walk=(id,depth,seen)=>kids(id).flatMap(c=>seen.has(c.id)?[]:[{...c,depth},...walk(c.id,depth+1,new Set([...seen,c.id]))]);
+ return data.tasks.filter(t=>t.permanent).map(task=>({task,children:kids(task.id),descendants:walk(task.id,0,new Set([task.id])),documents:taskDocumentPaths(task)}));}  // sub-tasks keep their own canonical documents (2026-10-17, OPS-064)
 function permanentMap(){
  const groups=permanentMapData(doc),W=250,step=295,top=20,docTop=160,docStep=78;
- const height=Math.max(230,...groups.map(g=>docTop+g.children.length*116+g.documents.length*docStep+20));
+ const height=Math.max(230,...groups.map(g=>docTop+g.descendants.length*116+g.documents.length*docStep+20));
  const s=svg('svg',{width:Math.max(900,groups.length*step+20),height,role:'group','aria-label':'恒久タスクと正本の参照関係'});
  const measure=document.createElement('canvas').getContext('2d');measure.font='12px -apple-system, sans-serif';
  function label(parent,text,x,y,maxLines=2){let lines=[''];for(const ch of text){let i=lines.length-1;if(measure.measureText(lines[i]+ch).width>W-24)lines.push(ch);else lines[i]+=ch;}if(lines.length>maxLines){lines=lines.slice(0,maxLines);while(measure.measureText(lines[maxLines-1]+'…').width>W-24)lines[maxLines-1]=lines[maxLines-1].slice(0,-1);lines[maxLines-1]+='…';}lines.forEach((line,i)=>parent.append(svg('text',{x,y:y+i*17,fill:'#243234'},line)));}
  function action(group,title,fn){group.setAttribute('tabindex',0);group.setAttribute('role','button');group.setAttribute('aria-label',title);group.style.cursor='pointer';group.append(svg('title',{},title));group.onclick=fn;group.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}};}
- groups.forEach(({task:t,children,documents},i)=>{
+ groups.forEach(({task:t,descendants:children,documents},i)=>{
  const childTop=160,docTop=160+children.length*116;
  const x=20+i*step,center=x+W/2,c=stateStyle(t.state);
  if(documents.length)s.append(svg('path',{d:`M${center},${top+96} V${top+120} H${x-8} V${docTop+(documents.length-1)*docStep+29}`,stroke:'#b4c6be','stroke-width':2,fill:'none'}));
  const card=svg('g',{});card.append(svg('rect',{x,y:top,width:W,height:96,rx:8,fill:selected===t.id?'#edf6ef':'white',stroke:selected===t.id?'#126c58':'#b8ccc0','stroke-width':selected===t.id?3:1}));label(card,t.id+' · '+t.owner,x+12,top+18,1);label(card,t.item.replace(/^\[[^\]]+\]\s*/,''),x+12,top+40);card.append(svg('rect',{x:x+1,y:top+72,width:W-2,height:23,fill:c.bg}),svg('text',{x:x+12,y:top+88,fill:c.fg},t.state));action(card,t.id+' '+t.item,()=>select(t.id));s.append(card);
- children.forEach((child,j)=>{const y=childTop+j*116,g=svg('g',{}),c=stateStyle(child.state);s.append(svg('path',{d:`M${center},${top+96} V${top+120} H${x-8} V${y+48} H${x}`,stroke:'#8ba7bd',fill:'none'}));g.append(svg('rect',{x,y,width:W,height:96,rx:8,fill:selected===child.id?'#edf6ef':'white',stroke:'#8ba7bd'}));label(g,child.id+' · サブタスク',x+12,y+18,1);label(g,child.item.replace(/^\[[^\]]+\]\s*/,''),x+12,y+40);g.append(svg('rect',{x:x+1,y:y+72,width:W-2,height:23,fill:c.bg}),svg('text',{x:x+12,y:y+88,fill:c.fg},child.state));action(g,child.id+' '+child.item+'\n'+child.condition,()=>select(child.id));s.append(g);
+ children.forEach((child,j)=>{const ind=child.depth*18,cx=x+ind,cw=W-ind,y=childTop+j*116,g=svg('g',{}),c=stateStyle(child.state);
+  // Nested sub-tasks hang from their parent's row instead of the permanent task's spine.
+  const pj=children.findIndex(p=>p.id===child.parentTask),from=child.depth&&pj>=0?`M${x+(child.depth-1)*18+10},${childTop+pj*116+96} V${y+48} H${cx}`:`M${center},${top+96} V${top+120} H${x-8} V${y+48} H${x}`;
+  s.append(svg('path',{d:from,stroke:'#8ba7bd',fill:'none'}));g.append(svg('rect',{x:cx,y,width:cw,height:96,rx:8,fill:selected===child.id?'#edf6ef':'white',stroke:'#8ba7bd'}));label(g,child.id+' · '+(child.depth?child.parentTask+' のサブタスク':'サブタスク'),cx+12,y+18,1);label(g,child.item.replace(/^\[[^\]]+\]\s*/,''),cx+12,y+40);g.append(svg('rect',{x:cx+1,y:y+72,width:cw-2,height:23,fill:c.bg}),svg('text',{x:cx+12,y:y+88,fill:c.fg},child.state));action(g,child.id+' '+child.item+'\n'+child.condition,()=>select(child.id));s.append(g);
   if(child.documents.length){const b=svg('g',{});b.append(svg('rect',{x:x+W-62,y:y+6,width:54,height:20,rx:5,fill:'#f3f6ef',stroke:'#cbd8c9'}),svg('text',{x:x+W-54,y:y+20,fill:'#126c58','font-size':12},'正本 '+child.documents.length));action(b,child.id+' の正本を読む（'+child.documents.join('、')+'）',()=>openTaskDocuments(child));s.append(b);}});
  documents.forEach((path,j)=>{const y=docTop+j*docStep,g=svg('g',{});s.append(svg('path',{d:`M${x-8},${y+29} H${x}`,stroke:'#b4c6be',fill:'none'}));g.append(svg('rect',{x,y,width:W,height:58,rx:7,fill:'#f3f6ef',stroke:'#cbd8c9'}));label(g,path.split('/').pop(),x+12,y+20,2);action(g,path+' を読む',()=>openDocument(path));s.append(g);});
  if(!documents.length)s.append(svg('text',{x:x+12,y:docTop+20,fill:'#657477'},'正本への参照なし'));

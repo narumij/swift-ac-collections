@@ -15,7 +15,8 @@ const actual=ctx.graphLayout(original.tasks,original.edges);const connected=new 
 vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert(original.milestones.length>0);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['GATE-0.6.0','GATE-0.7.0','MS-SPI','MS-HUMAN','MS-QUALITY'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite==='PERM-079'&&e.successor==='END-0.6.0'&&/^到達後。/.test(e.constraint)));assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='END-0.6.0'&&!('relation' in e)));rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
 
 vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,groups.regular.length+groups.permanent.length);
-const discoveryFixture={tasks:[{id:'ROOT',permanent:true},{id:'POLICY',parentTask:'ROOT'},{id:'WORK',parentTask:'POLICY'},{id:'LINKED'}],edges:[{prerequisite:'POLICY',successor:'WORK'}],milestones:[{id:'END-test'}],milestoneRelations:[{prerequisite:'LINKED',successor:'END-test'}]};
+const discoveryFixture={tasks:[{id:'ROOT',permanent:true},{id:'POLICY',parentTask:'ROOT'},{id:'NESTED',parentTask:'POLICY'},{id:'WORK'},{id:'LINKED'}],edges:[{prerequisite:'POLICY',successor:'WORK'}],milestones:[{id:'END-test'}],milestoneRelations:[{prerequisite:'LINKED',successor:'END-test'}]};
+// NESTED is a sub-task of a sub-task: it is drawn in the permanent map, not the regular list (2026-10-17).
 assert.deepEqual(Array.from(ctx.independentGroups(discoveryFixture).regular,t=>t.id),['WORK']);
 discoveryFixture.milestoneRelations.push({prerequisite:'WORK',successor:'END-test'});assert.equal(ctx.independentGroups(discoveryFixture).regular.length,0);
 console.log('PASS: independent regular/permanent partition, no omissions or duplicates.');
@@ -132,6 +133,10 @@ assert(permanent.some(g=>g.task.id==='HIST-003'&&g.task.state==='ACTIVE'));
 
 assert(!groups.regular.some(t=>['OPS-049','OPS-050','OPS-059','OPS-052'].includes(t.id)));
 assert(permanent.find(g=>g.task.id==='OPS-048').children.some(t=>t.id==='OPS-059'));
+// Sub-tasks of sub-tasks are nested under their parent in the permanent map (2026-10-17, OPS-070 → OPS-071/072).
+for(const g of permanent){assert.equal(new Set(g.descendants.map(d=>d.id)).size,g.descendants.length);for(const d of g.descendants){if(d.depth===0)assert.equal(d.parentTask,g.task.id);else{const pi=g.descendants.findIndex(p=>p.id===d.parentTask);assert(pi>=0&&pi<g.descendants.indexOf(d)&&g.descendants[pi].depth===d.depth-1);}}}
+{const ops044=permanent.find(g=>g.task.id==='OPS-044');if(ops044&&original.tasks.some(t=>t.id==='OPS-071'&&t.parentTask==='OPS-070')){assert(ops044.descendants.some(d=>d.id==='OPS-071'&&d.depth===1));assert(!groups.regular.some(t=>t.id==='OPS-071'||t.id==='OPS-072'));}}
+{const nested=ctx.permanentMapData({tasks:discoveryFixture.tasks.map(t=>({detail:'',...t}))}).find(g=>g.task.id==='ROOT');assert.deepEqual(nested.descendants.map(d=>[d.id,d.depth]),[['POLICY',0],['NESTED',1]]);}
 
 vm.runInContext(script.slice(script.indexOf('function protectionRecords('),script.indexOf('function renderProtection(')),ctx);
 assert.equal(ctx.protectionRecords(original).length,18);

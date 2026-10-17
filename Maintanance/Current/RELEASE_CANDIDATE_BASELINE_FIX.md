@@ -142,3 +142,17 @@ RELEASE-084を以下の限定範囲で再開する。担当Claude（姫）、受
 workflow変更なしを受け入れる。Ubuntu CIの実走合格・性能保証・リリース可否は未認定。将来の測定追加に対する恒久対策はRELEASE-085/086へ残す。RELEASE-084はWAITING_USER（受入済み証拠・記録のcommit確認待ち）。END-0.5.4への接続は維持。追加のClaude実装依頼なし。
 
 2026-10-17、ユーザーが今回の証拠・受入・振り返りのcommitを承認。RELEASE-084はDONEへ更新。限定依頼の完了であり、Ubuntu CI合格・リリース判断や将来の恒久対策完了を意味しない。
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第1区切り）
+
+本文は変更しない。関連taskのRELEASE-084はDONE（占有の重なりなし）。根拠は固定版 `876d405b981baae04dc0d90448094488524b3c79` 基準。
+
+結論「現行baselineでは旧例外修正が不要」（140行のAstra受入）が依存する事実：
+
+| 事実 | 根拠と確認方法 | 結果 | 更新条件・見直す範囲 |
+| --- | --- | --- | --- |
+| baselineは「HEADに取り込まれた最新の数値版tag」 | `.github/workflows/candidate.yml` 179〜195行（Resolve previous release tag、`git tag --merged HEAD --sort=-version:refname`） | 一致 | この手順が変わったとき |
+| 現在その tag は0.5.4（`b03d0bf21f110fc64c7dc9dfa0d790dab915b106`） | `git rev-parse 0.5.4^{commit}` | 一致 | **新しい数値版tag（0.6.0等）を打ったとき**。baselineが動くので結論の再確認が要る |
+| 0.5.4→入力版で測定コードと製品に差分なし（122行） | `git diff --name-only 0.5.4 <SHA> -- Benchmarks/Sources Benchmarks/Libraries Sources` | 差分なし。※`Benchmarks/`全体では2026-10-17の計測記録（`Benchmarks/QualityAssessment/`、`515acd61`）が増えたが、測定コードではないので結論に影響しない | `Benchmarks/Sources`・`Benchmarks/Libraries`・`Sources`に差分が入ったとき（特に測定の追加。恒久対策はRELEASE-085/086） |
+
+未確認：GitHub上の候補CIの実走結果（外部の結果でcommitでは固定できない）、Ubuntu環境での性能値。

@@ -53,6 +53,23 @@
 - commit: していない。
 - Codex reconciliation: 2026-10-17 Astra：OPS-048へ統合・限定受入。sync/verifyと生成requestsの照合済み。Safari未確認。詳細はCurrent/TASK_REGISTRY_APP.md。
 
+### `CP-20261017-015` — Registry Studio：常設task数の決め打ち検査で同期が止まった件
+
+- queue状態: `RECONCILED`（OPS-048へ統合・Astra受入）
+- 発見元・ユーザー指示: 2026-10-17、ユーザー「スタジオがこわれて真っ赤なのですが」。
+- 実施: `sync.py`がverifyで止まり、生成物が前の版へ戻っていた。原因は`verify.cjs` 118行の`assert.equal(permanent.length,10)`で、OPS-077（常設）の追加により11件になっていた。件数を`original.tasks.filter(t=>t.permanent).length`と照合するように変え、下限10件の検査を残した。
+- 検証: `sync.py`で生成とverifyが通過。Safariの表示は未確認。
+- 対象外: Registry・テンプレートの変更。
+- Codex reconciliation: 2026-10-17 Astra：OPS-048へ統合・受入。commit照合とverify再実行PASS。Safari未確認。詳細はCurrent/TASK_REGISTRY_APP.md。
+
+### `CP-20261017-016` — OPS-076追記のうち判断にはみ出した記述の再検証と再送
+
+- queue状態: `RECONCILED`（OPS-077へ統合・補正付きAstra受入）
+- 発見元・ユーザー指示: 2026-10-17、ユーザー「判断にはみだすと、それって依存が何層かあるはずなので、判断抽出したものについて再検証と、全体の再送をおねがいしたいが」。OPS-076はDONE後の直接依頼。
+- 実施: 15件を抽出し、依存の層を固定版`1175e583`で確かめ直した（[JUDGMENT_RECHECK.md](Current/Evidence/OPS-076/JUDGMENT_RECHECK.md)）。支持7、範囲限定4、取り下げ4（うち2件は受入時に補正済み）。`CANONICAL_EVIDENCE_ROLLOUT.md`の末尾に再送のReturnを置いた。元の追記・Return・証拠は書き換えていない。
+- 対象外: OPS-076の状態変更、各判断そのものの精査（OPS-077の範囲）。
+- Codex reconciliation: 2026-10-17 Astra：OPS-077へ統合し、OPS-076正本末尾へ補正付き受入を記録。15項目の優先精査。19件・77件は実施件数として維持し、全判断の再承認とはしない。OPS-076はDONE維持。
+
 [2026-10-17の照合・圧縮記録（2）](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md)：CP-009→OPS-075、010→OPS-048、011→OPS-070/071、012→OPS-073、013→OPS-074。未完作業は各正式taskで追跡する。
 
 2026-10-17までのreconciliation済みentry（CP-20261016-013、CP-20261017-001〜008）と2026-10-16〜17の照合節の原文は[2026-10-17の圧縮記録](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md)へ保存。CP-013はOPS-059（FROZEN）、001〜004はOPS-047 / OPS-048、005はOPS-048、006はQUALITY-002、007はRBT-048判断材料、008はOPS-044へ統合済み。

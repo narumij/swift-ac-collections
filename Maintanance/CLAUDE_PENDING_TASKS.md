@@ -157,6 +157,22 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - commit: `8631a031`（candidate.yml）。
 - Codex reconciliation: 未処理
 
+### `CP-20261017-007` — RBT-048の判断材料（index版更新APIの設計論点、会話記録）
+
+- queue状態: `AWAITING_CODEX`（記録のみ。判断はユーザー預かりのまま、製品・Tests変更なし）
+- 発見元: 2026-10-17、ユーザーとの会話。ユーザー「ずーっとまよってるのよな」「さきおくるか」で先送り。RBT-048の0.7.0暫定・USER_ONLYは変えない。
+- 論点（姫の整理。決定ではない）:
+  1. index_stale_check.mdの標準構成CROSS=ON/LAZY=OFFでは、CoW後の木はF列（別の木）。複製前に有効なindexは複製後もoのはずで、修正案のfatalErrorは表の外（内部矛盾）だけを止める。無関係な木のindexは未規定なので、到達してもtrapは許容範囲。
+  2. `SealError`の無効には種類がある（garbaged/unsealed/detached＝契約上起こりうる、null/notAllowed/unknown＝バグ）。今の`accessible.error == nil`は両方をnilへまとめている。
+  3. 先例: `insert(_:hint:)`は無効hintをfatal、順序不一致は性能だけ。C++はhint挿入とC++17 extract＋hint再挿入、Boost.MultiIndex `replace`は無効iteratorが事前条件・衝突はfalse（Boostの細部は記憶ベース、未確認）。
+  4. 参考元`Dictionary.updateValue(_:forKey:)`・`Set.update(with:)`のnilは「前の値が無かった（更新は必ず起きる）」。index版のnilは「何もしなかった」で、形は同じでも意味が`popLast()`型。迷いの根はここ。
+  5. 通常版MultiMapは`values[i] = v`（MappedValuesView、無効は事前条件）で出現単位の値更新ができる。MultiSetには代替がなく、hint系と組んで等価範囲を編集する道具一式になる（ユーザー指摘）。
+  6. 互換構成+Deprecated.swiftのコメント「申し訳程度…deprecatedにする／結局復活する可能性もある」（ユーザー提示）。
+- 決め方の候補: 「nilを前の値の報告にそろえる（無効indexはfatal、非Optional）」か「失敗nilを安全版として正式化（RBT-048修正）」か。決める前に範囲編集の仕様testを3〜4本書いて、`values`とhint系だけで足りるか確かめる案。
+- 未確認: Boostの細部、性能、ChatGPT／Astraとのダブルチェック。
+- commit: していない。
+- Codex reconciliation: 未処理（RBT-048の判断材料への統合をお願いします）
+
 ### `CP-20261017-008` — Fable用の依頼票と採番待ちqueueを新設
 
 - queue状態: `AWAITING_CODEX`（実施済み・未commit）
@@ -167,7 +183,6 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 検証: 新ファイル内の相対リンク先の実在を確認。
 - commit: していない。
 - Codex reconciliation: 未処理（運用上の位置づけ、FP-接頭辞、入口文書への記載要否の判断をお願いします）
-
 
 過去のreconciliation済みentryは次を参照する。
 

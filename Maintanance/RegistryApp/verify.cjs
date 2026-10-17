@@ -84,7 +84,15 @@ ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx
  // Rewiring a task link to a release gate is refused; to an END it is allowed.
  {const link=base.milestoneRelations.find(r=>r.prerequisite==='RELEASE-084');assert.throws(()=>ctx.rewireRelation(base,link,link.prerequisite,'GATE-0.6.0'),/版ゲート/);const ok=ctx.rewireRelation(base,link,link.prerequisite,'END-0.6.0');assert(ok.milestoneRelations.some(r=>r.prerequisite==='RELEASE-084'&&r.successor==='END-0.6.0'));}
  const shownNew=(()=>{ctx.doc=linked;return ctx.graphData().edges.find(e=>e.prerequisite===free&&e.shownFor===end);})();assert(shownNew&&shownNew.successor===gate.id);
- ctx.doc=copy(original);console.log('PASS: task→END/MS connect refuses GATE targets, has no line kinds, rejects duplicates/unknowns and old-format JSON, marks 相談待ち, draws into the gate, leaves baseline.');}
+ ctx.doc=copy(original); // START targets (OPS-069): the stored line is START → task; tasks may not enter a START; START may not lead off the chain.
+ {const lone=base.tasks.find(t=>!base.milestoneRelations.some(r=>r.prerequisite===t.id||r.successor===t.id)&&!base.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)).id;
+  const started=ctx.addMilestoneRelation(base,lone,'START-0.6.0');assert(started.milestoneRelations.some(r=>r.prerequisite==='START-0.6.0'&&r.successor===lone&&r.conditionReview==='相談待ち'));
+  assert.throws(()=>ctx.addMilestoneRelation(started,lone,'START-0.6.0'),/既にあります/);
+  const l84=base.milestoneRelations.find(r=>r.prerequisite==='RELEASE-084');assert.throws(()=>ctx.rewireRelation(base,l84,'RELEASE-084','START-0.6.0'),/START/);
+  const s79=base.milestoneRelations.find(r=>r.successor==='PERM-079');assert.throws(()=>ctx.rewireRelation(base,s79,s79.prerequisite,'END-0.6.0'),/START/);
+  const moved=ctx.rewireRelation(base,s79,'START-0.5.4','PERM-079');assert(moved.milestoneRelations.some(r=>r.prerequisite==='START-0.5.4'&&r.successor==='PERM-079'));
+  ctx.doc=started;assert(!ctx.independentGroups(started).regular.some(t=>t.id===lone),'start-side task is not independent');ctx.doc=copy(original);}
+console.log('PASS: task→END/MS connect refuses GATE targets, has no line kinds, rejects duplicates/unknowns and old-format JSON, marks 相談待ち, draws into the gate, leaves baseline.');}
 
 
 assert.equal(placed.pos.get('PERM-079')[0]-placed.pos.get('MS-060')[0],295);

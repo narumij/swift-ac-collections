@@ -338,6 +338,8 @@ function rewireRelation(data,e,prerequisite,successor){
  const i=candidate[key].findIndex(x=>x.prerequisite===e.prerequisite&&x.successor===e.successor);
  if(i<0)throw Error('元の関係が見つかりません。選び直してください。');
  if(link&&successor.startsWith('GATE-')&&!prerequisite.startsWith('END-'))throw Error('版ゲートへはタスクをつなげません。その版のEND-x.y.zを選んでください。');
+ if(link&&successor.startsWith('START-')&&!prerequisite.startsWith('GATE-'))throw Error('版のSTARTへはタスクをつなげません。STARTは出発点なので、STARTを前提（出発点）側に置いてください。');
+ if(link&&prerequisite.startsWith('START-')&&(data.milestones||[]).some(m=>m.id===successor)&&!isChainLink(e))throw Error('STARTから出る線はタスクへだけです。到達点どうしの列は配置から作られます。');
  candidate[key][i]={...candidate[key][i],prerequisite,successor};
  if(prerequisite!==e.prerequisite||successor!==e.successor)candidate[key][i].conditionReview='相談待ち';
  check(candidate);return candidate;
@@ -347,9 +349,10 @@ function addMilestoneRelation(data,taskId,targetId){
  if(!data.tasks.some(t=>t.id===taskId))throw Error('タスクが見つかりません: '+taskId);
  const ms=new Map((data.milestones||[]).map(m=>[m.id,m]));if(!ms.has(targetId))throw Error('到達点が見つかりません: '+targetId);
  if(targetId.startsWith('GATE-'))throw Error('版ゲートへはタスクをつなげません。版ゲートへ入る線はENDからだけです。その版のEND-x.y.zを選んでください。');
- const to=targetId;
- if((data.milestoneRelations||[]).some(r=>r.prerequisite===taskId&&r.successor===to))throw Error('この接続は既にあります: '+taskId+' → '+to);
- const candidate=copy(data);candidate.milestoneRelations=(candidate.milestoneRelations||[]).concat([{prerequisite:taskId,successor:to,constraint:'',conditionReview:'相談待ち',source:{path:'',quote:''}}]);
+ // A version START is the source of the line (START → task): the task starts in that version's interval (OPS-069).
+ const link=targetId.startsWith('START-')?{prerequisite:targetId,successor:taskId}:{prerequisite:taskId,successor:targetId};
+ if((data.milestoneRelations||[]).some(r=>r.prerequisite===link.prerequisite&&r.successor===link.successor))throw Error('この接続は既にあります: '+link.prerequisite+' → '+link.successor);
+ const candidate=copy(data);candidate.milestoneRelations=(candidate.milestoneRelations||[]).concat([{...link,constraint:'',conditionReview:'相談待ち',source:{path:'',quote:''}}]);
  check(candidate);return candidate;
 }
 function editRelation(e){
@@ -441,9 +444,9 @@ $('selectedTitle').textContent=t.id+(t.permanent?' · 常設タスク':'');const
  box.append(el('h3','このタスクの前提'));for(const e of doc.edges.filter(e=>e.successor===t.id)){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}removeRelation(e);};div.append(remove,el('strong',e.prerequisite+' · '+e.flow),el('p',(e.conditionReview?'条件：AIと相談待ち。元の条件：':'')+(e.constraint||'未設定'),'muted'));box.append(div);}
  const r=el('div',undefined,'row'),left=el('div'),right=el('div');r.append(left,right);box.append(r);const pre=field(left,'前提タスク','prerequisite','select','');options(pre,doc.tasks.filter(x=>x.id!==t.id).map(x=>x.id),doc.tasks.find(x=>x.id!==t.id)?.id);const flow=field(right,'合流位置','flow','select','');options(flow,['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE');box.append(el('p','依存条件はAIと相談して決めます。追加した接続は相談待ちとして保存されます。','muted'));for(const id of ['prerequisite','flow'])$(id).oninput=null;
  const add=el('button','前提を追加');box.append(add);add.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}const edge={prerequisite:pre.value,successor:t.id,flow:flow.value,constraint:'',conditionReview:'相談待ち',raw:null,sourceLine:null};doc.edges.push(edge);try{check(doc);}catch(e){doc.edges.pop();report(e.message,true);return;}dirty=true;render();};
- box.append(el('h3','このタスクがつながる到達点'));const links=(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id);if(!links.length)box.append(el('p','まだありません。','muted'));
- for(const e of links){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.successor),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
- const mr=el('div',undefined,'row'),mleft=el('div'),mright=el('div');mr.append(mleft,mright);box.append(mr);const gateOf=new Map((doc.milestoneRelations||[]).filter(r=>r.prerequisite.startsWith('END-')&&r.successor.startsWith('GATE-')).map(r=>[r.prerequisite,r.successor]));const targets=(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-'));const target=field(mleft,'到達点（版のENDか途中のカード。版ゲートへは直接つなげない）','milestoneTarget','select','');options(target,targets.map(m=>m.id),targets.find(m=>m.id.startsWith('END-')&&m.state!=='DONE')?.id||targets[0]?.id);for(const o of target.children){const g=gateOf.get(o.value);if(g)o.textContent=o.value+'（→ '+g+'）';}$('milestoneTarget').oninput=null;mright.append(el('p','線は関係の所在だけを示します。完了・着手・再開の条件は、取り込み時にAIと相談して正本（Registryのマイルストーン接続）の制約文へ書きます。','muted'));
+ box.append(el('h3','このタスクがつながる到達点'));const links=(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id||(e.successor===t.id&&e.prerequisite.startsWith('START-')));if(!links.length)box.append(el('p','まだありません。','muted'));
+ for(const e of links){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.successor===t.id?e.prerequisite+'（この版で始める）':e.successor),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
+ const mr=el('div',undefined,'row'),mleft=el('div'),mright=el('div');mr.append(mleft,mright);box.append(mr);const gateOf=new Map((doc.milestoneRelations||[]).filter(r=>r.prerequisite.startsWith('END-')&&r.successor.startsWith('GATE-')).map(r=>[r.prerequisite,r.successor]));const targets=(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-'));const target=field(mleft,'到達点（END・途中カードへ合流、またはSTARTからこの版で始める。版ゲートへは直接つなげない）','milestoneTarget','select','');options(target,targets.map(m=>m.id),targets.find(m=>m.id.startsWith('END-')&&m.state!=='DONE')?.id||targets[0]?.id);for(const o of target.children){const g=gateOf.get(o.value);if(g)o.textContent=o.value+'（→ '+g+'）';else if(o.value.startsWith('START-'))o.textContent=o.value+'（この版で始める）';}$('milestoneTarget').oninput=null;mright.append(el('p','線は関係の所在だけを示します。完了・着手・再開の条件は、取り込み時にAIと相談して正本（Registryのマイルストーン接続）の制約文へ書きます。','muted'));
  const connect=el('button','到達点へつなぐ');box.append(connect);connect.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,target.value);dirty=true;render();}catch(e){report(e.message,true);}};
 }
 function showDiff(){$('diffPanel').hidden=false;$('diff').textContent=JSON.stringify(delta(),null,2);}

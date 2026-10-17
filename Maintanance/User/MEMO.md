@@ -1,5 +1,12 @@
 ## ユーザー
 
+```
+N=~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node
+/usr/bin/python3 Maintanance/RegistryApp/sync.py --node $N/bin/node --marked $N/node_modules/marked/lib/marked.esm.js
+```
+
+知らなくて当然と知ってて当然がある
+
 ユーザーはHaskell的な発想を好む。仕事を整理するときは、純粋性と副作用、需要の有無、意味を保った置換可能性を重視する。規則や判断の説明では、必要に応じて型・状態・純粋な計算とIOの区別に対応づけると伝わりやすい。
 
 ## タスクリファクタリング

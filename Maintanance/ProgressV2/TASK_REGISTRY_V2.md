@@ -129,6 +129,8 @@
 | `OPS-084` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioの前提・後続にマイルストーンを選ぶ接続UIを追加する | 2026-10-18 Astra受入済み・ユーザーcommit承認により完了。独立26 PASS、接続操作smokeと更新保護smoke成功、--checkずれなし。Safari未確認。実装依頼終了 | `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md` |
 | `OPS-085` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 正本を直接開けるカード一覧タブを追加する | 2026-10-18 Astra受入済み・ユーザーcommit承認により完了。独立27 PASS、一覧・正本表示・入力保持の操作smoke成功。接続/更新保護smokeも成功、--checkずれなし。Safari未確認。姫への依頼終了 | `Maintanance/Current/REGISTRY_STUDIO_CARD_LIST.md` |
 | `OPS-086` | `DONE` | 姫（実装・補修） / Astra（受入） | [EXECUTION] Studioの編集版でマイルストーン計画を組み替える限定試行 | 2026-10-18補修受入・ユーザーcommit承認。独立28 PASS、計画編集/追加入力保護smoke成功、--checkずれなし。編集版の差分保存まで、実ファイル反映不要。Safari未確認、比較規則等の未決は正本へ保持。依頼終了 | `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md` |
+| `OPS-087` | `ACTIVE` | Astra | [EXECUTION] Studio保存機構の試行契約を仕様化する | 2026-10-18ユーザー依頼。既決の保存単位・応答待ち・再開・履歴・取込・失敗時保全を根拠と対応付けて仕様化。未決と実装詳細は分離。完了後にOPS-088を正式依頼する | `Maintanance/Current/REGISTRY_STUDIO_SAVE_CONTRACT.md` |
+| `OPS-088` | `WAITING_EXTERNAL` | 姫（改善提案） / Astra（受入） | [DISCOVERY] 保存契約に沿ったStudioユーザビリティ改善案を出す | 2026-10-18ユーザー依頼。OPS-087の仕様化完了と入力固定・正式依頼を待つ。保存/編集/更新/取込の分かりにくさと小さい改善案を提示。実装・契約変更は含めない | `Maintanance/Current/REGISTRY_STUDIO_SAVE_USABILITY.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -149,6 +151,7 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `OPS-088` | `OPS-087` | `SEQUENCE` | 保存契約の仕様化を完了し、入力版と範囲を固定して姫へ正式依頼してから着手する。改善の実装は別判断 |
 | `OPS-076` | `OPS-074` | `SEQUENCE` | 追加返却を固定版で再現・受入してから対象と編集範囲を確定して依頼する。受入だけでは自動開始しない |
 | `OPS-068` | `OPS-058` | `SEQUENCE` | ユーザーが限定試行の方針・対象・受入条件を承認し、入力と編集範囲を固定して正式依頼するまで着手しない |
 | `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |
@@ -327,6 +330,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-084` |
 | `OPS-048` | `OPS-085` |
 | `OPS-048` | `OPS-086` |
+| `OPS-048` | `OPS-087` |
+| `OPS-048` | `OPS-088` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

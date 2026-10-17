@@ -25,3 +25,13 @@ CP-20261016-007で作成したsync.pyを使い、正本からtasks・edges・親
 ## Astra受入記録（2026-10-16）
 
 姫の原返却を保持して確認。親子属性の削除とRules版・HEAD等の差分検知を補修し、マイルストーン出典の変化は確認前に正常終了しないようにした。seed欠落も復旧対象の例外へ変更。削除されたparentTask・Rules hash変化・無変更の検知を独立確認した。現行データの同期、既存verify.cjs全項目、続く--check差分なしを確認。出典引用は全文存在を確認し、今回までのゲート追記・リンク変更に合わせてhashと行番号を更新した。実画面の描画を検証済みとはしない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+
+入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+
+| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| --- | --- | --- |
+| `sync.py`に書き込みなしの`--check`がある（7・13行目） | `Maintanance/RegistryApp/sync.py` 492行目に`if '--check' in sys.argv:`。分岐があることだけを確かめ、実行はしていない | `sync.py`の変更 |
+| 生成物の置き場 | 版では`serve.py`がありサーバー実行型。生成HTMLは`Maintanance/Cache/RegistryStudio/`に出る（`.gitignore`の`/Maintanance/Cache/**`。ignoreの判定は作業ツリーの`git check-ignore`で見たもので、固定treeの事実は`.gitignore`の行だけ） | Studioの構成の変更 |

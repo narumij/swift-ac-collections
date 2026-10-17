@@ -129,3 +129,15 @@ JSONは実装中のRegistryを採取した固定snapshot。OPS-051の作業状�
 ユーザーの「OPS-051は完了にして、のこりは親タスクでの処理でいい」により、初期試作を受入・DONEとする。現状確認、task選択、正本閲覧、依存編集、JSON返却から正本への反映という初期の利用を受け入れた。残る改善は恒久OPS-048で扱い、本taskを受入待ちに据え置かない。
 
 利用手順はRegistryApp/README.mdを正本とする。採番待ちの読取専用Markdown表示、タスク番号選択、背景クリックでの正本表示終了も実装済み。モデル検査は通過。実機UIの全組合せ・全ブラウザの検証や、交差最適化・複雑な横縦混在の解決を認定するものではない。後続の改善を自動開始する許可にはしない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+
+入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+
+| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| --- | --- | --- |
+| 5・7行目「単一HTML＋JSONのローカル試作、`Maintanance/RegistryApp/`に置く」 | 版の`Maintanance/RegistryApp/`にあるのは`index.template.html`・`serve.py`・`sync.py`・`build-pending.py`・`build-documents.mjs`・`verify.cjs`など。`index.html`は`bbddb7ff3d9261500da0f8fd3abcacc241f330df`で`index.template.html`へ改名。生成物は`Maintanance/Cache/RegistryStudio/`（`.gitignore`の`/Maintanance/Cache/**`）。試作の形は事実として変わった | Studioの構成の変更 |
+| 11行目「38 task・11辺のsnapshot」 | 試作時点の値。今の件数は生成のたびに変わり、固定treeには生成物がない | 件数を根拠には使わない |
+
+「Registryへの書き戻しなし・状態の正本はRegistry」という方針（試作の判断）はこの変化で変わっていない。

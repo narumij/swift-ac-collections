@@ -68,3 +68,14 @@ AcCollections target → NextPermutationModule（実装）
 工程1〜3はローカル受入、工程4はPR #196の全11 job成功、工程5はmain到達commit `3ef37fc2`の照合をもって完了した。実装は`1f87e37a`、文書・ローカル受入記録は`4cd0ebc2`に保存済み。証拠と確認範囲は[受入記録](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md#pr-cimain到達確認2026-10-15)に記す。
 
 新名を主入口、旧名を互換入口とする今回のmodule移行は完了。candidate CI経路は未実行であり、その成功を含めない。benchmark名整理は後段に残し、本完了によって着手・凍結解除しない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+
+入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+
+| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| --- | --- | --- |
+| 11行目・21〜22行目の構成（主入口`NextPermutationModule`、互換`PermutationModule`→`NextPermutationModule`） | `Package.swift` 335行目に`name: "NextPermutationModule"`。346〜348行目に`name: "PermutationModule"`・`dependencies: ["NextPermutationModule"]`・`path: "Sources/_PermutationModule"`。この構成は版で成立 | Permutation系targetの変更 |
+
+成立範囲：一致したのはtarget構成だけで、計画全体（5行目「段階：計画」の工程・CI・benchmark名の移行）の完了は判定しない。benchmark名の移行はPERM-064（ACTIVE・Codex）の範囲。

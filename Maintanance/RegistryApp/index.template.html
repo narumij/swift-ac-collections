@@ -150,6 +150,8 @@ function versionView(data,v){
  const keep=new Set(data.nodes.filter(n=>n.kind==='milestone'&&wanted.has((n.gate||'').split('/')[2])).map(n=>n.id));
  const ms=new Set(data.nodes.filter(n=>n.kind==='milestone'&&n.gate).map(n=>n.id));
  for(let grew=true;grew;){grew=false;for(const e of data.edges)if(keep.has(e.successor)&&!keep.has(e.prerequisite)&&!ms.has(e.prerequisite)){keep.add(e.prerequisite);grew=true;}}
+ // Start-side work (OPS-069): tasks downstream of a kept START, and their downstream task chains, stay in the view.
+ for(let grew=true;grew;){grew=false;for(const e of data.edges)if(keep.has(e.prerequisite)&&!keep.has(e.successor)&&!ms.has(e.successor)&&(e.prerequisite.startsWith('START-')||!ms.has(e.prerequisite))){keep.add(e.successor);grew=true;}}
  return {nodes:data.nodes.filter(n=>keep.has(n.id)),edges:data.edges.filter(e=>keep.has(e.prerequisite)&&keep.has(e.successor))};
 }
 function graphLayout(tasks,edges){
@@ -265,8 +267,10 @@ function independentGroups(data){
  const stateRank=s=>{const r=ORDER.indexOf(s);return r<0?ORDER.length:r;};
  // General tasks without a route to a milestone remain discoverable even when they depend on another task.
  const links=data.edges.concat(data.milestoneRelations||[]);
- const attached=new Set((data.milestones||[]).map(m=>m.id));
+ const attached=new Set((data.milestones||[]).map(m=>m.id)),msIds=new Set(attached),startSide=new Set();
  for(let grew=true;grew;){grew=false;for(const e of links)if(attached.has(e.successor)&&!attached.has(e.prerequisite)){attached.add(e.prerequisite);grew=true;}}
+ // Start-side work (OPS-069): tasks downstream of a version START, and their downstream task chains, belong to that version.
+ for(let grew=true;grew;){grew=false;for(const e of links)if(!msIds.has(e.successor)&&!attached.has(e.successor)&&(e.prerequisite.startsWith('START-')||startSide.has(e.prerequisite))){attached.add(e.successor);startSide.add(e.successor);grew=true;}}
  const permanentIds=new Set(data.tasks.filter(t=>t.permanent).map(t=>t.id));
  // Sub-tasks at any depth under a permanent task are drawn in the permanent map (2026-10-17, OPS-070 children).
  const byId=new Map(data.tasks.map(t=>[t.id,t]));

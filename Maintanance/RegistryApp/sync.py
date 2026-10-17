@@ -206,11 +206,12 @@ def add_ends(cards, errors=None):
         mine = [c for c in cards if Path(c['gate']).parent.name == name]
         mid = [c for c in mine if not Path(c['gate']).name.startswith('GATE-')]
         rel = [c for c in mine if Path(c['gate']).name.startswith('GATE-')]
+        sid = 'START-' + folder_id(name)  # entry of the folder's work interval (OPS-069, step 1); identifier only
         eid = 'END-' + folder_id(name)  # identifier only: no name or condition of its own
-        out += mid + [dict(id=eid, kind='milestone', item=eid,
-                           state='DONE' if vkey(name) < head_version() else 'ACTIVE', owner='',
-                           condition='', raw='', detail='Maintanance/Milestones/README.md',
-                           gate=f'Maintanance/Milestones/{name}/', virtual=True)] + rel
+        virtual = lambda i, done: dict(id=i, kind='milestone', item=i, state='DONE' if done else 'ACTIVE', owner='',
+                                       condition='', raw='', detail='Maintanance/Milestones/README.md',
+                                       gate=f'Maintanance/Milestones/{name}/', virtual=True)
+        out += [virtual(sid, vkey(name) <= head_version())] + mid + [virtual(eid, vkey(name) < head_version())] + rel
     # Folder placement defines the source; gate ID defines the destination.
     errors = errors if errors is not None else []
     groups = {name: [c for c in out if (Path(c['gate'].rstrip('/')).name if c.get('virtual')

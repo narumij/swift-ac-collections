@@ -134,7 +134,7 @@ def sections(text, level):
 
 def gate_state(path, version_gate, state):
     """Version gates are passed when HEAD has reached their version (no checkbox). Gates in a folder
-    before HEAD are passed with it; other NN_ gates follow their DONE checkbox."""
+    before HEAD are passed with it; intermediate cards follow their DONE checkbox."""
     head, folder = head_version(), vkey(path.parent.name)
     if version_gate:
         return 'DONE' if vkey('.'.join(re.findall(r'\d+', path.stem))) <= head else 'ACTIVE'
@@ -149,12 +149,14 @@ def read_gates():
     is 'なし' or a Task Registry task are not Studio milestones. Returns (cards, errors)."""
     cards, errors = [], []
     task_ids = {t['id'] for t in parse_registry()[0]}
-    def order(p):  # file name order within a folder (NN_* before GATE-*)
+    def order(p):  # file name order within a folder; a number prefix is recommended, not required
         return p.name
     for path in [p for d in version_folders() for p in sorted(d.glob('*.md'), key=order)]:
-        if not re.fullmatch(r'\d+_.+\.md|GATE-\d+\.\d+\.\d+\.md', path.name):
-            continue  # only NN_*.md and GATE-x.y.z.md are gates; other files (e.g. GOAL.md) are ignored
+        if path.name == 'GOAL.md':
+            continue  # GOAL.md only keeps the folder and is ignored (Milestones/DESIGN.md「GOALファイル」, OPS-080)
         rel = path.relative_to(ROOT).as_posix()
+        if path.name.startswith('GATE-') and not re.fullmatch(r'GATE-\d+\.\d+\.\d+\.md', path.name):
+            errors.append(f'{rel}: a release gate file must be named GATE-x.y.z.md'); continue
         top = sections(path.read_text(encoding='utf-8'), '#')
         card = sections(top.get('カード情報', ''), '##')
         gid = card.get('ID', '').strip('` \n')
@@ -162,7 +164,7 @@ def read_gates():
         state = card.get('状態', '')
         version_gate = path.name.startswith('GATE-')
         if not gid or not name or (not version_gate and not re.search(r'- \[( |x)\] DONE', state)):
-            errors.append(f'{rel}: カード情報 needs ## ID, ## 名前 (and "- [ ] DONE" under ## 状態 for NN_ gates)'); continue
+            errors.append(f'{rel}: カード情報 needs ## ID, ## 名前 (and "- [ ] DONE" under ## 状態 for intermediate cards)'); continue
         vm = re.fullmatch(r'GATE-(\d+)\.(\d+)\.(\d+)\.md', path.name)
         if vm and (gid != 'GATE-' + '.'.join(vm.groups()) or not name.startswith('.'.join(vm.groups()) + ' ')):
             errors.append(f"{rel}: version gate needs ## ID `GATE-{'.'.join(vm.groups())}` and ## 名前 "

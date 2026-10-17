@@ -16,6 +16,21 @@ function milestoneChainErrors(data){const links=new Set(data.milestoneRelations.
   for(let i=0;i+1<chain.length;i++)if(!links.has(chain[i]+' → '+chain[i+1]))errors.push('missing '+chain[i]+' → '+chain[i+1]);
   for(const r of data.milestoneRelations)if(at.has(r.prerequisite)&&at.has(r.successor)&&at.get(r.successor)!==at.get(r.prerequisite)+1)errors.push('unexpected '+r.prerequisite+' → '+r.successor);}
  return errors;}
+// Cards against the real files (OPS-080): every Markdown file in a version folder except GOAL.md must be a generated
+// card, and every generated card must have its file. The listing comes from the file system, not from generated data.
+function milestoneListing(){const root=require('path').resolve(__dirname,'../Milestones');return fs.readdirSync(root,{withFileTypes:true}).filter(e=>e.isDirectory()&&!e.name.startsWith('_')).map(e=>({version:e.name,files:fs.readdirSync(require('path').join(root,e.name)).filter(f=>f.endsWith('.md')).sort()}));}
+function milestoneFileErrors(data,listing){const cards=new Map(data.milestones.filter(m=>!m.virtual&&/^Maintanance\/Milestones\//.test(m.gate||'')).map(m=>[m.gate,m.id])),files=new Set(),errors=[];
+ for(const {version,files:names} of listing)for(const f of names){const p='Maintanance/Milestones/'+version+'/'+f;files.add(p);if(f==='GOAL.md'){if(cards.has(p))errors.push('GOAL.md must not be a card: '+p);}else if(!cards.has(p))errors.push('not generated: '+p);}
+ for(const [p,id] of cards)if(!files.has(p))errors.push('no file for '+id+': '+p);
+ return errors;}
+assert.deepEqual(milestoneFileErrors(original,milestoneListing()),[]);
+{const data={milestones:[{id:'START-9.9.9',virtual:true},{id:'MS-A',gate:'Maintanance/Milestones/9.9.9/10_A.md'},{id:'X-EXTRA',gate:'Maintanance/Milestones/9.9.9/EXTRA.md'},{id:'END-9.9.9',virtual:true},{id:'GATE-10.0.0',gate:'Maintanance/Milestones/9.9.9/GATE-10.0.0.md'}]};
+ const files=['10_A.md','EXTRA.md','GATE-10.0.0.md','GOAL.md'];
+ assert.deepEqual(milestoneFileErrors(data,[{version:'9.9.9',files}]),[]);
+ assert.deepEqual(milestoneFileErrors({milestones:data.milestones.filter(m=>m.id!=='X-EXTRA')},[{version:'9.9.9',files}]),['not generated: Maintanance/Milestones/9.9.9/EXTRA.md']);
+ assert.deepEqual(milestoneFileErrors(data,[{version:'9.9.9',files:files.filter(f=>f!=='10_A.md')}]),['no file for MS-A: Maintanance/Milestones/9.9.9/10_A.md']);
+ assert.deepEqual(milestoneFileErrors({milestones:[...data.milestones,{id:'GOAL-X',gate:'Maintanance/Milestones/9.9.9/GOAL.md'}]},[{version:'9.9.9',files}]),['GOAL.md must not be a card: Maintanance/Milestones/9.9.9/GOAL.md']);
+ console.log('PASS: every version-folder file except GOAL.md is a generated card and every card has its file (missing, stale and GOAL cases rejected).');}
 {// Isolated fixtures: one version folder with the given files in folder order and relations along `order` (default: file order).
  const fx=(files,order)=>{const cards=files.map(([file,id])=>({id,kind:'milestone',gate:'Maintanance/Milestones/9.9.9/'+file}));const ids=order||[...cards].sort((a,b)=>a.gate<b.gate?-1:1).map(c=>c.id);const chain=['START-9.9.9',...ids,'END-9.9.9'];
   return {milestones:[{id:'START-9.9.9',virtual:true},...cards,{id:'END-9.9.9',virtual:true},{id:'GATE-10.0.0',kind:'milestone',gate:'Maintanance/Milestones/9.9.9/GATE-10.0.0.md'}],

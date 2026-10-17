@@ -1,0 +1,3 @@
+  Maintanance/Milestones/0.6.0/BAD.md: カード情報 needs ## ID, ## 名前 (and "- [ ] DONE" under ## 状態 for intermediate cards)
+c) BAD.md without ID
+c) sync exit=1

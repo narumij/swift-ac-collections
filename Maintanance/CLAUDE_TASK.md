@@ -114,3 +114,7 @@ to Claude; the coordinator will await Return before editing that scope.
 ## OPS-074 — 第2区切り受領後の追加対応（2026-10-17）
 
 ユーザーの差し戻し指示に基づく。第2区切りを受領し、完了受入は保留。[正本末尾の追加依頼](Current/CANONICAL_INVENTORY_APPEND.md)に従い、入力版の固定・根拠のSHA/パス/行範囲/主張・旧集計の確認範囲を補ってください。既存成果を保持し、追加Returnへ返却。指定範囲を姫へ再委任、Astraは返却待ち。深い調査・Registry変更・commitは含みません。
+
+## OPS-076 — 全体展開第2区切り（2026-10-17）
+
+OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の第2区切り](Current/CANONICAL_EVIDENCE_ROLLOUT.md)。指定6文書への限定追記と証拠をお願いします。入力・編集範囲・停止条件・Returnは正本に記載。依頼完成をもって受渡し、Astraは返却待ち。commitは含めません。

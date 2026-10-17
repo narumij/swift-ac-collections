@@ -140,12 +140,10 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RELEASE-084` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |
 
 
 | `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
-| `RELEASE-086` | `PROPOSED` | Astra | [EXECUTION] 立て直しプラン作成 | RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
-| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
+| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。2026-10-18、旧計画task RELEASE-086はユーザー指定でEXCLUDED。計画の必要性は維持し、後継の計画担当・taskは未設定。086の整理を前提充足やゲート通過と扱わない。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
 
 ## Task precedence
 
@@ -158,9 +156,6 @@
 | `OPS-088` | `OPS-087` | `SEQUENCE` | 保存契約の仕様化を完了し、入力版と範囲を固定して姫へ正式依頼してから着手する。改善の実装は別判断 |
 | `OPS-076` | `OPS-074` | `SEQUENCE` | 追加返却を固定版で再現・受入してから対象と編集範囲を確定して依頼する。受入だけでは自動開始しない |
 | `OPS-068` | `OPS-058` | `SEQUENCE` | ユーザーが限定試行の方針・対象・受入条件を承認し、入力と編集範囲を固定して正式依頼するまで着手しない |
-| `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |
-| `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |
-| `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |
@@ -169,7 +164,7 @@
 
 ### 受入済みの前提成果
 
-- RELEASE-082（手元候補確認）・RELEASE-083（比較元停止調査）は完了済み。原文は[立て直し整理前記録](../Archived/TASK_REGISTRY_BEFORE_RECOVERY_CLEANUP_2026-10-16.md)、証拠は現行のRELEASE_0_6_0_CANDIDATE_CHECK.md・RELEASE_CANDIDATE_BASELINE_INVESTIGATION.mdに保持。RELEASE-084はこの調査結果を再利用し、調査をやり直さない。
+- RELEASE-082（手元候補確認）・RELEASE-083（比較元停止調査）は完了済み。原文は[立て直し整理前記録](../Archived/TASK_REGISTRY_BEFORE_RECOVERY_CLEANUP_2026-10-16.md)、証拠は現行のRELEASE_0_6_0_CANDIDATE_CHECK.md・RELEASE_CANDIDATE_BASELINE_INVESTIGATION.mdに保持。RELEASE-084の完了記録は過去の記録への入口から参照できる。
 
 - `RBT-048`の受入済み入力は`RBT-047`。調査受入と原依存辺は[圧縮前記録](../Archived/TASK_REGISTRY_BEFORE_RELEASE_CLEANUP_2026-10-16.md)、判断材料は`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md`。修正方針のUSER_ONLYを維持し、受入済みから修正許可を推定しない。
 
@@ -238,6 +233,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
 
 ## 過去の記録への入口
+
+- RELEASE-084（DONE）・RELEASE-086（EXCLUDED、旧計画の不要整理）：[2026-10-18部分圧縮](../Archived/RELEASE_084_086_PARTIAL_COMPRESSION_2026-10-18.md)。084の限定成果は完了済み。086は達成扱いにしない。085・087はPROPOSEDを維持し、087の計画・実行証拠の必要性は残す。
 
 - [2026-10-17採番待ち照合（2）](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md)：CP-009〜013→OPS-075・048・070/071・073・074。返却済み範囲の受入と採番を完了、残作業は正式taskに保持。
 
@@ -373,7 +370,6 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-060` | `END-0.7.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |
 | `RBT-049` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、ASan strip_envの固定版調査を0.5.4の完了条件に含める。81204d22・記載macOS環境での受入済み限定調査により充足済み。Linux CI全体の合格や適用判断を追加条件にしない。 |
 | `DOC-045` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、赤黒木4型のDocCプレビューセルフレビューを0.5.4の完了条件に含める。既存の受入範囲で充足済み。未検証範囲の追加実施やリリース全体の合格を意味しない。 |
-| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |
 | `START-0.6.0` | `PERM-079` | 開始側。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。リリース完了だけでは調査を自動開始しない（2026-10-18、OPS-069 第1段の表示確認としてユーザー指定で START-0.6.0 へつなぎ替え）。 |
 | `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |
 | `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |

@@ -1,92 +1,23 @@
-# User採番待ちqueue
+# ユーザーからの持込み・採番待ち
 
-正式なRegistry IDへの照合・登録前に、ユーザーが発見・整理・明示実行した作業を
-一時的に受け渡す。このfileはTask Registryではなく、ユーザーが自律的に次作業を選ぶbacklogでもない。
+ユーザーが気づき・不具合・相談・作業案を自由に置き、調整担当へ渡す入口。採番済みの仕事について追加報告を書いてもよい。ユーザーの行動を制限するbacklogではなく、正式taskの状態を管理する場所でもない。
 
-現在の入口は[進捗 V2](ProgressV2/PROGRESS_OVERVIEW_V2.md)、正式なtaskの状態・担当・依存・再開条件は
-[Task Registry V2](ProgressV2/TASK_REGISTRY_V2.md)、制度・採番・文書権限は
-[Task制度 V2](ProgressV2/TASK_RULES_V2.md)を参照する。
+## ユーザーの記入
 
-## 規則
+形式は自由。短いメモだけでもよく、仮ID・状態名・テンプレートの記入は求めない。タイトルや日時があると引継ぎ対象を指しやすい。不具合なら、分かる範囲の期待動作・実際の動作・再現手順・ログが役立つ。不明な欄を埋める必要はない。
 
-- ユーザー裁量
+## 調整担当の扱い
 
-## entry template
+ユーザーから確認・整理を依頼されたときに処理する。記載だけで実装・方針決定・外部操作の許可を得たとは扱わない。
 
-- 自由
+1. 報告本文を残し、既存taskと重複・関連を照合する。採番済みならそのtaskへ引き継ぎ、新番号を重ねない。
+2. 未登録の仕事は通常の採番・委任手順で登録する。判断に必要な情報が足りなければ、必要な問いだけユーザーへ返す。
+3. 処理した項目の冒頭に、引継ぎ日・担当・固定ID・正本リンクを短く追記する。複数taskに分けた場合は対応を示す。原文は修正せず、訂正や補足は区別する。
+
+表示は「未引継ぎ」「確認待ち」「引継ぎ済み」で足りる。表示がなければ未引継ぎとして確認する。これは受渡しの状態であり、taskのACTIVE/DONE等を複製しない。「引継ぎ済み」は仕事の完了や受入を意味しない。以後の進捗は[Task Registry](ProgressV2/TASK_REGISTRY_V2.md)と詳細正本へ集約する。
+
+整理・圧縮を依頼された際は、引継ぎ済みの原文と接続先を[既存の圧縮手順](ProgressV2/TASK_REGISTRY_ARCHIVE.md)に従って保存し、入口を残す。未引継ぎ・確認待ちを消さない。この記述だけでは自動アーカイブの委任を追加しない。
+
+現在のStudioの採番待ち一覧には、このファイルは未接続。表示機能や書式制約を追加する場合は別の作業として扱う。
 
 ## 採番待ち
-
-### 2026/10/18-02:17:00 スタジオバグ
-
-#### 事前条件
-
-- スタジオのサーバープロセスが起動していること
-- スタジオをブラウザでしていること
-- マイルストーンが97e5d4ecb907cb5a2a3cd4056e9f3c8604a8c531時点の状態となっていること
-
-#### 再現手順
-
-- `0.6.0/10_VALIDATION_REVIEW.md`と`0.7.0/10_SPI.md`を入れ替える
-- 更新ボタンを押下
-
-#### 期待動作
-
-- 変更が反映され、並び順が変わった見取り図が参照できること
-
-#### 動作
-
-- 並び順は変更されない
-- 以下のログが表示される
-
-```
-更新できませんでした：Pending entries: Claude（姫） 0, Fable 0 · open requests: none
-Bundled 90 documents; missing: Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md, Maintanance/Milestones/0.7.0/10_SPI.md
-PASS: JS syntax; 61 tasks / 10 edges (= Registry rows); edit deltas; unchanged baseline; JSON roundtrip; duplicate/self/dangling/invalid-flow/cycle checks; duplicate/deleted task rejection; version rejection; unknown state and extra-field retention.
-Not tested: DOM rendering, actual file download, Safari UI.
-PASS: independent nodes excluded from graph; all connected nodes retained; all edges left-to-right; no overlap; empty-edge graph.
-tasks 61, edges 9, milestones 25 (from gate files)
-~ milestone MS-SPI: gate
-~ milestone MS-VALIDATION: detail, gate
-+ relation MS-SPI -> END-0.6.0
-+ relation MS-VALIDATION -> END-0.7.0
-+ relation START-0.6.0 -> MS-SPI
-+ relation START-0.7.0 -> MS-VALIDATION
-- relation MS-SPI -> END-0.7.0
-- relation MS-VALIDATION -> END-0.6.0
-- relation START-0.6.0 -> MS-VALIDATION
-- relation START-0.7.0 -> MS-SPI
-node: /Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node (saved record, v24.19.0)
-marked: /Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/marked/lib/marked.esm.js (saved record)
-FAILED (Command '['/Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node', '/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/RegistryApp/verify.cjs']' returned non-zero exit status 1.); restored registry.json and index.html to their state before this run
-node:internal/assert/utils:77
-    throw err;
-    ^
-
-AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
-
-  assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='END-0.6.0'&&!('relation' in e)))
-
-    at Object.<anonymous> (/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/RegistryApp/verify.cjs:15:807)
-    at Module._compile (node:internal/modules/cjs/loader:1872:14)
-    at Object..js (node:internal/modules/cjs/loader:2003:10)
-    at Module.load (node:internal/modules/cjs/loader:1594:32)
-    at Module._load (node:internal/modules/cjs/loader:1396:12)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
-    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
-    at node:internal/main/run_main_module:33:47 {
-  generatedMessage: true,
-  code: 'ERR_ASSERTION',
-  actual: false,
-  expected: true,
-  operator: '==',
-  diff: 'simple'
-}
-
-Node.js v24.19.0
-```
-
-#### 再現率
-
-- 4/4
-

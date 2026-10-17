@@ -113,6 +113,8 @@
 | `OPS-068` | `PROPOSED` | Claude（作業予定） / Astra（受入） | [EXECUTION] 現行判断と旧判断を分ける文書整理の限定試行 | 2026-10-17ユーザー指定で登録。OPS-058の方針承認後、対象・入力・編集範囲を固定してCLAUDE_TASKで正式依頼する。現行判断・履歴・参照を整理し、判断の欠落や意味変更がないかAstraが受け入れる。未発注・未着手 | `Maintanance/Current/DECISION_ARCHIVE_PILOT.md` |
 | `OPS-069` | `PROPOSED` | Astra（実装・検証予定） | [EXECUTION] Studioに版のSTARTと開始側タスクの上段配置を追加 | 2026-10-17ユーザー依頼。STARTは版の作業区間の入口で、release完了や着手許可ではない。STARTから始まる仕事を骨格の上、ENDへ合流する仕事を下へ接続に基づいて配置する。生成・編集・検証を一体で改修し、PERM-079の既存再開条件を保持する。今回は登録のみ、未着手 | `Maintanance/Current/REGISTRY_STUDIO_VERSION_START.md` |
 | `OPS-070` | `PROPOSED` | Astra（影響整理・案） / User（導入判断） | [DISCOVERY] 仮契約概念の導入検討 | 2026-10-17ユーザー依頼。知らなくて当たり前の未知を含む仕事を仮契約として扱い、判明した事実に応じたタスク再分解を自走できる案の影響を整理する。既存の状態・委任・受入・依存・整理との整合、適用境界と試行案を示す。今回は登録のみ。制度導入・権限拡張・既存taskの一括変更は未承認 | `Maintanance/Current/PROVISIONAL_TASK_AGREEMENT_STUDY.md` |
+| `OPS-071` | `PROPOSED` | Astra（検討案） / User（導入判断） | [DISCOVERY] 仮判断概念と仮契約との境界を検討する | 2026-10-17ユーザー依頼。暫定の見立てと委任の約束を分け、事実との照合で残す・修正・捨てる条件と影響を整理する。OPS-070の子task。登録のみ、既存判断の失効・権限変更は行わない | `Maintanance/Current/PROVISIONAL_JUDGMENT_STUDY.md` |
+| `OPS-072` | `PROPOSED` | Astra（試行・記録予定） / User（必要な判断） | [EXECUTION] 仮契約・仮判断の棚卸し記録を限定試行する | 2026-10-17ユーザー依頼。OPS-070・071の整理後、対象・方法・範囲をユーザーと確定して少数で試行する。事実・残す/修正/捨てる結果と理由・再確認のきっかけを残し、再探索負担と記録負担を評価する。登録のみ、正式判断やRegistry状態の自動変更はしない | `Maintanance/Current/PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -133,6 +135,8 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `OPS-072` | `OPS-070` | `SEQUENCE` | 仮契約の適用境界と影響を整理し、限定試行の範囲・方法が承認されるまで試行しない |
+| `OPS-072` | `OPS-071` | `SEQUENCE` | 仮判断と仮契約の区別、事実照合と棚卸し記録の案を揃えてから試行する |
 | `OPS-068` | `OPS-058` | `SEQUENCE` | ユーザーが限定試行の方針・対象・受入条件を承認し、入力と編集範囲を固定して正式依頼するまで着手しない |
 | `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |
 | `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |
@@ -306,6 +310,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-058` | `OPS-068` |
 | `OPS-044` | `OPS-067` |
 | `OPS-044` | `OPS-070` |
+| `OPS-070` | `OPS-071` |
+| `OPS-070` | `OPS-072` |
 
 ## マイルストーン接続
 

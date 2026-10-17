@@ -59,3 +59,7 @@ Registry・マイルストーン → 中間データ → 閲覧・編集 → 差
 CP-20261016-005のClaude助言をOPS-048へ統合。ユーザーの実装指示によりAstraが反映。負の列を0へ切り詰めることでDOC-034→MS-DOCが逆向きとなり全体fallbackしたため、先頭より前の供給枝を補助列に置き、骨格を1列右へ送る共通ルールを追加。固定task IDによる座標指定は追加していない。task・依存は変更していない。
 
 現行40taskの配置がfallback=falseとなり、収容・辺方向・カード非重複・ID置換不変性を確認。先頭へ入る2段の供給枝の限定fixtureも確認。従来データfixtureの座標回帰検証は維持。ブラウザ目視は未実施。修正後HTMLを配布先へ更新。
+
+## 採番待ちの複数queue表示の受入（2026-10-17 / Astra）
+
+FP-20261017-001（Fable、ユーザー直接依頼、5ea16511）をOPS-048へ統合。両queueを持ち主・出典付きで表示する変更を受入。Astraはbuild-pending.py差分と描画側の出典使用、内蔵seedのFP-001のsource/ownerを照合し、verify.cjsを再実行して成功。stub DOM確認はFableの報告、Safari実操作は未確認であり今回の受入保証に含めない。恒久taskはACTIVE。今回のqueue照合後のStudio再生成はまだ行っていない。

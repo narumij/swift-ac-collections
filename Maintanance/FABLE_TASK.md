@@ -31,7 +31,7 @@ Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記�
 
 ## Current job status
 
-OPS-044：採番待ち3件の照合案を作る管理試験をFableへ依頼中。対象・編集範囲・Returnは[試験正本](Current/FABLE_MANAGEMENT_TRIAL.md)。最終受入・Registry反映はAstra。
+OPS-044：管理試験は2026-10-17 Astra受入・対象3件の記録統合済み。[評価と補正](Current/FABLE_MANAGEMENT_TRIAL.md)を参照。現在の追加依頼なし。親恒久taskはACTIVEを維持。
 
 ユーザーがFableへ直接依頼した採番前の作業は、[採番待ちqueue](FABLE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。

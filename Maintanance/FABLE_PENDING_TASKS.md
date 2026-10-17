@@ -42,7 +42,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとFable�
 
 ### `FP-20261017-001` — Registry Studio：Fableの採番待ちqueueも表示する
 
-- queue状態: `AWAITING_CODEX`（実施済み・未commit。Studio（OPS-048）はAstraの道具なので受入が要る）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下の括弧は返却当時の状態）（実施済み・未commit。Studio（OPS-048）はAstraの道具なので受入が要る）
 - 発見元・ユーザー指示: 2026-10-17、ユーザー「これ（RegistryApp）に、姫の採番まちはあるけど、ふぁぶるさんの採番まちがまだみれないから、みれるようにしてくれる？それ自体を採番待ちに記載して、動作みてほしい」。
 - 種別候補: `EXECUTION`
 - 実施:
@@ -53,5 +53,6 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとFable�
 - 検証: `sync.py`完了・verify.cjs pass（`PATH`にnodeが無いため、`--node`・`--marked`にCodex実行環境`~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/`配下のnode v24.19.0とmarkedを指定）。生成seedは姫5件（CP-013・005〜008）＋Fable 1件（FP-001）、全entryに整形済みHTMLあり。`renderPending`をstub DOMで実行し、6枚のカード・持ち主表示・FP-001クリックで`FABLE_PENDING_TASKS.md`を出典に原文が開くことを確認。`registry.json`の差分は`source.head`（HEAD 93fd0204への追随）と生成時刻だけ。画面の実表示はユーザーのSafariで確認待ち。
 - commit: していない。
 - Codex reconciliation: 未処理
+- Astra reconciliation（2026-10-17、最新）: OPS-048へ統合。5ea16511の差分・seed照合とverify成功。Safari実操作は未確認。 原返却のcommit記述は当時の記録として保持。
 
 過去のreconciliation済みentryはまだない。圧縮時は`Archived/FABLE_PENDING_TASKS_RECONCILED_<日付>.md`へ移し、ここにリンクを残す。

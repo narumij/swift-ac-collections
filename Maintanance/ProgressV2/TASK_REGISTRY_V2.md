@@ -32,7 +32,7 @@
 
 | `OPS-058` | `PROPOSED` | ユーザー（採否） / Astra（整理） | [DECISION] 判断アーカイブ運用の採否 | CP-20261016-008を提案として登録。現在有効な判断を本文に集約し旧判断を履歴へ分ける方式を採るか。未承認・未実施。確定済み文書の変更権限は広げない | `Maintanance/Current/DECISION_ARCHIVE_PROPOSAL.md` |
 
-| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
+| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。CP-20261017-007の設計論点整理を判断材料へ統合（未決方針は不変）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |
 | `DOC-036` | `USER_ONLY` | User | [DECISION] 文書Validation計画の受入判断 | 2026-10-16ユーザー指示で構築。登録のみ・未実行。0.7.0前に既存Validation計画の対象・方法・判定境界をレビューし、計画を受け入れるか判断する。旧DOC-032のマイルストーンを実行可能な判断記録へ接続。人間レビュー実施や参加者接触とは別。AIは依頼された準備・整理だけを補助する。 | `Maintanance/Milestones/0.6.0/10_VALIDATION_REVIEW.md` |
 
 

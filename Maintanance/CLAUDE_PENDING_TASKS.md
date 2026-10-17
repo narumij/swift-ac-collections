@@ -159,7 +159,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261017-007` — RBT-048の判断材料（index版更新APIの設計論点、会話記録）
 
-- queue状態: `AWAITING_CODEX`（記録のみ。判断はユーザー預かりのまま、製品・Tests変更なし）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下の括弧は返却当時の状態）（記録のみ。判断はユーザー預かりのまま、製品・Tests変更なし）
 - 発見元: 2026-10-17、ユーザーとの会話。ユーザー「ずーっとまよってるのよな」「さきおくるか」で先送り。RBT-048の0.7.0暫定・USER_ONLYは変えない。
 - 論点（姫の整理。決定ではない）:
   1. index_stale_check.mdの標準構成CROSS=ON/LAZY=OFFでは、CoW後の木はF列（別の木）。複製前に有効なindexは複製後もoのはずで、修正案のfatalErrorは表の外（内部矛盾）だけを止める。無関係な木のindexは未規定なので、到達してもtrapは許容範囲。
@@ -172,10 +172,12 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 未確認: Boostの細部、性能、ChatGPT／Astraとのダブルチェック。
 - commit: していない。
 - Codex reconciliation: 未処理（RBT-048の判断材料への統合をお願いします）
+- Astra reconciliation（2026-10-17、最新）: RBT-048の判断材料へ統合。USER_ONLYと未決方針は維持。記録commitは93fd0204。 原返却のcommit記述は当時の記録として保持。
+
 
 ### `CP-20261017-008` — Fable用の依頼票と採番待ちqueueを新設
 
-- queue状態: `AWAITING_CODEX`（実施済み・未commit）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下の括弧は返却当時の状態）（実施済み・未commit）
 - 発見元・ユーザー指示: 2026-10-17、ユーザー「CLAUDE_TASKとCLAUDE_PENDING_TASKをコピーして、それぞれFABLE_TASKとFABLE_PENDING_TASKを用意して欲しい。依頼とか待ちが無い状態に。記載矛盾は直して」。実施はFable（Claude Fable 5.1、本リポジトリ初参加、称号なし。姫はネームドOpusで別）。
 - 種別候補: `EXECUTION`
 - 実施: `Maintanance/FABLE_TASK.md`・`Maintanance/FABLE_PENDING_TASKS.md`を新規作成。規則・占有権・templateは原本と同文で、宛先をClaude→Fableに置換。Claude固有の履歴（Current job status、受入済み節、Archived履歴リンク、照合節、CP-013〜007のentry、2026-10-08の委任終了Status）は含めず、「現在の依頼はない／採番待ちのentryはない」とした。仮IDはCP-との衝突を避けるため`FP-YYYYMMDD-NNN`（Fable判断、要確認）。感想先`FABLE_OBSERVATIONS.md`は未作成で、初回記入時に作成と明記。
@@ -183,6 +185,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 検証: 新ファイル内の相対リンク先の実在を確認。
 - commit: していない。
 - Codex reconciliation: 未処理（運用上の位置づけ、FP-接頭辞、入口文書への記載要否の判断をお願いします）
+- Astra reconciliation（2026-10-17、最新）: OPS-044へ統合。新設c051a8f4、経路定義835dc786を照合。Fableと姫の受渡しを分離。 原返却のcommit記述は当時の記録として保持。
 
 過去のreconciliation済みentryは次を参照する。
 

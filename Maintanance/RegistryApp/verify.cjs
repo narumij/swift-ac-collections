@@ -326,12 +326,13 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
 // Milestone plan in the edit version (OPS-086): reorder, move, rename/condition, add card, add version; IDs and task lines stay.
 {const base=copy(original);base.baseline.milestones=copy(original.milestones);const chain=(d,v)=>expectedMilestoneChains(d).find(c=>c.version===v).chain;
  const v6=original.milestones.find(m=>m.id==='MS-SPI').gate.split('/')[2],v7=original.milestones.find(m=>m.id==='MS-VALIDATION').gate.split('/')[2];
+ const orig6=ctx.planCards(base,v6).map(m=>m.id),orig7=ctx.planCards(base,v7).map(m=>m.id);
  const taskLines=d=>d.milestoneRelations.filter(r=>!(r.source&&r.source.path==='Maintanance/Milestones/README.md')).map(r=>r.prerequisite+'>'+r.successor).sort();
  let a=ctx.planAddCard(base,v6,'追加の中間カード','到達条件の案');const id=a.id;let d=a.data;assert.equal(id,'draft-ms-1');
- assert.deepEqual(chain(d,v6),['START-'+v6,'MS-SPI',id,'END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);assert.deepEqual(taskLines(d),taskLines(base),'task lines untouched');
- d=ctx.planReorder(d,id,-1);assert.deepEqual(chain(d,v6),['START-'+v6,id,'MS-SPI','END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);
+ assert.deepEqual(chain(d,v6),['START-'+v6,...orig6,id,'END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);assert.deepEqual(taskLines(d),taskLines(base),'task lines untouched');
+ for(let i=0;i<orig6.length;i++)d=ctx.planReorder(d,id,-1);assert.deepEqual(chain(d,v6),['START-'+v6,id,...orig6,'END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);
  assert(/\/10_DRAFT_MS_1\.md$/.test(d.milestones.find(m=>m.id===id).gate)&&/\/20_SPI\.md$/.test(d.milestones.find(m=>m.id==='MS-SPI').gate),'renumbered by file name');
- d=ctx.planMove(d,'MS-SPI',v7);assert.deepEqual(chain(d,v6),['START-'+v6,id,'END-'+v6]);assert.deepEqual(chain(d,v7),['START-'+v7,'MS-VALIDATION','MS-SPI','END-'+v7]);
+ d=ctx.planMove(d,'MS-SPI',v7);assert.deepEqual(chain(d,v6),['START-'+v6,id,...orig6.filter(x=>x!=='MS-SPI'),'END-'+v6]);assert.deepEqual(chain(d,v7),['START-'+v7,...orig7,'MS-SPI','END-'+v7]);
  assert(!d.milestoneRelations.some(r=>r.source&&r.source.path==='Maintanance/Milestones/README.md'&&(r.prerequisite==='START-'+v6&&r.successor===id?false:(r.prerequisite==='MS-SPI'&&r.successor===id)||(r.prerequisite===id&&r.successor==='MS-SPI'))),'no stale backbone line from the old position');
  assert.deepEqual(milestoneChainErrors(d),[]);assert.deepEqual(taskLines(d),taskLines(base),'task lines (to cards and to END) do not follow or change');
  d=ctx.planEditText(d,'MS-SPI','SPI登録（案）','バッジと試験結果');assert.equal(d.milestones.find(m=>m.id==='MS-SPI').item,'SPI登録（案）');

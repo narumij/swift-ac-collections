@@ -27,7 +27,9 @@ the user.
 
 調整役が`FABLE_TASK.md`で依頼する仕事は、事前にTask Registryへ登録し、依頼本文に固定IDを記載する。未登録なら、登録してから依頼する。
 
-Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記する常設の委任は、個別依頼の編集対象に同書が含まれていなくても有効とする（同書は未作成。初回記入時にFableが作成する）。都度の確認は不要であり、記入は任意とする。本作業や必要な報告を妨げない範囲で行う。
+Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記する常設の委任は、個別依頼の編集対象に同書が含まれていなくても有効とする（同書は2026-10-17にユーザー依頼で作成）。都度の確認は不要であり、記入は任意とする。本作業や必要な報告を妨げない範囲で行う。
+
+2026-10-17、ユーザーが会話でFableの中間記憶領域`Maintanance/Cache/Fable/`の使用を許可した。README以外はGit管理外。規則はTask RulesのAI用キャッシュ節とCOMMONSに従い、正本・権限・作業状態を置き換えない。
 
 ## Current job status
 

@@ -1,4 +1,4 @@
-# Codex-to-Claude Work Request
+# Coordinator-to-Claude Work Request
 
 ## 占有権と受渡し
 
@@ -21,7 +21,7 @@
 Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
 
 Task selection and start authority are defined in the root `CLAUDE.md`. This document records only the current job and
-bounded-task execution constraints. Codex integrates returned results, performs Registry acceptance and state updates,
+bounded-task execution constraints. The explicitly delegated coordinator integrates returned results, performs Registry acceptance and state updates,
 and owns public-document completion. Repository evidence establishes factual correctness; product decisions remain with
 the user.
 

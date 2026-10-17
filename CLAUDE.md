@@ -24,6 +24,11 @@ the user's latest instructions or authorize resuming frozen work.
 
 ## Request routing for Claude and Fable
 
+For the user-authorized temporary Fable coordinator role, consult
+[the deputy delegation](Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md). It explicitly
+includes Registry updates and cleanup, and defines runtime-model identification.
+Its bounded exception applies to the ordinary routing/acceptance rules below.
+
 Use the participant explicitly designated by the current user assignment; do not infer
 an identity or role from this file. Fable assignments and returns use
 [FABLE_TASK.md](Maintanance/FABLE_TASK.md), and Fable's unregistered direct work uses

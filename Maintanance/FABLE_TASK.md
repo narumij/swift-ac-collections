@@ -1,4 +1,4 @@
-# Codex-to-Fable Work Request
+# Coordinator-to-Fable Work Request
 
 ## 占有権と受渡し
 
@@ -21,7 +21,7 @@
 Status: Bounded assignments only.
 
 Task selection and start authority are defined in the root `CLAUDE.md`. This document records only the current job and
-bounded-task execution constraints. Codex integrates returned results, performs Registry acceptance and state updates,
+bounded-task execution constraints. The explicitly delegated coordinator integrates returned results, performs Registry acceptance and state updates,
 and owns public-document completion. Repository evidence establishes factual correctness; product decisions remain with
 the user.
 
@@ -31,7 +31,12 @@ Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記�
 
 ## Current job status
 
-OPS-044：管理試験は2026-10-17 Astra受入・対象3件の記録統合済み。[評価と補正](Current/FABLE_MANAGEMENT_TRIAL.md)を参照。現在の追加依頼なし。親恒久taskはACTIVEを維持。
+**Current assignment: OPS-044 temporary coordinator deputy.** Follow
+[the user delegation](Current/FABLE_COORDINATOR_DEPUTY.md), including runtime-model
+identification, Registry updates and cleanup. The earlier trial below is completed
+history; its proposal-only limits do not define this new assignment.
+
+OPS-044：管理試験は2026-10-17 Astra受入・対象3件の記録統合済み。[評価と補正](Current/FABLE_MANAGEMENT_TRIAL.md)を参照。試験とは別に上記代理を委任。親恒久taskはACTIVEを維持。
 
 ユーザーがFableへ直接依頼した採番前の作業は、[採番待ちqueue](FABLE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。

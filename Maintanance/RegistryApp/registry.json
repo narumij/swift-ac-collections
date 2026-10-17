@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "93fd0204",
-    "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
-    "dirty": false,
-    "generatedAt": "2026-10-17T13:33:47.666953+09:00",
+    "head": "318d78f4",
+    "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
+    "dirty": true,
+    "generatedAt": "2026-10-17T14:00:54.763691+09:00",
     "generator": "sync.py",
-    "rulesSha256": "e354cbe7f3452f00ec86066f746808526e37f0dcb9eb8c2fbe5f89d35e984590"
+    "rulesSha256": "84354a704f0b3e6da71ee64a1e00d08ce830b5fa844d5400a292c0341267b6dd"
   },
   "tasks": [
     {
@@ -61,11 +61,11 @@
     {
       "id": "OPS-044",
       "state": "ACTIVE",
-      "owner": "現在委任された調整担当（Registry更新はCodex）",
+      "owner": "ユーザーからRegistry更新を委任された調整担当",
       "item": "[EXECUTION] Task Registry運用の恒久管理",
       "condition": "現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない",
-      "detail": "`Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`",
-      "raw": "| `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md` |",
+      "detail": "`Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`  / `Maintanance/Current/FABLE_MANAGEMENT_TRIAL.md`（2026-10-17限定試験：Fableが指定3件の照合案、Astraが受入・反映。当該試験ではRegistry直接編集なし）  / `Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md`（2026-10-17ユーザー委任：モデル識別・Registry更新・掃除を含む一時代理）",
+      "raw": "| `OPS-044` | `ACTIVE` | ユーザーからRegistry更新を委任された調整担当 | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`  / `Maintanance/Current/FABLE_MANAGEMENT_TRIAL.md`（2026-10-17限定試験：Fableが指定3件の照合案、Astraが受入・反映。当該試験ではRegistry直接編集なし）  / `Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md`（2026-10-17ユーザー委任：モデル識別・Registry更新・掃除を含む一時代理） |",
       "sourceLine": 27,
       "group": "協働と運用",
       "permanent": true
@@ -123,9 +123,9 @@
       "state": "USER_ONLY",
       "owner": "User",
       "item": "[DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断",
-      "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし",
+      "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。CP-20261017-007の設計論点整理を判断材料へ統合（未決方針は不変）。判断前の製品修正なし",
       "detail": "`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`",
-      "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
+      "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。CP-20261017-007の設計論点整理を判断材料へ統合（未決方針は不変）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
       "sourceLine": 35,
       "group": "協働と運用",
       "permanent": false
@@ -315,9 +315,9 @@
       "state": "ACTIVE",
       "owner": "Codex",
       "item": "[EXECUTION] 1.0品質保証CIの構成・証拠化",
-      "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。",
-      "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`",
-      "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml` |",
+      "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。  CP-20261017-006のユーザー依頼による候補CI ASan job追加とLinux 218件成功報告を統合。run URL・対象SHA・完全証拠の対応は未保存。",
+      "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`  / `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
+      "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。  CP-20261017-006のユーザー依頼による候補CI ASan job追加とLinux 218件成功報告を統合。run URL・対象SHA・完全証拠の対応は未保存。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`  / `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
       "sourceLine": 64,
       "group": "RedBlackTreeと品質ゲート",
       "permanent": false
@@ -639,11 +639,11 @@
       {
         "id": "OPS-044",
         "state": "ACTIVE",
-        "owner": "現在委任された調整担当（Registry更新はCodex）",
+        "owner": "ユーザーからRegistry更新を委任された調整担当",
         "item": "[EXECUTION] Task Registry運用の恒久管理",
         "condition": "現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない",
-        "detail": "`Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`",
-        "raw": "| `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md` |",
+        "detail": "`Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`  / `Maintanance/Current/FABLE_MANAGEMENT_TRIAL.md`（2026-10-17限定試験：Fableが指定3件の照合案、Astraが受入・反映。当該試験ではRegistry直接編集なし）  / `Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md`（2026-10-17ユーザー委任：モデル識別・Registry更新・掃除を含む一時代理）",
+        "raw": "| `OPS-044` | `ACTIVE` | ユーザーからRegistry更新を委任された調整担当 | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_RULES_V2.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/README.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ProgressV2/COMMONS.md`  / `Maintanance/Current/FABLE_MANAGEMENT_TRIAL.md`（2026-10-17限定試験：Fableが指定3件の照合案、Astraが受入・反映。当該試験ではRegistry直接編集なし）  / `Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md`（2026-10-17ユーザー委任：モデル識別・Registry更新・掃除を含む一時代理） |",
         "sourceLine": 27,
         "group": "協働と運用",
         "permanent": true
@@ -701,9 +701,9 @@
         "state": "USER_ONLY",
         "owner": "User",
         "item": "[DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断",
-        "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし",
+        "condition": "2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。CP-20261017-007の設計論点整理を判断材料へ統合（未決方針は不変）。判断前の製品修正なし",
         "detail": "`Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md`",
-        "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
+        "raw": "| `RBT-048` | `USER_ONLY` | User | [DECISION] 失敗時CoW修正案と再解決失敗時の扱いの判断 | 2026-10-16ユーザー預かり指定。想定時期は0.7.0（「多分」のため暫定、必須ゲートではない）。nilからfatalErrorへの変更を含む修正方針は未承認。RBT-047の調査を材料にユーザーが決める。AIは代行・委任せず、本人の発言等でしらふ・酒が抜けたと分かったときに確認する（ユーザー指定）。経過時間だけで推定しない。CP-20261016-012の追加death test調査を判断材料として受入（Astraはログ・入力照合、再実行なし）。CP-20261017-007の設計論点整理を判断材料へ統合（未決方針は不変）。判断前の製品修正なし | `Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md` |",
         "sourceLine": 35,
         "group": "協働と運用",
         "permanent": false
@@ -893,9 +893,9 @@
         "state": "ACTIVE",
         "owner": "Codex",
         "item": "[EXECUTION] 1.0品質保証CIの構成・証拠化",
-        "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。",
-        "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`",
-        "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml` |",
+        "condition": "2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。  CP-20261017-006のユーザー依頼による候補CI ASan job追加とLinux 218件成功報告を統合。run URL・対象SHA・完全証拠の対応は未保存。",
+        "detail": "`Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`  / `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`",
+        "raw": "| `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。  CP-20261017-006のユーザー依頼による候補CI ASan job追加とLinux 218件成功報告を統合。run URL・対象SHA・完全証拠の対応は未保存。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Maintanance/Testing/TESTING.md` / `.github/workflows/candidate.yml`  / `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` |",
         "sourceLine": 64,
         "group": "RedBlackTreeと品質ゲート",
         "permanent": false
@@ -1173,7 +1173,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-084` | `END-0.5.4` | `required` | 2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 291
         }
       },
@@ -1185,7 +1185,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 292
         }
       },
@@ -1197,7 +1197,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 293
         }
       },
@@ -1209,7 +1209,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 294
         }
       },
@@ -1221,7 +1221,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 295
         }
       },
@@ -1233,7 +1233,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 296
         }
       },
@@ -1245,7 +1245,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 297
         }
       },
@@ -1257,7 +1257,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 298
         }
       },
@@ -1269,7 +1269,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 299
         }
       },
@@ -1281,7 +1281,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 300
         }
       },
@@ -1293,7 +1293,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 301
         }
       },
@@ -1305,7 +1305,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 302
         }
       },
@@ -1317,7 +1317,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 303
         }
       },
@@ -1329,7 +1329,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 304
         }
       },
@@ -1341,7 +1341,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 305
         }
       },
@@ -1353,7 +1353,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.5.3` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 313
         }
       },
@@ -1365,7 +1365,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.5.4` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 314
         }
       },
@@ -1377,7 +1377,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.5.4` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 315
         }
       },
@@ -1413,7 +1413,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.6.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 316
         }
       },
@@ -1425,7 +1425,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-VALIDATION` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 317
         }
       },
@@ -1437,7 +1437,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.6.0` | `required` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 318
         }
       },
@@ -1449,7 +1449,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.7.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 319
         }
       },
@@ -1461,7 +1461,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-SPI` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 320
         }
       },
@@ -1473,7 +1473,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.7.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 321
         }
       },
@@ -1485,7 +1485,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.8.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 322
         }
       },
@@ -1497,7 +1497,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-HUMAN` | `after` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 323
         }
       },
@@ -1509,7 +1509,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.8.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 324
         }
       },
@@ -1521,7 +1521,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.9.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 325
         }
       },
@@ -1533,7 +1533,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-QUALITY` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 326
         }
       },
@@ -1545,7 +1545,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.9.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 327
         }
       },
@@ -1557,7 +1557,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-1.0.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 328
         }
       },
@@ -1569,7 +1569,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-1.0.0` | `stage` |",
-          "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
           "line": 329
         }
       }
@@ -1814,7 +1814,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-084` | `END-0.5.4` | `required` | 2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 291
       }
     },
@@ -1826,7 +1826,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 292
       }
     },
@@ -1838,7 +1838,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 293
       }
     },
@@ -1850,7 +1850,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 294
       }
     },
@@ -1862,7 +1862,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 295
       }
     },
@@ -1874,7 +1874,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 296
       }
     },
@@ -1886,7 +1886,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 297
       }
     },
@@ -1898,7 +1898,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 298
       }
     },
@@ -1910,7 +1910,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 299
       }
     },
@@ -1922,7 +1922,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 300
       }
     },
@@ -1934,7 +1934,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 301
       }
     },
@@ -1946,7 +1946,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 302
       }
     },
@@ -1958,7 +1958,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 303
       }
     },
@@ -1970,7 +1970,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 304
       }
     },
@@ -1982,7 +1982,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 305
       }
     },
@@ -1994,7 +1994,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.5.3` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 313
       }
     },
@@ -2006,7 +2006,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.5.4` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 314
       }
     },
@@ -2018,7 +2018,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.5.4` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 315
       }
     },
@@ -2054,7 +2054,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.6.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 316
       }
     },
@@ -2066,7 +2066,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-VALIDATION` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 317
       }
     },
@@ -2078,7 +2078,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.6.0` | `required` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 318
       }
     },
@@ -2090,7 +2090,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.7.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 319
       }
     },
@@ -2102,7 +2102,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-SPI` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 320
       }
     },
@@ -2114,7 +2114,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.7.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 321
       }
     },
@@ -2126,7 +2126,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.8.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 322
       }
     },
@@ -2138,7 +2138,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-HUMAN` | `after` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 323
       }
     },
@@ -2150,7 +2150,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.8.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 324
       }
     },
@@ -2162,7 +2162,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.9.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 325
       }
     },
@@ -2174,7 +2174,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-QUALITY` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 326
       }
     },
@@ -2186,7 +2186,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.9.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 327
       }
     },
@@ -2198,7 +2198,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-1.0.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 328
       }
     },
@@ -2210,7 +2210,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-1.0.0` | `stage` |",
-        "sha256": "e78e5880ec8679b5076bee05b29a3233cb77153c54d2d970cf63d679a5da3a02",
+        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
         "line": 329
       }
     }

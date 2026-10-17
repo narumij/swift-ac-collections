@@ -93,3 +93,9 @@ The DeathTests figures match the 2026-10-16 working-copy run exactly (213 / 360 
 - compiler-rt保存抜粋ではstrip_env既定trueとDYLD_INSERT_LIBRARIESからruntimeを除く処理が示される。Apple実装と公開ソースの厳密な版対応は未確定のまま。内部カバレッジの子stderrに基づく原因確定も行わない。
 
 今回の受入では試験やネットワーク取得を再実行していない。受入範囲は保存証拠による固定版・記載macOS環境での比較調査。Linux、他toolchain、全体suite、CI成功、製品全体のASan合格、リリース可否は未検証。strip_env=0の恒久採用は別判断であり、後続実装や新規taskを開始しない。commit・Studio再生成は行っていない。
+
+## Linux候補CIへの別経路の追加（2026-10-17 / Astra）
+
+CP-20261017-006をQUALITY-002へ統合。ユーザーの明示依頼で8631a031がcandidate.ymlへLinux ASan＋Death Test jobを追加し、reportの合否にも接続した。ユーザーは本会話で/test releaseのASan成功を報告し、Testing Library 6.4.1、x86_64-unknown-linux-gnu、218件21suite成功のログ抜粋とworkflow全文を提示。workflowの--sanitize address、ENABLE_DEATH_TESTS、対象filterをAstraが確認した。strip_env=0は設定されていない。
+
+成功報告と提示資料を受け入れる。GitHub run URL・対象SHA・完全artifactとの紐付けは未保存で、再現可能なCI証拠としての完成はQUALITY-002に残す。「Linuxでは常に対処不要」と一般化しない。RBT-049の固定macOS調査のDONE範囲は変更しない。既に明示されたjob追加を再び採用未承認に戻さず、RELEASE-085の新たな必須判断にも加えない。

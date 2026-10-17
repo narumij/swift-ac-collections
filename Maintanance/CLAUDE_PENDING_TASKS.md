@@ -1,11 +1,11 @@
 # Claude採番待ちqueue
 
-CodexがstableなRegistry IDを採番できない間に、ユーザーとClaudeが発見・整理・明示実行した作業を
+正式なRegistry IDへの照合・登録前に、ユーザーとClaudeが発見・整理・明示実行した作業を
 一時的に受け渡す。このfileはTask Registryではなく、Claudeが自律的に次作業を選ぶbacklogでもない。
 
 現在の入口は[進捗 V2](ProgressV2/PROGRESS_OVERVIEW_V2.md)、正式なtaskの状態・担当・依存・再開条件は
 [Task Registry V2](ProgressV2/TASK_REGISTRY_V2.md)、制度・採番・文書権限は
-[Task制度 V2](ProgressV2/TASK_RULES_V2.md)を参照する。CodexからClaudeへの個別依頼と返却は
+[Task制度 V2](ProgressV2/TASK_RULES_V2.md)を参照する。調整担当からClaudeへの個別依頼と返却は
 [CLAUDE_TASK.md](CLAUDE_TASK.md)で扱う。
 
 ## 規則
@@ -14,13 +14,16 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - ユーザーが「記録」「分解」「採番待ち」を依頼しただけなら、候補を記録して着手しない。
 - ユーザーがClaudeへ具体的で境界のある実行を明示依頼した場合、その範囲だけ採番前に実行できる。
 - 仮IDはTask precedence、正式な完了報告、別taskの依存、commit messageのstable IDとして使わない。
-- ClaudeはRegistryの状態、最終受入、公開方針、Codex担当の完成判定を代行しない。
+- ClaudeはRegistryの状態、最終受入、公開方針、他担当の完成判定を、明示的な委任なしに代行しない。
 - 一件を終えても、別の採番待ち候補へ自動的に移らない。
-- Codexは照合依頼や成果の返却を受けて関係するentryを読み、重複・衝突を確認し、正式登録、既存taskへの統合、却下のいずれかを判断する。通常起動時の一括読みに加えない。
+- ユーザーから委任された調整担当は照合依頼や成果の返却を受けて関係するentryを読み、重複・衝突を確認し、正式登録、既存taskへの統合、却下のいずれかを判断する。通常起動時の一括読みに加えない。
 - 正式採番後も仮IDを消さず、正式IDと処理結果を記録して追跡可能にする。
 - reconciliation済みentryは、[圧縮・アーカイブ手順](ProgressV2/TASK_REGISTRY_ARCHIVE.md)に従い、原文と追跡経路を残して`Archived/`へ移し、現役queueから除く。
-- Codexによる照合・統合済みのentryの圧縮は、上記手順の範囲で、ユーザーの常設の委任としてClaudeが都度の確認なしで行ってよい。未処理のentryは動かさない。
+- 委任された調整担当による照合・統合済みのentryの圧縮は、上記手順の範囲で、ユーザーの常設の委任としてClaudeが都度の確認なしで行ってよい。未処理のentryは動かさない。
 - 履歴文書（過去のreconciliation済みentryを含む）の効力は、[AGENTS.mdの「現在の仕事と正本」](../AGENTS.md#現在の仕事と正本)に従う。
+
+
+旧フィールド名`Codex reconciliation`と状態名`AWAITING_CODEX`は互換のため保持する。処理担当をCodexに限定する意味ではなく、委任された調整担当が実際の担当名を添えて照合結果を記録する。
 
 ## entry template
 
@@ -44,7 +47,7 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261016-013` — Registry Studio：行き止まりの到達点の枝（MS-080）を近くに置く
 
-- queue状態: `AWAITING_CODEX`（実施済み。一度凍結したが、同夜ユーザーのSafariで反映を確認「お、うごいた」。OPS-048への接続はAstra）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下は返却時の注記）（実施済み。一度凍結したが、同夜ユーザーのSafariで反映を確認「お、うごいた」。OPS-048への接続はAstra）
 - 発見元・ユーザー指示: 2026-10-16夜。ユーザー「MS-080がすんごいとおいんで、これもう少し近くによせるルール修正ないかな？」「こっそりなおして」。
 - 実施: `index.html`のレイアウト1か所（2行）。行き止まりの到達点の枝を「地図全体のいちばん下」ではなく「その枝が使う列のカードの下」に置く。MS-080はy=1153→457。差分は`Cache/Hime/ms080-layout.diff`と同じ。
 - 検証: `verify.cjs`全項目PASS（exit 0）、fallbackなし、`sync.py --check`はHEADの差だけ。WebKitで描いて確認した。MS-070→MS-080の線がQUALITY-005のカードを斜めに横切る点は残る。
@@ -54,6 +57,8 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - Codex reconciliation: 2026-10-16 Astra。OPS-059へFROZENで正式登録。Safariでの未解決と未commit差分を保持。受入・修正・再開は行わない。
 
 照合済みCP-014〜016は[原文と統合結果](Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md)へ保存。CP-014→RBT-033追加証拠・RBT-049候補、CP-015→RELEASE-083/084、CP-016→PERM-080。未着手の候補はRegistryで扱う。
+- Astra reconciliation（2026-10-17、最新）: OPS-059へ登録済みとしてqueue照合を完了。FROZENは維持し、実装修正の受入・再開は行わない。残事項は同task正本へ。
+
 
 ### `CP-20261017-001` — 文書マイルストーンを版フォルダ`Milestones/`へ正本として分割
 
@@ -138,17 +143,19 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 
 ### `CP-20261017-005` — Registry Studio：DONEのtaskがあると作り直しが止まる不具合
 
-- queue状態: `AWAITING_CODEX`（実施済み・未commit。OPS-048）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下は返却時の注記）（実施済み・未commit。OPS-048）
 - 発見元: 2026-10-17、ユーザーが`sync.py`を実行して失敗（RBT-049・RELEASE-084がDONEになった後）。
 - 原因1（姫の不具合）：`6cf18dc4`の独立タスクの色順は`index.html`の`stateRank`と`STATES`に頼っていたが、`verify.cjs`は`independentGroups`だけを取り出して動かすため並べ替えが効かず、「DONEは最後」の検査で失敗。独立タスクにDONEが無かった間は通っていた。→ 並び順を`independentGroups`の中に移した（`STATES`が無いときも同じ順）。
 - 原因2：`verify.cjs`の「RegistryにDONEを残さない」検査（`4532e9df`）。ユーザー「タスク圧縮はすぐはしないから」により、DONEがしばらく残る運用と合わないため外した。
 - 検証：`/usr/bin/python3`で`sync.py`完了・verify pass。DONEのRBT-049・RELEASE-084を含めて生成。
 - commit: していない。
 - Codex reconciliation: 未処理
+- Astra reconciliation（2026-10-17、最新）: OPS-048へ統合。4163ff4eのDONE混在対応を照合。直前のAstra検証でDONEを含むverify成功。即時圧縮は要求しない。
+
 
 ### `CP-20261017-006` — 候補CIにLinuxのASan＋death test jobを追加
 
-- queue状態: `AWAITING_CODEX`（実施済み・未commit。RBT-033 / RBT-049の後続、CI適用はユーザー判断）
+- queue状態: `RECONCILED`（2026-10-17 Astra。以下は返却時の注記）（実施済み・未commit。RBT-033 / RBT-049の後続、CI適用はユーザー判断）
 - 発見元・ユーザー指示: 2026-10-17、ユーザー「candidate.ymlだったかな。それに足してみてくれない？」「ASanでもデステスト通したいのリリーステストなんだよね」「チェック自体はなくてもいいとはおもってるんだけど、品質保証の証拠として避けられない感じで」「いや、linuxでしかCIしてないんだ」。
 - 実施：`.github/workflows/candidate.yml`に`address-sanitizer-death-tests` job（`runs-on: ubuntu-24.04`、SwiftyLab/setup-swift、環境記録、`ASAN_OPTIONS=detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan`で`swift test -c debug --sanitize address --build-system native --traits ENABLE_DEATH_TESTS --filter 'DeathTests|RedBlackTreeInternalCoverageTests'`、ログをartifactへ）を追加し、`report`のneedsとPRコメントの一覧に入れた。既存jobは不変。最初はmacOS＋`strip_env=0`で書いたが、CIはLinuxだけなので書き直した（strip_envはmacOSのDYLDの話で、Linuxには関係しない）。
 - 検証：YAMLの構文とjob一覧・needsを確認。手元にLinux環境（container・Swift SDK）がないので、ローカル実行はしていない。
@@ -156,6 +163,8 @@ CP-004〜012は[照合済み履歴](Archived/CLAUDE_PENDING_TASKS_RECONCILED_202
 - 未検証：上記以外のSwift版・runner image。コメント起動（`/test release`）はdefault branchのworkflowを使うため、mainへ入るまで効かない。`candidate-*` tagのpushはそのcommitのworkflowで動く。
 - commit: `8631a031`（candidate.yml）。
 - Codex reconciliation: 未処理
+- Astra reconciliation（2026-10-17、最新）: QUALITY-002へCI構成と成功報告を統合。8631a031のASan job・report接続、およびユーザー提示のLinux 218件21suite成功ログを確認。run URL・対象SHAとの対応は未保存。RBT-049のmacOS限定結論は変更しない。
+
 
 ### `CP-20261017-007` — RBT-048の判断材料（index版更新APIの設計論点、会話記録）
 

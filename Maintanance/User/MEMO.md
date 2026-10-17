@@ -645,3 +645,26 @@ int main() {
 ```
 
 dummy　
+
+1. フリーズ（凍結）
+   • 入れる機能を締め切り、release branch を切ります（release/x.y）。
+   • それ以降は不具合修正だけを入れます。
+2. 候補（RC）
+   • x.y.z-rc.1 のような候補 tag を打ちます。
+   • CI を広め・長めに回します。複数の OS と Swift 版、sanitizer、性能、ドキュメントの生成などです。
+   • 直すたびに rc.2、rc.3 と上げていきます。
+3. 判定（go/no-go）
+   • チェックリストで判定します。
+      • CI がすべて緑か。
+      • 既知の問題が、許容したうえで記録されているか。
+      • CHANGELOG と移行ガイドがそろっているか。
+      • SemVer として正しいか（破壊的変更なのに minor を上げていないか）。
+4. リリース
+   • 最終 tag を打ちます。Swift Package Manager は tag がそのままバージョンになるので、ここが本番です。
+   • GitHub Release を作り、リリースノートと API ドキュメントを公開します。
+5. 後片付け
+   • release branch を main に戻し、CHANGELOG に次の Unreleased を開きます。
+   • 告知します。
+6. 事後対応
+   • 不具合が出たら、release branch から patch を出します（x.y.z+1）。
+   • tag は付け直さないのが鉄則です。SPM では利用者の Package.resolved に記録されているので、付け直すと壊れます。

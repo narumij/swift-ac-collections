@@ -51,3 +51,7 @@ Ruby PsychでYAMLをparseし、取り出したgithub-scriptをNodeでmock実行�
 - 詳細logのAPI取得は403で拒否された。失敗の具体的な原因、baseline tag、受付が固定した候補SHAは未確認。runに表示されるworkflow側のhead SHAを候補SHAとして代用しない。
 
 再開時は実行logと結果コメントから対象SHA・baseline tag・失敗内容を確かめ、既存の候補tag経路と共通する問題かを切り分ける。原因と必要な修正範囲を記録した後、修正・検証の作業を具体化する。性能基準を緩めたり失敗をskipしたりして成功に見せない。最終的な疎通確認では、対象SHAに対する性能比較の完走と、各試験結果・PRへの結果返却を確認する。
+
+## 2026-10-17 更新：ASan＋Death Test
+
+ユーザー依頼でcandidate.ymlへLinuxのaddress-sanitizer-death-testsを追加（8631a031）。上記の「ASan併用は追加していない」は当初の範囲を示す旧記録。現在はreportの合否にも含む。成功報告・提示ログと証拠の限界は[ASan調査正本のLinux後続記録](ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md)を参照し、QUALITY-002で追跡する。

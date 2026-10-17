@@ -63,3 +63,7 @@ CP-20261016-005のClaude助言をOPS-048へ統合。ユーザーの実装指示�
 ## 採番待ちの複数queue表示の受入（2026-10-17 / Astra）
 
 FP-20261017-001（Fable、ユーザー直接依頼、5ea16511）をOPS-048へ統合。両queueを持ち主・出典付きで表示する変更を受入。Astraはbuild-pending.py差分と描画側の出典使用、内蔵seedのFP-001のsource/ownerを照合し、verify.cjsを再実行して成功。stub DOM確認はFableの報告、Safari実操作は未確認であり今回の受入保証に含めない。恒久taskはACTIVE。今回のqueue照合後のStudio再生成はまだ行っていない。
+
+## DONE混在時の再生成修正の受入（2026-10-17 / Astra）
+
+CP-20261017-005をOPS-048へ統合。4163ff4eで独立タスクの状態順をindependentGroups内へ移し、RegistryにDONEを残さない検査を撤回した。ユーザーの「タスク圧縮はすぐはしない」に整合。直前のAstra受入で現行verifyを実行し成功済み。採番待ちの解消と即時アーカイブを混同しない。CP-20261016-013は既にOPS-059へ登録済みで、queue照合のみ完了。FROZENと未受入の境界を維持。

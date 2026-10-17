@@ -60,7 +60,7 @@ ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx
  const data=ctx.dataRelation(shown);assert.equal(data.successor,shown.shownFor);assert(!('shownFor' in data));assert.equal(ctx.gateEntry(shown.successor),shown.shownFor);
  const before=copy(ctx.doc);ctx.dirty=false;ctx.confirm=()=>false;ctx.removeRelation(shown);assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
  ctx.confirm=()=>true;ctx.removeRelation({...shown,prerequisite:'NO-SUCH'});assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
- const chain=ctx.graphData().edges.find(e=>e.prerequisite.startsWith('GATE-'));ctx.removeRelation(chain);assert.deepEqual(ctx.doc,before);
+ const chain=ctx.graphData().edges.find(e=>e.prerequisite.startsWith('GATE-')&&ctx.isChainLink(ctx.dataRelation(e)));ctx.removeRelation(chain);  // a gate's first drawn line may now be a START-side task line; pick the chainassert.deepEqual(ctx.doc,before);
  ctx.removeRelation(shown);assert.equal(ctx.doc.milestoneRelations.length,before.milestoneRelations.length-1);assert.equal(ctx.dirty,true);
  assert(!ctx.doc.milestoneRelations.some(r=>r.prerequisite===shown.prerequisite&&(r.successor===shown.successor||r.successor===shown.shownFor)));assert.deepEqual(ctx.doc.baseline,before.baseline);
  ctx.doc=copy(original);const moved=ctx.rewireRelation(ctx.doc,data,'OPS-048',ctx.gateEntry(shown.successor));
@@ -92,6 +92,17 @@ ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx
   const s79=base.milestoneRelations.find(r=>r.successor==='PERM-079');assert.throws(()=>ctx.rewireRelation(base,s79,s79.prerequisite,'END-0.6.0'),/START/);
   const moved=ctx.rewireRelation(base,s79,'START-0.5.4','PERM-079');assert(moved.milestoneRelations.some(r=>r.prerequisite==='START-0.5.4'&&r.successor==='PERM-079'));
   ctx.doc=started;assert(!ctx.independentGroups(started).regular.some(t=>t.id===lone),'start-side task is not independent');ctx.doc=copy(original);}
+ // START hidden behind its gate (OPS-069 step 3): no START with a preceding gate is drawn; its lines leave the gate with shownFrom; dataRelation restores them.
+ {ctx.doc=copy(original);const g=ctx.graphData(),gated=new Set(original.milestoneRelations.filter(r=>r.prerequisite.startsWith('GATE-')&&r.successor.startsWith('START-')).map(r=>r.successor));
+  for(const n of g.nodes)assert(!gated.has(n.id),'gated START must not be drawn: '+n.id);
+  assert(g.nodes.some(n=>n.id==='START-0.5.3'),'first START without a gate stays visible');
+  for(const e of g.edges)assert(g.nodes.some(n=>n.id===e.prerequisite)&&g.nodes.some(n=>n.id===e.successor),'drawn edge endpoints must be drawn nodes');
+  const p79=g.edges.find(e=>e.successor==='PERM-079');assert(p79&&p79.prerequisite==='GATE-0.6.0'&&p79.shownFrom==='START-0.6.0');
+  const back=ctx.dataRelation(p79);assert.equal(back.prerequisite,'START-0.6.0');assert(!('shownFrom' in back)&&!('shownFor' in back));
+  const chain=g.edges.find(e=>e.prerequisite==='GATE-0.6.0'&&e.successor==='MS-VALIDATION');assert(chain&&chain.shownFrom==='START-0.6.0','chain is drawn gate → first card');
+  assert(ctx.versionView(g,'0.6.0').nodes.some(n=>n.id==='PERM-079'),'start-side task stays in its version view');
+  assert(ctx.versionView(g,'@head').nodes.some(n=>n.id==='PERM-079'),'start-side task stays in HEAD view');
+  assert(!ctx.graphData().edges.some(e=>e.successor.startsWith('START-')),'no drawn line enters a START');ctx.doc=copy(original);}
 console.log('PASS: task→END/MS connect refuses GATE targets, has no line kinds, rejects duplicates/unknowns and old-format JSON, marks 相談待ち, draws into the gate, leaves baseline.');}
 
 

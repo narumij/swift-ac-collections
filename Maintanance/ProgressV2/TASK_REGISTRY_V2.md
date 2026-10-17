@@ -121,6 +121,7 @@
 | `OPS-075` | `PROPOSED` | User（判断） / 指名された調整担当（材料整理） | [DECISION] 姫を称号から屋号へ変えるか判断する | CP-009を正式登録。時期の目安はFableが安くなったとき、再開はユーザー指定時。現行称号・モデル別委任を維持し、登録のみで移行しない | `Maintanance/Current/HIME_TRADE_NAME_DECISION.md` |
 | `OPS-076` | `DONE` | 姫（実施） / Astra（受入） | [EXECUTION] 根拠と更新条件の追記を現行正本へ全体展開する | 2026-10-17第4区切り12件を受入。初回77件の仕分けと対象19件への追記を完了。未確認・対象外の理由は正本に保持し、継続保守はOPS-077。現行再現成功や元判断の再承認は含まない | `Maintanance/Current/CANONICAL_EVIDENCE_ROLLOUT.md` |
 | `OPS-078` | `DONE` | 姫（実装・検証） / Astra（受入。Fable代理は返却の照合とRegistry反映） | [EXECUTION] Studioのverifyを固定データ前提から配置由来の構造検査へ直す | 2026-10-18 Astra限定受入。efc3868a8の2カード入替修正を照合し、現入替配置でsync/verify 22 PASS・missingなし。元配置は姫の検証記録を受領。Safari未確認。同版複数カード鎖等の検査一般化はOPS-048の保守候補に保持 | `Maintanance/Current/REGISTRY_STUDIO_VERIFY_FIXTURE_COUPLING.md` |
+| `OPS-079` | `ACTIVE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 同版の複数中間カードを名前順の鎖として検査する | ユーザー依頼。START→A→B→ENDを正とし、現verifyの全カードへのSTART/END直結要求を修正。0・1・複数カードと順序変更を検証。製品・版計画・DESIGNの変更は対象外。依頼書完成により指定範囲を姫へ受渡し | `Maintanance/Current/REGISTRY_STUDIO_MULTIPLE_MILESTONES.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -312,6 +313,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-065` |
 | `OPS-048` | `OPS-069` |
 | `OPS-048` | `OPS-078` |
+| `OPS-048` | `OPS-079` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

@@ -1,0 +1,17 @@
+temp: /var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.dwGqrihICw
+1 workspace before any save: null
+2 save A (no parent, older base): 20261017T211647073531Z-9975bbf5
+3 save B (parent A): ('20261017T211647143136Z-57b2c794', '20261017T211647073531Z-9975bbf5', False)
+4 save C (parent A again = old tab): ('20261017T211647234894Z-c69cfa04', '20261017T211647234894Z-c69cfa04', True)
+5 unknown parent: 409
+6 workspace now: ('C: old tab still on A', 'oldbase000000000000', 2, 3)
+7 after /sync (canonical regenerated): workspace base oldbase000000000000, canonical 32328b8e711c
+8 after restart: files 3, workspace C: old tab still on A
+9 record import of B: {"saveId": "20261017T211647143136Z-57b2c794", "recordedAt": "2026-10-17T21:16:50
+10 record B again: already recorded: 20261017T211647143136Z-57b2c794
+11 list:
+   20261017T211647073531Z-9975bbf5  series=20261017T211647073531Z-9975bbf5  parent=None  base=oldbase00000  not imported  registry-edited-20261017T211647073531Z-9975bbf5.json
+   20261017T211647143136Z-57b2c794  series=20261017T211647073531Z-9975bbf5  parent=20261017T211647073531Z-9975bbf5  base=oldbase00000  imported  registry-edited-20261017T211647143136Z-57b2c794.json
+   20261017T211647234894Z-c69cfa04  series=20261017T211647234894Z-c69cfa04  parent=20261017T211647073531Z-9975bbf5  base=oldbase00000  not imported  registry-edited-20261017T211647234894Z-c69cfa04.json
+12 original history intact: A: first;B: after A;C: old tab still on A;
+cleaned: /var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.dwGqrihICw

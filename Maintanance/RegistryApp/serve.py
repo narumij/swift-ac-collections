@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve Registry Studio locally; POST /sync runs only the fixed sync.py command."""
+"""Serve Registry Studio locally; POST /sync runs only the fixed sync.py command, POST /save stores the edited JSON in Inbox/."""
 import argparse
 import json
 import subprocess
@@ -8,10 +8,16 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import inbox  # edit versions in Inbox/ (OPS-082)
+
 APP = Path(__file__).resolve().parent
 ROOT = APP.parent.parent
 OUTPUT = ROOT / "Maintanance/Cache/RegistryStudio"
 SYNC_LOCK = threading.Lock()
+# Edited JSON handed to the AI (OPS-082). Fixed on the server side; clients never choose the path. REGISTRY_STUDIO_INBOX
+# exists only so tests can use an isolated folder. Not under Cache/, so sync and restarts keep it.
+INBOX = inbox.INBOX
+MAX_SAVE_BYTES = 10 * 1024 * 1024
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -32,6 +38,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        if self.path == '/workspace':  # the edit version Studio resumes (OPS-082); null when nothing is saved
+            return self.reply(200, json.dumps(inbox.latest(INBOX), ensure_ascii=False).encode())
         if self.path not in ('/', '/index.html', '/registry.json'):
             return self.reply(404, {'error': 'Not found'})
         name = 'registry.json' if self.path == '/registry.json' else 'index.html'
@@ -40,11 +48,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         origin = f'http://127.0.0.1:{self.server.server_port}'
+        action = {'/sync': 'sync', '/save': 'save'}.get(self.path)
         if (not self.local_request() or self.headers.get('Origin') != origin
-                or self.headers.get('X-Registry-Studio') != 'sync'):
+                or action is None or self.headers.get('X-Registry-Studio') != action):
+            if self.path not in ('/sync', '/save'):
+                return self.reply(404, {'error': 'Not found'})
             return self.reply(403, {'error': 'Same-origin Studio request required'})
-        if self.path != '/sync':
-            return self.reply(404, {'error': 'Not found'})
+        if action == 'save':
+            return self.save()
         if not SYNC_LOCK.acquire(blocking=False):
             return self.reply(409, {'error': '更新中です。完了を待ってください。'})
         try:
@@ -59,6 +70,34 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(500, {'error': str(error)})
         finally:
             SYNC_LOCK.release()
+
+    def save(self):
+        """Store one edited Studio JSON as a new save in INBOX (inbox.append_save); never overwrite, never reflect into the Registry."""
+        try:
+            length = int(self.headers.get('Content-Length', ''))
+        except ValueError:
+            return self.reply(411, {'error': 'Content-Length が必要です。'})
+        if length <= 0 or length > MAX_SAVE_BYTES:
+            return self.reply(413, {'error': f'保存できる大きさは {MAX_SAVE_BYTES} バイトまでです。'})
+        raw = self.rfile.read(length)
+        try:
+            data = json.loads(raw.decode('utf-8'))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return self.reply(400, {'error': 'JSONとして読めません。'})
+        if not (isinstance(data, dict) and data.get('schemaVersion') == 1 and isinstance(data.get('source'), dict)
+                and isinstance(data['source'].get('sha256'), str) and isinstance(data.get('tasks'), list)
+                and isinstance(data.get('edges'), list) and isinstance(data.get('baseline'), dict)):
+            return self.reply(400, {'error': 'Registry Studio形式のJSONではありません。'})
+        claimed = data.pop('studioSave', None)  # the client names only its parent; the server assigns the rest
+        parent = claimed.get('parent') if isinstance(claimed, dict) else None
+        try:
+            meta = inbox.append_save(data, parent, INBOX)
+        except ValueError as error:
+            return self.reply(409, {'error': str(error)})
+        except OSError as error:
+            return self.reply(500, {'error': '保存できませんでした：' + str(error)})
+        folder = INBOX.relative_to(ROOT).as_posix() if INBOX.is_relative_to(ROOT) else str(INBOX)
+        self.reply(200, {'ok': True, 'file': f"registry-edited-{meta['saveId']}.json", 'folder': folder, 'save': meta})
 
 
 def main():

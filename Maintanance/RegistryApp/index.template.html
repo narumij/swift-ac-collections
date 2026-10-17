@@ -532,8 +532,11 @@ $('refresh').onclick=async()=>{
  if(location.protocol==='file:'){report('JSON更新にはローカルサーバーを起動し、http://127.0.0.1:8088/ を開いてください。',true);return;}
  // Refresh fetches the newest canonical; it never discards edits (OPS-082). Save first; the saved edit version is resumed after reload.
  if(dirty||formDirty){report('未保存の変更があります。先に「編集結果を保存」してください。保存した編集版は更新しても消えず、再読込後に再開します。',true);return;}
- const button=$('refresh');button.disabled=true;button.textContent='更新中…';
- try{const response=await fetch('/sync',{method:'POST',headers:{'X-Registry-Studio':'sync'}});const result=await response.json();if(!response.ok)throw Error(result.error||result.output||'更新に失敗しました。');dirty=false;formDirty=false;window.location.reload();}
+ const button=$('refresh');button.disabled=true;button.textContent='更新中…';const started=JSON.stringify(doc);
+ // A successful regeneration is not permission to reload: edits or pending input made while waiting stay on screen (OPS-082).
+ try{const response=await fetch('/sync',{method:'POST',headers:{'X-Registry-Studio':'sync'}});const result=await response.json();if(!response.ok)throw Error(result.error||result.output||'更新に失敗しました。');
+  if(dirty||formDirty||JSON.stringify(doc)!==started){report('正本の再生成は完了しました。更新を待つ間に変更があったため、画面は読み直していません。保存してからもう一度「更新」を押すと、最新の正本を表示します。',true);return;}
+  window.location.reload();}
  catch(error){report('更新できませんでした：'+error.message,true);}
  finally{button.disabled=false;button.textContent='更新';}
 };

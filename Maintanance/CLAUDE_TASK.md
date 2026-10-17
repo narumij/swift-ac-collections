@@ -178,3 +178,7 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-082 — 更新応答待ち中の編集保護（2026-10-18 / Astra）
 
 永続編集領域の返却を検収し、既存25 PASS・v2 smoke成功を確認。ただし更新応答待ち中の編集が無条件再読込で消えることを再現したため、完了受入保留。[正本のAstra再検収と限定補修依頼](Current/REGISTRY_STUDIO_SERVER_SAVE.md)に従い、適用済み編集・未適用入力の保護を補修してください。指定範囲を姫へ再委任、Astraは返却待ち。commitなし。
+
+## OPS-082 — 試行実装受入・依頼終了（2026-10-18 / Astra）
+
+[正本の技術受入](Current/REGISTRY_STUDIO_SERVER_SAVE.md)のとおり更新中の編集保護を含め受入。独立25 PASS・smoke v2/v3 PASS・--checkずれなし。Safari未確認、恒久採用判断とは別。ユーザーcommit承認によりDONE、追加依頼なし。

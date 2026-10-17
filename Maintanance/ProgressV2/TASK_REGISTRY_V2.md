@@ -124,7 +124,8 @@
 | `OPS-079` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 同版の複数中間カードを名前順の鎖として検査する | 2026-10-18 Astra受入。名前順の複数カード鎖検査、最新仕様のGOAL除外を反映し独立sync/verify 23 PASS・missingなし・--checkずれなし。Safari未確認。番号なし通常カードの生成器取りこぼしはOPS-048の修正候補へ保持 | `Maintanance/Current/REGISTRY_STUDIO_MULTIPLE_MILESTONES.md` |
 | `OPS-080` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 番号なし中間カードの生成漏れを修正する | 2026-10-18 Astra受入。番号なしカードの読込み・実ファイルからの欠落検知・GOAL除外を確認。独立sync/verify 24 PASS、missingなし、--checkずれなし。Safari未確認。ユーザーcommit許可済み | `Maintanance/Current/REGISTRY_STUDIO_UNNUMBERED_CARDS.md` |
 | `OPS-081` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioの見取り図・独立欄から新規タスク案を追加する | 2026-10-18 Astra受入。追加案・仮ID・接続・JSON往復・取消を確認。独立sync/verify 25 PASS、操作スモークPASS、--checkずれなし。Safari実表示・実ダウンロード未確認。正式採番・正本反映はAI取込時。ユーザーcommit許可済み | `Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md` |
-| `OPS-082` | `ACTIVE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioの永続編集領域を試行する | 2026-10-18永続編集領域を検収。独立25 PASS・v2 smoke成功。更新応答待ち中の編集が再読込で消える不具合を再現し完了受入保留、姫へ限定補修依頼。恒久採用・正本自動反映は対象外 | `Maintanance/Current/REGISTRY_STUDIO_SERVER_SAVE.md` |
+| `OPS-082` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioの永続編集領域を試行する | 2026-10-18 Astra技術受入。独立25 PASS・smoke v2/v3成功・--checkずれなし。保存/更新応答待ち中の編集保護を確認。Safari未確認、恒久採用は未決。ユーザーcommit承認済み | `Maintanance/Current/REGISTRY_STUDIO_SERVER_SAVE.md` |
+| `OPS-083` | `USER_ONLY` | User | [DECISION] 管理情報の安定性を保証する境界と仕様化の優先方針を決める | ユーザー指定で登録。保存→反映、依頼変更、説明文→機械処理、計画変更→達成表示の4点を判断材料とする。AIは代行・催促せず依頼された補助のみ。実装・全件監査・必須ゲート化は未承認 | `Maintanance/Current/MAINTENANCE_STABILITY_USER_DECISION.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 

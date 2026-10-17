@@ -111,6 +111,7 @@
 | `OPS-066` | `DONE` | Fable（試行） / Astra（受入、ユーザー指定） | [EXECUTION] 正本冒頭に確定範囲と未確認事項を示す | 2026-10-17ユーザー依頼。インタビュー改善案1。同日ユーザー「OPS-066をやって」でFableが試行：完了正本4件（OPS-061・062・RBT-049・DOC-045）の冒頭に「確定範囲」ブロック（受入済み・証拠commit・未確認・次の確認点）を置き、形式を詳細正本に記載。Registry状態の複製や全正本の一括移行はしない。2026-10-17 Astra受入。本文・受入記録・証拠commitを照合し、ASanの成功条件、DocCの導線表現、更新手順を補正。4件の試行として完了、対象拡大は行わない | `Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md` |
 | `OPS-067` | `USER_ONLY` | User | [DECISION] 担当・委任定義の集約方針を判断する | 2026-10-17ユーザー依頼。インタビュー改善案4。担当・委任の定義を一か所へ寄せる方針と集約先・適用範囲をユーザーが判断する。今回は登録のみ。AIは本体の実行・委任・判断代行をしない。上位文書変更や現行権限の拡張は未承認。 | `Maintanance/Current/COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md` |
 | `OPS-068` | `PROPOSED` | Claude（作業予定） / Astra（受入） | [EXECUTION] 現行判断と旧判断を分ける文書整理の限定試行 | 2026-10-17ユーザー指定で登録。OPS-058の方針承認後、対象・入力・編集範囲を固定してCLAUDE_TASKで正式依頼する。現行判断・履歴・参照を整理し、判断の欠落や意味変更がないかAstraが受け入れる。未発注・未着手 | `Maintanance/Current/DECISION_ARCHIVE_PILOT.md` |
+| `OPS-069` | `PROPOSED` | Astra（実装・検証予定） | [EXECUTION] Studioに版のSTARTと開始側タスクの上段配置を追加 | 2026-10-17ユーザー依頼。STARTは版の作業区間の入口で、release完了や着手許可ではない。STARTから始まる仕事を骨格の上、ENDへ合流する仕事を下へ接続に基づいて配置する。生成・編集・検証を一体で改修し、PERM-079の既存再開条件を保持する。今回は登録のみ、未着手 | `Maintanance/Current/REGISTRY_STUDIO_VERSION_START.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -297,6 +298,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-062` |
 | `OPS-048` | `OPS-064` |
 | `OPS-048` | `OPS-065` |
+| `OPS-048` | `OPS-069` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

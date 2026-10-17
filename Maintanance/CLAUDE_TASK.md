@@ -230,3 +230,7 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ユーザー指定の正式依頼。[正本](Current/REGISTRY_STUDIO_JUDGMENT_CACHE_REFRESH.md)の4点を姫自身のキャッシュへ反映してください。今回変わった判断と再確認条件だけを扱い、未決事項を探索しない。他担当のキャッシュは変更しない。出力範囲を姫へ受渡し、Astraは返却待ち。commitなし。
 
 2026-10-18：ユーザーcommit承認によりOPS-088のcommit待ちを解消、DONE。OPS-089の採否は未決、OPS-090の限定依頼は継続。
+
+## OPS-090 — キャッシュ更新受入・依頼終了（2026-10-18 / Astra）
+
+[正本のAstra受入](Current/REGISTRY_STUDIO_JUDGMENT_CACHE_REFRESH.md)のとおり4点の判断キャッシュを受入。固定版c98fd93aと根拠・停止境界・更新条件を照合し、Git管理外を確認。commit待ち。追加依頼なし、OPS-089の採否は引き続きUSER_ONLY。

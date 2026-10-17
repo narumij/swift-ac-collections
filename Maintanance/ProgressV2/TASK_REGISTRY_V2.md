@@ -132,7 +132,7 @@
 | `OPS-087` | `DONE` | Astra | [EXECUTION] Studio保存機構の試行契約を仕様化する | 2026-10-18試行保存契約v1の仕様化完了、ユーザーcommit承認により完了。6項目の約束・証拠・保証外・未決を分離。OPS-088への入力は完成し正式依頼済み | `Maintanance/Current/REGISTRY_STUDIO_SAVE_CONTRACT.md` |
 | `OPS-088` | `DONE` | 姫（返却済み） / Astra（受入済み） | [DISCOVERY] 保存契約に沿ったStudioユーザビリティ改善案を出す | 2026-10-18提案5件を受入、ユーザーcommit承認により完了。実装承認ではない。独立の取込済み再開再現を確認、Safari未確認。採否はOPS-089へ集約 | `Maintanance/Current/REGISTRY_STUDIO_SAVE_USABILITY.md` |
 | `OPS-089` | `USER_ONLY` | User | [DECISION] 保存操作の改善提案の採否と実施範囲を決める | ユーザー指定で受入結果を集約。5件の提案から採否を判断、実装・自動保存・自動土台切替は未承認。AIは依頼された補助のみ | `Maintanance/Current/REGISTRY_STUDIO_USABILITY_DECISION.md` |
-| `OPS-090` | `ACTIVE` | 姫（キャッシュ更新） / Astra（受入） | [EXECUTION] 今回変わったStudio関連判断のキャッシュを更新する | OPS-088受入後、ユーザー指定で正式依頼。保存契約・改善案の採否待ち・未決を追わない境界・SPI後バッジ修正済みをHime領域へ限定記録 | `Maintanance/Current/REGISTRY_STUDIO_JUDGMENT_CACHE_REFRESH.md` |
+| `OPS-090` | `DONE` | 姫（返却済み） / Astra（受入済み） | [EXECUTION] 今回変わったStudio関連判断のキャッシュを更新する | 2026-10-18固定版c98fd93aとの照合とGit管理外を確認し受入。4点の根拠・停止境界・更新条件を保持。ユーザーcommit承認により完了、姫への依頼終了 | `Maintanance/Current/REGISTRY_STUDIO_JUDGMENT_CACHE_REFRESH.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 

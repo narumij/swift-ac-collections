@@ -66,3 +66,11 @@ executable API MatrixまたはIndex契約の方針と合わせて決める。
 - `Sources/RedBlackTreeCollections/Implements/__tree/`
 - `Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift`
 - `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`
+
+## 棚卸し追記（2026-10-17 / 姫・Opus 5.5 / CP-20261017-013・浅い点検）
+
+本文は書き換えていない。追記範囲はOPS-072の立案（`PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md`）に従う。
+
+- 修正案：本文の`Sources/PermutationModule/…`は`1f87e37a`（2026-10-15）で`Sources/NextPermutationModule/…`へ移動済み（現行：`Sources/NextPermutationModule/NextPermutations.swift`）。
+- 点検事実：`ls Sources/NextPermutationModule/NextPermutations.swift`。
+- 中身の主張（API・手順）は今回見ていない（深い点検は後回し）。結果一覧：`Evidence/CP-20261017-013/SHALLOW_CHECK.md`。

@@ -346,3 +346,11 @@ AtCoderへ貼り付ける単一ファイルの生成はPackage切替とは別問
 - ABC328Eへの外部提出はユーザー専任とし、agentは着手・代行・催促しない。
 
 2026-10-16最新ユーザー判断：今回のリリース予定を0.6.0から0.5.4へ振替。本件の「今回のrelease完了後」は0.5.4完了後を指す。過去の実験・方針の記録は保持。現在の境界は[0.5.4ゲート](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-5-4)を参照。
+
+## 棚卸し追記（2026-10-17 / 姫・Opus 5.5 / CP-20261017-013・浅い点検）
+
+本文は書き換えていない。追記範囲はOPS-072の立案（`PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md`）に従う。
+
+- 修正案：本文の`Sources/PermutationModule/…`は`1f87e37a`（2026-10-15）で`Sources/NextPermutationModule/…`へ移動済み（現行：`Sources/NextPermutationModule/NextPermutations.swift`）。
+- 点検事実：`ls Sources/NextPermutationModule/NextPermutations.swift`。
+- 中身の主張（API・手順）は今回見ていない（深い点検は後回し）。結果一覧：`Evidence/CP-20261017-013/SHALLOW_CHECK.md`。

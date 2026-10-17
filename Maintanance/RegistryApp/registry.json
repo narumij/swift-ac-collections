@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "039b2141",
-    "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
+    "head": "9ddb150f",
+    "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
     "dirty": true,
-    "generatedAt": "2026-10-17T15:02:55.963274+09:00",
+    "generatedAt": "2026-10-17T15:06:30.321094+09:00",
     "generator": "sync.py",
-    "rulesSha256": "58e357e44f1810c7253032e19e367eda457f5005c73ad0a65264af4bd08fb47a"
+    "rulesSha256": "3e72cf9f495b8333b27b6a11b96ee0d581824208c5e4f7eabf2766fd1ce536ce"
   },
   "tasks": [
     {
@@ -505,6 +505,19 @@
       "parentTask": "OPS-048"
     },
     {
+      "id": "OPS-063",
+      "state": "ACTIVE",
+      "owner": "Astra / Fable（各自回答）",
+      "item": "[DISCOVERY] Task Registry運用インタビュー",
+      "condition": "2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない",
+      "detail": "`Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md`",
+      "raw": "| `OPS-063` | `ACTIVE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` |",
+      "sourceLine": 108,
+      "group": "調整・運用の個別課題",
+      "permanent": false,
+      "parentTask": "OPS-043"
+    },
+    {
       "id": "OPS-062",
       "state": "DONE",
       "owner": "Fable（正本・実装・検証・受入、ユーザー指示による自己受入）",
@@ -512,7 +525,7 @@
       "condition": "2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外",
       "detail": "`Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md`",
       "raw": "| `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |",
-      "sourceLine": 108,
+      "sourceLine": 109,
       "group": "調整・運用の個別課題",
       "permanent": false,
       "parentTask": "OPS-048"
@@ -525,7 +538,7 @@
       "condition": "2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。",
       "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
       "raw": "| `RELEASE-084` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
-      "sourceLine": 115,
+      "sourceLine": 116,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -537,7 +550,7 @@
       "condition": "0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 118,
+      "sourceLine": 119,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -549,7 +562,7 @@
       "condition": "RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-086` | `PROPOSED` | Astra | [EXECUTION] 立て直しプラン作成 | RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 119,
+      "sourceLine": 120,
       "group": "リリース後の立て直し",
       "permanent": false
     },
@@ -561,7 +574,7 @@
       "condition": "計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。",
       "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
       "raw": "| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-      "sourceLine": 120,
+      "sourceLine": 121,
       "group": "リリース後の立て直し",
       "permanent": false
     }
@@ -573,7 +586,7 @@
       "flow": "SEQUENCE",
       "constraint": "ユーザーが立て直し範囲を決めてから計画化する",
       "raw": "| `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |",
-      "sourceLine": 128
+      "sourceLine": 129
     },
     {
       "successor": "RELEASE-084",
@@ -581,7 +594,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない",
       "raw": "| `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |",
-      "sourceLine": 129
+      "sourceLine": 130
     },
     {
       "successor": "RELEASE-087",
@@ -589,7 +602,7 @@
       "flow": "SEQUENCE",
       "constraint": "計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない",
       "raw": "| `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |",
-      "sourceLine": 130
+      "sourceLine": 131
     },
     {
       "successor": "RBT-001",
@@ -597,7 +610,7 @@
       "flow": "PARALLEL_JOIN",
       "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
       "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-      "sourceLine": 131
+      "sourceLine": 132
     },
     {
       "successor": "RELEASE-076",
@@ -605,7 +618,7 @@
       "flow": "SEQUENCE",
       "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
       "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-      "sourceLine": 132
+      "sourceLine": 133
     },
     {
       "successor": "DOC-026",
@@ -613,7 +626,7 @@
       "flow": "SEQUENCE",
       "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
       "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-      "sourceLine": 133
+      "sourceLine": 134
     },
     {
       "successor": "DOC-027",
@@ -621,7 +634,7 @@
       "flow": "SEQUENCE",
       "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
       "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-      "sourceLine": 134
+      "sourceLine": 135
     }
   ],
   "baseline": {
@@ -1121,6 +1134,19 @@
         "parentTask": "OPS-048"
       },
       {
+        "id": "OPS-063",
+        "state": "ACTIVE",
+        "owner": "Astra / Fable（各自回答）",
+        "item": "[DISCOVERY] Task Registry運用インタビュー",
+        "condition": "2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない",
+        "detail": "`Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md`",
+        "raw": "| `OPS-063` | `ACTIVE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` |",
+        "sourceLine": 108,
+        "group": "調整・運用の個別課題",
+        "permanent": false,
+        "parentTask": "OPS-043"
+      },
+      {
         "id": "OPS-062",
         "state": "DONE",
         "owner": "Fable（正本・実装・検証・受入、ユーザー指示による自己受入）",
@@ -1128,7 +1154,7 @@
         "condition": "2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外",
         "detail": "`Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md`",
         "raw": "| `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |",
-        "sourceLine": 108,
+        "sourceLine": 109,
         "group": "調整・運用の個別課題",
         "permanent": false,
         "parentTask": "OPS-048"
@@ -1141,7 +1167,7 @@
         "condition": "2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。",
         "detail": "`Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md`",
         "raw": "| `RELEASE-084` | `DONE` | Claude（姫：実装・検証） / Astra（受入） | [EXECUTION] 候補CIの比較元対応の限定修正 | 2026-10-17 Astra受入済み。現行baseline 0.5.4で欠落・契約差が解消しworkflow修正不要。保存証拠とコード同一性を確認。ユーザーが証拠・受入記録のcommitを承認し、限定依頼は完了。Ubuntu CI実走成功・リリース可否は未認定。将来の恒久対策はRELEASE-085/086。 | `Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md` |",
-        "sourceLine": 115,
+        "sourceLine": 116,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1153,7 +1179,7 @@
         "condition": "0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 118,
+        "sourceLine": 119,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1165,7 +1191,7 @@
         "condition": "RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-086` | `PROPOSED` | Astra | [EXECUTION] 立て直しプラン作成 | RELEASE-085の範囲決定後に工程・担当・検証・停止条件を計画化。既存RELEASE-084を再利用し、実装は別依頼。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 119,
+        "sourceLine": 120,
         "group": "リリース後の立て直し",
         "permanent": false
       },
@@ -1177,7 +1203,7 @@
         "condition": "計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。",
         "detail": "`Maintanance/Current/RELEASE_CI_RECOVERY.md`",
         "raw": "| `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |",
-        "sourceLine": 120,
+        "sourceLine": 121,
         "group": "リリース後の立て直し",
         "permanent": false
       }
@@ -1189,7 +1215,7 @@
         "flow": "SEQUENCE",
         "constraint": "ユーザーが立て直し範囲を決めてから計画化する",
         "raw": "| `RELEASE-086` | `RELEASE-085` | `SEQUENCE` | ユーザーが立て直し範囲を決めてから計画化する |",
-        "sourceLine": 128
+        "sourceLine": 129
       },
       {
         "successor": "RELEASE-084",
@@ -1197,7 +1223,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない",
         "raw": "| `RELEASE-084` | `RELEASE-086` | `PARALLEL_JOIN` | 2026-10-17の限定再依頼は先行可。立て直し全体に関わる追加方針・範囲は確定プランと合流してから実施し、未決の比較除外・閾値変更は行わない |",
-        "sourceLine": 129
+        "sourceLine": 130
       },
       {
         "successor": "RELEASE-087",
@@ -1205,7 +1231,7 @@
         "flow": "SEQUENCE",
         "constraint": "計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない",
         "raw": "| `RELEASE-087` | `RELEASE-086` | `SEQUENCE` | 計画は必要入力。実行証拠も必須であり計画完成だけではゲートを通過しない |",
-        "sourceLine": 130
+        "sourceLine": 131
       },
       {
         "successor": "RBT-001",
@@ -1213,7 +1239,7 @@
         "flow": "PARALLEL_JOIN",
         "constraint": "Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する",
         "raw": "| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |",
-        "sourceLine": 131
+        "sourceLine": 132
       },
       {
         "successor": "RELEASE-076",
@@ -1221,7 +1247,7 @@
         "flow": "SEQUENCE",
         "constraint": "不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う",
         "raw": "| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |",
-        "sourceLine": 132
+        "sourceLine": 133
       },
       {
         "successor": "DOC-026",
@@ -1229,7 +1255,7 @@
         "flow": "SEQUENCE",
         "constraint": "対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する",
         "raw": "| `DOC-026` | `QUALITY-005` | `SEQUENCE` | 対象版についてSPI登録可の判断を得てから登録する。ゲートtaskのDONEだけでは登録可を意味せず、0.7.0 release後・登録実行の明示委任も確認する |",
-        "sourceLine": 133
+        "sourceLine": 134
       },
       {
         "successor": "DOC-027",
@@ -1237,7 +1263,7 @@
         "flow": "SEQUENCE",
         "constraint": "SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する",
         "raw": "| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |",
-        "sourceLine": 134
+        "sourceLine": 135
       }
     ],
     "milestoneRelations": [
@@ -1248,8 +1274,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 300
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 302
         }
       },
       {
@@ -1259,8 +1285,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 301
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 303
         }
       },
       {
@@ -1270,8 +1296,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 302
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 304
         }
       },
       {
@@ -1281,8 +1307,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 303
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 305
         }
       },
       {
@@ -1292,8 +1318,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 304
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 306
         }
       },
       {
@@ -1303,8 +1329,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-005` | `END-0.7.0` | 到達後。0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。END-0.7.0の前提ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 305
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 307
         }
       },
       {
@@ -1314,8 +1340,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 306
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 308
         }
       },
       {
@@ -1325,8 +1351,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 307
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 309
         }
       },
       {
@@ -1336,8 +1362,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 308
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 310
         }
       },
       {
@@ -1347,8 +1373,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 309
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 311
         }
       },
       {
@@ -1358,8 +1384,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 310
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 312
         }
       },
       {
@@ -1369,8 +1395,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 311
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 313
         }
       },
       {
@@ -1380,8 +1406,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 312
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 314
         }
       },
       {
@@ -1391,8 +1417,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 313
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 315
         }
       },
       {
@@ -1402,8 +1428,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-          "line": 314
+          "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+          "line": 316
         }
       },
       {
@@ -1810,8 +1836,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 300
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 302
       }
     },
     {
@@ -1821,8 +1847,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 301
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 303
       }
     },
     {
@@ -1832,8 +1858,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 302
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 304
       }
     },
     {
@@ -1843,8 +1869,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 303
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 305
       }
     },
     {
@@ -1854,8 +1880,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 304
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 306
       }
     },
     {
@@ -1865,8 +1891,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-005` | `END-0.7.0` | 到達後。0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。END-0.7.0の前提ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 305
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 307
       }
     },
     {
@@ -1876,8 +1902,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 306
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 308
       }
     },
     {
@@ -1887,8 +1913,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 307
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 309
       }
     },
     {
@@ -1898,8 +1924,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 308
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 310
       }
     },
     {
@@ -1909,8 +1935,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 309
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 311
       }
     },
     {
@@ -1920,8 +1946,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 310
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 312
       }
     },
     {
@@ -1931,8 +1957,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 311
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 313
       }
     },
     {
@@ -1942,8 +1968,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 312
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 314
       }
     },
     {
@@ -1953,8 +1979,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 313
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 315
       }
     },
     {
@@ -1964,8 +1990,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "bcd7ef10ffe3df10adf6d7347c4617762c29a244dfef1250d7c27cbe95c6724c",
-        "line": 314
+        "sha256": "98e6eddfb35a6956252490e9d6974ef6e6a511a8d9e7ad845d0c56b2c78cfd0c",
+        "line": 316
       }
     },
     {

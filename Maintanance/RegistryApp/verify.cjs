@@ -182,7 +182,7 @@ console.log('PASS: rectangle collision checks, each-edge removal, new-node and r
 vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
 vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
 const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,original.tasks.filter(t=>t.permanent).length);assert(permanent.length>=10);assert(permanent.every(g=>g.documents.length));for(const g of permanent)for(const c of g.children){assert(Array.isArray(c.documents));assert.deepEqual(c.documents,[...new Set([...c.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))]);}assert(permanent.some(g=>g.children.some(c=>c.id==='OPS-063'&&c.documents.length>=3)),'OPS-063 sub-task should expose its interview documents');assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).map(t=>t.id));
-const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('function switchMap('),script.indexOf("for(const id of ['dependencyTab'")),ctx);ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
+const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab','cardsView','cardsTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('const MAP_TABS='),script.indexOf('for(const name of MAP_TABS){const tab')),ctx);ctx.switchMap('cards');assert(!controls.cardsView.hidden&&controls.dependencyView.hidden&&controls.permanentView.hidden&&controls.protectionView.hidden);assert.equal(controls.cardsTab['aria-selected'],'true');ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 
 const reference=JSON.parse(fs.readFileSync(require('path').join(__dirname,'layout-reference.json'),'utf8'));for(const [id,position] of Object.entries(reference))if(placed.pos.has(id))assert.deepEqual(placed.pos.get(id),position);
@@ -289,3 +289,37 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  const rm=ctx.removeProposal(ctx.removeProposal(c,'draft-1'),'draft-2');assert.deepEqual(rm.edges,base.edges);assert.deepEqual(rm.milestoneRelations,base.milestoneRelations);assert(!('proposals' in rm));ctx.doc=rm;assert.equal(ctx.delta().length,0);
  const edited=copy(base);edited.tasks[0].state='DONE';ctx.check(edited);ctx.doc=edited;assert(!ctx.delta().some(x=>x.field==='proposals'));ctx.doc=copy(original);
  console.log('PASS: task proposals (draft-N, independent/milestone/task/proposal lines, 相談待ち, self/cycle/unknown/duplicate/collision rejection, formal task add still refused, save-reload, edit, cancel without traces).');}
+// Milestones on both sides of a task or proposal (OPS-084): milestone → task uses milestoneRelations; END and gates cannot lead into a task.
+{const base=copy(original),card=original.milestones.find(m=>!/^(START|END|GATE)-/.test(m.id)&&!m.virtual).id,end=original.milestones.find(m=>m.id.startsWith('END-')&&m.state!=='DONE').id;
+ const free=ctx.independentGroups(base).regular.find(t=>!t.proposal).id;
+ let r=ctx.addProposal(base,'SPI登録後のタスク出し','バッジ対応の他に試験結果への対応を検討する');let c=ctx.addMilestoneRelation(r.data,r.id,card,'from');
+ assert(c.milestoneRelations.some(e=>e.prerequisite===card&&e.successor===r.id&&e.conditionReview==='相談待ち'&&!('relation' in e)),'card → proposal');
+ c=ctx.addMilestoneRelation(c,free,card,'from');assert(c.milestoneRelations.some(e=>e.prerequisite===card&&e.successor===free),'card → task');
+ assert(!ctx.independentGroups(c).regular.some(t=>t.id===free||t.id===r.id),'tasks after a card are not independent');
+ const forward=ctx.addMilestoneRelation(base,free,end);assert(forward.milestoneRelations.some(e=>e.prerequisite===free&&e.successor===end),'task → END unchanged');
+ const started=ctx.addMilestoneRelation(base,free,'START-'+end.slice(4),'from');assert(started.milestoneRelations.some(e=>e.prerequisite==='START-'+end.slice(4)&&e.successor===free),'START → task either way');
+ const before=JSON.stringify(c);
+ assert.throws(()=>ctx.addMilestoneRelation(c,free,end,'from'),/END/);
+ assert.throws(()=>ctx.addMilestoneRelation(c,free,'GATE-'+end.slice(4),'from'),/版ゲート/);
+ assert.throws(()=>ctx.addMilestoneRelation(c,free,card,'from'),/既にあります/);
+ assert.throws(()=>ctx.addMilestoneRelation(c,free,card),/循環/);  // card → free → card
+ assert.throws(()=>ctx.addMilestoneRelation(c,'NO-SUCH',card,'from'),/見つかりません/);
+ assert.equal(JSON.stringify(c),before,'refusals leave the data unchanged');
+ const saved=JSON.parse(JSON.stringify(c));ctx.check(saved);assert.deepEqual(saved.milestoneRelations,c.milestoneRelations);assert.deepEqual(saved.baseline,base.baseline);
+ ctx.doc=c;const g=ctx.graphData();assert(g.nodes.some(n=>n.id===r.id)&&g.edges.some(e=>e.prerequisite===card&&e.successor===r.id),'drawn card → proposal');
+ const folder=original.milestones.find(m=>m.id===card).gate.split('/')[2];assert(ctx.versionView(g,folder).nodes.some(n=>n.id===r.id),'a proposal after a card stays in that version view');
+ const placed=ctx.graphLayout(g.nodes,g.edges);assertGeometry(placed,g.nodes,g.edges);assert(placed.pos.get(card)[0]<placed.pos.get(r.id)[0],'proposal right of its card');ctx.doc=copy(original);
+ console.log('PASS: milestone → task/proposal and task → milestone with explicit direction, END/gate/duplicate/cycle/unknown refused unchanged, save round-trip, drawn and laid out.');}
+// Card list (OPS-085): every formal task, milestone and proposal once, regardless of lines; only bundled documents are linked.
+{vm.runInContext(script.slice(script.indexOf('function cardListGroups('),script.indexOf('function renderCards(')),ctx);
+ const r=ctx.addProposal(copy(original),'一覧の案','');const groups=ctx.cardListGroups(r.data),ids=groups.flatMap(g=>g.cards.map(c=>c.id));
+ assert.equal(ids.length,new Set(ids).size,'no card listed twice');
+ for(const x of [...original.tasks,...original.milestones])assert(ids.includes(x.id),'listed: '+x.id);assert(ids.includes(r.id));
+ const byTitle=Object.fromEntries(groups.map(g=>[g.title,g.cards.map(c=>c.id)]));
+ assert(original.tasks.filter(t=>t.permanent).every(t=>byTitle['恒久タスク'].includes(t.id)));assert(original.tasks.filter(t=>!t.permanent&&t.state==='DONE').every(t=>byTitle['完了・除外'].includes(t.id)));assert.deepEqual(byTitle['追加案'],[r.id]);
+ const bundle=JSON.parse(/<script[^>]*id="documents"[^>]*>([\s\S]*?)<\/script>/.exec(html)[1]);
+ for(const x of [...original.tasks,...original.milestones])for(const p of ctx.cardDocumentPaths(x,bundle))assert(bundle.files[p],'only bundled documents: '+p);
+ assert.deepEqual(ctx.cardDocumentPaths({id:'X',detail:'Maintanance/Current/NO_SUCH_DOCUMENT.md'},bundle),[],'missing document not linked');
+ assert.deepEqual(ctx.cardDocumentPaths(ctx.proposalNodes(r.data)[0],bundle),[],'proposal has no document');
+ const multi=original.tasks.find(t=>ctx.cardDocumentPaths(t,bundle).length>1);assert(multi,'some task has several documents');
+ console.log('PASS: card list covers every task, milestone and proposal once, in their groups; only bundled documents are linked (single, several, none, proposal).');}

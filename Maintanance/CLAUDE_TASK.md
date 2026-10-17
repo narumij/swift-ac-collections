@@ -182,3 +182,21 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-082 — 試行実装受入・依頼終了（2026-10-18 / Astra）
 
 [正本の技術受入](Current/REGISTRY_STUDIO_SERVER_SAVE.md)のとおり更新中の編集保護を含め受入。独立25 PASS・smoke v2/v3 PASS・--checkずれなし。Safari未確認、恒久採用判断とは別。ユーザーcommit承認によりDONE、追加依頼なし。
+
+## OPS-084 — 前提・後続のマイルストーン選択（2026-10-18 / Astra）
+
+ユーザー指定の正式依頼。[正本](Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md)に従い、既存task・追加案の前提/後続としてマイルストーンを選べるUIを実装してください。具体例はSPI→追加案「SPI登録後のタスク出し」。UI追加も可。骨格と保存保護は維持し、実ユーザーの保存版を変更せず隔離検証する。指定範囲を姫へ受渡し、Astraは返却待ち。commitなし。
+
+## OPS-084 — 受入・依頼終了（2026-10-18 / Astra）
+
+[正本](Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md)のとおり受入。独立26 PASS・操作smoke・更新保護smoke成功。Safari未確認。受入済みcommit待ち、実装依頼終了。
+
+## OPS-085 — 正本確認用のカード一覧タブ（2026-10-18 / Astra）
+
+ユーザー指定の正式依頼。[正本](Current/REGISTRY_STUDIO_CARD_LIST.md)に従い、task・マイルストーンを一覧から探して正本を直接開けるタブを追加してください。検索は必須ではなく、小さくまとめる。OPS-084受入済みの未commit差分を保持して続け、未保存編集を守る。指定範囲を姫へ受渡し、Astraは返却待ち。commitなし。
+
+## OPS-085 — 受入・依頼終了（2026-10-18 / Astra）
+
+[正本](Current/REGISTRY_STUDIO_CARD_LIST.md)のとおりカード一覧タブを受入。独立27 PASS、一覧・正本閲覧・入力保持の操作smoke、既存接続/更新保護smoke成功。Safari未確認。受入済みcommit待ち、追加依頼なし。
+
+2026-10-18：OPS-084・OPS-085はユーザーcommit承認によりDONE。両依頼とも終了、新規依頼なし。

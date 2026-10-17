@@ -373,7 +373,7 @@ function permanentMapData(data){
 // Card list (OPS-085): every formal task, milestone and proposal of the loaded edit version, independent of lines and version views.
 function cardListGroups(data){
  const done=new Set(['DONE','EXCLUDED','ARCHIVED']),tasks=data.tasks||[];
- return [['マイルストーン',data.milestones||[]],['恒久タスク',tasks.filter(t=>t.permanent)],['タスク（未完了）',tasks.filter(t=>!t.permanent&&!done.has(t.state))],['完了・除外',tasks.filter(t=>!t.permanent&&done.has(t.state))],['追加案',typeof proposalNodes==='function'?proposalNodes(data):[]]].map(([title,cards])=>({title,cards}));
+ return [['マイルストーン',data.milestones||[]],['恒久タスク',tasks.filter(t=>t.permanent)],['タスク（未完了）',tasks.filter(t=>!t.permanent&&!done.has(t.state))],['完了・除外',tasks.filter(t=>!t.permanent&&done.has(t.state))],['追加案',typeof proposalNodes==='function'?proposalNodes(data):[]]].map(([title,cards])=>({title,cards:[...cards].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0)}));
 }
 // Only documents bundled with this page are offered; proposals have none (their canonical documents are made at import).
 function cardDocumentPaths(t,bundle){return t.proposal?[]:taskDocumentPaths(t).filter(p=>bundle&&bundle.files&&bundle.files[p]);}

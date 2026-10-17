@@ -104,6 +104,8 @@
 | --- | --- | --- | --- | --- | --- |
 | `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
 | `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |
+| `OPS-061` | `DONE` | Fable（実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] Studioにタスクを到達点へつなぐ操作を追加 | 2026-10-17ユーザー同席で実施。タスク編集欄に「到達点へつなぐ」を追加。行き先は版のENDか途中カードに限り、版ゲートは拒否（タスクは版の中の行動、ユーザー説明）。追加接続は条件未設定・相談待ちで保存JSONへ出る。verify追加・sync通過・stub DOMスモークテスト済み、Safari実表示は未検証。Registryへの自動反映は含まない。親OPS-048はACTIVE維持 | `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_CONNECT.md` |
+| `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
 ### リリース後の立て直し
@@ -204,6 +206,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 ## 過去の記録への入口
 
+- [マイルストーン接続の4列原文とゲート経路の関係種類（2026-10-17、線の種類廃止）](../Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md)：種類（stage / required / material / after / resume）が担っていた条件は現行「マイルストーン接続」の制約文へ移した。ゲート経路の関係種類の節は廃止。
+
 - [採番待ちqueueの照合済み原文（2026-10-17圧縮）](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md)：CP-20261016-013（→OPS-059 FROZEN維持）、CP-20261017-001〜008（→OPS-047 / OPS-048・QUALITY-002・RBT-048判断材料・OPS-044）と2026-10-16〜17の照合節。[Fable側](../Archived/FABLE_PENDING_TASKS_RECONCILED_2026-10-17.md)：FP-20261017-001（→OPS-048）・002（→OPS-044）。仮IDは依存や完了の根拠にしない。
 
 - [文書ゲート完了10件と整理前の依存](../Archived/TASK_REGISTRY_COMPLETED_DOCUMENT_GATES_2026-10-16.md)：DOC-033〜035・037・040〜044、RELEASE-078。受入証拠は文書マイルストーンと0.6.0正本へ引継ぎ済み。作業の再開や最終release合格を意味しない。
@@ -282,51 +286,30 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | 親 | サブタスク |
 | --- | --- |
 | `OPS-048` | `OPS-059` |
+| `OPS-048` | `OPS-061` |
+| `OPS-048` | `OPS-062` |
 
 ## マイルストーン接続
 
-タスクとEND・途中ゲートの接続の正本。Studioはこの表から生成し、JSONから引き継いだり接続先・方向を暗黙に変更したりしない。版を挟んでも到達先が同じなら行の変更は不要。ゲート同士の経路はMilestonesの配置から生成する。
+タスクとEND・途中カードの接続の正本。Studioはこの表から生成し、JSONから引き継いだり接続先・方向を暗黙に変更したりしない。版を挟んでも到達先が同じなら行の変更は不要。ゲート同士の経路はMilestonesの配置から生成する。
 
-接続は現行Studioから移管したもの。`required`は必須、`material`は判断材料、`resume`・`after`は再開判断・着手条件を表し、矢印だけで自動開始や必須完了を意味しない。状態・ユーザー判断・委任は各タスクの条件に従う。
+接続はタスクと到達点の関係を示す。完了・着手・再開の条件は各行の制約文に記載し、線の有無や向きだけでは判定しない。線の種類は2026-10-17に廃止した（Astra助言・ユーザー決定、OPS-062）。制約文は「この到達点の前に完了が必要。」「判断材料。」「到達後。」のいずれかで始め、意味を文章で持つ。状態・ユーザー判断・委任は各タスクの条件に従う。タスクは版の中の行動なので、版ゲート（`GATE-*`）へは接続せず、その版の`END-*`か途中カードへ接続する。
 
-| 接続元 | 接続先 | 関係 | 制約 |
-| --- | --- | --- | --- |
-| `RELEASE-084` | `END-0.5.4` | `required` | 2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |
-| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |
-| `RELEASE-072` | `END-0.6.0` | `required` | \| RELEASE-072 \| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \| |
-| `RELEASE-075` | `END-0.6.0` | `required` | \| RELEASE-075 \| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \| |
-| `RELEASE-076` | `END-0.6.0` | `required` | \| RELEASE-076 \| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \| |
-| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |
-| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |
-| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |
-| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |
-| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |
-| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |
-| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
-| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |
-| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |
-| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |
+| 接続元 | 接続先 | 制約 |
+| --- | --- | --- |
+| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |
+| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |
+| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |
+| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |
+| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |
+| `QUALITY-005` | `END-0.7.0` | 到達後。0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。END-0.7.0の前提ではない。 |
+| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |
+| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |
+| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |
+| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |
+| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |
+| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |
+| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |
+| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |
+| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |
 
-## ゲート経路の関係種類
-
-対象ノードへ入る経路の線の種類を指定する。接続元・接続先の組はここに持たず、Milestonesの配置から生成する。ゲートを移動しても指定は対象IDに追従する。未指定の新規ノードは `stage`（段階の接続）。この表はタスクからの接続には適用しない。
-
-| 対象ノード | 関係 |
-| --- | --- |
-| `END-0.5.3` | `stage` |
-| `GATE-0.5.4` | `stage` |
-| `END-0.5.4` | `stage` |
-| `GATE-0.6.0` | `stage` |
-| `MS-VALIDATION` | `stage` |
-| `END-0.6.0` | `required` |
-| `GATE-0.7.0` | `stage` |
-| `MS-SPI` | `stage` |
-| `END-0.7.0` | `stage` |
-| `GATE-0.8.0` | `stage` |
-| `MS-HUMAN` | `after` |
-| `END-0.8.0` | `stage` |
-| `GATE-0.9.0` | `stage` |
-| `MS-QUALITY` | `stage` |
-| `END-0.9.0` | `stage` |
-| `GATE-1.0.0` | `stage` |
-| `END-1.0.0` | `stage` |

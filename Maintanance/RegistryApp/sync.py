@@ -248,51 +248,25 @@ def registry_milestone_relations():
         if not active or not line.startswith('| `'):
             continue
         c = cells(line)
-        if len(c) != 4:
-            raise ValueError(f'Registry line {no}: invalid milestone connection row')
+        if len(c) != 3:
+            raise ValueError(f'Registry line {no}: invalid milestone connection row (expected 3 columns: 接続元 | 接続先 | 制約; line kinds were retired 2026-10-17)')
         result.append(dict(prerequisite=unquote(c[0]), successor=unquote(c[1]),
-                           relation=unquote(c[2]), constraint=c[3].replace(r'\|', '|'),
+                           constraint=c[2].replace(r'\|', '|'),
                            source=dict(path=REGISTRY.relative_to(ROOT).as_posix(), quote=line,
                                        sha256=sha256(REGISTRY), line=no)))
     return result
 
 
-def registry_gate_relation_types(cards):
-    """Incoming chain-edge types keyed by destination ID, independent of placement."""
-    result, active = {}, False
-    ids = {c['id'] for c in cards}
-    for no, line in enumerate(REGISTRY.read_text(encoding='utf-8').splitlines(), 1):
-        if line.startswith('## '):
-            active = line == '## ゲート経路の関係種類'
-        if not active or not line.startswith('| `'):
-            continue
-        c = cells(line)
-        if len(c) != 2:
-            raise ValueError(f'Registry line {no}: invalid gate relation row')
-        target, relation = map(unquote, c)
-        if target not in ids or target in result or relation not in {'stage', 'required', 'material', 'resume', 'after'}:
-            raise ValueError(f'Registry line {no}: invalid or duplicate gate relation: {target}, {relation}')
-        result[target] = (relation, line, no)
-    return result
-
-
 def chain_relations(cards):
-    """Topology comes from placement; relation types come from Registry, never old JSON."""
-    types = registry_gate_relation_types(cards)
+    """Topology comes from placement. Lines have no kind (retired 2026-10-17); conditions live in card text."""
+    path = ROOT / 'Maintanance/Milestones/README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    no = lines.index(next(line for line in lines if END_RULE in line)) + 1
     chain = []
     for a, b in zip(cards, cards[1:]):
-        if b['id'] in types:
-            relation, quote, no = types[b['id']]
-            path = REGISTRY
-        else:
-            relation = 'stage'
-            path = ROOT / 'Maintanance/Milestones/README.md'
-            quote = END_RULE
-            no = path.read_text(encoding='utf-8').splitlines().index(next(
-                line for line in path.read_text(encoding='utf-8').splitlines() if quote in line)) + 1
-        chain.append(dict(prerequisite=a['id'], successor=b['id'], relation=relation,
-                          constraint='接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。',
-                          source=dict(path=path.relative_to(ROOT).as_posix(), quote=quote,
+        chain.append(dict(prerequisite=a['id'], successor=b['id'],
+                          constraint='接続はゲートの配置から生成。条件は各カードの本文。',
+                          source=dict(path=path.relative_to(ROOT).as_posix(), quote=END_RULE,
                                       sha256=sha256(path), line=no)))
     return registry_milestone_relations() + chain
 
@@ -353,9 +327,9 @@ def diff(old, new):
     out += [f'+ milestone {i}' for i in sorted(set(nm) - set(om))] + [f'- milestone {i}' for i in sorted(set(om) - set(nm))]
     out += [f'~ milestone {i}: ' + ', '.join(k for k in ('item', 'state', 'detail', 'gate') if om[i].get(k) != nm[i].get(k))
             for i in sorted(set(om) & set(nm)) if any(om[i].get(k) != nm[i].get(k) for k in ('item', 'state', 'detail', 'gate'))]
-    rk = lambda r: (r['prerequisite'], r['successor'], r['relation'])
+    rk = lambda r: (r['prerequisite'], r['successor'])
     orr, nrr = {rk(r) for r in old.get('milestoneRelations', [])}, {rk(r) for r in new.get('milestoneRelations', [])}
-    out += [f'+ relation {a} -> {b} ({c})' for a, b, c in sorted(nrr - orr)] + [f'- relation {a} -> {b} ({c})' for a, b, c in sorted(orr - nrr)]
+    out += [f'+ relation {a} -> {b}' for a, b in sorted(nrr - orr)] + [f'- relation {a} -> {b}' for a, b in sorted(orr - nrr)]
     if old['source'].get('sha256') != new['source']['sha256']:
         out.append(f"~ source sha256 {old['source'].get('sha256', '')[:12]} -> {new['source']['sha256'][:12]}")
     for k in ('rulesSha256', 'head', 'dirty'):

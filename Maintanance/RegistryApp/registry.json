@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "318d78f4",
-    "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
+    "head": "bc50f176",
+    "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
     "dirty": true,
-    "generatedAt": "2026-10-17T14:00:54.763691+09:00",
+    "generatedAt": "2026-10-17T14:07:20.542820+09:00",
     "generator": "sync.py",
     "rulesSha256": "84354a704f0b3e6da71ee64a1e00d08ce830b5fa844d5400a292c0341267b6dd"
   },
@@ -1173,8 +1173,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-084` | `END-0.5.4` | `required` | 2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 291
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 293
         }
       },
       {
@@ -1185,8 +1185,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 292
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 294
         }
       },
       {
@@ -1197,8 +1197,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 293
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 295
         }
       },
       {
@@ -1209,8 +1209,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 294
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 296
         }
       },
       {
@@ -1221,8 +1221,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 295
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 297
         }
       },
       {
@@ -1233,8 +1233,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 296
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 298
         }
       },
       {
@@ -1245,8 +1245,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 297
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 299
         }
       },
       {
@@ -1257,8 +1257,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 298
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 300
         }
       },
       {
@@ -1269,8 +1269,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 299
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 301
         }
       },
       {
@@ -1281,8 +1281,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 300
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 302
         }
       },
       {
@@ -1293,8 +1293,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 301
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 303
         }
       },
       {
@@ -1305,8 +1305,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 302
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 304
         }
       },
       {
@@ -1317,8 +1317,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 303
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 305
         }
       },
       {
@@ -1329,8 +1329,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 304
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 306
         }
       },
       {
@@ -1341,8 +1341,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 305
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 307
         }
       },
       {
@@ -1353,8 +1353,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.5.3` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 313
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 315
         }
       },
       {
@@ -1365,8 +1365,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.5.4` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 314
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 316
         }
       },
       {
@@ -1377,8 +1377,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.5.4` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 315
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 317
         }
       },
       {
@@ -1413,8 +1413,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.6.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 316
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 318
         }
       },
       {
@@ -1425,8 +1425,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-VALIDATION` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 317
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 319
         }
       },
       {
@@ -1437,8 +1437,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.6.0` | `required` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 318
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 320
         }
       },
       {
@@ -1449,8 +1449,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.7.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 319
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 321
         }
       },
       {
@@ -1461,8 +1461,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-SPI` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 320
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 322
         }
       },
       {
@@ -1473,8 +1473,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.7.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 321
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 323
         }
       },
       {
@@ -1485,8 +1485,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.8.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 322
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 324
         }
       },
       {
@@ -1497,8 +1497,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-HUMAN` | `after` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 323
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 325
         }
       },
       {
@@ -1509,8 +1509,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.8.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 324
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 326
         }
       },
       {
@@ -1521,8 +1521,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-0.9.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 325
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 327
         }
       },
       {
@@ -1533,8 +1533,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `MS-QUALITY` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 326
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 328
         }
       },
       {
@@ -1545,8 +1545,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-0.9.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 327
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 329
         }
       },
       {
@@ -1557,8 +1557,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `GATE-1.0.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 328
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 330
         }
       },
       {
@@ -1569,8 +1569,8 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `END-1.0.0` | `stage` |",
-          "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-          "line": 329
+          "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+          "line": 331
         }
       }
     ]
@@ -1814,8 +1814,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-084` | `END-0.5.4` | `required` | 2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 291
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 293
       }
     },
     {
@@ -1826,8 +1826,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | `resume` | 0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 292
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 294
       }
     },
     {
@@ -1838,8 +1838,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | `required` | \\| RELEASE-072 \\| 人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する \\| |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 293
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 295
       }
     },
     {
@@ -1850,8 +1850,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | `required` | \\| RELEASE-075 \\| 判定基準、証拠取得、停止・復旧などの不足仕様を充当する \\| |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 294
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 296
       }
     },
     {
@@ -1862,8 +1862,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | `required` | \\| RELEASE-076 \\| 充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する \\| |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 295
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 297
       }
     },
     {
@@ -1874,8 +1874,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-005` | `END-0.7.0` | `after` | 0.7.0 release完了後、対象版のSPI登録可否をQUALITY-005で判定する。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 296
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 298
       }
     },
     {
@@ -1886,8 +1886,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | `required` | 続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 297
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 299
       }
     },
     {
@@ -1898,8 +1898,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | `required` | DOC-036 → Validation計画レビュー（MS-VALIDATION）→ 0.7.0。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 298
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 300
       }
     },
     {
@@ -1910,8 +1910,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 299
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 301
       }
     },
     {
@@ -1922,8 +1922,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | `required` | DOC-038とDOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 300
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 302
       }
     },
     {
@@ -1934,8 +1934,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | `material` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 301
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 303
       }
     },
     {
@@ -1946,8 +1946,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | `material` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 302
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 304
       }
     },
     {
@@ -1958,8 +1958,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 303
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 305
       }
     },
     {
@@ -1970,8 +1970,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 304
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 306
       }
     },
     {
@@ -1982,8 +1982,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | `material` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 305
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 307
       }
     },
     {
@@ -1994,8 +1994,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.5.3` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 313
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 315
       }
     },
     {
@@ -2006,8 +2006,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.5.4` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 314
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 316
       }
     },
     {
@@ -2018,8 +2018,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.5.4` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 315
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 317
       }
     },
     {
@@ -2054,8 +2054,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.6.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 316
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 318
       }
     },
     {
@@ -2066,8 +2066,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-VALIDATION` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 317
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 319
       }
     },
     {
@@ -2078,8 +2078,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.6.0` | `required` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 318
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 320
       }
     },
     {
@@ -2090,8 +2090,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.7.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 319
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 321
       }
     },
     {
@@ -2102,8 +2102,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-SPI` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 320
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 322
       }
     },
     {
@@ -2114,8 +2114,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.7.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 321
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 323
       }
     },
     {
@@ -2126,8 +2126,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.8.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 322
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 324
       }
     },
     {
@@ -2138,8 +2138,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-HUMAN` | `after` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 323
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 325
       }
     },
     {
@@ -2150,8 +2150,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.8.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 324
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 326
       }
     },
     {
@@ -2162,8 +2162,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-0.9.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 325
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 327
       }
     },
     {
@@ -2174,8 +2174,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `MS-QUALITY` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 326
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 328
       }
     },
     {
@@ -2186,8 +2186,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-0.9.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 327
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 329
       }
     },
     {
@@ -2198,8 +2198,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `GATE-1.0.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 328
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 330
       }
     },
     {
@@ -2210,8 +2210,8 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `END-1.0.0` | `stage` |",
-        "sha256": "92b6e448beb457d50f416fe92ae2caec46e47bcac4ac277a6c91b97678e81ed7",
-        "line": 329
+        "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
+        "line": 331
       }
     }
   ],

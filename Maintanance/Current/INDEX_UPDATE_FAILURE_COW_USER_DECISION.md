@@ -42,4 +42,4 @@ RBT-047原返却の「death testがskip」は訂正する。fix-draft-normal.log
 
 ## 判断材料の追加（2026-10-17 / Astra）
 
-[採番待ち記録](../CLAUDE_PENDING_TASKS.md)のCP-20261017-007（姫の設計論点整理、記録commit 93fd0204）をRBT-048の判断材料へ統合。原文は同entryを保持し、圧縮時に参照先を更新する。決定・修正方針の変更は含まない。Boost等の未確認記述は未確認のまま。USER_ONLY・0.7.0暫定・待機境界は不変で、提案された仕様testにも着手しない。
+[採番待ち記録](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md)（2026-10-17にqueueから圧縮）のCP-20261017-007（姫の設計論点整理、記録commit 93fd0204）をRBT-048の判断材料へ統合。原文は同entryを保持し、圧縮時に参照先を更新する。決定・修正方針の変更は含まない。Boost等の未確認記述は未確認のまま。USER_ONLY・0.7.0暫定・待機境界は不変で、提案された仕様testにも着手しない。

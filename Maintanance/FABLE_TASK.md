@@ -33,8 +33,8 @@ Fableが自分の感想・観察を`Maintanance/FABLE_OBSERVATIONS.md`へ追記�
 
 **Current assignment: OPS-044 temporary coordinator deputy.** Follow
 [the user delegation](Current/FABLE_COORDINATOR_DEPUTY.md), including runtime-model
-identification, Registry updates and cleanup. The earlier trial below is completed
-history; its proposal-only limits do not define this new assignment.
+identification, Registry updates and cleanup. The earlier trial is completed
+history (archived below); its proposal-only limits do not define this new assignment.
 
 OPS-044：管理試験は2026-10-17 Astra受入・対象3件の記録統合済み。[評価と補正](Current/FABLE_MANAGEMENT_TRIAL.md)を参照。試験とは別に上記代理を委任。親恒久taskはACTIVEを維持。
 
@@ -50,8 +50,6 @@ For the authority of historical records, follow [AGENTS.md — 現在の仕事�
 
 ## 受入済み依頼の履歴
 
-まだない。受入済みの節は、上記の委任に従って`Archived/FABLE_TASK_HISTORY_<日付>.md`へ移し、ここにリンクを残す。
+- [OPS-044管理試験の依頼原文（2026-10-17）](Archived/FABLE_TASK_HISTORY_2026-10-17.md)：Astra受入`318d78f4`、評価と補正は[試験正本](Current/FABLE_MANAGEMENT_TRIAL.md)。
 
-## OPS-044 — Bounded management trial (2026-10-17)
-
-The user approved one trial of pending-entry reconciliation. Follow [the canonical assignment](Current/FABLE_MANAGEMENT_TRIAL.md): CP-20261017-007, CP-20261017-008, and FP-20261017-001 only. Produce an evidence-backed update proposal in its Return section. Do not edit the Registry or queues, allocate IDs, accept your own work, or expand the task. The registered parent is OPS-044 and remains ACTIVE. Assignment complete: the specified output scope is handed to Fable until Return. No commit or external operation is delegated.
+受入済みの節は、上記の委任に従って`Archived/FABLE_TASK_HISTORY_<日付>.md`へ移し、ここにリンクを残す。

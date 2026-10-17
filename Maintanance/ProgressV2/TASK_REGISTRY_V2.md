@@ -203,6 +203,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 ## 過去の記録への入口
 
+- [採番待ちqueueの照合済み原文（2026-10-17圧縮）](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md)：CP-20261016-013（→OPS-059 FROZEN維持）、CP-20261017-001〜008（→OPS-047 / OPS-048・QUALITY-002・RBT-048判断材料・OPS-044）と2026-10-16〜17の照合節。[Fable側](../Archived/FABLE_PENDING_TASKS_RECONCILED_2026-10-17.md)：FP-20261017-001（→OPS-048）・002（→OPS-044）。仮IDは依存や完了の根拠にしない。
+
 - [文書ゲート完了10件と整理前の依存](../Archived/TASK_REGISTRY_COMPLETED_DOCUMENT_GATES_2026-10-16.md)：DOC-033〜035・037・040〜044、RELEASE-078。受入証拠は文書マイルストーンと0.6.0正本へ引継ぎ済み。作業の再開や最終release合格を意味しない。
 
 - [立て直し工程整理前の記録](../Archived/TASK_REGISTRY_BEFORE_RECOVERY_CLEANUP_2026-10-16.md)：完了RELEASE-082・083を履歴へ移動。現行の修正と協議・計画・完了ゲートは維持。

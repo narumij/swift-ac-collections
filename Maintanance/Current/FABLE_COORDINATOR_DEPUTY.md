@@ -38,4 +38,11 @@ At handback, record current occupied work, uncommitted changes and ownership, un
 
 ## Startup / handback record
 
-Awaiting Fable's startup acknowledgement. No cleanup or compression has been performed merely by creating this delegation.
+### Startup acknowledgement — 2026-10-17 Fable
+
+- Model identifier shown by the environment: `claude-fable-5-1` (Claude Fable 5.1, Claude Code in Xcode). Conversation identifier: not exposed by the environment. The user designated Fable in this conversation and issued the start instruction 「FABLE_TASK.mdの調整代理を開始して」.
+- Entry: Progress V2 → milestone HEAD `0.5.4` → Registry at HEAD `bc50f176` (43 tasks: 21 ACTIVE, 10 PROPOSED, 5 USER_ONLY, 2 DONE, 2 FROZEN, 2 WAITING_EXTERNAL, 1 WAITING_USER). Working tree: `Maintanance/User/MEMO.md` modified (user-owned, untouched).
+- Queue state at startup: every entry in `CLAUDE_PENDING_TASKS.md` (CP-20261016-013, CP-20261017-001〜008) and `FABLE_PENDING_TASKS.md` (FP-20261017-001・002) is `RECONCILED` by Astra. No open proposal or unreconciled return.
+- First actions under this delegation: compress the reconciled queue entries to `Archived/` under the archive procedure, archive the completed trial section of `FABLE_TASK.md`, point the RBT-048 decision document's CP-007 link at the archive, regenerate Studio. Registry task rows and states are not changed (DONE rows RBT-049・RELEASE-084 stay per the user's 「タスク圧縮はすぐはしない」). No commit without the user's instruction.
+- Occupied by Fable from this point: `CLAUDE_PENDING_TASKS.md`, `FABLE_PENDING_TASKS.md`, `FABLE_TASK.md`, new `Archived/*_2026-10-17.md`, Registry「過去の記録への入口」, Studio generated files. `CLAUDE_TASK.md` is not edited in this pass.
+- Result of the first pass (same day, uncommitted): both queues compressed to `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md` / `Archived/FABLE_PENDING_TASKS_RECONCILED_2026-10-17.md` (verbatim; only link targets rewritten, verified by link-insensitive comparison; all links resolve). Trial request section moved to `Archived/FABLE_TASK_HISTORY_2026-10-17.md`. Registry「過去の記録への入口」gained one bullet; no task row changed. RBT-048 decision document's CP-007 link repointed to the archive. Studio regenerated, verify.cjs passed, `--check` no drift, pending seed 0 entries. No new coordination know-how recorded (nothing new found). Next permitted steps: compress accepted sections of `CLAUDE_TASK.md` (RBT-049・RELEASE-083/084 all accepted) when asked; DONE rows stay until the user asks for compression.

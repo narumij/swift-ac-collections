@@ -47,7 +47,7 @@
 
 - queue状態: `RECONCILED`（OPS-048へ統合・Astra受入）
 - 発見元・ユーザー指示: 2026-10-17、ユーザー「依頼状態もスタジオでみたいなぁ」→姫が作業内訳を返す→「いったんこみっと。依頼状態みれるようにしよう」。
-- 実施: `build-pending.py`に依頼票（`CLAUDE_TASK.md`・`FABLE_TASK.md`）の`## <TASK-ID> — 題名`節を読む処理を追加。Registryの行と照合し、Registryにあって未完（DONE・EXCLUDED・ARCHIVED以外）のものだけを「依頼中」として出す。Registryから圧縮済みのIDの節は履歴として出さない。同じIDの節が複数あれば本文をまとめて1件にする。`index.template.html`に「依頼中」欄（採番待ち欄の上）と`renderRequests`を追加。カードに状態・依頼票の持ち主・Registryの担当を表示し、押すと依頼票の節の原文を開く。カードの横にtaskカードと同じ「正本」リンク（Registryの行が指す正本）を付けた（ユーザー「正本リンク足して欲しい。確認の手間がふえるから」）。状態の正本はRegistryのまま。
+- 実施: `build-pending.py`に依頼票（`CLAUDE_TASK.md`・`FABLE_TASK.md`）の`## <TASK-ID> — 題名`節を読む処理を追加。Registryの行と照合し、Registryにあって未完（DONE・EXCLUDED・ARCHIVED以外）のものだけを「依頼中」として出す。Registryから圧縮済みのIDの節は履歴として出さない。同じIDの節が複数あれば本文をまとめて1件にする。`index.template.html`に「依頼中」欄（採番待ち欄の上）と`renderRequests`を追加。カードに状態・依頼票の持ち主・Registryの担当を表示し、押すと依頼票の節の原文を開く。カードの横にtaskカードと同じ「正本」リンク（Registryの行が指す正本）を付けた（ユーザー「正本リンク足して欲しい。確認の手間がふえるから」）。依頼カードは中身に合わせて高さを伸ばす（task用の固定高で切れた崩れを修正）。宛先（姫・Fable）ごとに行を分け、依頼のない行と、全体が0件なら欄ごと非表示（ユーザー「Fableと姫は2行に分けた方がいいな。で、無ければ非表示」）。状態の正本はRegistryのまま。
 - 検証: `sync.py`で生成とverify通過。生成HTMLの`pendingSeed`で依頼中はOPS-074（ACTIVE・姫）とOPS-063（ACTIVE・Fable）の2件。verifyに依頼表示専用の検査は足していない。Safariでの見た目は未確認。
 - 対象外: Registry・依頼票の変更、依頼状態の新しい正本化。
 - commit: していない。

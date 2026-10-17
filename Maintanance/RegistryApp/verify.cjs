@@ -323,3 +323,26 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  assert.deepEqual(ctx.cardDocumentPaths(ctx.proposalNodes(r.data)[0],bundle),[],'proposal has no document');
  const multi=original.tasks.find(t=>ctx.cardDocumentPaths(t,bundle).length>1);assert(multi,'some task has several documents');
  console.log('PASS: card list covers every task, milestone and proposal once, in their groups; only bundled documents are linked (single, several, none, proposal).');}
+// Milestone plan in the edit version (OPS-086): reorder, move, rename/condition, add card, add version; IDs and task lines stay.
+{const base=copy(original);base.baseline.milestones=copy(original.milestones);const chain=(d,v)=>expectedMilestoneChains(d).find(c=>c.version===v).chain;
+ const v6=original.milestones.find(m=>m.id==='MS-SPI').gate.split('/')[2],v7=original.milestones.find(m=>m.id==='MS-VALIDATION').gate.split('/')[2];
+ const taskLines=d=>d.milestoneRelations.filter(r=>!(r.source&&r.source.path==='Maintanance/Milestones/README.md')).map(r=>r.prerequisite+'>'+r.successor).sort();
+ let a=ctx.planAddCard(base,v6,'追加の中間カード','到達条件の案');const id=a.id;let d=a.data;assert.equal(id,'draft-ms-1');
+ assert.deepEqual(chain(d,v6),['START-'+v6,'MS-SPI',id,'END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);assert.deepEqual(taskLines(d),taskLines(base),'task lines untouched');
+ d=ctx.planReorder(d,id,-1);assert.deepEqual(chain(d,v6),['START-'+v6,id,'MS-SPI','END-'+v6]);assert.deepEqual(milestoneChainErrors(d),[]);
+ assert(/\/10_DRAFT_MS_1\.md$/.test(d.milestones.find(m=>m.id===id).gate)&&/\/20_SPI\.md$/.test(d.milestones.find(m=>m.id==='MS-SPI').gate),'renumbered by file name');
+ d=ctx.planMove(d,'MS-SPI',v7);assert.deepEqual(chain(d,v6),['START-'+v6,id,'END-'+v6]);assert.deepEqual(chain(d,v7),['START-'+v7,'MS-VALIDATION','MS-SPI','END-'+v7]);
+ assert(!d.milestoneRelations.some(r=>r.source&&r.source.path==='Maintanance/Milestones/README.md'&&(r.prerequisite==='START-'+v6&&r.successor===id?false:(r.prerequisite==='MS-SPI'&&r.successor===id)||(r.prerequisite===id&&r.successor==='MS-SPI'))),'no stale backbone line from the old position');
+ assert.deepEqual(milestoneChainErrors(d),[]);assert.deepEqual(taskLines(d),taskLines(base),'task lines (to cards and to END) do not follow or change');
+ d=ctx.planEditText(d,'MS-SPI','SPI登録（案）','バッジと試験結果');assert.equal(d.milestones.find(m=>m.id==='MS-SPI').item,'SPI登録（案）');
+ d=ctx.planAddVersion(d,'0.6.5');assert.deepEqual(chain(d,'0.6.5'),['START-0.6.5','END-0.6.5']);assert(!d.milestoneRelations.some(r=>r.prerequisite==='END-0.6.5'||r.successor==='START-0.6.5'),'new version is not connected to gates');
+ const kinds=ctx.milestonePlanChanges(d).map(c=>c.change+':'+c.id);for(const k of ['added:'+id,'moved:MS-SPI','renamed:MS-SPI','condition:MS-SPI','added:START-0.6.5','added:END-0.6.5'])assert(kinds.includes(k),'change listed: '+k);
+ ctx.doc=d;assert(ctx.delta().some(x=>x.field==='milestones'&&x.changes.length>=6));
+ const before=JSON.stringify(d);
+ assert.throws(()=>ctx.planReorder(d,id,-1),/動かせません/);assert.throws(()=>ctx.planMove(d,'MS-SPI',v7),/同じ版/);assert.throws(()=>ctx.planMove(d,'MS-SPI','9.9.9'),/版がありません/);
+ assert.throws(()=>ctx.planEditText(d,'MS-SPI','  ',''),/名前/);assert.throws(()=>ctx.planReorder(d,'END-'+v6,1),/途中のカード/);assert.throws(()=>ctx.planAddVersion(d,'0.6.5'),/すでに/);assert.throws(()=>ctx.planAddVersion(d,'_x'),/英数字/);
+ const free=ctx.independentGroups(d).regular.find(t=>!t.proposal).id;const linked=ctx.addMilestoneRelation(d,free,id,'from');assert.throws(()=>ctx.addMilestoneRelation(linked,free,id),/循環/);
+ assert.equal(JSON.stringify(d),before,'refusals leave the plan unchanged');
+ const saved=JSON.parse(JSON.stringify(d));ctx.check(saved);assert.deepEqual(saved.baseline.milestones,original.milestones,'baseline milestones kept');
+ const g=ctx.graphData();const placed=ctx.graphLayout(g.nodes,g.edges);assertGeometry(placed,g.nodes,g.edges);ctx.doc=copy(original);
+ console.log('PASS: milestone plan (add card, reorder by renumbered file names, move between versions, rename/condition, add unconnected version, changes listed, refusals unchanged, task lines kept, layout).');}

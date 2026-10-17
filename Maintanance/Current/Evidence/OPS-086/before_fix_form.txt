@@ -1,0 +1,2 @@
+AssertionError [ERR_ASSERTION]: card name kept after selecting a card
+    at /Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Current/Evidence/OPS-086/smoke_form.cjs:56:10

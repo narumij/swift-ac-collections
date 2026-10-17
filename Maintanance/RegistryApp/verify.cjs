@@ -182,7 +182,7 @@ console.log('PASS: rectangle collision checks, each-edge removal, new-node and r
 vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
 vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
 const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,original.tasks.filter(t=>t.permanent).length);assert(permanent.length>=10);assert(permanent.every(g=>g.documents.length));for(const g of permanent)for(const c of g.children){assert(Array.isArray(c.documents));assert.deepEqual(c.documents,[...new Set([...c.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))]);}assert(permanent.some(g=>g.children.some(c=>c.id==='OPS-063'&&c.documents.length>=3)),'OPS-063 sub-task should expose its interview documents');assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).map(t=>t.id));
-const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab','cardsView','cardsTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('const MAP_TABS='),script.indexOf('for(const name of MAP_TABS){const tab')),ctx);ctx.switchMap('cards');assert(!controls.cardsView.hidden&&controls.dependencyView.hidden&&controls.permanentView.hidden&&controls.protectionView.hidden);assert.equal(controls.cardsTab['aria-selected'],'true');ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
+const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab','cardsView','cardsTab','neighborView','neighborTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('const MAP_TABS='),script.indexOf('for(const name of MAP_TABS){const tab')),ctx);ctx.switchMap('cards');assert(!controls.cardsView.hidden&&controls.dependencyView.hidden&&controls.permanentView.hidden&&controls.protectionView.hidden);assert.equal(controls.cardsTab['aria-selected'],'true');ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 
 const reference=JSON.parse(fs.readFileSync(require('path').join(__dirname,'layout-reference.json'),'utf8'));for(const [id,position] of Object.entries(reference))if(placed.pos.has(id))assert.deepEqual(placed.pos.get(id),position);
@@ -368,3 +368,32 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  const old=clone(data);delete old.milestones;latest.milestones=[{id:'MS-X',item:'gate'}];assert.equal(c.canonicalDifferences(old,data,latest)[0].unknown,true);
  console.log('PASS: canonical additions/deletions, field overlap, same-result convergence, metadata ignored, missing baseline reported, inputs preserved.');
 }
+
+// A task after a milestone must retain its other task prerequisites in a version view.
+{
+ ctx.doc=copy(original);
+ for(const view of ['@head','0.6.0']){
+  const visible=ctx.versionView(ctx.graphData(),view),ids=new Set(visible.nodes.map(n=>n.id));
+  for(const id of ['MS-SPI','DOC-027','DOC-026','QUALITY-005'])assert(ids.has(id),view+' retains '+id);
+  assert(visible.edges.some(e=>e.prerequisite==='QUALITY-005'&&e.successor==='DOC-026'));
+ }
+ console.log('PASS: version view retains SPI downstream tasks and their prerequisite chain.');
+}
+// Neighborhood view (OPS-091): one step around a node from the whole edit version, manual expansion, no data change.
+{vm.runInContext(script.slice(script.indexOf('function neighborhood('),script.indexOf('let neighborCenter=')),ctx);
+ const d=copy(original),before=JSON.stringify(d),ids=v=>v.nodes.map(n=>n.id).sort(),pairs=v=>v.edges.map(e=>e.prerequisite+'>'+e.successor).sort();
+ let v=ctx.neighborhood(d,'DOC-027',new Set());
+ assert(pairs(v).includes('DOC-026>DOC-027')&&pairs(v).includes('MS-SPI>DOC-027'),'DOC-027: task and milestone prerequisites');
+ assert(!ids(v).includes('QUALITY-005'),'one step only');assert.equal(v.nodes.find(n=>n.id==='DOC-027').depth,0);
+ v=ctx.neighborhood(d,'DOC-027',new Set(['DOC-026']));
+ assert(pairs(v).includes('QUALITY-005>DOC-026'),'expanding DOC-026 shows QUALITY-005 → DOC-026 (branch joins at DOC-027)');assert.equal(v.nodes.find(n=>n.id==='QUALITY-005').depth,2);
+ assert.equal(new Set(pairs(v)).size,pairs(v).length,'no duplicate lines');assert.equal(new Set(ids(v)).size,ids(v).length,'no duplicate nodes');
+ v=ctx.neighborhood(d,'MS-SPI',new Set());const spi=d.milestones.find(m=>m.id==='MS-SPI').gate.split('/')[2];
+ assert(pairs(v).includes('START-'+spi+'>MS-SPI')||pairs(v).some(p=>p.endsWith('>MS-SPI')),'milestone keeps its original START/END endpoints');
+ const startId='START-'+spi;v=ctx.neighborhood(d,startId,new Set());assert(v.nodes.length>1&&v.nodes[0].id===startId,'START can be a center');
+ const lone=ctx.independentGroups(d).regular.find(t=>!d.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)&&!d.milestoneRelations.some(e=>e.prerequisite===t.id||e.successor===t.id));
+ if(lone){v=ctx.neighborhood(d,lone.id,new Set());assert.deepEqual(ids(v),[lone.id]);assert.equal(v.edges.length,0);}
+ const r=ctx.addProposal(d,'接続を見る試験','');const withP=ctx.addMilestoneRelation(r.data,r.id,'MS-SPI','from');
+ v=ctx.neighborhood(withP,'MS-SPI',new Set());assert(v.nodes.some(n=>n.id===r.id&&n.kind==='proposal'),'proposal in the neighborhood');
+ assert.deepEqual(ctx.neighborhood(d,'NO-SUCH',new Set()).nodes,[]);assert.equal(JSON.stringify(d),before,'neighborhood never changes the data');
+ console.log('PASS: neighborhood one step, manual expansion (QUALITY-005 → DOC-026 → DOC-027 with MS-SPI → DOC-027), START/END, isolated node, proposal, no duplicates, data unchanged.');}

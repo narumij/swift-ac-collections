@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-091：2026-10-18 Astra受入済み、ユーザーcommit承認によりDONE。実装依頼終了。
+
 RBT-049：2026-10-17 Claude返却をCodex受入、DONE。固定版・macOSの限定比較調査を完了。原Returnの出現行数補正と受入範囲は[正本のCodex受入節](Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md#codex受入2026-10-17)を参照。追加実装依頼なし。CIへの採用・Linuxの有効性・全体合格は未認定。
 
 RELEASE-084：2026-10-17の再依頼をAstra受入。現行baselineでは修正不要、ユーザーのcommit承認により限定依頼はDONE。追加実装依頼なし。Ubuntu CI成功とは扱わない。
@@ -234,3 +236,15 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-090 — キャッシュ更新受入・依頼終了（2026-10-18 / Astra）
 
 [正本のAstra受入](Current/REGISTRY_STUDIO_JUDGMENT_CACHE_REFRESH.md)のとおり4点の判断キャッシュを受入。固定版c98fd93aと根拠・停止境界・更新条件を照合し、Git管理外を確認。commit待ち。追加依頼なし、OPS-089の採否は引き続きUSER_ONLY。
+
+## OPS-091 — 選択ノード中心の接続表示（2026-10-18 / Astra）
+
+ユーザー指定の正式依頼。[正本](Current/REGISTRY_STUDIO_NODE_NEIGHBORHOOD.md)に従い、選択ノードの前提・後続を1段表示し、必要な先だけ手動展開できる閲覧機能を実装してください。UIの具体配置は任せます。依存・状態・保存方式の変更は含みません。
+
+対象実装の占有を姫へ受渡し、Astraは返却待ち。現作業ツリーにあるAstraの未コミット表示修正を維持してください。画面操作なし、限定テストとsync/checkで検証。Returnは正本へ記入。今回commitの依頼はなく、受入後ユーザーへ確認します。
+
+## OPS-091 — 受入・依頼終了（2026-10-18 / Astra）
+
+[正本のAstra受入](Current/REGISTRY_STUDIO_NODE_NEIGHBORHOOD.md)のとおり限定受入。独立verify・操作smoke・同期照合成功、実画面未確認。追加作業なし、commitはユーザー確認待ち。
+
+2026-10-18：OPS-091はユーザーcommit承認によりDONE。追加依頼なし。

@@ -136,13 +136,15 @@
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
+| `OPS-091` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioに選択ノード中心の接続表示を追加する | 2026-10-18ユーザー依頼。選択ノードの前提・後続を1段表示し、必要な先を明示操作で展開する。閲覧専用、版別表示とは別。正本の状態・接続や保存契約は変更しない。2026-10-18 Astra受入。独立verify・操作smoke・sync/check成功。リスト形式の1段接続表示・手動展開・入力保持を確認。実画面未確認。実装依頼終了、ユーザーcommit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_NODE_NEIGHBORHOOD.md` |
+
 ### リリース後の立て直し
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 
 
-| `RELEASE-085` | `PROPOSED` | User / Astra | [DECISION] 立て直し協議 | 0.5.4後、候補CI・性能比較の立て直し範囲をユーザーが決める。今回は登録のみ。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
+| `RELEASE-085` | `DONE` | User / Astra | [DECISION] 立て直し協議 | 2026-10-18ユーザーのStudio保存差分により協議をDONEへ変更。具体的な追加実行・方針・RELEASE-087の完了はこの状態変更から推定しない。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
 | `RELEASE-087` | `PROPOSED` | User / Astra | [DECISION] 立て直し完了ゲート | 計画とその範囲の実行証拠・未比較・残課題を確認し、ユーザーが完了可否を判断。計画だけで通過しない。実行taskの依存は計画確定時に追加。2026-10-18、旧計画task RELEASE-086はユーザー指定でEXCLUDED。計画の必要性は維持し、後継の計画担当・taskは未設定。086の整理を前提充足やゲート通過と扱わない。 | `Maintanance/Current/RELEASE_CI_RECOVERY.md` |
 
 ## Task precedence
@@ -335,6 +337,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-088` |
 | `OPS-048` | `OPS-089` |
 | `OPS-048` | `OPS-090` |
+| `OPS-048` | `OPS-091` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

@@ -1,0 +1,485 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Registry Studio</title>
+<style>
+:root{color-scheme:light;--ink:#243234;--muted:#657477;--line:#d6e0dc;--accent:#126c58;--paper:#f4f6f1}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px -apple-system,BlinkMacSystemFont,sans-serif}header{background:#183c36;color:#fff;padding:25px 32px}h1{font-size:26px;margin:3px 0 10px;letter-spacing:-.6px}.eyebrow{font-size:11px;letter-spacing:3px;color:#b3d3be}header p{margin:7px 0;color:#d1e3dc}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}button,.file{border:1px solid var(--line);border-radius:7px;padding:9px 13px;background:white;color:var(--ink);font:inherit;cursor:pointer}button:hover,.file:hover{background:#e4f1e9}button.primary{background:#d4edbc;border-color:#d4edbc}button:disabled{opacity:.45;cursor:default}input,select,textarea{width:100%;font:inherit;padding:9px;border:1px solid #bdcdc5;border-radius:6px;background:white;color:var(--ink)}textarea{resize:vertical;line-height:1.65}label{display:block;margin:10px 0 6px;font-size:12px;color:var(--muted)}.file{display:inline-block;margin:0;color:var(--ink)}.file input{display:none}.status{padding:12px 32px;background:#e4ecdf;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}.status.error{background:#ffe2d9;color:#8a2419}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;padding:22px 28px}.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}h2{margin:0 0 14px;font-size:17px}h3{font-size:14px;margin:22px 0 10px}.list{max-height:72vh;overflow:auto;margin-top:12px}.task{display:block;width:100%;text-align:left;margin-bottom:7px;padding:12px}.task.selected{border-color:var(--accent);background:#edf6ef}.task strong{display:block;font-size:12px;margin-bottom:7px}.task span{font-size:12px;line-height:1.6}.badge{padding:2px 6px;border-radius:4px;background:#e4ece7;margin-left:5px;font-size:10px}.muted{color:var(--muted);font-size:12px;line-height:1.65}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.buttons{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}.graph{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fafcf9}.graph svg{display:block}.graph text{font:12px -apple-system,sans-serif}.graph .node{cursor:pointer}.edge-row{padding:10px 0;border-bottom:1px solid var(--line)}.edge-row button{padding:3px 8px;float:right}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f0;padding:12px;border-radius:7px;font-size:12px;line-height:1.6}details{margin-top:12px}summary{cursor:pointer}.count{color:#5c755c;font-size:12px}.unsaved{color:#a44e1d}footer{padding:10px 30px 28px;color:var(--muted);font-size:12px}@media(max-width:900px){.layout{grid-template-columns:1fr;padding:12px}.list{max-height:280px}.row{grid-template-columns:1fr}header{padding:22px}}
+.graph-tooltip{position:fixed;z-index:10;max-width:min(420px,calc(100vw - 24px));max-height:65vh;overflow:hidden;pointer-events:none;white-space:pre-wrap;overflow-wrap:anywhere;background:#183c36;color:#fff;border:1px solid #75968a;border-radius:9px;padding:14px 16px;box-shadow:0 8px 28px #173c3633;font-size:12px;line-height:1.7}
+.layout.sidebar-hidden{grid-template-columns:minmax(0,1fr)}
+.independent-strip{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px}.independent-strip .task{flex:0 0 250px;width:250px;margin:0;min-height:100px}.independent-strip .task span{display:block}
+.task{overflow:hidden;display:flex;flex-direction:column;padding:12px 0 0}.task>strong,.task>span:not(.state-band){margin-left:12px;margin-right:12px}.task>span:not(.state-band){margin-bottom:10px}.task .state-band{display:block;align-self:stretch;margin-top:auto;padding:6px 12px;font-size:11px;font-weight:600;letter-spacing:.25px}.task.selected{box-shadow:0 0 0 2px #126c58 inset}
+dialog{width:min(680px,94vw);max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:24px;color:var(--ink)}dialog::backdrop{background:#183c3666}
+#documentDialog{width:min(1000px,95vw)}#documentBody{line-height:1.8;overflow-wrap:anywhere}#documentBody table{border-collapse:collapse;display:block;overflow:auto}#documentBody td,#documentBody th{border:1px solid var(--line);padding:8px}#documentBody pre{overflow:auto}#documentBody blockquote{border-left:3px solid var(--line);margin-left:0;padding-left:16px}
+.task-shell{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:8px;background:white}.task-shell>.task{border:0;border-radius:0;margin:0;flex:1}.card-docs{display:flex;gap:10px;flex-wrap:wrap;padding:7px 12px;font-size:12px}.independent-strip .task-shell{flex:0 0 250px;display:flex;flex-direction:column}.independent-strip .task-shell>.task{width:100%;flex:1}.card-docs a{color:var(--accent)}
+[role="tab"][aria-selected="true"]{background:#183c36;color:white;border-color:#183c36}
+header{padding:12px 28px}.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px 24px;flex-wrap:wrap}header h1{font-size:20px;margin:0}header .toolbar{margin:0;gap:6px}header button,header .file{padding:7px 11px;font-size:12px}header .header-note{font-size:11px;margin:7px 0 0;color:#c5d8cf}.status{padding:7px 28px}@media(max-width:600px){header{padding:12px}.status{padding:7px 12px}}
+.source-info{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.6;margin:0 0 10px}.status[hidden]{display:none}
+/* Independent cards share the dependency graph's 250 × 96 geometry. */
+.independent-strip .task-shell{position:relative;flex:0 0 250px;width:250px;height:96px;margin:0;border:1px solid #b8ccc0;border-radius:7px;overflow:hidden;background:white}
+.independent-strip .task-shell>.task{display:block;position:relative;width:100%;height:100%;min-height:0;padding:0;margin:0;background:white;border:0;border-radius:0;font-size:12px}
+.independent-strip .task.selected{background:#d4edbc;box-shadow:inset 0 0 0 1px #126c58}
+.independent-strip .task>strong{position:absolute;top:3px;left:11px;right:48px;margin:0;line-height:22px;font-size:12px;font-weight:400;color:#657477;white-space:nowrap;overflow:hidden}
+.independent-strip .task>span:not(.state-band){position:absolute;top:28px;left:11px;right:11px;margin:0;line-height:17px;font-size:12px;font-weight:600;color:#213b32;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.independent-strip .task .state-band{position:absolute;left:0;right:0;bottom:0;height:25px;margin:0;padding:4px 11px;font-size:12px;line-height:17px;font-weight:600;letter-spacing:0}
+.independent-strip .card-document{position:absolute;right:4px;top:2px;width:40px;height:22px;padding:3px 6px;font-size:12px;line-height:16px;color:#126c58;text-decoration:none}
+.independent-strip .card-document:hover{text-decoration:underline}
+.independent-strip .task-shell.request-shell{height:auto;border:1px dashed var(--line)}
+.independent-strip .request-shell>.pending-card{flex:1 1 auto;width:100%;margin:0;border:0;border-radius:0}
+.graph-help{margin:0 0 10px}.graph-help summary{font-size:12px;color:var(--accent);width:fit-content}.graph-help p{margin-bottom:0}
+.state-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.state-sample{min-width:145px;border:1px solid var(--line);border-radius:6px;overflow:hidden}.state-sample .state-band{display:block;padding:6px 10px;font-size:12px;font-weight:600}.state-meaning{display:block;padding:5px 10px;font-size:11px;color:var(--muted)}
+.inspector-heading{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}.inspector-heading h2{margin:0}.inspector-heading select{width:auto;max-width:100%;min-width:160px;padding:6px 10px}
+.pending-card{flex:0 0 250px;display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px;border-style:dashed}.pending-card strong,.pending-card small{font-size:12px}.pending-card span{font-size:12px;line-height:1.5}.pending-card small{color:var(--muted)}
+#protectionList table{border-collapse:collapse;width:100%;font-size:12px}#protectionList td,#protectionList th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}#protectionList td:first-child{overflow-wrap:anywhere}#protectionList a{color:var(--accent)}
+</style>
+<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button></div></div><p class="header-note">保存したJSONをAIへ渡して反映を依頼します。画面の変更だけでは正本は変わりません。</p></header>
+<div id="status" class="status" role="status" hidden></div>
+<div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
+<dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
+<dialog id="relationDialog"><h2>依存のつなぎ替え</h2><div id="relationEditor"></div></dialog>
+<div id="graphTip" class="graph-tooltip" role="tooltip" hidden></div>
+<script id="seed" type="application/json">{}</script>
+<script id="documents" type="application/json">{}</script>
+<script id="pendingSeed" type="application/json">{}</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x));
+const STATES=['ACTIVE','WAITING_USER','WAITING_EXTERNAL','FROZEN','USER_ONLY','PROPOSED','DONE','EXCLUDED','ARCHIVED'];
+let doc=JSON.parse($('seed').textContent),selected=doc.tasks[0]?.id,dirty=false,formDirty=false;
+function initializeRelationBaseline(d){if(d.milestoneRelations&&!d.baseline.milestoneRelations)d.baseline.milestoneRelations=copy(d.milestoneRelations);}
+initializeRelationBaseline(doc);
+function check(d){
+ if(d.schemaVersion!==1||!d.source||typeof d.source.sha256!=='string'||!Array.isArray(d.tasks)||!Array.isArray(d.edges)||!d.baseline)throw Error('Registry Studio形式のJSONではありません。');
+ function model(tasks,edges){
+ if(!Array.isArray(tasks)||!Array.isArray(edges))throw Error('task/edge一覧がありません');
+ const ids=new Set();for(const t of tasks){if(!t.id||ids.has(t.id))throw Error('IDの欠落・重複');ids.add(t.id);for(const f of ['id','state','owner','item','condition','detail','raw'])if(typeof t[f]!=='string')throw Error('taskの欄が不正: '+f);}
+ const seen=new Set(),adj=new Map(tasks.map(t=>[t.id,[]]));for(const e of edges){if(!ids.has(e.prerequisite)||!ids.has(e.successor)||e.prerequisite===e.successor)throw Error('依存の参照先が不正');if(!['SEQUENCE','PARALLEL_JOIN'].includes(e.flow)||typeof e.constraint!=='string')throw Error('Flowまたは条件が不正');let k=e.prerequisite+'>'+e.successor;if(seen.has(k))throw Error('依存の重複');seen.add(k);adj.get(e.prerequisite).push(e.successor);}
+ const done=new Set(),stack=new Set();function walk(x){if(stack.has(x))throw Error('循環する依存は追加できません');if(done.has(x))return;stack.add(x);for(const y of adj.get(x))walk(y);stack.delete(x);done.add(x);}tasks.forEach(t=>walk(t.id));
+ }model(d.tasks,d.edges);model(d.baseline.tasks,d.baseline.edges);
+ if(d.milestones!==undefined||d.milestoneRelations!==undefined){
+ if(!Array.isArray(d.milestones)||!Array.isArray(d.milestoneRelations))throw Error('マイルストーン形式が不正');
+ if(d.milestoneRelations.some(e=>'relation' in e)||(d.baseline.milestoneRelations||[]).some(e=>'relation' in e))throw Error('旧形式（線の種類あり）のJSONは読み込めません。2026-10-17に線の種類を廃止し、条件は正本の制約文へ移しました。sync.pyで作り直した現行データを使ってください。');
+ for(const e of d.milestoneRelations)if(!e.source||typeof e.source.path!=='string'||typeof e.source.quote!=='string'||typeof e.constraint!=='string')throw Error('到達点への接続の出典・条件が不正');
+ model(d.tasks.concat(d.milestones),d.edges.concat(d.milestoneRelations.map(e=>({...e,flow:'PARALLEL_JOIN'}))));
+ }
+
+ if(d.tasks.length!==d.baseline.tasks.length||d.tasks.some(t=>!d.baseline.tasks.some(b=>b.id===t.id)))throw Error('この試作ではtask追加・削除は扱いません。');
+}
+function stateStyle(state){
+ const colors={ACTIVE:['#b9dfc8','#17523d'],WAITING_USER:['#dfc5ed','#63427c'],WAITING_EXTERNAL:['#dceafa','#244e7b'],FROZEN:['#f3f4f5','#68717d'],USER_ONLY:['#f5e0ef','#7b3e6a'],PROPOSED:['#e6f2e9','#42654d'],DONE:['#e9e6e2','#625a50'],EXCLUDED:['#e9e6e2','#625a50'],ARCHIVED:['#ffffff','#565656']};
+ const [bg,fg]=colors[state]||['#ece9dc','#5f5940'];return {bg,fg};
+}
+function stateBand(state){const b=el('span',state,'state-band');const c=stateStyle(state);b.style.background=c.bg;b.style.color=c.fg;return b;}
+function el(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
+function report(msg,error=false){$('status').hidden=!msg;$('status').textContent=msg;$('status').classList.toggle('error',error);}
+function delta(){let result=[];for(const t of doc.tasks){let b=doc.baseline.tasks.find(x=>x.id===t.id);for(const k of ['state','owner','item','condition'])if(t[k]!==b[k])result.push({task:t.id,field:k,old:b[k],new:t[k]});}if(JSON.stringify(doc.edges)!==JSON.stringify(doc.baseline.edges))result.push({field:'edges',old:doc.baseline.edges,new:doc.edges});if(JSON.stringify(doc.milestoneRelations||[])!==JSON.stringify(doc.baseline.milestoneRelations||doc.milestoneRelations||[]))result.push({field:'milestoneRelations',old:doc.baseline.milestoneRelations,new:doc.milestoneRelations});return result;}
+function banner(){$('sourceInfo').textContent='生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')+' · '+delta().length+'件の変更'+(dirty?' ／ ファイル未保存':'')+(formDirty?' ／ 入力を編集中：下の「変更を適用」で確定':'');}
+function options(select,values,value){for(const v of values){const o=el('option',v);o.value=v;select.append(o);}select.value=value;}
+function renderStateLegend(){
+ const meanings={ACTIVE:'有効（常設を含む）',PROPOSED:'提案中',WAITING_EXTERNAL:'外部待ち',WAITING_USER:'ユーザー待ち',USER_ONLY:'ユーザー専任',DONE:'完了',EXCLUDED:'対象外',FROZEN:'凍結',ARCHIVED:'履歴化'};
+ const samples=Object.entries(meanings).map(([state,meaning])=>{const item=el('div',undefined,'state-sample');item.append(stateBand(state),el('span',meaning,'state-meaning'));return item;});
+ $('stateLegend').replaceChildren(...samples);
+}
+function protectionRecords(data){
+ const records=[];
+ for(const task of data.tasks){
+  const marks=[...task.detail.matchAll(/`([^`]+)`（配置維持; /g)];
+  for(let i=0;i<marks.length;i++){
+   const m=marks[i],tail=task.detail.slice(m.index+m[0].length,marks[i+1]?.index??task.detail.length),end=tail.lastIndexOf('）');
+   if(end<0)continue;
+   const body=tail.slice(0,end),reasonAt=body.indexOf('理由='),fields={};
+   const metadata=reasonAt<0?body:body.slice(0,reasonAt);
+   for(const part of metadata.split('; ')){const eq=part.indexOf('=');if(eq>0)fields[part.slice(0,eq)]=part.slice(eq+1);}
+   if(reasonAt>=0)fields['理由']=body.slice(reasonAt+3);
+   records.push({path:m[1],task:task.id,...fields});
+  }
+ }
+ return records;
+}
+function protectionDays(start,today){
+ if(start==='不明'||start==null||start==='')return '不明';
+ const valid=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&Number.isFinite(Date.parse(s+'T00:00:00Z'))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
+ if(!valid(start)||!valid(today))return '日付要確認';
+ const days=(Date.parse(today+'T00:00:00Z')-Date.parse(start+'T00:00:00Z'))/86400000;
+ return days<0?'日付要確認':(days+1)+'日目';
+}
+function renderProtection(){
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),get=t=>parts.find(p=>p.type===t).value,today=get('year')+'-'+get('month')+'-'+get('day');
+ const table=el('table'),head=el('tr');for(const title of ['文書','タスク','区分','付与日','経過','記録日','記録者','理由'])head.append(el('th',title));table.append(head);
+ const records=protectionRecords(doc);
+ for(const r of records){const row=el('tr'),cell=el('td'),link=el('a',r.path);link.href='#document';link.onclick=e=>{e.preventDefault();openDocument(r.path);};cell.append(link);row.append(cell);for(const value of [r.task,r['区分'],r['付与日'],protectionDays(r['付与日'],today),r['記録日'],r['記録者'],r['理由']])row.append(el('td',value||'未記録'));table.append(row);}
+ $('protectionList').replaceChildren(records.length?table:el('p','配置維持の指定はありません。'));
+}
+function renderPending(){
+ const data=JSON.parse($('pendingSeed').textContent),box=$('pendingList');box.replaceChildren();$('pendingCount').textContent=data.entries.length+'件';$('pendingStamp').textContent=(data.sources||[{path:data.source}]).map(s=>(s.owner?s.owner+'：':'')+s.path).join(' · ')+' · 取得 '+data.generatedAt;
+ for(const entry of data.entries){const card=el('button',undefined,'pending-card');const source=entry.source||data.source;card.append(el('strong',entry.id),el('span',entry.title.replaceAll('`','')),el('small',entry.state+(entry.owner?' · '+entry.owner:'')));card.onclick=()=>{const dialog=$('documentDialog');$('documentTitle').textContent=entry.id+' · 採番待ち';$('documentStamp').textContent=source+' · 取得 '+data.generatedAt;if(entry.html){openDocument(source,{html:entry.html});$('documentTitle').textContent=entry.id+' · 採番待ち';$('documentStamp').textContent=source+' · 取得 '+data.generatedAt;}else{$('documentBody').replaceChildren(el('pre',entry.raw));if(!dialog.open)dialog.showModal();}};box.append(card);}
+ if(!data.entries.length)box.append(el('p','採番待ちはありません。','muted'));
+}
+function renderRequests(){
+ // Open requests from the request sheets, joined with the Registry state (2026-10-17).
+ const data=JSON.parse($('pendingSeed').textContent),list=data.requests||[],box=$('requestList');box.replaceChildren();$('requestCount').textContent=list.length+'件';
+ // One row per request sheet (姫 / Fable); rows and the whole section are hidden when empty.
+ $('requestSection').hidden=!list.length;const rows=new Map();
+ for(const r of list){if(!rows.has(r.owner)){const strip=el('div',undefined,'independent-strip');box.append(el('h3',r.owner+'宛'),strip);rows.set(r.owner,strip);}const row=rows.get(r.owner);const card=el('button',undefined,'pending-card');card.append(el('strong',r.id),el('span',r.title.replaceAll('`','')),el('small',r.state+' · '+r.owner+(r.assignee?' · '+r.assignee:'')),stateBand(r.state));card.onclick=()=>{const dialog=$('documentDialog');$('documentTitle').textContent=r.id+' · 依頼';$('documentStamp').textContent=r.sheet+' · 取得 '+data.generatedAt;$('documentBody').replaceChildren(el('pre',r.raw));if(!dialog.open)dialog.showModal();};
+  // Same "正本" link as task cards, so the canonical document opens without another search.
+  const task=doc.tasks.find(t=>t.id===r.id);if(task){const shell=cardWithDocuments(card,task);shell.classList.add('request-shell');row.append(shell);}else row.append(card);}
+}
+function render(){renderProtection();renderPending();renderRequests();renderStateLegend();graph();independent();permanentMap();editor();banner();if(!$('diffPanel').hidden)showDiff();}
+function select(id){if(formDirty&&!confirm('編集中の入力を破棄して移動しますか？'))return;formDirty=false;selected=id;render();}
+function taskDocumentPaths(t){return [...new Set([...t.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))];}
+function cardWithDocuments(card,t){const shell=el('div',undefined,'task-shell');shell.append(card);if(taskDocumentPaths(t).length){const a=el('a','正本','card-document');a.href='#document';a.setAttribute('aria-label',t.id+' の正本を読む');a.onclick=e=>{e.preventDefault();e.stopPropagation();openTaskDocuments(t);};shell.append(a);}return shell;}
+function openTaskDocuments(t){const paths=taskDocumentPaths(t);if(paths.length===1){openDocument(paths[0]);return;}const dialog=$('documentDialog');$('documentTitle').textContent=t.id+' の正本';$('documentStamp').textContent='読む文書を選択してください';$('documentBody').replaceChildren(documentLinks(t.detail));if(!dialog.open)dialog.showModal();}
+
+function svg(tag,attrs,text){let n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;return n;}
+function graphData(){
+ // END-xyz is not drawn: lines into an END are drawn into the release gate it leads to (2026-10-17).
+ // START-xyz is not drawn either when a release gate precedes it: the gate stands for both the END before it and the START after it,
+ // and lines out of the START are drawn out of that gate (2026-10-18, OPS-069 step 3). Data keeps START/END; shownFor/shownFrom are display-only.
+ const ms=doc.milestones||[],ends=new Map(),starts=new Map();
+ for(const e of doc.milestoneRelations||[]){if(e.prerequisite.startsWith('END-')&&e.successor.startsWith('GATE-'))ends.set(e.prerequisite,e.successor);if(e.prerequisite.startsWith('GATE-')&&e.successor.startsWith('START-'))starts.set(e.successor,e.prerequisite);}
+ const hidden=new Set(ms.filter(m=>m.id.startsWith('END-')||(m.id.startsWith('START-')&&starts.has(m.id))).map(m=>m.id));
+ const asMilestone=!ms.some(m=>m.id==='MS-QUALITY');  // older data drew QUALITY-001 as the 1.0 milestone; MS-QUALITY now plays that part
+ const nodes=doc.tasks.map(t=>asMilestone&&t.id==='QUALITY-001'?{...t,kind:'milestone',item:'1.0 品質判断'}:t).concat(ms.filter(m=>!hidden.has(m.id)));
+ const rel=[];for(const e of doc.milestoneRelations||[]){const out={...e};
+  if(hidden.has(e.prerequisite)){const from=starts.get(e.prerequisite);if(!from)continue;out.prerequisite=from;out.shownFrom=e.prerequisite;}
+  if(hidden.has(e.successor)){const to=ends.get(e.successor);if(!to)continue;out.successor=to;out.shownFor=e.successor;}
+  rel.push(out);}
+ const edges=doc.edges.concat(rel.map(e=>({...e,flow:'PARALLEL_JOIN'})));  // one kind of line: the relation is the location, conditions live in the constraint text
+ return {nodes,edges};
+}
+function versionFolders(){
+ const seen=[];for(const m of doc.milestones||[]){const f=(m.gate||'').split('/')[2];if(f&&!seen.includes(f))seen.push(f);}return seen;
+}
+function versionView(data,v){
+ // One version folder (or '@head': HEAD and every later folder): its gates and release gate, plus every
+ // task upstream of them. Earlier versions are not shown; only the release gate knows where a version goes.
+ if(!v)return data;
+ const folders=versionFolders(),from=folders.indexOf(doc.milestoneHead);
+ const wanted=new Set(v==='@head'?(from<0?folders:folders.slice(from)):[v]);
+ const keep=new Set(data.nodes.filter(n=>n.kind==='milestone'&&wanted.has((n.gate||'').split('/')[2])).map(n=>n.id));
+ const ms=new Set(data.nodes.filter(n=>n.kind==='milestone'&&n.gate).map(n=>n.id));
+ for(let grew=true;grew;){grew=false;for(const e of data.edges)if(keep.has(e.successor)&&!keep.has(e.prerequisite)&&!ms.has(e.prerequisite)){keep.add(e.prerequisite);grew=true;}}
+ // Start-side work (OPS-069): tasks downstream of a wanted START, and their downstream task chains, stay in the view.
+ // The START itself is drawn as the release gate before it (which sits in the previous folder), so that gate is kept too — after the
+ // upstream closure above, so the previous version's tasks are not pulled in with it.
+ const starts=new Set((doc.milestones||[]).filter(m=>m.id.startsWith('START-')&&wanted.has((m.gate||'').split('/')[2])).map(m=>m.id));
+ for(const e of data.edges)if(starts.has(e.shownFrom)&&data.nodes.some(n=>n.id===e.prerequisite))keep.add(e.prerequisite);
+ for(let grew=true;grew;){grew=false;for(const e of data.edges)if(keep.has(e.prerequisite)&&!keep.has(e.successor)&&!ms.has(e.successor)&&(starts.has(e.shownFrom)||e.prerequisite.startsWith('START-')||!ms.has(e.prerequisite))){keep.add(e.successor);grew=true;}}
+ return {nodes:data.nodes.filter(n=>keep.has(n.id)),edges:data.edges.filter(e=>keep.has(e.prerequisite)&&keep.has(e.successor))};
+}
+function graphLayout(tasks,edges){
+ const W=250,H=96,gutter=45,step=W+gutter,row=H+20,drop=H+40,golden=W*(3-Math.sqrt(5))/2;
+ // Derive the backbone from milestone-only edges; stable input order breaks ties.
+ const milestone=new Set(tasks.filter(t=>t.kind==='milestone').map(t=>t.id));
+ const paths=new Map();
+ function longest(id){if(paths.has(id))return paths.get(id);let best=[];for(const e of edges.filter(e=>e.prerequisite===id&&milestone.has(e.successor))){const p=longest(e.successor);if(p.length>best.length)best=p;}const result=[id,...best];paths.set(id,result);return result;}
+ let backbone=[];for(const id of milestone){const p=longest(id);if(p.length>backbone.length)backbone=p;}
+ // Classify non-backbone weak components by their backbone entrances/exits.
+ const nonBackbone=new Set(tasks.map(t=>t.id).filter(id=>!backbone.includes(id))),horizontal=new Set(),branches=[];
+ while(nonBackbone.size){const component=new Set(),queue=[nonBackbone.values().next().value];while(queue.length){const id=queue.pop();if(!nonBackbone.delete(id))continue;component.add(id);for(const e of edges){if(e.prerequisite===id&&nonBackbone.has(e.successor))queue.push(e.successor);if(e.successor===id&&nonBackbone.has(e.prerequisite))queue.push(e.prerequisite);}}
+ const starts=edges.filter(e=>backbone.includes(e.prerequisite)&&component.has(e.successor)).map(e=>backbone.indexOf(e.prerequisite));
+ const ends=edges.filter(e=>component.has(e.prerequisite)&&backbone.includes(e.successor)).map(e=>backbone.indexOf(e.successor));
+ const kind=starts.length?(ends.length?'route':'escape'):(ends.length?'feeder':'isolated');
+ const forward=starts.length&&ends.length&&Math.max(...starts)<Math.min(...ends);
+ if(kind==='route'&&forward)for(const id of component)horizontal.add(id);
+ branches.push({ids:[...component],kind,forward:Boolean(forward)});
+ }
+ const outgoing=new Map(tasks.map(t=>[t.id,edges.filter(e=>e.prerequisite===t.id).map(e=>e.successor)]));
+ const groups=backbone.map(anchor=>({anchor,below:[],route:[],escape:[]}));
+ const groupById=new Map(groups.map(g=>[g.anchor,g]));
+ const leadGroup={below:[],route:[],escape:[]};
+ // Distance to the first backbone destination determines the column before it.
+ function destinations(id,seen=new Set()){
+  if(backbone.includes(id))return [{index:backbone.indexOf(id),distance:0}];
+  if(seen.has(id))return [];const next=new Set(seen);next.add(id);
+  return (outgoing.get(id)||[]).flatMap(to=>destinations(to,next).map(d=>({...d,distance:d.distance+((edges.find(e=>e.prerequisite===id&&e.successor===to)?.flow==='SEQUENCE'&&!milestone.has(to))?0:1)})));
+ }
+ const ranking=new Map();
+ for(const t of tasks){
+  if(groupById.has(t.id))continue;
+  const targets=destinations(t.id).sort((a,b)=>a.index-b.index||b.distance-a.distance);
+  if(targets.length){
+   const target=targets[0],index=target.index-(horizontal.has(t.id)?1:target.distance),g=index<0?leadGroup:groups[index];
+   if(!g)continue;ranking.set(t.id,target.distance);
+   if(milestone.has(t.id)&&!g.header)g.header=t.id;
+   else (horizontal.has(t.id)?g.route:g.below).push(t.id);
+  }else{
+   // A branch without a later join can use an upper escape lane. This has no
+   // task-status meaning; it avoids routing through the lower joining branches.
+   const source=edges.find(e=>e.successor===t.id&&groupById.has(e.prerequisite));
+   if(source)groupById.get(source.prerequisite).escape.push(t.id);
+  }
+ }
+ function reaches(a,b,seen=new Set()){if(a===b)return true;if(seen.has(a))return false;seen.add(a);return (outgoing.get(a)||[]).some(n=>reaches(n,b,seen));}
+ function chainOrder(ids){
+ const remaining=new Set(ids),ordered=[];
+ function visit(id){if(!remaining.has(id))return;if(ids.some(p=>remaining.has(p)&&p!==id&&reaches(p,id)))return;remaining.delete(id);ordered.push(id);for(const next of outgoing.get(id)||[])if(ids.includes(next))visit(next);}
+ while(remaining.size){const before=remaining.size;[...remaining].sort((a,b)=>Number((outgoing.get(b)||[]).some(n=>remaining.has(n)))-Number((outgoing.get(a)||[]).some(n=>remaining.has(n)))).forEach(visit);if(before===remaining.size)break;}
+ return ordered;
+ }
+ for(const g of [leadGroup,...groups]){g.below=chainOrder(g.below);g.route=chainOrder(g.route);}
+
+ const used=new Set(edges.flatMap(e=>[e.prerequisite,e.successor])),pos=new Map();
+ const nodes=tasks.filter(t=>used.has(t.id));
+ let x=20;
+ // A feeder into the first milestone needs space before the backbone.
+ // Keep its chain vertical in a leading column rather than clamping it onto column zero.
+ const leading=[leadGroup.header,...leadGroup.below,...leadGroup.route].filter(id=>used.has(id));
+ if(leading.length){leading.forEach((id,i)=>pos.set(id,[x,185+drop+i*row]));x+=step;}
+ for(const group of groups){
+  if(!used.has(group.anchor))continue;
+  const y=185,below=(group.below||[]).filter(id=>used.has(id)),above=(group.escape||[]).filter(id=>used.has(id)),route=(group.route||[]).filter(id=>used.has(id));
+  pos.set(group.anchor,[x,y]);
+  const header=used.has(group.header);if(header)pos.set(group.header,[x,y+row]);
+  below.forEach((id,i)=>pos.set(id,[x+golden,y+(header?row:0)+drop+i*row]));
+  above.forEach((id,i)=>pos.set(id,[x+step,y-130-i*row]));
+  route.forEach((id,i)=>pos.set(id,[x+step*(i+1),y+drop]));
+  // Routes reserve their columns. Upper branches share the next milestone's span.
+  x+=route.length?step*(route.length+1):above.length?step+golden:step*1.5;
+ }
+ // A terminal milestone branch may also have its own prerequisite tasks.
+ // Lay out that whole branch below the backbone instead of leaving its feeders unplaced.
+ for(const branch of branches.filter(b=>b.kind==='escape'&&b.ids.some(id=>used.has(id)&&!pos.has(id)))){
+  const ids=new Set(branch.ids.filter(id=>used.has(id))),depth=new Map([...ids].map(id=>[id,0]));
+  for(let i=0;i<ids.size;i++)for(const e of edges)if(ids.has(e.prerequisite)&&ids.has(e.successor))depth.set(e.successor,Math.max(depth.get(e.successor),depth.get(e.prerequisite)+1));
+  const entrances=edges.filter(e=>!ids.has(e.prerequisite)&&ids.has(e.successor));
+  const start=Math.max(20,...entrances.map(e=>(pos.get(e.prerequisite)?.[0]||20)+step));
+  for(const id of ids)pos.delete(id);
+  const span=Math.max(...[...ids].map(id=>depth.get(id))),left=start,right=start+span*step+W;
+  const top=Math.max(185,...[...pos.entries()].filter(([,p])=>p[0]<right&&p[0]+W>left).map(([,p])=>p[1]))+drop,counts=new Map();
+  for(const id of chainOrder([...ids])){const col=depth.get(id),n=counts.get(col)||0;pos.set(id,[start+col*step,top+n*row]);counts.set(col,n+1);}
+ }
+ // Disconnected task chains occupy a separate row below the milestone map.
+ const detached=nodes.filter(t=>!pos.has(t.id)),detachedIds=new Set(detached.map(t=>t.id));
+ if(pos.size&&detached.length&&!edges.some(e=>detachedIds.has(e.prerequisite)!==detachedIds.has(e.successor))){
+  const depth=new Map(detached.map(t=>[t.id,0]));
+  for(let i=0;i<detached.length;i++)for(const e of edges)if(detachedIds.has(e.successor))depth.set(e.successor,Math.max(depth.get(e.successor),depth.get(e.prerequisite)+1));
+  const top=Math.max(...[...pos.values()].map(p=>p[1]))+drop,counts=new Map();
+  for(const t of detached){const col=depth.get(t.id),n=counts.get(col)||0;pos.set(t.id,[20+col*step,top+n*row]);counts.set(col,n+1);}
+ }
+ // Unknown/new groups get a dependency-ranked layout; fall back as a whole if
+ // rewiring would make the presentation groups misleading or overlap cards.
+ function valid(){
+  if(pos.size!==nodes.length)return false;
+  for(const e of edges){const a=pos.get(e.prerequisite),b=pos.get(e.successor);if(!(a[0]<b[0]||(a[0]===b[0]&&a[1]<b[1])))return false;}
+  const rects=[...pos.values()];for(let i=0;i<rects.length;i++)for(let j=0;j<i;j++)if(Math.abs(rects[i][0]-rects[j][0])<W&&Math.abs(rects[i][1]-rects[j][1])<H)return false;
+  return true;
+ }
+ let fallback=!valid();
+ if(fallback){
+  pos.clear();const depth=new Map(nodes.map(t=>[t.id,0]));
+  for(let i=0;i<nodes.length;i++)for(const e of edges)depth.set(e.prerequisite,Math.max(depth.get(e.prerequisite),depth.get(e.successor)+1));
+  const max=Math.max(0,...depth.values()),counts=new Map();
+  for(const t of nodes){const col=max-depth.get(t.id),n=counts.get(col)||0;pos.set(t.id,[20+col*step,185+n*row]);counts.set(col,n+1);}
+ }
+ return {pos,fallback,backbone,branches,offset:0,hasIsolated:false,hasEdges:edges.length>0,width:Math.max(900,...[...pos.values()].map(p=>p[0]+step)),height:Math.max(180,...[...pos.values()].map(p=>p[1]+H+34))};
+}
+function independentGroups(data){
+ // Grouped by state color in the STATES order, Registry order within a color (2026-10-17).
+ const ORDER=typeof STATES!=='undefined'?STATES:['ACTIVE','WAITING_USER','WAITING_EXTERNAL','FROZEN','USER_ONLY','PROPOSED','DONE','EXCLUDED','ARCHIVED'];
+ const stateRank=s=>{const r=ORDER.indexOf(s);return r<0?ORDER.length:r;};
+ // General tasks without a route to a milestone remain discoverable even when they depend on another task.
+ const links=data.edges.concat(data.milestoneRelations||[]);
+ const attached=new Set((data.milestones||[]).map(m=>m.id)),msIds=new Set(attached),startSide=new Set();
+ for(let grew=true;grew;){grew=false;for(const e of links)if(attached.has(e.successor)&&!attached.has(e.prerequisite)){attached.add(e.prerequisite);grew=true;}}
+ // Start-side work (OPS-069): tasks downstream of a version START, and their downstream task chains, belong to that version.
+ for(let grew=true;grew;){grew=false;for(const e of links)if(!msIds.has(e.successor)&&!attached.has(e.successor)&&(e.prerequisite.startsWith('START-')||startSide.has(e.prerequisite))){attached.add(e.successor);startSide.add(e.successor);grew=true;}}
+ const permanentIds=new Set(data.tasks.filter(t=>t.permanent).map(t=>t.id));
+ // Sub-tasks at any depth under a permanent task are drawn in the permanent map (2026-10-17, OPS-070 children).
+ const byId=new Map(data.tasks.map(t=>[t.id,t]));
+ const underPermanent=t=>{const seen=new Set();for(let p=t.parentTask;p&&!seen.has(p);p=byId.get(p)?.parentTask){if(permanentIds.has(p))return true;seen.add(p);}return false;};
+ const regular=data.tasks.filter(t=>!t.permanent&&!attached.has(t.id)&&!underPermanent(t));
+ const used=new Set(links.flatMap(e=>[e.successor,e.prerequisite]));
+ return {regular:regular.sort((a,b)=>stateRank(a.state)-stateRank(b.state)),permanent:data.tasks.filter(t=>t.permanent&&!used.has(t.id))};
+}
+function independent(){
+ const groups=independentGroups(doc);
+ function fill(id,countId,tasks){
+ $(countId).textContent=tasks.length+'件';const strip=$(id),scroll=strip.scrollLeft;strip.replaceChildren();
+ for(const t of tasks){const b=el('button',undefined,'task'+(selected===t.id?' selected':''));b.setAttribute('aria-pressed',String(selected===t.id));b.append(el('strong',t.id+(t.permanent?' · 常設':'')),el('span',t.item.replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,'')),stateBand(t.state));b.title=t.item+'\n担当：'+t.owner+'\n状態：'+t.state+'\n条件：'+t.condition;b.onclick=()=>select(t.id);strip.append(cardWithDocuments(b,t));}strip.scrollLeft=scroll;
+ if(!tasks.length)strip.append(el('p','該当するタスクはありません。','muted'));
+ }
+ fill('independent','independentCount',groups.regular);
+}
+function permanentMapData(data){
+ const kids=id=>data.tasks.filter(t=>t.parentTask===id).sort((a,b)=>Number(a.state==='DONE')-Number(b.state==='DONE')).map(child=>({...child,documents:taskDocumentPaths(child)}));
+ // descendants: depth-first, each sub-task followed by its own sub-tasks (depth 0 = direct child).
+ const walk=(id,depth,seen)=>kids(id).flatMap(c=>seen.has(c.id)?[]:[{...c,depth},...walk(c.id,depth+1,new Set([...seen,c.id]))]);
+ return data.tasks.filter(t=>t.permanent).map(task=>({task,children:kids(task.id),descendants:walk(task.id,0,new Set([task.id])),documents:taskDocumentPaths(task)}));}  // sub-tasks keep their own canonical documents (2026-10-17, OPS-064)
+function permanentMap(){
+ const groups=permanentMapData(doc),W=250,step=295,top=20,docTop=160,docStep=78;
+ const height=Math.max(230,...groups.map(g=>docTop+g.descendants.length*116+g.documents.length*docStep+20));
+ const s=svg('svg',{width:Math.max(900,groups.length*step+20),height,role:'group','aria-label':'恒久タスクと正本の参照関係'});
+ const measure=document.createElement('canvas').getContext('2d');measure.font='12px -apple-system, sans-serif';
+ function label(parent,text,x,y,maxLines=2){let lines=[''];for(const ch of text){let i=lines.length-1;if(measure.measureText(lines[i]+ch).width>W-24)lines.push(ch);else lines[i]+=ch;}if(lines.length>maxLines){lines=lines.slice(0,maxLines);while(measure.measureText(lines[maxLines-1]+'…').width>W-24)lines[maxLines-1]=lines[maxLines-1].slice(0,-1);lines[maxLines-1]+='…';}lines.forEach((line,i)=>parent.append(svg('text',{x,y:y+i*17,fill:'#243234'},line)));}
+ function action(group,title,fn){group.setAttribute('tabindex',0);group.setAttribute('role','button');group.setAttribute('aria-label',title);group.style.cursor='pointer';group.append(svg('title',{},title));group.onclick=fn;group.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}};}
+ groups.forEach(({task:t,descendants:children,documents},i)=>{
+ const childTop=160,docTop=160+children.length*116;
+ const x=20+i*step,center=x+W/2,c=stateStyle(t.state);
+ if(documents.length)s.append(svg('path',{d:`M${center},${top+96} V${top+120} H${x-8} V${docTop+(documents.length-1)*docStep+29}`,stroke:'#b4c6be','stroke-width':2,fill:'none'}));
+ const card=svg('g',{});card.append(svg('rect',{x,y:top,width:W,height:96,rx:8,fill:selected===t.id?'#edf6ef':'white',stroke:selected===t.id?'#126c58':'#b8ccc0','stroke-width':selected===t.id?3:1}));label(card,t.id+' · '+t.owner,x+12,top+18,1);label(card,t.item.replace(/^\[[^\]]+\]\s*/,''),x+12,top+40);card.append(svg('rect',{x:x+1,y:top+72,width:W-2,height:23,fill:c.bg}),svg('text',{x:x+12,y:top+88,fill:c.fg},t.state));action(card,t.id+' '+t.item,()=>select(t.id));s.append(card);
+ children.forEach((child,j)=>{const ind=child.depth*18,cx=x+ind,cw=W-ind,y=childTop+j*116,g=svg('g',{}),c=stateStyle(child.state);
+  // Nested sub-tasks hang from their parent's row instead of the permanent task's spine.
+  const pj=children.findIndex(p=>p.id===child.parentTask),from=child.depth&&pj>=0?`M${x+(child.depth-1)*18+10},${childTop+pj*116+96} V${y+48} H${cx}`:`M${center},${top+96} V${top+120} H${x-8} V${y+48} H${x}`;
+  s.append(svg('path',{d:from,stroke:'#8ba7bd',fill:'none'}));g.append(svg('rect',{x:cx,y,width:cw,height:96,rx:8,fill:selected===child.id?'#edf6ef':'white',stroke:'#8ba7bd'}));label(g,child.id+' · '+(child.depth?child.parentTask+' のサブタスク':'サブタスク'),cx+12,y+18,1);label(g,child.item.replace(/^\[[^\]]+\]\s*/,''),cx+12,y+40);g.append(svg('rect',{x:cx+1,y:y+72,width:cw-2,height:23,fill:c.bg}),svg('text',{x:cx+12,y:y+88,fill:c.fg},child.state));action(g,child.id+' '+child.item+'\n'+child.condition,()=>select(child.id));s.append(g);
+  if(child.documents.length){const b=svg('g',{});b.append(svg('rect',{x:x+W-62,y:y+6,width:54,height:20,rx:5,fill:'#f3f6ef',stroke:'#cbd8c9'}),svg('text',{x:x+W-54,y:y+20,fill:'#126c58','font-size':12},'正本 '+child.documents.length));action(b,child.id+' の正本を読む（'+child.documents.join('、')+'）',()=>openTaskDocuments(child));s.append(b);}});
+ documents.forEach((path,j)=>{const y=docTop+j*docStep,g=svg('g',{});s.append(svg('path',{d:`M${x-8},${y+29} H${x}`,stroke:'#b4c6be',fill:'none'}));g.append(svg('rect',{x,y,width:W,height:58,rx:7,fill:'#f3f6ef',stroke:'#cbd8c9'}));label(g,path.split('/').pop(),x+12,y+20,2);action(g,path+' を読む',()=>openDocument(path));s.append(g);});
+ if(!documents.length)s.append(svg('text',{x:x+12,y:docTop+20,fill:'#657477'},'正本への参照なし'));
+ });
+ $('permanentMap').replaceChildren(s);$('permanentMapCount').textContent=groups.length+'件';
+}
+
+function removeRelation(e){
+ if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}
+ e=dataRelation(e);
+ if(isChainLink(e)){report(CHAIN_NOTE,true);return;}
+ if(!confirm(e.prerequisite+' → '+e.successor+'\n'+linkLabel(e)+'：'+e.constraint+'\n\nこの関係を除去しますか？ 保存するJSONの変更に含まれます。'))return;
+ const key=isMilestoneLink(e)?'milestoneRelations':'edges',before=doc[key].length;
+ doc[key]=doc[key].filter(x=>!(x.prerequisite===e.prerequisite&&x.successor===e.successor));
+ if(doc[key].length!==before)dirty=true;render();
+}
+// Lines drawn into a release gate may stand for a line into its END (END is not drawn, 2026-10-17).
+// Editing works on the data relation; the gate chain itself comes from Milestones/ placement.
+const CHAIN_NOTE='ゲートの列は Milestones/ のフォルダとファイルの配置から作られます。ここでは変えられません。ファイルを動かして sync.py を実行してください。';
+function isMilestoneLink(e,data){const ms=new Set(((data||doc).milestones||[]).map(m=>m.id));return ms.has(e.successor)||ms.has(e.prerequisite);}
+function linkLabel(e){return isMilestoneLink(e)?'到達点への接続':e.flow;}
+function dataRelation(e){if(!e.shownFor&&!e.shownFrom)return e;const {shownFor,shownFrom,...rest}=e;if(shownFor)rest.successor=shownFor;if(shownFrom)rest.prerequisite=shownFrom;return rest;}
+function isChainLink(e){const ms=new Set((doc.milestones||[]).map(m=>m.id));return ms.has(e.prerequisite)&&ms.has(e.successor);}
+function gateEntry(id){for(const r of doc.milestoneRelations||[])if(r.successor===id&&r.prerequisite.startsWith('END-'))return r.prerequisite;return id;}
+function rewireRelation(data,e,prerequisite,successor){
+ const link=isMilestoneLink(e,data),key=link?'milestoneRelations':'edges',candidate=copy(data);
+ const i=candidate[key].findIndex(x=>x.prerequisite===e.prerequisite&&x.successor===e.successor);
+ if(i<0)throw Error('元の関係が見つかりません。選び直してください。');
+ if(link&&successor.startsWith('GATE-')&&!prerequisite.startsWith('END-'))throw Error('版ゲートへはタスクをつなげません。その版のEND-x.y.zを選んでください。');
+ if(link&&successor.startsWith('START-')&&!prerequisite.startsWith('GATE-'))throw Error('版のSTARTへはタスクをつなげません。STARTは出発点なので、STARTを前提（出発点）側に置いてください。');
+ if(link&&prerequisite.startsWith('START-')&&(data.milestones||[]).some(m=>m.id===successor)&&!isChainLink(e))throw Error('STARTから出る線はタスクへだけです。到達点どうしの列は配置から作られます。');
+ candidate[key][i]={...candidate[key][i],prerequisite,successor};
+ if(prerequisite!==e.prerequisite||successor!==e.successor)candidate[key][i].conditionReview='相談待ち';
+ check(candidate);return candidate;
+}
+function addMilestoneRelation(data,taskId,targetId){
+ // Connect a task to an END or an intermediate card (2026-10-17, OPS-061/062). Release gates are entered only from END, so GATE-* is refused. Lines have no kind; conditions are text.
+ if(!data.tasks.some(t=>t.id===taskId))throw Error('タスクが見つかりません: '+taskId);
+ const ms=new Map((data.milestones||[]).map(m=>[m.id,m]));if(!ms.has(targetId))throw Error('到達点が見つかりません: '+targetId);
+ if(targetId.startsWith('GATE-'))throw Error('版ゲートへはタスクをつなげません。版ゲートへ入る線はENDからだけです。その版のEND-x.y.zを選んでください。');
+ // A version START is the source of the line (START → task): the task starts in that version's interval (OPS-069).
+ const link=targetId.startsWith('START-')?{prerequisite:targetId,successor:taskId}:{prerequisite:taskId,successor:targetId};
+ if((data.milestoneRelations||[]).some(r=>r.prerequisite===link.prerequisite&&r.successor===link.successor))throw Error('この接続は既にあります: '+link.prerequisite+' → '+link.successor);
+ const candidate=copy(data);candidate.milestoneRelations=(candidate.milestoneRelations||[]).concat([{...link,constraint:'',conditionReview:'相談待ち',source:{path:'',quote:''}}]);
+ check(candidate);return candidate;
+}
+function editRelation(e){
+ if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}
+ const orig=dataRelation(e);
+ if(isChainLink(orig)){report(CHAIN_NOTE,true);return;}
+ const target=id=>id;
+ const dialog=$('relationDialog'),box=$('relationEditor');box.replaceChildren();
+ box.append(el('p','変更前：'+orig.prerequisite+' → '+orig.successor+(orig.prerequisite!==e.prerequisite||orig.successor!==e.successor?'（図では '+e.prerequisite+' → '+e.successor+'）':'')),el('pre',linkLabel(orig)+' / '+e.constraint+(e.source?'\n出典（変更前の根拠）：'+e.source.path+':'+e.source.line:'')));
+ const nodes=isMilestoneLink(orig)?doc.tasks.concat((doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-'))):doc.tasks;  // tasks never connect to a release gate
+ function picker(label,value){const l=el('label',label),select=el('select');for(const n of nodes){const o=el('option',n.id+' — '+n.item);o.value=n.id;select.append(o);}select.value=value;l.append(select);box.append(l);return select;}
+ const pre=picker('前提（矢印の出発点）',orig.prerequisite),next=picker('後続（矢印の到着点）',orig.successor),preview=el('p'),error=el('p',undefined,'unsaved');error.setAttribute('role','alert');
+ const refresh=()=>{const t=target(next.value);preview.textContent='変更後：'+pre.value+' → '+next.value+(t!==next.value?'（データ上は '+t+'）':'');};pre.onchange=refresh;next.onchange=refresh;refresh();box.append(preview,el('p','元の条件文は参照用に保持します。つなぎ替え後の条件はAIとの相談待ちとして保存し、正本反映前に一緒に決めます。'+(!isMilestoneLink(orig)?' タスク間の依存はタスク同士でつなぎ替えます。':''),'muted'),error);
+ const buttons=el('div',undefined,'buttons'),apply=el('button','つなぎ替えを適用','primary'),remove=el('button','この依存を除去'),cancel=el('button','キャンセル');buttons.append(apply,remove,cancel);box.append(buttons);
+ apply.onclick=()=>{try{const to=target(next.value);if(pre.value!==orig.prerequisite||to!==orig.successor){doc=rewireRelation(doc,orig,pre.value,to);dirty=true;}dialog.close();render();}catch(err){error.textContent=err.message;}};
+ remove.onclick=()=>{removeRelation(orig);if(!doc[isMilestoneLink(orig)?'milestoneRelations':'edges'].some(x=>x.prerequisite===orig.prerequisite&&x.successor===orig.successor))dialog.close();};cancel.onclick=()=>dialog.close();dialog.showModal();
+}
+function graph(){
+ const tip=$('graphTip');tip.hidden=true;
+ const picker=$('versionPicker'),folders=versionFolders();
+ if(picker&&picker.options.length!==folders.length+2){picker.replaceChildren();const all=el('option','全体');all.value='';const fromHead=el('option','HEAD から（'+(doc.milestoneHead||'?')+' 以降）');fromHead.value='@head';picker.append(all,fromHead);for(const f of folders){const o=el('option',f);o.value=f;picker.append(o);}picker.value='@head';/* opens at HEAD (2026-10-17) */picker.onchange=()=>render();}
+ const data=versionView(graphData(),picker?picker.value:'');let {pos,fallback,offset,hasIsolated,hasEdges,width,height}=graphLayout(data.nodes,data.edges);
+ // A version with no lines (e.g. only its release gate) still shows its cards in a row.
+ const lone=!!(picker&&picker.value)&&!hasEdges&&data.nodes.length>0;
+ if(lone){pos=new Map(data.nodes.map((n,i)=>[n.id,[20+i*295,50]]));width=40+data.nodes.length*295;height=170;hasIsolated=false;}
+ const W=250,H=96;
+ const s=svg('svg',{width,height,viewBox:`0 0 ${width} ${height}`,role:'group','aria-label':'全taskの明示依存グラフ'});const defs=svg('defs',{}),m=svg('marker',{id:'arrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'});m.append(svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#78998c'}));defs.append(m);s.append(defs);
+ for(const e of data.edges){let [x,y]=pos.get(e.prerequisite),[u,v]=pos.get(e.successor);const p=svg('path',{d:x===u?`M${x+W/2},${y+H} L${u+W/2},${v}`:`M${x+W},${y+H/2} C${x+W+20},${y+H/2} ${u-20},${v+H/2} ${u},${v+H/2}`,fill:'none',stroke:'#78998c','stroke-width':1.5,'stroke-dasharray':!isMilestoneLink(e)&&e.flow==='PARALLEL_JOIN'?'5 4':'','marker-end':'url(#arrow)'});p.append(svg('title',{},linkLabel(e)+' / '+e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));s.append(p);const hit=svg('path',{d:p.getAttribute('d'),fill:'none',stroke:'transparent','stroke-width':16,'pointer-events':'stroke',tabindex:0,role:'button','aria-label':e.prerequisite+' → '+e.successor+' の関係を編集',style:'cursor:pointer'});hit.append(svg('title',{},e.prerequisite+' → '+e.successor+'\nクリックしてつなぎ替え・除去'));hit.onclick=()=>editRelation(e);hit.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();editRelation(e);}};hit.onfocus=()=>{p.setAttribute('stroke-width',5);};hit.onblur=()=>{p.setAttribute('stroke-width',1.5);};s.append(hit);}
+ if(hasIsolated)s.append(svg('text',{x:20,y:28,fill:'#657477'},'独立タスク（明示依存なし）'));
+ if(!hasEdges&&!lone)s.append(svg('text',{x:20,y:60,fill:'#657477'},'明示された依存はありません。'));
+ if(lone)s.append(svg('text',{x:20,y:28,fill:'#657477'},'この版には途中のゲートもタスクもまだありません。'));
+ if(hasEdges)s.append(svg('text',{x:20+offset*295,y:28,fill:'#657477'},fallback?'依存順の自動配置 →':'前提からゲートへ →'));
+ const measure=document.createElement('canvas').getContext('2d');measure.font='12px -apple-system, sans-serif';
+ function lines(text){let out=[''];for(const ch of text){let i=out.length-1;if(measure.measureText(out[i]+ch).width>W-24)out.push(ch);else out[i]+=ch;}if(out.length>2){out=out.slice(0,2);while(measure.measureText(out[1]+'…').width>W-24)out[1]=out[1].slice(0,-1);out[1]+='…';}return out;}
+ function show(t,x,y){tip.textContent=t.id+(t.kind==='milestone'?' · 到達点':t.permanent?' · 常設':'')+'\n'+t.item+'\n\n状態：'+t.state+'\n担当：'+t.owner+'\n\n条件：'+t.condition;tip.hidden=false;const r=tip.getBoundingClientRect();tip.style.left=Math.max(12,Math.min(x+14,innerWidth-r.width-12))+'px';tip.style.top=Math.max(12,Math.min(y+14,innerHeight-r.height-12))+'px';}
+ for(const t of data.nodes.filter(t=>pos.has(t.id))){let [x,y]=pos.get(t.id);const g=svg('g',{class:'node',tabindex:0,role:'button','aria-label':t.id+' '+t.item,transform:`translate(${x} ${y})`});g.append(svg('rect',{width:W,height:H,rx:7,fill:t.id===selected?'#d4edbc':t.kind==='milestone'?'#fff1c9':'#fff',stroke:t.id===selected?'#126c58':'#b8ccc0'}),svg('text',{x:12,y:18,fill:'#657477'},t.id+(t.kind==='milestone'?' · 到達点':t.permanent?' · 常設':'')));
+ lines(t.item.replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/, '')).forEach((line,i)=>g.append(svg('text',{x:12,y:40+i*17,fill:'#213b32','font-weight':600},line)));
+ const band=stateStyle(t.state);g.append(svg('path',{d:`M0 70 H${W} V${H-7} Q${W} ${H} ${W-7} ${H} H7 Q0 ${H} 0 ${H-7} Z`,fill:band.bg}),svg('text',{x:12,y:87,fill:band.fg,'font-weight':600},t.state));g.onpointerenter=e=>show(t,e.clientX,e.clientY);g.onpointermove=e=>show(t,e.clientX,e.clientY);g.onpointerleave=()=>tip.hidden=true;g.onfocus=()=>{const r=g.getBoundingClientRect();show(t,r.left,r.bottom);};g.onblur=()=>tip.hidden=true;g.onclick=()=>{tip.hidden=true;select(t.id);};g.onkeydown=e=>{if(e.key==='Enter')select(t.id);if(e.key==='Escape')tip.hidden=true;};s.append(g);
+ if(taskDocumentPaths(t).length){const link=svg('a',{href:'#document',tabindex:0,'aria-label':t.id+' の正本を読む',transform:`translate(${x+W-46} ${y+3})`});link.append(svg('rect',{width:42,height:22,fill:'transparent'}),svg('text',{x:8,y:15,fill:'#126c58'},'正本'));const open=e=>{e.preventDefault();e.stopPropagation();tip.hidden=true;openTaskDocuments(t);};link.onclick=open;link.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')open(e);};s.append(link);}
+ }$('graph').replaceChildren(s);$('graph').onscroll=()=>tip.hidden=true;
+}
+
+function field(parent,title,id,type,value){const l=el('label',title);l.htmlFor=id;const e=el(type);e.id=id;if(type==='textarea')e.rows=5;e.value=value;parent.append(l,e);e.oninput=()=>{formDirty=true;banner();};return e;}
+const documentBundle=JSON.parse($('documents').textContent);
+function documentLinks(detail){
+ const wrap=el('div');const paths=[...detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]);
+ if(!paths.length)return el('pre',detail);
+ for(const path of [...new Set(paths)]){const a=el('a',path);a.href='#document';a.style.display='block';a.onclick=e=>{e.preventDefault();openDocument(path);};wrap.append(a);}return wrap;
+}
+function openDocument(path,overrideRecord){
+ const dialog=$('documentDialog'),body=$('documentBody'),record=overrideRecord||documentBundle.files[path];body.replaceChildren();$('documentTitle').textContent=path;
+ $('documentStamp').textContent='表示用コピー：'+new Date(documentBundle.generatedAt).toLocaleString()+'（正本の更新は自動反映しません）';
+ if(!record)body.append(el('p','この文書は同梱されていません。表示用データを更新してください。'));
+ else{
+ const parsed=new DOMParser().parseFromString(record.html,'text/html');
+ const allowed=new Set('P H1 H2 H3 H4 H5 H6 UL OL LI BLOCKQUOTE PRE CODE STRONG EM DEL A TABLE THEAD TBODY TR TH TD HR BR INPUT'.split(' '));
+ function clean(source,parent){for(const n of source.childNodes){if(n.nodeType===3){parent.append(document.createTextNode(n.textContent));continue;}if(n.nodeType!==1)continue;if(!allowed.has(n.tagName)){if(!['SCRIPT','STYLE','IFRAME','OBJECT'].includes(n.tagName))clean(n,parent);continue;}const dst=document.createElement(n.tagName);if(n.tagName==='INPUT'){dst.type='checkbox';dst.disabled=true;dst.checked=n.hasAttribute('checked');}if(n.tagName==='A'){
+ const href=n.getAttribute('href')||'';
+ if(/^https?:\/\//i.test(href)){dst.href=href;dst.target='_blank';dst.rel='noopener noreferrer';}
+ else if(!/^[a-z][a-z0-9+.-]*:/i.test(href)&&!href.startsWith('//')){dst.href='#document';dst.onclick=e=>{e.preventDefault();const base=new URL(path,'https://repository.invalid/');const target=new URL(href,base);openDocument(decodeURIComponent(target.pathname.slice(1)));};}
+ }clean(n,dst);parent.append(dst);}}
+ clean(parsed.body,body);
+ }
+ if(!dialog.open)dialog.showModal();body.scrollTop=0;
+}
+$('closeDocument').onclick=()=>$('documentDialog').close();
+{
+ const dialog=$('documentDialog');let backdropPress=false;
+ const outside=e=>{const r=dialog.getBoundingClientRect();return e.target===dialog&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom);};
+ dialog.addEventListener('pointerdown',e=>{backdropPress=outside(e);});
+ dialog.addEventListener('pointercancel',()=>{backdropPress=false;});
+ dialog.addEventListener('click',e=>{if(backdropPress&&outside(e))dialog.close();backdropPress=false;});
+ dialog.addEventListener('close',()=>{backdropPress=false;});
+}
+
+
+function renderTaskPicker(){
+ const picker=$('taskPicker');picker.replaceChildren();
+ for(const t of [...graphData().nodes].sort((a,b)=>a.id.localeCompare(b.id,'en',{numeric:true}))){const option=el('option',t.id);option.value=t.id;option.title=t.item;picker.append(option);}
+ picker.value=selected||'';
+ picker.onchange=()=>{select(picker.value);picker.value=selected||'';};
+}
+function editor(){renderTaskPicker();const box=$('editor');box.replaceChildren();const t=graphData().nodes.find(t=>t.id===selected);if(!t)return;
+ if(t.kind==='milestone'){$('selectedTitle').textContent=t.item;box.append(el('p','マイルストーン · 原文参照（この画面では編集しません）','muted'),el('h3','条件・判断'),el('pre',t.condition),el('h3','正本'),documentLinks(t.detail));for(const e of graphData().edges.filter(e=>e.successor===t.id||e.prerequisite===t.id)){const d=dataRelation(e);box.append(el('p',d.prerequisite+' → '+d.successor+' / '+linkLabel(d)),el('pre',e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));}return;}
+$('selectedTitle').textContent=t.id+(t.permanent?' · 常設タスク':'');const row=el('div',undefined,'row');box.append(row);const a=el('div'),b=el('div');row.append(a,b);let state=field(a,'状態','state','select','');options(state,[...new Set([...STATES,t.state])],t.state);field(b,'担当','owner','input',t.owner);box.append(el('h3','項目'),el('p',t.item),el('h3','条件・判断の原文'),el('pre',t.condition));
+ const apply=el('button','変更を適用','primary'),wrap=el('div',undefined,'buttons');wrap.append(apply);box.append(wrap);apply.onclick=()=>{for(const k of ['state','owner'])t[k]=$(k).value;dirty=true;formDirty=false;render();};
+ box.append(el('h3','詳細正本・出典'),documentLinks(t.detail),el('p',doc.source.path+':'+t.sourceLine, 'muted'));
+ const details=el('details'),sum=el('summary','生成時の行を読む');details.append(sum,el('pre',t.raw));box.append(details);
+ box.append(el('h3','このタスクの前提'));for(const e of doc.edges.filter(e=>e.successor===t.id)){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}removeRelation(e);};div.append(remove,el('strong',e.prerequisite+' · '+e.flow),el('p',(e.conditionReview?'条件：AIと相談待ち。元の条件：':'')+(e.constraint||'未設定'),'muted'));box.append(div);}
+ const r=el('div',undefined,'row'),left=el('div'),right=el('div');r.append(left,right);box.append(r);const pre=field(left,'前提タスク','prerequisite','select','');options(pre,doc.tasks.filter(x=>x.id!==t.id).map(x=>x.id),doc.tasks.find(x=>x.id!==t.id)?.id);const flow=field(right,'合流位置','flow','select','');options(flow,['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE');box.append(el('p','依存条件はAIと相談して決めます。追加した接続は相談待ちとして保存されます。','muted'));for(const id of ['prerequisite','flow'])$(id).oninput=null;
+ const add=el('button','前提を追加');box.append(add);add.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}const edge={prerequisite:pre.value,successor:t.id,flow:flow.value,constraint:'',conditionReview:'相談待ち',raw:null,sourceLine:null};doc.edges.push(edge);try{check(doc);}catch(e){doc.edges.pop();report(e.message,true);return;}dirty=true;render();};
+ box.append(el('h3','このタスクがつながる到達点'));const links=(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id);if(!links.length)box.append(el('p','まだありません。','muted'));
+ for(const e of links){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.successor),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
+ const mr=el('div',undefined,'row'),mleft=el('div'),mright=el('div');mr.append(mleft,mright);box.append(mr);const gateOf=new Map((doc.milestoneRelations||[]).filter(r=>r.prerequisite.startsWith('END-')&&r.successor.startsWith('GATE-')).map(r=>[r.prerequisite,r.successor]));const targets=(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-')&&!m.id.startsWith('START-'));const target=field(mleft,'到達点（版のENDか途中のカード。版ゲートへは直接つなげない）','milestoneTarget','select','');options(target,targets.map(m=>m.id),targets.find(m=>m.id.startsWith('END-')&&m.state!=='DONE')?.id||targets[0]?.id);for(const o of target.children){const g=gateOf.get(o.value);if(g)o.textContent=o.value+'（→ '+g+'）';}$('milestoneTarget').oninput=null;mright.append(el('p','線は関係の所在だけを示します。完了・着手・再開の条件は、取り込み時にAIと相談して正本（Registryのマイルストーン接続）の制約文へ書きます。','muted'));
+ const connect=el('button','到達点へつなぐ');box.append(connect);connect.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,target.value);dirty=true;render();}catch(e){report(e.message,true);}};
+ // Separate item (OPS-069 step 3, user correction): where this task starts. The stored line is START-x → task; the figure draws it out of the release gate before that version.
+ box.append(el('h3','このタスクが始まる版（START）'));const startLinks=(doc.milestoneRelations||[]).filter(e=>e.successor===t.id&&e.prerequisite.startsWith('START-'));if(!startLinks.length)box.append(el('p','まだありません。','muted'));
+ for(const e of startLinks){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.prerequisite),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
+ const sr=el('div',undefined,'row'),sleft=el('div'),sright=el('div');sr.append(sleft,sright);box.append(sr);const startIds=(doc.milestones||[]).filter(m=>m.id.startsWith('START-')).map(m=>m.id);
+ const startSel=field(sleft,'開始する版のSTART（この版の作業区間で始める仕事）','startSource','select','');options(startSel,startIds,(doc.milestones||[]).find(m=>m.id.startsWith('START-')&&m.state!=='DONE')?.id||startIds[startIds.length-1]);$('startSource').oninput=null;sright.append(el('p','図ではSTARTは描かれず、その版の前の版ゲートから線が出ます。開始条件は取り込み時に制約文（「開始側。」で始める）へ書きます。','muted'));
+ const startBtn=el('button','STARTからつなぐ');box.append(startBtn);startBtn.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,startSel.value);dirty=true;render();}catch(e){report(e.message,true);}};
+}
+function showDiff(){$('diffPanel').hidden=false;$('diff').textContent=JSON.stringify(delta(),null,2);}
+function switchMap(value){
+ const mode=value===true?'permanent':value===false?'dependency':value;
+ for(const name of ['dependency','permanent','protection']){const active=name===mode;$(name+'View').hidden=!active;const tab=$(name+'Tab');tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}
+}
+for(const id of ['dependencyTab','permanentTab','protectionTab']){const tab=$(id),names=['dependency','permanent','protection'];tab.onclick=()=>switchMap(id.replace('Tab',''));tab.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();let i=names.indexOf(id.replace('Tab',''));i=e.key==='Home'?0:e.key==='End'?2:(i+(e.key==='ArrowRight'?1:2))%3;switchMap(names[i]);$(names[i]+'Tab').focus();}};}
+$('refresh').onclick=async()=>{
+ if(location.protocol==='file:'){report('JSON更新にはローカルサーバーを起動し、http://127.0.0.1:8088/ を開いてください。',true);return;}
+ if((dirty||formDirty)&&!confirm('未保存の編集があります。更新成功後に破棄して読み直しますか？'))return;
+ const button=$('refresh');button.disabled=true;button.textContent='更新中…';
+ try{const response=await fetch('/sync',{method:'POST',headers:{'X-Registry-Studio':'sync'}});const result=await response.json();if(!response.ok)throw Error(result.error||result.output||'更新に失敗しました。');dirty=false;formDirty=false;window.location.reload();}
+ catch(error){report('更新できませんでした：'+error.message,true);}
+ finally{button.disabled=false;button.textContent='更新';}
+};
+$('changes').onclick=()=>{showDiff();$('diffPanel').scrollIntoView({behavior:'smooth'});};
+$('open').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());check(d);if((dirty||formDirty)&&!confirm('保存前の変更を破棄して読み込みますか？'))return;initializeRelationBaseline(d);doc=d;selected=d.tasks[0]?.id;dirty=false;formDirty=false;render();}catch(err){report('読み込めません：'+err.message,true);}finally{e.target.value='';}};
+$('save').onclick=()=>{try{if(formDirty)throw Error('入力中の変更を先に「変更を適用」で確定してください。');check(doc);const out=copy(doc);out.exportedAt=new Date().toISOString();out.changes=delta();const a=el('a');const url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)+'\n'],{type:'application/json'}));a.href=url;a.download='registry-edited-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);dirty=false;banner();report('保存用ファイルを作成しました。ダウンロード先を確認してください。');}catch(e){report(e.message,true);}};
+window.addEventListener('beforeunload',e=>{if(dirty||formDirty){e.preventDefault();e.returnValue='';}});check(doc);render();
+</script></html>

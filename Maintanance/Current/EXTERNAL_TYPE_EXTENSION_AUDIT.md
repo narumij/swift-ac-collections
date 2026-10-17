@@ -66,3 +66,29 @@ executable API MatrixまたはIndex契約の方針と合わせて決める。
 - `Sources/RedBlackTreeCollections/Implements/__tree/`
 - `Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift`
 - `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`
+
+## 棚卸し追記（2026-10-17 / 姫・Opus 5.5 / CP-20261017-013・浅い点検）
+
+本文は書き換えていない。追記範囲はOPS-072の立案（`PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md`）に従う。
+
+- 修正案：本文の`Sources/PermutationModule/…`は`1f87e37a`（2026-10-15）で`Sources/NextPermutationModule/…`へ移動済み（現行：`Sources/NextPermutationModule/NextPermutations.swift`）。
+- 点検事実：`ls Sources/NextPermutationModule/NextPermutations.swift`。
+- 中身の主張（API・手順）は今回見ていない（深い点検は後回し）。結果一覧：`Evidence/CP-20261017-013/SHALLOW_CHECK.md`。
+
+## 棚卸し追記2（2026-10-17 / 姫・Opus 5.5 / OPS-074第2区切り）
+
+追記時の占有確認：Registryに紐づくtaskなし。本文は変更しない。
+
+- 更新のきっかけ：Main sourcesに挙げたパスの移動・改名、または凍結clusterの再開指示。
+- 見直す範囲：Main sourcesの`Sources/PermutationModule/NextPermutations.swift`の1行（現行`Sources/NextPermutationModule/NextPermutations.swift`）。他の4パスは入力版`1bdbbd4f`で実在。
+- 変更がない間：上記は存在の確認だけで、監査の中身（Debug限定Comparable等）の現状は今回見ていない。明細：`Evidence/OPS-074/README.md`の#5。
+
+## 棚卸し追記3（2026-10-17 / 姫・Opus 5.5 / OPS-074差し戻し・根拠の書き方の例）
+
+本文は変更しない。根拠は固定版 `10d4951fc88d34f55d1b99f0712504c0e8468354` 基準（行番号はその版の本文・ソースのもの）。
+
+| 本文 | 主張 | 根拠と確認方法 | 結果 | 更新条件・見直す範囲 |
+| --- | --- | --- | --- | --- |
+| 64行 Main sources | `Sources/PermutationModule/NextPermutations.swift`が存在する | `git cat-file -e <SHA>:<パス>`（行を持たない事実なのでパスと方法のみ） | 不在。`1f87e37a`で移動、現行は`Sources/NextPermutationModule/NextPermutations.swift` | モジュール配置が変わったとき、この1行だけ |
+| 14行 Debug限定Comparable群 | `Result: @retroactive Comparable`は削除済み | `git grep -c "@retroactive Comparable" <SHA> -- Sources` | そのcommitの`Sources`内で0件（未発見。不在の証明ではない） | `Sources`に`@retroactive`が足されたとき。grepを再実行するだけでよい |
+| 23行 Completed Result cleanup | `Result._NodePtr`は`@usableFromInline package` | `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_node/unsafe_node+pointer+safe.swift` 322〜325行（`<SHA>`の行番号） | 一致 | そのファイルの差分が`extension Result`の箇所に及んだとき。同じ行番号を現行版に当てず、版間差分で対応箇所を追う |

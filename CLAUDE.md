@@ -22,6 +22,22 @@ Before starting or changing work, check the corresponding task's current state,
 conditions, and detailed canonical document. A request file alone does not override
 the user's latest instructions or authorize resuming frozen work.
 
+## Request routing for Claude and Fable
+
+For the user-authorized temporary Fable coordinator role, consult
+[the deputy delegation](Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md). It explicitly
+includes Registry updates and cleanup, and defines runtime-model identification.
+Its bounded exception applies to the ordinary routing/acceptance rules below.
+
+Use the participant explicitly designated by the current user assignment; do not infer
+an identity or role from this file. Fable assignments and returns use
+[FABLE_TASK.md](Maintanance/FABLE_TASK.md), and Fable's unregistered direct work uses
+[FABLE_PENDING_TASKS.md](Maintanance/FABLE_PENDING_TASKS.md) with FP- temporary IDs.
+For Fable, these replace the CLAUDE_TASK / CLAUDE_PENDING_TASKS paths below, including
+the request-file communication rule. Other shared rules remain applicable. A bounded
+management assignment grants only its stated operations, not another participant's
+ownership or final acceptance authority.
+
 ## Coordinator Assignments
 
 Follow the selected request and the occupancy and handoff rules in

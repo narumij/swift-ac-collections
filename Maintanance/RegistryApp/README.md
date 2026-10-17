@@ -1,3 +1,5 @@
+> 2026-10-17：生成物の出力先は `Maintanance/Cache/RegistryStudio/`（Git管理外）。以下の閲覧用 `index.html` と `registry.json` はこの出力先を指す。編集するHTMLソースは `RegistryApp/index.template.html`。`sync.py` がテンプレートから毎回生成する。サーバー起動時にも生成し、更新ボタンも同じ出力先を更新する。旧配置の生成物は削除済み。
+
 # レジストリスタジオ（仮）— 利用手順の正本
 
 
@@ -8,7 +10,7 @@
 ### AIが現状を提示するとき
 
 1. ユーザーから「現状確認」などの依頼を受けたら、現行Registry・Rulesと表示用JSONの生成元hashを照合する。マイルストーンの出典・引用・hash、内蔵する正本の版も確認する。HEADだけで一致を判断しない。
-2. 古い場合は現行の行・依存・常設区分・明示的親子関係・マイルストーン関係からsnapshotを更新する。原文・参照先・固定IDを保持し、未確定の関係を推測で追加しない。表示の関心度は仮評価であり、優先順位や権限へ読み替えない。照合できない部分は未確認と伝え、最新と称さない。
+2. 古い場合は現行の行・依存・常設区分・明示的親子関係・マイルストーン関係からsnapshotを更新する。原文・参照先・固定IDを保持し、未確定の関係を推測で追加しない。表示順を優先順位や権限へ読み替えない。照合できない部分は未確認と伝え、最新と称さない。
 3. `registry.json`、HTMLのseed、baseline、生成元情報を同じ版に揃え、`build-documents.mjs`で内蔵文書を更新し、`verify.cjs`と参照整合を確認する。baselineは新しい提示用snapshot生成時に設定し、受領した編集JSONのbaselineは書き換えない。
 4. 更新済みHTMLをユーザーが実際に開けるリンクまたはアプリのファイル表示で提示する。この会話の配布先は `/Users/narumij/Documents/Codex/2026-10-14/new-chat/outputs/registry-app/index.html`。配布用コピーを使う場合はrepositoryのHTMLと内容を揃える。別会話では実在する出力先を選び、古い会話のパスをそのまま使わない。開いているページは再読み込みが必要であることを伝える。Safari起動をユーザーが選ぶ場合は下のスニペットを渡す。
 5. 会話では注目するtask番号、変化、必要な判断を短く示す。全一覧の長文転記を画面提示の代わりにしない。HTMLを開けない環境では代替として簡潔な一覧を返す。
@@ -35,8 +37,9 @@ index.htmlをSafariで開く。生成時点のtask・依存辺のsnapshotを内�
 1. 依存／恒久の見取り図タブ、または独立タスク列からタスクを選ぶ。詳細はグラフの下にある。
 2. 状態・担当を直し、「変更を適用」を押す。
 3. 依存は前提taskとFlowを選んで追加する。既存の線をクリックすると、つなぎ替え・除去ができる。条件本文は編集せずAIと相談する。
-4. 「変更内容を見る」で確認し、「編集結果を保存」でJSONをダウンロードする。
-5. 保存したJSONをAIへ渡し、「この変更を現行Registryと照合して反映して」と依頼する。
+4. タスクを到達点へつなぐには、タスクを選んで「到達点へつなぐ」で到達点を選ぶ（2026-10-17、OPS-061／062）。選べるのは版のEND（→ 行き先の版ゲートを併記）と途中のカード。版ゲートへはタスクをつなげない（版ゲートへ入る線はENDからだけ）。線に種類はなく、完了・着手・再開の条件は文章で持つ。追加した接続は条件未設定・相談待ちで保存され、取込担当AIがユーザーと条件文を決めてRegistryの「マイルストーン接続」へ行を足してから正本になる。タスクが始まる版は別項目「このタスクが始まる版（START）」で扱う。「開始する版のSTART」を選んで「STARTからつなぐ」を押すと、線は `START-x → タスク` の向きで保存される（2026-10-18、OPS-069）。図ではSTARTは描かれず、その版の前の版ゲートから線が出る（版ゲートは前の版のENDと次の版のSTARTの重なり）。取込側はその行の制約文を「開始側。」で始める。前の版のENDへ合流する線と後の版のSTARTから出る線は循環になるので同時には持てない。
+5. 「変更内容を見る」で確認し、「編集結果を保存」でJSONをダウンロードする。
+6. 保存したJSONをAIへ渡し、「この変更を現行Registryと照合して反映して」と依頼する。
 
 保存は元ファイルの上書きではない。画面を閉じる前にダウンロードを確認する。ブラウザへ永続保存はしていない。task新規作成・削除・マイルストーン編集・自動ready判定は今回対象外。
 
@@ -62,7 +65,7 @@ Safari UIは未検証。操作権限がなく実機試験できず、自動試�
 Safariで開く場合は起動スニペットを渡し、ユーザーが実行する。通常の現状提示では上の手順に従い、更新済みHTMLへのリンクを提示する。
 
 ```sh
-open -a Safari "/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/RegistryApp/index.html"
+open -a Safari "/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Cache/RegistryStudio/index.html"
 ```
 
 Astra側のopenはSafari名解決失敗、絶対path指定でもkLSNoExecutableErrとなり、起動を確認できなかった。その後、ユーザーによる画面調整とJSON保存・返却・正本反映の往復を確認している。UI全体の検証完了を意味しない。
@@ -71,9 +74,9 @@ Astra側のopenはSafari名解決失敗、絶対path指定でもkLSNoExecutableE
 
 0.6.0 → 0.7.0 → SPI公開 → 人間レビュー → 1.0品質判断を上段の金色nodeで示す。1.0品質判断は既存QUALITY-001を表示上の到達点として用い、同じ判断を重複nodeにしない。Validation計画レビューと赤黒木本文準備を含む6件の表示用milestonesと、正本の引用・path・hash・行番号付きmilestoneRelations 13件を追加した。MS-*はアプリ内IDで新規Task IDではない。
 
-関係はstage（段階前提）、required（必須）、material（判断材料）、after（到達後の実施条件）、resume（到達後の再開判断）を区別する。単なる所属から必須依存は作らない。図の横順は実行順・実行許可を確定しない。全要件を網羅した図ではない。
+到達点への線は一種類（2026-10-17、OPS-062で stage / required / material / after / resume を廃止）。線は関係の所在を示し、完了・着手・再開の条件はRegistry「マイルストーン接続」の制約文で持つ。線の有無や向きだけでは判定しない。旧形式（種類あり）のJSONは読み込み時に明示的に拒否する。図の横順は実行順・実行許可を確定しない。全要件を網羅した図ではない。
 
-task間依存と合わせたグラフを検査し、接続したtaskは独立列から外す。マイルストーン選択時は正本と前後関係を読み取り専用で表示する。選択状態は一覧・グラフ・独立列で共有する。マイルストーン編集は未実装。
+task間依存と合わせたグラフを検査し、接続したtaskは独立列から外す。マイルストーン選択時は正本と前後関係を読み取り専用で表示する。選択状態は一覧・グラフ・独立列で共有する。到達点のカードや列の編集は未実装（ファイル配置と`sync.py`で行う）。タスクから到達点への接続は、タスク側の編集欄で追加・除去できる（2026-10-17、OPS-061）。
 
 旧JSONを開いた場合、そのデータにmilestonesがなければ旧taskグラフのみになる。最新版の内蔵データまたは同梱registry.jsonを使う。元Registryのsnapshot時点とマイルストーンを採取した時点は異なるため、各source情報を保持している。
 
@@ -97,7 +100,7 @@ task間依存と合わせたグラフを検査し、接続したtaskは独立列
 
 表示用コピーの更新は`node build-documents.mjs [markedのES moduleへのパス]`。省略時は環境のmarkedを使う。registry.jsonの詳細正本から抽出し、index.htmlへ埋め込む。実行時のブラウザ通信・追加ライブラリは不要。JSON編集結果に文書本文を混ぜない。
 
-恒久タスクの見取り図：permanent指定の全タスクを横に並べ、各詳細正本を下へ接続する。依存の有無で除外しない。参照線は依存とは別で編集対象にしない。タスク選択は他の画面と共通、文書はクリックで開く。
+恒久タスクの見取り図：permanent指定の全タスクを横に並べ、各詳細正本を下へ接続する。依存の有無で除外しない。参照線は依存とは別で編集対象にしない。タスク選択は他の画面と共通、文書はクリックで開く。サブタスクのカードには、詳細正本があれば右上に「正本 n」の印を置き、クリックでその文書を開く（2026-10-17、OPS-064。正本の無いサブタスクには印を出さない）。
 
 見取り図は依存／恒久のタブで切り替える。初期は依存。タスク選択と詳細欄は共通で、左のタスク一覧は廃止。恒久図の文書線は各正本への参照を示す枝分かれ表示で、文書間の順序を意味しない。
 
@@ -111,12 +114,14 @@ task間依存と合わせたグラフを検査し、接続したtaskは独立列
 
 2026-10-16、ユーザー依頼でAstraが会話から関心度を5段階で仮評価し、表示専用のdisplayInterestへ理由とともに保存。恒久タスクは高関心を左、子は未完了・高関心を上、独立タスクはDONEを右に保ち各区分内で高関心を左に置く。同点は元の順序を維持する。Registry上の優先度・権限・依存・状態を変更する判断ではない。依存図の構造は維持。カードのツールチップに仮評価理由を表示する。
 
+2026-10-17、`displayInterest`（関心度）と`milestoneSnapshot`を外した（ユーザー依頼、Astraの手順案に沿って姫が実施）。独立タスクと恒久図の並びは、DONEを右・下に置いたうえでRegistryの行の順になる。
+
 独立タスク欄は、依存関係も現存する親taskへの所属もないtaskを表示する。恒久task配下の子は恒久図から選ぶ。親子関係を依存辺へ置き換えない。
 
 
 ## 採番待ちの表示
 
-独立タスクの下にCLAUDE_PENDING_TASKS.mdの未処理entryを読み取り専用で表示する。仮ID・タイトル・queue状態を示し、クリックすると原文を開く。正式task・依存グラフ・タスク選択・編集JSONには混ぜず、表示に伴う採番・受入はしない。現状提示時は `python3 Maintanance/RegistryApp/build-pending.py` でqueueのsnapshotも更新し、続けて `build-documents.mjs` で採番待ち原文もMarkdownへ整形してから配布HTMLへコピーする。正本と同じ表示時のサニタイズを使う。queue本文は変更しない。
+独立タスクの下にCLAUDE_PENDING_TASKS.md（`CP-`、姫）とFABLE_PENDING_TASKS.md（`FP-`、Fable）の未処理entryを読み取り専用で表示する。読むqueueの一覧は`build-pending.py`先頭の`queues`で、別のqueueを足すときはそこに行を足す（存在しないfileは飛ばす）。仮ID・タイトル・queue状態・持ち主を示し、クリックすると原文を開く。正式task・依存グラフ・タスク選択・編集JSONには混ぜず、表示に伴う採番・受入はしない。現状提示時は `python3 Maintanance/RegistryApp/build-pending.py` でqueueのsnapshotも更新し、続けて `build-documents.mjs` で採番待ち原文もMarkdownへ整形してから配布HTMLへコピーする。正本と同じ表示時のサニタイズを使う。queue本文は変更しない。
 
 
 ## 配置維持タブ
@@ -134,12 +139,40 @@ python3 Maintanance/RegistryApp/sync.py --node <nodeのパス> --marked <marked.
 python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registry・registry.json・HTML seedのずれを出す。ずれがあれば終了コード1
 ```
 
-`--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略すると`PATH`上の`node`と、環境の`marked`を使う。
+`--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略時の探し方は下の「Node・markedの確認と記録」。
+
+### Node・markedの確認と記録（2026-10-17、OPS-065）
+
+毎回探し直さないために、`sync.py`は使えた`node`と`marked.esm.js`のパスを`Maintanance/RegistryApp/local-tools.json`へ保存する。このファイルは環境固有なのでGit管理外（`.gitignore`）。本READMEには環境固有のパスを書かない。
+
+- **確認方法**：`python3 Maintanance/RegistryApp/sync.py --show-tools`。何も書き換えずに、使われる`node`・`marked`とその出どころ（flag/env／saved record／PATH／search）と、記録ファイルの有無を表示する。
+- **優先順位**：`--node`／`--marked`または環境変数 → 保存済みの記録（`node --version`が通り、`marked.esm.js`が実在する場合だけ再利用） → `PATH`上の`node` → 既知の置き場所の探索（Codex実行環境、Homebrew、nvm、volta など）。保存済みが使えないときだけ探索し、その旨を表示する。
+- **記録先**：`sync.py`が成功したときに`local-tools.json`へ`node`・`nodeVersion`・`marked`・`verifiedAt`を書く。flagや環境変数で指定した場合も、その値が記録される。
+- **やり直し**：`local-tools.json`を消すと次回は探索からやり直す。見つからなければ`--node PATH`を一度渡す（以後は記録される）。
+- **AI用キャッシュとの関係**：環境固有のパスは各AIのCache領域ではなくこの記録に置く。READMEと記録の役割を分け、READMEには確認方法と記録先だけを書く。
 
 - **作り直すもの：** task・依存辺・親子・常設区分（Registryから）、生成元のhash、baseline、HTML seed、採番待ち（`build-pending.py`）、内蔵文書（`build-documents.mjs`）。最後に`verify.cjs`を通す。
-- **持ち越すもの（Registryから作れない）：** マイルストーンとその関係、`milestoneSnapshot`、taskごとの`displayInterest`。引用が原文から消えたものは`STALE`として報告し、自動では直さない。原文の版（hash）が変わっただけのものは、確認対象として一覧に出す。マイルストーンを増やしたり変えたりするときは、`registry.json`を手で直してから`sync.py`を回す。
+- **持ち越すもの：** なし（2026-10-17から）。`registry.json`は毎回、空から作る。task・依存・マイルストーン接続はRegistryから、到達点のカードと列はゲートのファイル（`Maintanance/Milestones/`）から、現在地は`Milestones/HEAD.md`から作る。既存の`registry.json`は差分の報告にだけ読み、無くても作れる。
 - **失敗したとき：** Nodeが見つからない、文書の生成か`verify.cjs`が失敗した、のいずれでも、`registry.json`と`index.html`を実行前の状態に戻して`FAILED`と表示し、終了コード1で止まる。成功と区別できる。
 - **再実行：** 内容が変わっていなければ`registry.json`は書き換わらない（`generatedAt`も据え置く）。
 - **配布用HTML：** 配布先へは、`sync.py`が成功した後の`index.html`をそのままコピーする。配布先で直接編集しない。
 
-2026-10-16 Astra受入補修：--checkは属性削除・Rules版等の差分も検知する。マイルストーン出典の引用欠落またはhash変更があれば、--checkは非ゼロ終了し、通常同期も書込み前に止まる。必要な範囲を原文と照合して表示用出典を更新してから再実行する。
+2026-10-17現在：--checkは正本から再生成したデータとJSON・HTML seedの差分を確認する。通常同期は現行正本から出典を再生成し、旧JSONのhash変更だけでは停止しない。正本の不正な構造・参照は書込み前に止める。採番待ちと内蔵文書まで更新するには通常同期を実行する。
+
+### 一般タスクの表示（2026-10-17）
+
+到達点への経路がない一般タスクは、タスク間依存や非恒久の親があっても下段の一般タスク欄へ表示する。恒久タスク直下の子は恒久図で扱う。OPS-068が版別図・恒久図・独立欄の全てから外れたため、ユーザー指定で補正。親子関係・順序依存・着手条件は変更しない。
+
+### ローカルサーバーでJSONを更新する
+
+リポジトリ直下から起動する。
+
+```sh
+python3 Maintanance/RegistryApp/serve.py
+```
+
+Safariで `http://127.0.0.1:8088/` を開く。ヘッダーの「更新」が `sync.py` を実行し、検査成功後に画面を再読み込みする。終了は起動したターミナルでCtrl+C。ポートを変える場合は `--port 8089` のように指定し、表示されたURLを開く。
+
+未保存・入力中の編集があれば確認を出し、更新が失敗した場合は画面と編集を保持してエラーを表示する。JSONの編集結果をRegistryへ取り込む操作ではない。反映依頼は従来どおり保存JSONをAIへ渡す。
+
+サーバーは127.0.0.1だけで待ち受け、HTML・JSONの配信と固定の同期コマンドだけを提供する。同一originの更新要求を確認し、二重実行を拒否する。直接HTMLを開く従来方式も使えるが、JSON更新はサーバー経由で行う。

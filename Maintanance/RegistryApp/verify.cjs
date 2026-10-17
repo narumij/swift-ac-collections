@@ -1,5 +1,6 @@
+const output=process.env.REGISTRY_STUDIO_APP||require('path').resolve(__dirname,'../Cache/RegistryStudio');
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
-const html=fs.readFileSync(require('path').join(__dirname,'index.html'),'utf8');const script=html.split('<script>')[1].split('</script>')[0];new vm.Script(script);const d=JSON.parse(fs.readFileSync(require('path').join(__dirname,'registry.json'),'utf8'));
+const html=fs.readFileSync(require('path').join(output,'index.html'),'utf8');const script=html.split('<script>')[1].split('</script>')[0];new vm.Script(script);const d=JSON.parse(fs.readFileSync(require('path').join(output,'registry.json'),'utf8'));
 const checkSource=script.slice(script.indexOf('function check('),script.indexOf('function el('));const deltaSource=script.slice(script.indexOf('function delta('),script.indexOf('function banner('));const ctx={doc:d};vm.createContext(ctx);vm.runInContext(checkSource+'\n'+deltaSource,ctx);ctx.check(d);const regRows=(()=>{const md=require('fs').readFileSync(require('path').resolve(__dirname,'../..',d.source.path),'utf8').split('\n');let sec='',grp=null,t=0,e=0;for(const l of md){if(l.startsWith('## ')){sec=l.slice(3).trim();grp=null;}else if(l.startsWith('### '))grp=l.slice(4).trim();if(!l.startsWith('| `'))continue;if(sec==='Task Registry')t++;else if(sec==='Task precedence'&&grp===null)e++;}return {t,e};})();assert.equal(d.tasks.length,regRows.t);assert.equal(d.edges.length,regRows.e);assert.equal(ctx.delta().length,0);
 const copy=x=>JSON.parse(JSON.stringify(x));const original=copy(d);d.tasks.find(t=>t.id==='OPS-059').condition='編集確認';assert.equal(ctx.delta()[0].old,original.tasks.find(t=>t.id==='OPS-059').condition);assert.equal(ctx.delta()[0].new,'編集確認');assert.deepEqual(d.baseline,original.baseline);
 d.edges.push({successor:'OPS-059',prerequisite:'PERM-060',flow:'SEQUENCE',constraint:'確認'});ctx.check(d);assert.equal(ctx.delta().length,2);const reloaded=JSON.parse(JSON.stringify(d));ctx.check(reloaded);assert.deepEqual(reloaded,d);
@@ -11,9 +12,14 @@ const layoutSource=script.slice(script.indexOf('function graphLayout('),script.i
 const fixture=['A','B','C','D','E','F'].map(id=>({id})),links=['A','B','C'].map(prerequisite=>({prerequisite,successor:'F'}));
 const layout=ctx.graphLayout(fixture,links);assert(!layout.pos.has('D'));assert(!layout.pos.has('E'));for(const id of ['A','B','C'])assert(layout.pos.get(id)[0]<layout.pos.get('F')[0]);
 const actual=ctx.graphLayout(original.tasks,original.edges);const connected=new Set(original.edges.flatMap(e=>[e.prerequisite,e.successor]));assert.equal(actual.pos.size,connected.size);for(const edge of original.edges)assert(actual.pos.get(edge.prerequisite)[0]<actual.pos.get(edge.successor)[0]);assert.equal(new Set([...actual.pos.values()].map(p=>p.join(','))).size,connected.size);assert.equal(ctx.graphLayout(fixture,[]).pos.size,0);console.log('PASS: independent nodes excluded from graph; all connected nodes retained; all edges left-to-right; no overlap; empty-edge graph.');
-vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert.equal(original.milestones.length,8);assert.equal(original.milestoneRelations.length,17);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['MS-060','MS-070','MS-SPI','MS-HUMAN','QUALITY-001'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-060'&&e.successor==='PERM-079'&&e.relation==='resume'));assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='MS-070'&&e.relation==='required'));rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
+vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert(original.milestones.length>0);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['GATE-0.6.0','GATE-0.7.0','MS-SPI','MS-HUMAN','MS-QUALITY'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite==='START-0.6.0'&&e.successor==='PERM-079'&&/^開始側。/.test(e.constraint)));assert(original.milestoneRelations.some(e=>e.prerequisite==='MS-VALIDATION'&&e.successor==='END-0.6.0'&&!('relation' in e)));rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
 
-vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));const expected=original.tasks.filter(t=>!visual.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)&&!original.tasks.some(parent=>parent.id===t.parentTask));assert.equal(groups.regular.length+groups.permanent.length,expected.length);assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,expected.length);console.log('PASS: independent regular/permanent partition, no omissions or duplicates.');
+vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,groups.regular.length+groups.permanent.length);
+const discoveryFixture={tasks:[{id:'ROOT',permanent:true},{id:'POLICY',parentTask:'ROOT'},{id:'NESTED',parentTask:'POLICY'},{id:'WORK'},{id:'LINKED'}],edges:[{prerequisite:'POLICY',successor:'WORK'}],milestones:[{id:'END-test'}],milestoneRelations:[{prerequisite:'LINKED',successor:'END-test'}]};
+// NESTED is a sub-task of a sub-task: it is drawn in the permanent map, not the regular list (2026-10-17).
+assert.deepEqual(Array.from(ctx.independentGroups(discoveryFixture).regular,t=>t.id),['WORK']);
+discoveryFixture.milestoneRelations.push({prerequisite:'WORK',successor:'END-test'});assert.equal(ctx.independentGroups(discoveryFixture).regular.length,0);
+console.log('PASS: independent regular/permanent partition, no omissions or duplicates.');
 
 // Preserve historical coordinate regression checks on the pre-gate fixture.
 // Current expanded graph is checked above for coverage, direction and collisions.
@@ -46,8 +52,59 @@ assert.throws(()=>ctx.rewireRelation(base,edge,'OPS-048','OPS-048'));
 assert.throws(()=>ctx.rewireRelation(base,edge,'MISSING','OPS-059'));
 assert.throws(()=>ctx.rewireRelation(base,edge,base.edges[0].prerequisite,base.edges[0].successor));
 assert.throws(()=>ctx.rewireRelation(base,edge,'QUALITY-001','RBT-001'));
-const relation=base.milestoneRelations[0],moved=ctx.rewireRelation(base,relation,'MS-060','OPS-048');ctx.check(moved);assert.deepEqual(moved.milestoneRelations[0].source,relation.source);assert.deepEqual(base,untouched);
+const relation=base.milestoneRelations[0],moved=ctx.rewireRelation(base,relation,'GATE-0.6.0','OPS-048');ctx.check(moved);assert.deepEqual(moved.milestoneRelations[0].source,relation.source);assert.deepEqual(base,untouched);
 ctx.doc=rewired;assert(ctx.delta().some(x=>x.field==='edges'));ctx.doc=moved;ctx.initializeRelationBaseline(ctx.doc);console.log('PASS: transactional rewiring, retained evidence/baseline, task and milestone endpoints, self/duplicate/dangling/cycle rejection.');
+// Display edges: END is not drawn, so a line into END is drawn into its release gate (2026-10-17).
+{ctx.doc=copy(original);ctx.initializeRelationBaseline(ctx.doc);ctx.formDirty=false;
+ const shown=ctx.graphData().edges.find(e=>e.shownFor);assert(shown&&shown.successor.startsWith('GATE-')&&shown.shownFor.startsWith('END-'));
+ const data=ctx.dataRelation(shown);assert.equal(data.successor,shown.shownFor);assert(!('shownFor' in data));assert.equal(ctx.gateEntry(shown.successor),shown.shownFor);
+ const before=copy(ctx.doc);ctx.dirty=false;ctx.confirm=()=>false;ctx.removeRelation(shown);assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
+ ctx.confirm=()=>true;ctx.removeRelation({...shown,prerequisite:'NO-SUCH'});assert.deepEqual(ctx.doc,before);assert.equal(ctx.dirty,false);
+ const chain=ctx.graphData().edges.find(e=>e.prerequisite.startsWith('GATE-')&&ctx.isChainLink(ctx.dataRelation(e)));ctx.removeRelation(chain);  // a gate's first drawn line may now be a START-side task line; pick the chainassert.deepEqual(ctx.doc,before);
+ ctx.removeRelation(shown);assert.equal(ctx.doc.milestoneRelations.length,before.milestoneRelations.length-1);assert.equal(ctx.dirty,true);
+ assert(!ctx.doc.milestoneRelations.some(r=>r.prerequisite===shown.prerequisite&&(r.successor===shown.successor||r.successor===shown.shownFor)));assert.deepEqual(ctx.doc.baseline,before.baseline);
+ ctx.doc=copy(original);const moved=ctx.rewireRelation(ctx.doc,data,'OPS-048',ctx.gateEntry(shown.successor));
+ assert(moved.milestoneRelations.some(r=>r.prerequisite==='OPS-048'&&r.successor===shown.shownFor));assert(!moved.milestoneRelations.some(r=>r.successor.startsWith('GATE-')&&!r.prerequisite.startsWith('END-')));
+ assert(!JSON.stringify(moved).includes('shownFor'));ctx.doc=copy(original);
+ console.log('PASS: display edges into release gates edit their END relation; cancel, no-op, chain refusal, removal, rewiring, nothing display-only saved.');}
+
+// Connecting a task to an END or intermediate card from the editor (2026-10-17, OPS-061/062): GATE targets refused, no line kinds, duplicates/unknowns rejected, baseline untouched.
+{ctx.doc=copy(original);ctx.initializeRelationBaseline(ctx.doc);const base=copy(ctx.doc),gate=base.milestones.find(m=>m.id==='GATE-0.6.0'),end='END-0.5.4';  // tasks join the END of a version folder; the release gate is entered only from END
+ const free=base.tasks.find(t=>!base.milestoneRelations.some(r=>r.prerequisite===t.id&&r.successor===end)&&!t.id.startsWith('END-')).id;
+ const linked=ctx.addMilestoneRelation(base,free,end);assert.throws(()=>ctx.addMilestoneRelation(base,free,gate.id));  // GATE target refusedctx.check(linked);assert.deepEqual(base,ctx.doc);
+ const added=linked.milestoneRelations.find(r=>r.prerequisite===free&&r.successor===end);assert(added&&!('relation' in added)&&added.conditionReview==='相談待ち'&&added.constraint===''&&typeof added.source.path==='string');
+ assert(!linked.milestoneRelations.some(r=>r.successor.startsWith('GATE-')&&!r.prerequisite.startsWith('END-')));assert.deepEqual(linked.baseline,base.baseline);
+ ctx.doc=linked;assert(ctx.delta().some(x=>x.field==='milestoneRelations'));
+ const direct=ctx.addMilestoneRelation(base,free,'MS-VALIDATION');assert(direct.milestoneRelations.some(r=>r.prerequisite===free&&r.successor==='MS-VALIDATION'));
+ assert.throws(()=>ctx.addMilestoneRelation(linked,free,end));assert.throws(()=>ctx.addMilestoneRelation(base,'NO-SUCH',end));assert.throws(()=>ctx.addMilestoneRelation(base,free,'NO-SUCH'));
+ // Old-format JSON (with line kinds) is refused explicitly instead of silently dropping conditions (2026-10-17, OPS-062).
+ {const old=copy(base);old.milestoneRelations[0].relation='required';assert.throws(()=>ctx.check(old),/旧形式/);const oldBase=copy(base);oldBase.baseline.milestoneRelations[0].relation='stage';assert.throws(()=>ctx.check(oldBase),/旧形式/);}
+ // One kind of line: no relation key anywhere, every milestone link drawn the same way (flow PARALLEL_JOIN on the display edge).
+ assert(!JSON.stringify(base.milestoneRelations).includes('"relation"'));{ctx.doc=base;for(const e of ctx.graphData().edges)if(ctx.isMilestoneLink(e))assert.equal(e.flow,'PARALLEL_JOIN');}
+ // Rewiring a task link to a release gate is refused; to an END it is allowed.
+ {const link=base.milestoneRelations.find(r=>r.prerequisite==='RELEASE-084');assert.throws(()=>ctx.rewireRelation(base,link,link.prerequisite,'GATE-0.6.0'),/版ゲート/);const ok=ctx.rewireRelation(base,link,link.prerequisite,'END-0.6.0');assert(ok.milestoneRelations.some(r=>r.prerequisite==='RELEASE-084'&&r.successor==='END-0.6.0'));}
+ const shownNew=(()=>{ctx.doc=linked;return ctx.graphData().edges.find(e=>e.prerequisite===free&&e.shownFor===end);})();assert(shownNew&&shownNew.successor===gate.id);
+ ctx.doc=copy(original); // START targets (OPS-069): the stored line is START → task; tasks may not enter a START; START may not lead off the chain.
+ {const lone=base.tasks.find(t=>!base.milestoneRelations.some(r=>r.prerequisite===t.id||r.successor===t.id)&&!base.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)).id;
+  const started=ctx.addMilestoneRelation(base,lone,'START-0.6.0');assert(started.milestoneRelations.some(r=>r.prerequisite==='START-0.6.0'&&r.successor===lone&&r.conditionReview==='相談待ち'));
+  assert.throws(()=>ctx.addMilestoneRelation(started,lone,'START-0.6.0'),/既にあります/);
+  const l84=base.milestoneRelations.find(r=>r.prerequisite==='RELEASE-084');assert.throws(()=>ctx.rewireRelation(base,l84,'RELEASE-084','START-0.6.0'),/START/);
+  const s79=base.milestoneRelations.find(r=>r.successor==='PERM-079');assert.throws(()=>ctx.rewireRelation(base,s79,s79.prerequisite,'END-0.6.0'),/START/);
+  const moved=ctx.rewireRelation(base,s79,'START-0.5.4','PERM-079');assert(moved.milestoneRelations.some(r=>r.prerequisite==='START-0.5.4'&&r.successor==='PERM-079'));
+  ctx.doc=started;assert(!ctx.independentGroups(started).regular.some(t=>t.id===lone),'start-side task is not independent');ctx.doc=copy(original);}
+ // START hidden behind its gate (OPS-069 step 3): no START with a preceding gate is drawn; its lines leave the gate with shownFrom; dataRelation restores them.
+ {ctx.doc=copy(original);const g=ctx.graphData(),gated=new Set(original.milestoneRelations.filter(r=>r.prerequisite.startsWith('GATE-')&&r.successor.startsWith('START-')).map(r=>r.successor));
+  for(const n of g.nodes)assert(!gated.has(n.id),'gated START must not be drawn: '+n.id);
+  assert(g.nodes.some(n=>n.id==='START-0.5.3'),'first START without a gate stays visible');
+  for(const e of g.edges)assert(g.nodes.some(n=>n.id===e.prerequisite)&&g.nodes.some(n=>n.id===e.successor),'drawn edge endpoints must be drawn nodes');
+  const p79=g.edges.find(e=>e.successor==='PERM-079');assert(p79&&p79.prerequisite==='GATE-0.6.0'&&p79.shownFrom==='START-0.6.0');
+  const back=ctx.dataRelation(p79);assert.equal(back.prerequisite,'START-0.6.0');assert(!('shownFrom' in back)&&!('shownFor' in back));
+  const chain=g.edges.find(e=>e.prerequisite==='GATE-0.6.0'&&e.successor==='MS-VALIDATION');assert(chain&&chain.shownFrom==='START-0.6.0','chain is drawn gate → first card');
+  assert(ctx.versionView(g,'0.6.0').nodes.some(n=>n.id==='PERM-079'),'start-side task stays in its version view');
+  assert(ctx.versionView(g,'@head').nodes.some(n=>n.id==='PERM-079'),'start-side task stays in HEAD view');
+  assert(!ctx.graphData().edges.some(e=>e.successor.startsWith('START-')),'no drawn line enters a START');ctx.doc=copy(original);}
+console.log('PASS: task→END/MS connect refuses GATE targets, has no line kinds, rejects duplicates/unknowns and old-format JSON, marks 相談待ち, draws into the gate, leaves baseline.');}
+
 
 assert.equal(placed.pos.get('PERM-079')[0]-placed.pos.get('MS-060')[0],295);
 assert(Math.abs(placed.pos.get('MS-070')[0]-placed.pos.get('PERM-079')[0]-250*(3-Math.sqrt(5))/2)<1e-9);
@@ -77,7 +134,7 @@ console.log('PASS: rectangle collision checks, each-edge removal, new-node and r
 
 vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
 vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
-const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,10);assert(permanent.every(g=>g.documents.length));assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).sort((a,b)=>(b.displayInterest?.score??0)-(a.displayInterest?.score??0)).map(t=>t.id));
+const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,original.tasks.filter(t=>t.permanent).length);assert(permanent.length>=10);assert(permanent.every(g=>g.documents.length));for(const g of permanent)for(const c of g.children){assert(Array.isArray(c.documents));assert.deepEqual(c.documents,[...new Set([...c.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))]);}assert(permanent.some(g=>g.children.some(c=>c.id==='OPS-063'&&c.documents.length>=3)),'OPS-063 sub-task should expose its interview documents');assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).map(t=>t.id));
 const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('function switchMap('),script.indexOf("for(const id of ['dependencyTab'")),ctx);ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 
@@ -95,6 +152,10 @@ assert(permanent.some(g=>g.task.id==='HIST-003'&&g.task.state==='ACTIVE'));
 
 assert(!groups.regular.some(t=>['OPS-049','OPS-050','OPS-059','OPS-052'].includes(t.id)));
 assert(permanent.find(g=>g.task.id==='OPS-048').children.some(t=>t.id==='OPS-059'));
+// Sub-tasks of sub-tasks are nested under their parent in the permanent map (2026-10-17, OPS-070 → OPS-071/072).
+for(const g of permanent){assert.equal(new Set(g.descendants.map(d=>d.id)).size,g.descendants.length);for(const d of g.descendants){if(d.depth===0)assert.equal(d.parentTask,g.task.id);else{const pi=g.descendants.findIndex(p=>p.id===d.parentTask);assert(pi>=0&&pi<g.descendants.indexOf(d)&&g.descendants[pi].depth===d.depth-1);}}}
+{const ops044=permanent.find(g=>g.task.id==='OPS-044');if(ops044&&original.tasks.some(t=>t.id==='OPS-071'&&t.parentTask==='OPS-070')){assert(ops044.descendants.some(d=>d.id==='OPS-071'&&d.depth===1));assert(!groups.regular.some(t=>t.id==='OPS-071'||t.id==='OPS-072'));}}
+{const nested=ctx.permanentMapData({tasks:discoveryFixture.tasks.map(t=>({detail:'',...t}))}).find(g=>g.task.id==='ROOT');assert.deepEqual(nested.descendants.map(d=>[d.id,d.depth]),[['POLICY',0],['NESTED',1]]);}
 
 vm.runInContext(script.slice(script.indexOf('function protectionRecords('),script.indexOf('function renderProtection(')),ctx);
 assert.equal(ctx.protectionRecords(original).length,18);
@@ -128,4 +189,31 @@ console.log('PASS: leading feeder column, no global fallback, renamed IDs and fi
 
 assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-037'));assert(historical.edges.some(e=>e.prerequisite==='DOC-037'&&e.successor==='DOC-035'));assert(!historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-035'));
 
-assert(!original.tasks.some(t=>t.state==='DONE'), 'completed tasks have moved to evidence archives');
+// DONE tasks may stay in the Registry until compression; compression is not immediate (2026-10-17 user).
+
+// Sequential restriction (2026-10-17 user decision): milestones form a single chain, no branch or join.
+{const ms=new Set(original.milestones.map(m=>m.id)),mm=original.milestoneRelations.filter(e=>ms.has(e.prerequisite)&&ms.has(e.successor));
+ const next=new Map(),prev=new Map();for(const e of mm){assert(!next.has(e.prerequisite),'milestone branch at '+e.prerequisite);assert(!prev.has(e.successor),'milestone join at '+e.successor);next.set(e.prerequisite,e.successor);prev.set(e.successor,e.prerequisite);}
+ const heads=[...ms].filter(id=>!prev.has(id));assert.equal(heads.length,1,'milestones must form one chain: '+heads.join(','));
+ let n=0;for(let id=heads[0];id;id=next.get(id)){n++;assert(n<=ms.size,'milestone cycle');}assert.equal(n,ms.size,'milestones must form one chain');
+ console.log('PASS: milestones form one sequential chain ('+n+').');}
+
+// Only END-xyz may enter a version gate; a version gate leads only to the next milestone (2026-10-17).
+{const ms=new Set(original.milestones.map(m=>m.id));
+ for(const e of original.milestoneRelations){
+  if(e.successor.startsWith('GATE-'))assert(e.prerequisite.startsWith('END-'),'only END may enter '+e.successor+' (got '+e.prerequisite+')');
+  if(e.prerequisite.startsWith('GATE-'))assert(ms.has(e.successor),e.prerequisite+' may not lead to task '+e.successor);}
+ console.log('PASS: version gates are entered only from END.');}
+
+// Each version folder is a DAG rooted at its END: every gate of the folder, and every task feeding them,
+// reaches the folder's END-xyz (2026-10-17). Cycles are rejected by the checks above.
+{const ms=original.milestones,edges=original.edges.concat(original.milestoneRelations),next=new Map();
+ for(const e of edges){if(!next.has(e.prerequisite))next.set(e.prerequisite,[]);next.get(e.prerequisite).push(e.successor);}
+ const reaches=(from,to,seen=new Set())=>from===to||(!seen.has(from)&&(seen.add(from),(next.get(from)||[]).some(n=>reaches(n,to,seen))));
+ const msIds=new Set(ms.map(m=>m.id));let checked=0;
+ for(const end of ms.filter(m=>m.id.startsWith('END-'))){
+  const folder=end.gate,members=new Set(ms.filter(m=>m.gate&&m.gate.startsWith(folder)&&!m.id.startsWith('GATE-')&&m.id!==end.id).map(m=>m.id));
+  for(let grew=true;grew;){grew=false;for(const e of edges)if(members.has(e.successor)&&!members.has(e.prerequisite)&&!msIds.has(e.prerequisite)){members.add(e.prerequisite);grew=true;}}
+  for(const e of original.milestoneRelations)if(e.successor===end.id&&!msIds.has(e.prerequisite))members.add(e.prerequisite);
+  for(const id of members){assert(reaches(id,end.id),id+' does not reach '+end.id);checked++;}}
+ console.log('PASS: every version folder is a DAG rooted at its END ('+checked+' nodes).');}

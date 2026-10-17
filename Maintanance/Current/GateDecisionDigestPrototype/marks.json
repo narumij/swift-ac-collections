@@ -15,9 +15,9 @@
         {"key": "defer",     "text": "コードスニペット追加と文書全体の再検討は0.8.0へ送る"}
       ],
       "sources": [
-        {"path": "Maintanance/Current/RELEASE_0_8_0.md", "section": "0.6.0との境界",
+        {"path": "Maintanance/Milestones/Archived/RELEASE_0_8_0.md", "section": "0.6.0との境界",
          "quote": "今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。"},
-        {"path": "Maintanance/Current/RELEASE_0_6_0.md", "section": "0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）",
+        {"path": "Maintanance/Milestones/Archived/RELEASE_0_6_0.md", "section": "0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）",
          "quote": "今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。"},
         {"path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md", "section": "DOC-034行",
          "quote": "今回は既存スニペットの構成・掲載数を固定し、追加・削除しない。"}

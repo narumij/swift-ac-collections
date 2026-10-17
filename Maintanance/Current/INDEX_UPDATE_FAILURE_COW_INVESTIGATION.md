@@ -91,3 +91,15 @@
 ## 追加調査による訂正への参照（2026-10-16 / Astra）
 
 原Returnのdeath test skip記述は、[RBT-048追加調査と受入](INDEX_UPDATE_FAILURE_COW_USER_DECISION.md#追加調査の受入2026-10-16--astra)に訂正を残した。原返却は保持。通常構成の56件成功ログを確認済み。製品修正・判断の承認ではない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+
+入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+
+| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| --- | --- | --- |
+| 調査は入力版HEAD`f6e181b2ab31dcd17c51c11236a6b5dd4b1024b8`で行われた（33行目） | 対象3実装のSHA-256を版で計算すると、`Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift` `465e345f`、`…/RedBlackTreeMultiMap/RedBlackTreeMultiMap.swift` `10edbcd3`、`…/RedBlackTreeMultiMap+Deprecated.swift` `531a69f6`で、35行目の先頭8桁と一致。`f6e181b2`→版の`Sources`・`Package.swift`の差分は3ファイル（`AcCollections.docc`・`OptionalElementBufferModule`の2つ）で、`Sources/RedBlackTreeCollections/`の差分はない | 対象3ファイル、または呼出先（CoW・index解決）を含む`Sources/RedBlackTreeCollections/`の変更 |
+| 調査用testと証拠が版にある | `Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift`（`RBT047_EXPECT_NO_COPY_ON_FAILURE` 4か所）と`Evidence/RBT-047/`：あり | testや証拠の移動・削除 |
+
+成立範囲：言えるのは「対象実装は変わっておらず、過去の結果がどこにあるか」まで。過去の実行結果を現行版で再現したことにはしない（toolchain・構成・テスト側にも依存する）。RBT-048の判断（ユーザー）の有効性も保証しない。再調査するなら、上の差分の所在から絞れる。

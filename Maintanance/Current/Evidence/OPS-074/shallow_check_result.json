@@ -1,0 +1,2469 @@
+{
+ "summary": {
+  "input_commit": "1bdbbd4f9",
+  "documents": 76,
+  "references": 272,
+  "reference_status": {
+   "exists": 249,
+   "exists_line_suffix": 2,
+   "missing_in_history": 15,
+   "missing_no_history": 6
+  },
+  "hashes": 100,
+  "hash_object_type": {
+   "blob": 3,
+   "commit": 83,
+   "none": 14
+  }
+ },
+ "references": [
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "../README.ja.md",
+   "path": "Maintanance/README.ja.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "../Package.swift",
+   "path": "Maintanance/Package.swift",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/README.md",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025/README.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "../Current/StrictMemorySafetyReadiness.md",
+   "status": "exists",
+   "path": "Maintanance/Current/StrictMemorySafetyReadiness.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Testing/TESTING.md",
+   "status": "exists",
+   "path": "Maintanance/Testing/TESTING.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/__tree",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/__tree"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "ASAN_DEATH_TEST_EVIDENCE_2026-10-16",
+   "status": "exists",
+   "path": "Maintanance/Current/ASAN_DEATH_TEST_EVIDENCE_2026-10-16"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "kind": "tick",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "kind": "tick",
+   "ref": "Tests/CLAUDE.md",
+   "status": "exists",
+   "path": "Tests/CLAUDE.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RBT-049/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-049"
+  },
+  {
+   "doc": "ASTRA_DECISION_TRACE_SUPPORT.md",
+   "kind": "link",
+   "ref": "GATE_DECISION_DIGEST_PROPOSAL.md",
+   "status": "exists",
+   "path": "Maintanance/Current/GATE_DECISION_DIGEST_PROPOSAL.md"
+  },
+  {
+   "doc": "ASTRA_DECISION_TRACE_SUPPORT.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/GateDecisionDigestPrototype/",
+   "status": "exists",
+   "path": "Maintanance/Current/GateDecisionDigestPrototype"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Maintanance/Quality/Profiles/NextPermutationModule.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/Profiles/NextPermutationModule.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/NextPermutationsSequence/",
+   "status": "exists",
+   "path": "Tests/PermutationTests/NextPermutationsSequence"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/Compatibility/AtCoder2025/",
+   "path": "Sources/PermutationModule/Compatibility/AtCoder2025",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab 2026-10-15",
+   "deleted_in": "1f87e37ab"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/AtCoder2025Compatibility/",
+   "status": "exists",
+   "path": "Tests/PermutationTests/AtCoder2025Compatibility"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/NextPermutations.swift",
+   "path": "Sources/PermutationModule/NextPermutations.swift",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab 2026-10-15",
+   "deleted_in": "1f87e37ab"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "kind": "tick",
+   "ref": "Sources/NextPermutationModule/NextPermutations.swift",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/NextPermutations.swift"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "kind": "link",
+   "ref": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "kind": "link",
+   "ref": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Sources/",
+   "status": "exists",
+   "path": "Benchmarks/Sources"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/",
+   "status": "exists",
+   "path": "Benchmarks/Libraries"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "../Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/run-bare-array-assessment.sh",
+   "status": "exists",
+   "path": "Benchmarks/run-bare-array-assessment.sh"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/run-permutation-assessment.sh",
+   "status": "exists",
+   "path": "Benchmarks/run-permutation-assessment.sh"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI.json",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md"
+  },
+  {
+   "doc": "CANONICAL_INVENTORY_APPEND.md",
+   "kind": "link",
+   "ref": "Evidence/CP-20261017-013/SHALLOW_CHECK.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/CP-20261017-013/SHALLOW_CHECK.md"
+  },
+  {
+   "doc": "CANONICAL_INVENTORY_APPEND.md",
+   "kind": "link",
+   "ref": "OPS_072_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/OPS_072_ACCEPTANCE.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../History/TestRebuild2026/README.md",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026/README.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../History/TestRebuild2026/EVIDENCE.md",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026/EVIDENCE.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../Testing/TESTING.md",
+   "status": "exists",
+   "path": "Maintanance/Testing/TESTING.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../Testing/Fixtures.md",
+   "status": "exists",
+   "path": "Maintanance/Testing/Fixtures.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../Archived/JudgmentCoordinates/README.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/JudgmentCoordinates/README.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "../CLAUDE_PENDING_TASKS.md",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_PENDING_TASKS.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "link",
+   "ref": "Evidence/ClaudeAcceptance20261016/build-tests.log",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/ClaudeAcceptance20261016/build-tests.log"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/History/TestRebuild2026/",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Testing/JudgmentCoordinates/",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates"
+  },
+  {
+   "doc": "COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PILOT.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PILOT.md",
+   "kind": "link",
+   "ref": "DECISION_ARCHIVE_PROPOSAL.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DECISION_ARCHIVE_PROPOSAL.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PROPOSAL.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PROPOSAL.md",
+   "kind": "link",
+   "ref": "DECISION_ARCHIVE_PILOT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DECISION_ARCHIVE_PILOT.md"
+  },
+  {
+   "doc": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "kind": "link",
+   "ref": "SPI_REGISTRATION_GATE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/SPI_REGISTRATION_GATE.md"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "kind": "tick",
+   "ref": ".github/workflows/ci.yml",
+   "status": "exists",
+   "path": ".github/workflows/ci.yml"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "link",
+   "ref": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "../Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/NextPermutations.swift",
+   "path": "Sources/PermutationModule/NextPermutations.swift",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab 2026-10-15",
+   "deleted_in": "1f87e37ab"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/RawBuffer/",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/RawBuffer"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/__tree/",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/__tree"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "kind": "tick",
+   "ref": "Sources/NextPermutationModule/NextPermutations.swift",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/NextPermutations.swift"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_ARCHIVE.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/COMMONS.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COMMONS.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/PROGRESS_OVERVIEW_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "kind": "tick",
+   "ref": "Maintanance/User/MEMO.md",
+   "status": "exists",
+   "path": "Maintanance/User/MEMO.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "kind": "link",
+   "ref": "../CLAUDE_PENDING_TASKS.md",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_PENDING_TASKS.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "kind": "tick",
+   "ref": "Maintanance/User/MEMO.md",
+   "status": "exists",
+   "path": "Maintanance/User/MEMO.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "kind": "tick",
+   "ref": "Tests/CLAUDE.md",
+   "status": "exists",
+   "path": "Tests/CLAUDE.md"
+  },
+  {
+   "doc": "HIME_TRADE_NAME_DECISION.md",
+   "kind": "link",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/README.md",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RBT-047/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "kind": "link",
+   "ref": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "kind": "link",
+   "ref": "Evidence/RBT-047/README.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "kind": "link",
+   "ref": "Evidence/RBT-047/fix-draft.diff",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047/fix-draft.diff"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "kind": "link",
+   "ref": "Evidence/RBT-048-death-probe/README.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-048-death-probe/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "kind": "link",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md"
+  },
+  {
+   "doc": "JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+   "kind": "link",
+   "ref": "../Testing/JudgmentCoordinates/README.md",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates/README.md"
+  },
+  {
+   "doc": "JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+   "kind": "link",
+   "ref": "../Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/DOCUMENT.md",
+   "status": "exists",
+   "path": "Maintanance/DOCUMENT.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Archived/TASK_REGISTRY_ARCHIVED_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_ARCHIVED_2026-10-16.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/WORKER_TASK.md",
+   "status": "exists",
+   "path": "Maintanance/WORKER_TASK.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/CLAUDE_TASK.md",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_TASK.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/MILESTONES.md",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Quality/Profiles/NextPermutationModule.md:42",
+   "status": "exists_line_suffix",
+   "path": "Maintanance/Quality/Profiles/NextPermutationModule.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "status": "missing_in_history",
+   "last_commit": "504b143ba 2026-10-16",
+   "deleted_in": "504b143ba"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Tests/TESTING.md:32",
+   "path": "Tests/TESTING.md",
+   "status": "missing_in_history",
+   "last_commit": "35a27b302 2026-10-16",
+   "deleted_in": "35a27b302"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/QUALITY_REQUIREMENTS.md",
+   "path": "Maintanance/QUALITY_REQUIREMENTS.md",
+   "status": "missing_in_history",
+   "last_commit": "9d36da929 2026-10-15",
+   "deleted_in": "9d36da929"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/Quality/QUALITY_REQUIREMENTS.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/",
+   "path": "Sources/PermutationModule",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab 2026-10-15",
+   "deleted_in": "1f87e37ab"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/PROGRESS_OVERVIEW.md",
+   "path": "Maintanance/PROGRESS_OVERVIEW.md",
+   "status": "missing_in_history",
+   "last_commit": "f07810927 2026-10-15",
+   "deleted_in": "f07810927"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Benchmarks/QualityAssessment/macOS/BareArray/README.md:22",
+   "status": "exists_line_suffix",
+   "path": "Benchmarks/QualityAssessment/macOS/BareArray/README.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Benchmarks/run-bare-array-assessment.sh",
+   "status": "exists",
+   "path": "Benchmarks/run-bare-array-assessment.sh"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "Maintanance/MAINTENANCE.md",
+   "path": "Maintanance/MAINTENANCE.md",
+   "status": "missing_in_history",
+   "last_commit": "e30eddcfc 2026-10-16",
+   "deleted_in": "e30eddcfc"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "kind": "tick",
+   "ref": "../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "path": "Current/PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "kind": "link",
+   "ref": "../../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "kind": "link",
+   "ref": "../../Sources/RedBlackTreeCollections/Documentation/API-Matrix.md",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-026_BEFORE_REACTIVATION_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-026_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "kind": "link",
+   "ref": "DOCUMENTATION_MILESTONES.md",
+   "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+   "status": "missing_in_history",
+   "last_commit": "e2dd63d62 2026-10-17",
+   "deleted_in": "e2dd63d62"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "kind": "link",
+   "ref": "Evidence/MemoizeDependency20261016/README.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/MemoizeDependency20261016/README.md"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "kind": "tick",
+   "ref": ".github/workflows/",
+   "status": "exists",
+   "path": ".github/workflows"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/",
+   "status": "exists",
+   "path": "Benchmarks/Libraries"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "../Archived/PERM-063_EXCLUDED_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-063_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_TASK_NAME_MIGRATION.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "../../Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift",
+   "status": "exists",
+   "path": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "../../Benchmarks/Libraries/CI.json",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "kind": "link",
+   "ref": "../Archived/PERM-064_BEFORE_REACTIVATION_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-064_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "link",
+   "ref": "PUBLIC_API_NAMING_DECISIONS.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "tick",
+   "ref": "Sources/NextPermutationModule/",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "kind": "tick",
+   "ref": "Sources/_PermutationModule/",
+   "status": "exists",
+   "path": "Sources/_PermutationModule"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../Technical/NextPermutationsSequenceExperiment.md",
+   "status": "exists",
+   "path": "Maintanance/Technical/NextPermutationsSequenceExperiment.md"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../../Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift",
+   "status": "exists",
+   "path": "Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../../Sources/NextPermutationModule/NextPermutations.swift",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/NextPermutations.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../../Sources/NextPermutationModule/BorrowedNextPermutations.swift",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/BorrowedNextPermutations.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "kind": "link",
+   "ref": "../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "kind": "link",
+   "ref": "Evidence/OPS-072/INVENTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/OPS-072/INVENTORY.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "kind": "link",
+   "ref": "Evidence/OPS-072/SURFACES.md",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/OPS-072/SURFACES.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "kind": "link",
+   "ref": "OPS_072_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/OPS_072_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "kind": "link",
+   "ref": "CANONICAL_INVENTORY_APPEND.md",
+   "status": "exists",
+   "path": "Maintanance/Current/CANONICAL_INVENTORY_APPEND.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/",
+   "path": "Sources/PermutationModule",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab 2026-10-15",
+   "deleted_in": "1f87e37ab"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "kind": "link",
+   "ref": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_TASK_AGREEMENT_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "kind": "link",
+   "ref": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "kind": "link",
+   "ref": "RECORD_LIFETIME_STUDY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RECORD_LIFETIME_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "kind": "link",
+   "ref": "OPS_072_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/OPS_072_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/COORDINATION_KNOW_HOW.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/COMMONS.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COMMONS.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_JUDGMENT_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "RECORD_LIFETIME_STUDY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RECORD_LIFETIME_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "kind": "link",
+   "ref": "OPS_072_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/OPS_072_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "kind": "link",
+   "ref": "Evidence/DOC-035-2026-10-16/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-035-2026-10-16"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "BENCHMARK_USAGE_GUIDE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_USAGE_GUIDE.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "DOCUMENTATION_CI_PLAN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_CI_PLAN.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "PUBLIC_API_NAMING_DECISIONS.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "StrictMemorySafetyReadiness.md",
+   "status": "exists",
+   "path": "Maintanance/Current/StrictMemorySafetyReadiness.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "AI_TECHNICAL_ORIENTATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/AI_TECHNICAL_ORIENTATION.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS_REFERENCE.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS_REFERENCE.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../DOCUMENT.md",
+   "status": "exists",
+   "path": "Maintanance/DOCUMENT.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/README.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "../Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "AtCoder2025CompatibilityPlan.md",
+   "status": "exists",
+   "path": "Maintanance/Current/AtCoder2025CompatibilityPlan.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_TASK_NAME_MIGRATION.md"
+  },
+  {
+   "doc": "README.md",
+   "kind": "link",
+   "ref": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md"
+  },
+  {
+   "doc": "RECORD_LIFETIME_STUDY.md",
+   "kind": "link",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md"
+  },
+  {
+   "doc": "RECORD_LIFETIME_STUDY.md",
+   "kind": "link",
+   "ref": "OPS_072_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/OPS_072_ACCEPTANCE.md"
+  },
+  {
+   "doc": "RECORD_LIFETIME_STUDY.md",
+   "kind": "tick",
+   "ref": "../Archived/JudgmentCoordinates/CHANGE_KNOWLEDGE_LAG_DRAFT.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/JudgmentCoordinates/CHANGE_KNOWLEDGE_LAG_DRAFT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-004_EXCLUDED_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-004_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-004_EXCLUDED_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-004_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "DOCUMENTATION_WORKFLOW.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_WORKFLOW.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "../UserDocuments/RedBlackTreeCollections/Head/",
+   "status": "exists",
+   "path": "Maintanance/UserDocuments/RedBlackTreeCollections/Head"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_OUTLINE_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/DOC-033-2026-10-16/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-040_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-041_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-042_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-043_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-044_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_OUTLINE_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "link",
+   "ref": "Evidence/DOC-033-2026-10-16/review-inputs.sha256.json",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16/review-inputs.sha256.json"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests"
+  },
+  {
+   "doc": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "kind": "link",
+   "ref": "Evidence/DOC-033-2026-10-16/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "kind": "link",
+   "ref": "../Quality/Profiles/RedBlackTreeCollections.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/Profiles/RedBlackTreeCollections.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "kind": "link",
+   "ref": "../../Benchmarks",
+   "status": "exists",
+   "path": "Benchmarks"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "kind": "link",
+   "ref": "../Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/index.html",
+   "path": "Maintanance/RegistryApp/index.html",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3 2026-10-17",
+   "deleted_in": "bbddb7ff3"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "kind": "link",
+   "ref": "../Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI.json",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI-Small.json",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI-Small.json"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Scripts/filter_library_for_baseline.py",
+   "path": "Benchmarks/Scripts/filter_library_for_baseline.py",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI-baseline-new-tasks.txt",
+   "path": "Benchmarks/Libraries/CI-baseline-new-tasks.txt",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RELEASE-083/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RELEASE-083"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "kind": "link",
+   "ref": "../Archived/RELEASE-080_RESOLVED_2026-10-16.md",
+   "status": "exists",
+   "path": "Maintanance/Archived/RELEASE-080_RESOLVED_2026-10-16.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "kind": "link",
+   "ref": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_PROCESS.md",
+   "status": "exists",
+   "path": "Maintanance/User/RELEASE_PROCESS.md"
+  },
+  {
+   "doc": "RELEASE_CI_RECOVERY.md",
+   "kind": "link",
+   "ref": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "path": "Maintanance/User/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_PROCESS.md",
+   "status": "exists",
+   "path": "Maintanance/User/RELEASE_PROCESS.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "kind": "tick",
+   "ref": "Maintanance/WORKER_TASK.md",
+   "status": "exists",
+   "path": "Maintanance/WORKER_TASK.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "kind": "tick",
+   "ref": "Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS.md",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "kind": "link",
+   "ref": "DOCUMENTATION_CI_PLAN.md",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_CI_PLAN.md"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "kind": "tick",
+   "ref": "Sources/_RedBlackTreeModule",
+   "status": "exists",
+   "path": "Sources/_RedBlackTreeModule"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "kind": "tick",
+   "ref": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift",
+   "status": "exists",
+   "path": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/PermutationDeathTests.swift",
+   "path": "Tests/PermutationTests/PermutationDeathTests.swift",
+   "status": "missing_in_history",
+   "last_commit": "5efc1a9c8 2026-10-07",
+   "deleted_in": "5efc1a9c8"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "../ProgressV2/COORDINATION_KNOW_HOW.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "../RegistryApp/README.md",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_PROTOTYPE.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_MILESTONE_CONNECT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP.md",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_LINT.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_LINT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/TaskGraphLint/run.sh",
+   "status": "exists",
+   "path": "Maintanance/Graph/TaskGraphLint/run.sh"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_SHARED_SCHEMA.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_SHARED_SCHEMA.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/InMemoryFixture/schema.sql",
+   "status": "exists",
+   "path": "Maintanance/Graph/InMemoryFixture/schema.sql"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "kind": "link",
+   "ref": "Evidence/RegistryAppDiscovery20261016/",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RegistryAppDiscovery20261016"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_PROTOTYPE.md",
+   "kind": "link",
+   "ref": "../RegistryApp/README.md",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/index.html",
+   "path": "Maintanance/RegistryApp/index.html",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3 2026-10-17",
+   "deleted_in": "bbddb7ff3"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/registry.json",
+   "path": "Maintanance/RegistryApp/registry.json",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3 2026-10-17",
+   "deleted_in": "bbddb7ff3"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/verify.cjs",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/verify.cjs"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/README.md",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "kind": "link",
+   "ref": "../ProgressV2/RegistryInterview/2026-10-17/ASTRA.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/RegistryInterview/2026-10-17/ASTRA.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "kind": "link",
+   "ref": "../ProgressV2/RegistryInterview/2026-10-17/FABLE.md",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/RegistryInterview/2026-10-17/FABLE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "kind": "link",
+   "ref": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "status": "exists",
+   "path": "Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "kind": "link",
+   "ref": "COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md",
+   "status": "exists",
+   "path": "Maintanance/Current/COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md"
+  }
+ ],
+ "hashes": [
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "hash": "46d50288",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "hash": "50b1c281",
+   "object_type": "none"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "hash": "7a092b72",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "hash": "81204d22",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "hash": "81204d227e14710c5e1732afcf421b4252899e79",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "0b9de44e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "0ef177d3",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "1f87e37a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "24dfb40f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "4eae63f9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "hash": "910aad2a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "hash": "039b2141",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "hash": "25518fdd1",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "hash": "46d50288",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "hash": "7a092b72",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "hash": "165c81aa",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "hash": "6be79ddb",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "hash": "b3072a98",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "hash": "dcb9e3ce",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "hash": "83ce31a2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "hash": "1f87e37a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "hash": "bc50f176",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "4163ff4e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "8631a031",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "93fd0204",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "hash": "c051a8f4",
+   "object_type": "commit"
+  },
+  {
+   "doc": "GATE_DECISION_DIGEST_PROPOSAL.md",
+   "hash": "4b8468e7c6c7",
+   "object_type": "none"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "0e3c417f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "1753a92bbfdb9e717c24fb083ab9065d4f615a27",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "1eddf823efadf925a17711a05081edaf588a0ea6",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "364c203d",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "658c70a6",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "7bb1b235bd19ad31d9fe9831517388918f4560ff",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "7cac21d8",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "8094d43748174bbc981a481f9760c582f1b050ab",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "96d45467",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "a5995bec",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "a87dcdb4",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "b9baeb13",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "e99f83b6",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "hash": "f9100295",
+   "object_type": "commit"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "hash": "f6e181b2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "146715b8bbd994ee",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "1945ce9506f93f4d",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "2f2049fa01efc30f",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "305958a8b7087e67",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "4016cca5",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "421a0166cab0216b",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "4f1b7e3c",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "504b143b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "539fcf418ee7d56e",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "7e5b655cd995e03f",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "8053683a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "9d36da92",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "a69077a87ba0b2c1",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "acb550d1097f02b5",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "d6095cdd",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "db3ee2bd",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "e3815e5e50b456b1",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "e5abf435",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "hash": "f1337ba3b04fb55a",
+   "object_type": "none"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "hash": "730d3433b47219244ef69e130970cb80f68a94a2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "hash": "ff209700",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "hash": "0330e7b5",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "hash": "1027a154",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "hash": "a5662f7d",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "hash": "bf0259a0",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "hash": "1f87e37a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "hash": "3ef37fc2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "hash": "4cd0ebc2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "hash": "6f101a27",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "hash": "fec74691",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RECORD_LIFETIME_STUDY.md",
+   "hash": "6d16675d",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+   "hash": "039b2141",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "hash": "f6e181b2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "hash": "1dc613ff",
+   "object_type": "commit"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "0789479b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "139ffef8",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "31aa2f07",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "964c12bc",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "9ff515c9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "b03d0bf2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "hash": "e9126d24",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "hash": "4a7ef4e3",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "hash": "a5a39d12",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "hash": "b6ff8a85",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "hash": "76c08138",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "hash": "f93ae6dfe7d5f452",
+   "object_type": "none"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "hash": "bd70dc47",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "hash": "bd70dc4741c4d80eb850446795081cb6e740ae4b",
+   "object_type": "commit"
+  }
+ ]
+}

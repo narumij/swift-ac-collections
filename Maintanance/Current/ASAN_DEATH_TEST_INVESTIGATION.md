@@ -53,3 +53,15 @@ Probe.swiftのsuite初期化は、この環境のASan runtime絶対パスをsete
 CP-20261016-014を本調査への追加証拠として統合。原報告は[strip_env調査](Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md)。Probeを読み、setenvによる復元なしで、正常終了・trap・ASan領域外検出を確認する構成であること、保存ログの3件成功およびDeathTests 213件成功／既定条件360 issuesを照合した。今回は再実行していない。
 
 受入範囲はmacOSでstrip_env=0により改善した保存実験の証拠。compiler-rt内部の原因確定、版を固定した製品全体の合格、Linux CIでの有効性は未確認。元のRBT-033 DONEは初回調査の完了として維持し、追加の固定版検証はRBT-049へ分離する。製品・Tests・CIへの適用は行わない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+
+入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+
+| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| --- | --- | --- |
+| 11行目前半「現在のASan CIはLinuxでENABLE_DEATH_TESTSを指定していない」 | `ci.yml` 384行のASan実行に`--traits`はない（通常CIについては今も成立）。ただし`candidate.yml`の145行目のjob「Run death tests with Address Sanitizer」は、152〜153行で`--sanitize address`と`--traits ENABLE_DEATH_TESTS`を併用している（RBT-049の候補CI）。前半は「通常CIでは」に限れば成立 | `.github/workflows/ci.yml`・`candidate.yml`のASan jobの変更 |
+| 11行目後半「CI成功だけではmacOSの併用成功を証明しない」 | 知識（推論）なので固定treeでは確かめられない。候補CIもLinux上のjobで、この推論の前提は変わっていない | CIにmacOSのASan＋death test jobが入ったとき |
+
+GitHub上のCI実走の成否は見ていない（ref・外部結果に依存する）。

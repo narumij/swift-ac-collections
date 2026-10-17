@@ -1,5 +1,18 @@
 ## ユーザー
 
+Registry Studio起動
+
+```
+python3 Maintanance/RegistryApp/serve.py
+```
+
+```
+N=~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node
+/usr/bin/python3 Maintanance/RegistryApp/sync.py --node $N/bin/node --marked $N/node_modules/marked/lib/marked.esm.js
+```
+
+知らなくて当然と知ってて当然がある
+
 ユーザーはHaskell的な発想を好む。仕事を整理するときは、純粋性と副作用、需要の有無、意味を保った置換可能性を重視する。規則や判断の説明では、必要に応じて型・状態・純粋な計算とIOの区別に対応づけると伝わりやすい。
 
 ## タスクリファクタリング
@@ -645,3 +658,26 @@ int main() {
 ```
 
 dummy　
+
+1. フリーズ（凍結）
+   • 入れる機能を締め切り、release branch を切ります（release/x.y）。
+   • それ以降は不具合修正だけを入れます。
+2. 候補（RC）
+   • x.y.z-rc.1 のような候補 tag を打ちます。
+   • CI を広め・長めに回します。複数の OS と Swift 版、sanitizer、性能、ドキュメントの生成などです。
+   • 直すたびに rc.2、rc.3 と上げていきます。
+3. 判定（go/no-go）
+   • チェックリストで判定します。
+      • CI がすべて緑か。
+      • 既知の問題が、許容したうえで記録されているか。
+      • CHANGELOG と移行ガイドがそろっているか。
+      • SemVer として正しいか（破壊的変更なのに minor を上げていないか）。
+4. リリース
+   • 最終 tag を打ちます。Swift Package Manager は tag がそのままバージョンになるので、ここが本番です。
+   • GitHub Release を作り、リリースノートと API ドキュメントを公開します。
+5. 後片付け
+   • release branch を main に戻し、CHANGELOG に次の Unreleased を開きます。
+   • 告知します。
+6. 事後対応
+   • 不具合が出たら、release branch から patch を出します（x.y.z+1）。
+   • tag は付け直さないのが鉄則です。SPM では利用者の Package.resolved に記録されているので、付け直すと壊れます。

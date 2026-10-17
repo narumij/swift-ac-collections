@@ -11,7 +11,7 @@
 | API・実装境界 | [`PUBLIC_API_NAMING_DECISIONS.md`](PUBLIC_API_NAMING_DECISIONS.md) / [`EXTERNAL_TYPE_EXTENSION_AUDIT.md`](EXTERNAL_TYPE_EXTENSION_AUDIT.md) / [`StrictMemorySafetyReadiness.md`](StrictMemorySafetyReadiness.md) |
 | 技術orientation | [`AI_TECHNICAL_ORIENTATION.md`](AI_TECHNICAL_ORIENTATION.md) |
 | 品質 | [`QUALITY_REQUIREMENTS.md`](../Quality/QUALITY_REQUIREMENTS.md) / [`QUALITY_REQUIREMENTS_REFERENCE.md`](../Quality/QUALITY_REQUIREMENTS_REFERENCE.md) / [`QUALITY_ASSESSMENT_INVENTORY.md`](../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md) |
-| release | [`RELEASE_0_6_0.md`](RELEASE_0_6_0.md) |
+| release | [`RELEASE_0_6_0.md`](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0) |
 
 完了済みの実行記録、失効した旧進捗、未採用の草案は、このfolderへ含めず`Archived/`へ整理した。
 `Maintanance/`直下の協働入口・観察・評価文書と[`DOCUMENT.md`](../DOCUMENT.md)も、明示された配置を維持する。

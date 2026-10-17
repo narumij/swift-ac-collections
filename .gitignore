@@ -22,5 +22,8 @@ Benchmarks/.build/
 !/Maintanance/Cache/*/
 !/Maintanance/Cache/*/README.md
 
+# Registry Studio: environment-specific node/marked record (2026-10-17, OPS-065)
+/Maintanance/RegistryApp/local-tools.json
+
 # Private user drafts
 /Maintanance/User/Rights/

@@ -23,3 +23,7 @@ RELEASE_CANDIDATE_BASELINE_FIX.mdの停止報告と後送判断、RELEASE_CANDID
 今回3件をPROPOSEDで登録。0.5.4後に協議する時点で範囲を確認し有効化する。まだ発注・修正・CI起動はしない。
 
 AI用作業記憶：../Cache/Astra/RELEASE_CI_RECOVERY.md（Git管理外。不在時は本書とRegistryの該当行から復元）。
+
+## 2026-10-17の限定再依頼
+
+ユーザーがCIの修正依頼作成を指示。RELEASE-084について、現行baseline確認と既決範囲の修正・限定検証を先行してClaudeへ依頼した。今回範囲は0.5.4完了・RELEASE-086確定を待たない。比較除外・閾値・baseline選択規則の未決判断を代行せず、必要なら協議へ返す。RELEASE-085〜087はPROPOSEDを維持し、全工程の有効化・完了とはしない。現行依頼と返却先は[RELEASE-084正本](RELEASE_CANDIDATE_BASELINE_FIX.md)末尾。

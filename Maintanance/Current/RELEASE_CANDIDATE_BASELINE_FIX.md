@@ -89,4 +89,70 @@ RELEASE-084はWAITING_EXTERNALとして0.6.0リリース完了まで後送。完
 
 2026-10-16のタスク整理により、RELEASE-085の協議→RELEASE-086の確定プランを本修正の再開前提とする。0.6.0完了待ちは維持。旧依頼をそのまま再実施せず、プランで必要性と範囲を確認し改めて依頼する。完了ゲートRELEASE-087への実行証拠の合流は計画時に具体化する。
 
-2026-10-16最新ユーザー判断：今回のリリース予定を0.6.0から0.5.4へ振替。本件の「今回のrelease完了後」は0.5.4完了後を指す。過去の実験・方針の記録は保持。現在の境界は[0.5.4ゲート](RELEASE_0_5_4.md)を参照。
+2026-10-16最新ユーザー判断：今回のリリース予定を0.6.0から0.5.4へ振替。本件の「今回のrelease完了後」は0.5.4完了後を指す。過去の実験・方針の記録は保持。現在の境界は[0.5.4ゲート](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-5-4)を参照。
+
+## 再依頼（2026-10-17 / ユーザー「CIの修正依頼もだしてほしい」）
+
+RELEASE-084を以下の限定範囲で再開する。担当Claude（姫）、受入Astra。今回の明示依頼により、本節の確認・修正は0.5.4完了およびRELEASE-086確定を待たず進めてよい。立て直し全体の方針確定・完了を意味しない。過去の停止報告は証拠として保持し、本節を現在の依頼とする。
+
+1. 着手時のbranch・HEAD・作業差分とcandidate.ymlの比較元選択を確認する。ローカルtagと取得できるremote/default branchの情報を区別し、現在の実行で選ばれるbaselineを特定する。ネットワークで確認できない場合は未確認と記載し、推測でtagを作成・変更しない。
+2. RELEASE-083の保存証拠を再利用し、現在のbaselineで8件欠落とPermutation 3件の契約差が今も該当するか確かめる。0.5.3向け例外を別SHAへ拡張しない。既に不要になった旧案をそのまま実装しない。
+3. 本書の既定方針で解決できる欠落処理・診断保存・結果表示を修正し、限定検証する。現在のbaselineで問題が解消していれば、その証拠を返し不要な修正はしない。契約差が残る場合でも、独立して成立する既定範囲の修正は進めてよい。ただし全体成功として表示せず、未解決比較は失敗または未判定として明示する。
+4. 比較対象除外、参考値化、閾値変更、baseline選択規則の変更が必要なら、その部分を未適用とし、推奨案・影響・必要なユーザー判断を短く返す。今回の依頼だけで未決方針を決めない。
+
+編集範囲は既存の「編集・検証範囲」を維持する。通常CI・製品・測定workload・既存CIライブラリ定義は変更しない。Studio健全性修正とは別の作業単位にする。GitHubへのコメント投稿・CI起動・push・merge・tag・commitは委任しない。workflowはdefault branchへの反映後にコメント起動へ効くことを引継ぐ。
+
+返却：変更一覧、固定入力SHA/hash、現在のbaselineとその根拠、最小ケースの検証結果、未解決判断、workflow反映順、推奨commit単位、作業終了・範囲解放。本節の返却欄に記入する。Registryの最終更新はAstraが行う。実装修正が終わってもCI実走成功・リリース可とは呼ばない。
+
+### 再依頼のReturn
+
+**Claude返却（2026-10-17、姫）。結論：現在のbaselineでは問題が解消しているため、workflowの修正はしていない。**
+
+**固定入力：** branch `develop/misc/69`、HEAD `0789479b`、着手時の作業差分なし。`candidate.yml` `ee96cebf3777cf5e…`、`CI.json` `ae78926adb7c16ce…`、`CI-Small.json` `af951833fbb7b436…`（RELEASE-083と同一）。
+
+**現在のbaselineと根拠：**
+- candidate.ymlは「候補HEADに含まれる`x.y.z`形式のtagのうち最新」を比較元に選ぶ。
+- ローカル：`git tag --merged HEAD`の最新は`0.5.4`（→`b03d0bf2`、PR #199のmerge）。
+- remote：`git ls-remote --tags origin`で`refs/tags/0.5.4`＝`b03d0bf2…`を確認（ネットワーク取得済み）。`0.5.3`は`139ffef8`のまま。
+- よって`b03d0bf2`を含む候補（今のdevelop系PR）の比較元は0.5.4になる。0.5.3向けの例外は不要。
+
+**8件欠落と契約差の再確認：**
+- RELEASE-083で0.5.3に無かった8件は、0.5.4のBenchmarks/Sourcesにすべてある。現行CI.json・CI-Small.jsonの29件で0.5.4に無いものは0件。
+- Permutationのruntime-check切替`9ff515c9`は0.5.4の祖先。比較元と候補の性能契約は同じ。
+- 0.5.4→HEADで`Benchmarks/`・`Sources/`の差分なし。
+
+**最小ケースの検証：** 0.5.4を一時worktreeへチェックアウトし、候補のCIライブラリを写してcandidate.ymlと同じ手順で`benchmark library run`を実行。CI.json・CI-Small.jsonともexit 0、`unknown tasks`なし、29件記録。証拠は`Evidence/RELEASE-084/`。macOSローカル実行で、Ubuntu runner上の実走ではない。
+
+**変更一覧：** workflow・Scripts・Librariesの変更なし。追加は`Evidence/RELEASE-084/`（README・ログ2件）と本Returnだけ。
+
+**未解決判断（ユーザー）：**
+1. 将来、新しい測定を足してリリースする前に候補CIを走らせると、同じ「比較元に無い測定」で止まる構造は残っている（workflowが候補のライブラリを比較元へ写すため）。恒久対策として「比較元に無い測定は未比較として明示し、比較できた件数と分けて表示する」を入れるかは方針判断。推奨は入れる（ただし今回の範囲外、立て直しRELEASE-085/086で扱う）。
+2. 0.5.4は候補と測定コードが同一なので、比較は配置ゆれ（過去に±20%の観測あり）だけを測ることになる。30%閾値は変えていない。
+
+**workflow反映順：** 変更なしのため不要。
+
+**推奨commit単位：** 証拠と本Returnの1commit。
+
+**作業終了・範囲解放。** CI実走成功・リリース可とは呼ばない。commit・push・GitHub操作はしていない。
+
+## Astra受入（2026-10-17、0789479b後の返却）
+
+限定再依頼を受入。現在baselineでは旧例外修正が不要という結論を確認した。workflowの数値版tag選択を手元で再現すると0.5.4、SHAはb03d0bf21f110fc64c7dc9dfa0d790dab915b106。9ff515c9が0.5.4の祖先で、0.5.4→HEADのSources・Benchmarks差分はゼロ。保存された最小測定ログのCI.json/CI-Small.json exit=0を確認した。remote確認はClaude返却の証拠であり、Astraは再取得していない。
+
+workflow変更なしを受け入れる。Ubuntu CIの実走合格・性能保証・リリース可否は未認定。将来の測定追加に対する恒久対策はRELEASE-085/086へ残す。RELEASE-084はWAITING_USER（受入済み証拠・記録のcommit確認待ち）。END-0.5.4への接続は維持。追加のClaude実装依頼なし。
+
+2026-10-17、ユーザーが今回の証拠・受入・振り返りのcommitを承認。RELEASE-084はDONEへ更新。限定依頼の完了であり、Ubuntu CI合格・リリース判断や将来の恒久対策完了を意味しない。
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第1区切り）
+
+本文は変更しない。関連taskのRELEASE-084はDONE（占有の重なりなし）。根拠は固定版 `876d405b981baae04dc0d90448094488524b3c79` 基準。
+
+結論「現行baselineでは旧例外修正が不要」（140行のAstra受入）が依存する事実：
+
+| 事実 | 根拠と確認方法 | 結果 | 更新条件・見直す範囲 |
+| --- | --- | --- | --- |
+| baselineは「HEADに取り込まれた最新の数値版tag」 | `.github/workflows/candidate.yml` 179〜195行（Resolve previous release tag、`git tag --merged HEAD --sort=-version:refname`） | 一致 | この手順が変わったとき |
+| 現在その tag は0.5.4（`b03d0bf21f110fc64c7dc9dfa0d790dab915b106`） | `git rev-parse 0.5.4^{commit}` | 一致 | **新しい数値版tag（0.6.0等）を打ったとき**。baselineが動くので結論の再確認が要る |
+| 0.5.4→入力版で測定コードと製品に差分なし（122行） | `git diff --name-only 0.5.4 <SHA> -- Benchmarks/Sources Benchmarks/Libraries Sources` | 差分なし。※`Benchmarks/`全体では2026-10-17の計測記録（`Benchmarks/QualityAssessment/`、`515acd61`）が増えたが、測定コードではないので結論に影響しない | `Benchmarks/Sources`・`Benchmarks/Libraries`・`Sources`に差分が入ったとき（特に測定の追加。恒久対策はRELEASE-085/086） |
+
+未確認：GitHub上の候補CIの実走結果（外部の結果でcommitでは固定できない）、Ubuntu環境での性能値。

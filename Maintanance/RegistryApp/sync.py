@@ -4,6 +4,7 @@
 Usage (from the repository root):
   python3 Maintanance/RegistryApp/sync.py --check   # report drift only; writes nothing
   python3 Maintanance/RegistryApp/sync.py           # regenerate registry.json and the HTML seed
+  python3 Maintanance/RegistryApp/sync.py --show-tools  # which node/marked would be used, and from where
 
 registry.json is built from nothing on every run (2026-10-17): tasks, edges and the milestone connection
 table come from the Task Registry; milestone cards from the gate files in Maintanance/Milestones/; the
@@ -363,10 +364,109 @@ def tool(flag, env, default):
     return os.environ.get(env) or default
 
 
+# ---- Node / marked resolution (2026-10-17, OPS-065) ---------------------------------------------
+# Order: --flag > environment variable > saved local record (reused only if it still works) > PATH >
+# known install locations. The record is environment-specific and untracked; the README describes
+# how to check it, not where the binaries are.
+TOOLS_RECORD = APP / 'local-tools.json'
+NODE_CANDIDATES = [
+    '~/.cache/codex-runtimes/*/dependencies/node/bin/node',
+    '/opt/homebrew/bin/node', '/usr/local/bin/node',
+    '~/.nvm/versions/node/*/bin/node', '~/.volta/bin/node',
+    '/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node',
+]
+MARKED_RELATIVE = ['node_modules/marked/lib/marked.esm.js', 'lib/node_modules/marked/lib/marked.esm.js']
+
+
+def node_works(path):
+    try:
+        out = subprocess.run([path, '--version'], capture_output=True, text=True, timeout=10)
+        return out.stdout.strip() if out.returncode == 0 and out.stdout.startswith('v') else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def marked_works(path):
+    return bool(path) and Path(path).is_file() and Path(path).name == 'marked.esm.js'
+
+
+def read_tools_record():
+    try:
+        return json.loads(TOOLS_RECORD.read_text(encoding='utf-8')) if TOOLS_RECORD.exists() else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def search_node():
+    for pattern in NODE_CANDIDATES:
+        full = os.path.expanduser(pattern)
+        hits = sorted(Path('/').glob(full.lstrip('/')), reverse=True) if '*' in full else ([Path(full)] if Path(full).exists() else [])
+        for hit in hits:
+            if node_works(str(hit)):
+                return str(hit)
+    return None
+
+
+def search_marked(node):
+    if not node:
+        return None
+    root = Path(node).resolve().parent.parent  # <prefix>/bin/node -> <prefix>
+    for rel in MARKED_RELATIVE:
+        cand = root / rel
+        if marked_works(cand):
+            return str(cand)
+    return None
+
+
+def resolve_tools():
+    """Return (node, marked, notes). Each value comes with where it came from, for the report."""
+    notes, record = [], read_tools_record()
+    node = tool('--node', 'REGISTRY_STUDIO_NODE', None)
+    if node:
+        notes.append(f'node: {node} (flag/env)')
+    elif record.get('node') and node_works(record['node']):
+        node = record['node']; notes.append(f"node: {node} (saved record, {record.get('nodeVersion', '?')})")
+    else:
+        if record.get('node'):
+            notes.append(f"node: saved record {record['node']} no longer works; searching")
+        node = shutil.which('node')
+        if node:
+            notes.append(f'node: {node} (PATH)')
+        else:
+            node = search_node()
+            notes.append(f'node: {node} (search)' if node else 'node: not found')
+    marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)
+    if marked:
+        notes.append(f'marked: {marked} (flag/env)')
+    elif record.get('marked') and marked_works(record['marked']):
+        marked = record['marked']; notes.append(f'marked: {marked} (saved record)')
+    else:
+        if record.get('marked'):
+            notes.append(f"marked: saved record {record['marked']} no longer exists; searching")
+        marked = search_marked(node)
+        notes.append(f'marked: {marked} (search)' if marked else "marked: not found; build-documents.mjs will try the environment's marked")
+    return node, marked, notes
+
+
+def save_tools_record(node, marked):
+    version = node_works(node)
+    if not version:
+        return
+    record = dict(node=node, nodeVersion=version, marked=marked,
+                  verifiedAt=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat(timespec='seconds'),
+                  note='Environment-specific; untracked. Delete this file to force a fresh search. See RegistryApp/README.md.')
+    TOOLS_RECORD.write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
 EMPTY = dict(tasks=[], edges=[], source={})
 
 
 def main():
+    if '--show-tools' in sys.argv:
+        node, marked, notes = resolve_tools()
+        print('\n'.join(notes))
+        print(f'record: {TOOLS_RECORD} ({"present" if TOOLS_RECORD.exists() else "absent"})')
+        sys.exit(0 if node else 1)
     new, errors = build()
     if errors:
         print('Source problems (fix them; nothing was written):\n  ' + '\n  '.join(errors))
@@ -391,8 +491,8 @@ def main():
     if '--check' in sys.argv:
         sys.exit(1 if changes else 0)
 
-    node = tool('--node', 'REGISTRY_STUDIO_NODE', shutil.which('node'))
-    marked = tool('--marked', 'REGISTRY_STUDIO_MARKED', None)
+    node, marked, tool_notes = resolve_tools()
+    print('\n'.join(tool_notes))
     if old and same_content(old, new) and seed == old:
         new['source']['generatedAt'] = old['source'].get('generatedAt')  # no meaningless diff on rerun
     backup = Path(tempfile.mkdtemp(prefix='registry-studio-sync-'))
@@ -404,7 +504,7 @@ def main():
         embed(new)
         subprocess.run([sys.executable, str(APP / 'build-pending.py')], cwd=ROOT, check=True)
         if not node:
-            raise FileNotFoundError('node not found; documents cannot be rebuilt or verified (use --node PATH)')
+            raise FileNotFoundError('node not found; documents cannot be rebuilt or verified. Pass --node PATH once (it is then saved to local-tools.json), or see RegistryApp/README.md')
         subprocess.run([node, str(APP / 'build-documents.mjs')] + ([marked] if marked else []), cwd=APP, check=True)
         subprocess.run([node, str(APP / 'verify.cjs')], cwd=APP, check=True)
     except (subprocess.CalledProcessError, OSError, ValueError) as e:
@@ -416,6 +516,7 @@ def main():
         print(f'FAILED ({e}); restored registry.json and index.html to their state before this run')
         sys.exit(1)
     shutil.rmtree(backup)
+    save_tools_record(node, marked)
     print('sync complete: registry.json, HTML seed, pending queue, documents, verify.cjs passed')
 
 

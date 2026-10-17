@@ -137,7 +137,17 @@ python3 Maintanance/RegistryApp/sync.py --node <nodeのパス> --marked <marked.
 python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registry・registry.json・HTML seedのずれを出す。ずれがあれば終了コード1
 ```
 
-`--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略すると`PATH`上の`node`と、環境の`marked`を使う。
+`--node`・`--marked`は、環境変数`REGISTRY_STUDIO_NODE`・`REGISTRY_STUDIO_MARKED`でも指定できる。省略時の探し方は下の「Node・markedの確認と記録」。
+
+### Node・markedの確認と記録（2026-10-17、OPS-065）
+
+毎回探し直さないために、`sync.py`は使えた`node`と`marked.esm.js`のパスを`Maintanance/RegistryApp/local-tools.json`へ保存する。このファイルは環境固有なのでGit管理外（`.gitignore`）。本READMEには環境固有のパスを書かない。
+
+- **確認方法**：`python3 Maintanance/RegistryApp/sync.py --show-tools`。何も書き換えずに、使われる`node`・`marked`とその出どころ（flag/env／saved record／PATH／search）と、記録ファイルの有無を表示する。
+- **優先順位**：`--node`／`--marked`または環境変数 → 保存済みの記録（`node --version`が通り、`marked.esm.js`が実在する場合だけ再利用） → `PATH`上の`node` → 既知の置き場所の探索（Codex実行環境、Homebrew、nvm、volta など）。保存済みが使えないときだけ探索し、その旨を表示する。
+- **記録先**：`sync.py`が成功したときに`local-tools.json`へ`node`・`nodeVersion`・`marked`・`verifiedAt`を書く。flagや環境変数で指定した場合も、その値が記録される。
+- **やり直し**：`local-tools.json`を消すと次回は探索からやり直す。見つからなければ`--node PATH`を一度渡す（以後は記録される）。
+- **AI用キャッシュとの関係**：環境固有のパスは各AIのCache領域ではなくこの記録に置く。READMEと記録の役割を分け、READMEには確認方法と記録先だけを書く。
 
 - **作り直すもの：** task・依存辺・親子・常設区分（Registryから）、生成元のhash、baseline、HTML seed、採番待ち（`build-pending.py`）、内蔵文書（`build-documents.mjs`）。最後に`verify.cjs`を通す。
 - **持ち越すもの：** なし（2026-10-17から）。`registry.json`は毎回、空から作る。task・依存・マイルストーン接続はRegistryから、到達点のカードと列はゲートのファイル（`Maintanance/Milestones/`）から、現在地は`Milestones/HEAD.md`から作る。既存の`registry.json`は差分の報告にだけ読み、無くても作れる。

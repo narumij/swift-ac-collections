@@ -107,3 +107,7 @@ OPS-069第1〜3段を部分受入、OPS-078の2カード入替不具合を限定
 2026-10-18：番号なし通常カードの生成漏れとファイル集合照合をOPS-080へ正式登録し、姫へ依頼。OPS-079は受入commit b07c1b8e。
 
 2026-10-18 OPS-080受入完了：番号なし通常カードの生成漏れと実ファイル集合の照合を解消。GOAL除外維持。独立sync/verify 24 PASS、詳細は[正本](REGISTRY_STUDIO_UNNUMBERED_CARDS.md)。
+
+2026-10-18：ユーザー指定の一般タスク新規追加案（独立欄・依存見取り図、仮ID、JSON保存）をOPS-081へ登録し姫へ依頼。[正本](REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md)。正式採番・Registry反映はAI取込時に行う。
+
+2026-10-18 OPS-081受入：新規タスク案を正式taskと分離して追加・編集・接続・取消・JSON保存できる機能を受入。独立25 PASSと操作スモークPASS。Safari未確認。詳細・制限は[正本](REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md#astra受入2026-10-18)。

@@ -264,3 +264,28 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
   for(const e of original.milestoneRelations)if(e.successor===end.id&&!msIds.has(e.prerequisite))members.add(e.prerequisite);
   for(const id of members){assert(reaches(id,end.id),id+' does not reach '+end.id);checked++;}}
  console.log('PASS: every version folder is a DAG rooted at its END ('+checked+' nodes).');}
+// Task proposals (OPS-081): drafts live in doc.proposals with draft-N IDs; formal tasks still cannot be added.
+{const base=copy(original),end=original.milestones.find(m=>m.id.startsWith('END-')&&m.state!=='DONE').id,someTask=original.tasks.find(t=>!t.permanent).id;
+ let r=ctx.addProposal(base,'  新しい案 ','メモ');assert.equal(r.id,'draft-1');assert.deepEqual(r.data.proposals,[{id:'draft-1',title:'新しい案',memo:'メモ'}]);assert.deepEqual(r.data.baseline,base.baseline);assert.equal(r.data.tasks.length,base.tasks.length);
+ const r2=ctx.addProposal(r.data,'二つ目','');assert.equal(r2.id,'draft-2');
+ assert(ctx.independentGroups(r2.data).regular.some(t=>t.id==='draft-1'&&t.proposal),'an unconnected proposal is listed as independent');
+ let c=ctx.addMilestoneRelation(r2.data,'draft-1',end);assert(c.milestoneRelations.some(e=>e.prerequisite==='draft-1'&&e.successor===end&&e.conditionReview==='相談待ち'));assert(!ctx.independentGroups(c).regular.some(t=>t.id==='draft-1'));
+ c=ctx.addMilestoneRelation(c,'draft-2','START-'+end.slice(4));c=ctx.addProposalEdge(c,'draft-2','draft-1');c=ctx.addProposalEdge(c,someTask,'draft-2','PARALLEL_JOIN');
+ assert(c.edges.filter(e=>/^draft-/.test(e.prerequisite)||/^draft-/.test(e.successor)).every(e=>e.conditionReview==='相談待ち'&&e.constraint===''));
+ ctx.doc=c;assert(ctx.graphData().nodes.some(n=>n.id==='draft-1'&&n.proposal&&n.state==='追加案'));assert(ctx.delta().some(x=>x.field==='proposals'&&x.new.length===2));
+ assert.throws(()=>ctx.addProposalEdge(c,'draft-1','draft-1'),/参照先/);
+ assert.throws(()=>ctx.addProposalEdge(c,'draft-1','draft-2'),/循環/);
+ assert.throws(()=>ctx.addProposalEdge(c,'draft-9',someTask),/参照先/);
+ assert.throws(()=>ctx.addProposalEdge(c,'draft-2','draft-1'),/重複/);
+ assert.throws(()=>ctx.addProposal(c,'   ',''),/タイトル/);
+ assert.throws(()=>ctx.addMilestoneRelation(c,'draft-1','GATE-'+end.slice(4)));
+ let x=copy(c);x.proposals.push({id:'draft-1',title:'重複',memo:''});assert.throws(()=>ctx.check(x),/重複/);
+ x=copy(c);x.proposals.push({id:'NEW-1',title:'形式違い',memo:''});assert.throws(()=>ctx.check(x),/仮ID/);
+ x=copy(c);x.milestones=x.milestones.concat([{...x.milestones.find(m=>m.id===end),id:'draft-7'}]);x.proposals.push({id:'draft-7',title:'衝突',memo:''});assert.throws(()=>ctx.check(x));
+ x=copy(c);x.baseline.proposals=[{id:'draft-5',title:'a',memo:''}];assert.throws(()=>ctx.check(x),/baseline/);
+ x=copy(c);x.tasks.push({...x.tasks[0],id:'NEW-TASK-1'});assert.throws(()=>ctx.check(x),/task追加/);
+ const saved=JSON.parse(JSON.stringify(c));ctx.check(saved);assert.deepEqual(saved,c);
+ const u=ctx.updateProposal(c,'draft-1','改題','新メモ');assert.deepEqual(u.proposals.find(p=>p.id==='draft-1'),{id:'draft-1',title:'改題',memo:'新メモ'});assert.throws(()=>ctx.updateProposal(c,'draft-1','',''),/タイトル/);
+ const rm=ctx.removeProposal(ctx.removeProposal(c,'draft-1'),'draft-2');assert.deepEqual(rm.edges,base.edges);assert.deepEqual(rm.milestoneRelations,base.milestoneRelations);assert(!('proposals' in rm));ctx.doc=rm;assert.equal(ctx.delta().length,0);
+ const edited=copy(base);edited.tasks[0].state='DONE';ctx.check(edited);ctx.doc=edited;assert(!ctx.delta().some(x=>x.field==='proposals'));ctx.doc=copy(original);
+ console.log('PASS: task proposals (draft-N, independent/milestone/task/proposal lines, 相談待ち, self/cycle/unknown/duplicate/collision rejection, formal task add still refused, save-reload, edit, cancel without traces).');}

@@ -154,3 +154,11 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-080 — 受入・依頼終了（2026-10-18 / Astra）
 
 番号なしカードの生成修正と欠落検知を受入。独立sync/verify 24 PASS、missingなし、--checkずれなし。Safari未確認。正本に受入範囲を記録し、依頼終了。
+
+## OPS-081 — Studioから新規タスク案を追加する（2026-10-18 / Astra）
+
+ユーザー指示による正式依頼。[正本](Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md)に従い、独立タスク欄・依存見取り図に一般タスク案を追加し、仮IDと接続を編集結果JSONへ保存できるようにしてください。正式採番・正本反映はAI取込時。最初に短い作業内訳を記入し、確定範囲内で進める。依頼完成で指定範囲を姫へ受渡し、Astraは返却待ち。commitなし。
+
+## OPS-081 — 受入・依頼終了（2026-10-18 / Astra）
+
+[正本](Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md)のとおり新規タスク案の追加・保存・取消を受入。独立sync/verify 25 PASS、操作スモークPASS、--checkずれなし。Safari実表示・実ダウンロードは未確認。ユーザーcommit許可によりDONE、依頼終了。

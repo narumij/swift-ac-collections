@@ -123,6 +123,7 @@
 | `OPS-078` | `DONE` | 姫（実装・検証） / Astra（受入。Fable代理は返却の照合とRegistry反映） | [EXECUTION] Studioのverifyを固定データ前提から配置由来の構造検査へ直す | 2026-10-18 Astra限定受入。efc3868a8の2カード入替修正を照合し、現入替配置でsync/verify 22 PASS・missingなし。元配置は姫の検証記録を受領。Safari未確認。同版複数カード鎖等の検査一般化はOPS-048の保守候補に保持 | `Maintanance/Current/REGISTRY_STUDIO_VERIFY_FIXTURE_COUPLING.md` |
 | `OPS-079` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 同版の複数中間カードを名前順の鎖として検査する | 2026-10-18 Astra受入。名前順の複数カード鎖検査、最新仕様のGOAL除外を反映し独立sync/verify 23 PASS・missingなし・--checkずれなし。Safari未確認。番号なし通常カードの生成器取りこぼしはOPS-048の修正候補へ保持 | `Maintanance/Current/REGISTRY_STUDIO_MULTIPLE_MILESTONES.md` |
 | `OPS-080` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 番号なし中間カードの生成漏れを修正する | 2026-10-18 Astra受入。番号なしカードの読込み・実ファイルからの欠落検知・GOAL除外を確認。独立sync/verify 24 PASS、missingなし、--checkずれなし。Safari未確認。ユーザーcommit許可済み | `Maintanance/Current/REGISTRY_STUDIO_UNNUMBERED_CARDS.md` |
+| `OPS-081` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioの見取り図・独立欄から新規タスク案を追加する | 2026-10-18 Astra受入。追加案・仮ID・接続・JSON往復・取消を確認。独立sync/verify 25 PASS、操作スモークPASS、--checkずれなし。Safari実表示・実ダウンロード未確認。正式採番・正本反映はAI取込時。ユーザーcommit許可済み | `Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -316,6 +317,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-078` |
 | `OPS-048` | `OPS-079` |
 | `OPS-048` | `OPS-080` |
+| `OPS-048` | `OPS-081` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

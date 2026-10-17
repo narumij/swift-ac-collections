@@ -20,6 +20,7 @@ header{padding:12px 28px}.header-row{display:flex;align-items:center;justify-con
 .independent-strip .task .state-band{position:absolute;left:0;right:0;bottom:0;height:25px;margin:0;padding:4px 11px;font-size:12px;line-height:17px;font-weight:600;letter-spacing:0}
 .independent-strip .card-document{position:absolute;right:4px;top:2px;width:40px;height:22px;padding:3px 6px;font-size:12px;line-height:16px;color:#126c58;text-decoration:none}
 .independent-strip .card-document:hover{text-decoration:underline}
+.independent-strip .task-shell:has(.task.proposal){border-style:dashed}
 .independent-strip .task-shell.request-shell{height:auto;border:1px dashed var(--line)}
 .independent-strip .request-shell>.pending-card{flex:1 1 auto;width:100%;margin:0;border:0;border-radius:0}
 .graph-help{margin:0 0 10px}.graph-help summary{font-size:12px;color:var(--accent);width:fit-content}.graph-help p{margin-bottom:0}
@@ -30,9 +31,9 @@ header{padding:12px 28px}.header-row{display:flex;align-items:center;justify-con
 </style>
 <header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button></div></div><p class="header-note">保存したJSONをAIへ渡して反映を依頼します。画面の変更だけでは正本は変わりません。</p></header>
 <div id="status" class="status" role="status" hidden></div>
-<div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
+<div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
 <dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
-<dialog id="relationDialog"><h2>依存のつなぎ替え</h2><div id="relationEditor"></div></dialog>
+<dialog id="relationDialog"><h2>依存のつなぎ替え</h2><div id="relationEditor"></div></dialog><dialog id="proposalDialog"><h2>タスク追加（追加案）</h2><div id="proposalForm"></div></dialog>
 <div id="graphTip" class="graph-tooltip" role="tooltip" hidden></div>
 <script id="seed" type="application/json">{}</script>
 <script id="documents" type="application/json">{}</script>
@@ -51,24 +52,41 @@ function check(d){
  const ids=new Set();for(const t of tasks){if(!t.id||ids.has(t.id))throw Error('IDの欠落・重複');ids.add(t.id);for(const f of ['id','state','owner','item','condition','detail','raw'])if(typeof t[f]!=='string')throw Error('taskの欄が不正: '+f);}
  const seen=new Set(),adj=new Map(tasks.map(t=>[t.id,[]]));for(const e of edges){if(!ids.has(e.prerequisite)||!ids.has(e.successor)||e.prerequisite===e.successor)throw Error('依存の参照先が不正');if(!['SEQUENCE','PARALLEL_JOIN'].includes(e.flow)||typeof e.constraint!=='string')throw Error('Flowまたは条件が不正');let k=e.prerequisite+'>'+e.successor;if(seen.has(k))throw Error('依存の重複');seen.add(k);adj.get(e.prerequisite).push(e.successor);}
  const done=new Set(),stack=new Set();function walk(x){if(stack.has(x))throw Error('循環する依存は追加できません');if(done.has(x))return;stack.add(x);for(const y of adj.get(x))walk(y);stack.delete(x);done.add(x);}tasks.forEach(t=>walk(t.id));
- }model(d.tasks,d.edges);model(d.baseline.tasks,d.baseline.edges);
+ }const props=proposalNodes(d,true);model(d.tasks.concat(props),d.edges);model(d.baseline.tasks,d.baseline.edges);
+ if((d.baseline.proposals||[]).length)throw Error('baselineに追加案は入れられません。');
  if(d.milestones!==undefined||d.milestoneRelations!==undefined){
  if(!Array.isArray(d.milestones)||!Array.isArray(d.milestoneRelations))throw Error('マイルストーン形式が不正');
  if(d.milestoneRelations.some(e=>'relation' in e)||(d.baseline.milestoneRelations||[]).some(e=>'relation' in e))throw Error('旧形式（線の種類あり）のJSONは読み込めません。2026-10-17に線の種類を廃止し、条件は正本の制約文へ移しました。sync.pyで作り直した現行データを使ってください。');
  for(const e of d.milestoneRelations)if(!e.source||typeof e.source.path!=='string'||typeof e.source.quote!=='string'||typeof e.constraint!=='string')throw Error('到達点への接続の出典・条件が不正');
- model(d.tasks.concat(d.milestones),d.edges.concat(d.milestoneRelations.map(e=>({...e,flow:'PARALLEL_JOIN'}))));
+ model(d.tasks.concat(props,d.milestones),d.edges.concat(d.milestoneRelations.map(e=>({...e,flow:'PARALLEL_JOIN'}))));
  }
 
  if(d.tasks.length!==d.baseline.tasks.length||d.tasks.some(t=>!d.baseline.tasks.some(b=>b.id===t.id)))throw Error('この試作ではtask追加・削除は扱いません。');
 }
+// Task proposals (OPS-081): drafts made in Studio before formal numbering. They live in doc.proposals, never in doc.tasks,
+// so the guard against adding formal tasks stays. Draft IDs (draft-N) are lower-case and cannot collide with formal IDs;
+// lines use the existing edges/milestoneRelations with conditions left 相談待ち. The importing AI assigns formal IDs.
+function proposalNodes(d,validate){
+ const list=d.proposals===undefined?[]:d.proposals;if(!Array.isArray(list))throw Error('追加案の形式が不正です。');
+ if(validate){const taken=new Set(d.tasks.map(t=>t.id).concat((d.milestones||[]).map(m=>m.id))),ids=new Set();
+  for(const p of list){if(!p||typeof p.id!=='string'||!/^draft-[1-9]\d*$/.test(p.id))throw Error('追加案の仮IDが不正です: '+(p&&p.id));if(ids.has(p.id))throw Error('追加案の仮IDが重複しています: '+p.id);if(taken.has(p.id))throw Error('追加案の仮IDが既存のIDと衝突しています: '+p.id);ids.add(p.id);
+   if(typeof p.title!=='string'||!p.title.trim())throw Error('追加案のタイトルが空です: '+p.id);if(typeof p.memo!=='string')throw Error('追加案のメモが不正です: '+p.id);}}
+ return list.map(p=>({id:p.id,kind:'proposal',proposal:true,item:p.title,memo:p.memo,state:'追加案',owner:'',condition:p.memo,detail:'',raw:'',sourceLine:''}));
+}
+function nextProposalId(d){let n=0;for(const p of d.proposals||[]){const m=/^draft-(\d+)$/.exec(p.id);if(m)n=Math.max(n,+m[1]);}return 'draft-'+(n+1);}
+function addProposal(data,title,memo){const c=JSON.parse(JSON.stringify(data));const id=nextProposalId(c);c.proposals=(c.proposals||[]).concat([{id,title:String(title||'').trim(),memo:String(memo||'')}]);check(c);return {data:c,id};}
+function updateProposal(data,id,title,memo){const c=JSON.parse(JSON.stringify(data)),p=(c.proposals||[]).find(p=>p.id===id);if(!p)throw Error('追加案が見つかりません: '+id);p.title=String(title||'').trim();p.memo=String(memo||'');check(c);return c;}
+function removeProposal(data,id){const c=JSON.parse(JSON.stringify(data));if(!(c.proposals||[]).some(p=>p.id===id))throw Error('追加案が見つかりません: '+id);const touches=e=>e.prerequisite===id||e.successor===id;
+ c.proposals=c.proposals.filter(p=>p.id!==id);if(!c.proposals.length)delete c.proposals;c.edges=c.edges.filter(e=>!touches(e));if(c.milestoneRelations)c.milestoneRelations=c.milestoneRelations.filter(e=>!touches(e));check(c);return c;}
+function addProposalEdge(data,prerequisite,successor,flow){const c=JSON.parse(JSON.stringify(data));c.edges.push({prerequisite,successor,flow:flow||'SEQUENCE',constraint:'',conditionReview:'相談待ち',raw:null,sourceLine:null});check(c);return c;}
 function stateStyle(state){
- const colors={ACTIVE:['#b9dfc8','#17523d'],WAITING_USER:['#dfc5ed','#63427c'],WAITING_EXTERNAL:['#dceafa','#244e7b'],FROZEN:['#f3f4f5','#68717d'],USER_ONLY:['#f5e0ef','#7b3e6a'],PROPOSED:['#e6f2e9','#42654d'],DONE:['#e9e6e2','#625a50'],EXCLUDED:['#e9e6e2','#625a50'],ARCHIVED:['#ffffff','#565656']};
+ const colors={ACTIVE:['#b9dfc8','#17523d'],WAITING_USER:['#dfc5ed','#63427c'],WAITING_EXTERNAL:['#dceafa','#244e7b'],FROZEN:['#f3f4f5','#68717d'],USER_ONLY:['#f5e0ef','#7b3e6a'],PROPOSED:['#e6f2e9','#42654d'],DONE:['#e9e6e2','#625a50'],EXCLUDED:['#e9e6e2','#625a50'],ARCHIVED:['#ffffff','#565656'],'追加案':['#fff4d6','#7a5600']};
  const [bg,fg]=colors[state]||['#ece9dc','#5f5940'];return {bg,fg};
 }
 function stateBand(state){const b=el('span',state,'state-band');const c=stateStyle(state);b.style.background=c.bg;b.style.color=c.fg;return b;}
 function el(tag,text,cls){let e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
 function report(msg,error=false){$('status').hidden=!msg;$('status').textContent=msg;$('status').classList.toggle('error',error);}
-function delta(){let result=[];for(const t of doc.tasks){let b=doc.baseline.tasks.find(x=>x.id===t.id);for(const k of ['state','owner','item','condition'])if(t[k]!==b[k])result.push({task:t.id,field:k,old:b[k],new:t[k]});}if(JSON.stringify(doc.edges)!==JSON.stringify(doc.baseline.edges))result.push({field:'edges',old:doc.baseline.edges,new:doc.edges});if(JSON.stringify(doc.milestoneRelations||[])!==JSON.stringify(doc.baseline.milestoneRelations||doc.milestoneRelations||[]))result.push({field:'milestoneRelations',old:doc.baseline.milestoneRelations,new:doc.milestoneRelations});return result;}
+function delta(){let result=[];for(const t of doc.tasks){let b=doc.baseline.tasks.find(x=>x.id===t.id);for(const k of ['state','owner','item','condition'])if(t[k]!==b[k])result.push({task:t.id,field:k,old:b[k],new:t[k]});}if(JSON.stringify(doc.edges)!==JSON.stringify(doc.baseline.edges))result.push({field:'edges',old:doc.baseline.edges,new:doc.edges});if(JSON.stringify(doc.milestoneRelations||[])!==JSON.stringify(doc.baseline.milestoneRelations||doc.milestoneRelations||[]))result.push({field:'milestoneRelations',old:doc.baseline.milestoneRelations,new:doc.milestoneRelations});if(JSON.stringify(doc.proposals||[])!==JSON.stringify(doc.baseline.proposals||[]))result.push({field:'proposals',old:doc.baseline.proposals||[],new:doc.proposals||[]});return result;}
 function banner(){$('sourceInfo').textContent='生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')+' · '+delta().length+'件の変更'+(dirty?' ／ ファイル未保存':'')+(formDirty?' ／ 入力を編集中：下の「変更を適用」で確定':'');}
 function options(select,values,value){for(const v of values){const o=el('option',v);o.value=v;select.append(o);}select.value=value;}
 function renderStateLegend(){
@@ -123,7 +141,7 @@ function renderRequests(){
 function render(){renderProtection();renderPending();renderRequests();renderStateLegend();graph();independent();permanentMap();editor();banner();if(!$('diffPanel').hidden)showDiff();}
 function select(id){if(formDirty&&!confirm('編集中の入力を破棄して移動しますか？'))return;formDirty=false;selected=id;render();}
 function taskDocumentPaths(t){return [...new Set([...t.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))];}
-function cardWithDocuments(card,t){const shell=el('div',undefined,'task-shell');shell.append(card);if(taskDocumentPaths(t).length){const a=el('a','正本','card-document');a.href='#document';a.setAttribute('aria-label',t.id+' の正本を読む');a.onclick=e=>{e.preventDefault();e.stopPropagation();openTaskDocuments(t);};shell.append(a);}return shell;}
+function cardWithDocuments(card,t){const shell=el('div',undefined,'task-shell');shell.append(card);if(!t.proposal&&taskDocumentPaths(t).length){const a=el('a','正本','card-document');a.href='#document';a.setAttribute('aria-label',t.id+' の正本を読む');a.onclick=e=>{e.preventDefault();e.stopPropagation();openTaskDocuments(t);};shell.append(a);}return shell;}
 function openTaskDocuments(t){const paths=taskDocumentPaths(t);if(paths.length===1){openDocument(paths[0]);return;}const dialog=$('documentDialog');$('documentTitle').textContent=t.id+' の正本';$('documentStamp').textContent='読む文書を選択してください';$('documentBody').replaceChildren(documentLinks(t.detail));if(!dialog.open)dialog.showModal();}
 
 function svg(tag,attrs,text){let n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;return n;}
@@ -135,7 +153,7 @@ function graphData(){
  for(const e of doc.milestoneRelations||[]){if(e.prerequisite.startsWith('END-')&&e.successor.startsWith('GATE-'))ends.set(e.prerequisite,e.successor);if(e.prerequisite.startsWith('GATE-')&&e.successor.startsWith('START-'))starts.set(e.successor,e.prerequisite);}
  const hidden=new Set(ms.filter(m=>m.id.startsWith('END-')||(m.id.startsWith('START-')&&starts.has(m.id))).map(m=>m.id));
  const asMilestone=!ms.some(m=>m.id==='MS-QUALITY');  // older data drew QUALITY-001 as the 1.0 milestone; MS-QUALITY now plays that part
- const nodes=doc.tasks.map(t=>asMilestone&&t.id==='QUALITY-001'?{...t,kind:'milestone',item:'1.0 品質判断'}:t).concat(ms.filter(m=>!hidden.has(m.id)));
+ const nodes=doc.tasks.map(t=>asMilestone&&t.id==='QUALITY-001'?{...t,kind:'milestone',item:'1.0 品質判断'}:t).concat(proposalNodes(doc),ms.filter(m=>!hidden.has(m.id)));
  const rel=[];for(const e of doc.milestoneRelations||[]){const out={...e};
   if(hidden.has(e.prerequisite)){const from=starts.get(e.prerequisite);if(!from)continue;out.prerequisite=from;out.shownFrom=e.prerequisite;}
   if(hidden.has(e.successor)){const to=ends.get(e.successor);if(!to)continue;out.successor=to;out.shownFor=e.successor;}
@@ -286,13 +304,15 @@ function independentGroups(data){
  const underPermanent=t=>{const seen=new Set();for(let p=t.parentTask;p&&!seen.has(p);p=byId.get(p)?.parentTask){if(permanentIds.has(p))return true;seen.add(p);}return false;};
  const regular=data.tasks.filter(t=>!t.permanent&&!attached.has(t.id)&&!underPermanent(t));
  const used=new Set(links.flatMap(e=>[e.successor,e.prerequisite]));
- return {regular:regular.sort((a,b)=>stateRank(a.state)-stateRank(b.state)),permanent:data.tasks.filter(t=>t.permanent&&!used.has(t.id))};
+ // Task proposals (OPS-081) without a route to a milestone follow the regular tasks.
+ const proposals=(typeof proposalNodes==='function'?proposalNodes(data):[]).filter(p=>!attached.has(p.id));
+ return {regular:regular.sort((a,b)=>stateRank(a.state)-stateRank(b.state)).concat(proposals),permanent:data.tasks.filter(t=>t.permanent&&!used.has(t.id))};
 }
 function independent(){
  const groups=independentGroups(doc);
  function fill(id,countId,tasks){
  $(countId).textContent=tasks.length+'件';const strip=$(id),scroll=strip.scrollLeft;strip.replaceChildren();
- for(const t of tasks){const b=el('button',undefined,'task'+(selected===t.id?' selected':''));b.setAttribute('aria-pressed',String(selected===t.id));b.append(el('strong',t.id+(t.permanent?' · 常設':'')),el('span',t.item.replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,'')),stateBand(t.state));b.title=t.item+'\n担当：'+t.owner+'\n状態：'+t.state+'\n条件：'+t.condition;b.onclick=()=>select(t.id);strip.append(cardWithDocuments(b,t));}strip.scrollLeft=scroll;
+ for(const t of tasks){const b=el('button',undefined,'task'+(selected===t.id?' selected':''));b.setAttribute('aria-pressed',String(selected===t.id));b.append(el('strong',t.id+(t.permanent?' · 常設':'')),el('span',t.item.replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,'')),stateBand(t.state));b.title=t.item+'\n担当：'+t.owner+'\n状態：'+t.state+'\n条件：'+t.condition;b.onclick=()=>select(t.id);if(t.proposal){b.classList.add('proposal');b.querySelector('strong').textContent=t.id+' · 追加案';b.title=t.item+'\n追加案（正式採番前）\nメモ：'+(t.memo||'なし');strip.append(cardWithDocuments(b,t));}else strip.append(cardWithDocuments(b,t));}strip.scrollLeft=scroll;
  if(!tasks.length)strip.append(el('p','該当するタスクはありません。','muted'));
  }
  fill('independent','independentCount',groups.regular);
@@ -355,7 +375,7 @@ function rewireRelation(data,e,prerequisite,successor){
 }
 function addMilestoneRelation(data,taskId,targetId){
  // Connect a task to an END or an intermediate card (2026-10-17, OPS-061/062). Release gates are entered only from END, so GATE-* is refused. Lines have no kind; conditions are text.
- if(!data.tasks.some(t=>t.id===taskId))throw Error('タスクが見つかりません: '+taskId);
+ if(!data.tasks.some(t=>t.id===taskId)&&!(data.proposals||[]).some(p=>p.id===taskId))throw Error('タスクが見つかりません: '+taskId);
  const ms=new Map((data.milestones||[]).map(m=>[m.id,m]));if(!ms.has(targetId))throw Error('到達点が見つかりません: '+targetId);
  if(targetId.startsWith('GATE-'))throw Error('版ゲートへはタスクをつなげません。版ゲートへ入る線はENDからだけです。その版のEND-x.y.zを選んでください。');
  // A version START is the source of the line (START → task): the task starts in that version's interval (OPS-069).
@@ -371,7 +391,7 @@ function editRelation(e){
  const target=id=>id;
  const dialog=$('relationDialog'),box=$('relationEditor');box.replaceChildren();
  box.append(el('p','変更前：'+orig.prerequisite+' → '+orig.successor+(orig.prerequisite!==e.prerequisite||orig.successor!==e.successor?'（図では '+e.prerequisite+' → '+e.successor+'）':'')),el('pre',linkLabel(orig)+' / '+e.constraint+(e.source?'\n出典（変更前の根拠）：'+e.source.path+':'+e.source.line:'')));
- const nodes=isMilestoneLink(orig)?doc.tasks.concat((doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-'))):doc.tasks;  // tasks never connect to a release gate
+ const nodes=isMilestoneLink(orig)?doc.tasks.concat(proposalNodes(doc),(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-'))):doc.tasks.concat(proposalNodes(doc));  // tasks never connect to a release gate
  function picker(label,value){const l=el('label',label),select=el('select');for(const n of nodes){const o=el('option',n.id+' — '+n.item);o.value=n.id;select.append(o);}select.value=value;l.append(select);box.append(l);return select;}
  const pre=picker('前提（矢印の出発点）',orig.prerequisite),next=picker('後続（矢印の到着点）',orig.successor),preview=el('p'),error=el('p',undefined,'unsaved');error.setAttribute('role','alert');
  const refresh=()=>{const t=target(next.value);preview.textContent='変更後：'+pre.value+' → '+next.value+(t!==next.value?'（データ上は '+t+'）':'');};pre.onchange=refresh;next.onchange=refresh;refresh();box.append(preview,el('p','元の条件文は参照用に保持します。つなぎ替え後の条件はAIとの相談待ちとして保存し、正本反映前に一緒に決めます。'+(!isMilestoneLink(orig)?' タスク間の依存はタスク同士でつなぎ替えます。':''),'muted'),error);
@@ -397,10 +417,10 @@ function graph(){
  const measure=document.createElement('canvas').getContext('2d');measure.font='12px -apple-system, sans-serif';
  function lines(text){let out=[''];for(const ch of text){let i=out.length-1;if(measure.measureText(out[i]+ch).width>W-24)out.push(ch);else out[i]+=ch;}if(out.length>2){out=out.slice(0,2);while(measure.measureText(out[1]+'…').width>W-24)out[1]=out[1].slice(0,-1);out[1]+='…';}return out;}
  function show(t,x,y){tip.textContent=t.id+(t.kind==='milestone'?' · 到達点':t.permanent?' · 常設':'')+'\n'+t.item+'\n\n状態：'+t.state+'\n担当：'+t.owner+'\n\n条件：'+t.condition;tip.hidden=false;const r=tip.getBoundingClientRect();tip.style.left=Math.max(12,Math.min(x+14,innerWidth-r.width-12))+'px';tip.style.top=Math.max(12,Math.min(y+14,innerHeight-r.height-12))+'px';}
- for(const t of data.nodes.filter(t=>pos.has(t.id))){let [x,y]=pos.get(t.id);const g=svg('g',{class:'node',tabindex:0,role:'button','aria-label':t.id+' '+t.item,transform:`translate(${x} ${y})`});g.append(svg('rect',{width:W,height:H,rx:7,fill:t.id===selected?'#d4edbc':t.kind==='milestone'?'#fff1c9':'#fff',stroke:t.id===selected?'#126c58':'#b8ccc0'}),svg('text',{x:12,y:18,fill:'#657477'},t.id+(t.kind==='milestone'?' · 到達点':t.permanent?' · 常設':'')));
+ for(const t of data.nodes.filter(t=>pos.has(t.id))){let [x,y]=pos.get(t.id);const g=svg('g',{class:'node',tabindex:0,role:'button','aria-label':t.id+' '+t.item,transform:`translate(${x} ${y})`});g.append(svg('rect',{width:W,height:H,rx:7,fill:t.id===selected?'#d4edbc':t.kind==='milestone'?'#fff1c9':'#fff',stroke:t.id===selected?'#126c58':'#b8ccc0','stroke-dasharray':t.proposal?'5 3':''}),svg('text',{x:12,y:18,fill:'#657477'},t.id+(t.kind==='milestone'?' · 到達点':t.proposal?' · 追加案':t.permanent?' · 常設':'')));
  lines(t.item.replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/, '')).forEach((line,i)=>g.append(svg('text',{x:12,y:40+i*17,fill:'#213b32','font-weight':600},line)));
  const band=stateStyle(t.state);g.append(svg('path',{d:`M0 70 H${W} V${H-7} Q${W} ${H} ${W-7} ${H} H7 Q0 ${H} 0 ${H-7} Z`,fill:band.bg}),svg('text',{x:12,y:87,fill:band.fg,'font-weight':600},t.state));g.onpointerenter=e=>show(t,e.clientX,e.clientY);g.onpointermove=e=>show(t,e.clientX,e.clientY);g.onpointerleave=()=>tip.hidden=true;g.onfocus=()=>{const r=g.getBoundingClientRect();show(t,r.left,r.bottom);};g.onblur=()=>tip.hidden=true;g.onclick=()=>{tip.hidden=true;select(t.id);};g.onkeydown=e=>{if(e.key==='Enter')select(t.id);if(e.key==='Escape')tip.hidden=true;};s.append(g);
- if(taskDocumentPaths(t).length){const link=svg('a',{href:'#document',tabindex:0,'aria-label':t.id+' の正本を読む',transform:`translate(${x+W-46} ${y+3})`});link.append(svg('rect',{width:42,height:22,fill:'transparent'}),svg('text',{x:8,y:15,fill:'#126c58'},'正本'));const open=e=>{e.preventDefault();e.stopPropagation();tip.hidden=true;openTaskDocuments(t);};link.onclick=open;link.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')open(e);};s.append(link);}
+ if(!t.proposal&&taskDocumentPaths(t).length){const link=svg('a',{href:'#document',tabindex:0,'aria-label':t.id+' の正本を読む',transform:`translate(${x+W-46} ${y+3})`});link.append(svg('rect',{width:42,height:22,fill:'transparent'}),svg('text',{x:8,y:15,fill:'#126c58'},'正本'));const open=e=>{e.preventDefault();e.stopPropagation();tip.hidden=true;openTaskDocuments(t);};link.onclick=open;link.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')open(e);};s.append(link);}
  }$('graph').replaceChildren(s);$('graph').onscroll=()=>tip.hidden=true;
 }
 
@@ -445,6 +465,7 @@ function renderTaskPicker(){
  picker.onchange=()=>{select(picker.value);picker.value=selected||'';};
 }
 function editor(){renderTaskPicker();const box=$('editor');box.replaceChildren();const t=graphData().nodes.find(t=>t.id===selected);if(!t)return;
+ if(t.proposal){proposalEditor(t);return;}
  if(t.kind==='milestone'){$('selectedTitle').textContent=t.item;box.append(el('p','マイルストーン · 原文参照（この画面では編集しません）','muted'),el('h3','条件・判断'),el('pre',t.condition),el('h3','正本'),documentLinks(t.detail));for(const e of graphData().edges.filter(e=>e.successor===t.id||e.prerequisite===t.id)){const d=dataRelation(e);box.append(el('p',d.prerequisite+' → '+d.successor+' / '+linkLabel(d)),el('pre',e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));}return;}
 $('selectedTitle').textContent=t.id+(t.permanent?' · 常設タスク':'');const row=el('div',undefined,'row');box.append(row);const a=el('div'),b=el('div');row.append(a,b);let state=field(a,'状態','state','select','');options(state,[...new Set([...STATES,t.state])],t.state);field(b,'担当','owner','input',t.owner);box.append(el('h3','項目'),el('p',t.item),el('h3','条件・判断の原文'),el('pre',t.condition));
  const apply=el('button','変更を適用','primary'),wrap=el('div',undefined,'buttons');wrap.append(apply);box.append(wrap);apply.onclick=()=>{for(const k of ['state','owner'])t[k]=$(k).value;dirty=true;formDirty=false;render();};
@@ -464,6 +485,40 @@ $('selectedTitle').textContent=t.id+(t.permanent?' · 常設タスク':'');const
  const startSel=field(sleft,'開始する版のSTART（この版の作業区間で始める仕事）','startSource','select','');options(startSel,startIds,(doc.milestones||[]).find(m=>m.id.startsWith('START-')&&m.state!=='DONE')?.id||startIds[startIds.length-1]);$('startSource').oninput=null;sright.append(el('p','図ではSTARTは描かれず、その版の前の版ゲートから線が出ます。開始条件は取り込み時に制約文（「開始側。」で始める）へ書きます。','muted'));
  const startBtn=el('button','STARTからつなぐ');box.append(startBtn);startBtn.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,startSel.value);dirty=true;render();}catch(e){report(e.message,true);}};
 }
+// Editor for a task proposal (OPS-081): title/memo correction, cancellation, and lines to tasks, proposals and milestones.
+function proposalEditor(t){
+ const box=$('editor');$('selectedTitle').textContent=t.id+' · 追加案';
+ box.append(el('p','正式採番前の追加案です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。状態・担当は取り込み時に決めます。','muted'));
+ const title=field(box,'タイトル（必須）','proposalTitle','input',t.item),memo=field(box,'メモ','proposalMemo','textarea',t.memo);
+ const wrap=el('div',undefined,'buttons'),apply=el('button','変更を適用','primary'),cancel=el('button','この追加案を取り消す');wrap.append(apply,cancel);box.append(wrap);
+ apply.onclick=()=>{try{doc=updateProposal(doc,t.id,title.value,memo.value);dirty=true;formDirty=false;render();}catch(e){report(e.message,true);}};
+ cancel.onclick=()=>{if(!confirm(t.id+' を取り消しますか？ この案につながる線も一緒に消えます。'))return;try{doc=removeProposal(doc,t.id);selected=doc.tasks[0]?.id;dirty=true;formDirty=false;render();}catch(e){report(e.message,true);}};
+ const guard=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return false;}return true;};
+ const others=doc.tasks.map(x=>x.id).concat(proposalNodes(doc).map(x=>x.id)).filter(id=>id!==t.id);
+ const listEdges=(heading,edges,end)=>{box.append(el('h3',heading));if(!edges.length)box.append(el('p','まだありません。','muted'));for(const e of edges){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation(isMilestoneLink(e)?{...e,flow:'PARALLEL_JOIN'}:e);div.append(remove,el('strong',end(e)+(e.flow&&!isMilestoneLink(e)?' · '+e.flow:'')),el('p','条件：AIと相談待ち','muted'));box.append(div);}};
+ const addEdgeRow=(label,id,onAdd)=>{const r=el('div',undefined,'row'),left=el('div'),right=el('div');r.append(left,right);box.append(r);const pick=field(left,label,id,'select','');options(pick,others,others[0]);const flow=field(right,'合流位置',id+'Flow','select','');options(flow,['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE');pick.oninput=null;flow.oninput=null;const b=el('button',label+'に追加');box.append(b);b.onclick=()=>{if(!guard())return;try{doc=onAdd(pick.value,flow.value);dirty=true;render();}catch(e){report(e.message,true);}};};
+ listEdges('この案の前提',doc.edges.filter(e=>e.successor===t.id),e=>e.prerequisite);
+ if(others.length)addEdgeRow('前提','proposalPre',(id,flow)=>addProposalEdge(doc,id,t.id,flow));
+ listEdges('この案を前提にする後続',doc.edges.filter(e=>e.prerequisite===t.id),e=>e.successor);
+ if(others.length)addEdgeRow('後続','proposalNext',(id,flow)=>addProposalEdge(doc,t.id,id,flow));
+ listEdges('この案がつながる到達点・始まる版',(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id||e.successor===t.id),e=>e.prerequisite===t.id?e.successor:e.prerequisite+'（開始）');
+ const targets=(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-')).map(m=>m.id);
+ if(targets.length){const r=el('div',undefined,'row'),left=el('div');r.append(left);box.append(r);const target=field(left,'到達点（ENDか途中のカード）または開始する版のSTART','proposalTarget','select','');options(target,targets,targets.find(id=>id.startsWith('END-'))||targets[0]);target.oninput=null;const b=el('button','つなぐ');box.append(b);b.onclick=()=>{if(!guard())return;try{doc=addMilestoneRelation(doc,t.id,target.value);dirty=true;render();}catch(e){report(e.message,true);}};}
+}
+function openProposalDialog(){
+ if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}
+ const dialog=$('proposalDialog'),box=$('proposalForm');box.replaceChildren();
+ const label=(text,control)=>{const l=el('label',text);l.append(control);box.append(l);return control;};
+ const title=label('タイトル（必須）',el('input')),memo=label('メモ（任意）',el('textarea'));memo.rows=4;
+ const place=label('置き場所',el('select'));const opt=(v,text)=>{const o=el('option',text);o.value=v;place.append(o);};opt('','独立タスクとして置く');
+ for(const m of (doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-')&&!m.id.startsWith('START-')))opt('ms:'+m.id,'到達点 '+m.id+' へつなぐ');
+ for(const x of doc.tasks.concat(proposalNodes(doc)))opt('task:'+x.id,x.id+' の前提にする');
+ const error=el('p',undefined,'unsaved');error.setAttribute('role','alert');box.append(el('p','線の条件は「AIと相談待ち」で保存します。正式IDと正本は取り込み時に付きます。','muted'),error);
+ const buttons=el('div',undefined,'buttons'),add=el('button','追加','primary'),cancel=el('button','キャンセル');buttons.append(add,cancel);box.append(buttons);
+ add.onclick=()=>{try{let {data,id}=addProposal(doc,title.value,memo.value);const v=place.value;if(v.startsWith('ms:'))data=addMilestoneRelation(data,id,v.slice(3));else if(v.startsWith('task:'))data=addProposalEdge(data,id,v.slice(5),'SEQUENCE');doc=data;selected=id;dirty=true;dialog.close();render();}catch(e){error.textContent=e.message;}};
+ cancel.onclick=()=>dialog.close();dialog.showModal();title.focus();
+}
+$('addProposal').onclick=openProposalDialog;
 function showDiff(){$('diffPanel').hidden=false;$('diff').textContent=JSON.stringify(delta(),null,2);}
 function switchMap(value){
  const mode=value===true?'permanent':value===false?'dependency':value;

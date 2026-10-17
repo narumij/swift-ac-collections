@@ -105,3 +105,8 @@ RedBlackTreeInternalCoverageTests evidence. Editable scope, stopping conditions,
 and Return are specified there. No product/Tests/CI edits, full suite, commit, or external
 operations. This completed assignment constitutes handoff of the specified output scope
 to Claude; the coordinator will await Return before editing that scope.
+
+## OPS-074 — 浅い棚卸しの補完と更新条件の追記（2026-10-17）
+
+現在の新規依頼はOPS-074。ユーザー明示指示に基づき、姫へアサイン。
+[正本の第2区切り](Current/CANONICAL_INVENTORY_APPEND.md)に従い、集計と誤記の訂正、再現可能な浅い点検明細、分かる範囲の更新条件をお願いします。編集範囲・停止条件・Returnは正本に記載。深い調査、本文短縮、制度変更には広げません。依頼完成をもって指定範囲を受渡し、Astraは返却待ち。成果のcommitは本依頼には含めません。

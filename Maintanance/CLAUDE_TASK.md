@@ -216,3 +216,7 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-086 — 補修受入・依頼終了（2026-10-18 / Astra）
 
 [正本の補修受入](Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md)のとおり受入。独立28 PASS・計画編集/追加欄入力保護smoke成功、--checkずれなし。実マイルストーン反映は不要。Safari未確認。ユーザーcommit承認によりDONE、追加依頼なし。
+
+## OPS-088 — 保存契約に沿うユーザビリティ改善提案（2026-10-18 / Astra）
+
+ユーザー指定の後続依頼。OPS-087仕様化完了を受け、[正本の正式依頼](Current/REGISTRY_STUDIO_SAVE_USABILITY.md)に従い改善案をお願いします。保存契約v1を入力とし、編集/適用/保存/更新/再開/AI取込の分かりにくさを具体例と小さい提案へ。提案までで実装・契約変更なし。指定出力範囲を姫へ受渡し、Astraは返却待ち。commitなし。

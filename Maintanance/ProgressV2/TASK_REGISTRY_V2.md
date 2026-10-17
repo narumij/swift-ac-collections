@@ -105,7 +105,8 @@
 | `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
 | `OPS-060` | `PROPOSED` | User（判断） / Astra（材料整理） | [DECISION] 今後のブランチ命名方針の協議 | ユーザー依頼で候補登録。develop/miscの連番方式と用途名等を協議し、方針と適用範囲をユーザーが決定する。今回は登録のみ、既存名の一括変更・remote操作なし。リリースを止めない。 | `Maintanance/Current/BRANCH_NAMING_DISCUSSION.md` |
 | `OPS-061` | `DONE` | Fable（実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] Studioにタスクを到達点へつなぐ操作を追加 | 2026-10-17ユーザー同席で実施。タスク編集欄に「到達点へつなぐ」を追加。行き先は版のENDか途中カードに限り、版ゲートは拒否（タスクは版の中の行動、ユーザー説明）。追加接続は条件未設定・相談待ちで保存JSONへ出る。verify追加・sync通過・stub DOMスモークテスト済み、Safari実表示は未検証。Registryへの自動反映は含まない。親OPS-048はACTIVE維持 | `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_CONNECT.md` |
-| `OPS-063` | `ACTIVE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` |
+| `OPS-063` | `ACTIVE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。Astra回答済み・Fable回答待ち。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/ASTRA.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/FABLE.md` |
+| `OPS-064` | `ACTIVE` | Fable（実装・検証） / 受入はユーザーかAstra | [EXECUTION] Studio恒久図でサブタスクの正本を開けるようにする | 2026-10-17ユーザー指摘「恒久図にインタビューのファイルが見当たらず正本リンクがない」。サブタスクのカードに正本の印を付けて開けるようにし、OPS-063の詳細正本列へ回答2件を追加。verify追加・sync通過。Safari実表示は未検証。受入後にDONE | `Maintanance/Current/TASK_REGISTRY_APP.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 
@@ -289,6 +290,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-059` |
 | `OPS-048` | `OPS-061` |
 | `OPS-048` | `OPS-062` |
+| `OPS-048` | `OPS-064` |
 | `OPS-043` | `OPS-063` |
 
 ## マイルストーン接続

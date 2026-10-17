@@ -1,5 +1,7 @@
 # ASan strip_envの固定版検証案
 
+> **確定範囲（2026-10-17、OPS-066試行）** 受入済み：固定版`81204d22`・記載macOS環境での既定条件とstrip_env=0の比較（Probe 3件・DeathTests 213件・内部カバレッジ5件が成功、Codex受入）。証拠：返却commit `46d50288`、受入commit `7a092b72`、`Evidence/RBT-049/`。未確認：Linux・他toolchain・全体suite・リリース可否。製品・Tests・CIへの適用判断は含まない。次の確認点：Linux候補CIの成功報告はQUALITY-002側でrun URL・対象SHAの保存待ち（本書末尾の節）。状態の正本はRegistry。
+
 RBT-049 / 作成Astra / 2026-10-16。2026-10-17ユーザーの「RBT-049をひめに依頼して」によりACTIVE。調査Claude（姫）、受入・統合Codex。
 
 入力はASAN_DEATH_TEST_INVESTIGATION.mdの追加受入とCP-20261016-014の原報告・ログ。

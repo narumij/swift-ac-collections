@@ -30,3 +30,8 @@
 ## 改善案1・4のタスク登録（2026-10-17）
 
 ユーザー指示により、改善案1を[OPS-066](CANONICAL_CONFIRMED_SCOPE_SUMMARY.md)（PROPOSED、Astra、登録のみ）、改善案4を[OPS-067](COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md)（USER_ONLY、ユーザー判断）へ接続した。実施や制度変更は今回行わない。
+
+## 改善案1の試行（2026-10-17）
+
+ユーザー「OPS-066をやって」により、Fableが完了正本4件（OPS-061・OPS-062・RBT-049・DOC-045）の冒頭へ「確定範囲」ブロックを置いた。形式と対象の根拠は[OPS-066正本](CANONICAL_CONFIRMED_SCOPE_SUMMARY.md)。Registryの状態は複製していない。受入はユーザーかAstra。
+

@@ -118,7 +118,7 @@ task間依存と合わせたグラフを検査し、接続したtaskは独立列
 
 ## 採番待ちの表示
 
-独立タスクの下にCLAUDE_PENDING_TASKS.mdの未処理entryを読み取り専用で表示する。仮ID・タイトル・queue状態を示し、クリックすると原文を開く。正式task・依存グラフ・タスク選択・編集JSONには混ぜず、表示に伴う採番・受入はしない。現状提示時は `python3 Maintanance/RegistryApp/build-pending.py` でqueueのsnapshotも更新し、続けて `build-documents.mjs` で採番待ち原文もMarkdownへ整形してから配布HTMLへコピーする。正本と同じ表示時のサニタイズを使う。queue本文は変更しない。
+独立タスクの下にCLAUDE_PENDING_TASKS.md（`CP-`、姫）とFABLE_PENDING_TASKS.md（`FP-`、Fable）の未処理entryを読み取り専用で表示する。読むqueueの一覧は`build-pending.py`先頭の`queues`で、別のqueueを足すときはそこに行を足す（存在しないfileは飛ばす）。仮ID・タイトル・queue状態・持ち主を示し、クリックすると原文を開く。正式task・依存グラフ・タスク選択・編集JSONには混ぜず、表示に伴う採番・受入はしない。現状提示時は `python3 Maintanance/RegistryApp/build-pending.py` でqueueのsnapshotも更新し、続けて `build-documents.mjs` で採番待ち原文もMarkdownへ整形してから配布HTMLへコピーする。正本と同じ表示時のサニタイズを使う。queue本文は変更しない。
 
 
 ## 配置維持タブ

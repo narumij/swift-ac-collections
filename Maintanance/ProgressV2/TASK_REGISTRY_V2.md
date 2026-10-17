@@ -118,7 +118,7 @@
 | `OPS-073` | `DONE` | 姫（検討） / Astra（受入） | [DISCOVERY] 情報・知識・判断・契約の寿命を区別する | 2026-10-17最小案を補正付き受入。制度採用・既存判断の失効は含まない | `Maintanance/Current/RECORD_LIFETIME_STUDY.md` |
 | `OPS-074` | `DONE` | 姫（点検） / Astra（受入） | [EXECUTION] 正本の棚卸し追記を段階実施する | 2026-10-17追加返却を受入。2固定版の全JSON再現一致。方式補完まで完了、全体適用はOPS-076。深い検証は対象外 | `Maintanance/Current/CANONICAL_INVENTORY_APPEND.md` |
 | `OPS-075` | `PROPOSED` | User（判断） / 指名された調整担当（材料整理） | [DECISION] 姫を称号から屋号へ変えるか判断する | CP-009を正式登録。時期の目安はFableが安くなったとき、再開はユーザー指定時。現行称号・モデル別委任を維持し、登録のみで移行しない | `Maintanance/Current/HIME_TRADE_NAME_DECISION.md` |
-| `OPS-076` | `ACTIVE` | 姫（実施） / Astra（受入） | [EXECUTION] 根拠と更新条件の追記を現行正本へ全体展開する | 第1区切りを補正付き受入。OPS-074完了を確認し、第2区切りの6文書へ限定発注。本文改変・制度採用・保留42件の深掘りは対象外 | `Maintanance/Current/CANONICAL_EVIDENCE_ROLLOUT.md` |
+| `OPS-076` | `ACTIVE` | 姫（実施） / Astra（受入） | [EXECUTION] 根拠と更新条件の追記を現行正本へ全体展開する | 第2区切り6文書を受入、当初対象7件の追記完了。第3区切りとして保留42件の浅い仕分け・候補抽出を姫へ依頼。今回は対象本文を編集せず、新規EvidenceとReturnのみ。深掘り・制度採用は対象外 | `Maintanance/Current/CANONICAL_EVIDENCE_ROLLOUT.md` |
 | `OPS-062` | `DONE` | Fable（正本・実装・検証・受入、ユーザー指示による自己受入） | [EXECUTION] マイルストーン接続の線の種類を廃止し条件を制約文へ移す | 2026-10-17ユーザー同席・Astra助言。Registry「マイルストーン接続」を3列化し15行の制約文へ条件を明記、「ゲート経路の関係種類」節を廃止（原文はArchived）。sync.py・Studio・verify.cjsを一種類の線へ更新し、旧形式JSON（種類あり）は明示的に拒否。Safari実表示は未検証。タスク間依存のFlowは対象外 | `Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md` |
 
 

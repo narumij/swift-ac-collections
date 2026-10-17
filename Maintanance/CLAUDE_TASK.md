@@ -118,3 +118,7 @@ to Claude; the coordinator will await Return before editing that scope.
 ## OPS-076 — 全体展開第2区切り（2026-10-17）
 
 OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の第2区切り](Current/CANONICAL_EVIDENCE_ROLLOUT.md)。指定6文書への限定追記と証拠をお願いします。入力・編集範囲・停止条件・Returnは正本に記載。依頼完成をもって受渡し、Astraは返却待ち。commitは含めません。
+
+## OPS-076 — 保留42件の浅い仕分け・第3区切り（2026-10-17）
+
+第2区切り6文書はAstra受入済み。現在の依頼は[正本の第3区切り](Current/CANONICAL_EVIDENCE_ROLLOUT.md)。保留42件の浅い分類と追記候補を、理由・確認先・残りとともに返してください。今回の編集は新規EvidenceとReturnのみ、対象文書への追記はまだ行わない。依頼完成をもって指定範囲を受渡し。commitは含めません。

@@ -34,3 +34,17 @@ CP-011のスコープと矛盾判断の区別はOPS-070/071へ材料統合。CP-
 ## 調整完了（2026-10-17 / Astra）
 
 続くユーザー指示でCP-009をOPS-075へ登録し、CP-009〜013を原文付き履歴へ移した。Claude/Fableの現行依頼票とqueueを照合し、返却済み成果の受入待ち・採番待ちは0件。OPS-074の補完作業、OPS-073/075の未着手検討は正式taskとして残り、完了を偽装しない。今回の調整処理から新たな発注は行わない。
+
+
+## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）
+
+入力版`56005d06d1ad97ed544cda914e12ee725692dc58`。本文・旧記録は変えていない。各行は「その版で確かめた主張・方法」。確認は`git`の読み取りだけで、ブラウザ・製品テスト・CIは実行していない。
+
+| 主張（節） | 確認方法と結果 | 更新のきっかけ |
+| --- | --- | --- |
+| 補正2：`DOCUMENTATION_MILESTONES.md`はCurrentにあり、`e2dd63d62`で整理された | `git show --stat e2dd63d62 -- Maintanance/Current/DOCUMENTATION_MILESTONES.md`：41行削除（2026-10-17「reorganize milestones into version folders」） | なし（過去の事実で動かない） |
+| 補正3：`1f87e37a`のrenameと現行`NextPermutationModule`の実在 | `git ls-tree -d <版> Sources/`：`Sources/NextPermutationModule`あり、`Sources/PermutationModule`なし | Permutation系moduleの改名・移動 |
+| 補正1：内訳26件と合計23件の食い違い、明細の再現 | 後続のOPS-074で固定版の明細を再現・訂正済み（`Evidence/OPS-074/CORRECTION.md`、`result_v2_d6e6fab6.json`が版にある） | なし（OPS-074受入で閉じた） |
+| 検証結果：58 task・88文書でverify通過 | commitでは固定されない実行結果。今回は再実行していない | Registry・Studioの変更のたび数は変わる。数そのものを根拠に使わない |
+
+補正4〜6（保証範囲・凍結表・欄の混在）は判断と注意で、機械的な存在確認に置き換えない。

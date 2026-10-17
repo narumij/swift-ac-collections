@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "bc50f176",
+    "head": "69f30486",
     "sha256": "bf77113f4e217817ba6db4153b297899f6dd0af6d6c373a204bb8e9a3593a4e6",
-    "dirty": true,
-    "generatedAt": "2026-10-17T14:07:20.542820+09:00",
+    "dirty": false,
+    "generatedAt": "2026-10-17T14:15:16.352901+09:00",
     "generator": "sync.py",
     "rulesSha256": "84354a704f0b3e6da71ee64a1e00d08ce830b5fa844d5400a292c0341267b6dd"
   },
@@ -1383,30 +1383,6 @@
       },
       {
         "prerequisite": "END-0.5.4",
-        "successor": "GATE-0.5.5",
-        "relation": "stage",
-        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
-        "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "eb0712094717d8ee4ff58c3f91155bfe26695ce227aefad19c7691763d3f46ed",
-          "line": 13
-        }
-      },
-      {
-        "prerequisite": "GATE-0.5.5",
-        "successor": "END-0.5.5",
-        "relation": "stage",
-        "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
-        "source": {
-          "path": "Maintanance/Milestones/README.md",
-          "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-          "sha256": "eb0712094717d8ee4ff58c3f91155bfe26695ce227aefad19c7691763d3f46ed",
-          "line": 13
-        }
-      },
-      {
-        "prerequisite": "END-0.5.5",
         "successor": "GATE-0.6.0",
         "relation": "stage",
         "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
@@ -1623,38 +1599,15 @@
       "virtual": true
     },
     {
-      "id": "GATE-0.5.5",
-      "kind": "milestone",
-      "item": "0.5.5 リリース",
-      "state": "ACTIVE",
-      "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.5.4/GATE-0.5.5.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
-      "detail": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
-      "raw": "ゲート：Maintanance/Milestones/0.5.4/GATE-0.5.5.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
-      "gate": "Maintanance/Milestones/0.5.4/GATE-0.5.5.md"
-    },
-    {
-      "id": "END-0.5.5",
-      "kind": "milestone",
-      "item": "END-0.5.5",
-      "state": "ACTIVE",
-      "owner": "",
-      "condition": "",
-      "raw": "",
-      "detail": "Maintanance/Milestones/README.md",
-      "gate": "Maintanance/Milestones/0.5.5/",
-      "virtual": true
-    },
-    {
       "id": "GATE-0.6.0",
       "kind": "milestone",
       "item": "0.6.0 リリース",
       "state": "ACTIVE",
       "owner": "ユーザー同席（AI単独では扱わない）",
-      "condition": "ゲート：Maintanance/Milestones/0.5.5/GATE-0.6.0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+      "condition": "ゲート：Maintanance/Milestones/0.5.4/GATE-0.6.0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
       "detail": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
-      "raw": "ゲート：Maintanance/Milestones/0.5.5/GATE-0.6.0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
-      "gate": "Maintanance/Milestones/0.5.5/GATE-0.6.0.md"
+      "raw": "ゲート：Maintanance/Milestones/0.5.4/GATE-0.6.0.md\n正本：Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+      "gate": "Maintanance/Milestones/0.5.4/GATE-0.6.0.md"
     },
     {
       "id": "MS-VALIDATION",
@@ -2024,30 +1977,6 @@
     },
     {
       "prerequisite": "END-0.5.4",
-      "successor": "GATE-0.5.5",
-      "relation": "stage",
-      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
-      "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "eb0712094717d8ee4ff58c3f91155bfe26695ce227aefad19c7691763d3f46ed",
-        "line": 13
-      }
-    },
-    {
-      "prerequisite": "GATE-0.5.5",
-      "successor": "END-0.5.5",
-      "relation": "stage",
-      "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",
-      "source": {
-        "path": "Maintanance/Milestones/README.md",
-        "quote": "END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない",
-        "sha256": "eb0712094717d8ee4ff58c3f91155bfe26695ce227aefad19c7691763d3f46ed",
-        "line": 13
-      }
-    },
-    {
-      "prerequisite": "END-0.5.5",
       "successor": "GATE-0.6.0",
       "relation": "stage",
       "constraint": "接続はゲートの配置、線の種類はRegistryの指定（未指定はstage）から生成。",

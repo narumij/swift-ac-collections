@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "source": {
     "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-    "head": "349e5be1",
-    "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+    "head": "4721bb5a",
+    "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
     "dirty": true,
-    "generatedAt": "2026-10-17T16:18:46.994663+09:00",
+    "generatedAt": "2026-10-17T16:28:28.480922+09:00",
     "generator": "sync.py",
     "rulesSha256": "c10af25ca21f46da8660d06111c8ec554a77cf825404284800488af0208ecf62"
   },
@@ -1422,7 +1422,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-087` | `END-0.5.4` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 314
         }
       },
@@ -1433,7 +1433,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `OPS-068` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 315
         }
       },
@@ -1444,7 +1444,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-026` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 316
         }
       },
@@ -1455,7 +1455,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-007` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 317
         }
       },
@@ -1466,7 +1466,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-064` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。0.5.4への仮配置は同日のユーザー編集で除去し、0.6.0への仮配置を残す。実施版の確定とは扱わない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 318
         }
       },
@@ -1477,18 +1477,18 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-060` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 319
         }
       },
       {
         "prerequisite": "RBT-008",
-        "successor": "END-1.0.0",
+        "successor": "END-0.9.0",
         "constraint": "判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。",
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-          "quote": "| `RBT-008` | `END-1.0.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "quote": "| `RBT-008` | `END-0.9.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。 |",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 320
         }
       },
@@ -1499,7 +1499,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-048` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。ユーザー専任と既存の暫定想定時期は維持する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 321
         }
       },
@@ -1510,7 +1510,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-062` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 322
         }
       },
@@ -1521,7 +1521,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-080` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 323
         }
       },
@@ -1532,7 +1532,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `OPT-065` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 324
         }
       },
@@ -1543,7 +1543,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `OPS-060` | `END-0.7.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 325
         }
       },
@@ -1554,7 +1554,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-049` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、ASan strip_envの固定版調査を0.5.4の完了条件に含める。81204d22・記載macOS環境での受入済み限定調査により充足済み。Linux CI全体の合格や適用判断を追加条件にしない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 326
         }
       },
@@ -1565,7 +1565,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-045` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、赤黒木4型のDocCプレビューセルフレビューを0.5.4の完了条件に含める。既存の受入範囲で充足済み。未検証範囲の追加実施やリリース全体の合格を意味しない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 327
         }
       },
@@ -1576,7 +1576,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 328
         }
       },
@@ -1587,7 +1587,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 329
         }
       },
@@ -1598,7 +1598,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 330
         }
       },
@@ -1609,7 +1609,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 331
         }
       },
@@ -1620,7 +1620,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 332
         }
       },
@@ -1631,7 +1631,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 333
         }
       },
@@ -1642,7 +1642,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 334
         }
       },
@@ -1653,7 +1653,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 335
         }
       },
@@ -1664,7 +1664,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 336
         }
       },
@@ -1675,7 +1675,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 337
         }
       },
@@ -1686,7 +1686,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 338
         }
       },
@@ -1697,7 +1697,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 339
         }
       },
@@ -1708,7 +1708,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 340
         }
       },
@@ -1719,7 +1719,7 @@
         "source": {
           "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
           "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-          "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+          "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
           "line": 341
         }
       },
@@ -2127,7 +2127,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-087` | `END-0.5.4` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 314
       }
     },
@@ -2138,7 +2138,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `OPS-068` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 315
       }
     },
@@ -2149,7 +2149,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-026` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 316
       }
     },
@@ -2160,7 +2160,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-007` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 317
       }
     },
@@ -2171,7 +2171,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-064` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。0.5.4への仮配置は同日のユーザー編集で除去し、0.6.0への仮配置を残す。実施版の確定とは扱わない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 318
       }
     },
@@ -2182,18 +2182,18 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-060` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 319
       }
     },
     {
       "prerequisite": "RBT-008",
-      "successor": "END-1.0.0",
+      "successor": "END-0.9.0",
       "constraint": "判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。",
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
-        "quote": "| `RBT-008` | `END-1.0.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "quote": "| `RBT-008` | `END-0.9.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。凍結を維持し、1.0必須化・自動再開はしない。 |",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 320
       }
     },
@@ -2204,7 +2204,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-048` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。ユーザー専任と既存の暫定想定時期は維持する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 321
       }
     },
@@ -2215,7 +2215,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-062` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 322
       }
     },
@@ -2226,7 +2226,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-080` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 323
       }
     },
@@ -2237,7 +2237,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `OPT-065` | `END-0.6.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 324
       }
     },
@@ -2248,7 +2248,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `OPS-060` | `END-0.7.0` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 325
       }
     },
@@ -2259,7 +2259,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-049` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、ASan strip_envの固定版調査を0.5.4の完了条件に含める。81204d22・記載macOS環境での受入済み限定調査により充足済み。Linux CI全体の合格や適用判断を追加条件にしない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 326
       }
     },
@@ -2270,7 +2270,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-045` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー確認により、赤黒木4型のDocCプレビューセルフレビューを0.5.4の完了条件に含める。既存の受入範囲で充足済み。未検証範囲の追加実施やリリース全体の合格を意味しない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 327
       }
     },
@@ -2281,7 +2281,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-084` | `END-0.5.4` | この到達点の前に完了が必要。2026-10-17ユーザー指定。候補CIの限定修正・検証結果をEND-0.5.4へ合流する。未決方針やCI実走の未確認を完了扱いにしない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 328
       }
     },
@@ -2292,7 +2292,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `PERM-079` | `END-0.6.0` | 到達後。0.6.0のリリース完了を確認した後、`PERM-079`で`prepare/compatible/2`の統合手順再構築調査を再開するかユーザーが判断する。END-0.6.0の前提ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 329
       }
     },
@@ -2303,7 +2303,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-072` | `END-0.6.0` | この到達点の前に完了が必要。人間向け工程表が実際の現在位置・次の操作・証拠・停止点を追えるか確認する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 330
       }
     },
@@ -2314,7 +2314,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-075` | `END-0.6.0` | この到達点の前に完了が必要。判定基準、証拠取得、停止・復旧などの不足仕様を充当する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 331
       }
     },
@@ -2325,7 +2325,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RELEASE-076` | `END-0.6.0` | この到達点の前に完了が必要。充当後の工程をValidation & Verificationする。RELEASE-075への依存を維持する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 332
       }
     },
@@ -2336,7 +2336,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-027` | `MS-SPI` | この到達点の前に完了が必要。DOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 333
       }
     },
@@ -2347,7 +2347,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-036` | `MS-VALIDATION` | この到達点の前に完了が必要。DOC-036でValidation計画の受入判断を得てから、Validation計画レビュー（MS-VALIDATION）へ進む。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 334
       }
     },
@@ -2358,7 +2358,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-038` | `END-0.7.0` | この到達点の前に完了が必要。DOC-038の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 335
       }
     },
@@ -2369,7 +2369,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `DOC-039` | `END-0.7.0` | この到達点の前に完了が必要。DOC-039の成果を0.8.0の文書整備条件へ接続する。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 336
       }
     },
@@ -2380,7 +2380,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-001` | `MS-QUALITY` | 判断材料。品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 337
       }
     },
@@ -2391,7 +2391,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-009` | `MS-QUALITY` | 判断材料。他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 338
       }
     },
@@ -2402,7 +2402,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 339
       }
     },
@@ -2413,7 +2413,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 340
       }
     },
@@ -2424,7 +2424,7 @@
       "source": {
         "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
         "quote": "| `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |",
-        "sha256": "2d0f6e0edd7dddab8a908fd922d0c51eccd2e327f77227e659dcec5f954289cb",
+        "sha256": "1954a86938b8619ce66763b145ee7a098f5030983a5379f8478d637af1ccece5",
         "line": 341
       }
     },

@@ -1,0 +1,3613 @@
+{
+ "summary": {
+  "input_commit": "d6e6fab66fa3a4fda020080c8d401d3ec1cb9de4",
+  "read_from": "git tree at input_commit (working tree not read)",
+  "history_range": "commits reachable from d6e6fab66fa3a4fda020080c8d401d3ec1cb9de4",
+  "script": "Maintanance/Current/Evidence/OPS-074/shallow_check_v2.py",
+  "script_sha256": "1479888d882d48e265e8d8b513b4c3d38763ad20571e8609a07a4b25b841f68e",
+  "documents": 72,
+  "document_list": [
+   "AI_TECHNICAL_ORIENTATION.md",
+   "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "ASTRA_DECISION_TRACE_SUPPORT.md",
+   "AtCoder2025CompatibilityPlan.md",
+   "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "BENCHMARK_USAGE_GUIDE.md",
+   "BRANCH_NAMING_DISCUSSION.md",
+   "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "CLAUDE_STARTUP_DOCUMENT_REVIEW.md",
+   "COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md",
+   "DECISION_ARCHIVE_PILOT.md",
+   "DECISION_ARCHIVE_PROPOSAL.md",
+   "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "DOCUMENTATION_CI_PLAN.md",
+   "DOCUMENTATION_WORKFLOW.md",
+   "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "FABLE_COORDINATOR_DEPUTY.md",
+   "FABLE_MANAGEMENT_TRIAL.md",
+   "GATE_DECISION_DIGEST_PROPOSAL.md",
+   "HIST_002_EXPLORATION.md",
+   "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+   "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "MILESTONE_HEALTH_AUDIT_2026-10-17.md",
+   "MILESTONE_MIGRATION_ACCEPTANCE_2026-10-17.md",
+   "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "PERMUTATION_PERFORMANCE_GAP_REVIEW.md",
+   "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "PLACEMENT_EXCEPTION_SIMPLIFICATION_REVIEW.md",
+   "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "PROVISIONAL_JUDGMENT_STUDY.md",
+   "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "PUBLIC_API_NAMING_DECISIONS.md",
+   "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "README.md",
+   "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+   "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md",
+   "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "REGISTRY_STUDIO_SYNC.md",
+   "REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md",
+   "REGISTRY_STUDIO_VERSION_START.md",
+   "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "RELEASE_CI_RECOVERY.md",
+   "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "SPI_REGISTRATION_GATE.md",
+   "StrictMemorySafetyReadiness.md",
+   "TASK_REGISTRY_APP.md",
+   "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "TASK_REGISTRY_APP_DISCOVERY.md",
+   "TASK_REGISTRY_APP_PROTOTYPE.md",
+   "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "TASK_REGISTRY_OPERATION_INTERVIEW.md"
+  ],
+  "reference_occurrences": 272,
+  "reference_status": {
+   "exists": 246,
+   "exists_line_suffix": 2,
+   "missing_in_history": 16,
+   "missing_no_history": 8
+  },
+  "hash_occurrences": 124,
+  "hash_object_type": {
+   "blob": 3,
+   "commit": 107,
+   "none": 14
+  }
+ },
+ "references": [
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 21,
+   "kind": "tick",
+   "ref": "../README.ja.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/README.ja.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 22,
+   "kind": "tick",
+   "ref": "../Package.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/Package.swift",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 23,
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025/README.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 24,
+   "kind": "tick",
+   "ref": "../Current/StrictMemorySafetyReadiness.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/StrictMemorySafetyReadiness.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 26,
+   "kind": "tick",
+   "ref": "Maintanance/Testing/TESTING.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/TESTING.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 188,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/__tree",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/__tree"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 389,
+   "kind": "tick",
+   "ref": "../README.ja.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/README.ja.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 390,
+   "kind": "tick",
+   "ref": "../Package.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/Package.swift",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 391,
+   "kind": "tick",
+   "ref": "Maintanance/Testing/TESTING.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/TESTING.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 392,
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025/README.md"
+  },
+  {
+   "doc": "AI_TECHNICAL_ORIENTATION.md",
+   "line": 393,
+   "kind": "tick",
+   "ref": "../Current/StrictMemorySafetyReadiness.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/StrictMemorySafetyReadiness.md"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "line": 31,
+   "kind": "link",
+   "ref": "ASAN_DEATH_TEST_EVIDENCE_2026-10-16",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/ASAN_DEATH_TEST_EVIDENCE_2026-10-16"
+  },
+  {
+   "doc": "ASAN_DEATH_TEST_INVESTIGATION.md",
+   "line": 53,
+   "kind": "link",
+   "ref": "Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 20,
+   "kind": "tick",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-16_4.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 21,
+   "kind": "tick",
+   "ref": "Tests/CLAUDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/CLAUDE.md"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 30,
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RBT-049/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-049"
+  },
+  {
+   "doc": "ASTRA_DECISION_TRACE_SUPPORT.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "GATE_DECISION_DIGEST_PROPOSAL.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/GATE_DECISION_DIGEST_PROPOSAL.md"
+  },
+  {
+   "doc": "ASTRA_DECISION_TRACE_SUPPORT.md",
+   "line": 32,
+   "kind": "tick",
+   "ref": "Maintanance/Current/GateDecisionDigestPrototype/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/GateDecisionDigestPrototype"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 6,
+   "kind": "tick",
+   "ref": "Maintanance/Quality/Profiles/NextPermutationModule.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/Profiles/NextPermutationModule.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 7,
+   "kind": "tick",
+   "ref": "Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 20,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 24,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 50,
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/NextPermutationsSequence/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/PermutationTests/NextPermutationsSequence"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 73,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/Compatibility/AtCoder2025/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule/Compatibility/AtCoder2025",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 156,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/Compatibility/AtCoder2025/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule/Compatibility/AtCoder2025",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 181,
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/AtCoder2025Compatibility/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/PermutationTests/AtCoder2025Compatibility"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 251,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/NextPermutations.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule/NextPermutations.swift",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 348,
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "line": 5,
+   "kind": "link",
+   "ref": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "line": 12,
+   "kind": "link",
+   "ref": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "line": 16,
+   "kind": "link",
+   "ref": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md"
+  },
+  {
+   "doc": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "line": 33,
+   "kind": "tick",
+   "ref": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 6,
+   "kind": "tick",
+   "ref": "Benchmarks/Sources/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Sources"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 6,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 11,
+   "kind": "tick",
+   "ref": "../Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 121,
+   "kind": "tick",
+   "ref": "Benchmarks/run-bare-array-assessment.sh",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/run-bare-array-assessment.sh"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 122,
+   "kind": "tick",
+   "ref": "Benchmarks/run-permutation-assessment.sh",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/run-permutation-assessment.sh"
+  },
+  {
+   "doc": "BENCHMARK_USAGE_GUIDE.md",
+   "line": 123,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../History/TestRebuild2026/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026/README.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../History/TestRebuild2026/EVIDENCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026/EVIDENCE.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 19,
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 19,
+   "kind": "tick",
+   "ref": "Maintanance/History/TestRebuild2026/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/TestRebuild2026"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "../Testing/TESTING.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/TESTING.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "../Testing/Fixtures.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/Fixtures.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 29,
+   "kind": "link",
+   "ref": "../Archived/JudgmentCoordinates/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/JudgmentCoordinates/README.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 37,
+   "kind": "link",
+   "ref": "../CLAUDE_PENDING_TASKS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_PENDING_TASKS.md"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 56,
+   "kind": "link",
+   "ref": "Evidence/ClaudeAcceptance20261016/build-tests.log",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/ClaudeAcceptance20261016/build-tests.log"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 63,
+   "kind": "tick",
+   "ref": "Maintanance/Testing/JudgmentCoordinates/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates"
+  },
+  {
+   "doc": "COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PILOT.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PILOT.md",
+   "line": 8,
+   "kind": "link",
+   "ref": "DECISION_ARCHIVE_PROPOSAL.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DECISION_ARCHIVE_PROPOSAL.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PROPOSAL.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "DECISION_ARCHIVE_PROPOSAL.md",
+   "line": 28,
+   "kind": "link",
+   "ref": "DECISION_ARCHIVE_PILOT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DECISION_ARCHIVE_PILOT.md"
+  },
+  {
+   "doc": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "line": 56,
+   "kind": "link",
+   "ref": "SPI_REGISTRATION_GATE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/SPI_REGISTRATION_GATE.md"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "line": 78,
+   "kind": "tick",
+   "ref": ".github/workflows/ci.yml",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": ".github/workflows/ci.yml"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 7,
+   "kind": "tick",
+   "ref": "../Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 42,
+   "kind": "link",
+   "ref": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 64,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/NextPermutations.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule/NextPermutations.swift",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 65,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/RawBuffer/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/RawBuffer"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 66,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/__tree/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/__tree"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 67,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift"
+  },
+  {
+   "doc": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "line": 68,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "line": 25,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_ARCHIVE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "line": 26,
+   "kind": "link",
+   "ref": "../ProgressV2/COMMONS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COMMONS.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "line": 35,
+   "kind": "link",
+   "ref": "../ProgressV2/PROGRESS_OVERVIEW_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "line": 44,
+   "kind": "tick",
+   "ref": "Maintanance/User/MEMO.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/User/MEMO.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 35,
+   "kind": "tick",
+   "ref": "Maintanance/User/MEMO.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/User/MEMO.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 45,
+   "kind": "link",
+   "ref": "../CLAUDE_PENDING_TASKS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_PENDING_TASKS.md"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 54,
+   "kind": "tick",
+   "ref": "Tests/CLAUDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/CLAUDE.md"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 11,
+   "kind": "tick",
+   "ref": "Maintanance/History/RefactoringFromAtCoder2025/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/History/RefactoringFromAtCoder2025/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 23,
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 23,
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RBT-047/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 62,
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 85,
+   "kind": "link",
+   "ref": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 93,
+   "kind": "link",
+   "ref": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "line": 22,
+   "kind": "link",
+   "ref": "Evidence/RBT-047/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "Evidence/RBT-047/fix-draft.diff",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-047/fix-draft.diff"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "line": 37,
+   "kind": "link",
+   "ref": "Evidence/RBT-048-death-probe/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RBT-048-death-probe/README.md"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+   "line": 45,
+   "kind": "link",
+   "ref": "../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17.md"
+  },
+  {
+   "doc": "JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+   "line": 18,
+   "kind": "link",
+   "ref": "../Testing/JudgmentCoordinates/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates/README.md"
+  },
+  {
+   "doc": "JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+   "line": 18,
+   "kind": "link",
+   "ref": "../Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 18,
+   "kind": "tick",
+   "ref": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 19,
+   "kind": "tick",
+   "ref": "Maintanance/DOCUMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/DOCUMENT.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 20,
+   "kind": "tick",
+   "ref": "Maintanance/Archived/TASK_REGISTRY_ARCHIVED_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_ARCHIVED_2026-10-16.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 21,
+   "kind": "tick",
+   "ref": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 22,
+   "kind": "tick",
+   "ref": "Maintanance/WORKER_TASK.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/WORKER_TASK.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 22,
+   "kind": "tick",
+   "ref": "Maintanance/CLAUDE_TASK.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/CLAUDE_TASK.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 89,
+   "kind": "tick",
+   "ref": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 89,
+   "kind": "tick",
+   "ref": "Maintanance/MILESTONES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 145,
+   "kind": "tick",
+   "ref": "Maintanance/Quality/Profiles/NextPermutationModule.md:42",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists_line_suffix",
+   "path": "Maintanance/Quality/Profiles/NextPermutationModule.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 145,
+   "kind": "tick",
+   "ref": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "status": "missing_in_history",
+   "last_commit": "504b143bae49e9d379a3b35b11d85347b6a22374 2026-10-16",
+   "deleted_in": "504b143bae49e9d379a3b35b11d85347b6a22374"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 145,
+   "kind": "tick",
+   "ref": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 146,
+   "kind": "tick",
+   "ref": "Tests/TESTING.md:32",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Tests/TESTING.md",
+   "status": "missing_in_history",
+   "last_commit": "35a27b302ed1bec7448890f962dd6e1de2a9eec4 2026-10-16",
+   "deleted_in": "35a27b302ed1bec7448890f962dd6e1de2a9eec4"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 146,
+   "kind": "tick",
+   "ref": "Maintanance/QUALITY_REQUIREMENTS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/QUALITY_REQUIREMENTS.md",
+   "status": "missing_in_history",
+   "last_commit": "9d36da92937584d00e3d48bebaba757035d5298a 2026-10-15",
+   "deleted_in": "9d36da92937584d00e3d48bebaba757035d5298a"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 146,
+   "kind": "tick",
+   "ref": "Maintanance/Quality/QUALITY_REQUIREMENTS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 150,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 152,
+   "kind": "tick",
+   "ref": "Maintanance/PROGRESS_OVERVIEW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/PROGRESS_OVERVIEW.md",
+   "status": "missing_in_history",
+   "last_commit": "f078109279143d5a932520213b3bfb0495cd9f13 2026-10-15",
+   "deleted_in": "f078109279143d5a932520213b3bfb0495cd9f13"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 155,
+   "kind": "tick",
+   "ref": "Sources/RedBlackTreeCollections/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 156,
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 157,
+   "kind": "tick",
+   "ref": "Benchmarks/QualityAssessment/macOS/BareArray/README.md:22",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists_line_suffix",
+   "path": "Benchmarks/QualityAssessment/macOS/BareArray/README.md"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 157,
+   "kind": "tick",
+   "ref": "Benchmarks/run-bare-array-assessment.sh",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/run-bare-array-assessment.sh"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 162,
+   "kind": "tick",
+   "ref": "Maintanance/MAINTENANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/MAINTENANCE.md",
+   "status": "missing_in_history",
+   "last_commit": "e30eddcfc9b21b023bb2cb45e745b0a4b08d1744 2026-10-16",
+   "deleted_in": "e30eddcfc9b21b023bb2cb45e745b0a4b08d1744"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 167,
+   "kind": "tick",
+   "ref": "../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Current/PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "line": 29,
+   "kind": "link",
+   "ref": "../../Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "line": 30,
+   "kind": "link",
+   "ref": "../../Sources/RedBlackTreeCollections/Documentation/API-Matrix.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/RedBlackTreeCollections/Documentation/API-Matrix.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "line": 31,
+   "kind": "link",
+   "ref": "../Archived/RBT-026_BEFORE_REACTIVATION_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-026_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+   "line": 39,
+   "kind": "link",
+   "ref": "DOCUMENTATION_MILESTONES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/Current/DOCUMENTATION_MILESTONES.md",
+   "status": "missing_in_history",
+   "last_commit": "e2dd63d62f3eb40f0814b101fa094331291e4de1 2026-10-17",
+   "deleted_in": "e2dd63d62f3eb40f0814b101fa094331291e4de1"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 32,
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 33,
+   "kind": "link",
+   "ref": "../Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 34,
+   "kind": "link",
+   "ref": "../Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 74,
+   "kind": "link",
+   "ref": "Evidence/MemoizeDependency20261016/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/MemoizeDependency20261016/README.md"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 9,
+   "kind": "tick",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 9,
+   "kind": "tick",
+   "ref": ".github/workflows/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": ".github/workflows"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 10,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 15,
+   "kind": "link",
+   "ref": "../Archived/PERM-063_EXCLUDED_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-063_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_TASK_NAME_MIGRATION.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 22,
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "../../Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 24,
+   "kind": "link",
+   "ref": "../../Benchmarks/Libraries/CI.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "line": 25,
+   "kind": "link",
+   "ref": "../Archived/PERM-064_BEFORE_REACTIVATION_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-064_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "PUBLIC_API_NAMING_DECISIONS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 25,
+   "kind": "tick",
+   "ref": "Sources/NextPermutationModule/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 25,
+   "kind": "tick",
+   "ref": "Sources/_PermutationModule/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/_PermutationModule"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 64,
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 68,
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "../Technical/NextPermutationsSequenceExperiment.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Technical/NextPermutationsSequenceExperiment.md"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../../Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../../Sources/NextPermutationModule/NextPermutations.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/NextPermutations.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../../Sources/NextPermutationModule/BorrowedNextPermutations.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/NextPermutationModule/BorrowedNextPermutations.swift"
+  },
+  {
+   "doc": "PERMUTATION_SEQUENCE_INVALID_VIEW_ISSUE.md",
+   "line": 31,
+   "kind": "link",
+   "ref": "../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "Evidence/OPS-072/INVENTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/OPS-072/INVENTORY.md"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "line": 26,
+   "kind": "tick",
+   "ref": "Sources/PermutationModule/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Sources/PermutationModule",
+   "status": "missing_in_history",
+   "last_commit": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044 2026-10-15",
+   "deleted_in": "1f87e37ab9e3c9a4e099979f5d671fb46a6fe044"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "line": 45,
+   "kind": "link",
+   "ref": "Evidence/OPS-072/SURFACES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/OPS-072/SURFACES.md"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "line": 15,
+   "kind": "link",
+   "ref": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_TASK_AGREEMENT_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "line": 15,
+   "kind": "link",
+   "ref": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "line": 30,
+   "kind": "link",
+   "ref": "../ProgressV2/COORDINATION_KNOW_HOW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "line": 31,
+   "kind": "link",
+   "ref": "../ProgressV2/COMMONS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COMMONS.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "line": 37,
+   "kind": "link",
+   "ref": "PROVISIONAL_JUDGMENT_STUDY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_JUDGMENT_STUDY.md"
+  },
+  {
+   "doc": "PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+   "line": 38,
+   "kind": "link",
+   "ref": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md"
+  },
+  {
+   "doc": "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "line": 25,
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "line": 48,
+   "kind": "link",
+   "ref": "Evidence/DOC-035-2026-10-16/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-035-2026-10-16"
+  },
+  {
+   "doc": "PUBLIC_DOCUMENTATION_INITIAL_EDITION_CHECK.md",
+   "line": 54,
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 5,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "BENCHMARK_USAGE_GUIDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_USAGE_GUIDE.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 10,
+   "kind": "link",
+   "ref": "DOCUMENTATION_CI_PLAN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_CI_PLAN.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "PUBLIC_API_NAMING_DECISIONS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "StrictMemorySafetyReadiness.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/StrictMemorySafetyReadiness.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 12,
+   "kind": "link",
+   "ref": "AI_TECHNICAL_ORIENTATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/AI_TECHNICAL_ORIENTATION.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS_REFERENCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS_REFERENCE.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 14,
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../DOCUMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/DOCUMENT.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 19,
+   "kind": "link",
+   "ref": "../Archived/PermutationMigration_2026-10-16/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/PermutationMigration_2026-10-16/README.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 19,
+   "kind": "link",
+   "ref": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "../Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_AFTER_USER_RECLASSIFICATION_2026-10-16.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "AtCoder2025CompatibilityPlan.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/AtCoder2025CompatibilityPlan.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "BENCHMARK_TASK_NAME_MIGRATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/BENCHMARK_TASK_NAME_MIGRATION.md"
+  },
+  {
+   "doc": "README.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "line": 16,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../Archived/RBT-004_EXCLUDED_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-004_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "EXTERNAL_TYPE_EXTENSION_AUDIT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "line": 14,
+   "kind": "link",
+   "ref": "../Archived/RBT-004_EXCLUDED_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-004_EXCLUDED_2026-10-16.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md",
+   "line": 15,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "DOCUMENTATION_WORKFLOW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_WORKFLOW.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../UserDocuments/RedBlackTreeCollections/Head/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/UserDocuments/RedBlackTreeCollections/Head"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 25,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_OUTLINE_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 33,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 37,
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/DOC-033-2026-10-16/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 41,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 57,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-040_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 10,
+   "kind": "link",
+   "ref": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-041_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-042_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 12,
+   "kind": "link",
+   "ref": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-043_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOC-044_DOCUMENT_REVIEW_RETURN.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 19,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_OUTLINE_AUDIT.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 19,
+   "kind": "link",
+   "ref": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 19,
+   "kind": "link",
+   "ref": "Evidence/DOC-033-2026-10-16/review-inputs.sha256.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16/review-inputs.sha256.json"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+   "line": 21,
+   "kind": "tick",
+   "ref": "Tests/RedBlackTreeTests/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Tests/RedBlackTreeTests"
+  },
+  {
+   "doc": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "line": 22,
+   "kind": "link",
+   "ref": "Evidence/DOC-033-2026-10-16/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/DOC-033-2026-10-16"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "line": 22,
+   "kind": "link",
+   "ref": "../Quality/Profiles/RedBlackTreeCollections.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/Profiles/RedBlackTreeCollections.md"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "line": 23,
+   "kind": "link",
+   "ref": "../../Benchmarks",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks"
+  },
+  {
+   "doc": "RED_BLACK_TREE_TUNING_RESEARCH_DECISION.md",
+   "line": 24,
+   "kind": "link",
+   "ref": "../Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "line": 15,
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/index.html",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/RegistryApp/index.html",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3d9261500da0f8fd3abcacc241f330df 2026-10-17",
+   "deleted_in": "bbddb7ff3d9261500da0f8fd3abcacc241f330df"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "line": 45,
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "line": 26,
+   "kind": "link",
+   "ref": "../Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 92,
+   "kind": "link",
+   "ref": "../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Milestones/_Archived/RELEASE_0_5_4_HISTORY.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 12,
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 13,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI.json"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 14,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI-Small.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Libraries/CI-Small.json"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 60,
+   "kind": "tick",
+   "ref": "Benchmarks/Scripts/filter_library_for_baseline.py",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Benchmarks/Scripts/filter_library_for_baseline.py",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 62,
+   "kind": "tick",
+   "ref": "Benchmarks/Libraries/CI-baseline-new-tasks.txt",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Benchmarks/Libraries/CI-baseline-new-tasks.txt",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 79,
+   "kind": "tick",
+   "ref": "Maintanance/Current/Evidence/RELEASE-083/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RELEASE-083"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "line": 5,
+   "kind": "link",
+   "ref": "../Archived/RELEASE-080_RESOLVED_2026-10-16.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Archived/RELEASE-080_RESOLVED_2026-10-16.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "line": 14,
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "line": 40,
+   "kind": "tick",
+   "ref": "Maintanance/Current/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "line": 40,
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_PROCESS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/User/RELEASE_PROCESS.md"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_COMMENT_CI.md",
+   "line": 57,
+   "kind": "link",
+   "ref": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md"
+  },
+  {
+   "doc": "RELEASE_CI_RECOVERY.md",
+   "line": 29,
+   "kind": "link",
+   "ref": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_CANDIDATE_BASELINE_FIX.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 12,
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/User/RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "status": "missing_no_history",
+   "last_commit": null,
+   "deleted_in": null
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 111,
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_PROCESS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/User/RELEASE_PROCESS.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 115,
+   "kind": "tick",
+   "ref": "Maintanance/User/RELEASE_PROCESS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/User/RELEASE_PROCESS.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 116,
+   "kind": "tick",
+   "ref": "Maintanance/WORKER_TASK.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/WORKER_TASK.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 117,
+   "kind": "tick",
+   "ref": "Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md"
+  },
+  {
+   "doc": "RELEASE_SHAPING_WORKER_REQUEST_DRAFT.md",
+   "line": 117,
+   "kind": "tick",
+   "ref": ".github/workflows/candidate.yml",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": ".github/workflows/candidate.yml"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "line": 4,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "line": 24,
+   "kind": "link",
+   "ref": "../Quality/QUALITY_REQUIREMENTS.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Quality/QUALITY_REQUIREMENTS.md"
+  },
+  {
+   "doc": "SPI_REGISTRATION_GATE.md",
+   "line": 32,
+   "kind": "link",
+   "ref": "DOCUMENTATION_CI_PLAN.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/DOCUMENTATION_CI_PLAN.md"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "line": 55,
+   "kind": "tick",
+   "ref": "Sources/_RedBlackTreeModule",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Sources/_RedBlackTreeModule"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "line": 178,
+   "kind": "tick",
+   "ref": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift"
+  },
+  {
+   "doc": "StrictMemorySafetyReadiness.md",
+   "line": 221,
+   "kind": "tick",
+   "ref": "Tests/PermutationTests/PermutationDeathTests.swift",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Tests/PermutationTests/PermutationDeathTests.swift",
+   "status": "missing_in_history",
+   "last_commit": "5efc1a9c846c9950aaa21adc677295a3717afa7e 2026-10-07",
+   "deleted_in": "5efc1a9c846c9950aaa21adc677295a3717afa7e"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "../ProgressV2/COORDINATION_KNOW_HOW.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 17,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 21,
+   "kind": "link",
+   "ref": "../RegistryApp/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 37,
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 46,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 50,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_CLAUDE_ADVICE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 54,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_PROTOTYPE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_PROTOTYPE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 77,
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_MILESTONE_CONNECT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP.md",
+   "line": 81,
+   "kind": "link",
+   "ref": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/REGISTRY_STUDIO_SINGLE_LINE_KIND.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 12,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 13,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 14,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 14,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 14,
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 15,
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 3,
+   "kind": "link",
+   "ref": "TASK_REGISTRY_APP.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/TASK_REGISTRY_APP.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_REGISTRY_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_REGISTRY_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "../ProgressV2/TASK_RULES_V2.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/TASK_RULES_V2.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 9,
+   "kind": "link",
+   "ref": "../MILESTONES.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/MILESTONES.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 34,
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_LINT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_LINT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 34,
+   "kind": "link",
+   "ref": "../Graph/TaskGraphLint/run.sh",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TaskGraphLint/run.sh"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 35,
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_SHARED_SCHEMA.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_SHARED_SCHEMA.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 35,
+   "kind": "link",
+   "ref": "../Graph/InMemoryFixture/schema.sql",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/InMemoryFixture/schema.sql"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 36,
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 36,
+   "kind": "link",
+   "ref": "../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 37,
+   "kind": "link",
+   "ref": "../Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_DISCOVERY.md",
+   "line": 41,
+   "kind": "link",
+   "ref": "Evidence/RegistryAppDiscovery20261016/",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/Evidence/RegistryAppDiscovery20261016"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_PROTOTYPE.md",
+   "line": 11,
+   "kind": "link",
+   "ref": "../RegistryApp/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 15,
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/index.html",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/RegistryApp/index.html",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3d9261500da0f8fd3abcacc241f330df 2026-10-17",
+   "deleted_in": "bbddb7ff3d9261500da0f8fd3abcacc241f330df"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 16,
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/registry.json",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "path": "Maintanance/RegistryApp/registry.json",
+   "status": "missing_in_history",
+   "last_commit": "bbddb7ff3d9261500da0f8fd3abcacc241f330df 2026-10-17",
+   "deleted_in": "bbddb7ff3d9261500da0f8fd3abcacc241f330df"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 17,
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/verify.cjs",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/verify.cjs"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 18,
+   "kind": "tick",
+   "ref": "Maintanance/RegistryApp/README.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/RegistryApp/README.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "line": 7,
+   "kind": "link",
+   "ref": "../ProgressV2/RegistryInterview/2026-10-17/ASTRA.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/RegistryInterview/2026-10-17/ASTRA.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "line": 8,
+   "kind": "link",
+   "ref": "../ProgressV2/RegistryInterview/2026-10-17/FABLE.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/ProgressV2/RegistryInterview/2026-10-17/FABLE.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "line": 32,
+   "kind": "link",
+   "ref": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "line": 32,
+   "kind": "link",
+   "ref": "COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/COORDINATOR_AUTHORITY_CONSOLIDATION_DECISION.md"
+  },
+  {
+   "doc": "TASK_REGISTRY_OPERATION_INTERVIEW.md",
+   "line": 36,
+   "kind": "link",
+   "ref": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "claim": "referenced path exists at commit",
+   "method": "git cat-file -e <commit>:<path>",
+   "status": "exists",
+   "path": "Maintanance/Current/CANONICAL_CONFIRMED_SCOPE_SUMMARY.md"
+  }
+ ],
+ "hashes": [
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 3,
+   "hash": "81204d22",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 3,
+   "hash": "46d50288",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 3,
+   "hash": "7a092b72",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 19,
+   "hash": "81204d22",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 53,
+   "hash": "81204d227e14710c5e1732afcf421b4252899e79",
+   "object_type": "commit"
+  },
+  {
+   "doc": "ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md",
+   "line": 75,
+   "hash": "50b1c281",
+   "object_type": "none"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 15,
+   "hash": "910aad2a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 120,
+   "hash": "0ef177d3",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 120,
+   "hash": "4eae63f9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 217,
+   "hash": "0b9de44e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "AtCoder2025CompatibilityPlan.md",
+   "line": 217,
+   "hash": "24dfb40f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 34,
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 35,
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 36,
+   "hash": "46d50288",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 36,
+   "hash": "7a092b72",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 37,
+   "hash": "039b2141",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CANONICAL_CONFIRMED_SCOPE_SUMMARY.md",
+   "line": 46,
+   "hash": "25518fdd1",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 41,
+   "hash": "b3072a98",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 45,
+   "hash": "165c81aa",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 45,
+   "hash": "6be79ddb",
+   "object_type": "commit"
+  },
+  {
+   "doc": "CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+   "line": 53,
+   "hash": "dcb9e3ce",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-040_DOCUMENT_REVIEW_RETURN.md",
+   "line": 7,
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-041_DOCUMENT_REVIEW_RETURN.md",
+   "line": 7,
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-042_DOCUMENT_REVIEW_RETURN.md",
+   "line": 7,
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-043_DOCUMENT_REVIEW_RETURN.md",
+   "line": 7,
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOC-044_DOCUMENT_REVIEW_RETURN.md",
+   "line": 7,
+   "hash": "3780fb90",
+   "object_type": "commit"
+  },
+  {
+   "doc": "DOCUMENTATION_CI_PLAN.md",
+   "line": 89,
+   "hash": "83ce31a2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_COORDINATOR_DEPUTY.md",
+   "line": 44,
+   "hash": "bc50f176",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 35,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 39,
+   "hash": "93fd0204",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 47,
+   "hash": "93fd0204",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 49,
+   "hash": "93fd0204",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 54,
+   "hash": "c051a8f4",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 54,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 55,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 57,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 59,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 60,
+   "hash": "c051a8f4",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 60,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 61,
+   "hash": "835dc786",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 66,
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 68,
+   "hash": "4163ff4e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 68,
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 68,
+   "hash": "4163ff4e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 71,
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 72,
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 73,
+   "hash": "5ea16511",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 78,
+   "hash": "4163ff4e",
+   "object_type": "commit"
+  },
+  {
+   "doc": "FABLE_MANAGEMENT_TRIAL.md",
+   "line": 78,
+   "hash": "8631a031",
+   "object_type": "commit"
+  },
+  {
+   "doc": "GATE_DECISION_DIGEST_PROPOSAL.md",
+   "line": 22,
+   "hash": "4b8468e7c6c7",
+   "object_type": "none"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 50,
+   "hash": "8094d43748174bbc981a481f9760c582f1b050ab",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 55,
+   "hash": "a5995bec",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 58,
+   "hash": "1eddf823efadf925a17711a05081edaf588a0ea6",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 59,
+   "hash": "364c203d",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 60,
+   "hash": "7cac21d8",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 62,
+   "hash": "0e3c417f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 64,
+   "hash": "e99f83b6",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 64,
+   "hash": "b9baeb13",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 65,
+   "hash": "658c70a6",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 66,
+   "hash": "96d45467",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 67,
+   "hash": "1753a92bbfdb9e717c24fb083ab9065d4f615a27",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 68,
+   "hash": "7bb1b235bd19ad31d9fe9831517388918f4560ff",
+   "object_type": "blob"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 71,
+   "hash": "a87dcdb4",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 71,
+   "hash": "f9100295",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 90,
+   "hash": "658c70a6",
+   "object_type": "commit"
+  },
+  {
+   "doc": "HIST_002_EXPLORATION.md",
+   "line": 90,
+   "hash": "96d45467",
+   "object_type": "commit"
+  },
+  {
+   "doc": "INDEX_UPDATE_FAILURE_COW_INVESTIGATION.md",
+   "line": 33,
+   "hash": "f6e181b2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 8,
+   "hash": "4016cca5",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 51,
+   "hash": "4f1b7e3c",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 55,
+   "hash": "146715b8bbd994ee",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 56,
+   "hash": "539fcf418ee7d56e",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 57,
+   "hash": "1945ce9506f93f4d",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 58,
+   "hash": "e3815e5e50b456b1",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 59,
+   "hash": "f1337ba3b04fb55a",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 60,
+   "hash": "a69077a87ba0b2c1",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 61,
+   "hash": "7e5b655cd995e03f",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 62,
+   "hash": "421a0166cab0216b",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 63,
+   "hash": "2f2049fa01efc30f",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 64,
+   "hash": "acb550d1097f02b5",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 74,
+   "hash": "504b143b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 74,
+   "hash": "504b143b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 76,
+   "hash": "d6095cdd",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 77,
+   "hash": "4f1b7e3c",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 77,
+   "hash": "8053683a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 84,
+   "hash": "e5abf435",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 114,
+   "hash": "4f1b7e3c",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 114,
+   "hash": "305958a8b7087e67",
+   "object_type": "none"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 146,
+   "hash": "9d36da92",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MAINTENANCE_HEALTH_CHECK_2026-10-16.md",
+   "line": 190,
+   "hash": "db3ee2bd",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 38,
+   "hash": "ff209700",
+   "object_type": "commit"
+  },
+  {
+   "doc": "MEMOIZE_DEPENDENCY_INVESTIGATION.md",
+   "line": 56,
+   "hash": "730d3433b47219244ef69e130970cb80f68a94a2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 47,
+   "hash": "1027a154",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 49,
+   "hash": "a5662f7d",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 74,
+   "hash": "bf0259a0",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERFORMANCE_CI_CHANGE_GUIDE.md",
+   "line": 127,
+   "hash": "0330e7b5",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 3,
+   "hash": "6f101a27",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 68,
+   "hash": "3ef37fc2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 68,
+   "hash": "1f87e37a",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PERMUTATION_MODULE_MIGRATION_PLAN.md",
+   "line": 68,
+   "hash": "4cd0ebc2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md",
+   "line": 21,
+   "hash": "fec74691",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+   "line": 3,
+   "hash": "039b2141",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+   "line": 51,
+   "hash": "f6e181b2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RED_BLACK_TREE_OUTLINE_AUDIT.md",
+   "line": 3,
+   "hash": "1dc613ff",
+   "object_type": "commit"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_MILESTONE_CONNECT.md",
+   "line": 3,
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "REGISTRY_STUDIO_SINGLE_LINE_KIND.md",
+   "line": 3,
+   "hash": "9ddb150f",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 40,
+   "hash": "964c12bc",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 43,
+   "hash": "139ffef8",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 47,
+   "hash": "e9126d24",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 50,
+   "hash": "9ff515c9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 55,
+   "hash": "9ff515c9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 62,
+   "hash": "31aa2f07",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 111,
+   "hash": "0789479b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 115,
+   "hash": "b03d0bf2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 116,
+   "hash": "139ffef8",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 117,
+   "hash": "b03d0bf2",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_FIX.md",
+   "line": 121,
+   "hash": "9ff515c9",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 40,
+   "hash": "b6ff8a85",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 47,
+   "hash": "4a7ef4e3",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 47,
+   "hash": "a5a39d12",
+   "object_type": "commit"
+  },
+  {
+   "doc": "RELEASE_CANDIDATE_BASELINE_INVESTIGATION.md",
+   "line": 62,
+   "hash": "b6ff8a85",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 37,
+   "hash": "76c08138",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_APP_CLAUDE_ADVICE.md",
+   "line": 37,
+   "hash": "f93ae6dfe7d5f452",
+   "object_type": "none"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 13,
+   "hash": "bd70dc4741c4d80eb850446795081cb6e740ae4b",
+   "object_type": "commit"
+  },
+  {
+   "doc": "TASK_REGISTRY_LAYOUT_ADVICE.md",
+   "line": 45,
+   "hash": "bd70dc47",
+   "object_type": "commit"
+  }
+ ]
+}

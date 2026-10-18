@@ -1,5 +1,9 @@
 # Task graph DB independent experiment
 
+## TL;DR（人間向け）
+
+SQLiteによるタスク依存管理の独立試験と、正本・編集版の読み取り健全性検査の記録。Codex側と交流会は終了し、Claudeのlocal projectionだけを補助具として継続する。末尾では39項目と正本/編集込み検査をAstraが限定受入したが、取込済み認定や正本への自動書戻し、Gitからのツール復元保証にはしない。
+
 ## Purpose
 
 SQLiteをtask依存管理のgraph databaseとして利用できるか、ClaudeとCodexが独立に試験する。

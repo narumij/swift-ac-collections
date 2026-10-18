@@ -6,6 +6,14 @@ const c={};vm.createContext(c);vm.runInContext(source+'\n'+html.slice(html.index
 const event=(n,kind='return')=>({schemaVersion:1,id:n.toString(16).padStart(32,'0'),taskId:'OPS-111',event:kind,owner:'<img src=x onerror=alert(1)>',timestamp:'2026-10-18T12:00:00Z',reason:'repeat '+n,commitSha:'a'.repeat(40)});
 const rows=ns=>c.validateActivityRows(ns.map(n=>event(n)),'events');
 assert.equal(rows([1,2]).length,2);
+// Local timezone display, including a UTC date crossing midnight in Japan.
+const stamp='2026-10-18T20:30:00Z',input={...event(90),timestamp:stamp};
+const expected=new Intl.DateTimeFormat(undefined,{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZoneName:'short'}).format(new Date(stamp));
+const displayed=c.validateActivityRows([input],'events')[0];
+assert(displayed.title.includes(expected));assert(!displayed.title.includes(stamp));
+assert.equal(input.timestamp,stamp);assert.equal(displayed.raw.at,stamp);
+assert(c.validateActivityRows([{sha:'b'.repeat(40),timestamp:stamp,subject:'test'}],'commits')[0].title.includes(expected));
+
 assert(!html.includes('id="activity-commits"'));
 assert(html.includes("for(const kind of ['events'])"));
 assert(rows([1])[0].detail.includes('<img')&&rows([1])[0].title.includes('a'.repeat(40)));

@@ -121,6 +121,7 @@
 | `OPS-143` | `DONE` | Astra / 姫 | [DISCOVERY] 速やかな停止と即時停止の区分を協議 | 協議のみ再開。翻訳・実装は停止を維持 | `Maintanance/Current/STOP_MODES_DISCUSSION.md` |
 | `OPS-144` | `DONE` | ユーザー / Astra（相談補助） | [DECISION] コンシェルジュ役の分担を決める | ユーザーが窓口と背後調整役の分担を承認。占有窓口・コミット実行は調整役へ | `Maintanance/Current/CONCIERGE_ROLE_DISCUSSION.md` |
 | `OPS-145` | `DONE` | Astra / 姫（確認） | [EXECUTION] 停止・再開・担当交代の占有ルールを整備 | 既存受渡し規則に補足。翻訳再開・UI実装は含めない | `Maintanance/Current/FILE_OCCUPANCY_HANDOFF.md` |
+| `OPS-146` | `DONE` | Astra調整 | [EXECUTION] 作業イベントのhover時刻をローカル表示へ統一 | ユーザー指摘。保存UTCは変えず、読取表示だけタイムゾーン付きにする | `Maintanance/Current/STUDIO_ACTIVITY_LOCAL_TIME.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
 | `OPS-124` | `DONE` | Astra | [EXECUTION] 作業イベントカードに担当名を表示する | タスクID・担当・工程を併記。表示のみ | `Maintanance/Current/STUDIO_ACTIVITY_OWNER.md` |
@@ -441,6 +442,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `DOC-030` | `OPS-142` |
 | `OPS-048` | `OPS-134` |
 | `OPS-048` | `OPS-135` |
+| `OPS-048` | `OPS-146` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-104：初回基礎研究の準備をAstraが補足付き受入。依頼終了、ユーザーcommit承認によりDONE。実験・追加依頼なし。
+
 OPS-102：第1〜3回をAstra受入済み。限定依頼は終了、ユーザーcommit承認によりDONE。場面別の候補と適用限界を正本末尾に記録。追加作業なし。
 
 OPS-101：第1〜3回をAstra受入済み。限定依頼は終了、結果をOPS-099へ接続。ユーザーcommit承認によりDONE。追加調査・キャッシュ変更の依頼なし。
@@ -357,3 +359,13 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-102 — 第3回：場面別の候補と限界の整理
 
 [正本の第3回正式依頼](Current/CACHE_SECOND_ITEM_PILOT.md)に従い、既存の返却と受入補正から半ページ程度に整理してください。追加調査・実装・キャッシュ変更なし。編集は第3回Returnのみ、commitなし。返却後停止。
+
+
+## OPS-104 — 基礎研究の初回実験準備
+
+[正式依頼](Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md)に従い、3条件の実験用依頼文と評価表、最小実施手順を用意してください。本書作成時点でRegistry採番済み。指定正本のProposal・Returnを姫へ委任します。実験実施・会話やエージェント起動・他文書変更・commitなし。返却後停止し、Astraが受け入れます。
+
+
+## OPS-104 — 準備受入・依頼終了（2026-10-18 / Astra）
+
+[正本の受入補足](Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md)に評価上の補足を記録。原Proposal・Returnは保持。差し戻し・追加作業はなく、実験はまだ開始しない。

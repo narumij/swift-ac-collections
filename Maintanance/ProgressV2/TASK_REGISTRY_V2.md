@@ -23,7 +23,7 @@
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `DOC-045` | `DONE` | Codex | [EXECUTION] 赤黒木4型のDocCプレビューセルフレビュー | 2026-10-17ユーザー明示依頼。Release DocC起動、4型ヘッダ読了・代表画面・APIとガイド遷移・停止を確認し自己受入済み。全member・Safari・狭幅は未検証。スニペット増減・契約変更は含まない | `Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md` |
 | `DOC-030` | `ACTIVE` | Codex | [EXECUTION] 文書整備の恒久管理 | 文書の役割・整備方法・参照関係を維持する常設node。リンク切れの点検・修正と移動・改名時の参照元確認を含み、対象と方法は詳細正本の「リンクと参照先の保守」に従う。個別の文書作業の完了だけではDONE・履歴化しない。常時実行中や読み手への編集委任を意味せず、具体的な作業は現在の依頼と権限に従う。維持文書は配置維持の指定に従い残す | `Maintanance/DOCUMENT.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Current/DOCUMENTATION_WORKFLOW.md` / `Maintanance/UserDocuments/SnippetSurvey/README.md` |
-| `OPS-103` | `ACTIVE` | Astra | [DISCOVERY] AI協働・判断と記憶の基礎研究（恒久） | 2026-10-18ユーザー指定の常設node。都度テーマ・観察・仮説・限界を手入れしながら様子を見る。性能改善を必須成果とせず、個別試行完了でDONEにしない。OPS-102を出発点とする。初回比較実験は候補段階、今回は設置まで。個別実施は範囲と停止点を定めて切り出す | `Maintanance/Current/AI_COLLABORATION_BASIC_RESEARCH.md` |
+| `OPS-103` | `ACTIVE` | Astra | [DISCOVERY] AI協働・判断と記憶の基礎研究（恒久） | 2026-10-18ユーザー指定の常設node。都度テーマ・観察・仮説・限界を手入れしながら様子を見る。性能改善を必須成果とせず、個別試行完了でDONEにしない。OPS-102を出発点とする。初回比較実験の準備OPS-104を補足付き受入。実験自体は未着手。個別実施は範囲と停止点を定めて切り出す | `Maintanance/Current/AI_COLLABORATION_BASIC_RESEARCH.md` |
 | `OPS-077` | `ACTIVE` | Astra（精査） / 事実照合担当は都度委任 | [EXECUTION] 判断の根拠と更新条件の恒久メンテナンス | 常設node。ユーザーの依頼時に対象を絞り、事実照合と判断への影響の精査を分担する。個別実施の完了でDONEにしない。常時監視・全件再調査・読み手への任命は意味しない | `Maintanance/Current/JUDGMENT_EVIDENCE_MAINTENANCE.md` |
 | `OPS-043` | `ACTIVE` | Codex / Claude / Astra（各自の記録） | [EXECUTION] 協働のふりかえりと知見の蓄積 | 具体的な出来事と、その時点の観察・受け止め方を残す常設node。一回の回答や個別作業の完了だけではDONE・履歴化しない。人物評の固定や担当適性の判定とは区別する。評価の追記・任意観察は各文書の記入条件と現在の依頼に従い、他者の声を代筆・改変しない。常時実行中・定期記入義務・読み手への担当任命を意味せず、過去の感想を現行の規則・権限へ昇格させない | `Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/USER_MANAGEMENT_INTERVIEW_ASTRA.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/CODEX_OBSERVATIONS.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/CLAUDE_OBSERVATIONS.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/ASTRA_OBSERVATIONS.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） |
 | `TEST-005` | `ACTIVE` | Claude（姫） | [EXECUTION] テスト整備の恒久管理 | Test as Specificationを中心にテストの構成・実行方法・fixture説明と整備の現在地を維持する常設node。個別試験・レビューの完了でDONE・履歴化しない。文書中の古い状態は現行Registry・品質要求・対象taskの詳細正本と照合し、記載だけで現行事実としない。具体的な作業は現在の依頼・受渡しと各文書の権限に従い、本行だけでは発注・再開・他担当による編集を認めない | `Maintanance/Testing/TESTING.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Tests/CLAUDE.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Testing/Fixtures.md`（配置維持; 区分=既存指定; 付与日=不明; 記録日=2026-10-16; 記録者=Astra; 理由=旧配置維持例外から継承） / `Maintanance/Testing/JudgmentCoordinates/README.md` / `Maintanance/Testing/TEST_WORKFLOW.md` |
@@ -102,6 +102,7 @@
 
 ### 調整・運用の個別課題
 
+| `OPS-104` | `DONE` | Claude（姫・案作成） / Astra（受入） | [DISCOVERY] 基礎研究の初回実験用依頼文と評価表を準備する | 2026-10-18ユーザー依頼。3条件の依頼文・事前評価表・最小実施手順・限界を正本Proposalへ作成し返却。実験実施・コード変更・commitなし。Astraが準備成果として補足付き受入。省略と違反の区別、U2の補助観察化、評価用順序の分離を記録。ユーザーcommit承認により準備完了。実施環境・モデル・担当は未決、実験開始なし | `Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md` |
 | `OPS-102` | `DONE` | Claude（姫・限定試行） / Astra（受入・整理） | [DISCOVERY] 場面ごとに判断の次に欲しいキャッシュ情報を探す | 2026-10-18ユーザー承認。最大3往復で候補出し・小さい試行・結果整理を行う。第1〜3回をAstra受入済み、限定依頼終了。場面別の候補と適用限界を正本に総括。入力にない追加条件は要求に採用しない。効率改善は未検証。ユーザーcommit承認により完了、追加依頼なし。共通規則を隠さず、既存キャッシュの削除・変更、LRUや自動選抜の実装、全体導入はしない。結果なし・場面別の違いも成果とする | `Maintanance/Current/CACHE_SECOND_ITEM_PILOT.md` |
 
 | `OPS-101` | `DONE` | Claude（姫・限定試行） / Astra（受入・整理） | [DISCOVERY] コピー判断とオリジナル判断を区別する運用の限定試行 | 2026-10-18ユーザー依頼で登録。判断キャッシュは正本の写しという前提で、少数の記録をコピー判断・オリジナル判断・出典未確認に分け、出典照合の負担と誤分類を確認する。ユーザー指定で3回に分割。第1回は姫のSTUDIO_LAYOUTの3項目を読取照合し、正本Returnのみ編集。第2・3回は各返却の受入後に依頼する。キャッシュ変更・正本昇格・削除・LRU導入なし。OPS-099の検討材料として返す。第1・2回はAstra受入済み。第2回の催促禁止の出どころは共通規則として補正。第3回の整理もAstra受入済み、3回の限定依頼は終了。OPS-099へ結果を接続。実際の退避・復元と全体への制度採用は未検証・未実施。ユーザーのcommit承認により限定試行を完了。 | `Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md` |
@@ -343,6 +344,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | 親 | サブタスク |
 | --- | --- |
 | `OPS-103` | `OPS-102` |
+| `OPS-103` | `OPS-104` |
 | `OPS-048` | `OPS-059` |
 | `OPS-048` | `OPS-061` |
 | `OPS-048` | `OPS-062` |

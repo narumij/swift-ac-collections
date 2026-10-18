@@ -107,6 +107,7 @@
 | `OPS-111` | `DONE` | Sol（実装・独立確認） / Astra（設計・受入） | [EXECUTION] Studioの作業イベントとコミット履歴を二段カード帯にする | 2026-10-18ユーザー依頼。受入・差し戻し・再確認などの往復を消さず表示し、Git履歴と並べて定期更新。Sol実装・独立確認とAstra受入済み。閲覧位置補正の差し戻し1回を記録。限定試験とsync/verify成功。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_ACTIVITY_TIMELINE.md` |
 | `OPS-112` | `DONE` | Sol（文書補正・独立確認） / Astra（受入・Registry反映） | [EXECUTION] 初回研究の未実施表記を実施記録と整合させる | 2026-10-18ユーザーの小さな非Studio作業依頼。OPS-105の受入済み実施記録に照合し、OPS-103の初回研究案内だけ補正。結果の再評価・新実験なし。作業Sol補正・確認Sol独立照合・Astra受入済み、差し戻しなし。ユーザーcommit承認により完了 | `Maintanance/Current/RESEARCH_STATUS_DOCUMENT_CORRECTION.md` |
 | `OPS-113` | `DONE` | Astra | [EXECUTION] 作業履歴を外枠色付き一行カードへ縮小する | 2026-10-18ユーザー依頼。コミット帯を廃止し、作業イベントのID・種別のみを表示。背景は帯と同色、外枠で種別を区別。詳細と原履歴を保持。文字帯の復活を含め実装・限定検査・受入済み。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_COMPACT_ACTIVITY.md` |
+| `OPS-114` | `DONE` | Sol（実装・確認） / Astra（設計・受入・コミット担当） | [EXECUTION] コミット事前承認レーンを試作する | 2026-10-18ユーザー依頼。個別・表示中の全部承認、取消、永続記録、一回限りの使用を実装。コミットはAstraのみ。AGENTS変更案を用意し、規則反映前は事前承認だけで実行しない。実装・限定検査・独立確認・Astra受入済み。ユーザーの規則反映・画面承認保存を確認。承認範囲を切り出してcommit | `Maintanance/Current/COMMIT_PREAPPROVAL_LANE.md` |
 | `OPS-108` | `DONE` | Sol（作業・独立確認） / Astra（受入） | [DISCOVERY] Sol OJTならしとして表示設定2件の根拠を照合する | 2026-10-18ユーザー実施承認。読取限定・作業役→確認役→Astraで一周。追加調査を広げず補正最大一往復。2件の静的照合を補足付き受入。キャッシュ欄の訂正一往復完了、実装・試験未変更。ユーザーcommit承認により完了 | `Maintanance/Current/SOL_OJT_WARMUP.md` |
 | `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |
 | `OPS-106` | `ACTIVE` | Astra（蓄積・手入れ） / 他担当は個別依頼で参加 | [DISCOVERY] 実務のキャッシュ参照一行記録を蓄積する | 2026-10-18ユーザー承認。既存Return等に実参照したファイル＋節を残し、恒久研究の手入れ時に小さく見返す。効果は未知。件数埋め・過去分補完・利用頻度による削除なし。負担も観察して継続方法を見直す | `Maintanance/Current/CACHE_REFERENCE_OBSERVATION_PILOT.md` |
@@ -388,6 +389,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-110` |
 | `OPS-048` | `OPS-111` |
 | `OPS-048` | `OPS-113` |
+| `OPS-048` | `OPS-114` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

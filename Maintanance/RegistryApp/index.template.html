@@ -32,10 +32,14 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-row{display:fl
 #protectionList table{border-collapse:collapse;width:100%;font-size:12px}#protectionList td,#protectionList th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}#protectionList td:first-child{overflow-wrap:anywhere}#protectionList a{color:var(--accent)}
 /* Fixed strip geometry keeps polling from moving the editor or scroll position. */
 .activity-current{height:44px;margin-top:8px;color:#d1e3dc;font-size:11px;line-height:20px;overflow:hidden}.activity-current>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-timelines{height:48px;margin-top:8px;overflow:hidden}.activity-row{height:48px;display:flex;gap:8px;min-width:0}.activity-label{flex:0 0 106px;padding-top:4px;font-size:11px;color:#d1e3dc}.activity-label small{display:block;font-size:10px;line-height:14px}.activity-label small[data-stale="true"]{color:#ffe0a1}.activity-track{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scroll-behavior:auto;overflow-anchor:none}.activity-card{box-sizing:border-box;flex:0 0 auto;height:30px;padding:4px 9px;border:2px solid #8da9a0;border-radius:6px;background:transparent;color:#e4eee9;font-size:11px;line-height:18px}.activity-card strong{display:block;white-space:nowrap}.activity-card[data-event="request"]{border-color:#9db7ce}.activity-card[data-event="work"]{border-color:#6fc39b}.activity-card[data-event="verification"]{border-color:#80b8e8}.activity-card[data-event="acceptance"]{border-color:#65d6c0}.activity-card[data-event="return"]{border-color:#f19b83}.activity-card[data-event="recheck"]{border-color:#b5a2ee}.activity-card[data-event="complete"]{border-color:#b9c1bb}.activity-card[data-event="awaiting-commit"]{border-color:#e6c478}.activity-card[data-event="commit"]{border-color:#91a5c4}.activity-card:focus{outline:2px solid #ffffff;outline-offset:-4px}
+/* Approval details are outside the sticky header; fixed track height isolates polling. */
+.approval-lane{margin:12px 28px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;overflow-anchor:none}.approval-heading{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;font-size:12px}.approval-heading h2{font-size:13px;margin:0}.approval-heading button,.approval-card button{padding:4px 8px;font-size:11px}.approval-policy{font-size:11px;color:var(--muted);margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-track{display:flex;gap:8px;height:106px;overflow:auto;overflow-anchor:none}.approval-card{flex:0 0 280px;width:280px;height:92px;border:1px solid #b8ccc0;border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:5px;font-size:11px}.approval-card strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-card[data-status="approved"]{border-color:#126c58;background:#edf6ef}.approval-card[data-status="claimed"]{border-color:#bb8b32}.approval-actions{display:flex;gap:6px;margin-top:auto}.approval-lane>details{margin-top:4px;font-size:11px}.approval-lane>details[open]{max-height:230px;overflow:auto}.approval-history{display:flex;gap:8px;overflow:auto;margin-top:8px}#approval-status[data-stale="true"]{color:#a44e1d}#approval-detail{max-height:65vh;overflow:auto}#approval-dialog h2{font-size:16px}@media(max-width:600px){.approval-lane{margin:10px 12px 0}}
 </style>
 <div id="canonicalRestartNotice" role="status" hidden style="background:#e5f3e9;color:#234e36;padding:10px 20px;border-bottom:1px solid #b5d5be">保存した編集内容が正本に反映されています。正本から新しく始めるのがおすすめです。 <button id="canonicalRestartAction">正本から新しく始める</button></div>
 <div id="serverRestartNotice" role="status" hidden style="background:#fff1c2;color:#593c00;padding:12px 20px;border-bottom:1px solid #d5b95c"></div>
 <header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section class="activity-current" aria-label="現在の作業詳細"><div id="activity-current-heading">現在の作業：読み込み待ち</div><div id="activity-current-detail">担当・時刻・詳細をここに表示します</div></section><section class="activity-timelines" aria-label="作業イベントの履歴"><div class="activity-row"><div class="activity-label">作業イベント<small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div></section><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header>
+<section class="approval-lane" aria-label="コミット事前承認"><div class="approval-heading"><h2>コミット事前承認</h2><span id="approval-status" role="status">読み込み待ち</span><button type="button" id="approval-all" disabled>表示中の未承認0件を承認</button></div><p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="approval-history-summary">使用・取消の履歴（0件）</summary><div id="approval-history" class="approval-history"></div></details></section>
+<dialog id="approval-dialog" aria-labelledby="approval-dialog-title"><h2 id="approval-dialog-title">コミット依頼の詳細</h2><pre id="approval-detail" tabindex="0"></pre><button type="button" id="approval-close">閉じる</button></dialog>
 <div id="status" class="status" role="status" hidden></div>
 <div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab" aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button><button id="neighborTab" role="tab" aria-selected="false" aria-controls="neighborView" tabindex="-1">接続を見る</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div class="buttons" role="group" aria-label="見取り図の表示"><button id="graphZoomOut" aria-label="見取り図を縮小">−</button><button id="graphZoomReset" aria-label="倍率を100%に戻す" title="100%に戻す">100%</button><button id="graphZoomIn" aria-label="見取り図を拡大">＋</button><label style="display:flex;align-items:center;gap:6px;margin:0"><input id="graphHoverEnabled" type="checkbox" checked style="width:auto">カードの説明を表示</label></div><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden><h2>カード一覧 <span id="cardsCount" class="count"></span></h2><p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p><label>並び方<select id="cardOrder" aria-label="カード一覧の並び方"><option value="id">ID順（PREFIX別）</option><option value="grouped">ジャンル別</option></select></label><div id="planTools"></div><div id="cardList"></div></section><section id="neighborView" role="tabpanel" aria-labelledby="neighborTab" class="panel" hidden><h2>接続を見る <span id="neighborCount" class="count"></span></h2><p class="muted">選んだノードの直接の前提（→このノード）と後続（このノード→）を1段だけ表示します。開いている編集版のすべてのtask・追加案・マイルストーンと線から作り、版の絞込みは通しません。必要なノードだけ「この先を展開」で1段ずつ広げられます。表示を変えても編集内容は変わりません。線は関係の所在で、着手できるかは条件文で判断します。</p><div id="neighborBox"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
 <dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
@@ -955,6 +959,110 @@ function startActivityTimelines(){
  }
 }
 startActivityTimelines();
+
+// OPS-114: this lane owns only approval DOM and HTTP state, never the editor.
+const approvalStatusLabels={pending:'承認待ち',approved:'承認済み',claimed:'実行直前に確保済み・取消不可',consumed:'使用済み',cancelled:'取消済み'};
+function validateApprovalList(value){
+ if(!value||!Array.isArray(value.requests)||typeof value.policyNotice!=='string')throw Error('Invalid approval list');
+ const seen=new Set();
+ const requests=value.requests.map(row=>{
+  if(!row||typeof row.id!=='string'||!row.id||seen.has(row.id)||!Number.isSafeInteger(row.revision)||row.revision<1||!Object.hasOwn(approvalStatusLabels,row.status))throw Error('Invalid approval identity');
+  for(const key of ['taskId','title','scope','condition','branch','createdAt','updatedAt'])if(typeof row[key]!=='string')throw Error('Invalid approval content');
+  if(!Array.isArray(row.paths)||!row.paths.length||row.paths.some(path=>typeof path!=='string'||!path))throw Error('Invalid approval paths');
+  for(const key of ['approvedAt','commitSha'])if(row[key]!=null&&typeof row[key]!=='string')throw Error('Invalid approval history');
+  seen.add(row.id);return {...row,paths:[...row.paths]};
+ });
+ return {requests,policyNotice:value.policyNotice};
+}
+function createApprovalController({fetchRecord,view,isHidden,schedule,cancel,makeController}){
+ let rows=[],fresh=false,busy=false,reading=false,generation=0,timer=null,getController=null;
+ const clear=()=>{if(timer!==null){cancel(timer);timer=null;}};
+ const later=()=>{clear();if(!isHidden()&&!busy&&!reading)timer=schedule(poll,3000);};
+ const availability=()=>view.availability(fresh&&!busy&&!isHidden(),busy);
+ async function request(options,controller){
+  let timeout;
+  try{return await Promise.race([
+   (async()=>{const response=await fetchRecord('/commit-approvals',{...options,signal:controller.signal});if(!response.ok)throw Error(response.status===409?'依頼が更新されました。確認し直してください。':'取得・変更に失敗しました。');return validateApprovalList(await response.json());})(),
+   new Promise((_,reject)=>{timeout=schedule(()=>{controller.abort();reject(Error('応答がありません。'));},5000);controller.signal.addEventListener('abort',()=>reject(Error('中断しました。')),{once:true});})
+  ]);}finally{cancel(timeout);}
+ }
+ function apply(value){rows=value.requests;fresh=true;view.update(value);}
+ async function poll(){
+  clear();if(isHidden()||reading||busy)return;
+  reading=true;const mine=generation,controller=makeController();getController=controller;
+  try{const result=await request({cache:'no-store'},controller);if(mine===generation&&!isHidden())apply(result);}
+  catch(e){if(mine===generation&&!isHidden()){fresh=false;view.failure('取得不調 · 最終情報を保持。操作停止中');}}
+  finally{if(getController===controller)getController=null;reading=false;availability();later();}
+ }
+ async function act(action,targets){
+  // Copy the displayed click-time identities before any await or network activity.
+  const snapshot=targets.map(({id,revision})=>({id,revision}));
+  if(!fresh||busy||isHidden()||!snapshot.length||!['approve','cancel'].includes(action))return;
+  if(new Set(snapshot.map(t=>t.id)).size!==snapshot.length||snapshot.some(t=>!rows.some(r=>r.id===t.id&&r.revision===t.revision&&(action==='approve'?r.status==='pending':['pending','approved'].includes(r.status)))))return;
+  busy=true;fresh=false;generation++;clear();if(getController)getController.abort();availability();
+  const controller=makeController();
+  try{const result=await request({method:'POST',headers:{'Content-Type':'application/json','X-Registry-Studio':'commit-approvals'},body:JSON.stringify({action,targets:snapshot})},controller);apply(result);}
+  catch(e){view.failure(e.message+' 最終情報を保持。操作停止中');}
+  finally{busy=false;availability();later();}
+ }
+ function visibility(){clear();generation++;fresh=false;if(getController)getController.abort();availability();if(!isHidden())poll();}
+ return {poll,act,visibility};
+}
+function createApprovalView({track,history,historySummary,status,policy,all,dialog,detail,close,makeNode}){
+ const cards=new Map();let rows=[],enabled=false,busy=false,action=()=>{},inspected=null;
+ const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
+ function details(row){
+  inspected=row.id;
+  set(detail,['依頼：'+row.id+' / revision '+row.revision,'タスク：'+row.taskId+' · '+row.title,'状態：'+approvalStatusLabels[row.status],'目的・範囲：\n'+row.scope,'対象ファイル：\n'+row.paths.join('\n'),'受入条件：\n'+row.condition,'branch：'+row.branch,'登録：'+row.createdAt,'更新：'+row.updatedAt,'承認：'+(row.approvedAt||'未承認'),'実コミット：'+(row.commitSha||'未記録')].join('\n\n'));
+ }
+ close.onclick=()=>dialog.close();
+ function controls(){
+  const count=rows.filter(r=>r.status==='pending').length;set(all,'表示中の未承認'+count+'件を承認');all.disabled=!enabled||!count;
+  for(const {row,approve,revoke} of cards.values()){
+   approve.hidden=row.status!=='pending';approve.disabled=!enabled||row.status!=='pending';
+   revoke.hidden=!['pending','approved','claimed'].includes(row.status);revoke.disabled=!enabled||!['pending','approved'].includes(row.status);
+   set(revoke,row.status==='claimed'?'取消不可':'取消');
+  }
+ }
+ all.onclick=()=>action('approve',rows.filter(r=>r.status==='pending').map(({id,revision})=>({id,revision})));
+ return {
+  bind(fn){action=fn;},
+  update(value){
+   rows=value.requests;set(policy,value.policyNotice);set(status,rows.length?'承認待ち '+rows.filter(r=>r.status==='pending').length+'件 · 承認済み '+rows.filter(r=>r.status==='approved').length+'件':'依頼なし');
+   status.dataset.stale='false';
+   const keep=new Set(rows.map(r=>r.id));for(const [id,card] of cards)if(!keep.has(id)){card.node.remove();cards.delete(id);}
+   const positions=new Map([[track,0],[history,0]]),scrolls=[track.scrollLeft,history.scrollLeft,history.scrollTop];
+   for(const row of rows){
+    let card=cards.get(row.id);
+    if(!card){
+     const node=makeNode('article'),title=makeNode('strong'),state=makeNode('span'),buttons=makeNode('div'),inspect=makeNode('button'),approve=makeNode('button'),revoke=makeNode('button');
+     node.className='approval-card';buttons.className='approval-actions';inspect.type=approve.type=revoke.type='button';
+     set(inspect,'詳細');set(approve,'承認');buttons.appendChild(inspect);buttons.appendChild(approve);buttons.appendChild(revoke);node.appendChild(title);node.appendChild(state);node.appendChild(buttons);
+     card={node,title,state,inspect,approve,revoke,row};cards.set(row.id,card);
+     inspect.onclick=()=>{details(card.row);if(!dialog.open)dialog.showModal();};
+     approve.onclick=()=>action('approve',[{id:card.row.id,revision:card.row.revision}]);revoke.onclick=()=>action('cancel',[{id:card.row.id,revision:card.row.revision}]);
+    }
+    card.row=row;set(card.title,row.taskId+' · '+row.title);card.title.title=row.taskId+' · '+row.title;set(card.state,approvalStatusLabels[row.status]);card.node.dataset.status=row.status;
+    const parent=['consumed','cancelled'].includes(row.status)?history:track,index=positions.get(parent);positions.set(parent,index+1);
+    if(parent.children[index]!==card.node)parent.insertBefore(card.node,parent.children[index]||null);
+    if(dialog.open&&inspected===row.id)details(row);
+   }
+   track.scrollLeft=scrolls[0];history.scrollLeft=scrolls[1];history.scrollTop=scrolls[2];
+   set(historySummary,'使用・取消の履歴（'+rows.filter(r=>['consumed','cancelled'].includes(r.status)).length+'件）');controls();
+  },
+  availability(value,inProgress){enabled=value;busy=inProgress;controls();if(busy)set(status,'変更を確認中 · 操作停止中');},
+  failure(message){set(status,message);status.dataset.stale='true';}
+ };
+}
+function startCommitApprovals(){
+ const status=$('approval-status');
+ if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';return;}
+ const view=createApprovalView({track:$('approval-track'),history:$('approval-history'),historySummary:$('approval-history-summary'),status,policy:$('approval-policy'),all:$('approval-all'),dialog:$('approval-dialog'),detail:$('approval-detail'),close:$('approval-close'),makeNode:tag=>document.createElement(tag)});
+ const controller=createApprovalController({fetchRecord:fetch,view,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
+ view.bind(controller.act);document.addEventListener('visibilitychange',controller.visibility);controller.poll();
+}
+startCommitApprovals();
+
 
 const resumed=resumeWorkspace();
 </script></html>

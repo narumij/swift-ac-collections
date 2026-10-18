@@ -315,3 +315,16 @@ python3 Maintanance/RegistryApp/activity.py --task OPS-111 --event recheck --own
 各行は `schemaVersion: 1`、一意の `id`、`taskId`、`event`、`owner`、`timestamp`、`reason`、`commitSha` を持つJSONです。CLIは追記ロックとfsyncを使い、不完全な末尾がある場合は既存記録を変更せず拒否します。HTTPは固定の読取専用 `GET /activity-events` と `GET /activity-commits` のみ。JSONと文字列を検証し、画面はtextContentで表示します。Gitは固定引数・3秒タイムアウトで読みます。互換の旧 `/work-progress` は残しますが、画面では取得しません。サーバー側変更には手動再起動、HTML変更にはsyncとページ再読込が必要です。
 
 限定検証：`python3 Maintanance/RegistryApp/test-activity.py` と `node Maintanance/RegistryApp/test-activity.cjs`。実利用のイベントは作りません。
+
+
+## コミット事前承認（OPS-114、試作）
+
+作業イベント帯の下に、Astraが登録したコミット依頼を表示します。「詳細」で目的・範囲、対象ファイルの完全パス一覧、受入条件、branch、状態・時刻・実コミットを確認できます。承認待ち・承認済み・確保済みは小さいカードで表示し、使用済み・取消済みは折り畳みの履歴から辿れます。確保済みは実行直前のため取消不可と表示します。
+
+各依頼を個別に承認・取消できます。「表示中の未承認N件を承認」は、クリック時に表示リストが保持する承認待ちのIDとrevisionだけを送ります。後から追加された依頼には広げず、空集合では送信しません。競合は全件無変更で拒否され、最新情報を再取得してから確認し直します。承認は限定した目的と範囲への事前承認で、画面からcommit・push・mergeやtask受入を行いません。現行規則が変更されるまではAstraが会話で直前承認を確認します。登録内容を変える場合は、旧依頼を取消し、新しい依頼を登録して再承認します。
+
+承認レーンだけを約3秒ごとに取得し、編集中の入力・未保存の変更・選択・全体の描画には触れません。非表示で取得を停止・中断し、5秒でタイムアウト、取得は重複させません。取得・変更の失敗時は最後の表示を残して承認・取消を停止し、次の正常な取得で再開します。変更より古い取得応答は採用しません。詳細はテキストとして表示します。
+
+固定APIは `GET /commit-approvals` とユーザー操作の `POST /commit-approvals`（`approve` / `cancel`、ID+revision集合）です。保存は `Approvals/` 内のSQLiteで、sync・再起動・commitで消しません。CLIには承認操作やcommit等のGit変更機能を設けません。読み取りで実commitの対応を照合します。契約の正本は[コミット事前承認レーン](../Current/COMMIT_PREAPPROVAL_LANE.md)です。新しいAPIを使うにはサーバーの手動再起動とHTMLの生成・ページ再読込が必要です。
+
+限定検証：`node Maintanance/RegistryApp/test-approvals.cjs`（独立した疑似DOM・通信でクリック対象固定、競合・取得失敗、古い応答、非表示・タイムアウト、フォーカス保持を確認）。実際の依頼・承認は試験で作成しません。

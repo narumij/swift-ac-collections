@@ -12,6 +12,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import activity
+import approvals
+import sqlite3
 
 import inbox  # edit versions in Inbox/ (OPS-082)
 
@@ -32,7 +34,7 @@ MAX_SAVE_BYTES = 10 * 1024 * 1024
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py'):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py'):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -112,6 +114,11 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        if self.path == '/commit-approvals':
+            try:
+                return self.reply(200, approvals.Store().list())
+            except (OSError, ValueError, sqlite3.Error):
+                return self.reply(503, {'error': 'Approvals unavailable'})
         if self.path in ('/activity-events', '/activity-commits'):
             try:
                 records = activity.read_events() if self.path == '/activity-events' else read_activity_commits()
@@ -136,12 +143,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         origin = f'http://127.0.0.1:{self.server.server_port}'
-        action = {'/sync': 'sync', '/save': 'save'}.get(self.path)
+        action = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals'}.get(self.path)
         if (not self.local_request() or self.headers.get('Origin') != origin
                 or action is None or self.headers.get('X-Registry-Studio') != action):
-            if self.path not in ('/sync', '/save'):
+            if self.path not in ('/sync', '/save', '/commit-approvals'):
                 return self.reply(404, {'error': 'Not found'})
             return self.reply(403, {'error': 'Same-origin Studio request required'})
+        if action == 'commit-approvals':
+            return self.commit_approvals()
         if action == 'save':
             return self.save()
         if not SYNC_LOCK.acquire(blocking=False):
@@ -158,6 +167,32 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(500, {'error': str(error)})
         finally:
             SYNC_LOCK.release()
+
+    def commit_approvals(self):
+        if (self.headers.get('Content-Type', '').split(';')[0].strip().lower() != 'application/json'
+                or self.headers.get('Transfer-Encoding') is not None):
+            return self.reply(400, {'error': 'JSON body required'})
+        lengths = self.headers.get_all('Content-Length', [])
+        if len(lengths) != 1 or not re.fullmatch(r'[0-9]+', lengths[0]):
+            return self.reply(411, {'error': 'Content-Length required'})
+        if len(lengths[0]) > 6:
+            return self.reply(413, {'error': 'Approval body too large'})
+        length = int(lengths[0])
+        if length <= 0 or length > 128 * 1024:
+            return self.reply(413, {'error': 'Approval body too large'})
+        self.connection.settimeout(5)
+        try:
+            raw = self.rfile.read(length)
+            if len(raw) != length:
+                raise ValueError('Incomplete body')
+            body = json.loads(raw.decode('utf-8'))
+            return self.reply(200, approvals.Store().mutate(body))
+        except approvals.Conflict as error:
+            return self.reply(409, {'error': str(error)})
+        except (ValueError, UnicodeDecodeError, RecursionError):
+            return self.reply(400, {'error': 'Invalid approval request'})
+        except (OSError, sqlite3.Error):
+            return self.reply(503, {'error': 'Approvals unavailable'})
 
     def save(self):
         """Store one edited Studio JSON as a new save in INBOX (inbox.append_save); never overwrite, never reflect into the Registry."""

@@ -110,7 +110,9 @@
 | `OPS-113` | `DONE` | Astra | [EXECUTION] 作業履歴を外枠色付き一行カードへ縮小する | 2026-10-18ユーザー依頼。コミット帯を廃止し、作業イベントのID・種別のみを表示。背景は帯と同色、外枠で種別を区別。詳細と原履歴を保持。文字帯の復活を含め実装・限定検査・受入済み。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_COMPACT_ACTIVITY.md` |
 | `OPS-127` | `DONE` | Astra（調整・受入） / 姫（設計相談・限定実装） | [EXECUTION] Studioの受渡し・終了表示と担当別ランプを整える | 2026-10-19限定実装・補修をAstra受入。独立回帰試験と隔離WebKit証拠確認。WAKE-20261019-B/ACKで連続待機終了。実サーバー再起動は未実施 | `Maintanance/Current/STUDIO_HANDOFF_SIGNALS.md` |
 | `OPS-128` | `DONE` | Astra（協議・整理） / 姫（助言） | [DISCOVERY] Studio連携の操作回数と更新漏れを減らす手順を検討する | 2026-10-19姫と2往復し限定試行案を整理。参照先と次担当を返却に集約。ユーザーが限定試行を承認、OPS-129で実施 | `Maintanance/Current/STUDIO_OPERATION_REVIEW.md` |
-| `OPS-129` | `ACTIVE` | 姫（実装） / Astra（受入・観察） | [EXECUTION] 参照つき返却経路を実装し自然な返却3回で試行する | 限定実装・補修をAstra受入。自然な返却2/3回を確認、残り1回は次の返却で観察。今回の実装依頼は終了。実サーバー操作なし | `Maintanance/Current/STUDIO_OPERATION_REVIEW.md` |
+| `OPS-129` | `DONE` | 姫（実装） / Astra（受入・観察） | [EXECUTION] 参照つき返却経路を実装し自然な返却3回で試行する | 限定実装と自然な3返却を確認。経路維持、通知後追記の行き違いを通信規約へ反映。長期効果は未断定 | `Maintanance/Current/STUDIO_OPERATION_REVIEW.md` |
+| `OPS-130` | `DONE` | Astra | [EXECUTION] 二系統の通信規約初版を記述する | 2026-10-19初版作成、姫の運用照合5点を反映。二経路・疎通・切替・改訂を記述。未実装保証は分離 | `Maintanance/Current/COMMUNICATION_PROTOCOL.md` |
+| `OPS-131` | `DONE` | 姫（実装） / Astra（受入） | [EXECUTION] Studioサーバーを動作維持で整理する | 2026-10-19責務分離をAstra受入。隔離HTTP含む関連20試験通過。既存timeout等の別件は正本に保持。実サーバー操作なし | `Maintanance/Current/STUDIO_SERVER_REFACTOR.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
 | `OPS-124` | `DONE` | Astra | [EXECUTION] 作業イベントカードに担当名を表示する | タスクID・担当・工程を併記。表示のみ | `Maintanance/Current/STUDIO_ACTIVITY_OWNER.md` |
@@ -421,6 +423,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-127` |
 | `OPS-048` | `OPS-128` |
 | `OPS-048` | `OPS-129` |
+| `OPS-048` | `OPS-130` |
+| `OPS-048` | `OPS-131` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

@@ -97,6 +97,62 @@ def read_activity_commits():
     return list(reversed(commits))
 
 
+def json_bytes(value):
+    return json.dumps(value, ensure_ascii=False).encode()
+
+
+def approval_store(path):
+    return probe.Store() if path == '/approval-probe' else approvals.Store()
+
+
+# GET handlers for the fixed paths below. Each returns the arguments of Handler.reply: (status, body[, content type]).
+def get_approvals(path):
+    try:
+        return 200, approval_store(path).list()
+    except (OSError, ValueError, sqlite3.Error):
+        return 503, {'error': 'Approvals unavailable'}
+
+
+def get_activity(path):
+    try:
+        return 200, json_bytes(activity.read_events() if path == '/activity-events' else read_activity_commits())
+    except (OSError, ValueError, UnicodeDecodeError, subprocess.SubprocessError):
+        return 503, {'error': 'Activity row unavailable'}
+
+
+def get_work_progress(path):
+    try:
+        return 200, json_bytes(read_work_progress())
+    except (OSError, ValueError, UnicodeDecodeError):
+        return 503, {'error': 'Progress record unavailable'}
+
+
+def get_server_status(path):
+    return 200, runtime_status()
+
+
+def get_workspace(path):
+    # the edit version Studio resumes (OPS-082); null when nothing is saved
+    return 200, json_bytes(inbox.latest(INBOX))
+
+
+def get_page(path):
+    if path == '/registry.json':
+        return 200, (OUTPUT / 'registry.json').read_bytes(), 'application/json; charset=utf-8'
+    return 200, (OUTPUT / 'index.html').read_bytes(), 'text/html; charset=utf-8'
+
+
+# Exact paths only: no query strings, prefixes or files chosen by the client.
+GET_ROUTES = {
+    '/commit-approvals': get_approvals, '/approval-probe': get_approvals,
+    '/activity-events': get_activity, '/activity-commits': get_activity,
+    '/work-progress': get_work_progress, '/server-status': get_server_status, '/workspace': get_workspace,
+    '/': get_page, '/index.html': get_page, '/registry.json': get_page,
+}
+# POST path -> the X-Registry-Studio value it requires
+POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe'}
+
+
 class Handler(BaseHTTPRequestHandler):
     def reply(self, status, body, content_type='application/json; charset=utf-8'):
         if isinstance(body, dict):
@@ -112,48 +168,33 @@ class Handler(BaseHTTPRequestHandler):
         host = f'127.0.0.1:{self.server.server_port}'
         return self.headers.get('Host') == host
 
+    def studio_request(self, action):
+        """Same host and origin, and the X-Registry-Studio value of this path."""
+        return (self.local_request() and self.headers.get('Origin') == f'http://127.0.0.1:{self.server.server_port}'
+                and self.headers.get('X-Registry-Studio') == action)
+
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
-        if self.path in ('/commit-approvals', '/approval-probe'):
-            try:
-                return self.reply(200, (probe.Store() if self.path == '/approval-probe' else approvals.Store()).list())
-            except (OSError, ValueError, sqlite3.Error):
-                return self.reply(503, {'error': 'Approvals unavailable'})
-        if self.path in ('/activity-events', '/activity-commits'):
-            try:
-                records = activity.read_events() if self.path == '/activity-events' else read_activity_commits()
-                return self.reply(200, json.dumps(records, ensure_ascii=False).encode())
-            except (OSError, ValueError, UnicodeDecodeError, subprocess.SubprocessError):
-                return self.reply(503, {'error': 'Activity row unavailable'})
-        if self.path == '/work-progress':
-            try:
-                data = read_work_progress()
-                return self.reply(200, json.dumps(data, ensure_ascii=False).encode())
-            except (OSError, ValueError, UnicodeDecodeError):
-                return self.reply(503, {'error': 'Progress record unavailable'})
-        if self.path == '/server-status':
-            return self.reply(200, runtime_status())
-        if self.path == '/workspace':  # the edit version Studio resumes (OPS-082); null when nothing is saved
-            return self.reply(200, json.dumps(inbox.latest(INBOX), ensure_ascii=False).encode())
-        if self.path not in ('/', '/index.html', '/registry.json'):
+        route = GET_ROUTES.get(self.path)
+        if route is None:
             return self.reply(404, {'error': 'Not found'})
-        name = 'registry.json' if self.path == '/registry.json' else 'index.html'
-        mime = 'application/json; charset=utf-8' if name.endswith('.json') else 'text/html; charset=utf-8'
-        self.reply(200, (OUTPUT / name).read_bytes(), mime)
+        return self.reply(*route(self.path))
 
     def do_POST(self):
-        origin = f'http://127.0.0.1:{self.server.server_port}'
-        action = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe'}.get(self.path)
-        if (not self.local_request() or self.headers.get('Origin') != origin
-                or action is None or self.headers.get('X-Registry-Studio') != action):
-            if self.path not in ('/sync', '/save', '/commit-approvals', '/approval-probe'):
-                return self.reply(404, {'error': 'Not found'})
+        action = POST_ACTIONS.get(self.path)
+        if action is None:
+            return self.reply(404, {'error': 'Not found'})
+        if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
-        if action in ('commit-approvals', 'approval-probe'):
-            return self.commit_approvals()
+        if action == 'sync':
+            return self.sync()
         if action == 'save':
             return self.save()
+        return self.commit_approvals()
+
+    def sync(self):
+        """Run only the fixed sync.py command, one at a time."""
         if not SYNC_LOCK.acquire(blocking=False):
             return self.reply(409, {'error': '更新中です。完了を待ってください。'})
         try:
@@ -187,7 +228,7 @@ class Handler(BaseHTTPRequestHandler):
             if len(raw) != length:
                 raise ValueError('Incomplete body')
             body = json.loads(raw.decode('utf-8'))
-            return self.reply(200, (probe.Store() if self.path == '/approval-probe' else approvals.Store()).mutate(body))
+            return self.reply(200, approval_store(self.path).mutate(body))
         except approvals.Conflict as error:
             return self.reply(409, {'error': str(error)})
         except (ValueError, UnicodeDecodeError, RecursionError):

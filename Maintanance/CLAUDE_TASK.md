@@ -35,6 +35,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+RBT-026：Astraが議論材料として補正付き受入、姫への依頼終了。契約の最終ユーザー判断待ち。
+
 OPS-116：Astra技術受入済み、姫への依頼終了。実画面確認・受入記録commit待ち。
 
 OPS-104：初回基礎研究の準備をAstraが補足付き受入。依頼終了、ユーザーcommit承認によりDONE。実験・追加依頼なし。
@@ -386,3 +388,15 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-116 — 技術受入・依頼終了（2026-10-18 / Astra）
 
 修正a810e4f4を照合、旧版でのfallbackと現版での解消を独立確認。sync/verify成功。追加修正依頼なし。Safari実表示と受入記録commitは残る。詳細は正本のAstra受入節。
+
+## RBT-026 — Mapped Values Viewの範囲契約の議論（2026-10-18 / Astra）
+
+Registry登録済み。[正式依頼・固定版の材料](Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md#姫への正式依頼範囲契約の限定議論rbt-026)に従い、範囲外Indexの成立条件と現行契約の選択肢を整理してください。編集は同書「姫 Return」のみ。実装変更・全件監査・サーバー操作・commitなし。最終判断はユーザーへ返します。短い作業内訳と実参照キャッシュの一行を添え、返却後停止してください。
+
+## RBT-026 — 追加：Studioへの進行連絡
+
+2026-10-18ユーザーの明示委任。[正本の追加手順](Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md#追加委任姫からstudioへの進行連絡試行2026-10-18)に従い、着手・相談停止・返却時に既存activityコマンドで姫自身のイベントを記録してください。今回のStudio編集禁止の例外はこの追記操作のみ。サーバー操作・実装変更は不要。失敗したら通常の会話で連絡してください。自動起動はなく、返却は引き続き正本の姫 Returnへ。
+
+## RBT-026 — 議論材料の受入・依頼終了（2026-10-18 / Astra）
+
+[正本のAstra受入](Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md#astra受入2026-10-18)の範囲で受入。原Returnを保持し、一般化と実行確認範囲を補正。追加作業なし。姫の着手・返却イベントも受信済み。最終契約判断はユーザーへ返す。

@@ -117,6 +117,11 @@
 | `OPS-133` | `DONE` | Astra | [EXECUTION] 見取り図から読む正本へ人間向け要約を追加 | 2026-10-19ユーザー依頼。HEAD以降の見取り図39ノードの参照40文書と独立欄7文書にTL;DRを追加し受入。判断・本文・状態を変更せず、履歴を現行条件に読み替えない | `Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md` |
 | `OPS-134` | `DONE` | Astra | [EXECUTION] 作業凡例の常時表示と恒久研究の分類漏れを補正 | 2026-10-19ユーザー指摘。凡例を折りたたみ、OPS-103の既決恒久扱いを常設ID一覧へ反映。状態や研究内容は変えない | `Maintanance/Current/STUDIO_READING_SMALL_FIXES.md` |
 | `OPS-135` | `DONE` | Astra | [EXECUTION] トップバーにもコミット承認状態と一括承認を表示 | 2026-10-19ユーザー依頼。既存承認欄と同じ状態・処理を共有し、取得失敗・処理中の停止も同期する | `Maintanance/Current/STUDIO_HEADER_APPROVAL.md` |
+| `OPS-137` | `DONE` | 姫（要素出し） / Astra（整理・受入） | [DISCOVERY] 作業タブの報告・振り返り要素を洗い出す | MILESTONES報告と最新振り返りの表示候補を正本参照で整理。先に要素出し、配置・実装は次の区切り | `Maintanance/Current/STUDIO_WORK_ELEMENTS.md` |
+| `OPS-138` | `DONE` | 姫（実装・提案） / Astra（受入） | [EXECUTION] 古い作業イベントの濃淡と待機完了操作 | 濃淡・待機完了ボタン・要求/記録の往復照合を受入済み。稼働中サーバーへの適用は再起動後 | `Maintanance/Current/STUDIO_WORK_CONTROLS.md` |
+| `OPS-139` | `DONE` | 姫（実装） / Astra（運用・受入） | [EXECUTION] Astra継続確認の期限表示 | 単発の本人信号と55秒の期限表示を受入済み。停止断定なし、稼働中サーバーへの適用は再起動後 | `Maintanance/Current/STUDIO_CONTINUITY_STATUS.md` |
+| `OPS-140` | `DONE` | Sol（現行） / Luna（旧資料） / Astra（受入） | [EXECUTION] 正本の人間向け要約を全体適用 | 68件追加を受入。History4件はユーザー用のため追加撤回。既存42件維持、権限/制度等33件除外 | `Maintanance/Current/CANONICAL_HUMAN_SUMMARY_ROLLOUT.md` |
+| `OPS-141` | `DONE` | Astra（整理） / 姫（運用照合） | [EXECUTION] メンバー状態の規約反映と作業ページへの表示移設 | 規約0.3・独立メンバー欄・依頼方向表示を受入。自動二重書込/コンシェルジュは対象外 | `Maintanance/Current/MEMBER_STATE_PROTOCOL_REVIEW.md` |
 | `OPS-142` | `DONE` | Astra調整（対象・受入） / Sol・姫（補助） | [EXECUTION] 現行・旧正本の日本語要約と詳細英語化 | 固定棚卸し範囲の119件英語化/既存英語維持＋日本語要約、保留10件の日本語要約を受入。History除外、控え保持。全担当返却・姫WAKE ACK確認 | `Maintanance/Current/CANONICAL_LANGUAGE_MIGRATION.md` |
 | `OPS-143` | `DONE` | Astra / 姫 | [DISCOVERY] 速やかな停止と即時停止の区分を協議 | 協議のみ再開。翻訳・実装は停止を維持 | `Maintanance/Current/STOP_MODES_DISCUSSION.md` |
 | `OPS-144` | `DONE` | ユーザー / Astra（相談補助） | [DECISION] コンシェルジュ役の分担を決める | ユーザーが窓口と背後調整役の分担を承認。占有窓口・コミット実行は調整役へ | `Maintanance/Current/CONCIERGE_ROLE_DISCUSSION.md` |
@@ -124,6 +129,7 @@
 | `OPS-146` | `DONE` | Astra調整 | [EXECUTION] 作業イベントのhover時刻をローカル表示へ統一 | ユーザー指摘。保存UTCは変えず、読取表示だけタイムゾーン付きにする | `Maintanance/Current/STUDIO_ACTIVITY_LOCAL_TIME.md` |
 | `OPS-147` | `PROPOSED` | ユーザー / Astra調整（検討補助） | [DECISION] 継続コミット承認モードの導入可否を検討 | 未着手候補。将来依頼へ有効な範囲付き委任と確認承認の切替。現行承認や自動レビューを変更せず実装しない | `Maintanance/Current/COMMIT_APPROVAL_MODES_STUDY.md` |
 | `OPS-148` | `PROPOSED` | Astra / 姫 | [DISCOVERY] 協働システムに感じる設計思想を往復で整理 | 登録・依頼準備のみ。実運用の観察から共通点/相違点/限界を整理し、ユーザー思想の代弁や制度追加はしない | `Maintanance/Current/ORCHESTRATION_PHILOSOPHY_DISCUSSION.md` |
+| `OPS-136` | `DONE` | 姫（実装） / Astra（受入） | [EXECUTION] トップバーの操作を左上メニューへ集約 | 2026-10-19ユーザー依頼。作業が左・初期、タスクが右、中央タイトル。メニューはタスク側へ。最終配置受入済み、既存操作契約は維持 | `Maintanance/Current/STUDIO_HEADER_MENU.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
 | `OPS-124` | `DONE` | Astra | [EXECUTION] 作業イベントカードに担当名を表示する | タスクID・担当・工程を併記。表示のみ | `Maintanance/Current/STUDIO_ACTIVITY_OWNER.md` |
@@ -216,9 +222,9 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `OPS-142` | `OPS-144` | `SEQUENCE` | ユーザーとの役割協議完了後に再開する。停止中の差分確認から始める |
 | `OPS-144` | `OPS-145` | `SEQUENCE` | 占有の受渡し規則を役割協議の入力にする |
 | `OPS-144` | `OPS-143` | `SEQUENCE` | 停止区分の協議結果を受けてユーザーと役割を相談する |
+| `OPS-142` | `OPS-144` | `SEQUENCE` | ユーザーとの役割協議完了後に再開する。停止中の差分確認から始める |
 | `PERM-081` | `PERM-060` | `SEQUENCE` | 現行再現と公開面の影響整理を判断材料とする。調査完了は案の承認ではない |
 | `OPS-089` | `OPS-088` | `SEQUENCE` | 提案受入後に判断材料とする。USER_ONLYの実行をAIへ委任しない |
 | `OPS-090` | `OPS-088` | `SEQUENCE` | 提案の受入完了を確認して今回の判断を更新する。commit待ちは実施を妨げない |
@@ -441,9 +447,15 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-131` |
 | `OPS-048` | `OPS-132` |
 | `DOC-030` | `OPS-133` |
-| `DOC-030` | `OPS-142` |
 | `OPS-048` | `OPS-134` |
 | `OPS-048` | `OPS-135` |
+| `OPS-048` | `OPS-136` |
+| `OPS-048` | `OPS-137` |
+| `OPS-048` | `OPS-138` |
+| `OPS-048` | `OPS-139` |
+| `DOC-030` | `OPS-140` |
+| `DOC-030` | `OPS-142` |
+| `OPS-048` | `OPS-141` |
 | `OPS-048` | `OPS-146` |
 | `OPS-048` | `OPS-147` |
 | `OPS-103` | `OPS-148` |
@@ -499,4 +511,3 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `RBT-034` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、再現可能な証拠を備えた品質アセスメントの完成と合流する。合否を縛る必須条件ではない。 |
 | `QUALITY-002` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する。合否を縛る必須条件ではない。 |
 | `QUALITY-003` | `MS-QUALITY` | 判断材料。1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する。合否を縛る必須条件ではない。 |
-

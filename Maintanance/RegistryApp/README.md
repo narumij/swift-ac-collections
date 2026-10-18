@@ -229,6 +229,7 @@ python3 Maintanance/RegistryApp/sync.py --check   # 書き込まずに、Registr
 
 ローカルサーバーで開いているとき、Studioの編集は「編集版」としてサーバー側の`Maintanance/RegistryApp/Inbox/`に積み上がり、調整役がいなくても保存・再開できる。正本（Registry）と、編集を始めたときの土台（編集版の`source`・`baseline`）と、ユーザーの編集版は別物として扱う。
 
+- **操作の場所**（OPS-136）：「編集結果を保存」「変更内容を見る」「更新」「JSONを開く」「正本から新しく始める」は、タスク側の先頭、見取り図のタブの左にある「メニュー ▾」の中にある（最後の1つだけ区切り線の下）。クリックかEnterで開き、Escか外側のクリックで閉じる。操作を選ぶと閉じる。処理中はボタンの文字が「処理中… ▾」に替わる（ボタンの幅は変わらない）。コミット事前承認の欄、保存・更新の結果、正本との差の通知は、メニューの外に出たまま。見出しは1列で、左に同じ幅の「作業｜タスク」の切替、中央にタイトル、右に承認の欄（状態と一括承認）が並ぶ。最初は作業。タスク側には、見取り図の5つのタブ（先頭）、独立タスク・依頼中・採番待ち・詳細がある。作業側には、現在の作業・作業イベントの帯・最近の作業・担当ランプ・承認の詳細と履歴・疎通確認がある。切り替えても両方の内容は残るので、タスク側の選択や入力は往復しても消えない。隠れている側も更新は続く。切替は←→/Home/Endでも動く。狭い画面ではタイトルを隠し、承認の欄だけが横スクロールして、「コミット事前承認：」の見出しは隠れて状態が先に見える。正本との差の通知・説明文・保存や更新の結果は、どちらの側でも見える。
 - **保存**：「編集結果を保存」は、押した時点の適用済み内容を`POST /save`で送る。サーバーは毎回新しいファイル（`registry-edited-<保存ID>.json`）を作り、`studioSave`（保存ID・保存時刻・系列・前版・土台のsha256/HEAD/生成時刻）を付ける。
   - 上書き・期限削除・取込後削除はしない。
   - 応答を待つ間にした変更は保存済みにならず、未保存のまま残る（表示でも分かる）。
@@ -329,6 +330,26 @@ python3 Maintanance/RegistryApp/activity.py --task OPS-111 --event recheck --own
 - ユーザー判断・必要な承認・連絡不能・利用枠や実行環境の制限などで続行できない場合、またはユーザーが中断を指示した場合は例外として戻る。待っているもの、保存済みの現在地、再開に必要な一手を明記し、完了したとは報告しない。返却が遅いだけで連絡不能と断定しない。
 - 連続動作は新しい権限を与えない。個別の編集占有、正式依頼、コミット承認を引き続き守る。未承認の仕事やユーザー判断を代行しない。WAKEは生きた会話内の待機への合図であり、閉じた会話の起動を保証しない。
 
+### 待機完了ボタン（OPS-138）
+
+作業側の「最近の作業」の見出しにあります。担当を選んで「待機完了」を押すと、その担当に待機の終了を依頼します。
+
+- 宛先に選べるのは、activityに出てくる担当本人だけ（ユーザーは除く）。待機中かどうかは保証しない。届かなければ「依頼済み・ACK待ち」のまま残る。
+- サーバー（`POST /activity-wake`）が、`WAKE-<日付>-<32桁の乱数>`の番号、関連task（その担当の最新の実務記録）、文面を決め、送信者を「ユーザー」として`request`を1件書く。ブラウザが送るのは担当の名前だけ。
+- 同じ担当に未応答の依頼があるときは、新しく増やさず、その依頼を返す。
+- 「ACK済み」になるのは、宛先の担当本人が、番号の境界まで一致する`ACK <番号>`を書いたときだけ。
+- 失敗や結果不明のときは、表示するだけで自動では再送しない。止まっているAIを起こす機能ではない。
+
+### Member status (OPS-141; includes the OPS-139 continuity mark)
+
+The Work page has its own "メンバー状態" section above Recent work. Each member card shows three lines: declared state and time, last activity and time, and continuity confirmation. The Astra mark in the top bar has moved here.
+
+- The state changes only with the member's own presence (`working` = 作業中, `waiting` = 待機中, `ended` = 待機終了). Without one it is "未申告". Practical records, PINGs and ACKs do not change it.
+- "最後" is the member's last practical record. Continuity comes from one-shot `continuity.py --owner <name> --state alive|ended` marks. Over 55 s it shows "確認が古い" without changing the state. `ended` there means the end of a continuous run. No mark shows "未確認"; a failed read shows "不調".
+- `ACK WAKE` records up to the boundary event (2026-10-18T19:35:45Z) are shown as "待機終了（旧ACKからの読み）".
+- A return and the next state can be one record: `--event return --presence waiting`. That return stays in the lane.
+- Request cards in the activity band show the direction as recorded, e.g. `OPS-1 · Astra → 姫 · 依頼`. Without a recipient they show the sender only.
+
 ### 担当者の作業イベント更新ルール
 
 2026-10-18ユーザー指定。Astraに加え、Claude（姫）にも適用する。任された作業について、実際の工程の切替時に既存 `activity.py` で記録する。常時実況や定期的な同文投稿は不要。
@@ -351,7 +372,7 @@ repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT
 省略できる項目が2つあります（OPS-127）。
 
 - `--next <担当名|user|none>`：このイベントのあと、次にこのtaskを拾うのは誰か。`none`は「この仕事はここで終わり」。「最近の作業」のカードでは、見出しのすぐ下の行に「次：…」が太字で出ます。文字の色はカード左の線と同じで、赤は承認待ち、青は次の担当あり、灰はこの仕事は終了です。不明は細字です。長い名前は2行まで折り返し、全文はカードのtitleで読めます（OPS-132）。その仕事の最新の実務イベントの値だけを使うので、後のイベントで書かなければ「次：不明」に戻ります。そのtaskに承認待ちのカードがあれば、「次：ユーザー（承認待ち）」が優先です。commitだけでは終わりと見なしません。
-- `--presence waiting|ended`：自分の在席の状態。担当ランプに「待機中」「待機終了」と出ます。連続待機を始めたときに`waiting`を1回、WAKEで会話へ戻るときに`ended`（`ACK WAKE-…`の返事でも待機終了になります）。待機中に定期的に書く必要はありません。その後に本人の実務イベントが来ると、ランプは「不明」に戻ります。何も届かないこと（沈黙）では、状態は変わりません。
+- `--presence working|waiting|ended`: the member's declared state (working / waiting / wait ended). It appears in Member status and stays until the member declares another; practical records and ACKs do not change it. It may be added to a return. See "Member status".
 - `--doc <パス> --section <見出し>`（OPS-129、`return`専用、`--next`と3つそろえて使う）：返却先のReturn節を指します。パスはどこから実行してもrepoルートからの相対。書く前に1回だけ、文書がrepoの中にあること（symlinkでrepoの外を指すものは拒否）、見出しが完全一致で1つだけあること（コードブロックの中の見出しは数えない）、その節（次の同じかより浅い見出しまで）が空でないことを確かめます。どれかが欠けたり外れたりすると何も書かず、見出しが見つからないときは候補を表示します。内容の良し悪しは受入側が見ます。確かめた参照は`ref`（`path`・`section`）として記録され、`/activity-events`でそのまま読めます。後で文書が変わっても過去の記録は再検査しません。重複の検出や自動の再試行はしません。
   例：`python3 -B Maintanance/RegistryApp/activity.py --task OPS-129 --event return --owner '姫' --doc Maintanance/Current/STUDIO_OPERATION_REVIEW.md --section 'OPS-129 姫Return' --next Astra`
 
@@ -360,6 +381,7 @@ repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT
 このCLIによるGit対象外Activity履歴への追記は、個別依頼の編集ファイル一覧に含まれていなくても行ってよい。Studio実装の編集、サーバー再起動、Registry更新、commitの委任は含まない。記録後のsyncは不要。失敗したらReturnと通常の会話で伝え、成功と扱わない。履歴を直接書き換え・削除しない。
 
 成果の詳細と相談内容は正本へ先に保存し、帯は短い通知とする。返却を自分で受入済み・task完了にしない。重複通知を増やさず、受信したイベント自体を新しい作業権限にしない。依頼はCLAUDE_TASKと正本の正式な範囲を確認する。`/loop`の予約・自動着手・監視義務はこのルールでは設定しない。新しいイベントがない時はイベントを追加しない。
+- 情報更新依頼（UPDATE、OPS-137）：記録や状態の更新だけを頼むときは、番号`UPDATE-YYYYMMDD-X`を付けた`request`で送れる。宛先は`--next`で、reasonに対象と項目を書く。手順と返し方（更新済み／変更不要／範囲外）は[通信規約](../Current/COMMUNICATION_PROTOCOL.md)の「情報更新依頼」の節を見る。Studioは特別に扱わない（専用の表示と照合は未実装）ので、作業レーンには通常の依頼として出る。
 
 ### 狭い画面と、到達点に集まる線（OPS-126）
 

@@ -77,14 +77,15 @@ assert(card401.children[2].textContent.includes('姫'),'owner shown as text');
 assert.equal(card401.children[4].textContent,'開始：不明');assert(card401.title.includes('開始：不明（記録範囲外または未記録）'),'unknown start explained in the card title');
 
 // 8. Wiring: the lane is fed by the existing pollers only, and the template keeps the approval controls.
-assert(html.includes("const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);}"));
+assert(html.includes("const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);wake.rows(rows);}"),'OPS-138: the wake control is fed by the same poller');
 assert(html.includes('workLaneInstance().approvals(value.requests)'));
-// One approval UI, inside the work lane: counts and the all-approve entry stay visible; cards and history are folded.
+// One approval UI, inside the work lane: counts and the all-approve entry stay visible; cards and history are always visible.
 const laneStart=html.indexOf('<section class="approval-lane work-lane"'),laneEnd=html.indexOf('</section>',laneStart),laneHtml=html.slice(laneStart,laneEnd);
-const folded=laneHtml.slice(laneHtml.indexOf('<details id="approval-details">'));
+const details=laneHtml.slice(laneHtml.indexOf('<div id="approval-details">'),laneHtml.indexOf('<details id="work-lane-help">'));
 for(const id of ['approval-status','approval-all','approval-policy','approval-track','approval-history','approval-history-summary'])assert.equal(html.split('id="'+id+'"').length,2,'exactly one '+id);
-for(const id of ['approval-status','approval-all'])assert(laneHtml.includes('id="'+id+'"')&&!folded.includes('id="'+id+'"'),id+' visible in the lane heading');
-for(const id of ['approval-track','approval-history','approval-policy'])assert(folded.includes('id="'+id+'"'),id+' folded in the lane');
-assert(!html.includes('aria-label="コミット事前承認"'),'no separate approval section');
+for(const id of ['approval-status','approval-all'])assert(laneHtml.includes('id="'+id+'"')&&!details.includes('id="'+id+'"'),id+' visible in the lane heading');
+for(const id of ['approval-track','approval-history','approval-policy'])assert(details.includes('id="'+id+'"'),id+' visible in the lane');
+assert(!details.includes('<details'),'approval details and history are not collapsible');
+assert(!html.includes('<section class="approval-lane" aria-label="コミット事前承認"'),'no separate approval lane; header mirror is allowed');
 assert(!/work-lane[^]*?approve/.test(slice('// OPS-119 work lane','// OPS-114: this lane owns only approval DOM')),'the lane has no approve action');
 console.log('PASS: OPS-119 work lane (transitions, unknown start, per-task approvals, probe exclusion +/-, RBT-026, ordering, local DOM update, focus/scroll, failure kept, wiring).');

@@ -102,6 +102,11 @@ class ServeTests(unittest.TestCase):
                 self.assertEqual(self.json_of(self.request('GET', '/work-progress')), (503, {'error': 'Progress record unavailable'}))
         with patch.object(serve, 'runtime_status', return_value={'restartRecommended': True, 'changedFiles': ['serve.py']}):
             self.assertEqual(self.json_of(self.request('GET', '/server-status')), (200, {'restartRecommended': True, 'changedFiles': ['serve.py']}))
+        with patch.object(serve.continuity, 'read', return_value={'schemaVersion': 1, 'owners': {}}):
+            status, sent = self.json_of(self.request('GET', '/continuity'))
+            self.assertEqual((status, sent['owners']), (200, {})); self.assertIn('serverNow', sent)
+        with patch.object(serve.continuity, 'read', side_effect=ValueError('x')):
+            self.assertEqual(self.json_of(self.request('GET', '/continuity')), (503, {'error': 'Continuity unavailable'}))
         self.assertEqual(self.json_of(self.request('GET', '/workspace')), (200, None))
         with patch.object(serve.inbox, 'latest', return_value={'saveId': 's'}) as latest:
             self.assertEqual(self.json_of(self.request('GET', '/workspace')), (200, {'saveId': 's'}))
@@ -115,10 +120,11 @@ class ServeTests(unittest.TestCase):
                     self.assertEqual(self.json_of(self.request('GET', path)), (503, {'error': 'Approvals unavailable'}))
 
     def test_post_guards(self):
-        actions = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe'}
+        actions = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe', '/activity-wake': 'activity-wake'}
         forbidden = (403, {'error': 'Same-origin Studio request required'})
         with patch.object(serve.subprocess, 'run') as run, patch.object(serve.inbox, 'append_save') as save, \
-                patch.object(serve.approvals, 'Store') as store, patch.object(serve.probe, 'Store') as probe:
+                patch.object(serve.approvals, 'Store') as store, patch.object(serve.probe, 'Store') as probe, \
+                patch.object(serve.activity, 'request_wake') as wake:
             for path, action in actions.items():
                 for headers in ({'Origin': None}, {'Origin': 'http://evil.example'}, {'Origin': f'http://localhost:{self.port}'},
                                 {'X-Registry-Studio': None}, {'X-Registry-Studio': 'other'},
@@ -128,7 +134,7 @@ class ServeTests(unittest.TestCase):
             for path in ('/commit', '/sync/', '/save?x=1', '/'):
                 self.assertEqual(self.json_of(self.request('POST', path, b'{}')), (404, {'error': 'Not found'}), path)
                 self.assertEqual(self.json_of(self.request('POST', path, b'{}', {'Origin': None}, host='evil.example')), (404, {'error': 'Not found'}))
-            for mock in (run, save, store, probe):
+            for mock in (run, save, store, probe, wake):
                 mock.assert_not_called()
 
     def test_sync(self):
@@ -230,6 +236,30 @@ class ServeTests(unittest.TestCase):
                     store.return_value.mutate.side_effect = error
                     self.assertEqual(post(), expected, error)
                 unused.assert_not_called()
+
+
+    def test_activity_wake(self):
+        def post(body=b'{"owner":"Astra"}', **options):
+            options.setdefault('headers', {}).setdefault('Content-Type', 'application/json')
+            return self.json_of(self.request('POST', '/activity-wake', body, **options))
+        event = {'id': 'e', 'reason': 'WAKE-20261019-ABC：Astraへ。'}
+        with patch.object(serve.activity, 'request_wake', return_value=(event, True)) as wake:
+            self.assertEqual(post(), (200, {'created': True, 'event': event})); wake.assert_called_once_with('Astra')
+            wake.reset_mock()
+            bad = (400, {'error': 'JSON body required'})
+            self.assertEqual(post(headers={'Content-Type': 'text/plain'}), bad); self.assertEqual(post(headers={'Transfer-Encoding': 'chunked'}), bad)
+            self.assertEqual(post(length=False), (411, {'error': 'Content-Length required'}))
+            self.assertEqual(post(headers={'Content-Length': '2000'}), (411, {'error': 'Content-Length required'}))
+            self.assertEqual(post(b''), (411, {'error': 'Content-Length required'}))
+            invalid = (400, {'error': 'Invalid wake request'})
+            for body in (b'{', b'[]', b'{"owner":1}', b'{"owner":"Astra","reason":"free text"}', b'{"owner":"Astra","command":"rm"}', b'\xff'):
+                self.assertEqual(post(body), invalid, body)
+            wake.assert_not_called()
+        with patch.object(serve.activity, 'request_wake', return_value=(event, False)):
+            self.assertEqual(post(), (200, {'created': False, 'event': event}), 'unanswered request comes back')
+        for error, expected in ((LookupError('x'), (409, {'error': 'Unknown owner'})), (ValueError('x'), (400, {'error': 'Invalid wake request'})), (OSError('x'), (503, {'error': 'Activity unavailable'}))):
+            with patch.object(serve.activity, 'request_wake', side_effect=error):
+                self.assertEqual(post(), expected)
 
 
 if __name__ == '__main__':

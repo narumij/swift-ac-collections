@@ -13,6 +13,7 @@ from pathlib import Path
 
 import activity
 import approvals
+import continuity
 import probe
 import sqlite3
 
@@ -35,7 +36,7 @@ MAX_SAVE_BYTES = 10 * 1024 * 1024
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py'):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py'):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -127,6 +128,15 @@ def get_work_progress(path):
         return 503, {'error': 'Progress record unavailable'}
 
 
+def get_continuity(path):
+    # OPS-139: the owners' own one-shot marks plus the server clock, so Studio can age them without trusting its own clock
+    try:
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+        return 200, json_bytes({'serverNow': now, **continuity.read()})
+    except (OSError, ValueError, UnicodeDecodeError):
+        return 503, {'error': 'Continuity unavailable'}
+
+
 def get_server_status(path):
     return 200, runtime_status()
 
@@ -147,10 +157,12 @@ GET_ROUTES = {
     '/commit-approvals': get_approvals, '/approval-probe': get_approvals,
     '/activity-events': get_activity, '/activity-commits': get_activity,
     '/work-progress': get_work_progress, '/server-status': get_server_status, '/workspace': get_workspace,
+    '/continuity': get_continuity,
     '/': get_page, '/index.html': get_page, '/registry.json': get_page,
 }
 # POST path -> the X-Registry-Studio value it requires
-POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe'}
+POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+                '/activity-wake': 'activity-wake'}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -191,6 +203,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.sync()
         if action == 'save':
             return self.save()
+        if action == 'activity-wake':
+            return self.activity_wake()
         return self.commit_approvals()
 
     def sync(self):
@@ -235,6 +249,29 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(400, {'error': 'Invalid approval request'})
         except (OSError, sqlite3.Error):
             return self.reply(503, {'error': 'Approvals unavailable'})
+
+    def activity_wake(self):
+        """OPS-138: the user's 待機完了 request. The body names only the owner; activity.request_wake fixes everything else."""
+        if (self.headers.get('Content-Type', '').split(';')[0].strip().lower() != 'application/json'
+                or self.headers.get('Transfer-Encoding') is not None):
+            return self.reply(400, {'error': 'JSON body required'})
+        lengths = self.headers.get_all('Content-Length', [])
+        if len(lengths) != 1 or not re.fullmatch(r'[0-9]{1,4}', lengths[0]) or not 0 < int(lengths[0]) <= 1024:
+            return self.reply(411, {'error': 'Content-Length required'})
+        self.connection.settimeout(5)
+        try:
+            raw = self.rfile.read(int(lengths[0]))
+            body = json.loads(raw.decode('utf-8'))
+            if len(raw) != int(lengths[0]) or not isinstance(body, dict) or set(body) != {'owner'} or not isinstance(body['owner'], str):
+                raise ValueError('Invalid body')
+            event, created = activity.request_wake(body['owner'])
+            return self.reply(200, {'created': created, 'event': event})
+        except LookupError:
+            return self.reply(409, {'error': 'Unknown owner'})
+        except (ValueError, UnicodeDecodeError, RecursionError):
+            return self.reply(400, {'error': 'Invalid wake request'})
+        except OSError:
+            return self.reply(503, {'error': 'Activity unavailable'})
 
     def save(self):
         """Store one edited Studio JSON as a new save in INBOX (inbox.append_save); never overwrite, never reflect into the Registry."""

@@ -1,6 +1,6 @@
 # 共同作業の通信規約 — 初版（OPS-130）
 
-版：0.1 / 2026-10-19 / 作成：Astra。親OPS-048。
+版：0.3 / 2026-10-19 / 作成：Astra（0.2・0.3の追記：姫）。親OPS-048。
 
 ユーザー要求：手順省力経路とフルマニュアル経路を備え、実運用を踏まえて定期的に見直し改訂する。本書は二系統に共通する受渡しの要求と意味の正本。権限はAGENTS.md・正式依頼の既存規定に従う。CLI/HTTP/表示の具体的手順は[Studio README](../RegistryApp/README.md)、試行の証拠は[OPS-128/129](STUDIO_OPERATION_REVIEW.md)。本書の版とイベントのschemaVersionは別である。
 
@@ -33,6 +33,36 @@
 
 各通知に全情報を複写せず、正本の特定箇所への参照を使える。相手が参照できなければ必要内容を渡し直す。コミット承認・claim/finishは既存の別契約のまま扱う。
 
+### 情報更新依頼（UPDATE、OPS-137）
+
+新しい仕事を頼むほどではないが、相手が持つ記録や状態を今の事実に合わせてほしいときに使う。仕事の発注・権限の追加・他者の記録を代わりに直す許可ではない。PING（届いたかの確認）やWAKE（待機の終了）とも別のもの。
+
+- **送り方**（通常の会話か正本の該当欄で送る。既存のCLIを使ってもよい）：一意の番号`UPDATE-YYYYMMDD-X`（末尾は大文字の英数字、使い回さない）に、宛先・対象（文書や記録とその箇所）・直してほしい項目・返答先を添えて、1回送る。CLIで送るなら`activity.py --event request --owner <送信者> --next <宛先> --reason 'UPDATE-…：<対象>の<項目>'`（返答先の節は`--doc/--section`）。
+- **返し方**：宛先の本人が自分の記録を確かめ、同じ番号で次のどれかを1回返す。
+  - `UPDATE-… 更新済み`（どこを直したか）
+  - `UPDATE-… 変更不要`（理由）
+  - `UPDATE-… 範囲外`（通常の依頼や持ち主の判断が必要な理由）
+  受け取っただけの返事（`ACK UPDATE-…`）は受信の確認で、更新が済んだことを意味しない。
+- **閉じ方**：送信者が、番号・宛先・返答の内容を照合して閉じる。返事がなければ「未応答」として残す。沈黙を「変更不要」と読まない。再送するときは同じ番号で再送だと書き、別の件なら新しい番号を使う。
+- **境界**：記録の訂正も、占有と権限の範囲に従う。宛先以外の者が代わりに書き換えない。ユーザーの確定事項や他者の判断を変える依頼には使わない。そういう内容なら、通常の依頼か持ち主への相談に切り替える。
+- **現状の制約**：専用のUIと自動の照合は未実装。StudioはUPDATEを特別に扱わない（特別扱いはPING・WAKEとそのACKだけ）ので、CLIで送ったUPDATEとその返事は、作業レーンに通常のイベント（例：「依頼済み」）として出る。
+
+### Member status (0.3, OPS-141)
+
+For each member, keep three things separate and never infer one from another:
+
+- **Declared state**: `working` (作業中), `waiting` (待機中), `ended` (待機終了). Only the member's own explicit presence changes it. Practical records, requests, PINGs and ACKs do not change it. Without a declaration it is "未申告" (not declared).
+- **Last activity**: the type and time of the member's last practical record (excluding presence-only work records and probes). It is not read as "working".
+- **Confirmation freshness**: the time of the member's own continuity mark (`continuity.py`). Over 55 s it is shown as "確認が古い" (confirmation is old); the declared state is not changed. Continuity `ended` means the end of a continuous run, which is different from the end of a wait. No mark is "未確認"; a failed read is "不調".
+
+Rules:
+- A return and the next state may be recorded together (`--event return --presence waiting`). Such a return stays in the work lane.
+- An ACK to a WAKE only confirms receipt. To end a wait, the member records `--presence ended`. "ACK済み" on the wake button means receipt as well.
+- Old records: up to the boundary event `feeb9d2cde9c43d0bc7d8cc0fa080e4b` (2026-10-18T19:35:45Z), an `ACK WAKE` keeps its old reading as "wait ended". It is labelled as the old reading and is never shown as the member's own declaration.
+- Two conversations using the same name cannot be told apart. Use different display names when they work at the same time.
+- Manual route: in conversation, say "starting", "returning; waiting next", "received (still waiting)", "ending the wait" and "last confirmation hh:mm" to keep the same meanings.
+- Not implemented: writing activity and continuity together automatically (partial failure and proxy sending would need design). The one-shot continuity CLI stays optional.
+
 ## 3. 一操作と記録の関係
 
 正本に結果を保存してから通知する。省力ツールの成功は、そのツールが実施した検査/記録の成功だけを意味する。参照先が存在することは内容が正しいことや完了したことを保証しない。
@@ -64,6 +94,8 @@
 | 状態の表示 | event ID・owner・next・presenceから派生。直近200件の表示であり、正式状態の正本ではない |
 | 重複・中断 | 自動重複排除なし。appendロック・末尾不完全時の拒否。結果不明時は手動確認 |
 | 手動フォールバック | 上記手順を定義。通知ツール停止からの往復を通した実地試験は未実施 |
+| 継続確認（OPS-139/141） | Each member writes one-shot `continuity.py --owner <name> --state alive` marks at milestones and around waits, and `ended` at an intended end of a continuous run. Studio shows them in the Work page member status (not the top bar) as "継続 hh:mm", "確認が古い" over 55 s, "連続動作の終了", "未確認" or "不調". "確認が古い" only means no recent confirmation; it does not change the declared state or assert a stop. Long tool runs also look old. No background heartbeat. Within a minute only while the page is in front and the server runs |
+| 待機完了の依頼（OPS-138） | Studioの「待機完了」から、ユーザーが担当を選んでWAKEを送る。番号・関連task・文面はサーバーが決める。未応答の依頼が同じ担当にあれば、新しく作らずにそれを返す。完了扱いは、宛先本人が同じ番号の`ACK`を書いたときだけ。自動の再送や起動はしない |
 
 現行の待機終了送信は `--event request --reason 'WAKE-YYYYMMDD-X：待機終了依頼'`、返信は `--event work --reason 'ACK WAKE-YYYYMMDD-X：会話へ戻る' --presence ended`。task/ownerは従来どおり添える。これは疎通PINGとは別の操作。
 
@@ -99,6 +131,8 @@
 | 版 | 日付 | 変更理由・範囲 |
 | --- | --- | --- |
 | 0.1 | 2026-10-19 | ユーザー要求により二系統・共通意味・手動切替・疎通手順・改訂方法を初版化。OPS-129の限定実装と未実装の要求を分離 |
+| 0.2 | 2026-10-19 | 実運用からの追加（OPS-137〜139）。§2に情報更新依頼（UPDATE）、§5に継続確認と待機完了の依頼の現状を足した。0.1の意味は変えていない。未実装・限界：UPDATEの専用UIと自動照合はない。継続確認は本人の単発の記録だけで、停止の断定はしない。待機完了は届いたかどうかを保証しない。どちらも実サーバーの再起動後の確認は未実施 |
+| 0.3 | 2026-10-19 | OPS-141. Added member status to §2 (declared state, last activity, confirmation freshness), `working`, the distinction between wait end and continuous-run end, ACK = receipt, the old-record boundary, the same-name limitation and the manual route. Old ACKs keep their old reading with a label. Not implemented: automatic combined update of activity and continuity |
 
 ## 作業記録
 

@@ -131,6 +131,47 @@ class ActivityTests(unittest.TestCase):
                 code, body = serve.Handler.do_GET(Request())
                 self.assertEqual(code,200); self.assertEqual(json.loads(body)[0]['ref'],{'path':'docs/r.md','section':'A 姫Return'})
 
+    def test_request_wake(self):
+        # OPS-138: user's 待機完了 request: known owners only, one unanswered request per owner, exact-ID ACK, concurrent-safe.
+        with tempfile.TemporaryDirectory() as folder, patch.object(activity, 'EVENTS', Path(folder)/'events.jsonl'):
+            activity.append_event('OPS-1', 'work', '姫', '実装', at='2026-10-19T01:00:00Z')
+            activity.append_event('OPS-2', 'work', '姫', 'WAIT 待機開始', at='2026-10-19T01:00:01Z', presence='waiting')
+            activity.append_event('OPS-3', 'work', '姫', 'ACK PING-20261019-A：受信', at='2026-10-19T01:00:02Z')
+            for owner in ('Fable', 'ユーザー', '', 'a\n'):
+                with self.assertRaises((LookupError, ValueError), msg=owner): activity.request_wake(owner)
+            event, created = activity.request_wake('姫', at='2026-10-19T01:01:00Z')
+            self.assertTrue(created); self.assertEqual((event['owner'], event['event'], event['next'], event['taskId']), ('ユーザー', 'request', '姫', 'OPS-1'), 'task = latest practical record')
+            wake_id = event['reason'].split('：')[0]
+            local_day = activity.datetime.datetime(2026, 10, 19, 1, 1, tzinfo=activity.datetime.timezone.utc).astimezone().strftime('%Y%m%d')
+            self.assertRegex(wake_id, r'^WAKE-' + local_day + r'-[0-9A-F]{32}$', 'local date, like the hand-written IDs'); self.assertTrue(event['reason'].startswith(wake_id + '：姫へ。'))
+            again, created = activity.request_wake('姫'); self.assertFalse(created); self.assertEqual(again['id'], event['id'], 'unanswered: the same request comes back')
+            # a near-miss ACK (prefix of the ID, other owner, ID followed by more characters) does not answer it
+            activity.append_event('OPS-1', 'work', 'Astra', f'ACK {wake_id}：代理', at='2026-10-19T01:01:05Z')
+            activity.append_event('OPS-1', 'work', '姫', f'ACK {wake_id[:-1]}：途中まで', at='2026-10-19T01:01:06Z')
+            activity.append_event('OPS-1', 'work', '姫', f'ACK {wake_id}X：長い', at='2026-10-19T01:01:07Z')
+            self.assertFalse(activity.request_wake('姫')[1])
+            activity.append_event('OPS-1', 'work', '姫', f'ACK {wake_id}：会話へ戻る', at='2026-10-19T01:01:10Z', presence='ended')
+            self.assertIsNone(activity.pending_wake(activity.read_events(), '姫'))
+            fresh, created = activity.request_wake('姫'); self.assertTrue(created); self.assertNotEqual(fresh['reason'][:46], event['reason'][:46], 'a new ID after the answer')
+            # concurrent requests to another owner add exactly one
+            activity.append_event('OPS-9', 'work', 'Astra', '作業', at='2026-10-19T01:02:00Z')
+            script = "import activity,sys;from pathlib import Path;activity.EVENTS=Path(sys.argv[1]);print(activity.request_wake('Astra')[1])"
+            procs = [subprocess.Popen([sys.executable, '-B', '-c', script, str(activity.EVENTS)], cwd=serve.APP, stdout=subprocess.PIPE, text=True) for _ in range(6)]
+            outs = [p.communicate()[0].strip() for p in procs]
+            self.assertEqual(sorted(outs), ['False'] * 5 + ['True'])
+            rows = activity.read_events()
+            self.assertEqual(sum(1 for r in rows if r['owner'] == 'ユーザー' and r.get('next') == 'Astra'), 1)
+            self.assertEqual(len({r['id'] for r in rows}), len(rows))
+            # beyond the 200-record display window: an old unanswered request is still found, then answered
+            astra_wake = next(r for r in rows if r['owner'] == 'ユーザー' and r.get('next') == 'Astra')
+            for i in range(230):
+                activity.append_event('OPS-50', 'work', 'Fable', f'別の作業{i}', at='2026-10-19T02:00:00Z')
+            self.assertNotIn(astra_wake['id'], [r['id'] for r in activity.read_events()], 'it left the display window')
+            again, created = activity.request_wake('Astra'); self.assertFalse(created); self.assertEqual(again['id'], astra_wake['id'])
+            activity.append_event('OPS-9', 'work', 'Astra', 'ACK ' + astra_wake['reason'].split('：')[0] + '：会話へ戻る', at='2026-10-19T02:01:00Z')
+            fresh, created = activity.request_wake('Astra'); self.assertTrue(created); self.assertNotEqual(fresh['id'], astra_wake['id'])
+            self.assertEqual(fresh['taskId'], 'OPS-9', 'the ACK is not practical work, so the task stays the latest practical one')
+
     def test_fixed_routes_and_git(self):
         class Request:
             path='/activity-events'

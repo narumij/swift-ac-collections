@@ -36,6 +36,8 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-info{backgroun
 #protectionList table{border-collapse:collapse;width:100%;font-size:12px}#protectionList td,#protectionList th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}#protectionList td:first-child{overflow-wrap:anywhere}#protectionList a{color:var(--accent)}
 /* Fixed strip geometry keeps polling from moving the editor or scroll position. */
 .activity-current{height:44px;margin-top:8px;color:#d1e3dc;font-size:11px;line-height:20px;overflow:hidden}.activity-current>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-timelines{height:48px;margin-top:8px;overflow:hidden}.activity-row{height:48px;display:flex;gap:8px;min-width:0}.activity-label{flex:0 0 106px;padding-top:4px;font-size:11px;color:#d1e3dc}.activity-label:has(small:empty){display:none}.activity-label small{display:block;font-size:10px;line-height:14px}.activity-label small[data-stale="true"]{color:#ffe0a1}.activity-track{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scroll-behavior:auto;overflow-anchor:none}.activity-card{box-sizing:border-box;flex:0 0 auto;height:30px;padding:4px 9px;border:2px solid #8da9a0;border-radius:6px;background:transparent;color:#e4eee9;font-size:11px;line-height:18px}.activity-card strong{display:block;white-space:nowrap}.activity-card[data-event="request"]{border-color:#9db7ce}.activity-card[data-event="work"]{border-color:#6fc39b}.activity-card[data-event="verification"]{border-color:#80b8e8}.activity-card[data-event="acceptance"]{border-color:#65d6c0}.activity-card[data-event="return"]{border-color:#f19b83}.activity-card[data-event="recheck"]{border-color:#b5a2ee}.activity-card[data-event="complete"]{border-color:#b9c1bb}.activity-card[data-event="awaiting-commit"]{border-color:#e6c478}.activity-card[data-event="commit"]{border-color:#91a5c4}.activity-card:focus{outline:2px solid #ffffff;outline-offset:-4px}
+/* OPS-138: older event cards are one step darker (background only); border = event colour, text and focus unchanged. */
+.activity-card[data-age="older"]{background:rgba(0,0,0,.22)}
 /* Approval details are outside the sticky header; fixed track height isolates polling. */
 .approval-lane{margin:12px 28px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;overflow-anchor:none}.approval-heading{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;font-size:12px}.approval-heading h2{font-size:13px;margin:0}.approval-heading button,.approval-card button{padding:4px 8px;font-size:11px}.approval-policy{font-size:11px;color:var(--muted);margin:6px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-track{display:flex;gap:8px;height:106px;overflow:auto;overflow-anchor:none}.approval-card{flex:0 0 280px;width:280px;height:92px;border:1px solid #b8ccc0;border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:5px;font-size:11px}.approval-card strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-card[data-status="approved"]{border-color:#126c58;background:#edf6ef}.approval-card[data-status="claimed"]{border-color:#bb8b32}.approval-actions{display:flex;gap:6px;margin-top:auto}.approval-lane>details{margin-top:4px;font-size:11px}.approval-lane>details[open]{max-height:230px;overflow:auto}.approval-history{display:flex;gap:8px;overflow:auto;margin-top:8px}#approval-status[data-stale="true"],#work-lane-status[data-stale="true"]{color:#a44e1d}.work-lane-approval{color:var(--muted)}.work-card{border-left-width:4px}
 /* OPS-132: taller work cards for the separate next line (fixed height keeps polling from moving the page); the next
@@ -45,18 +47,54 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-info{backgroun
 .work-lane .work-card[data-next="approval"] .work-next{color:#c0392b}
 .work-lane .work-card[data-next="known"] .work-next{color:#2f6db5}
 .work-lane .work-card[data-next="ended"] .work-next{color:#4f5b57}
-.work-lane .work-card[data-next="unknown"] .work-next{font-weight:400;color:var(--muted)}.work-lane .work-card[data-next="approval"]{border-left-color:#c0392b}.work-lane .work-card[data-next="known"]{border-left-color:#2f6db5}.work-lane .work-card[data-next="ended"]{border-left-color:#9aa6a2;background:#f4f6f5}.presence-lamps{display:inline-flex;flex-wrap:wrap;gap:4px 10px}.presence-lamp{font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid transparent}.presence-lamp::before{content:"";display:inline-block;width:8px;height:8px;margin-right:4px;border:1.5px dashed #9aa6a2;vertical-align:middle}.presence-lamp[data-state="waiting"]::before{border:1.5px solid #2f6db5}.presence-lamp[data-state="ended"]::before{border:1.5px solid #6b7672;background:#6b7672}.presence-lamp[data-fresh="true"]{border-color:#2f6db5;animation:lamp-glow 1.2s ease-out 1}@keyframes lamp-glow{from{background:#dbe8f8}to{background:transparent}}@media(prefers-reduced-motion:reduce){.presence-lamp[data-fresh="true"]{animation:none}}.presence-lamps[data-stale="true"]{color:#a44e1d}.work-lane .approval-lane{margin:8px 0 0}.work-card span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.work-card[data-stage="相談待ち"]{border-color:#bb8b32}.work-card[data-stage="記録コミット済み"],.work-card[data-stage="作業区切り"]{background:#f7f7f4}#approval-detail{max-height:65vh;overflow:auto}#approval-dialog h2{font-size:16px}@media(max-width:600px){.approval-lane{margin:10px 12px 0}}
-@media(max-width:600px){header .header-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}header h1,header .toolbar>*{flex:0 0 auto;white-space:nowrap}header .toolbar{flex-wrap:nowrap}.buttons[role=tablist]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}.buttons[role=tablist]>button{flex:0 0 auto;white-space:nowrap}header .header-row :focus-visible{outline:2px solid #f0c75e;outline-offset:-3px}.buttons[role=tablist]>button:focus-visible{outline:2px solid #126c58;outline-offset:-3px}}
+.work-lane .work-card[data-next="unknown"] .work-next{font-weight:400;color:var(--muted)}.work-lane .work-card[data-next="approval"]{border-left-color:#c0392b}.work-lane .work-card[data-next="known"]{border-left-color:#2f6db5}.work-lane .work-card[data-next="ended"]{border-left-color:#9aa6a2;background:#f4f6f5}.presence-lamps{display:inline-flex;flex-wrap:wrap;gap:4px 10px}.presence-lamp{font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid transparent}.presence-lamp::before{content:"";display:inline-block;width:8px;height:8px;margin-right:4px;border:1.5px dashed #9aa6a2;vertical-align:middle}.presence-lamp[data-state="waiting"]::before{border:1.5px solid #2f6db5}.presence-lamp[data-state="working"]::before{border:1.5px solid #19713c;background:#e4f5ec}
+/* OPS-141: member states get their own line under the lane heading */
+/* User amendment: member status is its own section above Recent work, with readable cards (one line per field). */
+.member-area{margin:12px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#fff}.member-area h2{font-size:14px;margin:0 0 8px}
+.member-list{display:flex;flex-wrap:wrap;gap:10px}.member-list .presence-lamp{flex:1 1 240px;max-width:360px;font-size:13px;line-height:1.6;padding:8px 12px;border:1px solid var(--line);border-radius:8px;white-space:pre-line;background:#fbfcfb}.presence-lamp[data-state="ended"]::before{border:1.5px solid #6b7672;background:#6b7672}.presence-lamp[data-fresh="true"]{border-color:#2f6db5;animation:lamp-glow 1.2s ease-out 1}@keyframes lamp-glow{from{background:#dbe8f8}to{background:transparent}}@media(prefers-reduced-motion:reduce){.presence-lamp[data-fresh="true"]{animation:none}}.presence-lamps[data-stale="true"]{color:#a44e1d}.work-lane .approval-lane{margin:8px 0 0}.work-card span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.work-card[data-stage="相談待ち"]{border-color:#bb8b32}.work-card[data-stage="記録コミット済み"],.work-card[data-stage="作業区切り"]{background:#f7f7f4}#approval-detail{max-height:65vh;overflow:auto}#approval-dialog h2{font-size:16px}@media(max-width:600px){.approval-lane{margin:10px 12px 0}}
+@media(max-width:600px){.buttons[role=tablist]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}.buttons[role=tablist]>button{flex:0 0 auto;white-space:nowrap}header .header-row :focus-visible{outline:2px solid #f0c75e;outline-offset:-3px}.buttons[role=tablist]>button:focus-visible{outline:2px solid #126c58;outline-offset:-3px}}
+/* OPS-136: the edit actions open from the top-left menu; the title sits quietly at the right. The list is a plain
+   disclosure (Tab moves through it), stacked and wide enough on narrow screens. */
+/* User (2026-10-19): one row: menu, title, then the approval state and bulk approve at the right. Only the approval part
+   scrolls sideways when it does not fit, so the menu list is never clipped. */
+header .header-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px}header .header-row>h1{white-space:nowrap;text-align:center}
+.header-row>.header-approval{justify-self:end;margin:0 0 0 auto;flex:0 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+.header-row>.header-approval>*{flex:0 0 auto}
+
+/* User (2026-10-19, OPS-136): the map tabs are the second row of the sticky header, right under the menu/approval row;
+   the canonical notice and everything else come after them. Header colours: the selected tab is the light one. */
+header .header-area-tabs{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+/* OPS-139: Astra's continuity mark, after the work/task switch. Text and border style only: no approval circles/colours. */
+.header-left{display:flex;align-items:center;gap:8px;justify-self:start;min-width:0}
+.wake-control{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.wake-control select{width:auto;padding:3px 6px;font-size:11px}.wake-control small{color:var(--muted)}#wake-status[data-kind="pending"]{font-weight:700}
+.continuity{flex:0 0 auto;font-size:11px;padding:3px 8px;border:1px dotted #8da9a0;border-radius:999px;color:#d1e3dc;white-space:nowrap}
+.continuity[data-kind="alive"]{border-style:solid;border-color:#8fd3b0;color:#e4f5ec}
+.continuity[data-kind="lapsed"]{border:2px dashed #f0c75e;color:#ffe8a6;font-weight:700}
+.continuity[data-kind="ended"]{border-style:solid;color:#c5d8cf}
+.continuity[data-kind="trouble"]{border-color:#f0c75e}header .header-area-tabs>button{padding:5px 12px;min-width:72px}
+/* OPS-136 work tab: the activity band keeps its dark colours inside the panel; the lane fits the panel. */
+#workArea .work-activity{background:#183c36;border-radius:8px;padding:2px 12px 10px}#workArea .approval-lane{margin:12px 0 0}#workspace[hidden],#workArea[hidden]{display:none}.work-area{padding:18px 28px}@media(max-width:900px){.work-area{padding:12px}}header [role="tab"]{background:transparent;color:#d1e3dc;border-color:#3d6a60}
+header [role="tab"]:hover{background:#24524a}header [role="tab"][aria-selected="true"]{background:#fff;color:#183c36;border-color:#fff}
+header .header-area-tabs>button:focus-visible{outline:2px solid #f0c75e;outline-offset:-3px}
+/* User (2026-10-19): the menu works on the task area only, so it sits at the start of the task area beside the map tabs. */
+.task-toolbar{display:flex;align-items:center;gap:8px;min-width:0}.task-toolbar>.buttons{flex:1 1 auto;min-width:0}
+.header-menu{position:relative;flex:0 0 auto;z-index:25}#headerMenuButton{font-weight:600;display:inline-grid;justify-items:center}
+#headerMenuButton>span{grid-area:1/1}#headerMenuButton>.menu-busy,#headerMenuButton[aria-busy="true"]>.menu-idle{visibility:hidden}#headerMenuButton[aria-busy="true"]>.menu-busy{visibility:visible}header h1{font-size:15px;color:#d1e3dc}
+.header-menu-list{position:absolute;left:0;top:calc(100% + 6px);z-index:30;display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:220px;max-width:calc(100vw - 24px);padding:8px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.header-menu-list[hidden]{display:none}.header-menu-list>button,.header-menu-list>.file{text-align:left;white-space:nowrap}.header-menu-list hr{width:100%;border:0;border-top:1px solid var(--line);margin:4px 0}
+.header-menu-list :focus-visible{outline:2px solid #126c58;outline-offset:-3px}
 .header-approval{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-top:7px;font-size:12px}.header-approval button{padding:4px 8px;font-size:11px}
+
+/* OPS-136 narrow header (kept last so it wins over the general header rules above): the title gives way, tighter buttons. */
+@media(max-width:600px){header .header-approval-label{display:none}header .header-row{grid-template-columns:auto minmax(0,1fr)}header .header-row>h1{display:none}header .header-area-tabs>button{padding:4px 8px;min-width:56px}header .header-approval button{padding:3px 6px}}
 </style>
 <div id="canonicalRestartNotice" role="status" hidden style="background:#e5f3e9;color:#234e36;padding:10px 20px;border-bottom:1px solid #b5d5be">保存した編集内容が正本に反映されています。正本から新しく始めるのがおすすめです。 <button id="canonicalRestartAction">正本から新しく始める</button></div>
 <div id="serverRestartNotice" role="status" hidden style="background:#fff1c2;color:#593c00;padding:12px 20px;border-bottom:1px solid #d5b95c"></div>
-<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><div class="header-approval" aria-label="コミット事前承認"><span>コミット事前承認：<span id="header-approval-status">読み込み待ち</span></span><button type="button" id="header-approval-all" disabled>表示中の未承認0件を承認</button></div><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header><section class="header-info" aria-label="作業の状況"><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section class="activity-current" aria-label="現在の作業詳細"><div id="activity-current-heading">現在の作業：読み込み待ち</div><div id="activity-current-detail">担当・時刻・詳細をここに表示します</div></section><section class="activity-timelines" aria-label="作業イベントの履歴"><div class="activity-row"><div class="activity-label"><small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div></section></section>
-<section class="approval-lane work-lane" aria-label="最近の作業とコミット事前承認"><div class="approval-heading"><h2>最近の作業</h2><span id="work-lane-status" role="status">読み込み待ち</span><span id="presence-lamps" class="presence-lamps" role="status" aria-label="担当ごとの在席（新しい連絡があった担当は短く「新着」）"></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status" role="status">読み込み待ち</span></span><button type="button" id="approval-all" disabled>表示中の未承認0件を承認</button></div><p class="approval-policy" title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの並行した依頼は区別しません。疎通確認（PING・WAKE・ACK）は工程に数えません。">直近200件の活動＋未完の承認から（全taskの現在地ではありません · 正式な状態はRegistry · 同じtaskの並行依頼は区別しません）</p><div id="work-lane-track" class="approval-track" aria-label="最近の作業（新しい順）" tabindex="0"></div><details id="approval-details"><summary>コミット事前承認の詳細（個別の承認・取消・履歴）</summary><p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="approval-history-summary">使用・取消の履歴（0件）</summary><div id="approval-history" class="approval-history"></div></details></details><details id="work-lane-help"><summary>作業カードの色の説明</summary><p class="approval-policy work-lane-legend">カードの左の線：赤＝承認待ち（最優先。上の承認信号の🔴と同じ意味）・青＝次の担当あり・灰＝この仕事は終了・薄い線＝次は不明</p></details><details class="approval-lane" id="probe-panel"><summary>疎通確認（動作確認専用）</summary><div class="approval-heading"><h2>疎通確認</h2><strong id="probe-result" aria-live="polite">まだ処理されていません</strong><span id="probe-status" role="status">読み込み待ち</span><button type="button" id="probe-all" disabled>表示中の未承認0件を承認</button></div><p id="probe-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="probe-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="probe-history-summary">使用・取消の履歴（0件）</summary><div id="probe-history" class="approval-history"></div></details></details></section>
+<header><div class="header-row"><div class="header-left"><div class="buttons header-area-tabs" role="tablist" aria-label="表示する領域"><button id="workAreaTab" role="tab" aria-selected="true" aria-controls="workArea">作業</button><button id="taskAreaTab" role="tab" aria-selected="false" aria-controls="workspace" tabindex="-1">タスク</button></div></div><h1>Registry Studio</h1><div class="header-approval" aria-label="コミット事前承認"><span><span class="header-approval-label">コミット事前承認：</span><span id="header-approval-status">読み込み待ち</span></span><button type="button" id="header-approval-all" disabled>表示中の未承認0件を承認</button></div></div><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header><section class="header-info" aria-label="編集版の説明"><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p></section>
 <dialog id="approval-dialog" aria-labelledby="approval-dialog-title"><h2 id="approval-dialog-title">コミット依頼の詳細</h2><pre id="approval-detail" tabindex="0"></pre><button type="button" id="approval-close">閉じる</button></dialog>
 <dialog id="probe-dialog" aria-labelledby="probe-dialog-title"><h2 id="probe-dialog-title">疎通ジョブの詳細</h2><pre id="probe-detail" tabindex="0"></pre><button type="button" id="probe-close">閉じる</button></dialog>
 <div id="status" class="status" role="status" hidden></div>
-<div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab" aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button><button id="neighborTab" role="tab" aria-selected="false" aria-controls="neighborView" tabindex="-1">接続を見る</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><div class="graph-controls"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div class="buttons" role="group" aria-label="見取り図の表示"><button id="graphZoomOut" aria-label="見取り図を縮小">−</button><button id="graphZoomReset" aria-label="倍率を100%に戻す" title="100%に戻す">100%</button><button id="graphZoomIn" aria-label="見取り図を拡大">＋</button><label style="display:flex;align-items:center;gap:6px;margin:0"><input id="graphHoverEnabled" type="checkbox" checked style="width:auto">カードの説明を表示</label></div></div><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden><h2>カード一覧 <span id="cardsCount" class="count"></span></h2><p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p><label>並び方<select id="cardOrder" aria-label="カード一覧の並び方"><option value="id">ID順（PREFIX別）</option><option value="grouped">ジャンル別</option></select></label><div id="planTools"></div><div id="cardList"></div></section><section id="neighborView" role="tabpanel" aria-labelledby="neighborTab" class="panel" hidden><h2>接続を見る <span id="neighborCount" class="count"></span></h2><p class="muted">選んだノードの直接の前提（→このノード）と後続（このノード→）を1段だけ表示します。開いている編集版のすべてのtask・追加案・マイルストーンと線から作り、版の絞込みは通しません。必要なノードだけ「この先を展開」で1段ずつ広げられます。表示を変えても編集内容は変わりません。線は関係の所在で、着手できるかは条件文で判断します。</p><div id="neighborBox"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
+<section id="workArea" class="work-area" role="tabpanel" aria-labelledby="workAreaTab" aria-label="作業"><div class="work-activity"><section class="activity-current" aria-label="現在の作業詳細"><div id="activity-current-heading">現在の作業：読み込み待ち</div><div id="activity-current-detail">担当・時刻・詳細をここに表示します</div></section><section class="activity-timelines" aria-label="作業イベントの履歴"><div class="activity-row"><div class="activity-label"><small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div></section></div><section class="member-area" aria-labelledby="member-area-title"><h2 id="member-area-title">メンバー状態</h2><div id="presence-lamps" class="presence-lamps member-list" role="status" aria-label="メンバー状態：本人が申告した状態と時刻・最後の活動・継続確認（新しい連絡があった担当は短く「新着」）"></div></section><section class="approval-lane work-lane" aria-label="最近の作業とコミット事前承認"><div class="approval-heading"><h2>最近の作業</h2><span id="work-lane-status" role="status">読み込み待ち</span><span class="wake-control"><select id="wake-owner" aria-label="待機完了を依頼する担当"></select><button type="button" id="wake-send" disabled>待機完了</button><small>選んだ担当に待機終了を依頼</small><span id="wake-status" role="status"></span></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status" role="status">読み込み待ち</span></span><button type="button" id="approval-all" disabled>表示中の未承認0件を承認</button></div><p class="approval-policy" title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの並行した依頼は区別しません。疎通確認（PING・WAKE・ACK）は工程に数えません。">直近200件の活動＋未完の承認から（全taskの現在地ではありません · 正式な状態はRegistry · 同じtaskの並行依頼は区別しません）</p><div id="work-lane-track" class="approval-track" aria-label="最近の作業（新しい順）" tabindex="0"></div><div id="approval-details"><h3>コミット事前承認の詳細（個別の承認・取消・履歴）</h3><p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><div><h3 id="approval-history-summary">使用・取消の履歴（0件）</h3><div id="approval-history" class="approval-history"></div></div></div><details id="work-lane-help"><summary>作業カードの色の説明</summary><p class="approval-policy work-lane-legend">カードの左の線：赤＝承認待ち（最優先。上の承認信号の🔴と同じ意味）・青＝次の担当あり・灰＝この仕事は終了・薄い線＝次は不明</p></details><details class="approval-lane" id="probe-panel"><summary>疎通確認（動作確認専用）</summary><div class="approval-heading"><h2>疎通確認</h2><strong id="probe-result" aria-live="polite">まだ処理されていません</strong><span id="probe-status" role="status">読み込み待ち</span><button type="button" id="probe-all" disabled>表示中の未承認0件を承認</button></div><p id="probe-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="probe-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="probe-history-summary">使用・取消の履歴（0件）</summary><div id="probe-history" class="approval-history"></div></details></details></section></section><div id="workspace" class="layout sidebar-hidden" role="tabpanel" aria-labelledby="taskAreaTab" hidden><main><div class="task-toolbar"><div class="header-menu"><button type="button" id="headerMenuButton" aria-haspopup="true" aria-expanded="false" aria-controls="headerMenu" aria-busy="false"><span class="menu-idle">メニュー ▾</span><span class="menu-busy">処理中… ▾</span></button><div id="headerMenu" class="header-menu-list" role="group" aria-label="編集版の操作" hidden><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><label class="file" tabindex="0" role="button">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><hr><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab" aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button><button id="neighborTab" role="tab" aria-selected="false" aria-controls="neighborView" tabindex="-1">接続を見る</button></div></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><div class="graph-controls"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div class="buttons" role="group" aria-label="見取り図の表示"><button id="graphZoomOut" aria-label="見取り図を縮小">−</button><button id="graphZoomReset" aria-label="倍率を100%に戻す" title="100%に戻す">100%</button><button id="graphZoomIn" aria-label="見取り図を拡大">＋</button><label style="display:flex;align-items:center;gap:6px;margin:0"><input id="graphHoverEnabled" type="checkbox" checked style="width:auto">カードの説明を表示</label></div></div><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden><h2>カード一覧 <span id="cardsCount" class="count"></span></h2><p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p><label>並び方<select id="cardOrder" aria-label="カード一覧の並び方"><option value="id">ID順（PREFIX別）</option><option value="grouped">ジャンル別</option></select></label><div id="planTools"></div><div id="cardList"></div></section><section id="neighborView" role="tabpanel" aria-labelledby="neighborTab" class="panel" hidden><h2>接続を見る <span id="neighborCount" class="count"></span></h2><p class="muted">選んだノードの直接の前提（→このノード）と後続（このノード→）を1段だけ表示します。開いている編集版のすべてのtask・追加案・マイルストーンと線から作り、版の絞込みは通しません。必要なノードだけ「この先を展開」で1段ずつ広げられます。表示を変えても編集内容は変わりません。線は関係の所在で、着手できるかは条件文で判断します。</p><div id="neighborBox"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
 <dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
 <dialog id="relationDialog"><h2>依存のつなぎ替え</h2><div id="relationEditor"></div></dialog><dialog id="proposalDialog"><h2>タスク追加（追加案）</h2><div id="proposalForm"></div></dialog>
 <div id="graphTip" class="graph-tooltip" role="tooltip" hidden></div>
@@ -853,6 +891,11 @@ function switchMap(value){
  for(const name of MAP_TABS){const active=name===mode;$(name+'View').hidden=!active;const tab=$(name+'Tab');tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}
 }
 for(const name of MAP_TABS){const tab=$(name+'Tab'),names=MAP_TABS;tab.onclick=()=>switchMap(name);tab.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();let i=names.indexOf(name);i=e.key==='Home'?0:e.key==='End'?names.length-1:(i+(e.key==='ArrowRight'?1:names.length-1))%names.length;switchMap(names[i]);$(names[i]+'Tab').focus();}};}
+// User (2026-10-19, OPS-136): the header switches between the work area (left, shown first) and the task area (#workspace). Both stay
+// in the DOM, so selections and inputs survive the round trip and polling keeps both up to date.
+const AREA_TABS=[['work','workArea'],['task','workspace']];
+function switchArea(name){for(const [n,id] of AREA_TABS){const on=n===name;$(id).hidden=!on;const tab=$(n+'AreaTab');tab.setAttribute('aria-selected',String(on));tab.tabIndex=on?0:-1;}}
+for(const [name] of AREA_TABS){const tab=$(name+'AreaTab'),names=AREA_TABS.map(a=>a[0]);tab.onclick=()=>switchArea(name);tab.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();let i=names.indexOf(name);i=e.key==='Home'?0:e.key==='End'?names.length-1:(i+(e.key==='ArrowRight'?1:names.length-1))%names.length;switchArea(names[i]);$(names[i]+'AreaTab').focus();}};}
 $('refresh').onclick=async()=>{
  if(location.protocol==='file:'){report('JSON更新にはローカルサーバーを起動し、http://127.0.0.1:8088/ を開いてください。',true);return;}
  // Refresh fetches the newest canonical; it never discards edits (OPS-082). Save first; the saved edit version is resumed after reload.
@@ -965,10 +1008,11 @@ function validateActivityRows(value,kind){
   let row;
   if(kind==='events'){
    const id=text(v.id,36),taskId=text(v.taskId,40),event=text(v.event,24),owner=text(v.owner,80),reason=text(v.reason??'',240,false),sha=text(v.commitSha??'',40,false),next=text(v.next??'',80,false),presence=v.presence??'';
-   if(presence&&!['waiting','ended'].includes(presence))throw Error('Invalid presence');
+   if(presence&&!['waiting','ended','working'].includes(presence))throw Error('Invalid presence');
    if(v.schemaVersion!==1||!(/^[a-f0-9]{32}$/).test(id)||!(/^[A-Z][A-Z0-9]*-[0-9]+$/).test(taskId)||!Object.hasOwn(activityLabels,event)||(sha&&!(/^[a-f0-9]{40}$/).test(sha)))throw Error('Invalid event');
    const label=event==='work'&&/^検討中[:：]/.test(reason)?'検討中':activityLabels[event];
-   row={id,event,raw:{taskId,owner,reason,at,shortTime,next,presence},heading:taskId+' · '+owner+' · '+label,detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+label+' · '+owner+' · '+localTime+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
+   const who=event==='request'&&next&&!['none','unknown'].includes(next)?owner+' → '+next:owner;  // user amendment: request cards show sender → recipient as recorded
+   row={id,event,raw:{taskId,owner,reason,at,shortTime,next,presence},heading:taskId+' · '+who+' · '+label,detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+label+' · '+owner+' · '+localTime+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
   }else{
    const sha=text(v.sha,40),subject=text(v.subject,4096,false);if(!/^[a-f0-9]{40}$/.test(sha))throw Error('Invalid commit');
    row={id:sha,heading:sha.slice(0,8)+' · '+subject,detail:shortTime,title:sha+' · '+localTime+' · '+subject};
@@ -1005,10 +1049,12 @@ function createActivityView(track,status,makeNode,getActive=()=>null,current=nul
     let node=nodes.get(row.id);
     if(!node){node=makeNode('article');node.className='activity-card';node.tabIndex=0;node.appendChild(makeNode('strong'));nodes.set(row.id,node);}
     set(node.children[0],row.heading);node.dataset.event=row.event||'';if(node.title!==row.title)node.title=row.title;
+    // OPS-138: one quiet step only: every card except the newest gets a slightly darker background.
+    const age=index===rows.length-1?'latest':'older';if(node.dataset.age!==age)node.dataset.age=age;
     if(track.children[index]!==node)track.insertBefore(node,track.children[index]||null);
    });
    if(follow)track.scrollLeft=track.scrollWidth;else if(anchor)track.scrollLeft+=anchor.node.getBoundingClientRect().left-track.getBoundingClientRect().left-offset;else track.scrollLeft=oldLeft;
-   if(current){const latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!row.raw?.presence).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
+   if(current){const latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!(row.raw?.presence&&row.event==='work')).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
    first=false;set(status,rows.length?'': '記録なし');status.dataset.stale='false';
   },
   failure(){set(status,'取得不調 · 最終情報を保持');status.dataset.stale='true';}
@@ -1019,10 +1065,51 @@ function startActivityTimelines(){
   const status=$('activity-'+kind+'-status');
   if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';continue;}
   const timeline=createActivityView($('activity-'+kind),status,tag=>document.createElement(tag),()=>document.activeElement,{heading:$('activity-current-heading'),detail:$('activity-current-detail')});
-  const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);},failure(){timeline.failure();workLaneInstance().activityFailure();}};
+  const wake=createWakeControl({select:$('wake-owner'),button:$('wake-send'),status:$('wake-status'),send:sendWake});
+  const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);wake.rows(rows);},failure(){timeline.failure();workLaneInstance().activityFailure();}};
   const poller=createActivityPoller({kind,fetchRecord:fetch,view,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
   document.addEventListener('visibilitychange',poller.visibility);poller.poll();
  }
+}
+// OPS-138: 待機完了. The user asks one owner (anyone already in the activity record, except the user) to end a continuous
+// wait. The server fixes the WAKE ID, task and text; an unanswered request to the same owner comes back instead of a new
+// one. "Answered" means a later record by that owner starting with exactly `ACK <id>`; until then it is only "依頼済み",
+// never "終了". Nothing here starts or wakes a stopped AI, and nothing is resent automatically.
+const WAKE_SENDER='ユーザー';
+function wakeOwners(rows){const seen=[];for(let i=rows.length-1;i>=0;i--){const o=rows[i].raw?.owner;if(o&&o!==WAKE_SENDER&&!seen.includes(o))seen.push(o);}return seen;}
+function wakeStatus(rows,owner){
+ for(let i=rows.length-1;i>=0;i--){const r=rows[i].raw||{},m=/^(WAKE-\d{8}-[A-Z0-9]+)：/.exec(r.reason||'');
+  if(r.owner===WAKE_SENDER&&r.next===owner&&rows[i].event==='request'&&m){const ack=new RegExp('^ACK '+m[1]+'(?![A-Za-z0-9])'),a=rows.slice(i+1).find(x=>x.raw?.owner===owner&&ack.test(x.raw.reason||''));
+   return a?{kind:'acked',id:m[1],at:a.raw.at}:{kind:'pending',id:m[1],at:r.at};}}
+ return {kind:'none'};
+}
+function createWakeControl({select,button,status,send}){
+ let rows=[],busy=false,note='',noteFor='';
+ const time=at=>{const d=new Date(at);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ja-JP',{hour12:false}):'';};
+ const render=()=>{
+  const owners=wakeOwners(rows),current=[...select.options||[]].map(o=>o.value);
+  if(owners.join('\n')!==current.join('\n')){const keep=select.value;while(select.options.length)select.remove(0);for(const o of owners){const opt=document.createElement('option');opt.value=o;opt.textContent=o;select.add(opt);}select.value=owners.includes(keep)?keep:owners[0]||'';}
+  const owner=select.value,st=owner?wakeStatus(rows,owner):{kind:'none'};
+  if(noteFor!==owner+'|'+st.kind+'|'+(st.id||''))note='';
+  button.disabled=busy||!owner||st.kind==='pending';
+  const text=busy?'送信中…':note||(st.kind==='pending'?'依頼済み・ACK待ち（'+time(st.at)+'）':st.kind==='acked'?'ACK済み・受信確認（'+time(st.at)+'）':'');
+  if(status.textContent!==text)status.textContent=text;status.dataset.kind=busy?'busy':st.kind;
+  status.title=st.kind==='acked'?'ACKは受け取った確認です。待機が終わったかどうかは、その担当のメンバー状態（待機終了）で確かめます':'';button.title=st.kind==='pending'?'この担当への依頼はまだACKがありません（'+st.id+'）':'選んだ担当に待機終了を依頼します。届くのは待機中のAIだけです';
+ };
+ const setNote=(text)=>{const owner=select.value,st=owner?wakeStatus(rows,owner):{kind:'none'};note=text;noteFor=owner+'|'+st.kind+'|'+(st.id||'');};
+ select.addEventListener('change',()=>{note='';render();});
+ button.addEventListener('click',async()=>{const owner=select.value;if(busy||!owner)return;busy=true;render();
+  try{const result=await send(owner);busy=false;if(result&&result.created===false)setNote('未応答の依頼があります（同じ依頼を表示しています）');else setNote('送信しました。記録の反映を待っています');}
+  catch(e){busy=false;setNote(e&&e.unknown?'結果が分かりません。記録を読み直してから判断してください（自動では再送しません）':'送信できませんでした：'+(e&&e.message||'不明'));}
+  render();});
+ return {rows(next){rows=next;render();},render};
+}
+async function sendWake(owner){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);
+ try{const response=await fetch('/activity-wake',{method:'POST',headers:{'X-Registry-Studio':'activity-wake','Content-Type':'application/json'},body:JSON.stringify({owner}),signal:controller.signal});
+  const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||'送信に失敗しました');return result;}
+ catch(e){if(e&&e.name==='AbortError'){const unknown=Error('timeout');unknown.unknown=true;throw unknown;}throw e;}
+ finally{clearTimeout(timer);}
 }
 startActivityTimelines();
 
@@ -1039,7 +1126,7 @@ function isProbeEvent(reason){
 function workLaneItems(events,approvals,registryState=()=>''){
  const byTask=new Map(),item=id=>byTask.get(id)||byTask.set(id,{taskId:id,last:null,start:null,approvals:{pending:0,approved:0,claimed:0},registryState:registryState(id)||''}).get(id);
  for(const row of events){
-  const r=row.raw;if(!r||isProbeEvent(r.reason)||r.presence)continue;
+  const r=row.raw;if(!r||isProbeEvent(r.reason)||(r.presence&&row.event==='work'))continue;  // OPS-141: a return with a presence stays
   const it=item(r.taskId);
   if(!it.last||Date.parse(r.at)>=Date.parse(it.last.at))it.last={event:row.event,...r};
  }
@@ -1077,36 +1164,47 @@ function createWorkLaneView({track,status,makeNode,getActive=()=>null}){
   }
  };
 }
-// OPS-127: per-owner lamps. The state comes from each owner's own latest record: presence (waiting/ended), or a WAKE ACK
-// (= wait ended). A PING ACK does not change it; any later practical event of the owner resets it to unknown. Silence or
-// elapsed time never changes it. Not a proof that anyone is working.
+// OPS-141 member states (protocol 0.3). Per member, three separate things: the state the member declared last (presence
+// working / waiting / ended = 作業中 / 待機中 / 待機終了), the member's last practical activity with its time, and the
+// freshness of the member's own continuity mark. Practical events, PINGs and ACKs never change the declared state.
+// Up to LEGACY_ACK_BOUNDARY a WAKE ACK was read as "wait ended"; those records keep that old reading, labelled as such
+// and never as the member's own declaration. Later ACKs only confirm receipt.
+const LEGACY_ACK_BOUNDARY={id:'feeb9d2cde9c43d0bc7d8cc0fa080e4b',at:'2026-10-18T19:35:45+00:00'};
+const PRESENCE_LABELS={working:'作業中',waiting:'待機中',ended:'待機終了',unknown:'未申告'};
 function presenceStates(rows){
- const states=new Map();
- for(const row of rows){const r=row.raw;if(!r)continue;const prev=states.get(r.owner)||{state:'unknown',at:''};
-  const state=r.presence?r.presence:/^ACK WAKE-\d{8}-[A-Z0-9]+(?![A-Za-z0-9])/.test(r.reason)?'ended':isProbeEvent(r.reason)?prev.state:'unknown';
-  states.set(r.owner,{state,at:r.at});}
- return new Map([...states].sort((a,b)=>Date.parse(b[1].at)-Date.parse(a[1].at)).slice(0,6));
+ const states=new Map(),limit=Date.parse(LEGACY_ACK_BOUNDARY.at);
+ for(const row of rows){const r=row.raw;if(!r||r.owner==='ユーザー')continue;
+  const s=states.get(r.owner)||{state:'unknown',at:'',legacy:false,last:null,seen:''};s.seen=r.at;
+  if(r.presence){s.state=r.presence;s.at=r.at;s.legacy=false;}
+  else if(/^ACK WAKE-\d{8}-[A-Z0-9]+(?![A-Za-z0-9])/.test(r.reason)&&Date.parse(r.at)<=limit){s.state='ended';s.at=r.at;s.legacy=true;}
+  if(!isProbeEvent(r.reason)&&!(r.presence&&row.event==='work'))s.last={at:r.at,label:activityLabels[row.event]||row.event};
+  states.set(r.owner,s);}
+ // every member in the record window is shown (newest first); no silent cap — the member area wraps
+ return new Map([...states].sort((a,b)=>Date.parse(b[1].seen)-Date.parse(a[1].seen)));
 }
+function memberTime(at){const d=new Date(at);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ja-JP',{hour12:false}):'';}
 function createPresenceLamps({box,makeNode,schedule=(fn,ms)=>setTimeout(fn,ms)}){
- const lamps=new Map(),labels={waiting:'待機中',ended:'待機終了',unknown:'不明'};let seen=null;
+ const lamps=new Map();let seen=null,states=new Map(),continuity=()=>'継続 未確認',continuityOwners=[];
  const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
- function paint(owner,state,fresh){
+ const text=(owner,s,fresh)=>owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':'')+(fresh?'・新着':'')+'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+'\n'+continuity(owner);
+ function paint(owner,s,fresh){
   let lamp=lamps.get(owner);if(!lamp){lamp={node:makeNode('span'),fresh:0};lamp.node.className='presence-lamp';lamps.set(owner,lamp);}
   if(box.children[[...lamps.keys()].indexOf(owner)]!==lamp.node)box.appendChild(lamp.node);
-  lamp.node.dataset.state=state;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
+  lamp.node.dataset.state=s.state;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
    // Only the latest flash of a lamp that is still shown clears; a fetch failure keeps its text until recovery.
-   if(lamps.get(owner)!==lamp||lamp.fresh!==mine)return;delete lamp.node.dataset.fresh;if(box.dataset.stale==='true')return;paint(owner,lamp.node.dataset.state,false);},3000);}
-  set(lamp.node,owner+'：'+labels[state]+(lamp.node.dataset.fresh?'・新着':''));
+   if(lamps.get(owner)!==lamp||lamp.fresh!==mine)return;delete lamp.node.dataset.fresh;if(box.dataset.stale==='true')return;paint(owner,members().get(owner)||s,false);},3000);}
+  set(lamp.node,text(owner,s,!!lamp.node.dataset.fresh));
  }
+ // members = activity owners plus owners that only have a continuity mark (their state is 未申告, not invented)
+ const members=()=>{const all=new Map(states);for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,{state:'unknown',at:'',legacy:false,last:null});return all;};
+ const render=freshOwners=>{const all=members();for(const [owner,lamp] of lamps)if(!all.has(owner)){lamp.node.remove();lamps.delete(owner);}for(const [owner,s] of all)paint(owner,s,freshOwners.has(owner));};
  return {
   update(rows){
-   const states=presenceStates(rows),ids=new Set(rows.map(r=>r.id)),freshOwners=new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]);
-   seen=seen?new Set([...seen,...ids]):ids;
-   for(const [owner,lamp] of lamps)if(!states.has(owner)){lamp.node.remove();lamps.delete(owner);}
-   for(const [owner,{state}] of states)paint(owner,state,freshOwners.has(owner));
-   delete box.dataset.stale;
+   states=presenceStates(rows);const ids=new Set(rows.map(r=>r.id)),freshOwners=new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]);
+   seen=seen?new Set([...seen,...ids]):ids;render(freshOwners);delete box.dataset.stale;
   },
-  failure(){box.dataset.stale='true';for(const [owner,lamp] of lamps){lamp.node.dataset.state='unknown';set(lamp.node,owner+'：不明（取得不調）');}}
+  continuity(fn,owners){continuity=fn;continuityOwners=owners||[];if(box.dataset.stale!=='true')render(new Set());},
+  failure(){box.dataset.stale='true';for(const [owner,lamp] of lamps){lamp.node.dataset.state='unknown';set(lamp.node,owner+'：取得不調（状態を読めません）\n'+continuity(owner));}}
  };
 }
 function createWorkLane({view,registryState,lamps=null}){
@@ -1122,7 +1220,12 @@ function createWorkLane({view,registryState,lamps=null}){
 function workLaneInstance(){
  if(!workLaneInstance.value){
   const states=new Map(JSON.parse($('seed').textContent).tasks.map(t=>[t.id,t.state]));
-  workLaneInstance.value=createWorkLane({view:createWorkLaneView({track:$('work-lane-track'),status:$('work-lane-status'),makeNode:tag=>document.createElement(tag),getActive:()=>document.activeElement}),registryState:id=>states.get(id),lamps:createPresenceLamps({box:$('presence-lamps'),makeNode:tag=>document.createElement(tag)})});
+  workLaneInstance.value=createWorkLane({view:createWorkLaneView({track:$('work-lane-track'),status:$('work-lane-status'),makeNode:tag=>document.createElement(tag),getActive:()=>document.activeElement}),registryState:id=>states.get(id),lamps:(workLaneInstance.lamps=createPresenceLamps({box:$('presence-lamps'),makeNode:tag=>document.createElement(tag)}))});
+  // OPS-141: continuity marks feed the same member states (5 s fetch, 1 s age check, paused while the page is hidden)
+  if(typeof location!=='undefined'&&location.protocol!=='file:'&&typeof fetch==='function'){
+   const lamps=workLaneInstance.lamps,status=createContinuityStatus({onChange:(fn,owners)=>lamps.continuity(fn,owners),fetchRecord:async()=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);try{const response=await fetch('/continuity',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}}});
+   status.poll();setInterval(()=>{if(!document.hidden)status.poll();},5000);setInterval(status.paint,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){status.poll();status.paint();}});
+  }
  }
  return workLaneInstance.value;
 }
@@ -1239,7 +1342,52 @@ startCommitApprovals();
 // measured height so scrollIntoView and keyboard focus land below it, following wrapped buttons and the notice opening.
 // OPS-126 proposal 7: on narrow screens these rows scroll sideways; show a keyboard-focused control fully (Chromium
 // otherwise leaves the last button partly outside). Only when the row actually overflows.
-if(typeof document!=='undefined'&&document.querySelectorAll)for(const row of document.querySelectorAll('header .header-row,.buttons[role=tablist]'))row.addEventListener('focusin',e=>{if(row.scrollWidth>row.clientWidth&&e.target.scrollIntoView)e.target.scrollIntoView({block:'nearest',inline:'nearest'});});
+if(typeof document!=='undefined'&&document.querySelectorAll)for(const row of document.querySelectorAll('header .header-row,header .header-approval,.buttons[role=tablist]'))row.addEventListener('focusin',e=>{if(row.scrollWidth>row.clientWidth&&e.target.scrollIntoView)e.target.scrollIntoView({block:'nearest',inline:'nearest'});});
+// OPS-136: the top-left menu. The button toggles the list; Esc (from the button or the list) closes it and returns focus to
+// the button; a click outside closes it. Choosing an action closes it after that action's own click handling, so the file
+// picker, confirm() and dialogs work as before; focus goes back to the button only if it was left in the list or nowhere.
+// Disabled (busy) actions show on the button. The open state is DOM only; polling never touches it.
+function createHeaderMenu({button,menu,root,defer=fn=>setTimeout(fn,0)}){
+ const setOpen=open=>{menu.hidden=!open;button.setAttribute('aria-expanded',String(open));};
+ const close=refocus=>{if(menu.hidden)return;setOpen(false);if(refocus)button.focus();};
+ button.addEventListener('click',()=>setOpen(menu.hidden));
+ for(const node of [button,menu])node.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){e.preventDefault();close(true);}});
+ menu.addEventListener('keydown',e=>{const file=e.target.closest?.('label.file');if(file&&(e.key==='Enter'||e.key===' ')){e.preventDefault();file.querySelector('input').click();}});
+ menu.addEventListener('click',e=>{if(!e.target.closest?.('button,label'))return;defer(()=>{const a=root.activeElement;close(!a||a===root.body||menu.contains(a));});});
+ root.addEventListener('click',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!button.contains(e.target))close(false);});
+ // Both labels share one grid cell (CSS), so the button keeps its width while busy; only which label is visible changes.
+ const busy=()=>{const on=[...menu.querySelectorAll('button')].some(b=>b.disabled);button.setAttribute('aria-busy',String(on));};
+ return {close,busy,setOpen};
+}
+// OPS-139/141: the members' own one-shot continuity marks (continuity.py), shown in the member states of the work area.
+// The age is the server clock at fetch time plus the time elapsed here since, minus the mark's time, so neither a late
+// response nor this browser's clock makes an old mark look fresh. Over 55 s means only "the confirmation is old": the
+// declared state is not changed, and a long tool run looks the same. Fetch trouble is shown as such.
+const CONTINUITY_LIMIT_MS=55000;
+function continuityState(mark,ageMs,failed){
+ if(failed)return {kind:'trouble',label:'継続 不調'+(mark?'（最後に読めた確認 '+memberTime(mark.at)+'）':'')};
+ if(!mark||ageMs===null||!Number.isFinite(ageMs)||ageMs<-5000)return {kind:'unknown',label:'継続 未確認'+(mark?'（時刻が未来）':'')};
+ if(mark.state==='ended')return {kind:'ended',label:'連続動作の終了 '+memberTime(mark.at)};
+ if(ageMs<=CONTINUITY_LIMIT_MS)return {kind:'alive',label:'継続 '+memberTime(mark.at)+'（'+Math.max(0,Math.round(ageMs/1000))+'秒前）'};
+ return {kind:'lapsed',label:'継続 確認が古い（'+memberTime(mark.at)+'、'+Math.ceil(ageMs/1000)+'秒前）'};
+}
+function validateContinuity(value){
+ if(!value||typeof value!=='object'||!Number.isFinite(Date.parse(value.serverNow))||!value.owners||typeof value.owners!=='object'||Array.isArray(value.owners))throw Error('Invalid continuity');
+ for(const mark of Object.values(value.owners))if(!mark||!['alive','ended'].includes(mark.state)||!Number.isFinite(Date.parse(mark.at)))throw Error('Invalid continuity mark');
+ return {serverMs:Date.parse(value.serverNow),owners:value.owners};
+}
+function createContinuityStatus({onChange,fetchRecord,now=()=>performance.now()}){
+ let seq=0,applied=0,base=null,failed=false;
+ const paint=()=>{const owners=base?Object.keys(base.owners):[];
+  onChange(owner=>{const mark=base?.owners[owner]||null,age=mark?base.serverMs+(now()-base.perf)-Date.parse(mark.at):null;return continuityState(mark,age,failed).label;},owners);};
+ const poll=async()=>{const mine=++seq;try{const got=validateContinuity(await fetchRecord());
+   if(mine<applied||(base&&got.serverMs<base.serverMs))return;  // a late or older answer never replaces a newer one
+   applied=mine;base={...got,perf:now()};failed=false;}catch(e){if(mine>=applied)failed=true;}paint();};
+ return {poll,paint};
+}
+// OPS-136: when focus leaves the scrolled approval part, it returns to its start so the state is visible again.
+if(typeof document!=='undefined'&&document.querySelector){const part=document.querySelector('header .header-approval');if(part)part.addEventListener('focusout',e=>{if(!part.contains(e.relatedTarget))part.scrollLeft=0;});}
+if(typeof document!=='undefined'&&document.getElementById&&document.getElementById('headerMenuButton')){const menu=createHeaderMenu({button:$('headerMenuButton'),menu:$('headerMenu'),root:document});if(typeof MutationObserver!=='undefined')new MutationObserver(menu.busy).observe($('headerMenu'),{subtree:true,attributes:true,attributeFilter:['disabled']});}
 if(typeof ResizeObserver!=='undefined'){const stickyHeader=document.querySelector('header'),fitStickyHeight=()=>document.documentElement.style.setProperty('--sticky-h',Math.ceil(stickyHeader.getBoundingClientRect().height)+'px');new ResizeObserver(fitStickyHeight).observe(stickyHeader);fitStickyHeight();}
 
 

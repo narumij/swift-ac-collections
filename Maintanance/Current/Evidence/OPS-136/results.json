@@ -1,0 +1,513 @@
+{
+ "wide": {
+  "initial": {
+   "selected": "workAreaTab",
+   "order": [
+    "作業",
+    "タスク"
+   ],
+   "workVisible": true,
+   "taskHidden": true,
+   "laneCards": 2
+  },
+  "taskAfterHiddenLoad": {
+   "nodes": 39,
+   "firstCardSize": [
+    250,
+    96
+   ],
+   "paths": 39,
+   "zoomLabel": "100%",
+   "zoomAfter": "125%"
+  },
+  "closed": {
+   "open": false,
+   "expanded": "false",
+   "label": "メニュー ▾",
+   "focus": "body",
+   "button": {
+    "left": 28,
+    "top": 110,
+    "right": 118,
+    "bottom": 147
+   },
+   "title": {
+    "left": 648,
+    "top": 17,
+    "right": 752,
+    "bottom": 35
+   },
+   "list": null,
+   "items": [],
+   "approval": {
+    "text": "🔴 承認待ち 1件",
+    "visible": true,
+    "all": "表示中の未承認1件を承認"
+   },
+   "row": {
+    "height": 27,
+    "sameRow": false,
+    "approval": {
+     "left": 1041,
+     "top": 14,
+     "right": 1372,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "status": {
+    "hidden": true,
+    "text": ""
+   },
+   "vw": 1400
+  },
+  "opened": {
+   "open": true,
+   "expanded": "true",
+   "label": "メニュー ▾",
+   "focus": "body",
+   "button": {
+    "left": 28,
+    "top": 110,
+    "right": 118,
+    "bottom": 147
+   },
+   "title": {
+    "left": 648,
+    "top": 17,
+    "right": 752,
+    "bottom": 35
+   },
+   "list": {
+    "left": 28,
+    "top": 153,
+    "right": 248,
+    "bottom": 395
+   },
+   "items": [
+    {
+     "text": "編集結果を保存",
+     "left": 37,
+     "top": 162,
+     "right": 239,
+     "bottom": 199
+    },
+    {
+     "text": "変更内容を見る",
+     "left": 37,
+     "top": 205,
+     "right": 239,
+     "bottom": 242
+    },
+    {
+     "text": "更新",
+     "left": 37,
+     "top": 248,
+     "right": 239,
+     "bottom": 285
+    },
+    {
+     "text": "JSONを開く",
+     "left": 37,
+     "top": 291,
+     "right": 239,
+     "bottom": 328
+    },
+    {
+     "text": "正本から新しく始める",
+     "left": 37,
+     "top": 349,
+     "right": 239,
+     "bottom": 386
+    }
+   ],
+   "approval": {
+    "text": "🔴 承認待ち 1件",
+    "visible": true,
+    "all": "表示中の未承認1件を承認"
+   },
+   "row": {
+    "height": 27,
+    "sameRow": false,
+    "approval": {
+     "left": 1041,
+     "top": 14,
+     "right": 1372,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "status": {
+    "hidden": true,
+    "text": ""
+   },
+   "vw": 1400
+  },
+  "insideViewport": true,
+  "afterOutside": false,
+  "keyboardOrder": [
+   "save",
+   "changes",
+   "refresh",
+   "label.file",
+   "restart"
+  ],
+  "afterEsc": {
+   "open": false,
+   "focus": "headerMenuButton"
+  },
+  "duringPoll": {
+   "open": true,
+   "focus": "changes"
+  },
+  "changes": {
+   "open": false,
+   "focus": "headerMenuButton",
+   "diffVisible": true
+  },
+  "fileClick": {
+   "chooser": true,
+   "open": false
+  },
+  "fileKey": {
+   "chooser": true
+  },
+  "save": {
+   "open": false,
+   "focus": "headerMenuButton",
+   "status": {
+    "hidden": false,
+    "text": "保存できませんでした（編集はそのまま残っています）：Load failed"
+   }
+  },
+  "refresh": {
+   "busyLabel": "メニュー（処理中） ▾",
+   "open": false,
+   "afterLabel": "メニュー ▾",
+   "status": {
+    "hidden": false,
+    "text": "更新できませんでした：Load failed"
+   }
+  },
+  "restart": {
+   "dialogs": [
+    "最新の正本・採番待ち・依頼中を取得し、正本から新しく始めますか？ 保存済みの履歴"
+   ],
+   "open": false
+  },
+  "approvalKeyboard": {
+   "reached": true,
+   "focus": "header-approval-all",
+   "row": {
+    "height": 27,
+    "sameRow": false,
+    "approval": {
+     "left": 1041,
+     "top": 14,
+     "right": 1372,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "disabled": false
+  },
+  "approvalAfterLeave": 0,
+  "layout": {
+   "rowHeight": 27,
+   "menuInTopBar": false,
+   "menuBesideMapTabs": true,
+   "areaButtonWidths": [
+    72,
+    72
+   ],
+   "titleCentreOffset": 0,
+   "titleOverlaps": false,
+   "areaTabs": true,
+   "areaTabsBox": [
+    28,
+    176
+   ],
+   "titleShown": true,
+   "approvalInRow": true,
+   "headerBottom": 51,
+   "mapTabsTop": 139,
+   "mapInMain": true,
+   "selectedArea": "taskAreaTab",
+   "taskVisible": true,
+   "workHidden": true
+  },
+  "menuOverContent": true,
+  "work": {
+   "focus": "workAreaTab",
+   "selected": "workAreaTab",
+   "workVisible": true,
+   "taskHidden": true,
+   "laneHasNew": true,
+   "current": "現在：OPS-950 · 姫 · 返却",
+   "headerApproval": "🟢 承認済み・Astra未処理 1件",
+   "laneHeading": "最近の作業4件Astra：不明姫：不明・新着コミット事前承認：🟢 承認済み・Astra未処理 1件表示中の未承認0件を承認",
+   "statusOutside": true,
+   "headerWhileHidden": "🟢 承認済み・Astra未処理 1件"
+  },
+  "roundTrip": {
+   "before": {
+    "map": "cardsTab",
+    "selected": "GRAPH-001 · 常設タスク",
+    "input": "往復で残る入力（適用しない）"
+   },
+   "after": {
+    "map": "cardsTab",
+    "selected": "GRAPH-001 · 常設タスク",
+    "input": "往復で残る入力（適用しない）",
+    "focus": "taskAreaTab",
+    "taskVisible": true
+   },
+   "kept": true
+  },
+  "errors": []
+ },
+ "narrow": {
+  "initial": {
+   "selected": "workAreaTab",
+   "order": [
+    "作業",
+    "タスク"
+   ],
+   "workVisible": true,
+   "taskHidden": true,
+   "laneCards": 4
+  },
+  "taskAfterHiddenLoad": {
+   "nodes": 39,
+   "firstCardSize": [
+    250,
+    96
+   ],
+   "paths": 39,
+   "zoomLabel": "100%",
+   "zoomAfter": "125%"
+  },
+  "closed": {
+   "open": false,
+   "expanded": "false",
+   "label": "メニュー ▾",
+   "focus": "body",
+   "button": {
+    "left": 12,
+    "top": 129,
+    "right": 102,
+    "bottom": 166
+   },
+   "title": {
+    "left": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0
+   },
+   "list": null,
+   "items": [],
+   "approval": {
+    "text": "🔴 承認待ち 1件",
+    "visible": true,
+    "all": "表示中の未承認1件を承認"
+   },
+   "row": {
+    "height": 28,
+    "sameRow": false,
+    "approval": {
+     "left": 150,
+     "top": 16,
+     "right": 378,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "status": {
+    "hidden": true,
+    "text": ""
+   },
+   "vw": 390
+  },
+  "opened": {
+   "open": true,
+   "expanded": "true",
+   "label": "メニュー ▾",
+   "focus": "body",
+   "button": {
+    "left": 12,
+    "top": 129,
+    "right": 102,
+    "bottom": 166
+   },
+   "title": {
+    "left": 0,
+    "top": 0,
+    "right": 0,
+    "bottom": 0
+   },
+   "list": {
+    "left": 12,
+    "top": 172,
+    "right": 232,
+    "bottom": 414
+   },
+   "items": [
+    {
+     "text": "編集結果を保存",
+     "left": 21,
+     "top": 181,
+     "right": 223,
+     "bottom": 218
+    },
+    {
+     "text": "変更内容を見る",
+     "left": 21,
+     "top": 224,
+     "right": 223,
+     "bottom": 261
+    },
+    {
+     "text": "更新",
+     "left": 21,
+     "top": 267,
+     "right": 223,
+     "bottom": 304
+    },
+    {
+     "text": "JSONを開く",
+     "left": 21,
+     "top": 310,
+     "right": 223,
+     "bottom": 347
+    },
+    {
+     "text": "正本から新しく始める",
+     "left": 21,
+     "top": 368,
+     "right": 223,
+     "bottom": 405
+    }
+   ],
+   "approval": {
+    "text": "🔴 承認待ち 1件",
+    "visible": true,
+    "all": "表示中の未承認1件を承認"
+   },
+   "row": {
+    "height": 28,
+    "sameRow": false,
+    "approval": {
+     "left": 150,
+     "top": 16,
+     "right": 378,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "status": {
+    "hidden": true,
+    "text": ""
+   },
+   "vw": 390
+  },
+  "insideViewport": true,
+  "afterOutside": false,
+  "keyboardOrder": [
+   "save",
+   "changes",
+   "refresh",
+   "label.file",
+   "restart"
+  ],
+  "afterEsc": {
+   "open": false,
+   "focus": "headerMenuButton"
+  },
+  "approvalKeyboard": {
+   "reached": true,
+   "focus": "header-approval-all",
+   "row": {
+    "height": 28,
+    "sameRow": false,
+    "approval": {
+     "left": 150,
+     "top": 16,
+     "right": 378,
+     "bottom": 37
+    },
+    "scrolls": false,
+    "scrollLeft": 0,
+    "allInView": true
+   },
+   "disabled": false
+  },
+  "approvalAfterLeave": 0,
+  "layout": {
+   "rowHeight": 28,
+   "menuInTopBar": false,
+   "menuBesideMapTabs": true,
+   "areaButtonWidths": [
+    56,
+    56
+   ],
+   "titleCentreOffset": null,
+   "titleOverlaps": false,
+   "areaTabs": true,
+   "areaTabsBox": [
+    12,
+    128
+   ],
+   "titleShown": false,
+   "approvalInRow": true,
+   "headerBottom": 52,
+   "mapTabsTop": 127,
+   "mapInMain": true,
+   "selectedArea": "taskAreaTab",
+   "taskVisible": true,
+   "workHidden": true
+  },
+  "menuOverContent": true,
+  "work": {
+   "focus": "workAreaTab",
+   "selected": "workAreaTab",
+   "workVisible": true,
+   "taskHidden": true,
+   "laneHasNew": true,
+   "current": "現在：OPS-950 · 姫 · 返却",
+   "headerApproval": "🟢 承認済み・Astra未処理 1件",
+   "laneHeading": "最近の作業4件姫：不明・新着Astra：不明コミット事前承認：🟢 承認済み・Astra未処理 1件表示中の未承認0件を承認",
+   "statusOutside": true,
+   "headerWhileHidden": "🟢 承認済み・Astra未処理 1件"
+  },
+  "roundTrip": {
+   "before": {
+    "map": "cardsTab",
+    "selected": "GRAPH-001 · 常設タスク",
+    "input": "往復で残る入力（適用しない）"
+   },
+   "after": {
+    "map": "cardsTab",
+    "selected": "GRAPH-001 · 常設タスク",
+    "input": "往復で残る入力（適用しない）",
+    "focus": "taskAreaTab",
+    "taskVisible": true
+   },
+   "kept": true
+  },
+  "errors": []
+ },
+ "posts": [
+  "save",
+  "sync"
+ ]
+}

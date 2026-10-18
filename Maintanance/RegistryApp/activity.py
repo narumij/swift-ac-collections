@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]  # repository root; --doc paths are r
 KINDS = ('request', 'work', 'verification', 'acceptance', 'return', 'recheck', 'complete', 'awaiting-commit', 'commit')
 # OPS-127: optional handoff fields. next = who picks the task up next (an owner name, 'user', or 'none' = this work is
 # finished); presence = the owner's own state for the Studio lamp. Older records without them stay valid.
-PRESENCE = ('waiting', 'ended')
+PRESENCE = ('waiting', 'ended', 'working')  # OPS-141: working = explicit start; waiting/ended = wait start/end
 MAX_LINE = 4096
 
 
@@ -57,18 +57,26 @@ def validate_event(value):
     return event
 
 
+def _read_tail(stream):
+    stream.seek(0, 2)
+    end = stream.tell()
+    stream.seek(max(0, end - (201 * MAX_LINE)))
+    start = stream.tell()
+    return start, stream.read()
+
+
 def read_events():
     """Bounded tail read; retain append order, including repeated trips."""
     try:
         with EVENTS.open('rb') as stream:
             fcntl.flock(stream, fcntl.LOCK_SH)
-            stream.seek(0, 2)
-            end = stream.tell()
-            stream.seek(max(0, end - (201 * MAX_LINE)))
-            start = stream.tell()
-            raw = stream.read()
+            start, raw = _read_tail(stream)
     except FileNotFoundError:
         return []
+    return _parse_tail(start, raw)
+
+
+def _parse_tail(start, raw):
     if start:
         raw = raw.partition(b'\n')[2]
     lines = raw.splitlines()[-200:]
@@ -140,15 +148,90 @@ def append_event(task_id, kind, owner, reason='', commit_sha='', at=None, next_o
     EVENTS.parent.mkdir(parents=True, exist_ok=True)
     with EVENTS.open('a+b') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
-        stream.seek(0, 2)
-        if stream.tell():
-            stream.seek(-1, 2)
-            if stream.read(1) != b'\n':
-                raise ValueError('Incomplete final record; preserve it and investigate before appending')
-        stream.write(raw)
-        stream.flush()
-        os.fsync(stream.fileno())
+        _write_locked(stream, raw)
     return event
+
+
+def _write_locked(stream, raw):
+    stream.seek(0, 2)
+    if stream.tell():
+        stream.seek(-1, 2)
+        if stream.read(1) != b'\n':
+            raise ValueError('Incomplete final record; preserve it and investigate before appending')
+    stream.write(raw)
+    stream.flush()
+    os.fsync(stream.fileno())
+
+
+# OPS-138: the user's "待機完了" (end of a continuous wait) request from Studio. The server fixes every field; the client
+# names only the owner. One unanswered request per owner: asking again returns the same request instead of adding more.
+WAKE_SENDER = 'ユーザー'
+
+
+def wake_id_pattern(wake_id):
+    return re.compile('^ACK ' + re.escape(wake_id) + '(?![A-Za-z0-9])')
+
+
+def pending_wake(rows, owner):
+    """The latest user WAKE to OWNER that OWNER has not answered with an exact `ACK <id>`, else None."""
+    scan = _WakeScan(owner)
+    for row in rows:
+        scan.add(row)
+    return scan.pending
+
+
+class _WakeScan:
+    """One linear pass over the records for one owner: whether the owner exists, its latest practical task, all WAKE IDs
+    already used, and the latest user WAKE to it that is still unanswered. Memory stays small however long the log is."""
+    def __init__(self, owner):
+        self.owner, self.known, self.task, self.any_task, self.pending, self.used = owner, False, None, None, None, set()
+
+    def add(self, row):
+        self.used.update(re.findall(r'WAKE-\d{8}-[A-Z0-9]+', row['reason']))
+        if row['owner'] == self.owner:
+            self.known, self.any_task = True, row['taskId']
+            if not row.get('presence') and not re.match(r'^(ACK )?(PING|WAKE)-\d{8}-', row['reason']):
+                self.task = row['taskId']
+            if self.pending and wake_id_pattern(self.pending['reason'].split('：')[0]).match(row['reason']):
+                self.pending = None
+        found = re.match(r'(WAKE-\d{8}-[A-Z0-9]+)：', row['reason'])
+        if row['owner'] == WAKE_SENDER and row.get('next') == self.owner and row['event'] == 'request' and found:
+            self.pending = row
+
+
+def request_wake(owner, at=None):
+    """Append one WAKE request to OWNER (an owner already in the activity record, not the user) under one exclusive lock,
+    so simultaneous requests cannot both add one. The check reads the whole log line by line, not the 200-record display
+    window, so an old unanswered request is never forgotten and repeated. Returns (event, created)."""
+    text(owner, 80)
+    EVENTS.parent.mkdir(parents=True, exist_ok=True)
+    with EVENTS.open('a+b') as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        stream.seek(0)
+        scan = _WakeScan(owner)
+        for line in stream:
+            if len(line) > MAX_LINE + 1:
+                raise ValueError('Activity line too large')
+            if line.strip():
+                scan.add(validate_event(json.loads(line.decode('utf-8'))))
+        if owner == WAKE_SENDER or not scan.known:
+            raise LookupError('Unknown owner')
+        if scan.pending:
+            return scan.pending, False
+        now = at or datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds')
+        # the date part follows the existing hand-written IDs: the local date of the request
+        day = datetime.datetime.fromisoformat(now.replace('Z', '+00:00')).astimezone().strftime('%Y%m%d')
+        while True:
+            wake_id = 'WAKE-' + day + '-' + uuid.uuid4().hex.upper()
+            if wake_id not in scan.used:
+                break
+        event = validate_event(dict(schemaVersion=1, id=uuid.uuid4().hex, taskId=scan.task or scan.any_task, event='request',
+                                    owner=WAKE_SENDER, timestamp=now,
+                                    reason=f'{wake_id}：{owner}へ。ユーザーがStudioから待機完了（待機の終了）を依頼',
+                                    commitSha='', next=owner))
+        raw = (json.dumps(event, ensure_ascii=False) + '\n').encode('utf-8')
+        _write_locked(stream, raw)
+    return event, True
 
 
 def main():

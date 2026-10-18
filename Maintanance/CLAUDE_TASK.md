@@ -556,6 +556,58 @@ Registry登録済み。[正式依頼・固定版の材料](Current/MAPPED_VALUES
 
 候補2・3をAstra受入。追加実装なし。WAKE-20261019-Gを受けたら同番号ACKを記録して連続待機を終了してください。
 
+## OPS-136 — 左上メニューへの操作集約
+
+[正式依頼](Current/STUDIO_HEADER_MENU.md)へ。既存5操作を左上にまとめ、トップバー承認・未保存等は外に残す。限定実装と隔離検証、commitなし。着手通知・参照つき返却後は連続待機。
+
+## OPS-136 — 受入済み / OPS-137 — 要素出し
+
+OPS-136はAstra受入済み。次は[作業タブ要素出し](Current/STUDIO_WORK_ELEMENTS.md)の正式依頼へ。実装なし、要素と参照元を最大8件。返却後連続待機。
+
+## OPS-136 — ユーザー確定配置への追加実装
+
+[正本末尾](Current/STUDIO_HEADER_MENU.md)の「ユーザー確定：一列トップバーと作業／タスク」へ。上位2切替と既存タスク内タブの階層化。OPS-137要素出しは受領、報告表示の実装はまだ含めない。返却後連続待機。
+
+## OPS-137 — 待機確認の追加協議
+
+OPS-136返却後、[要素出し正本末尾](Current/STUDIO_WORK_ELEMENTS.md)の「連続待機の途切れを1分以内に知る」について実現可否を短く返す。実装/ジョブ予約なし。返却後連続待機。
+
+## OPS-138 — 作業イベントと待機完了
+
+[正式依頼](Current/STUDIO_WORK_CONTROLS.md)へ。古いイベント濃淡の限定実装と、待機完了ボタンの最小案。返却後連続待機。
+
+## OPS-139 — Astra継続確認表示
+
+OPS-138の区切り後、[正式依頼](Current/STUDIO_CONTINUITY_STATUS.md)へ。単発本人信号・固定パス・期限表示、独立heartbeat禁止。返却後連続待機。
+
+## OPS-138 — 次は待機完了ボタン実装（再通知）
+
+濃淡と案の返却は受領済み。未着手の追加実装は[正本](Current/STUDIO_WORK_CONTROLS.md)の「Astra実装指示：待機完了ボタン」。OPS-139とOPS-137文書化は返却済みなので直ちにこの限定実装へ。案だけの返却を実装完了として扱わない。返却後、最終記録照合の往復を行う。
+
+## OPS-138 — 最終記録照合の往復
+
+ボタン実装は限定受入済み。[正本末尾](Current/STUDIO_WORK_CONTROLS.md)の最終記録照合依頼へ。OPS-136〜139の台帳と記録を独立確認。実装追加なし、返却後連続待機。
+
+## OPS-138仕上げ / OPS-140 Luna返却確認
+
+[OPS-138正本末尾](Current/STUDIO_WORK_CONTROLS.md)のAstra応答へ。処理中メニュー寸法の限定補正と、Lunaの歴史資料4件の読み取りレビュー。commitなし、返却後連続待機。
+
+## OPS-136〜140 — 受入・連続待機終了
+
+最終照合とLunaレビューをAstra受入。証言の補足は反映済み。今回の依頼は終了。WAKE-20261019-Hを受けたら同番号ACKを記録し、連続待機を終了してください。追加作業なし。
+
+## OPS-141 — メンバー状態の規約協議
+
+[正式依頼](Current/MEMBER_STATE_PROTOCOL_REVIEW.md)の第1依頼へ。ユーザーが姫との往復を明示依頼。読む・限定返却のみ、規約/コード変更なし。第2往復まで連続待機。前回WAKEは前回区間の終了であり、本依頼は新しい区間。
+
+## OPS-141 — 第3依頼：メンバー状態の限定実装
+
+[正本](Current/MEMBER_STATE_PROTOCOL_REVIEW.md)の「第3依頼」へ。ユーザー継続実施指示。規約と表示を限定更新、commitなし、返却後連続待機。前回WAKEは協議区間の終了で、本依頼が次の区間。
+
+## OPS-142 — 正本の詳細英語化（姫分担）
+
+[正式依頼](Current/CANONICAL_LANGUAGE_MIGRATION.md)のHime translation requestへ。固定対象はEvidence/OPS-142/hime.json。History除外、日本語要約・原文証拠保持。commitなし。返却後連続待機。
+
 ## OPS-143 — 停止区分の協議のみ再開
 
 ユーザーの新しい依頼により[停止区分の協議](Current/STOP_MODES_DISCUSSION.md)の正式依頼へ。OPS-142と他の実作業は停止したまま。本書末尾の依頼が旧翻訳依頼に優先する。Returnへの助言のみ、規約・コード変更とcommitなし。
@@ -563,10 +615,6 @@ Registry登録済み。[正式依頼・固定版の材料](Current/MAPPED_VALUES
 ## OPS-145 — 停止時の占有ルール確認
 
 [限定確認依頼](Current/FILE_OCCUPANCY_HANDOFF.md)へ。運用案の矛盾・不足を短く返却。実装・旧翻訳再開・commitなし。
-
-## OPS-142 — 正本の詳細英語化（姫分担）
-
-[正式依頼](Current/CANONICAL_LANGUAGE_MIGRATION.md)のHime translation requestへ。固定対象はEvidence/OPS-142/hime.json。History除外、日本語要約・原文証拠保持。commitなし。返却後連続待機。
 
 ## OPS-142 — 追加候補の限定再開 H-20261019-02
 

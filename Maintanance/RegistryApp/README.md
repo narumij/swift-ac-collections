@@ -293,3 +293,20 @@ Safariで `http://127.0.0.1:8088/` を開く。ヘッダーの「更新」が `s
 正本の取得は初回・画面に戻ったとき・30秒ごと。取得失敗時は案内を隠す。案内は自動切替ではなく、既存の確認付き再開操作への入口。保存履歴は削除しない。新しい案内を使うには一度ページを読み直す必要がある。実画面の確認とは別に、部分反映や未保存時に案内しない判定をverifyで検証する。
 
 2026-10-18ユーザー指定：カード一覧の初期表示はID順（PREFIX別）。DOC・OPS・RBTなどIDの最初のハイフンより前を見出しにし、各群の中もIDの辞書順で表示する。ジャンル別への切替は維持する。
+
+
+## 作業進行帯（OPS-110）
+
+ヘッダーの帯は、調整担当が書いた一つの進行記録を約3秒間隔（取得完了後）で読みます。正式なRegistry状態やAIプロセスの生存監視とは別です。更新から1分を過ぎた記録にはその旨を表示し、稼働を保証しません。タブ非表示時は停止、取得は5秒で中断します。通信・記録不調では最終記録を保持し、帯にだけ不調を示します。ファイルなしは「未登録」です。
+
+記録先はGit対象外の `Maintanance/Cache/RegistryStudio/work-progress.json`。`GET /work-progress` はこの固定パスだけを読み、欠落時はJSONの `null` を返します。32 KiB以下、`schemaVersion: 1`、次の形です（未知の項目は返しません）。
+
+```json
+{"schemaVersion":1,"taskId":"OPS-110","title":"作業進行帯の試作","owner":"Sol","stage":"work","updatedAt":"2026-10-18T15:00:00+09:00","waitingReason":""}
+```
+
+`stage` は `preparation`（準備）、`work`（作業）、`verification`（確認）、`acceptance`（受入）、`awaiting-commit`（コミット待ち）。`waitingReason` は任意、240文字まで。必須の `taskId` は大文字英数字の接頭辞と番号、40文字まで、`title` は160文字、`owner` は80文字、`updatedAt` はタイムゾーン付きISO日時（秒単位、小数秒は任意で3桁まで）です。制御文字は不可。任意文字列はHTMLとして解釈せず表示します。
+
+調整担当は工程が変わるとき、同じディレクトリの別ファイルに上記JSONを書き、`work-progress.json` へ原子的に置換してください。終了して非表示に戻す場合は記録を削除します。自動的な進捗推定やRegistryへの反映はありません。`sync.py` はこの記録を削除せず、編集版・差分・HTML seedにも混ぜません。サーバー側変更の利用には手動再起動が必要です。
+
+限定検証：`python3 Maintanance/RegistryApp/test-work-progress.py` と `node Maintanance/RegistryApp/test-work-progress.cjs`。画面操作なしで、固定パス・検証・隔離した定期取得と失敗復帰を確かめます。

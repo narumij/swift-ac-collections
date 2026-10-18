@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Serve Registry Studio locally; POST /sync runs only the fixed sync.py command, POST /save stores the edited JSON in Inbox/."""
 import argparse
+import datetime
+import re
 import hashlib
 import json
 import subprocess
@@ -15,6 +17,9 @@ import inbox  # edit versions in Inbox/ (OPS-082)
 APP = Path(__file__).resolve().parent
 ROOT = APP.parent.parent
 OUTPUT = ROOT / "Maintanance/Cache/RegistryStudio"
+WORK_PROGRESS = OUTPUT / 'work-progress.json'
+MAX_PROGRESS_BYTES = 32 * 1024
+PROGRESS_STAGES = ('preparation', 'work', 'verification', 'acceptance', 'awaiting-commit')
 SYNC_LOCK = threading.Lock()
 # Edited JSON handed to the AI (OPS-082). Fixed on the server side; clients never choose the path. REGISTRY_STUDIO_INBOX
 # exists only so tests can use an isolated folder. Not under Cache/, so sync and restarts keep it.
@@ -44,6 +49,33 @@ def runtime_status():
 
 
 
+def read_work_progress():
+    """Read one bounded, fixed-path advisory record; never consult or change edit data."""
+    try:
+        with WORK_PROGRESS.open('rb') as stream:
+            raw = stream.read(MAX_PROGRESS_BYTES + 1)
+    except FileNotFoundError:
+        return None
+    if len(raw) > MAX_PROGRESS_BYTES:
+        raise ValueError('Progress record too large')
+    data = json.loads(raw.decode('utf-8'))
+    if not isinstance(data, dict) or type(data.get('schemaVersion')) is not int or data['schemaVersion'] != 1:
+        raise ValueError('Invalid progress version')
+    for key, limit in (('taskId', 40), ('title', 160), ('owner', 80), ('updatedAt', 40)):
+        value = data.get(key)
+        if not isinstance(value, str) or not value.strip() or len(value) > limit or re.search(r'[\x00-\x1f\x7f]', value):
+            raise ValueError('Invalid progress field')
+    if not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', data['taskId']) or data.get('stage') not in PROGRESS_STAGES:
+        raise ValueError('Invalid progress task or stage')
+    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})', data['updatedAt']):
+        raise ValueError('Progress timestamp needs a timezone')
+    datetime.datetime.fromisoformat(data['updatedAt'].replace('Z', '+00:00'))
+    reason = data.get('waitingReason', '')
+    if not isinstance(reason, str) or len(reason) > 240 or re.search(r'[\x00-\x1f\x7f]', reason):
+        raise ValueError('Invalid waiting reason')
+    return {key: data[key] for key in ('schemaVersion', 'taskId', 'title', 'owner', 'stage', 'updatedAt')} | {'waitingReason': reason}
+
+
 class Handler(BaseHTTPRequestHandler):
     def reply(self, status, body, content_type='application/json; charset=utf-8'):
         if isinstance(body, dict):
@@ -62,6 +94,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        if self.path == '/work-progress':
+            try:
+                data = read_work_progress()
+                return self.reply(200, json.dumps(data, ensure_ascii=False).encode())
+            except (OSError, ValueError, UnicodeDecodeError):
+                return self.reply(503, {'error': 'Progress record unavailable'})
         if self.path == '/server-status':
             return self.reply(200, runtime_status())
         if self.path == '/workspace':  # the edit version Studio resumes (OPS-082); null when nothing is saved

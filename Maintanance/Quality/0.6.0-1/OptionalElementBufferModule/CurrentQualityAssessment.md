@@ -1,5 +1,11 @@
 # OptionalElementBufferModule Current Quality Assessment
 
+## TL;DR（人間向け）
+
+OptionalElementBufferの0.6.0時点の品質を、公開契約・仕様test・build・CI等の証拠と未検証範囲に分けた評価記録です。更新API変更による性能回帰を受け、当時は一般向け既定提供からtraitによるopt-inへ変更した経緯も残します。
+
+有限の検証成功は、並行更新の安全性、外部性能、一般利用・競技利用のValidationを保証しません。旧名や時点ごとの結論を保存しているため、現在の状態と提供方針はRegistry・品質正本で確認します。
+
 ## 文書の役割
 
 この文書は、OptionalElementBufferModuleの0.6.0時点の現行品質評価を記録する。

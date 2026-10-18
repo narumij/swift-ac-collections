@@ -108,6 +108,7 @@
 | `OPS-111` | `DONE` | Sol（実装・独立確認） / Astra（設計・受入） | [EXECUTION] Studioの作業イベントとコミット履歴を二段カード帯にする | 2026-10-18ユーザー依頼。受入・差し戻し・再確認などの往復を消さず表示し、Git履歴と並べて定期更新。Sol実装・独立確認とAstra受入済み。閲覧位置補正の差し戻し1回を記録。限定試験とsync/verify成功。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_ACTIVITY_TIMELINE.md` |
 | `OPS-112` | `DONE` | Sol（文書補正・独立確認） / Astra（受入・Registry反映） | [EXECUTION] 初回研究の未実施表記を実施記録と整合させる | 2026-10-18ユーザーの小さな非Studio作業依頼。OPS-105の受入済み実施記録に照合し、OPS-103の初回研究案内だけ補正。結果の再評価・新実験なし。作業Sol補正・確認Sol独立照合・Astra受入済み、差し戻しなし。ユーザーcommit承認により完了 | `Maintanance/Current/RESEARCH_STATUS_DOCUMENT_CORRECTION.md` |
 | `OPS-113` | `DONE` | Astra | [EXECUTION] 作業履歴を外枠色付き一行カードへ縮小する | 2026-10-18ユーザー依頼。コミット帯を廃止し、作業イベントのID・種別のみを表示。背景は帯と同色、外枠で種別を区別。詳細と原履歴を保持。文字帯の復活を含め実装・限定検査・受入済み。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_COMPACT_ACTIVITY.md` |
+| `OPS-116` | `WAITING_USER` | Claude（姫・原因調査と修正） / Astra（受入） | [EXECUTION] 見取り図の全体fallbackによる骨格配置崩れを修正する | 2026-10-18ユーザー依頼。b9300017後の表示崩れを再現し、原因を確定して限定修正。接続・状態・計画を変えず、骨格・既存配置要求を保持。a810e4f4の修正をAstra技術受入。旧版fallback再現・新版解消とsync/verify成功。技術受入記録は承認済み範囲でcommit。Safari表示確認待ち | `Maintanance/Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md` |
 | `OPS-115` | `DONE` | Astra | [EXECUTION] 固定色の疎通ジョブで承認から処理まで確認する | ユーザー依頼。7色の独立ジョブ、承認後Astraが一件ずつ処理。コミットとは分離。7件の承認・順次処理・ユーザーによる画面動作確認済み。疎通欄は初期折りたたみ | `Maintanance/Current/APPROVAL_PROBE.md` |
 | `OPS-114` | `DONE` | Sol（実装・確認） / Astra（設計・受入・コミット担当） | [EXECUTION] コミット事前承認レーンを試作する | 2026-10-18ユーザー依頼。個別・表示中の全部承認、取消、永続記録、一回限りの使用を実装。コミットはAstraのみ。AGENTS変更案を用意し、規則反映前は事前承認だけで実行しない。実装・限定検査・独立確認・Astra受入済み。ユーザーの規則反映・画面承認保存を確認。承認範囲を切り出してcommit | `Maintanance/Current/COMMIT_PREAPPROVAL_LANE.md` |
 | `OPS-108` | `DONE` | Sol（作業・独立確認） / Astra（受入） | [DISCOVERY] Sol OJTならしとして表示設定2件の根拠を照合する | 2026-10-18ユーザー実施承認。読取限定・作業役→確認役→Astraで一周。追加調査を広げず補正最大一往復。2件の静的照合を補足付き受入。キャッシュ欄の訂正一往復完了、実装・試験未変更。ユーザーcommit承認により完了 | `Maintanance/Current/SOL_OJT_WARMUP.md` |
@@ -394,6 +395,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-113` |
 | `OPS-048` | `OPS-114` |
 | `OPS-048` | `OPS-115` |
+| `OPS-048` | `OPS-116` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

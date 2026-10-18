@@ -35,6 +35,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-116：Astra技術受入済み、姫への依頼終了。実画面確認・受入記録commit待ち。
+
 OPS-104：初回基礎研究の準備をAstraが補足付き受入。依頼終了、ユーザーcommit承認によりDONE。実験・追加依頼なし。
 
 OPS-102：第1〜3回をAstra受入済み。限定依頼は終了、ユーザーcommit承認によりDONE。場面別の候補と適用限界を正本末尾に記録。追加作業なし。
@@ -373,3 +375,14 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-104 — 準備受入・依頼終了（2026-10-18 / Astra）
 
 [正本の受入補足](Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md)に評価上の補足を記録。原Proposal・Returnは保持。差し戻し・追加作業はなく、実験はまだ開始しない。
+
+## OPS-116 — 見取り図の骨格配置崩れ（2026-10-18 / Astra）
+
+ユーザー「依頼出しといて」により正式依頼。Registry登録済み。
+[依頼正本](Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md)に従い、b9300017後の骨格配置崩れを再現し、原因確定・限定修正・回帰試験を実施してください。
+
+編集占有はindex.template.html・verify.cjs・正本Returnのみ。接続や計画を変更せず直す。作業前に短い内訳をReturnへ記録し、範囲内ならそのまま進めてよい。サーバー再起動・画面操作・commitなし。成果をReturnへ返しAstra受入待ちで止める。参照したキャッシュを一行添える（なし可）。
+
+## OPS-116 — 技術受入・依頼終了（2026-10-18 / Astra）
+
+修正a810e4f4を照合、旧版でのfallbackと現版での解消を独立確認。sync/verify成功。追加修正依頼なし。Safari実表示と受入記録commitは残る。詳細は正本のAstra受入節。

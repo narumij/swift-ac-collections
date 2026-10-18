@@ -94,7 +94,7 @@ Method: shell and awk over the Markdown tables, plus `git show <commit>^:<path>`
    - Impact: low. A resuming reader could think MM1–MM4 is still open.
    - Proposed correction: update the line-111 sentence to past tense and the CLAUDE_TASK gate row to DONE. Moving the accepted RBT/PERM/OPT sections to history falls under the existing standing compression delegation, but I did not do it here.
 4. **The Claude pending queue has an unreconciled entry whose stated status is stale.**
-   - Evidence: `CLAUDE_PENDING_TASKS.md:43–63`, `CP-20261015-007`, is `AWAITING_CODEX`, says "Registry ID`PERM-072`（`ACTIVE`）", and records "Codex reconciliation: 未処理". PERM-072 is DONE in `Archived/TASK_REGISTRY_ARCHIVED_2026-10-15_2.md:29`.
+   - Evidence: `CLAUDE_PENDING_TASKS.md:43–63`, `CP-20261015-007`, is `AWAITING_COORDINATOR`, says "Registry ID`PERM-072`（`ACTIVE`）", and records "Codex reconciliation: 未処理". PERM-072 is DONE in `Archived/TASK_REGISTRY_ARCHIVED_2026-10-15_2.md:29`.
    - Impact: low. The queue shows open work that has finished.
    - Proposed correction: Codex reconciles it to `RECONCILED` (→PERM-072) and moves it to the reconciled archive.
 
@@ -194,3 +194,5 @@ HEAD `db3ee2bd`から返却とscope releaseを確認。両検査を受入、comm
 RBT-041は既に着手可能。次の仕事の選択と発注は現在のRegistryとユーザー依頼に従い、検査受入を製品品質全体の合格とは扱わない。
 
 2026-10-16、ユーザーのcommit許可を受領。OPS-045・DOC-031をDONEとして受入記録と修正を保存する。
+
+<!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

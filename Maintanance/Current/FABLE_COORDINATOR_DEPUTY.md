@@ -28,7 +28,7 @@ Within the current user-selected work, Fable may:
 
 No new product-policy authority, automatic FROZEN resumption, USER_ONLY execution, or automatic PROPOSED activation is granted. Commit, branch and external operations retain their existing operation-specific authorization requirements. This delegation does not authorize autonomous pursuit of all remaining tasks or changes to product code/CI without a corresponding assignment. Report a genuinely new decision to the user; do not make a new user gate out of routine fact checking.
 
-Queue field names such as `Codex reconciliation` and `AWAITING_CODEX` are retained for compatibility. During this delegation, Fable may fill reconciliation results with the actual actor/model and evidence; the field name does not require waiting for Codex. Preserve original Returns and append reconciliation separately.
+The queue state is `AWAITING_COORDINATOR`. The field name `Codex reconciliation` is retained for compatibility. During this delegation, Fable may fill reconciliation results with the actual actor/model and evidence; the field name does not require waiting for Codex. Preserve original Returns and append reconciliation separately.
 
 ## Entry and return to Astra
 

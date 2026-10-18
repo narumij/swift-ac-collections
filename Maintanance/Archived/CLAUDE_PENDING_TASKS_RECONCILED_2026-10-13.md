@@ -18,7 +18,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-YYYYMMDD-NNN` — <短い名称>
 
-- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_CODEX` / `RECONCILED`
+- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_COORDINATOR` / `RECONCILED`
 - 発見元・ユーザー指示:
 - 種別候補: `DISCOVERY` / `DECISION` / `EXECUTION`
 - 対象範囲:
@@ -104,7 +104,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 関連の観測: 2026-10-08は1日で69件が完了し、1件ごとの割当・受入・中継が重かった（Claudeの観測）。
     ただし中継の重さは粒度ではなく受け渡しの仕組みの問題として、別に扱うのがよいとユーザーと整理した。
 - Codex reconciliation: 2026-10-08、将来の独立したCodex担当taskとしてRegistryへ正式登録。運用上の観測: Codex担当の作業を承認された場合、queueは「Claudeが連絡を書く」taskとして
-  扱えば、今の状態語（`USER_AUTHORIZED`→`AWAITING_CODEX`）のままで回る。状態語を足すかはCodexが判断する。
+  扱えば、今の状態語（`USER_AUTHORIZED`→`AWAITING_COORDINATOR`）のままで回る。状態語を足すかはCodexが判断する。
 
 ### `CP-20261009-001` — `f01c66a6`前後の実benchmark hot path機械語比較
 
@@ -318,3 +318,5 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   型コメント3 fileとHead文書6 fileの15行だけであること、旧API表記が対象範囲に残っていないこと、現在のHEADで
   Xcode buildが成功することを確認し、Claudeの一時clientによる9例のcompile・実行結果と合わせて受け入れた。
   出力コメントの表現は当初どおり対象外とし、このtaskでは変更しない。
+
+<!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

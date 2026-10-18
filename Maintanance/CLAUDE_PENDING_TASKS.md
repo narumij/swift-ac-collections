@@ -23,13 +23,13 @@
 - 履歴文書（過去のreconciliation済みentryを含む）の効力は、[AGENTS.mdの「現在の仕事と正本」](../AGENTS.md#現在の仕事と正本)に従う。
 
 
-旧フィールド名`Codex reconciliation`と状態名`AWAITING_CODEX`は互換のため保持する。処理担当をCodexに限定する意味ではなく、委任された調整担当が実際の担当名を添えて照合結果を記録する。
+状態名は`AWAITING_COORDINATOR`（調整担当待ち）とする。旧フィールド名`Codex reconciliation`は互換のため保持するが、処理担当をCodexに限定しない。委任された調整担当が実際の担当名を添えて照合結果を記録する。
 
 ## entry template
 
 ### `CP-YYYYMMDD-NNN` — <短い名称>
 
-- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_CODEX` / `RECONCILED`
+- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_COORDINATOR` / `RECONCILED`
 - 発見元・ユーザー指示:
 - 種別候補: `DISCOVERY` / `DECISION` / `EXECUTION`
 - 対象範囲:

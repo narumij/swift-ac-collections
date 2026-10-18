@@ -25,7 +25,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-YYYYMMDD-NNN` — <短い名称>
 
-- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_CODEX` / `RECONCILED`
+- queue状態: `CANDIDATE` / `USER_AUTHORIZED` / `AWAITING_COORDINATOR` / `RECONCILED`
 - 発見元・ユーザー指示:
 - 種別候補: `DISCOVERY` / `DECISION` / `EXECUTION`
 - 対象範囲:
@@ -212,3 +212,5 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-14.md`
+
+<!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

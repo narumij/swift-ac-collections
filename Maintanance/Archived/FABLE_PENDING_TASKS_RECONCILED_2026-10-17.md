@@ -32,7 +32,7 @@
 - 統合先: 既存`OPS-048`。新規採番不要。
 - 提案編集:
   1. `Current/TASK_REGISTRY_APP.md`末尾に節追加: `## DONE混在時の再生成修正（2026-10-17）` 本文「CP-20261017-005（姫）をOPS-048へ統合。独立タスクの状態順の並べ替えを`independentGroups`内へ移し、`verify.cjs`の「RegistryにDONEを残さない」検査を外した（ユーザー「タスク圧縮はすぐはしないから」）。commit `4163ff4e`。」
-  2. `CLAUDE_PENDING_TASKS.md`の同entry: `queue状態: `AWAITING_CODEX`（実施済み・未commit。OPS-048）` → `queue状態: `RECONCILED`（2026-10-17 Astra、OPS-048へ統合。括弧内は返却当時）（実施済み・未commit。OPS-048）`、`Codex reconciliation: 未処理` の下に `- Astra reconciliation（2026-10-17）: OPS-048へ統合。commit `4532e9df`の検査撤回を含む。実装commitは`4163ff4e`。` を追加（原文は保持）。
+  2. `CLAUDE_PENDING_TASKS.md`の同entry: `queue状態: `AWAITING_COORDINATOR`（実施済み・未commit。OPS-048）` → `queue状態: `RECONCILED`（2026-10-17 Astra、OPS-048へ統合。括弧内は返却当時）（実施済み・未commit。OPS-048）`、`Codex reconciliation: 未処理` の下に `- Astra reconciliation（2026-10-17）: OPS-048へ統合。commit `4532e9df`の検査撤回を含む。実装commitは`4163ff4e`。` を追加（原文は保持）。
 - ユーザー判断待ち: なし。任意: 「DONEはしばらく残す」の判断をRulesか`TASK_REGISTRY_ARCHIVE.md`に一文置くか（今はqueueとコードのコメントだけ）。
 
 #### CP-20261017-006 — 候補CIにLinuxのASan＋death test jobを追加
@@ -45,7 +45,7 @@
   1. `TASK_REGISTRY_V2.md`の`QUALITY-002`行、説明末尾に追記: 「2026-10-17、ユーザー依頼で候補workflowにLinux ASan＋death test jobを追加（`8631a031`、CP-20261017-006）。成功はユーザー報告、run URL未保存。恒久採用は未決。」
   2. `Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`末尾に節追加: `## Linux候補CIでの後続（2026-10-17 / Astra）` 本文「CP-20261017-006により`candidate.yml`へASan death test jobを追加し、ubuntu-24.04で成功（ユーザー報告、`8631a031`・`eb52378c`）。本taskの結論（macOS DYLD経路のstrip_env）とは独立で、Linuxでは対処不要と整合。本taskのDONE範囲は変更しない。」
   3. `Current/RELEASE_CI_RECOVERY.md`の13行目の段落末尾に一文: 「2026-10-17時点で候補workflowには`address-sanitizer-death-tests` jobが入っている（CP-20261017-006）。立て直し範囲の決定時に残す・外すを明示する。」
-  4. `CLAUDE_PENDING_TASKS.md`の同entry: `queue状態: `AWAITING_CODEX`（実施済み・未commit。…）` → `queue状態: `RECONCILED`（2026-10-17 Astra、QUALITY-002へ証拠として統合。括弧内は返却当時）（…）`、`Codex reconciliation: 未処理` の下に `- Astra reconciliation（2026-10-17）: QUALITY-002へ統合、RBT-049正本・RELEASE_CI_RECOVERYへ参照追記。CI成功のrun URLは未保存。` を追加。
+  4. `CLAUDE_PENDING_TASKS.md`の同entry: `queue状態: `AWAITING_COORDINATOR`（実施済み・未commit。…）` → `queue状態: `RECONCILED`（2026-10-17 Astra、QUALITY-002へ証拠として統合。括弧内は返却当時）（…）`、`Codex reconciliation: 未処理` の下に `- Astra reconciliation（2026-10-17）: QUALITY-002へ統合、RBT-049正本・RELEASE_CI_RECOVERYへ参照追記。CI成功のrun URLは未保存。` を追加。
 - ユーザー判断待ち: (a) 候補CIにこのjobを恒久的に残すか（RELEASE-085の範囲）。(b) 成功runのURLか対象commitを記録するか（GitHub側はユーザーの領分。残すなら本entryへ一行）。
 - 範囲外所見: なし。
 
@@ -54,3 +54,5 @@
 - Codex reconciliation: 未処理
 - Astra reconciliation（2026-10-17、最新）: OPS-044の管理補助として受入、CP-005/006を既存OPS-048/QUALITY-002へ統合。ASan恒久採用の再判断とrun保存をユーザー専任とする提案は不採用。既存の明示依頼を維持し、run証拠の照合はQUALITY-002へ残す。
 
+
+<!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

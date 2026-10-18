@@ -11,6 +11,8 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+import activity
+
 import inbox  # edit versions in Inbox/ (OPS-082)
 
 # Restart-notice manual check requested by user (2026-10-18).
@@ -30,7 +32,7 @@ MAX_SAVE_BYTES = 10 * 1024 * 1024
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py'):
+    for name in ('serve.py', 'inbox.py', 'activity.py'):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -76,6 +78,22 @@ def read_work_progress():
     return {key: data[key] for key in ('schemaVersion', 'taskId', 'title', 'owner', 'stage', 'updatedAt')} | {'waitingReason': reason}
 
 
+def read_activity_commits():
+    result = subprocess.run(['git', 'log', '-30', '--format=%H%x1f%cI%x1f%s', '-z', 'HEAD', '--'],
+                            cwd=ROOT, capture_output=True, timeout=3, check=True)
+    if len(result.stdout) > 512 * 1024:
+        raise ValueError('Commit response too large')
+    commits = []
+    for raw in result.stdout.decode('utf-8').split('\0'):
+        if not raw:
+            continue
+        sha, at, subject = raw.split('\x1f')
+        if not re.fullmatch(r'[a-f0-9]{40}', sha):
+            raise ValueError('Invalid commit identity')
+        commits.append({'sha': sha, 'timestamp': activity.timestamp(at), 'subject': activity.text(subject, 4096, False)})
+    return list(reversed(commits))
+
+
 class Handler(BaseHTTPRequestHandler):
     def reply(self, status, body, content_type='application/json; charset=utf-8'):
         if isinstance(body, dict):
@@ -94,6 +112,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        if self.path in ('/activity-events', '/activity-commits'):
+            try:
+                records = activity.read_events() if self.path == '/activity-events' else read_activity_commits()
+                return self.reply(200, json.dumps(records, ensure_ascii=False).encode())
+            except (OSError, ValueError, UnicodeDecodeError, subprocess.SubprocessError):
+                return self.reply(503, {'error': 'Activity row unavailable'})
         if self.path == '/work-progress':
             try:
                 data = read_work_progress()

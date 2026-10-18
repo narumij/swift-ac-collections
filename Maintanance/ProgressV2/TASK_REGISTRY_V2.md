@@ -104,6 +104,7 @@
 
 | `OPS-109` | `DONE` | Sol（案・確認） / Astra（反映・受入） | [EXECUTION] OJT第2回として倍率操作の検査説明を補正する | 2026-10-18ユーザー継続指示。再描画の文字列検査と実動作確認を区別する文書補正一件。作業Sol案を確認Solが独立照合、Astra受入・反映済み。差し戻しなし。コード・試験変更なし、ユーザーcommit承認により完了 | `Maintanance/Current/SOL_OJT_DOCUMENT_CORRECTION.md` |
 | `OPS-110` | `DONE` | Sol（実装・独立確認） / Astra（設計・受入） | [EXECUTION] Studioに作業進行帯を試作する | 2026-10-18ユーザー依頼。タスク番号・担当・工程を表示し、編集状態に触れず進行情報だけを定期更新する。Registry状態やAI生存監視とは分離。作業Sol実装・確認Sol独立検証・Astra受入済み。限定試験とsync/verify成功。ユーザーが帯の表示・動作を確認、commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_WORK_PROGRESS.md` |
+| `OPS-111` | `DONE` | Sol（実装・独立確認） / Astra（設計・受入） | [EXECUTION] Studioの作業イベントとコミット履歴を二段カード帯にする | 2026-10-18ユーザー依頼。受入・差し戻し・再確認などの往復を消さず表示し、Git履歴と並べて定期更新。Sol実装・独立確認とAstra受入済み。閲覧位置補正の差し戻し1回を記録。限定試験とsync/verify成功。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_ACTIVITY_TIMELINE.md` |
 | `OPS-108` | `DONE` | Sol（作業・独立確認） / Astra（受入） | [DISCOVERY] Sol OJTならしとして表示設定2件の根拠を照合する | 2026-10-18ユーザー実施承認。読取限定・作業役→確認役→Astraで一周。追加調査を広げず補正最大一往復。2件の静的照合を補足付き受入。キャッシュ欄の訂正一往復完了、実装・試験未変更。ユーザーcommit承認により完了 | `Maintanance/Current/SOL_OJT_WARMUP.md` |
 | `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |
 | `OPS-106` | `ACTIVE` | Astra（蓄積・手入れ） / 他担当は個別依頼で参加 | [DISCOVERY] 実務のキャッシュ参照一行記録を蓄積する | 2026-10-18ユーザー承認。既存Return等に実参照したファイル＋節を残し、恒久研究の手入れ時に小さく見返す。効果は未知。件数埋め・過去分補完・利用頻度による削除なし。負担も観察して継続方法を見直す | `Maintanance/Current/CACHE_REFERENCE_OBSERVATION_PILOT.md` |
@@ -382,6 +383,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-096` |
 | `OPS-048` | `OPS-097` |
 | `OPS-048` | `OPS-110` |
+| `OPS-048` | `OPS-111` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

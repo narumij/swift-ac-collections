@@ -197,3 +197,7 @@ sync.pyとverify.cjsを実行して通過。専用検査では寸法・上下限
 ## 作業進行帯（2026-10-18）
 
 [OPS-110の設計・受入](REGISTRY_STUDIO_WORK_PROGRESS.md)。タスク番号・担当・現在工程を示す一件分の帯を追加。進行記録だけを定期取得し、編集版やRegistry状態から分離する。使用法と記録書式は[Studio README](../RegistryApp/README.md#作業進行帯ops-110)。
+
+## 作業イベントとコミットの二段帯（2026-10-18）
+
+[OPS-111の設計・受入](REGISTRY_STUDIO_ACTIVITY_TIMELINE.md)。OPS-110の現在工程表示を二段の横スクロール履歴へ置換。担当が発生時に追記する作業イベントを上段、実際のGit HEAD履歴を下段に示す。受入・差し戻し・再確認・完了・commitも過去を消さず記録し、他操作を変えず帯だけ更新。正式な判断・受入は詳細正本に残す。運用とCLIは[Studio README](../RegistryApp/README.md#作業イベントコミットの二段帯ops-111)。

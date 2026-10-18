@@ -31,11 +31,11 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-row{display:fl
 .pending-card{flex:0 0 250px;display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px;border-style:dashed}.pending-card strong,.pending-card small{font-size:12px}.pending-card span{font-size:12px;line-height:1.5}.pending-card small{color:var(--muted)}
 #protectionList table{border-collapse:collapse;width:100%;font-size:12px}#protectionList td,#protectionList th{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}#protectionList td:first-child{overflow-wrap:anywhere}#protectionList a{color:var(--accent)}
 /* Fixed strip geometry keeps polling from moving the editor or scroll position. */
-.work-progress{height:48px;margin-top:8px;font-size:11px;line-height:20px;overflow:hidden;color:#d1e3dc}.work-progress>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.work-progress[data-stale="true"]{color:#ffe0a1}
+.activity-timelines{height:144px;margin-top:8px;overflow:hidden}.activity-row{height:72px;display:flex;gap:8px;min-width:0}.activity-label{flex:0 0 106px;padding-top:6px;font-size:11px;color:#d1e3dc}.activity-label small{display:block;font-size:10px;line-height:14px}.activity-label small[data-stale="true"]{color:#ffe0a1}.activity-track{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;scroll-behavior:auto;overflow-anchor:none}.activity-card{box-sizing:border-box;flex:0 0 260px;height:52px;padding:6px 9px;border:1px solid #4d7064;border-radius:6px;background:#203b32;color:#e4eee9;font-size:11px;line-height:18px}.activity-card strong,.activity-card span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-card:focus{outline:2px solid #97d7bc;outline-offset:-2px}
 </style>
 <div id="canonicalRestartNotice" role="status" hidden style="background:#e5f3e9;color:#234e36;padding:10px 20px;border-bottom:1px solid #b5d5be">保存した編集内容が正本に反映されています。正本から新しく始めるのがおすすめです。 <button id="canonicalRestartAction">正本から新しく始める</button></div>
 <div id="serverRestartNotice" role="status" hidden style="background:#fff1c2;color:#593c00;padding:12px 20px;border-bottom:1px solid #d5b95c"></div>
-<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section id="workProgress" class="work-progress" aria-label="作業進行（記録表示）"><div id="workProgressSummary">作業進行：読み込み待ち</div><div id="workProgressDetail">担当が更新する進行記録です。</div></section><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header>
+<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section class="activity-timelines" aria-label="作業イベントとコミットの履歴"><div class="activity-row"><div class="activity-label">作業イベント<small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div><div class="activity-row"><div class="activity-label">コミット<small id="activity-commits-status" role="status">読み込み待ち</small></div><div id="activity-commits" class="activity-track" aria-label="Git HEADのコミット（古い順）" tabindex="0"></div></div></section><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header>
 <div id="status" class="status" role="status" hidden></div>
 <div id="workspace" class="layout sidebar-hidden"><main><div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab" aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab" role="tab" aria-selected="false" aria-controls="permanentView" tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false" aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab" aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button><button id="neighborTab" role="tab" aria-selected="false" aria-controls="neighborView" tabindex="-1">接続を見る</button></div><section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel"><label class="muted">版 <select id="versionPicker" aria-label="版ごとの見取り図"></select></label><details class="graph-help"><summary>見取り図の解説</summary><div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div><p class="muted">上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。</p></details><div class="buttons" role="group" aria-label="見取り図の表示"><button id="graphZoomOut" aria-label="見取り図を縮小">−</button><button id="graphZoomReset" aria-label="倍率を100%に戻す" title="100%に戻す">100%</button><button id="graphZoomIn" aria-label="見取り図を拡大">＋</button><label style="display:flex;align-items:center;gap:6px;margin:0"><input id="graphHoverEnabled" type="checkbox" checked style="width:auto">カードの説明を表示</label></div><div id="graph" class="graph"></div></section><section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden><h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2><p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p><div id="permanentMap" class="graph"></div></section><section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden><p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p><div id="protectionList" style="overflow:auto"></div></section><section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden><h2>カード一覧 <span id="cardsCount" class="count"></span></h2><p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p><label>並び方<select id="cardOrder" aria-label="カード一覧の並び方"><option value="id">ID順（PREFIX別）</option><option value="grouped">ジャンル別</option></select></label><div id="planTools"></div><div id="cardList"></div></section><section id="neighborView" role="tabpanel" aria-labelledby="neighborTab" class="panel" hidden><h2>接続を見る <span id="neighborCount" class="count"></span></h2><p class="muted">選んだノードの直接の前提（→このノード）と後続（このノード→）を1段だけ表示します。開いている編集版のすべてのtask・追加案・マイルストーンと線から作り、版の絞込みは通しません。必要なノードだけ「この先を展開」で1段ずつ広げられます。表示を変えても編集内容は変わりません。線は関係の所在で、着手できるかは条件文で判断します。</p><div id="neighborBox"></div></section><section class="panel" style="margin-top:18px"><h2>独立タスク <span id="independentCount" class="count"></span></h2><p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p><div class="buttons"><button id="addProposal">タスク追加</button></div><p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p><div id="independent" class="independent-strip"></div></section><section id="requestSection" class="panel" style="margin-top:18px"><h2>依頼中 <span id="requestCount" class="count"></span></h2><p class="muted">依頼票（CLAUDE_TASK.md・FABLE_TASK.md）にあり、Registryで未完のtaskです。状態の正本はRegistryの行です。</p><div id="requestList"></div></section><section class="panel" style="margin-top:18px"><h2>採番待ち <span id="pendingCount" class="count"></span></h2><p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p><div id="pendingList" class="independent-strip"></div><p id="pendingStamp" class="muted"></p></section><section class="panel" style="margin-top:18px"><div class="inspector-heading"><h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select></div><div id="editor"></div></section><section id="diffPanel" class="panel" style="margin-top:18px" hidden><h2>AIに渡す変更</h2><p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p><pre id="diff"></pre></section></main></div><footer><div id="sourceInfo" class="source-info"></div>ローカル試作 · 自動同期なし · 保存はダウンロード · マイルストーンと新規採番はこの試作の対象外</footer>
 <dialog id="documentDialog"><button id="closeDocument" style="float:right">閉じる</button><h2 id="documentTitle"></h2><p id="documentStamp" class="muted"></p><article id="documentBody"></article></dialog>
@@ -886,44 +886,74 @@ async function checkServerRestart(){
 checkServerRestart();
 if(typeof setInterval==='function')setInterval(checkServerRestart,30000);
 window.addEventListener('focus',checkServerRestart);
-// OPS-110: isolated advisory progress. No doc, seed, save, sync or full-render access.
-function validateWorkProgress(value){
- if(value===null)return null;
- if(!value||typeof value!=='object'||Array.isArray(value)||value.schemaVersion!==1)throw Error('Invalid progress');
- const text=(key,limit,required=true)=>{const v=value[key]===undefined&&!required?'':value[key];if(typeof v!=='string'||v.length>limit||(required&&!v.trim())||/[\x00-\x1f\x7f]/.test(v))throw Error('Invalid field');return v;};
- const taskId=text('taskId',40),title=text('title',160),owner=text('owner',80),updatedAt=text('updatedAt',40),waitingReason=text('waitingReason',240,false);
- if(!/^[A-Z][A-Z0-9]*-[0-9]+$/.test(taskId)||!['preparation','work','verification','acceptance','awaiting-commit'].includes(value.stage))throw Error('Invalid stage');
- if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(updatedAt)||!Number.isFinite(Date.parse(updatedAt)))throw Error('Invalid time');
- return {taskId,title,owner,stage:value.stage,updatedAt,waitingReason};
+// OPS-111: isolated history rows; no edit document, render, save or sync access.
+const activityLabels={request:'依頼',work:'作業',verification:'確認',acceptance:'受入',return:'差し戻し',recheck:'再確認',complete:'完了','awaiting-commit':'コミット待ち',commit:'コミット'};
+function validateActivityRows(value,kind){
+ if(!Array.isArray(value)||value.length>(kind==='events'?200:30))throw Error('Invalid rows');
+ const seen=new Set(),text=(v,n,required=true)=>{if(typeof v!=='string'||v.length>n||(required&&!v.trim())||/[\x00-\x1f\x7f]/.test(v))throw Error('Invalid text');return v;};
+ return value.map(v=>{
+  if(!v||typeof v!=='object'||Array.isArray(v))throw Error('Invalid row');
+  const at=text(v.timestamp,40);if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(at)||!Number.isFinite(Date.parse(at)))throw Error('Invalid time');
+  const shortTime=new Intl.DateTimeFormat(undefined,{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(at));
+  let row;
+  if(kind==='events'){
+   const id=text(v.id,36),taskId=text(v.taskId,40),event=text(v.event,24),owner=text(v.owner,80),reason=text(v.reason??'',240,false),sha=text(v.commitSha??'',40,false);
+   if(v.schemaVersion!==1||!(/^[a-f0-9]{32}$/).test(id)||!(/^[A-Z][A-Z0-9]*-[0-9]+$/).test(taskId)||!Object.hasOwn(activityLabels,event)||(sha&&!(/^[a-f0-9]{40}$/).test(sha)))throw Error('Invalid event');
+   row={id,heading:taskId+' · '+activityLabels[event],detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+activityLabels[event]+' · '+owner+' · '+at+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
+  }else{
+   const sha=text(v.sha,40),subject=text(v.subject,4096,false);if(!/^[a-f0-9]{40}$/.test(sha))throw Error('Invalid commit');
+   row={id:sha,heading:sha.slice(0,8)+' · '+subject,detail:shortTime,title:sha+' · '+at+' · '+subject};
+  }
+  if(seen.has(row.id))throw Error('Duplicate identity');seen.add(row.id);return row;
+ });
 }
-function createWorkProgressPoller({fetchRecord,view,isHidden,schedule,cancel,now,makeController}){
- let last=null,failed=false,inFlight=false,timer=null,controller=null;
- const stages=['preparation','work','verification','acceptance','awaiting-commit'],labels=['準備','作業','確認','受入','コミット待ち'];
- function paint(){
-  const old=last&&now()-Date.parse(last.updatedAt)>60000;
-  view.stale(Boolean(failed||old));
-  if(!last){view.summary(failed?'作業進行：取得できません（再試行します）':'作業進行：未登録');view.detail('担当が更新する進行記録です。');return;}
-  view.summary(last.taskId+' · '+last.title+' · 担当：'+last.owner);
-  view.detail((failed?'通信・記録不調：最終記録を保持 · ':old?'1分以上前の記録 · ':'')+stages.map((s,i)=>s===last.stage?'【'+labels[i]+'】':labels[i]).join(' → ')+' · 記録更新：'+last.updatedAt+(last.waitingReason?' · 待機：'+last.waitingReason:''));
- }
+function createActivityPoller({kind,fetchRecord,view,isHidden,schedule,cancel,makeController}){
+ let inFlight=false,timer=null,controller=null;
  async function poll(){
   if(isHidden()||inFlight)return;
-  inFlight=true;controller=makeController();
-  const timeout=schedule(()=>controller.abort(),5000);
-  try{const response=await fetchRecord('/work-progress',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('Unavailable');const next=validateWorkProgress(await response.json());if(!isHidden()){last=next;failed=false;}}
-  catch(e){if(!isHidden())failed=true;}
-  finally{cancel(timeout);controller=null;inFlight=false;paint();if(!isHidden())timer=schedule(poll,3000);}
+  inFlight=true;controller=makeController();const active=controller;
+  const timeout=schedule(()=>active.abort(),5000);
+  try{const response=await fetchRecord('/activity-'+kind,{cache:'no-store',signal:active.signal});if(!response.ok)throw Error('Unavailable');const rows=validateActivityRows(await response.json(),kind);if(!isHidden())view.update(rows);}
+  catch(e){if(!isHidden())view.failure();}
+  finally{cancel(timeout);controller=null;inFlight=false;if(!isHidden())timer=schedule(poll,3000);}
  }
- function visibility(){if(timer!==null){cancel(timer);timer=null;}if(isHidden()){if(controller)controller.abort();}else{paint();poll();}}
+ function visibility(){if(timer!==null){cancel(timer);timer=null;}if(isHidden()){if(controller)controller.abort();}else poll();}
  return {poll,visibility};
 }
-function startWorkProgress(){
- if(location.protocol==='file:'||typeof fetch!=='function'){$('workProgressSummary').textContent='作業進行：ローカルサーバーで表示できます';return;}
- const summary=$('workProgressSummary'),detail=$('workProgressDetail'),strip=$('workProgress');
- const setText=(node,text)=>{if(node.textContent!==text){node.textContent=text;node.title=text;}};
- const poller=createWorkProgressPoller({fetchRecord:fetch,view:{summary:t=>setText(summary,t),detail:t=>setText(detail,t),stale:v=>strip.dataset.stale=String(v)},isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,now:Date.now,makeController:()=>new AbortController()});
- document.addEventListener('visibilitychange',poller.visibility);poller.poll();
+function createActivityView(track,status,makeNode,getActive=()=>null){
+ const nodes=new Map();let first=true;
+ const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
+ return {
+  update(rows){
+   const active=getActive(),focusedCard=active&&active!==track&&track.contains(active);
+   const follow=!focusedCard&&(first||track.scrollWidth-track.clientWidth-track.scrollLeft<=24),oldLeft=track.scrollLeft;
+   const keep=new Set(rows.map(row=>row.id)),left=track.getBoundingClientRect().left;
+   const retained=[...nodes].filter(([id])=>keep.has(id)).map(([,node])=>({node,rect:node.getBoundingClientRect()}));
+   const anchor=retained.find(({rect})=>rect.right>left&&rect.left<left+track.clientWidth)||retained[0];
+   const offset=anchor?anchor.rect.left-left:0;
+   for(const [id,node] of nodes)if(!keep.has(id)){node.remove();nodes.delete(id);}
+   rows.forEach((row,index)=>{
+    let node=nodes.get(row.id);
+    if(!node){node=makeNode('article');node.className='activity-card';node.tabIndex=0;node.appendChild(makeNode('strong'));node.appendChild(makeNode('span'));nodes.set(row.id,node);}
+    set(node.children[0],row.heading);set(node.children[1],row.detail);if(node.title!==row.title)node.title=row.title;
+    if(track.children[index]!==node)track.insertBefore(node,track.children[index]||null);
+   });
+   if(follow)track.scrollLeft=track.scrollWidth;else if(anchor)track.scrollLeft+=anchor.node.getBoundingClientRect().left-track.getBoundingClientRect().left-offset;else track.scrollLeft=oldLeft;
+   first=false;set(status,rows.length?'': '記録なし');status.dataset.stale='false';
+  },
+  failure(){set(status,'取得不調 · 最終情報を保持');status.dataset.stale='true';}
+ };
 }
-startWorkProgress();
+function startActivityTimelines(){
+ for(const kind of ['events','commits']){
+  const status=$('activity-'+kind+'-status');
+  if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';continue;}
+  const view=createActivityView($('activity-'+kind),status,tag=>document.createElement(tag),()=>document.activeElement);
+  const poller=createActivityPoller({kind,fetchRecord:fetch,view,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
+  document.addEventListener('visibilitychange',poller.visibility);poller.poll();
+ }
+}
+startActivityTimelines();
+
 const resumed=resumeWorkspace();
 </script></html>

@@ -43,6 +43,20 @@
 
 ## 採番待ち
 
+### `CP-20261018-001` — GRAPH-001：マイルストーンの取り扱いと、正本のみ／編集込みの健全性確認
+
+- queue状態: `AWAITING_COORDINATOR`（実施済み）
+- 発見元・ユーザー指示: 2026-10-18、Studioサーバー停止中の初回メンテナンスの文脈で、ユーザー「未採番で、マイルストーンの取り扱いと、正本のみの健全性確認と、編集も合わせた健全せいの確認ができるようにしてほしいかな」。
+- 範囲: 姫のlocal projection（`.task-graphs/`、Git対象外）と、GRAPH-001の正本`Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md`への記録。
+  - マイルストーンをtaskと同じグラフで扱う（線の意味：必須・材料・開始・到達後、`why`・`impact`がたどる）。
+  - `health canon`（正本だけの健全性）と`health edit`（編集版・Inboxを含む健全性）。どちらも読み取りだけ。
+- 対象外: Registry・Studio・Inboxの変更、検査規則の一般化（2026-10-18のAstra確認どおり、個別判定は規則にしない）。
+- 結果・検証：実施済み。正本の「マイルストーンの取り扱いと健全性確認（2026-10-18、CP-20261018-001）」節に記録した。
+  - `health canon`・`health edit`はどちらも現行でPASS。
+  - ツール自身の検査は39項目PASS。
+  - `why`・`impact`は到達点をたどる。
+- Codex reconciliation: 未処理（GRAPH-001への統合をお願いします）
+
 ### `CP-20261017-014` — Registry Studio：依頼中のtaskを表示する
 
 - queue状態: `RECONCILED`（OPS-048へ統合・Astra受入）

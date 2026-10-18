@@ -29,3 +29,19 @@ Sequenceの製品導入、返す値の所有方式、copy・性能コストの�
 ## 経緯
 
 [凍結時の原文](../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md)を保存した。旧採否待ちや凍結条件は今回の明示指示で置き換えられた。固定IDは維持し、再採番しない。
+
+## 現行再現・受入（2026-10-18 / Astra）
+
+根拠版 `76a96cf7123d9dfbd63a1a652160802b27843dff`。Apple Swift 6.4 (swiftlang-6.4.0.34.1)、arm64 macOS。`swift test -c debug --filter NextPermutationsSequenceExperiment` 成功。XCTest 6件とSwift Testing death test 2件、計8件失敗0。[完全ログ](../Evidence/PERM-060/2026-10-18-debug.log)。Release・ASan・互換traitは今回対象外。既存timing testの数値は性能判断に使用しない。
+
+- `map(Array.init)` とfor内コピーの逐次消費は成功。新規iterator同士は独立、コピーしたiteratorは同じ状態を進める。
+- `Array(sequence)`後の古いViewのstartIndex読取りと、iteratorコピー側のnext後の古いView読取りは、それぞれ期待したtrapで終了。
+- `NextPermutations.next()`は分岐の前に世代を閉じる。終端nilも例外でない。実験adapterはこのViewをそのままElementとして返すので、収集完了時には保持したViewが有効ではない。
+- 通常公開型NextPermutationsとBorrowedNextPermutationsはSequence非準拠を明記。実験adapterはテストファイル内private。したがって今回の再現から通常公開APIの修正必要性までは導けない。
+- `Compatibility/AtCoder2025/PermutationsAtCoder2025.swift`には別のSequence実装がある。今回の試験は `!COMPATIBLE_ATCODER_2025` 条件内であり、互換側の安全性・不具合有無をこの結果へ含めない。
+
+調査を受入。製品・テストコードは変更していない。修正済みではなく、実験アダプターの扱いを決める[PERM-081](PERMUTATION_SEQUENCE_ADAPTER_DECISION.md)へ引継ぐ。判断後の実装修正は別範囲で定める。
+
+## 一時作業物:
+
+`/tmp/astra-perm060-test.log`（実体 `/private/tmp/astra-perm060-test.log`）、2026-10-18 Astra作成、限定試験ログ。上記Evidenceへ保存済み、削除可。通常の.buildは共有build cacheとして保持。

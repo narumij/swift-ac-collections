@@ -344,7 +344,14 @@ python3 Maintanance/RegistryApp/activity.py --task OPS-111 --event recheck --own
 | 受入後、commit承認待ちと確認した時（受入担当のみ） | awaiting-commit | 最新の承認保存状態を確認してから記録。返却待ちとは区別 |
 | 受入・完了・commit時（その権限のある担当のみ） | acceptance / complete / commit | 実際の結果。commit時は実SHA |
 
-repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT-026 --event return --owner '姫' --reason '正本の姫 Returnへ返却。Astra受入待ち'`。IDは現在の正式task、ownerは実際の担当、reasonは240文字以内とする。時刻は実行時刻を使い、推測で過去を埋めない。
+repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT-026 --event return --owner '姫' --reason '正本の姫 Returnへ返却。Astra受入待ち'`。
+
+省略できる項目が2つあります（OPS-127）。
+
+- `--next <担当名|user|none>`：このイベントのあと、次にこのtaskを拾うのは誰か。`none`は「この仕事はここで終わり」。「最近の作業」のカードに「次：…」と出ます。その仕事の最新の実務イベントの値だけを使うので、後のイベントで書かなければ「次：不明」に戻ります。そのtaskに承認待ちのカードがあれば、「次：ユーザー（承認待ち）」が優先です。commitだけでは終わりと見なしません。
+- `--presence waiting|ended`：自分の在席の状態。担当ランプに「待機中」「待機終了」と出ます。連続待機を始めたときに`waiting`を1回、WAKEで会話へ戻るときに`ended`（`ACK WAKE-…`の返事でも待機終了になります）。待機中に定期的に書く必要はありません。その後に本人の実務イベントが来ると、ランプは「不明」に戻ります。何も届かないこと（沈黙）では、状態は変わりません。
+
+担当ランプは、その担当の新しい記録が届いたときだけ、1回弱く光って「新着」と出ます（動きを減らす設定では光らず、文字だけ）。ランプは連絡の有無の表示で、仕事中であることの保証ではありません。IDは現在の正式task、ownerは実際の担当、reasonは240文字以内とする。時刻は実行時刻を使い、推測で過去を埋めない。
 
 このCLIによるGit対象外Activity履歴への追記は、個別依頼の編集ファイル一覧に含まれていなくても行ってよい。Studio実装の編集、サーバー再起動、Registry更新、commitの委任は含まない。記録後のsyncは不要。失敗したらReturnと通常の会話で伝え、成功と扱わない。履歴を直接書き換え・削除しない。
 

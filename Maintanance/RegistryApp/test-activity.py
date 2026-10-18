@@ -40,6 +40,32 @@ class ActivityTests(unittest.TestCase):
             rows=[json.loads(line) for line in path.read_text().splitlines()]
             self.assertEqual(len(rows),8);self.assertEqual(len({r['id'] for r in rows}),8)
 
+    def test_handoff_fields(self):
+        # OPS-127: optional next/presence round-trip; invalid values are refused; older records stay readable.
+        with tempfile.TemporaryDirectory() as folder, patch.object(activity, 'EVENTS', Path(folder)/'events.jsonl'):
+            old = {'schemaVersion':1,'id':'a'*32,'taskId':'OPS-111','event':'work','owner':'Astra','timestamp':'2026-10-18T12:00:00Z','reason':'old','commitSha':''}
+            activity.EVENTS.write_text(json.dumps(old)+'\n')
+            done = activity.append_event('OPS-111','return','姫','返却',next_owner='Astra')
+            wait = activity.append_event('OPS-111','work','姫','WAIT 待機開始',presence='waiting')
+            end = activity.append_event('OPS-111','acceptance','Astra','受入',next_owner='none')
+            rows = activity.read_events()
+            self.assertNotIn('next', rows[0]); self.assertNotIn('presence', rows[0])
+            self.assertEqual(rows[1]['next'],'Astra'); self.assertEqual(rows[2]['presence'],'waiting'); self.assertEqual(rows[3]['next'],'none')
+            self.assertEqual([done['next'],wait['presence'],end['next']],['Astra','waiting','none'])
+            before = activity.EVENTS.read_bytes()
+            for changes in ({'presence':'asleep'},{'next_owner':'x'*81},{'next_owner':'bad\n'}):
+                args=dict(task_id='OPS-111',kind='work',owner='姫');args.update(changes)
+                with self.assertRaises(ValueError): activity.append_event(**args)
+            self.assertEqual(activity.EVENTS.read_bytes(), before)
+            # The read route passes the fields through unchanged.
+            class Request:
+                path='/activity-events'
+                local_request=lambda self:True
+                reply=lambda self,*args:args
+            code, body = serve.Handler.do_GET(Request())
+            sent = json.loads(body)
+            self.assertEqual(code, 200); self.assertEqual(sent[1]['next'],'Astra'); self.assertEqual(sent[2]['presence'],'waiting'); self.assertNotIn('next', sent[0])
+
     def test_fixed_routes_and_git(self):
         class Request:
             path='/activity-events'

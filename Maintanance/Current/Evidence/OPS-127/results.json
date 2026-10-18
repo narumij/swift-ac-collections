@@ -1,0 +1,306 @@
+{
+ "steps": {
+  "initial": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：待機中",
+     "state": "waiting",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    },
+    "OPS-901": {
+     "line": "次：姫 · Registry：不明 · 承認なし",
+     "next": "known"
+    }
+   },
+   "current": "現在：OPS-903 · Astra · コミット"
+  },
+  "afterReturn": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：不明・新着",
+     "state": "unknown",
+     "fresh": "true",
+     "anim": "lamp-glow"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "次：Astra · Registry：不明 · 承認なし",
+     "next": "known"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · 姫 · 返却"
+  },
+  "flashCleared": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "次：Astra · Registry：不明 · 承認なし",
+     "next": "known"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · 姫 · 返却"
+  },
+  "afterEnd": {
+   "lamps": [
+    {
+     "text": "Astra：不明・新着",
+     "state": "unknown",
+     "fresh": "true",
+     "anim": "lamp-glow"
+    },
+    {
+     "text": "姫：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "この仕事は終了 · Registry：不明 · 承認なし",
+     "next": "ended"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 受入"
+  },
+  "afterPingAck": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：不明・新着",
+     "state": "unknown",
+     "fresh": "true",
+     "anim": "lamp-glow"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "この仕事は終了 · Registry：不明 · 承認なし",
+     "next": "ended"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 受入"
+  },
+  "afterWakeAck": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：待機終了・新着",
+     "state": "ended",
+     "fresh": "true",
+     "anim": "lamp-glow"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "この仕事は終了 · Registry：不明 · 承認なし",
+     "next": "ended"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 受入"
+  },
+  "afterReRequest": {
+   "lamps": [
+    {
+     "text": "Astra：不明・新着",
+     "state": "unknown",
+     "fresh": "true",
+     "anim": "lamp-glow"
+    },
+    {
+     "text": "姫：待機終了",
+     "state": "ended",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 依頼"
+  },
+  "failure": {
+   "lamps": [
+    {
+     "text": "Astra：不明（取得不調）",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：不明（取得不調）",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "true",
+   "cards": {
+    "OPS-901": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 依頼"
+  },
+  "recovered": {
+   "lamps": [
+    {
+     "text": "Astra：不明",
+     "state": "unknown",
+     "fresh": "",
+     "anim": "none"
+    },
+    {
+     "text": "姫：待機終了",
+     "state": "ended",
+     "fresh": "",
+     "anim": "none"
+    }
+   ],
+   "stale": "",
+   "cards": {
+    "OPS-901": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-903": {
+     "line": "次：不明 · Registry：不明 · 承認なし",
+     "next": "unknown"
+    },
+    "OPS-902": {
+     "line": "次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0",
+     "next": "approval"
+    }
+   },
+   "current": "現在：OPS-901 · Astra · 依頼"
+  }
+ },
+ "focusKept": true,
+ "consultWithApproval": {
+  "stage": "相談待ち",
+  "next": "approval",
+  "left": "rgb(192, 57, 43)",
+  "top": "rgb(187, 139, 50)"
+ },
+ "errors": [],
+ "reducedMotion": {
+  "text": "Astra：不明・新着",
+  "state": "unknown",
+  "fresh": "true",
+  "anim": "none"
+ }
+}

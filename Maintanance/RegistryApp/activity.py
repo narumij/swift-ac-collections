@@ -11,6 +11,9 @@ import uuid
 
 EVENTS = Path(__file__).resolve().parent / 'Activity' / 'events.jsonl'
 KINDS = ('request', 'work', 'verification', 'acceptance', 'return', 'recheck', 'complete', 'awaiting-commit', 'commit')
+# OPS-127: optional handoff fields. next = who picks the task up next (an owner name, 'user', or 'none' = this work is
+# finished); presence = the owner's own state for the Studio lamp. Older records without them stay valid.
+PRESENCE = ('waiting', 'ended')
 MAX_LINE = 4096
 
 
@@ -39,6 +42,12 @@ def validate_event(value):
         raise ValueError('Invalid activity identity or event')
     if event['commitSha'] and not re.fullmatch(r'[a-f0-9]{40}', event['commitSha']):
         raise ValueError('Commit SHA requires 40 lowercase hex digits')
+    if value.get('next') not in (None, ''):
+        event['next'] = text(value['next'], 80)
+    if value.get('presence') not in (None, ''):
+        if value['presence'] not in PRESENCE:
+            raise ValueError('Invalid activity presence')
+        event['presence'] = value['presence']
     return event
 
 
@@ -67,10 +76,10 @@ def read_events():
     return result
 
 
-def append_event(task_id, kind, owner, reason='', commit_sha='', at=None):
+def append_event(task_id, kind, owner, reason='', commit_sha='', at=None, next_owner='', presence=''):
     event = validate_event(dict(schemaVersion=1, id=uuid.uuid4().hex, taskId=task_id, event=kind, owner=owner,
                                 timestamp=at or datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
-                                reason=reason, commitSha=commit_sha))
+                                reason=reason, commitSha=commit_sha, next=next_owner, presence=presence))
     raw = (json.dumps(event, ensure_ascii=False) + '\n').encode('utf-8')
     if len(raw) > MAX_LINE:
         raise ValueError('Activity line too large')
@@ -96,9 +105,11 @@ def main():
     parser.add_argument('--reason', default='')
     parser.add_argument('--commit', default='', dest='commit_sha')
     parser.add_argument('--at', help='Actual occurrence time, with seconds and timezone; default now')
+    parser.add_argument('--next', default='', dest='next_owner', help="Who picks this task up next: an owner name, 'user', or 'none' (this work is finished)")
+    parser.add_argument('--presence', default='', choices=('',) + PRESENCE, help="The owner's own state for the Studio lamp")
     args = parser.parse_args()
     try:
-        event = append_event(args.task, args.event, args.owner, args.reason, args.commit_sha, args.at)
+        event = append_event(args.task, args.event, args.owner, args.reason, args.commit_sha, args.at, args.next_owner, args.presence)
     except (ValueError, OSError) as error:
         parser.exit(1, f'Activity not appended: {error}\n')
     print(json.dumps(event, ensure_ascii=False))

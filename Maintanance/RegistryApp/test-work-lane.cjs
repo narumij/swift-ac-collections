@@ -63,13 +63,13 @@ const view=c.createWorkLaneView({track,status,makeNode:t=>new Node(t),getActive:
 const lane=c.createWorkLane({view,registryState:id=>({'OPS-401':'ACTIVE'})[id]});
 lane.activity(rows([ev('OPS-401','work','着手'),ev('OPS-402','request')]));
 assert.equal(track.children.length,2);assert.equal(track.children[0].children[0].textContent,'OPS-402 · 依頼済み');
-assert(track.children[1].children[2].textContent.startsWith('Registry：ACTIVE'));assert.equal(status.textContent,'2件');
+assert(track.children[1].children[2].textContent.startsWith('次：不明 · Registry：ACTIVE'),'OPS-127: next comes first, unknown when not recorded');assert.equal(status.textContent,'2件');
 const card401=track.children[1];track.scrollLeft=77;active=card401;
 lane.activity(rows([ev('OPS-402','request'),ev('OPS-401','return')].slice(0,1).concat([ev('OPS-401','return')])));
 assert.strictEqual(track.children[1],card401,'a focused card is not moved');assert.equal(card401.children[0].textContent,'OPS-401 · 返却・受入待ち');assert.equal(track.scrollLeft,77);
 active=null;
 lane.approvals([appr('c1','OPS-401','pending')]);
-assert(card401.children[2].textContent.includes('承認 待ち1'),'approval badge');assert.equal(card401.children[0].textContent,'OPS-401 · 返却・受入待ち','approval does not change the stage');
+assert(card401.children[2].textContent.includes('承認 待ち1'),'approval badge');assert(card401.children[2].textContent.startsWith('次：ユーザー（承認待ち）'),'OPS-127: a pending approval comes first');assert.equal(card401.dataset.next,'approval');assert.equal(card401.children[0].textContent,'OPS-401 · 返却・受入待ち','approval does not change the stage');
 lane.activityFailure();assert.equal(track.children.length,2,'last cards kept');assert.equal(status.dataset.stale,'true');assert(status.textContent.includes('活動の取得不調'));
 lane.approvalFailure();assert(status.textContent.includes('承認の取得不調'));
 lane.activity(rows([ev('OPS-401','return')]));assert(!status.textContent.includes('活動の取得不調'));assert(status.textContent.includes('承認の取得不調'));

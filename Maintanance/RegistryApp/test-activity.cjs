@@ -79,6 +79,16 @@ async function main(){
  await commits.poll();assert.strictEqual(last,eventsLast,'commit failure cannot affect event row');
  assert(!source.includes('innerHTML')&&!source.includes('render(')&&!source.includes('/sync')&&!source.includes('window.scroll'),'isolated text-only updates');
  assert(html.includes('.activity-timelines{height:48px')&&html.includes('overflow-anchor:none'),'fixed footprint, explicit scroll anchoring');
- console.log('PASS: activity validation; repeated trips; stable DOM/focus; rolling-window scroll anchor; latest follow; isolated polling, recovery, hidden pause/abort, timeout.');
+ // OPS-127: optional next/presence are validated; a presence record stays in the history but is not the current work.
+{
+ const ok=c.validateActivityRows([{...event(30,'return'),next:'Astra'},{...event(31,'work'),presence:'waiting'}],'events');
+ assert.equal(ok[0].raw.next,'Astra');assert.equal(ok[1].raw.presence,'waiting');
+ for(const bad of [{presence:'asleep'},{next:'x'.repeat(81)},{next:'bad\n'}])assert.throws(()=>c.validateActivityRows([{...event(32,'work'),...bad}],'events'));
+ const track=new Node('track'),status=new Node('status'),current={heading:new Node('heading'),detail:new Node('detail')};
+ const view=c.createActivityView(track,status,t=>new Node(t),()=>null,current);
+ view.update(c.validateActivityRows([event(33,'return'),{...event(34,'work'),reason:'WAIT 待機開始',presence:'waiting'}],'events'));
+ assert(current.heading.textContent.endsWith('返却'),'presence record is not the current work');assert.equal(track.children.length,2,'presence record kept in history');
+}
+console.log('PASS: activity validation; repeated trips; stable DOM/focus; rolling-window scroll anchor; latest follow; isolated polling, recovery, hidden pause/abort, timeout.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

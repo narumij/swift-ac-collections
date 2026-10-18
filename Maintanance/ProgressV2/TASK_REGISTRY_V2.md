@@ -102,6 +102,7 @@
 
 ### 調整・運用の個別課題
 
+| `OPS-106` | `ACTIVE` | Astra（蓄積・手入れ） / 他担当は個別依頼で参加 | [DISCOVERY] 実務のキャッシュ参照一行記録を蓄積する | 2026-10-18ユーザー承認。既存Return等に実参照したファイル＋節を残し、恒久研究の手入れ時に小さく見返す。効果は未知。件数埋め・過去分補完・利用頻度による削除なし。負担も観察して継続方法を見直す | `Maintanance/Current/CACHE_REFERENCE_OBSERVATION_PILOT.md` |
 | `OPS-105` | `DONE` | Astra | [DISCOVERY] Codexの新規会話で旧実装情報の影響を6回答比較する | 2026-10-18ユーザー実施承認。OPS-104の入力・評価基準を固定し各条件2回で停止。6回答を収集・評価済み。ユーザー確認で全件GPT-6.1 Sol中。旧実装の2制限の引継ぎは観察なし。課題の範囲曖昧さ・非盲検・記憶分離の限界を記録。追加試行なし、ユーザーcommit承認により完了 | `Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md` |
 | `OPS-104` | `DONE` | Claude（姫・案作成） / Astra（受入） | [DISCOVERY] 基礎研究の初回実験用依頼文と評価表を準備する | 2026-10-18ユーザー依頼。3条件の依頼文・事前評価表・最小実施手順・限界を正本Proposalへ作成し返却。実験実施・コード変更・commitなし。Astraが準備成果として補足付き受入。省略と違反の区別、U2の補助観察化、評価用順序の分離を記録。ユーザーcommit承認により準備完了。実施環境・モデル・担当は未決、実験開始なし | `Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md` |
 | `OPS-102` | `DONE` | Claude（姫・限定試行） / Astra（受入・整理） | [DISCOVERY] 場面ごとに判断の次に欲しいキャッシュ情報を探す | 2026-10-18ユーザー承認。最大3往復で候補出し・小さい試行・結果整理を行う。第1〜3回をAstra受入済み、限定依頼終了。場面別の候補と適用限界を正本に総括。入力にない追加条件は要求に採用しない。効率改善は未検証。ユーザーcommit承認により完了、追加依頼なし。共通規則を隠さず、既存キャッシュの削除・変更、LRUや自動選抜の実装、全体導入はしない。結果なし・場面別の違いも成果とする | `Maintanance/Current/CACHE_SECOND_ITEM_PILOT.md` |
@@ -347,6 +348,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-103` | `OPS-102` |
 | `OPS-103` | `OPS-104` |
 | `OPS-103` | `OPS-105` |
+| `OPS-103` | `OPS-106` |
 | `OPS-048` | `OPS-059` |
 | `OPS-048` | `OPS-061` |
 | `OPS-048` | `OPS-062` |

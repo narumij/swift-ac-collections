@@ -190,3 +190,12 @@ Registryへの書き戻しや外部tool導入は行わない。
   - 途中で、緩い読み方がIDに数字のない`MS-SPI`の行を数え落とし、行数差の誤検出を出した。ツール側の不具合として直した（正本の問題ではない）。
 
 使い方：`.task-graphs/claude-tg.sh health canon`／`.task-graphs/claude-tg.sh health edit [path]`。最終行が`HEALTH: PASS`か`HEALTH: 要確認 n件`になる。task計画用の要約（引数なし）の出力と判定は、今回変えていない。
+
+
+## CP-20261018-001の限定受入（2026-10-19 Astra）
+
+基準HEAD `3ae88eda927282e9ef84de2997b7fd102efb8c6b`。既存GRAPH-001へ統合、新番号は不要。姫のlocal projectionはGit対象外のため、この確認は手元のツール版についての結果であり、commitだけからツールを復元できる保証ではない。
+
+Astraが一時DB（試験後削除）を指定してtest-milestones.shの39項目、health canon、health editを独立実行し、すべて終了0・PASS。現行はtask109・依存10・到達点29・接続26、Inbox7件、要確認0。編集版の土台が今の正本と異なるという情報は保持される。これは取込済み/未取込の認定ではなく、取込時の3者比較を省略する根拠にはしない。
+
+今回の受入は指定された読み取り検査と既存fixtureの範囲。Registry・Studio・Inboxやユーザーの編集は変更していない。個別の状態判断を検査規則へ一般化せず、過去の提案3件を追加発注しない。GRAPH-001は恒久ACTIVEのまま。

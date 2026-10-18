@@ -73,7 +73,7 @@
 
 ### `CP-20261018-003` — DESIGN.mdへの姫の感想
 
-- queue状態: `AWAITING_COORDINATOR`（実施済み）
+- queue状態: `RECONCILED`（OPS-043へ感想として受領）
 - 発見元・ユーザー指示: 2026-10-18、ユーザーが`Maintanance/DESIGN.md`を添付し「これの感想も書いて欲しいかもw」（CP-20261018-002に続く未採番の依頼）。
 - 範囲: 感想を`CLAUDE_OBSERVATIONS.md`の2026-10-18「DESIGN.mdを読んで：型はユーザー、実装はAI」に記入（常設の委任）。
 - 対象外: DESIGN.md（ユーザー作成物、AIの改変禁止）・FOCUS.md・規則の変更、変更提案。
@@ -82,11 +82,11 @@
   - Studioは判断の場として使われ始めている。
   - 外部仕様が黙っている所でAIの解釈が入る（OPS-096）。
   - 小さい仕事で作業内訳を省いていた自省。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-19 Astra：OPS-043へ感想として受領。DESIGN.mdに関する姫本人の感想本文を照合。規則・設計の変更や提案の実行承認ではない。
 
 ### `CP-20261018-002` — FOCUS.md草案への姫の感想
 
-- queue状態: `AWAITING_COORDINATOR`（実施済み）
+- queue状態: `RECONCILED`（OPS-043へ感想として受領）
 - 発見元・ユーザー指示: 2026-10-18、ユーザーが`Maintanance/FOCUS.md`を添付し「未採番で感想書いて」。
 - 範囲: 感想を`CLAUDE_OBSERVATIONS.md`の2026-10-18「FOCUS.mdを読んで：忘れるのは、捨てることではなかった」に記入（常設の委任）。
 - 対象外: FOCUS.md本体・DESIGN.md・規則・キャッシュの変更、草案への提案。
@@ -94,11 +94,11 @@
   - 「忘れる＝通常の探索対象から外す」は、今日の経験（OPS-100・101）と合う。
   - 範囲外の共通規則（OPS-101第2回の誤分類の原因）は、現在地にかかわらず範囲内に数えるとよさそう。
   - 全履歴を読まずに再開できた例が1件ある（観察1回）。
-- Codex reconciliation: 未処理（必要ならFOCUS.mdの検討材料として参照してください）
+- Codex reconciliation: 2026-10-19 Astra：OPS-043へ感想として受領。FOCUS.mdに関する姫本人の感想本文を照合。一回の観察として保持し、一般的効果や規則へ昇格しない。
 
 ### `CP-20261018-001` — GRAPH-001：マイルストーンの取り扱いと、正本のみ／編集込みの健全性確認
 
-- queue状態: `AWAITING_COORDINATOR`（実施済み）
+- queue状態: `RECONCILED`（GRAPH-001へ限定受入）
 - 発見元・ユーザー指示: 2026-10-18、Studioサーバー停止中の初回メンテナンスの文脈で、ユーザー「未採番で、マイルストーンの取り扱いと、正本のみの健全性確認と、編集も合わせた健全せいの確認ができるようにしてほしいかな」。
 - 範囲: 姫のlocal projection（`.task-graphs/`、Git対象外）と、GRAPH-001の正本`Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md`への記録。
   - マイルストーンをtaskと同じグラフで扱う（線の意味：必須・材料・開始・到達後、`why`・`impact`がたどる）。
@@ -108,7 +108,7 @@
   - `health canon`・`health edit`はどちらも現行でPASS。
   - ツール自身の検査は39項目PASS。
   - `why`・`impact`は到達点をたどる。
-- Codex reconciliation: 未処理（GRAPH-001への統合をお願いします）
+- Codex reconciliation: 2026-10-19 Astra：GRAPH-001へ限定受入。一時DBで39項目fixture、health canon/editをAstraが独立実行し通過。現行task109・依存10・到達点29・接続26、Inbox7件、要確認0。古い土台の情報は保持。正本末尾へ範囲を記録。
 
 ### `CP-20261017-014` — Registry Studio：依頼中のtaskを表示する
 

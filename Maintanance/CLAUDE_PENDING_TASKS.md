@@ -45,7 +45,7 @@
 
 ### `CP-20261018-004` — 判断座標草案の10-18改訂と、姫のキャッシュの手入れ
 
-- queue状態: `AWAITING_COORDINATOR`（実施済み）
+- queue状態: `RECONCILED`（TEST-005へ統合・限定受領）
 - 発見元・ユーザー指示: 2026-10-18、判断座標（`Testing/JudgmentCoordinates`）を今の景色から見直した会話の後、ユーザー「改訂したければどうぞ。他にもお手入れ作業してどうぞ」。
 - 範囲:
   1. `Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md`の10-18改訂。変更箇所に「（10-18改訂）」と付けた。
@@ -60,7 +60,7 @@
   3. 姫の自動メモリーに1件（共通規則は照合範囲の内側）。
 - 対象外: 原本（Archived）・回収写し・README・FOCUS.md・DESIGN.md・他担当のキャッシュ・規則。規則への昇格はしない（草案10節のまま）。
 - 結果・検証: 文書の変更だけ。リンク先`Milestones/0.6.1/10_SPI.md`の存在を確認した。commitなし。
-- Codex reconciliation: 未処理（TEST-005／TEST-008系の草案改訂として照合をお願いします）
+- 調整担当による照合・統合: 2026-10-18 Astra。改訂commitとローカルキャッシュを確認し、TEST-005の恒久維持へ統合。TEST-008は完了維持。草案・自己報告・規則を区別し、自動メモリーの実体は未確認。詳細は[受領記録](Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md)。追加依頼なし。
 
 ### `CP-20261018-003` — DESIGN.mdへの姫の感想
 

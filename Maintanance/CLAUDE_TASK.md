@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-095：恒久要求に沿うタスク配置の修正と試験強化を姫へ正式依頼、返却待ち。
+
 OPS-093：Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
 
 OPS-094：2026-10-18 Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
@@ -276,3 +278,7 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 [正本の受入記録](Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md)のとおり受入。独立smoke2本・同期照合成功。追加作業なし、commit待ち。実画面未確認。
 
 2026-10-18：ユーザーcommit承認によりOPS-094をDONEとする。追加依頼なし。
+
+## OPS-095 — 接続タスクの配置修正（2026-10-18 / Astra）
+
+[正式依頼](Current/REGISTRY_STUDIO_TASK_PLACEMENT_FIX.md)に従い、恒久正本の配置要求を実装し、網羅性・排他性と配置先の試験を強化してください。OPS-092の重複2件を再現し、接続を持つマイルストーン未接続群も扱う。対象範囲を姫へ委任。画面操作・実データ変更・commitなし。Returnは正本へ。

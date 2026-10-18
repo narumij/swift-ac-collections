@@ -1,0 +1,16 @@
+PASS all: layout sound
+FAIL all: DOC-027 under MS-SPI (MS-SPI 1737.9915028125263,185, DOC-027 2623,1849)
+PASS all: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS @head: layout sound
+FAIL @head: DOC-027 under MS-SPI (MS-SPI 410.4915028125263,185, DOC-027 1295,1849)
+PASS @head: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS 0.6.0: layout sound
+FAIL 0.6.0: DOC-027 under MS-SPI (MS-SPI 410.4915028125263,185, DOC-027 1295,1849)
+PASS 0.6.0: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS fixture single successor: X1 beside A1 in its column (upper lane 758,55)
+FAIL fixture successor chain: Y1,Y2,Y3 under A1
+FAIL fixture outside prerequisite: Z1 under A1
+FAIL fixture long outside prerequisite at the second milestone: Z2 under A1
+FAIL fixture combined: Y1,Y2,Y3,Z1,Z2 under A1
+PASS fixture multiple origins (A1, A2): sound, placement not decided here — M1 in A1 column, M2 in A2 column
+7 FAILED

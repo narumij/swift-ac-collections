@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-096：Astra追加分受入済み、ユーザーcommit承認によりDONE。依頼終了。
+
 OPS-095：Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
 
 OPS-093：Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
@@ -288,3 +290,17 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 [正本の受入](Current/REGISTRY_STUDIO_TASK_PLACEMENT_FIX.md)のとおり受入。独立配置試験・旧回帰試験・局所図/選択追従smoke・同期照合成功。追加作業なし、commit待ち。
 
 2026-10-18：ユーザーcommit承認によりOPS-095をDONEとする。追加依頼なし。
+
+## OPS-096 — 途中マイルストーン配下の配置（2026-10-18 / Astra）
+
+[正式依頼](Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md)に従い、DOC-027など途中マイルストーンから始まる群を、そのマイルストーンの下へまとめてください。全体見取り図の接続構造によるルール変更で、ID固定配置はしない。実辺とOPS-095の表示要求を保持。指定範囲を姫へ委任、画面操作・実データ変更・commitなし。Returnは正本へ。
+
+## OPS-096 — 水平位置と骨格間隔の追加依頼（2026-10-18 / Astra）
+
+[正本末尾の追加依頼](Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md)を実施してください。単独は右上を維持、複数スタックは下、上下の水平オフセットを共通に。不足幅はマイルストーン間隔を広げて確保。上下選択機能は将来希望で今回は不要。元Returnを保持し追加Returnへ記入。指定範囲を再委任、画面操作・commitなし。
+
+## OPS-096 — 追加分受入・依頼終了（2026-10-18 / Astra）
+
+[正本の追加分受入](Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md)のとおり受入。独立配置・幅拡張・回帰試験成功、同期照合一致。追加依頼なし、commit待ち。
+
+2026-10-18：ユーザーcommit承認によりOPS-096をDONEとする。

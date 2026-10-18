@@ -326,21 +326,39 @@ function graphLayout(tasks,edges){
 
  const used=new Set(edges.flatMap(e=>[e.prerequisite,e.successor])),pos=new Map();
  const nodes=tasks.filter(t=>used.has(t.id));
+ // A group that starts at one milestone stays with it (OPS-096, TASK_REGISTRY_APP.md「途中マイルストーンから始まるタスク群の配置」).
+ // A lone card keeps the upper lane; a group with more cards (a chain, outside prerequisites) is stacked in dependency
+ // order below, at the same horizontal offset `lane`, so lines from other prerequisites stay between their real ends.
+ // Groups started from several milestones keep the later layout (priority undecided).
+ const lane=step,assigned=new Set([leadGroup,...groups].flatMap(g=>[g.header,...g.below,...g.route,...g.escape]));
+ for(const branch of branches.filter(b=>b.kind==='escape')){
+  const ids=branch.ids.filter(id=>used.has(id));if(!ids.some(id=>!assigned.has(id)))continue;
+  const origins=[...new Set(edges.filter(e=>!ids.includes(e.prerequisite)&&ids.includes(e.successor)).map(e=>e.prerequisite))];
+  if(origins.length!==1||!groupById.has(origins[0]))continue;
+  const g=groupById.get(origins[0]);g.escape=g.escape.filter(id=>!ids.includes(id));g.stack=(g.stack||[]).concat(chainOrder(ids));
+ }
  let x=20;
  // A feeder into the first milestone needs space before the backbone.
  // Keep its chain vertical in a leading column rather than clamping it onto column zero.
  const leading=[leadGroup.header,...leadGroup.below,...leadGroup.route].filter(id=>used.has(id));
  if(leading.length){leading.forEach((id,i)=>pos.set(id,[x,185+drop+i*row]));x+=step;}
- for(const group of groups){
+ for(const [k,group] of groups.entries()){
   if(!used.has(group.anchor))continue;
   const y=185,below=(group.below||[]).filter(id=>used.has(id)),above=(group.escape||[]).filter(id=>used.has(id)),route=(group.route||[]).filter(id=>used.has(id));
   pos.set(group.anchor,[x,y]);
   const header=used.has(group.header);if(header)pos.set(group.header,[x,y+row]);
   below.forEach((id,i)=>pos.set(id,[x+golden,y+(header?row:0)+drop+i*row]));
-  above.forEach((id,i)=>pos.set(id,[x+step,y-130-i*row]));
+  above.forEach((id,i)=>pos.set(id,[x+lane,y-130-i*row]));
   route.forEach((id,i)=>pos.set(id,[x+step*(i+1),y+drop]));
+  const stack=group.stack||[];
+  if(stack.length){const top=Math.max(y,...[...pos.values()].filter(p=>p[0]<x+lane+W&&p[0]+W>x+lane).map(p=>p[1]))+drop;stack.forEach((id,i)=>pos.set(id,[x+lane,top+i*row]));}
   // Routes reserve their columns. Upper branches share the next milestone's span.
-  x+=route.length?step*(route.length+1):above.length?step+golden:step*1.5;
+  let advance=route.length?step*(route.length+1):above.length?step+golden:step*1.5;
+  // A lower stack widens only this gap, as far as the next milestone's lower cards (header or below column) need.
+  const next=groups.slice(k+1).find(g=>used.has(g.anchor));
+  const nextLower=!next?null:used.has(next.header)?0:next.below.some(id=>used.has(id))?golden:null;
+  if(stack.length&&nextLower!==null)advance=Math.max(advance,lane+step-nextLower);
+  x+=advance;
  }
  // A terminal milestone branch may also have its own prerequisite tasks.
  // Lay out that whole branch below the backbone instead of leaving its feeders unplaced.

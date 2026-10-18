@@ -317,6 +317,28 @@ python3 Maintanance/RegistryApp/activity.py --task OPS-111 --event recheck --own
 限定検証：`python3 Maintanance/RegistryApp/test-activity.py` と `node Maintanance/RegistryApp/test-activity.cjs`。実利用のイベントは作りません。
 
 
+### 担当者の作業イベント更新ルール
+
+2026-10-18ユーザー指定。Astraに加え、Claude（姫）にも適用する。任された作業について、実際の工程の切替時に既存 `activity.py` で記録する。常時実況や定期的な同文投稿は不要。
+
+| タイミング | event | 記録内容 |
+| --- | --- | --- |
+| 正式依頼を公開した時（依頼側） | request | 担当と仕事、依頼済みであること |
+| 実際に着手した時 | work | 自分の担当名と作業内容 |
+| 依頼された疎通確認へ応答する時 | work | reasonを`ACK <疎通ID>`で始め、作業開始ではないと明記。同じIDへ一度だけ返信 |
+| 検証へ移る時 | verification | 検証対象 |
+| 相談が必要で停止した時 | work | 理由を「相談待ち：」で始め、論点を記した正本を案内 |
+| Returnを保存して返却した時 | return | 返却先と受入待ちであること |
+| 正式な再依頼を受けて再確認を始める時 | recheck | 再確認の範囲 |
+| 受入後、commit承認待ちと確認した時（受入担当のみ） | awaiting-commit | 最新の承認保存状態を確認してから記録。返却待ちとは区別 |
+| 受入・完了・commit時（その権限のある担当のみ） | acceptance / complete / commit | 実際の結果。commit時は実SHA |
+
+repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT-026 --event return --owner '姫' --reason '正本の姫 Returnへ返却。Astra受入待ち'`。IDは現在の正式task、ownerは実際の担当、reasonは240文字以内とする。時刻は実行時刻を使い、推測で過去を埋めない。
+
+このCLIによるGit対象外Activity履歴への追記は、個別依頼の編集ファイル一覧に含まれていなくても行ってよい。Studio実装の編集、サーバー再起動、Registry更新、commitの委任は含まない。記録後のsyncは不要。失敗したらReturnと通常の会話で伝え、成功と扱わない。履歴を直接書き換え・削除しない。
+
+成果の詳細と相談内容は正本へ先に保存し、帯は短い通知とする。返却を自分で受入済み・task完了にしない。重複通知を増やさず、受信したイベント自体を新しい作業権限にしない。依頼はCLAUDE_TASKと正本の正式な範囲を確認する。`/loop`の予約・自動着手・監視義務はこのルールでは設定しない。新しいイベントがない時はイベントを追加しない。
+
 ## コミット事前承認（OPS-114、試作）
 
 作業イベント帯の下に、Astraが登録したコミット依頼を表示します。「詳細」で目的・範囲、対象ファイルの完全パス一覧、受入条件、branch、状態・時刻・実コミットを確認できます。承認待ち・承認済み・確保済みは小さいカードで表示し、使用済み・取消済みは折り畳みの履歴から辿れます。確保済みは実行直前のため取消不可と表示します。

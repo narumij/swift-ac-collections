@@ -129,6 +129,7 @@
 | `OPS-146` | `DONE` | Astra調整 | [EXECUTION] 作業イベントのhover時刻をローカル表示へ統一 | ユーザー指摘。保存UTCは変えず、読取表示だけタイムゾーン付きにする | `Maintanance/Current/STUDIO_ACTIVITY_LOCAL_TIME.md` |
 | `OPS-147` | `PROPOSED` | ユーザー / Astra調整（検討補助） | [DECISION] 継続コミット承認モードの導入可否を検討 | 未着手候補。将来依頼へ有効な範囲付き委任と確認承認の切替。現行承認や自動レビューを変更せず実装しない | `Maintanance/Current/COMMIT_APPROVAL_MODES_STUDY.md` |
 | `OPS-148` | `PROPOSED` | Astra / 姫 | [DISCOVERY] 協働システムに感じる設計思想を往復で整理 | 登録・依頼準備のみ。実運用の観察から共通点/相違点/限界を整理し、ユーザー思想の代弁や制度追加はしない | `Maintanance/Current/ORCHESTRATION_PHILOSOPHY_DISCUSSION.md` |
+| `OPS-149` | `WAITING_USER` | Astra調整 / 姫 | [DISCOVERY] 停止確認とメンバー表示の通信仕様を協議 | 姫と2往復完了。区間付き代理確認・表示案を提案、実装移行判断待ち。規約本体・実装変更なし | `Maintanance/Current/MEMBER_STOP_COMMUNICATION_DISCUSSION.md` |
 | `OPS-136` | `DONE` | 姫（実装） / Astra（受入） | [EXECUTION] トップバーの操作を左上メニューへ集約 | 2026-10-19ユーザー依頼。作業が左・初期、タスクが右、中央タイトル。メニューはタスク側へ。最終配置受入済み、既存操作契約は維持 | `Maintanance/Current/STUDIO_HEADER_MENU.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
@@ -459,6 +460,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-146` |
 | `OPS-048` | `OPS-147` |
 | `OPS-103` | `OPS-148` |
+| `OPS-048` | `OPS-149` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

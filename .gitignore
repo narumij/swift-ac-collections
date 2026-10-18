@@ -27,3 +27,6 @@ Benchmarks/.build/
 
 # Private user drafts
 /Maintanance/User/Rights/
+
+# Python bytecode cache
+__pycache__/

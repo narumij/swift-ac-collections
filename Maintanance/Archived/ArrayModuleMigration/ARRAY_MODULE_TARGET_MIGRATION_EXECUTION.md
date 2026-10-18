@@ -1,64 +1,72 @@
 # ElementBuffer系target・module名移行の実行
 
+## TL;DR（人間向け）
+
+ElementBuffer系の実装moduleを`ElementBufferModule`・`OptionalElementBufferModule`へ移し、旧名を再公開の互換targetとして残した実行task（ARRAY-016、DONE）の記録。build・test・trait有効時のtest・互換smoke・benchmarkのtitle維持・DocC生成の成功を確かめ、PR #195でmainへ固定した。旧名targetの削除は後続のARRAY-018で行った。
+
 ## Task
 
 - ID: `ARRAY-016`
-- 種別: `EXECUTION`
-- 状態: `DONE`
-- 担当: Codex
-- 現在の中間ゴールへの近さ: `DIRECT`
-- 前提: `ARRAY-015`
+- Kind: `EXECUTION`
+- State: `DONE`
+- Owner: Codex
+- Closeness to the current intermediate goal: `DIRECT`
+- Prerequisite: `ARRAY-015`
 
-## 確定済み方針
+<a id="確定済み方針"></a>
+## Settled policy
 
-- 実装moduleを`ElementBufferModule`と`OptionalElementBufferModule`へ移行する。
-- `BareArrayModule`と`OptionalArrayModule`は、新moduleを`@_exported import`する薄い互換targetとして残す。
-- test targetとdirectoryも公開型体系へ合わせて改名する。
-- `AcCollections`は新moduleへ直接依存し、直接再公開する。
-- Optional側の`ENABLE_OPTIONAL_ELEMENT_BUFFER` trait条件は維持する。
-- benchmarkはimportだけを変更し、task title、workload、baseline比較、結果正規化を変更しない。
-- root packageのlibrary product構成と旧互換targetの終了条件は変更しない。
+- Move the implementation modules to `ElementBufferModule` and `OptionalElementBufferModule`.
+- Keep `BareArrayModule` and `OptionalArrayModule` as thin compatibility targets that `@_exported import` the new modules.
+- Rename the test targets and directories to match the public type system as well.
+- `AcCollections` depends directly on the new modules and re-exports them directly.
+- Keep the `ENABLE_OPTIONAL_ELEMENT_BUFFER` trait condition on the Optional side.
+- Benchmarks change only imports; do not change task titles, workloads, baseline comparison or result normalization.
+- Do not change the root package's library product structure or the end condition of the old compatibility targets.
 
-## 実行範囲
+<a id="実行範囲"></a>
+## Scope of execution
 
-1. 現行実装directoryを`Sources/ElementBufferModule`と`Sources/OptionalElementBufferModule`へ移す。
-2. `Sources/_BareArrayModule`と`Sources/_OptionalArrayModule`に旧名互換facadeと互換性説明用DocCを作る。
-3. `Package.swift`へ新旧target、dependency、path、test target、およびtrait条件を反映する。
-4. `AcCollections`、test、benchmarkのimportを新moduleへ変更する。
-5. test target directoryを`Tests/ElementBufferModuleTests`と`Tests/OptionalElementBufferModuleTests`へ移す。
-6. 通常CIのDocC target matrixを新module名へ更新する。
-7. 現行の利用者向け正本文書にあるmodule名と現行source pathを更新する。Archived記録は履歴として改名しない。
-8. 残る旧名参照を再検索し、互換target、履歴、または意図した説明以外の実行系参照がないことを確認する。
+1. Move the current implementation directories to `Sources/ElementBufferModule` and `Sources/OptionalElementBufferModule`.
+2. Create old-name compatibility facades and DocC explaining compatibility in `Sources/_BareArrayModule` and `Sources/_OptionalArrayModule`.
+3. Reflect the new and old targets, dependencies, paths, test targets and the trait condition in `Package.swift`.
+4. Change the imports of `AcCollections`, tests and benchmarks to the new modules.
+5. Move the test target directories to `Tests/ElementBufferModuleTests` and `Tests/OptionalElementBufferModuleTests`.
+6. Update the DocC target matrix of the normal CI to the new module names.
+7. Update module names and current source paths in the current user-facing canonical documents. Archived records are not renamed, as history.
+8. Search again for remaining old-name references, and confirm there are no execution-related references other than the compatibility targets, history or intended explanations.
 
-## 検証
+<a id="検証"></a>
+## Verification
 
-- trait無効のpackage buildとtestが成功する。
-- `ENABLE_OPTIONAL_ELEMENT_BUFFER`有効のpackage buildと対象testが成功する。
-- 新moduleを直接importする両test targetが成功する。
-- 旧module名だけをimportする最小compatibility testで、新moduleの公開型が利用できる。
-- benchmark packageのrelease buildが成功し、既存のElementBuffer系task titleが変わっていない。
-- 新module両方のDocC generationがwarnings-as-errorsで成功する。
-- 変更後の検索結果とcompiler diagnosticsに、意図しない旧module依存が残らない。
+- Package build and tests with the trait disabled succeed.
+- Package build and the target tests with `ENABLE_OPTIONAL_ELEMENT_BUFFER` enabled succeed.
+- Both test targets that import the new modules directly succeed.
+- A minimal compatibility test that imports only the old module name can use the new modules' public types.
+- The benchmark package's release build succeeds, and the existing ElementBuffer-family task titles are unchanged.
+- DocC generation of both new modules succeeds with warnings-as-errors.
+- The search results and compiler diagnostics after the change show no unintended dependency on old modules.
 
-## 停止条件
+<a id="停止条件"></a>
+## Stop conditions
 
-公開library product、trait名・提供条件、benchmark workload・task title、性能baseline、または旧互換targetの
-終了条件を変更する必要が生じた場合は、このtaskで決めずに停止して別taskへ分離する。
+If it becomes necessary to change the public library products, the trait name or provision conditions, benchmark workloads or task titles, the performance baseline, or the end condition of the old compatibility targets,
+do not decide it in this task; stop and separate it into another task.
 
-## 実施結果（2026-10-14）
+<a id="実施結果2026-10-14"></a>
+## Results (2026-10-14)
 
-- 実装・test targetとdirectoryを確定済みの新名称へ移し、旧名2 targetを1行の再公開facadeとして追加した。
-- `AcCollections`、test、benchmarkのimport、manifest依存、DocC CI target matrix、および現行正本のsource pathを
-  更新した。この段階ではArchived記録とmaintenance directory名を履歴・管理座標として維持した。
-- Xcode Build for Testingと`swift test --disable-sandbox`が成功した。
-- trait有効時にOptional系通常test 36件、AcCollections再公開test 1件、Death Test 21件が成功した。
-- 旧名facadeから新moduleの公開型を利用するcompatibility smoke testを両test targetへ追加し、成功した。
-- benchmark packageのrelease buildが成功し、dry-runで既存のElementBuffer系task title 22件が維持されている
-  ことを確認した。
-- 新旧4 moduleのDocC generationが`--warnings-as-errors`付きで成功した。
+- Moved the implementation and test targets and directories to the settled new names, and added the 2 old-name targets as one-line re-export facades.
+- Updated the imports of `AcCollections`, tests and benchmarks, the manifest dependencies, the DocC CI target matrix, and the source paths in current canonicals.
+  At this stage the Archived records and the maintenance directory names were kept as history and management coordinates.
+- Xcode Build for Testing and `swift test --disable-sandbox` succeeded.
+- With the trait enabled, 36 normal Optional-family tests, 1 AcCollections re-export test and 21 Death Tests succeeded.
+- Added a compatibility smoke test using the new modules' public types through the old-name facades to both test targets; it succeeded.
+- The benchmark package's release build succeeded, and a dry run confirmed that the 22 existing ElementBuffer-family task titles are kept.
+- DocC generation of the 4 new and old modules succeeded with `--warnings-as-errors`.
 
-旧名facadeは移行中間状態としてPR #195でmainへ固定した。最終的な移行ゴールは`ARRAY-018`で旧名2 targetを
-削除し、新moduleだけをpackageと継続CIへ残すこととする。
+The old-name facades were fixed into main by PR #195 as an intermediate migration state. The final goal of the migration is, in `ARRAY-018`, to delete the 2 old-name targets
+and leave only the new modules in the package and continuous CI.
 
-後続の`ARRAY-018`では、ユーザーの追加指示によりmaintenance directoryも新module名へ統一し、現行・Archivedの
-管理path参照を更新した。本文中の歴史上の名称と当時のsource pathは置換対象に含めていない。
+In the later `ARRAY-018`, by the user's additional instruction, the maintenance directory was also unified to the new module names, and the management path references in current and Archived
+documents were updated. Historical names and source paths of their time in the body text were not included in the replacement.

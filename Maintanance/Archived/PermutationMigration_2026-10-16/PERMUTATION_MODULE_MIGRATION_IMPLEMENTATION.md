@@ -1,55 +1,65 @@
 # ワーカー依頼：Permutation module移行の実装・ローカル検証
 
-固定ID：`PERM-076`。種別：EXECUTION。担当：Worker Codex（実装1体）。作成者・受入担当：Astra。
-基準：`17c7ea72`。2026-10-15のユーザーの進行指示に基づく。Registry登録後に渡す依頼書。
+## TL;DR（人間向け）
 
-## 目的と入力
+Permutation module移行の実装とローカル検証を、Worker Codex 1体へ渡した依頼書（PERM-076）。新名`NextPermutationModule`を実装と主入口に、旧名`PermutationModule`を再公開の互換入口にする実施内容・編集範囲・検証・停止条件を定めている。benchmark名の変更やremote CI・commitは含まない。受入とmain到達は別の記録にある。
 
-[移行計画](../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)のmodule移行を、ローカルで検証可能な一つの差分として返す。
-[調査受入](PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)の訂正・補足を先に読む。
-新名`NextPermutationModule`が実装と主入口、旧名`PermutationModule`は同じ宣言を再公開する互換入口としてmainに残す。benchmark名の整理は後段へ遅らせる。
+Fixed ID: `PERM-076`. Kind: EXECUTION. Owner: Worker Codex (1 implementer). Author and acceptance: Astra.
+Base: `17c7ea72`. Based on the user's go-ahead instruction on 2026-10-15. A request file handed over after Registry registration.
 
-## 確定した実施内容
+<a id="目的と入力"></a>
+## Purpose and input
 
-1. `Sources/PermutationModule/`の実装・DocC・設計資料を`Sources/NextPermutationModule/`へ移し、旧名targetは`Sources/_PermutationModule/`の薄い再公開入口にする。`@_exported import NextPermutationModule`を用い、実装を複製しない。
-2. `AcCollections` productは維持。facade targetは新旧targetへ依存し、sourceは新名を再公開する。既存settings・compiler条件・通常／2025互換modeの排他を保持する。
-3. 通常ownerのgeneric parameterを決定済みの`Element`へ揃える。公開型名・method名・入れ子`Permutation`・契約・アルゴリズムは維持する。
-4. 通常testとcompiler fixtureを新主入口へ揃え、旧直接importとfacadeの検査も残す。外部clientで新旧入口の型同一性とextensionの利用を確認する。
-5. 新DocC catalogと見出し、旧shimの互換案内、新旧両targetのDocC matrixを揃える。READMEの通常importはAcCollectionsを維持し、新旧の役割を明記する。deprecated指定や廃止期限は加えない。
-6. benchmarkのimportだけ新名へ揃える。登録title、library、測定処理、入力・結果の正規化を変更しない。
-7. 下記の現行文書の名前・path・互換方針を揃える。過去の実行証拠は当時の名前を保持する。
+Return the module migration of [the migration plan](../../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md) as one diff verifiable locally.
+Read the corrections and supplements in [the investigation acceptance](PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md) first.
+The new name `NextPermutationModule` is the implementation and main entry; the old name `PermutationModule` stays in main as a compatibility entry re-exporting the same declarations. The benchmark-name tidy-up is delayed to a later stage.
 
-## 編集できる範囲
+<a id="確定した実施内容"></a>
+## Settled work
 
-- `Package.swift`、`Sources/AcCollections/AcCollections.swift`。
-- 旧・新Permutation source directoryと互換shim directory。移動対象内のDocC・設計・品質資料を含む。
-- `Tests/PermutationTests/`、`Tests/AcCollectionsTests/`内のPermutation関連検査。
-- `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`と`Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`。このfixture内に新旧・facade入口の検査を加えてよい。
-- `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`のimportのみ。
-- `.github/workflows/ci.yml`のDocC matrixのみ。
-- `README.md`・`README.ja.md`のPermutation導入説明。
-- `Maintanance/Current/QUALITY_REQUIREMENTS.md`、`QUALITY_ASSESSMENT_INVENTORY.md`、`DOCUMENTATION_CI_PLAN.md`のPermutation現行名・path・互換説明。
-- `Maintanance/PermutationModule/CurrentQualityAssessment.md`と`UserDocumentationDraft.md`の同じ範囲。この管理directoryは改名しない。
-- 専用返却先の「返却」以下。
+1. Move the implementation, DocC and design materials in `Sources/PermutationModule/` to `Sources/NextPermutationModule/`, and make the old-name target a thin re-export entry in `Sources/_PermutationModule/`. Use `@_exported import NextPermutationModule`; do not duplicate the implementation.
+2. Keep the `AcCollections` product. The facade target depends on the new and old targets, and its source re-exports the new name. Keep existing settings, compiler conditions and the exclusivity of normal / 2025 compatibility mode.
+3. Align the normal owner's generic parameter with the decided `Element`. Keep public type names, method names, the nested `Permutation`, contracts and algorithms.
+4. Align normal tests and compiler fixtures with the new main entry, and also keep checks of old direct imports and the facade. Confirm type identity of the new and old entries and use of extensions in an external client.
+5. Align the new DocC catalog and headings, the old shim's compatibility guidance, and the DocC matrix of both targets. Keep the README's normal import of AcCollections and state the roles of new and old. Do not add a deprecated attribute or a removal deadline.
+6. Align only benchmark imports with the new name. Do not change registered titles, libraries, measurement, or input/result normalization.
+7. Align names, paths and the compatibility policy in the current documents below. Past execution evidence keeps the names of its time.
 
-範囲外の現行参照が移行で壊れる場合は、そのpathと必要な修正を返す。範囲外を勝手に編集せず、全体完了と報告しない。
+<a id="編集できる範囲"></a>
+## Editable scope
 
-## 実行と検証
+- `Package.swift`, `Sources/AcCollections/AcCollections.swift`.
+- The old and new Permutation source directories and the compatibility shim directory, including DocC, design and quality materials within the moved targets.
+- Permutation-related checks in `Tests/PermutationTests/` and `Tests/AcCollectionsTests/`.
+- `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/` and `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`. Checks of the new, old and facade entries may be added within this fixture.
+- Only the imports of `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`.
+- Only the DocC matrix of `.github/workflows/ci.yml`.
+- The Permutation introduction in `README.md` and `README.ja.md`.
+- The current Permutation names, paths and compatibility explanation in `Maintanance/Current/QUALITY_REQUIREMENTS.md`, `QUALITY_ASSESSMENT_INVENTORY.md` and `DOCUMENTATION_CI_PLAN.md`.
+- The same scope in `Maintanance/PermutationModule/CurrentQualityAssessment.md` and `UserDocumentationDraft.md`. This management directory is not renamed.
+- From 「返却」 onward in the dedicated return destination.
 
-開始時にHEAD・branch・未コミット差分、Registryの現在状態、関連する局所手順を確認する。基準後の変更があれば影響を確認する。既存の差分を上書きしない。
+If current references outside the scope break because of the migration, return the path and the needed fix. Do not edit outside the scope on your own, and do not report overall completion.
 
-- 対象のDebug／Releaseテストとcompiler正常・期待拒否検査を実行する。関連するDeath Testも実行数を記録する。
-- product AcCollectionsだけに依存する外部clientで、新名・旧名・facadeの三入口、新旧同時import時の型受渡しを確認する。通常modeと2025互換modeを分ける。使用可能なtoolchainの範囲を明記する。
-- benchmark release buildと登録task一覧を確認し、旧完全titleが維持されることを確かめる。性能測定自体は今回不要。
-- 新旧targetのDocCを生成し、module入口・symbol link・互換案内・診断を確認する。失敗や未実行を成功と扱わない。
-- command、toolchain、対象版、件数、終了結果、未実施範囲を残す。既存の成功記録で今回の検証を代用しない。
+<a id="実行と検証"></a>
+## Execution and verification
 
-## 停止条件と対象外
+At the start, check HEAD, the branch, uncommitted diffs, the Registry's current state and the relevant local procedures. If there are changes after the base, check their impact. Do not overwrite existing diffs.
 
-新しい仕様判断、型同一性の不成立、公開契約変更の必要、範囲外の変更が必須と判明したら、途中成果と根拠を残して返す。検査を弱めて通さない。
-Registry・採番・依頼書・名称決定・AGENTS・Claude担当領域・他者返却物は編集しない。凍結taskを再開しない。benchmark名変更、性能チューニング、SPI登録、remote CI実行、branch作成、commit、push、mergeは行わない。
+- Run the target Debug / Release tests and the compiler success / expected-rejection checks. Also run the related Death Tests and record their counts.
+- In an external client depending only on the product AcCollections, check the three entries (new name, old name, facade) and passing types when importing new and old together. Separate normal mode and 2025 compatibility mode. State the range of usable toolchains.
+- Check the benchmark release build and the list of registered tasks, and confirm the old full titles are kept. Performance measurement itself is not needed this time.
+- Generate DocC for the new and old targets and check the module entries, symbol links, compatibility guidance and diagnostics. Do not treat failures or non-runs as success.
+- Keep the commands, toolchain, target version, counts, exit results and the scope not run. Do not substitute existing success records for this verification.
 
-## 返却と受入
+<a id="停止条件と対象外"></a>
+## Stop conditions and out of scope
 
-返却先：[実装結果](PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION_RESULT.md)。変更一覧、検証証拠、未確認・停止点、残作業を記入し、作業を終了して割当範囲を返却したことを明記する。冒頭の管理欄は編集しない。
-Astraが原回答を保持して独立照合する。ローカル差分の受入後はコミット許可待ちとし、ユーザー許可と保存確認後にこの実装taskをDONEとする。remote CI・main到達は別の後続段階であり、このtaskのDONEで移行全体を完了扱いにしない。
+If a new specification decision, a failure of type identity, a need to change the public contract, or a required change outside the scope becomes clear, return with the partial output and grounds. Do not weaken checks to make them pass.
+Do not edit the Registry, numbering, request files, the naming decision, AGENTS, Claude's area, or others' returns. Do not resume frozen tasks. No benchmark-name changes, performance tuning, SPI registration, remote CI runs, branch creation, commit, push or merge.
+
+<a id="返却と受入"></a>
+## Return and acceptance
+
+Return destination: [implementation result](PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION_RESULT.md). Fill in the list of changes, verification evidence, unconfirmed items and stop points, and remaining work, and state that the work has ended and the assigned scope is returned. Do not edit the management fields at the top.
+Astra keeps the original answer and checks it independently. After accepting the local diff it waits for commit permission, and after user permission and confirming the save, this implementation task becomes DONE. Remote CI and reaching main are a separate later stage, and this task's DONE does not treat the whole migration as complete.

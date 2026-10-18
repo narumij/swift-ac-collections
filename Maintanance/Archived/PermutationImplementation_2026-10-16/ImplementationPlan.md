@@ -1,92 +1,98 @@
-> 2026-10-16、ユーザー指示によりアーカイブ。元の文書：`Maintanance/PermutationModule/ImplementationPlan.md`。公開API削減の実施記録を全文保存した。以下は当時の判断・結果であり、現行の契約・指示・着手条件として使わない。相対リンクのみ移動先に合わせた。
+> Archived on 2026-10-16 by user instruction. Original document: `Maintanance/PermutationModule/ImplementationPlan.md`. The full record of carrying out the public API reduction is saved. The following is the judgment and result of its time, not to be used as current contracts, instructions or start conditions. Only relative links were adjusted to the new location.
 
 # PermutationModule 削減実施記録
 
-本書は `Maintanance/CLAUDE_TASK.md` のユーザー最終決定(バリアント削減、2026-10-03)に
-基づき実施した `PermutationModule` の公開API削除の記録である。削除前の調査所見は
-`Maintanance/Quality/Unversioned/PermutationModule/ProductReadinessAssessment.md`に残す。現行の公開契約は
-`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、Test as Specificationの再構成状態は
-`Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md`と[過去の試験記録](../../Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md)を正本とする。旧COW契約の
-`Tests/PermutationTests/NextPermutationsSequence/`は履歴資料であり、現行適合の根拠には用いない。
+## TL;DR（人間向け）
 
-## 実施したこと(2026-10-03、完了)
+ユーザーの最終決定（2026-10-03、バリアント削減）に基づいて、`PermutationModule`の公開APIを削除した実施記録。swift-algorithmsとの等価性を先に確かめてから削除し、テスト・ドキュメントを現行APIへ合わせた。ABC328Eの実提出確認も記録している。2026-10-16にアーカイブした当時の記録で、現行の契約・指示ではない。
 
-### Phase 1A — 削除ゲート(swift-algorithms等価性PoC)
+This document records the deletion of `PermutationModule`'s public APIs, carried out based on the user's final decision (variant reduction, 2026-10-03) in `Maintanance/CLAUDE_TASK.md`.
+The investigation findings before the deletion remain in
+`Maintanance/Quality/Unversioned/PermutationModule/ProductReadinessAssessment.md`. The current public contract is canonical in
+`Sources/NextPermutationModule/Documentation/Quality-Profile.md`, and the state of the Test as Specification reconstruction in
+`Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md` and [the past test record](../../Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md). The old COW contract's
+`Tests/PermutationTests/NextPermutationsSequence/` is historical material and is not used as grounds for current conformance.
 
-`unsafePermutations()`/`Permutations.All`を削除する前に、「`swift-algorithms`の
-`permutations()`で代替可能」という削除根拠そのものを検証した。
+<a id="実施したこと2026-10-03完了"></a>
+## What was done (2026-10-03, complete)
 
-- `Package.swift`の`PermutationTests`ターゲットへ`Algorithms`依存と
-  `USING_ALGORITHMS`定義を一時的に有効化。
-- `Tests/PermutationTests/PermutationTests.swift`に
-  `testPhase1A_unsafePermutationsEquivalentToAlgorithmsPermutations`を追加し、
-  空コレクション・単一要素・重複なし昇順/非昇順・降順・重複値あり・`Array`以外の
-  `Collection`(`Range<Int>`、`Index == Int`)の7ケースで、即時`Array`化した結果を
-  `Algorithms.permutations()`と比較。
-- `swift test --filter PermutationTests`で実行し、結果数・順序・重複の見え方を含めて
-  全ケースで完全一致(反例なし)を確認。
-- PoC用の一時変更(依存有効化・比較テスト)は削除ゲートの通過後、下記Phase 1Bの
-  削除作業と合わせて除去し、`Package.swift`は元の状態(`Algorithms`依存コメントアウト)
-  に復元した。エビデンスはコミット履歴に残る。
+<a id="phase-1a--削除ゲートswift-algorithms等価性poc"></a>
+### Phase 1A — deletion gate (swift-algorithms equivalence PoC)
 
-### Phase 1B — 削除の実施
+Before deleting `unsafePermutations()` / `Permutations.All`, the deletion ground itself — "replaceable by `swift-algorithms`'
+`permutations()`" — was verified.
 
-1. 保持する`nextPermutations()`契約のテストを先に追加
+- Temporarily enabled the `Algorithms` dependency and the
+  `USING_ALGORITHMS` definition in the `PermutationTests` target in `Package.swift`.
+- Added
+  `testPhase1A_unsafePermutationsEquivalentToAlgorithmsPermutations` to `Tests/PermutationTests/PermutationTests.swift`, and in 7 cases — empty collection, single element, no duplicates ascending / non-ascending, descending, with duplicate values, and a
+  `Collection` other than `Array` (`Range<Int>`, `Index == Int`) — compared the results, immediately turned into `Array`, with
+  `Algorithms.permutations()`.
+- Ran `swift test --filter PermutationTests` and confirmed a complete match in every case, including the number of results, the order and how duplicates appear
+  (no counterexample).
+- The temporary PoC changes (enabling the dependency, the comparison test) were removed after passing the deletion gate, together with the deletion work of Phase 1B below,
+  and `Package.swift` was restored to its original state (`Algorithms` dependency commented out). The evidence remains in the commit history.
+
+<a id="phase-1b--削除の実施"></a>
+### Phase 1B — carrying out the deletion
+
+1. First added tests for the kept `nextPermutations()` contract
    (`Tests/PermutationTests/PermutationTests.swift`):
-   空コレクション・単一要素・降順先頭ではない開始位置からの継続・CoWによる
-   既取得結果の不変性(`testNextPermutationsRetainedResultsRemainStable`)。
-2. `Sources/PermutationModule/NextPermutations.swift`から次を削除:
-   - `unsafePermutations()`(Collection拡張メソッド)
-   - `Permutations.All`、`.init(safe:)`/`.init(unsafe:)`、`IteratorA`、`SubSequenceA`
-   - `unsafeNextPermutations()`(Collection拡張メソッド)
-   - `Permutations.Nexts`/`IteratorN`の`_unsafe`フラグとエイリアシング経路。
-     `Nexts`は常にCoWする単一経路へ単純化し、`init`は`internal`化した
-     (`nextPermutations()`からのみ到達可能)。
-   - `Permutations.Buffer.prepare(count:)`(`All`の位置インデックス列初期化専用で、
-     `All`削除後に未参照となったため削除)。
-3. `Tests/PermutationTests/PermutationTests.swift`から、削除したAPIのみを対象とする
-   `testUnsafePermutations`・`testUnsafeNextPermutations`・Phase 1A PoCテスト・
-   `testPerformance1`(`unsafePermutations()`を測定)を削除。
-4. ドキュメントを現行APIに合わせて全面的に書き直し
-   (`Specification.md`・本書・`ProductReadinessAssessment.md`)。削除した変種は
-   「対応中の選択肢」としてではなく、削除済みの履歴として記録する。
+   empty collection, single element, continuation from a start position that is not the head of a descending order, and immutability of
+   already obtained results through CoW (`testNextPermutationsRetainedResultsRemainStable`).
+2. Deleted the following from `Sources/PermutationModule/NextPermutations.swift`:
+   - `unsafePermutations()` (Collection extension method)
+   - `Permutations.All`, `.init(safe:)` / `.init(unsafe:)`, `IteratorA`, `SubSequenceA`
+   - `unsafeNextPermutations()` (Collection extension method)
+   - The `_unsafe` flag and aliasing path of `Permutations.Nexts` / `IteratorN`.
+     `Nexts` was simplified to a single path that always does CoW, and `init` was made `internal`
+     (reachable only from `nextPermutations()`).
+   - `Permutations.Buffer.prepare(count:)` (used only to initialize `All`'s position index sequence, and
+     deleted because it became unreferenced after deleting `All`).
+3. Deleted from `Tests/PermutationTests/PermutationTests.swift` the tests that target only the deleted APIs:
+   `testUnsafePermutations`, `testUnsafeNextPermutations`, the Phase 1A PoC test, and
+   `testPerformance1` (which measured `unsafePermutations()`).
+4. Fully rewrote the documentation to match the current APIs
+   (`Specification.md`, this document, `ProductReadinessAssessment.md`). The deleted variants are recorded
+   not as "options being handled" but as deleted history.
 
-## 検証
+<a id="検証"></a>
+## Verification
 
-- `swift test --filter PermutationTests` — 全ケース成功(削除後、2テスト)。
-- `swift build` / `swift test`(リポジトリルート、通常モード)— 成功、既存テストに
-  退行なし。
-- `COMPATIBLE_ATCODER_2025`を一時的に有効化して
-  `swift test --filter 'AcCollectionsTests|PermutationTests'`を実行 — 成功
-  (`AcCollections`が互換モードで`PermutationModule`を再公開する経路を含む)、
-  `Package.swift`は元の状態へ復元。
-- `git diff --check` — クリーン。
+- `swift test --filter PermutationTests` — all cases succeed (2 tests after the deletion).
+- `swift build` / `swift test` (repository root, normal mode) — success, no regression in existing tests.
+- Temporarily enabled `COMPATIBLE_ATCODER_2025` and ran
+  `swift test --filter 'AcCollectionsTests|PermutationTests'` — success
+  (including the route in which `AcCollections` re-exports `PermutationModule` in compatibility mode);
+  `Package.swift` restored to its original state.
+- `git diff --check` — clean.
 
-## 追加の削減(2026-10-03、完了)
+<a id="追加の削減2026-10-03完了"></a>
+## Additional reduction (2026-10-03, complete)
 
-`Tests/PermutationTests/NextPermutation.swift`(本体の`PermutationModule`からは未参照の
-別世代実装。`Array: NextPermutation`という独自protocol、`NextPermutationUnsafeHandle`、
-`UnsafeMutableBufferPointer`直接操作のアルゴリズムを含む)を削除し、これを唯一使用していた
-`testPerformance00`(`ENABLE_PERFORMANCE_TESTING`配下)を`PermutationTests.swift`から削除した。
-実装バリアントを1経路(`Sources/PermutationModule/NextPermutationProtocol.swift`経由)へ
-さらに縮小する、というユーザー方針に基づく。
+Deleted `Tests/PermutationTests/NextPermutation.swift` (a different-generation implementation not referenced from the main `PermutationModule`, containing
+its own protocol `Array: NextPermutation`, `NextPermutationUnsafeHandle`, and an algorithm operating
+`UnsafeMutableBufferPointer` directly), and deleted from `PermutationTests.swift` `testPerformance00` (under `ENABLE_PERFORMANCE_TESTING`), the only user of it.
+Based on the user's policy of further reducing the implementation variants to one path (via `Sources/PermutationModule/NextPermutationProtocol.swift`).
 
-## ABC328E実提出確認(2026-10-13、完了)
+<a id="abc328e実提出確認2026-10-13完了"></a>
+## Real ABC328E submission check (2026-10-13, complete)
 
-- ユーザーがAtCoderへ手作業で提出し、Acceptedを確認した。
-- 実提出を往復した探索結果、性能推移、採用・棄却した枝、および製品版との境界は
-  `../Technical/HumanAITuningReport.md`を正本とする。
-- 収束後の実験sourceは`Maintanance/User/PermutationBorrowedSpanExperiment.swift`に保存した。
-- AtCoder環境での実提出という目的を達成したため、ユーザー専任項目を完了とする。最速80msの枝は
-  unsafeな上限実験であり、製品版Permutationの採用根拠や正式な外部性能assessmentとは扱わない。
+- The user submitted to AtCoder by hand and confirmed Accepted.
+- For the search results gone back and forth through real submissions, the performance history, the branches adopted and rejected, and the boundary with the product version,
+  `../Technical/HumanAITuningReport.md` is canonical.
+- The experiment source after convergence is saved in `Maintanance/User/PermutationBorrowedSpanExperiment.swift`.
+- The purpose of a real submission in the AtCoder environment was achieved, so the user-only item is complete. The fastest 80ms branch is
+  an unsafe upper-bound experiment and is not treated as grounds for adopting the product version of Permutation or as a formal external performance assessment.
 
-## 当時の判断・対応記録
+<a id="当時の判断対応記録"></a>
+## Record of the judgments and responses of the time
 
-以下は旧実装について記録された判断と実施結果であり、現在の凍結状態を示さない。現在の作業状態は[Task Registry](../../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
+The following are judgments and results recorded for the old implementation, and do not show the current freeze state. For the current work state see the [Task Registry](../../ProgressV2/TASK_REGISTRY_V2.md).
 
-- `Sendable`対応はSwift 6以降に必要とする方針で確定し、全公開型で実施済み。
-  `IteratorN`/`SubSequenceN`は、共有CoW bufferの`final`化と変更前detachを根拠に
-  `@unchecked Sendable where C.Element: Sendable`へ適合した。詳細は
-  `Maintanance/Quality/StrictMemorySafetyReadiness.md` §9を参照。公開APIのコメントドックも整備済み。
-- `PermutationModule`への`.strictMemorySafety()`も恒久適用済み。内部Bufferのunsafe操作は
-  所有境界ごとのscoped `unsafe`へ整理し、strict設定下で警告0件を確認した。
+- Support for `Sendable` was settled as a policy needed for Swift 6 and later and done for all public types.
+  `IteratorN` / `SubSequenceN` conform to `@unchecked Sendable where C.Element: Sendable` on the grounds of making the shared CoW buffer `final` and detaching before mutation.
+  For details see
+  `Maintanance/Quality/StrictMemorySafetyReadiness.md` §9. Doc comments of the public APIs are also in place.
+- `.strictMemorySafety()` is also applied permanently to `PermutationModule`. Unsafe operations of the internal Buffer were
+  organized into scoped `unsafe` per ownership boundary, and 0 warnings under the strict setting were confirmed.

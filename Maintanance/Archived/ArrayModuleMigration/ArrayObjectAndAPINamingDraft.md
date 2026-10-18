@@ -1,5 +1,9 @@
 # BareArray / OptionalArray object and API naming draft
 
+## TL;DR（人間向け）
+
+BareArray・OptionalArrayの型名とアクセスAPIの名前を、ユーザー・Codex・Claudeの独立した候補出し→投票用紙→採点→議論で決めた過程の記録。決定の正本は`Current/PUBLIC_API_NAMING_DECISIONS.md`で、この文書は検討経緯と改名の引渡しを残す。2026-10-13にユーザーがXcodeで`ElementBuffer`／`OptionalElementBuffer`の系列へ改名し、関連の更新とビルド・テストが成功した。
+
 Status: naming decisions are complete. `Current/PUBLIC_API_NAMING_DECISIONS.md` is authoritative. This
 document preserves the deliberation and provides the bounded implementation handoff; it does not
 authorize the frozen production rename task by itself.

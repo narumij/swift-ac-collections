@@ -1,85 +1,95 @@
 # ElementBuffer系旧名互換targetの削除
 
+## TL;DR（人間向け）
+
+ElementBuffer系の旧名facade target（`BareArrayModule`・`OptionalArrayModule`）を削除し、新moduleだけをpackageと継続CIに残した実行task（ARRAY-018、DONE）の記録。ローカル検証とPR #196の全job成功を確かめ、Claudeの独立目視検査の指摘と、ユーザー指示によるmaintenance folder・監査文書名の統一も反映した。本文中の歴史上の型名・target名・当時のsource pathは変えていない。
+
 ## Task
 
 - ID: `ARRAY-018`
-- 種別: `EXECUTION`
-- 状態: `DONE`
-- 担当: Codex
-- 現在の中間ゴールへの近さ: `DIRECT`
-- 前提: `ARRAY-016`
+- Kind: `EXECUTION`
+- State: `DONE`
+- Owner: Codex
+- Closeness to the current intermediate goal: `DIRECT`
+- Prerequisite: `ARRAY-016`
 
-## ゴール
+<a id="ゴール"></a>
+## Goal
 
-ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`OptionalArrayModule`の旧名facade targetを
-削除し、`ElementBufferModule`と`OptionalElementBufferModule`だけをpackageと継続CIへ残す。
+As the final state of the ElementBuffer-family module-name migration, delete the old-name facade targets `BareArrayModule` and `OptionalArrayModule`,
+and leave only `ElementBufferModule` and `OptionalElementBufferModule` in the package and continuous CI.
 
-## 確認した境界
+<a id="確認した境界"></a>
+## Confirmed boundaries
 
-- root packageが公開するlibrary productは`AcCollections`だけで、旧名facadeを直接含むlibrary productはない。
-- `AcCollections`は新moduleを直接再公開しており、旧名facadeの公開宣言には依存していない。
-- production sourceとbenchmarkは新moduleを直接importする。
-- 旧名facadeへの実行系依存は、manifest内の`AcCollections`・test target依存、互換smoke test、およびDocC CI entryに限定される。
-- 当初はmaintenance folder名を履歴・管理座標として改名対象外にしたが、現行module名との対応を記憶し続ける
-  負担と誤認を避けるため、ユーザーの追加指示で現行正本folderも新module名へ統一する。
-- benchmark task名rename互換はmodule target削除とは独立しており、削除しない。
+- The only library product the root package publishes is `AcCollections`; no library product directly contains the old-name facades.
+- `AcCollections` re-exports the new modules directly and does not depend on the public declarations of the old-name facades.
+- Production source and benchmarks import the new modules directly.
+- Execution-related dependencies on the old-name facades are limited to `AcCollections` and test target dependencies in the manifest, the compatibility smoke tests, and the DocC CI entries.
+- Initially the maintenance folder names were excluded from renaming as history and management coordinates, but to avoid the burden and misreading of continuing to remember their correspondence with the current module names,
+  the current canonical folders are also unified to the new module names by the user's additional instruction.
+- Compatibility for benchmark task-name renames is independent of deleting module targets and is not deleted.
 
-## 実行範囲
+<a id="実行範囲"></a>
+## Scope of execution
 
-1. `Package.swift`から旧名2 targetと、それらへの内部依存を削除する。
-2. `Sources/_BareArrayModule`と`Sources/_OptionalArrayModule`のfacade source・DocCを削除する。
-3. 旧名だけをimportするcompatibility smoke testを削除する。
-4. PR DocC matrixから旧名2 targetを削除し、新moduleを含む5 target構成へ戻す。
-5. 現行の移行正本とCI計画へ、旧名facade終了後の構成を反映する。
-6. 旧名facadeのDocC入口を削除するだけで終えず、新module名のDocC入口をそれぞれのtargetへ配置する。
-7. 旧名2 maintenance folderを新module名のfolderへ移し、現行・Archivedを含む管理path参照をすべて
-   新座標へ統一する。本文中の歴史上の型名・target名・source pathは変更しない。
+1. Delete the 2 old-name targets and the internal dependencies on them from `Package.swift`.
+2. Delete the facade sources and DocC of `Sources/_BareArrayModule` and `Sources/_OptionalArrayModule`.
+3. Delete the compatibility smoke tests that import only the old names.
+4. Delete the 2 old-name targets from the PR DocC matrix and return it to the 5-target structure including the new modules.
+5. Reflect the structure after the end of the old-name facades in the current migration canonical and the CI plan.
+6. Do not stop at deleting the old-name facades' DocC entries; place DocC entries with the new module names in the respective targets.
+7. Move the 2 old-name maintenance folders to folders with the new module names, and unify all management path references, including current and Archived, to the new
+   coordinates. Historical type names, target names and source paths in the body text are not changed.
 
-## 検証
+<a id="検証"></a>
+## Verification
 
-- manifest評価と既定のpackage testが成功する。
-- `ENABLE_OPTIONAL_ELEMENT_BUFFER`有効時の対象testが成功する。
-- benchmark packageのrelease buildとCI libraryのtask解決が成功する。
-- `ElementBufferModule`と`OptionalElementBufferModule`のDocC生成が成功する。
-- 両新moduleの生成済みDocCに、新module名のmodule landing pageが含まれる。
-- 旧maintenance folderと、それを指す管理path参照が残らない。
-- 実行系に旧名targetへの依存またはimportが残らない。
-- remote PR CIでperformanceを含む全jobが完走する。
+- Manifest evaluation and the default package tests succeed.
+- The target tests with `ENABLE_OPTIONAL_ELEMENT_BUFFER` enabled succeed.
+- The benchmark package's release build and the CI library's task resolution succeed.
+- DocC generation of `ElementBufferModule` and `OptionalElementBufferModule` succeeds.
+- The generated DocC of both new modules contains module landing pages with the new module names.
+- No old maintenance folders or management path references pointing to them remain.
+- No dependency on or import of the old-name targets remains in execution.
+- All jobs, including performance, complete in the remote PR CI.
 
-## 停止条件
+<a id="停止条件"></a>
+## Stop conditions
 
-旧名targetを直接提供するlibrary productまたはrepository外consumerが確認され、互換終了時期について新しい
-製品判断が必要になった場合は、削除を進めず判断taskへ分離する。
+If a library product directly providing the old-name targets or a consumer outside the repository is confirmed and a new
+product decision on when compatibility ends becomes necessary, do not proceed with the deletion; separate it into a decision task.
 
-## ローカル検証（2026-10-14）
+<a id="ローカル検証2026-10-14"></a>
+## Local verification (2026-10-14)
 
-- YAML parseと`swift package --disable-sandbox dump-package`が成功した。
-- `swift test --disable-sandbox`が成功した。
-- `ENABLE_OPTIONAL_ELEMENT_BUFFER`有効のOptional系通常test 35件とDeath Test 21件が成功した。
-- benchmark packageのrelease buildが成功した。
-- `ElementBufferModule`と`OptionalElementBufferModule`のDocC generationが`--warnings-as-errors`付きで成功した。
-- 実行系の旧名target定義、依存、import、およびDocC matrix entryが残っていないことを検索で確認した。
-- Claudeの独立目視検査で、`Utilities`配下のcompiler fixture 2件に旧名importが残ることと、`Tests/TESTING.md`の
-  compatibility test記述が古いことを検出した。両方を修正し、fixtureのcompile-pass 1件と期待する
-  escape diagnostic 4件をscriptで再確認した。目視検査はCodexが受け入れた。
-- commit `7377b76d`のPR #196 CI run `38465709778`で、performanceを含む10 jobsすべてのsuccessを確認した。
-  DocC matrixは旧名2 targetを除いた5 targetで完走し、旧名facade終了後のremote構成を受け入れた。
-- 完了記録後、旧名facadeのDocC landing pageだけを削除し、新module側へ対応するlanding pageを配置していない
-  不足を確認した。`ElementBufferModule.docc/ElementBufferModule.md`と
-  `OptionalElementBufferModule.docc/OptionalElementBufferModule.md`を追加し、両targetを
-  `--warnings-as-errors`付きで生成して成功した。生成済みJSONでも新module名のoverviewと4公開型への
-  symbol linkが採用されたことを確認した。
-- Claudeの第2回独立目視検査で、Bare利用者向けドラフトに削除済みmoduleからの導入経路が残るMUST-FIXを
-  検出した。両draftのmodule名、`AcCollections` DocCのOptional trait境界、ElementBuffer landing pageの案内、
-  両auditの現行・履歴pathとOptionalのDocC CI記述を修正した。`AcCollections`と`ElementBufferModule`のDocCを
-  `--warnings-as-errors`付きで再生成して成功し、指摘を受け入れた。公開コメント拡充、公開媒体の言語、
-  release向け移行説明は後続ドキュメント作業として分離した。
-- ユーザーの追加指示により、記憶上の例外だったmaintenance folder名も
-  `ElementBufferModule`／`OptionalElementBufferModule`へ移した。8文書を移動し、現行・Archivedを含む管理path
-  241件を新座標へ置換した。歴史上の型名、target名、および当時のsource pathは履歴事実として保持した。
-- 続くユーザー指示で監査文書名も`ElementBufferAudit.md`／`OptionalElementBufferAudit.md`へ統一し、全参照を
-  新しいfile名へ置換した。安定task IDと本文中の歴史上の名称は変更していない。
-- Claudeの独立置換漏れ検査は`accept`。新path 8種類・246参照の実在と整合、旧管理座標のlive参照0件、
-  歴史上のsource pathと安定task IDの保持を確認した。指摘されたArchived品質評価2件の現行Quality Profile
-  案内を修正した。過去Return内の管理path表現も、旧座標を現行文書に残さず記憶負担を減らすというユーザー目的に
-  従って検査時点の判断と分かる表現へ統一し、変更前の原文はGit履歴に保持した。
+- YAML parsing and `swift package --disable-sandbox dump-package` succeeded.
+- `swift test --disable-sandbox` succeeded.
+- With `ENABLE_OPTIONAL_ELEMENT_BUFFER` enabled, 35 normal Optional-family tests and 21 Death Tests succeeded.
+- The benchmark package's release build succeeded.
+- DocC generation of `ElementBufferModule` and `OptionalElementBufferModule` succeeded with `--warnings-as-errors`.
+- A search confirmed that no old-name target definitions, dependencies, imports or DocC matrix entries remain in execution.
+- Claude's independent visual inspection found old-name imports remaining in 2 compiler fixtures under `Utilities` and an outdated
+  compatibility-test description in `Tests/TESTING.md`. Both were fixed, and the fixture's 1 compile-pass and the expected
+  4 escape diagnostics were re-confirmed by script. Codex accepted the visual inspection.
+- In PR #196 CI run `38465709778` for commit `7377b76d`, all 10 jobs including performance succeeded.
+  The DocC matrix completed with 5 targets excluding the 2 old-name targets, and the remote structure after the end of the old-name facades was accepted.
+- After recording completion, a gap was found: only the old-name facades' DocC landing pages had been deleted, without placing corresponding landing pages on the new module side.
+  `ElementBufferModule.docc/ElementBufferModule.md` and
+  `OptionalElementBufferModule.docc/OptionalElementBufferModule.md` were added, and both targets were
+  generated with `--warnings-as-errors` successfully. The generated JSON also confirmed that the overviews with the new module names and the symbol links to the 4 public types
+  were adopted.
+- Claude's second independent visual inspection found a MUST-FIX: the Bare user-facing draft still had an import route from the deleted module.
+  Fixed the module names in both drafts, the Optional trait boundary in the `AcCollections` DocC, the guidance in the ElementBuffer landing page,
+  and the current and historical paths and Optional's DocC CI description in both audits. Regenerated the DocC of `AcCollections` and `ElementBufferModule`
+  with `--warnings-as-errors` successfully, and the finding was accepted. Expanding public comments, the language of public media, and
+  release-oriented migration explanations were separated as later documentation work.
+- By the user's additional instruction, the maintenance folder names, which had been an exception kept in memory, were also moved to
+  `ElementBufferModule` / `OptionalElementBufferModule`. 8 documents were moved, and 241 management paths, including current and Archived,
+  were replaced with the new coordinates. Historical type names, target names and source paths of their time were kept as historical facts.
+- By a following user instruction, the audit document names were also unified to `ElementBufferAudit.md` / `OptionalElementBufferAudit.md`, and all references
+  were replaced with the new file names. Stable task IDs and historical names in the body text were not changed.
+- Claude's independent check for missed replacements was `accept`: confirmed that the 8 new paths and 246 references exist and are consistent, that live references to the old management coordinates are 0,
+  and that historical source paths and stable task IDs are kept. The current Quality Profile guidance in 2 Archived quality assessments that were pointed out
+  was fixed. Management path expressions inside past Returns were also unified, following the user's purpose of not leaving old coordinates in current documents and reducing the memory burden,
+  into wording that shows the judgment at the time of inspection; the original text before the change is kept in the Git history.

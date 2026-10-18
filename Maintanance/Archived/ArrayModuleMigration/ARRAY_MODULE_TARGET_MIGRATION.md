@@ -1,112 +1,121 @@
 # ElementBuffer系target・module名移行の調査
 
+## TL;DR（人間向け）
+
+公開型を`ElementBuffer`・`OptionalElementBuffer`へ改名した後も残っていた旧target・module名について、新moduleへ移して旧名を薄い互換targetとして残す方式を調査した記録（ARRAY-015、DONE）。ユーザーの指定した方向と新module名に沿って、変更対象と影響範囲、benchmark・CIへの影響を確かめ、実際の移行は後続のARRAY-016へ渡した。
+
 ## Task
 
 - ID: `ARRAY-015`
-- 種別: `DISCOVERY`
-- 状態: `DONE`
-- 担当: Codex
-- 現在の中間ゴールへの近さ: `NEAR`
+- Kind: `DISCOVERY`
+- State: `DONE`
+- Owner: Codex
+- Closeness to the current intermediate goal: `NEAR`
 
-## 背景
+<a id="背景"></a>
+## Background
 
-公開所有型は`ElementBuffer`と`OptionalElementBuffer`へ改名済みだが、SwiftPM target、module、source
-directory、test target、および保守資料には`BareArrayModule`と`OptionalArrayModule`が残っている。
-旧名は現行moduleを指す座標としては有効だが、旧製品像と現在の公開型・提供区分を読み替える認知負荷が
-実際のtask見直しで観測された。
+The public owned types have been renamed to `ElementBuffer` and `OptionalElementBuffer`, but `BareArrayModule` and `OptionalArrayModule` remain in SwiftPM targets, modules, source
+directories, test targets and maintenance materials.
+The old names are valid as coordinates pointing to the current modules, but the cognitive load of translating between the old product image and the current public types and provision categories
+was observed in an actual task review.
 
-Swift Package Indexへ登録するとmodule別DocC pageと公開導線が外部化される。登録後のmodule renameを
-避けるため、0.9.x登録より前に公開型に合わせた新moduleへ移行し、旧module名を薄い互換targetとして残す
-実行境界を確定する。
+Registering with the Swift Package Index externalizes per-module DocC pages and public routes. To avoid renaming modules after registration,
+settle, before the 0.9.x registration, the execution boundary for migrating to new modules matching the public types and keeping the old module names as thin compatibility targets.
 
-## 採用済み方向
+<a id="採用済み方向"></a>
+## Adopted direction
 
-2026-10-14、ユーザーはRedBlackTreeの既存方式と同様に、新moduleへ移行しながら旧module名を互換維持に
-使う方向を指定した。`Sources/_RedBlackTreeModule/RedBlackTreeModule.swift`は
-`@_exported import RedBlackTreeCollections`だけを持ち、manifest上の旧targetは新targetへ依存する。
-ElementBuffer系でもこの薄い互換facade方式を採用方向とし、現行名の恒久維持または旧module名を残さない
-非互換renameは比較候補から外す。
+On 2026-10-14 the user specified, like RedBlackTree's existing method, the direction of migrating to new modules while using the old module names to keep
+compatibility. `Sources/_RedBlackTreeModule/RedBlackTreeModule.swift` has only
+`@_exported import RedBlackTreeCollections`, and the old target in the manifest depends on the new target.
+This thin compatibility-facade method is adopted as the direction for the ElementBuffer family too; keeping the current names permanently, or an incompatible rename that does not keep the old module names,
+are removed from the comparison candidates.
 
-続く確認で、新しい実装target・module名を`ElementBufferModule`と
-`OptionalElementBufferModule`にすることもユーザーが指定した。旧名の`BareArrayModule`と
-`OptionalArrayModule`は、RedBlackTreeと同様に新moduleを`@_exported import`する薄い互換targetとして
-残す。互換targetの削除時期は定めず、今回の移行では削除しない。
+In a following confirmation, the user also specified that the new implementation target and module names be `ElementBufferModule` and
+`OptionalElementBufferModule`. The old names `BareArrayModule` and
+`OptionalArrayModule` are kept, as with RedBlackTree, as thin compatibility targets that `@_exported import` the new modules. No time for deleting the compatibility targets
+is set, and they are not deleted in this migration.
 
-## 現在確認できる事実
+<a id="現在確認できる事実"></a>
+## Facts confirmed now
 
-- `Package.swift`は`OptionalArrayModule`、`OptionalArrayModuleTests`、`BareArrayModule`、
-  `BareArrayModuleTests`をtarget名として使用している。
-- `AcCollections`は`OptionalArrayModule`を`ENABLE_OPTIONAL_ELEMENT_BUFFER` trait時だけ、
-  `BareArrayModule`を通常構成で依存・再公開する。
-- 公開型名、target名、module名、directory名は現在一致していない。
-- RedBlackTreeでは過去にdirectory、target・test import、旧名再公開targetを段階的に移行した実績がある。
-  この実績は選択肢の証拠であり、同じ方式を自動採用する根拠にはしない。
-- 2026-10-13の公開型renameでは、HEADのperformance CI libraryをrename前baselineへそのまま渡し、
-  baselineに存在しない新task名を要求して`unknown tasks`になった。現在は旧名・新名のlibrary入力と
-  結果名を対応付ける互換処理がある。
-- 過去のPrime Codexは、ElementBuffer系のtarget・module renameを実行した経験がない。公開型renameの
-  回復手順とRedBlackTreeの移行履歴は参考にできるが、今回の成立手順を実証した証拠ではない。
-- 実行系の旧module名参照を全数検索した結果、変更対象は`Package.swift`のtarget・dependency、
-  `Sources/AcCollections/AcCollections.swift`の再公開import、両test群のimport、benchmark source 2件の
-  import、および`.github/workflows/ci.yml`のDocC target matrixに限られる。performance CIとcandidate
-  workflowはbenchmark source fileの存在を確認するが、module名を比較契約やtask titleとして使わない。
-- benchmark packageはproduct `AcCollections`だけに依存し、benchmark task titleは公開型名に基づく現行名を
-  維持する。したがって今回のmodule renameは、rename前baseline向けlibrary定義や結果名正規化を変更しない。
-- root packageが公開するproductは`AcCollections`だけである。旧moduleの互換targetはrepository内の直接importと
-  既存source compatibilityを維持するが、独立library productを新設する判断は今回の移行に含めない。
+- `Package.swift` uses `OptionalArrayModule`, `OptionalArrayModuleTests`, `BareArrayModule` and
+  `BareArrayModuleTests` as target names.
+- `AcCollections` depends on and re-exports `OptionalArrayModule` only with the `ENABLE_OPTIONAL_ELEMENT_BUFFER` trait, and
+  `BareArrayModule` in the normal configuration.
+- Public type names, target names, module names and directory names do not currently match.
+- RedBlackTree has a past record of migrating directories, target and test imports and an old-name re-export target in stages.
+  That record is evidence of an option, not a ground for adopting the same method automatically.
+- In the public type rename of 2026-10-13, HEAD's performance CI library was passed as is to the pre-rename baseline,
+  which requested new task names not present in the baseline and gave `unknown tasks`. There is now compatibility processing that maps the old and new names of the library input
+  and the result names.
+- The past Prime Codex has no experience of executing an ElementBuffer-family target/module rename. The recovery procedure of the public type rename
+  and RedBlackTree's migration history can be referred to, but they are not evidence demonstrating a working procedure for this time.
+- A full search of old module-name references in execution found that the change targets are limited to the targets and dependencies in `Package.swift`,
+  the re-export import in `Sources/AcCollections/AcCollections.swift`, the imports of both test groups, the imports of 2 benchmark sources,
+  and the DocC target matrix in `.github/workflows/ci.yml`. The performance CI and the candidate
+  workflow check that benchmark source files exist, but do not use module names as comparison contracts or task titles.
+- The benchmark package depends only on the product `AcCollections`, and benchmark task titles keep the current names based on the public type names.
+  Therefore this module rename does not change the library definitions for the pre-rename baseline or the result-name normalization.
+- The only product the root package publishes is `AcCollections`. The old modules' compatibility targets keep direct imports within the repository and
+  existing source compatibility, but a decision to create an independent library product is not included in this migration.
 
-## 調査範囲
+<a id="調査範囲"></a>
+## Scope of investigation
 
-1. `Package.swift`のtarget、dependency、trait条件、test targetを列挙する。
-2. production、test、benchmark、compiler fixture、CI、DocC、maintenance文書、単一file生成物にある
-   `import`とmodule名依存を、構成条件とともに確認する。
-   performance CIについては`Current/PERFORMANCE_CI_CHANGE_GUIDE.md`を正本とし、target・module renameが
-   benchmark sourceの完全なtask title、HEADからbaselineへ渡すlibrary定義、結果名の正規化、および
-   base・currentそれぞれのharness buildへ与える影響を分ける。
-3. repository外consumerで現在成立している直接importと`AcCollections`再公開経路への影響を分ける。
-4. 新名称へ移行し、旧module名を薄い互換targetとして残す構成について、source compatibility、SPI・DocC表示、
-   移行量、保守負担を確認する。RedBlackTreeの現行manifest、1行の再公開source、互換module用DocCを
-   最小構成の基準とし、ElementBuffer系で追加条件が必要な箇所を抽出する。
-5. `ElementBuffer`系と`OptionalElementBuffer`系を同時に扱う必要があるか、提供区分の違いから分離すべきかを
-   確認する。
-6. 判断が必要な場合は、一判断ごとの`DECISION`候補へ分離し、移行実装をこのtaskへ含めない。
-7. rename実行候補を作る場合は、performance CIの互換処理をrenameより前に成立させる必要があるかを確認する。
-   task titleの意味や測定境界が変わる場合はrename互換として扱わず、別workloadまたはbaseline切替として分離する。
+1. Enumerate the targets, dependencies, trait conditions and test targets in `Package.swift`.
+2. Check `import`s and module-name dependencies, with their configuration conditions, in production, tests, benchmarks, compiler fixtures, CI, DocC, maintenance documents and single-file outputs.
+   For the performance CI, take `Current/PERFORMANCE_CI_CHANGE_GUIDE.md` as canonical, and separate the effects of a target/module rename on
+   the full task titles in the benchmark source, the library definitions passed from HEAD to the baseline, the normalization of result names, and the harness builds of
+   base and current respectively.
+3. Separate the effects on direct imports that currently work in consumers outside the repository and on the `AcCollections` re-export route.
+4. For the structure that migrates to the new names and keeps the old module names as thin compatibility targets, check source compatibility, SPI/DocC display,
+   the amount of migration and the maintenance burden. Take RedBlackTree's current manifest, its one-line re-export source and its compatibility-module DocC as
+   the minimal baseline, and extract the places where the ElementBuffer family needs additional conditions.
+5. Check whether the `ElementBuffer` family and the `OptionalElementBuffer` family must be handled together, or should be separated because of their different provision categories.
+6. If a judgment is needed, separate it into one `DECISION` candidate per judgment, and do not include migration implementation in this task.
+7. When creating a rename execution candidate, check whether the performance CI's compatibility processing must be established before the rename.
+   If the meaning of task titles or the measurement boundary changes, do not treat it as rename compatibility; separate it as a different workload or a baseline switch.
 
-## 調査結論
+<a id="調査結論"></a>
+## Conclusion of the investigation
 
-- 実装本体を`Sources/ElementBufferModule`と`Sources/OptionalElementBufferModule`へ移し、それぞれ同名の
-  target・moduleを作る。
-- 旧名targetは`Sources/_BareArrayModule`と`Sources/_OptionalArrayModule`の薄いfacadeとし、新moduleへ依存して
-  `@_exported import`する。旧名targetの削除は別の明示的な判断がない限り行わない。
-- test target名とdirectory名も公開型体系へ合わせて`ElementBufferModuleTests`と
-  `OptionalElementBufferModuleTests`へ移す。
-- `AcCollections`は新moduleへ直接依存・再公開する。Optional側のtrait条件と
-  `ENABLE_OPTIONAL_ELEMENT_BUFFER`名は維持する。
-- benchmarkのimportだけを新module名へ変更し、既存task title、workload、baseline比較、結果正規化は変更しない。
-- DocC target matrixは新module名へ置換する。旧互換module用DocCは、互換性の説明だけを持つ最小構成にする。
-- source、test、manifest、CI、公開文書の実変更と検証は後続の実行taskで行う。
+- Move the implementation bodies to `Sources/ElementBufferModule` and `Sources/OptionalElementBufferModule`, and create
+  targets and modules of the same names.
+- The old-name targets are thin facades in `Sources/_BareArrayModule` and `Sources/_OptionalArrayModule` that depend on the new modules and
+  `@_exported import` them. The old-name targets are not deleted without a separate explicit decision.
+- The test target names and directory names are also moved, to match the public type system, to `ElementBufferModuleTests` and
+  `OptionalElementBufferModuleTests`.
+- `AcCollections` depends on and re-exports the new modules directly. The Optional side's trait condition and the
+  name `ENABLE_OPTIONAL_ELEMENT_BUFFER` are kept.
+- Only benchmark imports are changed to the new module names; existing task titles, workloads, baseline comparison and result normalization are not changed.
+- The DocC target matrix is replaced with the new module names. The old compatibility modules' DocC is a minimal structure that only explains compatibility.
+- The actual changes and verification of source, tests, manifest, CI and public documents are done in the following execution task.
 
-## このtaskで変更しないこと
+<a id="このtaskで変更しないこと"></a>
+## Not changed in this task
 
-- `ENABLE_OPTIONAL_ELEMENT_BUFFER` trait名の変更
-- ElementBufferの1.0提供対象への復帰
-- benchmark workload名、task title、性能判定、baseline
-- root packageのlibrary product構成
+- Changing the trait name `ENABLE_OPTIONAL_ELEMENT_BUFFER`
+- Returning ElementBuffer to the 1.0 provision targets
+- Benchmark workload names, task titles, performance judgments, baselines
+- The root package's library product structure
 
-## 完了条件
+<a id="完了条件"></a>
+## Completion conditions
 
-- 現行名に依存するsurfaceと構成条件が再現可能な根拠つきで列挙されている。
-- performance CIについて、currentの完全なtask名、rename前baselineで解決する完全なtask名、結果正規化後の
-  完全なtask名、および両世代のharness build境界が確認されている。
-- 薄い互換target付きrenameのmanifest、source、DocC、consumer、CIへの影響が確認されている。
-- 両moduleを一括または分離して判断する根拠が示されている。
-- 必要な製品判断と、判断後の実行単位が混ざらず分離されている。
-- Swift Package Index登録前に閉じる必要がある範囲が明示されている。
+- The surfaces and configuration conditions that depend on the current names are listed with reproducible grounds.
+- For the performance CI, the current full task names, the full task names resolved in the pre-rename baseline, the full task names after result normalization,
+  and the harness build boundaries of both generations have been checked.
+- The effects of a rename with thin compatibility targets on the manifest, source, DocC, consumers and CI have been checked.
+- Grounds for judging both modules together or separately are shown.
+- The needed product decisions and the execution units after the decisions are separated without mixing.
+- The scope that must be closed before Swift Package Index registration is stated explicitly.
 
-## 後続
+<a id="後続"></a>
+## Follow-up
 
-`ARRAY-016`で、上記のrename、旧名互換facade、import更新、DocC target更新、およびbuild・test・benchmark
-検証を一つの機械的移行として実施する。コンパイラ診断で未確認のmodule依存が見つかった場合は診断に従って
-同task内で追従するが、公開product、trait、workload、または互換終了条件の変更が必要になった場合は停止して
-別判断へ分離する。
+In `ARRAY-016`, the rename above, the old-name compatibility facades, import updates, DocC target updates, and build/test/benchmark
+verification are carried out as one mechanical migration. If compiler diagnostics find an unconfirmed module dependency, follow the diagnostics
+within the same task, but if a change to public products, traits, workloads or the end condition of compatibility becomes necessary, stop and
+separate it into a different decision.

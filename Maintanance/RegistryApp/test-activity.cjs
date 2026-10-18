@@ -6,6 +6,8 @@ const c={};vm.createContext(c);vm.runInContext(source,c);
 const event=(n,kind='return')=>({schemaVersion:1,id:n.toString(16).padStart(32,'0'),taskId:'OPS-111',event:kind,owner:'<img src=x onerror=alert(1)>',timestamp:'2026-10-18T12:00:00Z',reason:'repeat '+n,commitSha:'a'.repeat(40)});
 const rows=ns=>c.validateActivityRows(ns.map(n=>event(n)),'events');
 assert.equal(rows([1,2]).length,2);
+assert(!html.includes('id="activity-commits"'));
+assert(html.includes("for(const kind of ['events'])"));
 assert(rows([1])[0].detail.includes('<img')&&rows([1])[0].title.includes('a'.repeat(40)));
 for(const changes of [{event:'success'},{taskId:'../OPS-111'},{id:'bad'},{owner:'bad\n'},{timestamp:'today'},{commitSha:'abcdef'},{reason:'x'.repeat(241)}])assert.throws(()=>c.validateActivityRows([{...event(1),...changes}],'events'));
 assert.throws(()=>c.validateActivityRows([event(1),event(1)],'events'));
@@ -24,8 +26,11 @@ class Node{
 }
 {
  const track=new Node('track'),status=new Node('status');let active=null;
- const view=c.createActivityView(track,status,t=>new Node(t),()=>active);
+ const current={heading:new Node('heading'),detail:new Node('detail')};
+ const view=c.createActivityView(track,status,t=>new Node(t),()=>active,current);
  view.update(rows([1,2,3,4,5,6]));assert.equal(track.scrollLeft,1096,'initial latest');
+ assert.equal(current.heading.textContent,'現在：OPS-111 · 差し戻し');assert(current.detail.textContent.includes('repeat 6'),'latest detail restored separately');
+ assert.equal(track.children[0].children.length,1,'one line only');assert.equal(track.children[0].dataset.event,'return');
  const stable=track.children[2],moves=track.moves;view.update(rows([1,2,3,4,5,6]));
  assert.strictEqual(track.children[2],stable);assert.equal(track.moves,moves,'unchanged nodes never move');
  track.scrollLeft=300;const anchor=track.children[1],offset=anchor.getBoundingClientRect().left;
@@ -35,7 +40,7 @@ class Node{
  assert.equal(track.scrollLeft,34,'past browsing does not follow');
  active=null;track.scrollLeft=track.scrollWidth;view.update(rows([2,3,4,5,6,7,8]));assert.equal(track.scrollLeft,1362,'latest follows');
  active=track.children[5];const old=track.scrollLeft;view.update(rows([2,3,4,5,6,7,8,9]));assert.equal(track.scrollLeft,old,'focused card inhibits follow');
- view.failure();assert(status.textContent.includes('最終情報を保持'));assert.equal(track.children.length,8);
+ const detailBefore=current.detail.textContent;view.failure();assert.equal(current.detail.textContent,detailBefore,'failure retains latest detail');assert(status.textContent.includes('最終情報を保持'));assert.equal(track.children.length,8);
  view.update(rows([2,3,4,5,6,7,8,9]));assert.equal(status.dataset.stale,'false');
 }
 async function main(){
@@ -56,7 +61,7 @@ async function main(){
  const commits=c.createActivityPoller({kind:'commits',fetchRecord:async path=>{assert.equal(path,'/activity-commits');return {ok:false};},view:{update:()=>assert.fail('failed commit row must not paint'),failure:()=>{}},isHidden:()=>false,schedule,cancel,makeController:()=>({signal:{},abort(){}})});
  await commits.poll();assert.strictEqual(last,eventsLast,'commit failure cannot affect event row');
  assert(!source.includes('innerHTML')&&!source.includes('render(')&&!source.includes('/sync')&&!source.includes('window.scroll'),'isolated text-only updates');
- assert(html.includes('.activity-timelines{height:144px')&&html.includes('overflow-anchor:none'),'fixed footprint, explicit scroll anchoring');
+ assert(html.includes('.activity-timelines{height:48px')&&html.includes('overflow-anchor:none'),'fixed footprint, explicit scroll anchoring');
  console.log('PASS: activity validation; repeated trips; stable DOM/focus; rolling-window scroll anchor; latest follow; isolated polling, recovery, hidden pause/abort, timeout.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

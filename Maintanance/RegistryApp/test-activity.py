@@ -66,6 +66,71 @@ class ActivityTests(unittest.TestCase):
             sent = json.loads(body)
             self.assertEqual(code, 200); self.assertEqual(sent[1]['next'],'Astra'); self.assertEqual(sent[2]['presence'],'waiting'); self.assertNotIn('next', sent[0])
 
+    def test_return_reference(self):
+        # OPS-129: --doc/--section/--next on a return; checked once at send time, stored as ref, never re-checked on read.
+        doc = '# T\n\n## A 姫Return\n\n本文\n\n### 下位\n\n## Dup\n\nx\n\n## Dup\n\ny\n\n## Empty\n\n### Child\n\nz\n\n## Blank\n\n## Code\n\n```\n## Fenced\n```\n\n## C#\n\nc\n'
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)/'repo'; (root/'docs').mkdir(parents=True); (root/'docs'/'r.md').write_text(doc)
+            outside = Path(folder)/'outside.md'; outside.write_text('## A 姫Return\n\nx\n'); (root/'docs'/'link.md').symlink_to(outside)
+            events = Path(folder)/'events.jsonl'
+            def cli(*args, cwd=folder):
+                script = 'import sys,activity;from pathlib import Path;activity.ROOT=Path(sys.argv[1]);activity.EVENTS=Path(sys.argv[2]);sys.argv=["activity.py"]+sys.argv[3:];activity.main()'
+                return subprocess.run([sys.executable,'-B','-c',script,str(root),str(events),*args],cwd=cwd,capture_output=True,text=True,env={'PYTHONPATH':str(Path(__file__).resolve().parent)})
+            base = ['--task','OPS-129','--event','return','--owner','姫']
+            # normal, from a different cwd: the path is repo-root relative
+            ok = cli(*base,'--doc','docs/r.md','--section','A 姫Return','--next','Astra',cwd=str(root/'docs'))
+            self.assertEqual(ok.returncode,0,ok.stderr)
+            self.assertEqual(json.loads(ok.stdout)['ref'],{'path':'docs/r.md','section':'A 姫Return'})
+            before = events.read_bytes()
+            for args, message in (
+                (['--doc','docs/r.md','--next','Astra'],'required together'),
+                (['--section','A 姫Return','--next','Astra'],'required together'),
+                (['--doc','docs/r.md','--section','A 姫Return'],'required together'),
+                (['--doc','docs/r.md','--section','A','--next','Astra'],'not found'),
+                (['--doc','docs/r.md','--section','Dup','--next','Astra'],'not unique'),
+                (['--doc','docs/r.md','--section','Blank','--next','Astra'],'empty'),
+                (['--doc','docs/r.md','--section','Fenced','--next','Astra'],'not found'),
+                (['--doc','../outside.md','--section','A 姫Return','--next','Astra'],'outside'),
+                (['--doc','docs/link.md','--section','A 姫Return','--next','Astra'],'outside'),
+                (['--doc',str(root/'docs'/'r.md'),'--section','A 姫Return','--next','Astra'],'relative'),
+                (['--doc','docs/none.md','--section','A 姫Return','--next','Astra'],'not found')):
+                run = cli(*base,*args)
+                self.assertNotEqual(run.returncode,0,args); self.assertIn(message,run.stderr,args); self.assertEqual(run.stdout,'')
+            work = cli('--task','OPS-129','--event','work','--owner','姫','--doc','docs/r.md','--section','A 姫Return','--next','Astra')
+            self.assertIn('return only',work.stderr)
+            self.assertIn('Headings: ',cli(*base,'--doc','docs/r.md','--section','A','--next','Astra').stderr,'candidates are listed')
+            self.assertEqual(events.read_bytes(),before,'nothing is written on any rejection')
+            # a section with only a subsection is not empty; a closing # in the text is kept
+            with patch.object(activity,'ROOT',root):
+                self.assertEqual(activity.check_ref('docs/r.md','Empty')['section'],'Empty')
+                self.assertEqual(activity.check_ref('docs/r.md','C#')['section'],'C#')
+            # a fence closes only on the same character, at least as long, with nothing but spaces after it
+            (root/'docs'/'f.md').write_text('# F\n\n````\n```\n## Fake1\n```\n````\n\n~~~\n```\n## Fake2\n~~~ text\n## Fake3\n~~~~  \n\n## Real\n\nr\n')
+            with patch.object(activity,'ROOT',root):
+                for fake in ('Fake1','Fake2','Fake3'):
+                    with self.assertRaisesRegex(ValueError,'not found'): activity.check_ref('docs/f.md',fake)
+                self.assertEqual(activity.check_ref('docs/f.md','Real')['section'],'Real')
+            # write failure: no success output, no event
+            events.write_bytes(before+b'{')
+            fail = cli(*base,'--doc','docs/r.md','--section','A 姫Return','--next','Astra')
+            self.assertNotEqual(fail.returncode,0); self.assertEqual(fail.stdout,''); self.assertEqual(events.read_bytes(),before+b'{')
+            events.write_bytes(before)
+            # history is not re-checked: the document changes, the stored ref is still readable, old records stay valid
+            (root/'docs'/'r.md').write_text('# gone\n')
+            old = {'schemaVersion':1,'id':'b'*32,'taskId':'OPS-111','event':'return','owner':'Astra','timestamp':'2026-10-18T12:00:00Z'}
+            with events.open('a') as stream: stream.write(json.dumps(old)+'\n')
+            with patch.object(activity,'EVENTS',events):
+                rows = activity.read_events()
+                self.assertEqual(rows[0]['ref']['section'],'A 姫Return'); self.assertNotIn('ref',rows[1])
+                for bad in ('x',{'path':'a'},{'path':'a','section':'b\n'}):
+                    with self.assertRaises(ValueError): activity.validate_event({**old,'ref':bad})
+                class Request:
+                    path='/activity-events'
+                    local_request=lambda self:True
+                    reply=lambda self,*args:args
+                code, body = serve.Handler.do_GET(Request())
+                self.assertEqual(code,200); self.assertEqual(json.loads(body)[0]['ref'],{'path':'docs/r.md','section':'A 姫Return'})
+
     def test_fixed_routes_and_git(self):
         class Request:
             path='/activity-events'

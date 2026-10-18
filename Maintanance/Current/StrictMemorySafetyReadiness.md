@@ -2,6 +2,15 @@
 
 # `.strictMemorySafety()` 採用レディネス調査 (CLAUDE_TASK.md Task 1)
 
+## TL;DR（人間向け）
+
+strict memory safetyの診断を調べ、各targetへ段階的に適用してきた記録です。採用済みtargetの記録と、赤黒木本体への全面適用の保留を分けて読みます。
+
+注釈と警告0は、unsafe実装の正しさそのものの証明ではありません。旧target名の経緯を含み、赤黒木の次段階は明示的な再開判断が必要です。
+
+<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+
+
 > 状態(2026-10-06): `AcCollections`、`RedBlackTreeModule`、`PermutationModule`への採用は完了。
 > `BareArrayModule`と`OptionalArrayModule`への採用も完了した。
 > `RedBlackTreeCollections`への全面適用は保留中で、

@@ -1,5 +1,14 @@
 # テストメンテナンス・ダッシュボード
 
+## TL;DR（人間向け）
+
+テスト整備の現在情報と、仕様・不足・手順への入口をまとめる資料です。詳しい過去ログは履歴側へ分けています。
+
+テスト成功だけで十分とはせず、公開APIと実装に対する仕様不足も確認します。仕事の委任は依頼票、具体的な試験手順はTEST_WORKFLOWを見ます。
+
+<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+
+
 現在情報だけを保持する。作業入口は `Tests/CLAUDE.md`、テスト固有の手順正本は [TEST_WORKFLOW.md](TEST_WORKFLOW.md)、CodexからClaudeへの依頼は
 `Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md`、2026-10-15までに完了した
 作業記録と旧handoffは `Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md` にある。

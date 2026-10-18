@@ -107,6 +107,12 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 文書を読めること、編集へ参加できること、正本として採用できること、および配置を変更できることを
 同じ権限として扱わない。上位文書の変更統制は、下位taskの実行権限から自動的には導かれない。
 
+### Canonical document language — provisional trial
+
+User decision, 2026-10-19: for new or substantively updated maintenance canonical documents, keep task/milestone card text and the human-facing `TL;DR` in Japanese; use English for newly written detailed content. Apply this prospectively during ordinary work, without bulk translation or rewriting unchanged sections just for language consistency. Mixed-language documents are acceptable during the trial.
+
+The Japanese summary must retain the decision, material rationale, open questions, and any action expected from the user. It is a reading aid, not a separate decision authority. Preserve original quotations, historical returns, identifiers, and existing references. This trial does not override document ownership or the language rules of product-facing documentation. Explicit user requests for Japanese take precedence. Review the trial through ordinary feedback; no separate translation or periodic review task is required.
+
 ### 新規正本の配置
 
 正本を新規作成するときは、`Maintanance/Current/`へ配置する。ユーザーが別の配置先を明示した場合は、その指定に従う。

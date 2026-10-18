@@ -108,6 +108,7 @@
 | `OPS-111` | `DONE` | Sol（実装・独立確認） / Astra（設計・受入） | [EXECUTION] Studioの作業イベントとコミット履歴を二段カード帯にする | 2026-10-18ユーザー依頼。受入・差し戻し・再確認などの往復を消さず表示し、Git履歴と並べて定期更新。Sol実装・独立確認とAstra受入済み。閲覧位置補正の差し戻し1回を記録。限定試験とsync/verify成功。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_ACTIVITY_TIMELINE.md` |
 | `OPS-112` | `DONE` | Sol（文書補正・独立確認） / Astra（受入・Registry反映） | [EXECUTION] 初回研究の未実施表記を実施記録と整合させる | 2026-10-18ユーザーの小さな非Studio作業依頼。OPS-105の受入済み実施記録に照合し、OPS-103の初回研究案内だけ補正。結果の再評価・新実験なし。作業Sol補正・確認Sol独立照合・Astra受入済み、差し戻しなし。ユーザーcommit承認により完了 | `Maintanance/Current/RESEARCH_STATUS_DOCUMENT_CORRECTION.md` |
 | `OPS-113` | `DONE` | Astra | [EXECUTION] 作業履歴を外枠色付き一行カードへ縮小する | 2026-10-18ユーザー依頼。コミット帯を廃止し、作業イベントのID・種別のみを表示。背景は帯と同色、外枠で種別を区別。詳細と原履歴を保持。文字帯の復活を含め実装・限定検査・受入済み。ユーザー表示確認・commit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_COMPACT_ACTIVITY.md` |
+| `OPS-124` | `DONE` | Astra | [EXECUTION] 作業イベントカードに担当名を表示する | タスクID・担当・工程を併記。表示のみ | `Maintanance/Current/STUDIO_ACTIVITY_OWNER.md` |
 | `OPS-123` | `DONE` | Astra / 姫 | [DISCOVERY] 今回の連携を往復で振り返り評価感想を残す | 姫初回→Astra応答→姫最終、その後双方の評価感想。制度変更なし | `Maintanance/Current/ASTRA_CLAUDE_COLLABORATION_RETROSPECTIVE.md` |
 | `OPS-122` | `DONE` | Astra | [EXECUTION] 作業イベントに検討中を表示する | 既存workの検討中表記。履歴・最近の作業へ反映 | `Maintanance/Current/STUDIO_CONSIDERATION_EVENT.md` |
 | `OPS-121` | `DONE` | Astra | [EXECUTION] 承認レーンに信号と件数を表示する | 信号・件数表示を技術受入。既存2試験と表示分岐確認PASS。実ブラウザ未確認 | `Maintanance/Current/STUDIO_APPROVAL_SIGNALS.md` |
@@ -409,6 +410,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-120` |
 | `OPS-048` | `OPS-121` |
 | `OPS-048` | `OPS-122` |
+| `OPS-048` | `OPS-124` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

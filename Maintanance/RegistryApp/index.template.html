@@ -916,8 +916,8 @@ function validateActivityRows(value,kind){
   if(kind==='events'){
    const id=text(v.id,36),taskId=text(v.taskId,40),event=text(v.event,24),owner=text(v.owner,80),reason=text(v.reason??'',240,false),sha=text(v.commitSha??'',40,false);
    if(v.schemaVersion!==1||!(/^[a-f0-9]{32}$/).test(id)||!(/^[A-Z][A-Z0-9]*-[0-9]+$/).test(taskId)||!Object.hasOwn(activityLabels,event)||(sha&&!(/^[a-f0-9]{40}$/).test(sha)))throw Error('Invalid event');
-   const label=event==='work'&&/^検討中[:：]/.test(reason)?owner+'検討中':activityLabels[event];
-   row={id,event,raw:{taskId,owner,reason,at,shortTime},heading:taskId+' · '+label,detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+label+' · '+owner+' · '+at+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
+   const label=event==='work'&&/^検討中[:：]/.test(reason)?'検討中':activityLabels[event];
+   row={id,event,raw:{taskId,owner,reason,at,shortTime},heading:taskId+' · '+owner+' · '+label,detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+label+' · '+owner+' · '+at+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
   }else{
    const sha=text(v.sha,40),subject=text(v.subject,4096,false);if(!/^[a-f0-9]{40}$/.test(sha))throw Error('Invalid commit');
    row={id:sha,heading:sha.slice(0,8)+' · '+subject,detail:shortTime,title:sha+' · '+at+' · '+subject};

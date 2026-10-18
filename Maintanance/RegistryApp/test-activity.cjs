@@ -29,7 +29,7 @@ class Node{
  const current={heading:new Node('heading'),detail:new Node('detail')};
  const view=c.createActivityView(track,status,t=>new Node(t),()=>active,current);
  view.update(rows([1,2,3,4,5,6]));assert.equal(track.scrollLeft,1096,'initial latest');
- assert.equal(current.heading.textContent,'現在：OPS-111 · 差し戻し');assert(current.detail.textContent.includes('repeat 6'),'latest detail restored separately');
+ assert.equal(current.heading.textContent,'現在：OPS-111 · <img src=x onerror=alert(1)> · 差し戻し');assert(current.detail.textContent.includes('repeat 6'),'latest detail restored separately');
  assert.equal(track.children[0].children.length,1,'one line only');assert.equal(track.children[0].dataset.event,'return');
  const stable=track.children[2],moves=track.moves;view.update(rows([1,2,3,4,5,6]));
  assert.strictEqual(track.children[2],stable);assert.equal(track.moves,moves,'unchanged nodes never move');

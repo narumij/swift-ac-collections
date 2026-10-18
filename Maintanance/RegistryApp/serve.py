@@ -13,6 +13,7 @@ from pathlib import Path
 
 import activity
 import approvals
+import probe
 import sqlite3
 
 import inbox  # edit versions in Inbox/ (OPS-082)
@@ -34,7 +35,7 @@ MAX_SAVE_BYTES = 10 * 1024 * 1024
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py'):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py'):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -114,9 +115,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
-        if self.path == '/commit-approvals':
+        if self.path in ('/commit-approvals', '/approval-probe'):
             try:
-                return self.reply(200, approvals.Store().list())
+                return self.reply(200, (probe.Store() if self.path == '/approval-probe' else approvals.Store()).list())
             except (OSError, ValueError, sqlite3.Error):
                 return self.reply(503, {'error': 'Approvals unavailable'})
         if self.path in ('/activity-events', '/activity-commits'):
@@ -143,13 +144,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         origin = f'http://127.0.0.1:{self.server.server_port}'
-        action = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals'}.get(self.path)
+        action = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe'}.get(self.path)
         if (not self.local_request() or self.headers.get('Origin') != origin
                 or action is None or self.headers.get('X-Registry-Studio') != action):
-            if self.path not in ('/sync', '/save', '/commit-approvals'):
+            if self.path not in ('/sync', '/save', '/commit-approvals', '/approval-probe'):
                 return self.reply(404, {'error': 'Not found'})
             return self.reply(403, {'error': 'Same-origin Studio request required'})
-        if action == 'commit-approvals':
+        if action in ('commit-approvals', 'approval-probe'):
             return self.commit_approvals()
         if action == 'save':
             return self.save()
@@ -186,7 +187,7 @@ class Handler(BaseHTTPRequestHandler):
             if len(raw) != length:
                 raise ValueError('Incomplete body')
             body = json.loads(raw.decode('utf-8'))
-            return self.reply(200, approvals.Store().mutate(body))
+            return self.reply(200, (probe.Store() if self.path == '/approval-probe' else approvals.Store()).mutate(body))
         except approvals.Conflict as error:
             return self.reply(409, {'error': str(error)})
         except (ValueError, UnicodeDecodeError, RecursionError):

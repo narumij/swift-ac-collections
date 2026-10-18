@@ -26,7 +26,7 @@ assert.deepEqual(Object.keys(c.validateContinuity({serverNow:'2026-10-19T01:00:0
  v.poll();queue[3].rej(Error('down'));await new Promise(r=>setImmediate(r));assert(last.fn('Astra').startsWith('継続 不調'));
  // markup: no longer in the top bar; fed into the member states of the work area
  const hdr=html.slice(html.indexOf('<header>'),html.indexOf('</header>'));assert(!hdr.includes('continuity-status')&&!hdr.includes('Astra 未確認'),'moved out of the top bar');
- assert(html.includes("onChange:(fn,owners)=>lamps.continuity(fn,owners)"),'feeds the member states');
- assert(html.includes("setInterval(status.paint,1000)")&&html.includes("if(!document.hidden)status.poll();},5000)"),'1 s age check, 5 s fetch, paused when hidden');
+ assert(html.includes("onData:data=>studio.continuity(data,performance.now())"),'feeds the member states through the shared snapshot (OPS-153)');
+ assert(html.includes("setInterval(()=>studio.tick(performance.now()),1000)")&&html.includes("if(!document.hidden)status.poll();},5000)"),'1 s clock input, 5 s fetch, paused when hidden');
  assert(!/CONTINUITY_OWNER/.test(html),'not fixed to Astra');
  console.log('PASS: OPS-139/141 continuity (all members, 55 s = confirmation old, end = continuous-run end, unknown/future/trouble, late answers ignored, moved to member states).');})().catch(e=>{console.error(e);process.exit(1);});

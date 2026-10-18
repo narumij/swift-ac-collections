@@ -61,6 +61,7 @@ Rules:
 - 開始待ち (start pending, OPS-151): a request whose `reason` starts with an ID (not PING / WAKE / UPDATE) and whose `next` is a member shows "開始待ち <ID>（sender time）" in that member's status, next to the declared state, which it never changes. Only that member's own record with the same ID and task closes it: a working, an ended or a return. A waiting with that ID leaves it open. A declaration without the ID, or with another ID (an old WAKE ACK, an earlier ended), never closes it and marks it "対応未確認". A recipient with no record of its own is listed with "本人記録なし". There is no cancel record yet; its format is undecided, so no text is matched as a cancel.
 - An ACK to a WAKE only confirms receipt. To end a wait, the member records `--presence ended`. "ACK済み" on the wake button means receipt as well.
 - Old records: up to the boundary event `feeb9d2cde9c43d0bc7d8cc0fa080e4b` (2026-10-18T19:35:45Z), an `ACK WAKE` keeps its old reading as "wait ended". It is labelled as the old reading and is never shown as the member's own declaration.
+- Order (OPS-153): members keep the order in which they first appeared in the record window; a new member is added at the end, one that leaves is removed, and one that returns goes to the end. The order is not re-sorted by new activity. (An earlier review note said "newest first"; that held only at first appearance.)
 - Two conversations using the same name cannot be told apart. Use different display names when they work at the same time.
 - Manual route: in conversation, say "starting", "returning; waiting next", "received (still waiting)", "ending the wait" and "last confirmation hh:mm" to keep the same meanings.
 - Not implemented: writing activity and continuity together automatically (partial failure and proxy sending would need design). The one-shot continuity CLI stays optional.
@@ -93,7 +94,7 @@ Rules:
 | 省力経路 | OPS-129の返却CLIでdoc/section/nextを検査し、refつき通知を一度で追記する。試行中 |
 | 手動経路 | 正本にReturnを書き、通常の会話または従来のactivity通知で参照と次担当を明示する。通知不能時は会話へ戻す。履歴直接編集はしない |
 | 依頼と返答の対応 | 正式依頼/Returnの参照とWAKE ID。全イベント共通の構造化requestId/replyToは未実装 |
-| 状態の表示 | event ID・owner・next・presenceから派生。直近200件の表示であり、正式状態の正本ではない |
+| 状態の表示 | event ID・owner・next・presenceから派生。直近200件の表示であり、正式状態の正本ではない。Studio keeps one input snapshot (activity, approvals and continuity each with last good value, success, generation and receipt time; the clock and UI state as inputs) and derives the timeline, cards, member status and 待機完了 once per input with one revision (OPS-153). The sources are combined as received, not as one simultaneous server state |
 | 重複・中断 | 自動重複排除なし。appendロック・末尾不完全時の拒否。結果不明時は手動確認 |
 | 手動フォールバック | 上記手順を定義。通知ツール停止からの往復を通した実地試験は未実施 |
 | 継続確認（OPS-139/141） | Each member writes one-shot `continuity.py --owner <name> --state alive` marks at milestones and around waits, and `ended` at an intended end of a continuous run. Studio shows them in the Work page member status (not the top bar) as "継続 hh:mm", "確認が古い" over 55 s, "連続動作の終了", "未確認" or "不調". "確認が古い" only means no recent confirmation; it does not change the declared state or assert a stop. Long tool runs also look old. No background heartbeat. Within a minute only while the page is in front and the server runs |

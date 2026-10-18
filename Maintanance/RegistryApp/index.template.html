@@ -1049,40 +1049,124 @@ function createActivityPoller({kind,fetchRecord,view,isHidden,schedule,cancel,ma
  function visibility(){if(timer!==null){cancel(timer);timer=null;}if(isHidden()){if(controller)controller.abort();}else poll();}
  return {poll,visibility};
 }
-function createActivityView(track,status,makeNode,getActive=()=>null,current=null){
+// OPS-153 区切り3: the timeline cards, their age step, the current band and the status text are composed by pure functions;
+// the timeline view only draws them, keeps node identity, the follow/anchor scroll and focus.
+function currentBandViewModel(rows){
+ const starts=confirmedStarts(rows),latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!isStateNotice(row,starts)).at(-1);
+ return latest?{heading:'現在：'+latest.heading,detail:latest.detail,title:latest.title||''}:{heading:'現在の作業：未登録',detail:'担当が更新する進行記録です。',title:''};
+}
+// OPS-138: one quiet step only: every card except the newest gets a slightly darker background.
+// The current band is derived only for a timeline that shows one (withCurrent); otherwise it is null.
+function activityTimelineViewModel(rows,withCurrent=true){return {cards:rows.map((row,index)=>({id:row.id,heading:row.heading,title:row.title,event:row.event||'',age:index===rows.length-1?'latest':'older'})),current:withCurrent?currentBandViewModel(rows):null,status:rows.length?'':'記録なし'};}
+const ACTIVITY_FAILURE_TEXT='取得不調 · 最終情報を保持';
+function createActivityTimelineView(track,status,makeNode,getActive=()=>null,current=null){
  const nodes=new Map();let first=true;
  const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
  return {
-  update(rows){
+  show(vm){
    const active=getActive(),focusedCard=active&&active!==track&&track.contains(active);
    const follow=!focusedCard&&(first||track.scrollWidth-track.clientWidth-track.scrollLeft<=24),oldLeft=track.scrollLeft;
-   const keep=new Set(rows.map(row=>row.id)),left=track.getBoundingClientRect().left;
+   const keep=new Set(vm.cards.map(card=>card.id)),left=track.getBoundingClientRect().left;
    const retained=[...nodes].filter(([id])=>keep.has(id)).map(([,node])=>({node,rect:node.getBoundingClientRect()}));
    const anchor=retained.find(({rect})=>rect.right>left&&rect.left<left+track.clientWidth)||retained[0];
    const offset=anchor?anchor.rect.left-left:0;
    for(const [id,node] of nodes)if(!keep.has(id)){node.remove();nodes.delete(id);}
-   rows.forEach((row,index)=>{
-    let node=nodes.get(row.id);
-    if(!node){node=makeNode('article');node.className='activity-card';node.tabIndex=0;node.appendChild(makeNode('strong'));nodes.set(row.id,node);}
-    set(node.children[0],row.heading);node.dataset.event=row.event||'';if(node.title!==row.title)node.title=row.title;
-    // OPS-138: one quiet step only: every card except the newest gets a slightly darker background.
-    const age=index===rows.length-1?'latest':'older';if(node.dataset.age!==age)node.dataset.age=age;
+   vm.cards.forEach((card,index)=>{
+    let node=nodes.get(card.id);
+    if(!node){node=makeNode('article');node.className='activity-card';node.tabIndex=0;node.appendChild(makeNode('strong'));nodes.set(card.id,node);}
+    set(node.children[0],card.heading);node.dataset.event=card.event;if(node.title!==card.title)node.title=card.title;
+    if(node.dataset.age!==card.age)node.dataset.age=card.age;
     if(track.children[index]!==node)track.insertBefore(node,track.children[index]||null);
    });
    if(follow)track.scrollLeft=track.scrollWidth;else if(anchor)track.scrollLeft+=anchor.node.getBoundingClientRect().left-track.getBoundingClientRect().left-offset;else track.scrollLeft=oldLeft;
-   if(current){const starts=confirmedStarts(rows),latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!isStateNotice(row,starts)).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
-   first=false;set(status,rows.length?'': '記録なし');status.dataset.stale='false';
+   if(current&&vm.current){set(current.heading,vm.current.heading);set(current.detail,vm.current.detail);current.heading.title=vm.current.title;current.detail.title=vm.current.title;}
+   first=false;set(status,vm.status);status.dataset.stale='false';
   },
-  failure(){set(status,'取得不調 · 最終情報を保持');status.dataset.stale='true';}
+  showFailure(text){set(status,text);status.dataset.stale='true';}
+ };
+}
+function createActivityView(track,status,makeNode,getActive=()=>null,current=null){
+ const studio=createStudio({views:{timeline:createActivityTimelineView(track,status,makeNode,getActive,current)},withCurrent:!!current});
+ return {update(rows){studio.activity(rows);},failure(){studio.activityFailure();}};
+}
+// OPS-153 区切り4: one shared input snapshot and one derive per input. Each source (activity, approvals, continuity) keeps its
+// last good value, whether its latest result succeeded, a generation and the receipt time; the sources are combined as they
+// were received and never presented as one simultaneous server state. The clock and the UI state (the chosen WAKE owner,
+// sending, the last result note, the kept member order) are inputs too. Every input derives the whole snapshot once and every
+// view the studio has gets that same revision (a view may skip DOM writes for unchanged values). receivedAt is the studio's
+// injectable wall clock in milliseconds since the epoch (Date.now by default); the continuity clock is performance.now().
+// Late or failed answers are ordered at the input boundary: the activity and approval pollers are single-flight, and the
+// continuity fetch drops older answers; a failed fetch is recorded as ok=false and keeps the last good value.
+function emptyStudioSnapshot(parts,{registryState=()=>'',withCurrent=true}={}){
+ const source=value=>({generation:0,receivedAt:null,ok:null,value});
+ return {revision:0,parts:[...parts],registryState,withCurrent,last:'',clock:0,activitySeen:null,freshOwners:new Set(),
+  sources:{activity:source([]),approvals:source([]),continuity:source(null)},
+  ui:{memberOrder:[],wakeSelected:'',wakeBusy:false,wakeSending:null,wakeNote:'',wakeNoteFor:''}};
+}
+// Pure: the next snapshot for one input. A failed result keeps the last good value. A member-only or WAKE-only snapshot does
+// only the work its parts need (the helpers of the other parts are not required).
+function applyStudioInput(s,input){
+ const n={...s,sources:{...s.sources},ui:{...s.ui},revision:s.revision+1,last:input.source,freshOwners:new Set()},has=p=>s.parts.includes(p);
+ if(['activity','approvals','continuity'].includes(input.source)){
+  const old=s.sources[input.source];n.sources[input.source]={generation:old.generation+1,receivedAt:input.at??null,ok:!!input.ok,value:input.ok?input.value:old.value};
+  if(input.source==='continuity'&&Number.isFinite(input.now))n.clock=input.now;
+  if(input.source==='activity'&&input.ok&&has('members')){const f=newRecordOwners(s.activitySeen,input.value);n.activitySeen=f.seen;n.freshOwners=f.owners;}
+ }else if(input.source==='clock')n.clock=input.now;
+ else if(input.source==='wake')Object.assign(n.ui,input.patch);
+ else throw Error('Unknown studio input');
+ // WAKE: the choice falls back to the first owner when it is no longer listed; a result note belongs to one owner and request.
+ if(has('wake')){const rows=n.sources.activity.value,sel=wakeSelection(wakeOwners(rows),n.ui.wakeSelected);n.ui.wakeSelected=sel;if(n.ui.wakeNoteFor!==wakeKey(rows,sel))n.ui.wakeNote='';}
+ return n;
+}
+// Continuity text: from the marks, the server time at receipt and the clock; a test seam may give a label function instead.
+// A failed continuity fetch is the source's ok=false; the marks shown are the last good ones.
+function studioContinuity(s){
+ const src=s.sources.continuity,v=src.value,failed=src.ok===false;
+ if(!v)return {owners:[],text:()=>failed?'継続 不調':'継続 未確認'};
+ if(v.labelOf)return {owners:v.owners||[],text:v.labelOf};
+ return {owners:v.base?Object.keys(v.base.owners):[],text:owner=>continuityLabel(v.base,failed,s.clock,owner)};
+}
+// Pure: the view models of the requested parts, all of the same revision.
+function deriveStudio(s,parts=s.parts){
+ const out={revision:s.revision},act=s.sources.activity,want=p=>parts.includes(p);
+ if(want('members')){const cont=studioContinuity(s),entries=stableMemberOrder(s.ui.memberOrder,memberViewModels(memberModel(act.value),cont.owners,cont.text));
+  out.members={entries,order:entries.map(e=>e.owner),fresh:s.last==='activity'?s.freshOwners:new Set(),failed:act.ok===false,failureText:owner=>memberFailureText(owner,cont.text)};}
+ if(want('cards'))out.cards=workLaneViewModel(workLaneItems(act.value,s.sources.approvals.value,s.registryState),workLaneTrouble(act.ok===false,s.sources.approvals.ok===false));
+ if(want('timeline'))out.timeline=act.ok===false?{failed:true,text:ACTIVITY_FAILURE_TEXT}:activityTimelineViewModel(act.value,s.withCurrent);
+ if(want('wake'))out.wake=wakeViewModel({rows:act.value,selected:s.ui.wakeSelected,busy:s.ui.wakeBusy,note:s.ui.wakeNote});
+ return out;
+}
+// The one presenter: applies each input, derives once, and hands the parts that depend on that input to their views with the
+// same revision. The shown member order is written back as a UI input. Operations (WAKE send) run here, never in a view.
+function createStudio({views,registryState,withCurrent=true,now=()=>Date.now()}){
+ const parts=Object.keys(views).filter(k=>views[k]);let s=emptyStudioSnapshot(parts,{registryState,withCurrent});
+ const draw={members:(v,vm,rev)=>{if(vm.failed)v.showFailure(vm.failureText,rev);else{v.show(vm.entries,vm.fresh,rev);v.recovered();}},
+  cards:(v,vm,rev)=>v.update(vm,rev),timeline:(v,vm,rev)=>vm.failed?v.showFailure(vm.text,rev):v.show(vm,rev),wake:(v,vm,rev)=>v.show(vm,rev)};
+ const input=x=>{s=applyStudioInput(s,x);const vm=deriveStudio(s);
+  if(vm.members)s={...s,ui:{...s.ui,memberOrder:vm.members.order}};
+  for(const p of parts)draw[p](views[p],vm[p],vm.revision);return vm;};
+ const wakeNote=e=>e&&e.unknown?'結果が分かりません。記録を読み直してから判断してください（自動では再送しません）':'送信できませんでした：'+(e&&e.message||'不明');
+ return {input,snapshot:()=>s,
+  activity:rows=>input({source:'activity',ok:true,value:rows,at:now()}),activityFailure:()=>input({source:'activity',ok:false,at:now()}),
+  approvals:rows=>input({source:'approvals',ok:true,value:rows,at:now()}),approvalFailure:()=>input({source:'approvals',ok:false,at:now()}),
+  // from the continuity boundary: {base, failed}; a label function (labelOf, owners) is the isolated-test seam
+  continuity:(data,perf)=>input(data&&data.failed?{source:'continuity',ok:false,at:now(),now:perf}:{source:'continuity',ok:true,value:data&&data.labelOf?data:{base:data.base},at:now(),now:perf}),
+  tick:perf=>input({source:'clock',now:perf}),
+  wakeSelect:owner=>input({source:'wake',patch:{wakeSelected:owner,wakeNote:''}}),
+  // The owner and its request state are fixed when the send starts; the result note belongs to them even if the choice changes
+  // while waiting, so it is never shown for another owner.
+  async wakeSend(send){const owner=s.ui.wakeSelected;if(s.ui.wakeBusy||!owner)return;const sending={owner,key:wakeKey(s.sources.activity.value,owner)};
+   input({source:'wake',patch:{wakeBusy:true,wakeSending:sending}});
+   let note;try{const result=await send(sending.owner);note=result&&result.created===false?'未応答の依頼があります（同じ依頼を表示しています）':'送信しました。記録の反映を待っています';}catch(e){note=wakeNote(e);}
+   input({source:'wake',patch:{wakeBusy:false,wakeSending:null,wakeNote:note,wakeNoteFor:sending.key}});}
  };
 }
 function startActivityTimelines(){
  for(const kind of ['events']){
   const status=$('activity-'+kind+'-status');
   if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';continue;}
-  const timeline=createActivityView($('activity-'+kind),status,tag=>document.createElement(tag),()=>document.activeElement,{heading:$('activity-current-heading'),detail:$('activity-current-detail')});
-  const wake=createWakeControl({select:$('wake-owner'),button:$('wake-send'),status:$('wake-status'),send:sendWake});
-  const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);wake.rows(rows);},failure(){timeline.failure();workLaneInstance().activityFailure();}};
+  // OPS-153: the activity poller feeds the one shared studio; the timeline, cards, members and WAKE are its views.
+  const view={update(rows){workLaneInstance().activity(rows);},failure(){workLaneInstance().activityFailure();}};
   const poller=createActivityPoller({kind,fetchRecord:fetch,view,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
   document.addEventListener('visibilitychange',poller.visibility);poller.poll();
  }
@@ -1099,26 +1183,35 @@ function wakeStatus(rows,owner){
    return a?{kind:'acked',id:m[1],at:a.raw.at}:{kind:'pending',id:m[1],at:r.at};}}
  return {kind:'none'};
 }
-function createWakeControl({select,button,status,send}){
- let rows=[],busy=false,note='',noteFor='';
+// OPS-153 区切り3: the 待機完了 control. The owner list, the button and the status text come from a pure view model; the
+// chosen owner, "sending" and the last result note are inputs held here (UI and operation state), and the view only draws.
+// The button state is display information, not a permission: the server re-checks every request.
+function wakeSelection(owners,keep){return owners.includes(keep)?keep:owners[0]||'';}
+function wakeKey(rows,owner){const st=owner?wakeStatus(rows,owner):{kind:'none'};return owner+'|'+st.kind+'|'+(st.id||'');}
+function wakeViewModel({rows,selected,busy,note}){
+ const st=selected?wakeStatus(rows,selected):{kind:'none'};
  const time=at=>{const d=new Date(at);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ja-JP',{hour12:false}):'';};
- const render=()=>{
-  const owners=wakeOwners(rows),current=[...select.options||[]].map(o=>o.value);
-  if(owners.join('\n')!==current.join('\n')){const keep=select.value;while(select.options.length)select.remove(0);for(const o of owners){const opt=document.createElement('option');opt.value=o;opt.textContent=o;select.add(opt);}select.value=owners.includes(keep)?keep:owners[0]||'';}
-  const owner=select.value,st=owner?wakeStatus(rows,owner):{kind:'none'};
-  if(noteFor!==owner+'|'+st.kind+'|'+(st.id||''))note='';
-  button.disabled=busy||!owner||st.kind==='pending';
-  const text=busy?'送信中…':note||(st.kind==='pending'?'依頼済み・ACK待ち（'+time(st.at)+'）':st.kind==='acked'?'ACK済み・受信確認（'+time(st.at)+'）':'');
-  if(status.textContent!==text)status.textContent=text;status.dataset.kind=busy?'busy':st.kind;
-  status.title=st.kind==='acked'?'ACKは受け取った確認です。待機が終わったかどうかは、その担当のメンバー状態（待機終了）で確かめます':'';button.title=st.kind==='pending'?'この担当への依頼はまだACKがありません（'+st.id+'）':'選んだ担当に待機終了を依頼します。届くのは待機中のAIだけです';
+ return {owners:wakeOwners(rows),selected,disabled:busy||!selected||st.kind==='pending',
+  buttonTitle:st.kind==='pending'?'この担当への依頼はまだACKがありません（'+st.id+'）':'選んだ担当に待機終了を依頼します。届くのは待機中のAIだけです',
+  text:busy?'送信中…':note||(st.kind==='pending'?'依頼済み・ACK待ち（'+time(st.at)+'）':st.kind==='acked'?'ACK済み・受信確認（'+time(st.at)+'）':''),
+  kind:busy?'busy':st.kind,statusTitle:st.kind==='acked'?'ACKは受け取った確認です。待機が終わったかどうかは、その担当のメンバー状態（待機終了）で確かめます':''};
+}
+function createWakeView({select,button,status,onChange,onClick}){
+ select.addEventListener('change',onChange);button.addEventListener('click',onClick);
+ return {
+  selected(){return select.value;},
+  // The options are rebuilt only when the owner list changes; the chosen value is drawn as given.
+  show(vm){
+   const current=[...select.options||[]].map(o=>o.value);
+   if(vm.owners.join('\n')!==current.join('\n')){while(select.options.length)select.remove(0);for(const o of vm.owners){const opt=document.createElement('option');opt.value=o;opt.textContent=o;select.add(opt);}}
+   if(select.value!==vm.selected)select.value=vm.selected;
+   button.disabled=vm.disabled;if(status.textContent!==vm.text)status.textContent=vm.text;status.dataset.kind=vm.kind;status.title=vm.statusTitle;button.title=vm.buttonTitle;
+  }
  };
- const setNote=(text)=>{const owner=select.value,st=owner?wakeStatus(rows,owner):{kind:'none'};note=text;noteFor=owner+'|'+st.kind+'|'+(st.id||'');};
- select.addEventListener('change',()=>{note='';render();});
- button.addEventListener('click',async()=>{const owner=select.value;if(busy||!owner)return;busy=true;render();
-  try{const result=await send(owner);busy=false;if(result&&result.created===false)setNote('未応答の依頼があります（同じ依頼を表示しています）');else setNote('送信しました。記録の反映を待っています');}
-  catch(e){busy=false;setNote(e&&e.unknown?'結果が分かりません。記録を読み直してから判断してください（自動では再送しません）':'送信できませんでした：'+(e&&e.message||'不明'));}
-  render();});
- return {rows(next){rows=next;render();},render};
+}
+function createWakeControl({select,button,status,send}){
+ const studio=createStudio({views:{wake:createWakeView({select,button,status,onChange:()=>studio.wakeSelect(select.value),onClick:()=>studio.wakeSend(send)})}});
+ return {rows(next){studio.activity(next);}};
 }
 async function sendWake(owner){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);
@@ -1159,24 +1252,31 @@ function workLaneItems(events,approvals,registryState=()=>''){
   startNote:it.start||!it.last?'':'開始：不明（記録範囲外または未記録）'
  }));
 }
+// OPS-153 区切り2: the card text, the approval badge, the title and the lane status are composed by pure functions;
+// the card view only draws them, keeps node identity, focus and scroll.
+function workCardViewModel(it){
+ const a=it.approvals,badge=a.pending+a.approved+a.claimed?'承認 待ち'+a.pending+' · 済み'+a.approved+(a.claimed?' · 確保'+a.claimed:''):'承認なし';
+ // OPS-132: the next taker / end has its own line right under the heading; nothing else is dropped.
+ const lines=[it.taskId+' · '+it.stage,it.next?it.next.text:'',[it.owner,it.time].filter(Boolean).join(' · ')+(it.reason?' · '+it.reason:''),'Registry：'+(it.registryState||'不明')+' · '+badge,it.start];
+ return {taskId:it.taskId,lines,title:lines.slice(0,4).concat(it.startNote||it.start).filter(Boolean).join('\n'),stage:it.stage,next:it.next?.kind||'unknown'};
+}
+function workLaneTrouble(activityTrouble,approvalTrouble){const list=[activityTrouble&&'活動の取得不調',approvalTrouble&&'承認の取得不調'].filter(Boolean);return list.join(' · ')+(list.length?' · 最終情報を保持':'');}
+function workLaneViewModel(items,trouble){return {cards:items.map(workCardViewModel),status:(items.length?items.length+'件':'記録なし')+(trouble?' · '+trouble:''),stale:!!trouble};}
 function createWorkLaneView({track,status,makeNode,getActive=()=>null}){
  const cards=new Map();const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
  return {
-  update(items,trouble){
+  update(vm){
    const active=getActive(),focused=active&&track.contains(active),left=track.scrollLeft;
-   const keep=new Set(items.map(i=>i.taskId));for(const [id,card] of cards)if(!keep.has(id)&&!(focused&&card.node.contains(active))){card.node.remove();cards.delete(id);}
-   items.forEach((it,index)=>{
+   const keep=new Set(vm.cards.map(i=>i.taskId));for(const [id,card] of cards)if(!keep.has(id)&&!(focused&&card.node.contains(active))){card.node.remove();cards.delete(id);}
+   vm.cards.forEach((it,index)=>{
     let card=cards.get(it.taskId);
     if(!card){const node=makeNode('article');node.className='approval-card work-card';node.tabIndex=0;const lines=['strong','span','span','span','span'].map(t=>makeNode(t));lines[1].className='work-next';lines.forEach(l=>node.appendChild(l));card={node,lines};cards.set(it.taskId,card);}
-    const a=it.approvals,badge=a.pending+a.approved+a.claimed?'承認 待ち'+a.pending+' · 済み'+a.approved+(a.claimed?' · 確保'+a.claimed:''):'承認なし';
-    // OPS-132: the next taker / end has its own line right under the heading; nothing else is dropped.
-    const texts=[it.taskId+' · '+it.stage,it.next?it.next.text:'',[it.owner,it.time].filter(Boolean).join(' · ')+(it.reason?' · '+it.reason:''),'Registry：'+(it.registryState||'不明')+' · '+badge,it.start];
-    texts.forEach((t,i)=>set(card.lines[i],t));const title=texts.slice(0,4).concat(it.startNote||it.start).filter(Boolean).join('\n');if(card.node.title!==title)card.node.title=title;card.node.dataset.stage=it.stage;card.node.dataset.next=it.next?.kind||'unknown';
+    it.lines.forEach((t,i)=>set(card.lines[i],t));if(card.node.title!==it.title)card.node.title=it.title;card.node.dataset.stage=it.stage;card.node.dataset.next=it.next;
     // Do not move cards while one has focus; only their text changes.
     if(!focused&&track.children[index]!==card.node)track.insertBefore(card.node,track.children[index]||null);
    });
    track.scrollLeft=left;
-   set(status,(items.length?items.length+'件':'記録なし')+(trouble?' · '+trouble:''));status.dataset.stale=trouble?'true':'false';
+   set(status,vm.status);status.dataset.stale=vm.stale?'true':'false';
   }
  };
 }
@@ -1195,7 +1295,8 @@ function presenceStates(rows){
   else if(/^ACK WAKE-\d{8}-[A-Z0-9]+(?![A-Za-z0-9])/.test(r.reason)&&Date.parse(r.at)<=limit){s.state='ended';s.at=r.at;s.legacy=true;}
   if(!isProbeEvent(r.reason)&&!isStateNotice(row,starts))s.last={at:r.at,label:activityLabels[row.event]||row.event};
   states.set(r.owner,s);}
- // every member in the record window is shown (newest first); no silent cap — the member area wraps
+ // every member in the record window is listed (newest first here); no silent cap — the member area wraps.
+ // The shown order is decided by stableMemberOrder: members keep the order in which they first appeared.
  return new Map([...states].sort((a,b)=>Date.parse(b[1].seen)-Date.parse(a[1].seen)));
 }
 // OPS-151: a request with a leading ID opens "開始待ち" for its recipient. Only the recipient's own record with the same ID
@@ -1221,48 +1322,70 @@ function pendingLines(p){
  return shown.map(e=>'\n開始待ち '+e.id+'（'+e.from+' '+memberTime(e.at)+'）'+(e.unmatched?'・対応未確認':p.selfSeen?'':'・本人記録なし')).join('')+(list.length>3?'\nほか'+(list.length-3)+'件の開始待ち':'');
 }
 function memberTime(at){const d=new Date(at);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ja-JP',{hour12:false}):'';}
-function createPresenceLamps({box,makeNode,schedule=(fn,ms)=>setTimeout(fn,ms)}){
- const lamps=new Map();let seen=null,states=new Map(),pendings=new Map(),continuity=()=>'継続 未確認',continuityOwners=[];
- const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
- const text=(owner,s,fresh)=>owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':'')+(fresh?'・新着':'')+'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+pendingLines(pendings.get(owner))+'\n'+continuity(owner);
- function paint(owner,s,fresh){
-  let lamp=lamps.get(owner);if(!lamp){lamp={node:makeNode('span'),fresh:0};lamp.node.className='presence-lamp';lamps.set(owner,lamp);}
-  if(box.children[[...lamps.keys()].indexOf(owner)]!==lamp.node)box.appendChild(lamp.node);
-  lamp.node.dataset.state=s.state;if(pendings.has(owner))lamp.node.dataset.pending='true';else delete lamp.node.dataset.pending;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
-   // Only the latest flash of a lamp that is still shown clears; a fetch failure keeps its text until recovery.
-   if(lamps.get(owner)!==lamp||lamp.fresh!==mine)return;delete lamp.node.dataset.fresh;if(box.dataset.stale==='true')return;paint(owner,members().get(owner)||s,false);},3000);}
-  set(lamp.node,text(owner,s,!!lamp.node.dataset.fresh));
- }
+// OPS-153 区切り1: the member status is derived by pure functions and the lamp view only draws what it is given.
+// memberModel reads the history once; memberViewModels joins it with the continuity text into one entry per member, in the
+// order shown; memberFailureText is the text kept while the activity fetch fails. "・新着" is a display effect added by the view.
+function memberModel(rows){return {states:presenceStates(rows),pendings:startPendings(rows)};}
+const UNDECLARED={state:'unknown',at:'',legacy:false,last:null};
+function memberViewModels(model,continuityOwners,continuityText){
  // members = activity owners, recipients with an open 開始待ち, and owners with only a continuity mark (未申告, not invented)
- const members=()=>{const all=new Map(states);for(const o of pendings.keys())if(!all.has(o))all.set(o,{state:'unknown',at:'',legacy:false,last:null});for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,{state:'unknown',at:'',legacy:false,last:null});return all;};
- const render=freshOwners=>{const all=members();for(const [owner,lamp] of lamps)if(!all.has(owner)){lamp.node.remove();lamps.delete(owner);}for(const [owner,s] of all)paint(owner,s,freshOwners.has(owner));};
+ const all=new Map(model.states);for(const o of model.pendings.keys())if(!all.has(o))all.set(o,UNDECLARED);for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,UNDECLARED);
+ return [...all].map(([owner,s])=>({owner,state:s.state,pending:model.pendings.has(owner),
+  head:owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':''),
+  body:'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+pendingLines(model.pendings.get(owner))+'\n'+continuityText(owner)}));
+}
+// The shown order is a display input, not a reading of the history: members already shown keep their previous order,
+// new members are added at the end in view-model order, members that left are dropped (one that returns goes to the end).
+function stableMemberOrder(prevOrder,vms){
+ const by=new Map(vms.map(v=>[v.owner,v])),kept=prevOrder.filter(o=>by.has(o)),known=new Set(kept);
+ return [...kept.map(o=>by.get(o)),...vms.filter(v=>!known.has(v.owner))];
+}
+function memberFailureText(owner,continuityText){return owner+'：取得不調（状態を読めません）\n'+continuityText(owner);}
+// Owners with a record not seen before (they flash). Pure: returns the owners and the new seen set.
+function newRecordOwners(seen,rows){const ids=new Set(rows.map(r=>r.id));return {owners:new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]),seen:seen?new Set([...seen,...ids]):ids};}
+// The lamp view: DOM only. It draws the entries it is given, keeps lamp order, runs the flash, and shows a failure text.
+function createMemberLampView({box,makeNode,schedule=(fn,ms)=>setTimeout(fn,ms)}){
+ const lamps=new Map();let shown=new Map();
+ const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
+ function paint(vm,fresh){
+  const owner=vm.owner;let lamp=lamps.get(owner);if(!lamp){lamp={node:makeNode('span'),fresh:0};lamp.node.className='presence-lamp';lamps.set(owner,lamp);}
+  lamp.node.dataset.state=vm.state;if(vm.pending)lamp.node.dataset.pending='true';else delete lamp.node.dataset.pending;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
+   // Only the latest flash of a lamp that is still shown clears; a fetch failure keeps its text until recovery.
+   if(lamps.get(owner)!==lamp||lamp.fresh!==mine)return;delete lamp.node.dataset.fresh;if(box.dataset.stale==='true')return;paint(shown.get(owner)||vm,false);},3000);}
+  set(lamp.node,vm.head+(lamp.node.dataset.fresh?'・新着':'')+vm.body);
+ }
  return {
-  update(rows){
-   states=presenceStates(rows);pendings=startPendings(rows);const ids=new Set(rows.map(r=>r.id)),freshOwners=new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]);
-   seen=seen?new Set([...seen,...ids]):ids;render(freshOwners);delete box.dataset.stale;
-  },
-  continuity(fn,owners){continuity=fn;continuityOwners=owners||[];if(box.dataset.stale!=='true')render(new Set());},
-  failure(){box.dataset.stale='true';for(const [owner,lamp] of lamps){lamp.node.dataset.state='unknown';set(lamp.node,owner+'：取得不調（状態を読めません）\n'+continuity(owner));}}
+  show(vms,freshOwners=new Set()){shown=new Map(vms.map(v=>[v.owner,v]));for(const [owner,lamp] of lamps)if(!shown.has(owner)){lamp.node.remove();lamps.delete(owner);}for(const v of vms)paint(v,freshOwners.has(v.owner));
+   // The DOM follows the given order exactly; when it differs, the lamps are re-appended in that order.
+   const nodes=vms.map(v=>lamps.get(v.owner).node);if(nodes.some((n,i)=>box.children[i]!==n))for(const n of nodes)box.appendChild(n);},
+  showFailure(textOf){box.dataset.stale='true';for(const [owner,lamp] of lamps){lamp.node.dataset.state='unknown';set(lamp.node,textOf(owner));}},
+  recovered(){delete box.dataset.stale;},
+  stale(){return box.dataset.stale==='true';}
  };
 }
-function createWorkLane({view,registryState,lamps=null}){
- let events=[],approvals=[],activityTrouble=false,approvalTrouble=false;
- const render=()=>view.update(workLaneItems(events,approvals,registryState),[activityTrouble&&'活動の取得不調',approvalTrouble&&'承認の取得不調'].filter(Boolean).join(' · ')+((activityTrouble||approvalTrouble)?' · 最終情報を保持':''));
- return {
-  activity(rows){events=rows;activityTrouble=false;if(lamps)lamps.update(rows);render();},
-  activityFailure(){activityTrouble=true;if(lamps)lamps.failure();render();},
-  approvals(rows){approvals=rows;approvalTrouble=false;render();},
-  approvalFailure(){approvalTrouble=true;render();}
- };
+// The member status as one studio part (used alone in tests; the page uses the shared studio).
+function createPresenceLamps({box,makeNode,schedule=(fn,ms)=>setTimeout(fn,ms)}){
+ const studio=createStudio({views:{members:createMemberLampView({box,makeNode,schedule})}});
+ return {update(rows){studio.activity(rows);},continuity(fn,owners){studio.continuity({labelOf:fn,owners:owners||[]});},failure(){studio.activityFailure();}};
 }
+// The work cards as one studio part (used alone in tests; the page uses the shared studio).
+function createWorkLane({view,registryState}){
+ const studio=createStudio({views:{cards:view},registryState});
+ return {activity(rows){studio.activity(rows);},activityFailure(){studio.activityFailure();},approvals(rows){studio.approvals(rows);},approvalFailure(){studio.approvalFailure();}};
+}
+// The page's one studio: the activity timeline with its current band, the work cards, the member status and 待機完了.
 function workLaneInstance(){
  if(!workLaneInstance.value){
-  const states=new Map(JSON.parse($('seed').textContent).tasks.map(t=>[t.id,t.state]));
-  workLaneInstance.value=createWorkLane({view:createWorkLaneView({track:$('work-lane-track'),status:$('work-lane-status'),makeNode:tag=>document.createElement(tag),getActive:()=>document.activeElement}),registryState:id=>states.get(id),lamps:(workLaneInstance.lamps=createPresenceLamps({box:$('presence-lamps'),makeNode:tag=>document.createElement(tag)}))});
-  // OPS-141: continuity marks feed the same member states (5 s fetch, 1 s age check, paused while the page is hidden)
+  const states=new Map(JSON.parse($('seed').textContent).tasks.map(t=>[t.id,t.state])),make=tag=>document.createElement(tag),select=$('wake-owner');
+  const studio=workLaneInstance.value=createStudio({registryState:id=>states.get(id),views:{
+   timeline:createActivityTimelineView($('activity-events'),$('activity-events-status'),make,()=>document.activeElement,{heading:$('activity-current-heading'),detail:$('activity-current-detail')}),
+   cards:createWorkLaneView({track:$('work-lane-track'),status:$('work-lane-status'),makeNode:make,getActive:()=>document.activeElement}),
+   members:createMemberLampView({box:$('presence-lamps'),makeNode:make}),
+   wake:createWakeView({select,button:$('wake-send'),status:$('wake-status'),onChange:()=>studio.wakeSelect(select.value),onClick:()=>studio.wakeSend(sendWake)})}});
+  // OPS-141: continuity marks feed the same snapshot (5 s fetch, paused while the page is hidden); the clock is an input every second.
   if(typeof location!=='undefined'&&location.protocol!=='file:'&&typeof fetch==='function'){
-   const lamps=workLaneInstance.lamps,status=createContinuityStatus({onChange:(fn,owners)=>lamps.continuity(fn,owners),fetchRecord:async()=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);try{const response=await fetch('/continuity',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}}});
-   status.poll();setInterval(()=>{if(!document.hidden)status.poll();},5000);setInterval(status.paint,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){status.poll();status.paint();}});
+   const status=createContinuityStatus({onData:data=>studio.continuity(data,performance.now()),fetchRecord:async()=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);try{const response=await fetch('/continuity',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}}});
+   status.poll();setInterval(()=>{if(!document.hidden)status.poll();},5000);setInterval(()=>studio.tick(performance.now()),1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){status.poll();studio.tick(performance.now());}});
   }
  }
  return workLaneInstance.value;
@@ -1409,18 +1532,21 @@ function continuityState(mark,ageMs,failed){
  if(ageMs<=CONTINUITY_LIMIT_MS)return {kind:'alive',label:'継続 '+memberTime(mark.at)+'（'+Math.max(0,Math.round(ageMs/1000))+'秒前）'};
  return {kind:'lapsed',label:'継続 確認が古い（'+memberTime(mark.at)+'、'+Math.ceil(ageMs/1000)+'秒前）'};
 }
+// Pure: one owner's continuity text from the last good marks, the fetch state and the clock (shared by the snapshot derive).
+function continuityLabel(base,failed,now,owner){const mark=base?.owners[owner]||null,age=mark?base.serverMs+(now-base.perf)-Date.parse(mark.at):null;return continuityState(mark,age,failed).label;}
 function validateContinuity(value){
  if(!value||typeof value!=='object'||!Number.isFinite(Date.parse(value.serverNow))||!value.owners||typeof value.owners!=='object'||Array.isArray(value.owners))throw Error('Invalid continuity');
  for(const mark of Object.values(value.owners))if(!mark||!['alive','ended'].includes(mark.state)||!Number.isFinite(Date.parse(mark.at)))throw Error('Invalid continuity mark');
  return {serverMs:Date.parse(value.serverNow),owners:value.owners};
 }
-function createContinuityStatus({onChange,fetchRecord,now=()=>performance.now()}){
+// The continuity input boundary: a late or older answer never replaces a newer one. onData passes the accepted marks and the
+// fetch state to the snapshot; onChange (label function and owners) is kept for the isolated continuity test.
+function createContinuityStatus({onChange=null,onData=null,fetchRecord,now=()=>performance.now()}){
  let seq=0,applied=0,base=null,failed=false;
- const paint=()=>{const owners=base?Object.keys(base.owners):[];
-  onChange(owner=>{const mark=base?.owners[owner]||null,age=mark?base.serverMs+(now()-base.perf)-Date.parse(mark.at):null;return continuityState(mark,age,failed).label;},owners);};
+ const paint=()=>{if(!onChange)return;const owners=base?Object.keys(base.owners):[],t=now();onChange(owner=>continuityLabel(base,failed,t,owner),owners);};
  const poll=async()=>{const mine=++seq;try{const got=validateContinuity(await fetchRecord());
    if(mine<applied||(base&&got.serverMs<base.serverMs))return;  // a late or older answer never replaces a newer one
-   applied=mine;base={...got,perf:now()};failed=false;}catch(e){if(mine>=applied)failed=true;}paint();};
+   applied=mine;base={...got,perf:now()};failed=false;}catch(e){if(mine>=applied)failed=true;}if(onData)onData({base,failed});paint();};
  return {poll,paint};
 }
 // OPS-136: when focus leaves the scrolled approval part, it returns to its start so the state is visible again.

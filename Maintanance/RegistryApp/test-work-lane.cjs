@@ -77,7 +77,8 @@ assert(card401.children[2].textContent.includes('姫'),'owner shown as text');
 assert.equal(card401.children[4].textContent,'開始：不明');assert(card401.title.includes('開始：不明（記録範囲外または未記録）'),'unknown start explained in the card title');
 
 // 8. Wiring: the lane is fed by the existing pollers only, and the template keeps the approval controls.
-assert(html.includes("const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);wake.rows(rows);}"),'OPS-138: the wake control is fed by the same poller');
+assert(html.includes("const view={update(rows){workLaneInstance().activity(rows);},failure(){workLaneInstance().activityFailure();}}"),'OPS-138/153: the one poller feeds the shared studio');
+assert(/wake:createWakeView\(\{select,button:\$\('wake-send'\)/.test(html),'OPS-153: the wake control is a view of the same studio');
 assert(html.includes('workLaneInstance().approvals(value.requests)'));
 // One approval UI, inside the work lane: counts and the all-approve entry stay visible; cards and history are always visible.
 const laneStart=html.indexOf('<section class="approval-lane work-lane"'),laneEnd=html.indexOf('</section>',laneStart),laneHtml=html.slice(laneStart,laneEnd);

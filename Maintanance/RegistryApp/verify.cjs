@@ -317,7 +317,7 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
 {vm.runInContext(script.slice(script.indexOf('function cardListGroups('),script.indexOf('function renderCards(')),ctx);
  const r=ctx.addProposal(copy(original),'一覧の案','');const groups=ctx.cardListGroups(r.data),ids=groups.flatMap(g=>g.cards.map(c=>c.id));
  assert.equal(ids.length,new Set(ids).size,'no card listed twice');
- const saved=JSON.stringify(r.data),flat=ctx.cardListGroups(r.data,'id');assert.equal(flat.length,1);assert.deepEqual(Array.from(flat[0].cards,c=>c.id),Array.from(ids).sort());assert.equal(JSON.stringify(r.data),saved,'sorting does not edit the document');
+ const saved=JSON.stringify(r.data),flat=ctx.cardListGroups(r.data,'id');assert.deepEqual(Array.from(flat,g=>g.title),Array.from(new Set(Array.from(ids,id=>id.split('-')[0]))).sort());assert.deepEqual(Array.from(flat).flatMap(g=>Array.from(g.cards,c=>c.id)),Array.from(ids).sort());for(const g of flat)assert(g.cards.every(c=>c.id.split('-')[0]===g.title));assert.equal(JSON.stringify(r.data),saved,'sorting does not edit the document');
  for(const x of [...original.tasks,...original.milestones])assert(ids.includes(x.id),'listed: '+x.id);assert(ids.includes(r.id));
  const byTitle=Object.fromEntries(groups.map(g=>[g.title,g.cards.map(c=>c.id)]));
  assert(original.tasks.filter(t=>t.permanent).every(t=>byTitle['恒久タスク'].includes(t.id)));assert(original.tasks.filter(t=>!t.permanent&&t.state==='DONE').every(t=>byTitle['完了・除外'].includes(t.id)));assert.deepEqual(byTitle['追加案'],[r.id]);

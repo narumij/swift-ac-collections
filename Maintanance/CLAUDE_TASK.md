@@ -31,6 +31,10 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-101第1回：判断の出どころ分類、3項目の読取試行。下記依頼を姫へ受渡し。第2・3回は未発注。
+
+OPS-100：Astraが助言として受入済み。OPS-099へ整理を接続、ユーザーcommit承認によりDONE・依頼終了。試行・キャッシュ変更の追加依頼なし。
+
 OPS-097：Astra受入済み。任意感想も受領、ユーザーcommit承認によりDONE。依頼終了。
 
 OPS-096：Astra追加分受入済み、ユーザーcommit承認によりDONE。依頼終了。
@@ -316,3 +320,11 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 [正本のAstra受入](Current/REGISTRY_STUDIO_LAYOUT_CACHE_REFRESH.md)のとおり受入。固定版根拠・更新条件・保留・Git除外を確認。任意感想は提案として保持し、掃除や制度追加は依頼していない。commit待ち。
 
 2026-10-18：ユーザーcommit承認によりOPS-097をDONEとする。
+
+## OPS-100：判断キャッシュのLRU・保持件数制限への助言
+
+ユーザー指定の依頼。[正式依頼](Current/JUDGMENT_CACHE_LRU_ADVICE.md)を読み、同書Returnへ意見を記入してください。経験・推測・提案を分け、短くて構いません。厳密LRUや10件を前提にせず、現状維持や簡単な代案も含めてください。編集範囲を姫へ委任。実装・キャッシュ変更・掃除・commitなし。
+
+## OPS-101 第1回：判断の出どころの3項目分類
+
+[正本の第1回正式依頼](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md)に従い、STUDIO_LAYOUTの指定3項目だけを照合し、同書第1回Returnへ記入してください。コピー・オリジナル・出典未確認を区別し、証拠と感想を分ける。分類を揃えるノルマなし。指定回答欄を姫へ委任。キャッシュ・他正本・Registry・コード変更、commitなし。返却後は次回依頼まで停止。

@@ -916,7 +916,8 @@ function validateActivityRows(value,kind){
   if(kind==='events'){
    const id=text(v.id,36),taskId=text(v.taskId,40),event=text(v.event,24),owner=text(v.owner,80),reason=text(v.reason??'',240,false),sha=text(v.commitSha??'',40,false);
    if(v.schemaVersion!==1||!(/^[a-f0-9]{32}$/).test(id)||!(/^[A-Z][A-Z0-9]*-[0-9]+$/).test(taskId)||!Object.hasOwn(activityLabels,event)||(sha&&!(/^[a-f0-9]{40}$/).test(sha)))throw Error('Invalid event');
-   row={id,event,raw:{taskId,owner,reason,at,shortTime},heading:taskId+' · '+activityLabels[event],detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+activityLabels[event]+' · '+owner+' · '+at+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
+   const label=event==='work'&&/^検討中[:：]/.test(reason)?owner+'検討中':activityLabels[event];
+   row={id,event,raw:{taskId,owner,reason,at,shortTime},heading:taskId+' · '+label,detail:owner+' · '+shortTime+(reason?' · '+reason:'')+(sha?' · '+sha.slice(0,8):''),title:taskId+' · '+label+' · '+owner+' · '+at+(reason?' · '+reason:'')+(sha?' · commit '+sha:'')};
   }else{
    const sha=text(v.sha,40),subject=text(v.subject,4096,false);if(!/^[a-f0-9]{40}$/.test(sha))throw Error('Invalid commit');
    row={id:sha,heading:sha.slice(0,8)+' · '+subject,detail:shortTime,title:sha+' · '+at+' · '+subject};
@@ -996,7 +997,7 @@ function workLaneItems(events,approvals,registryState=()=>''){
  const time=it=>it.last?Date.parse(it.last.at):0;
  return [...byTask.values()].filter(it=>it.last||it.approvals.pending+it.approvals.approved+it.approvals.claimed).sort((a,b)=>time(b)-time(a)||a.taskId.localeCompare(b.taskId)).map(it=>({
   taskId:it.taskId,registryState:it.registryState,approvals:it.approvals,
-  stage:it.last?(it.last.event==='work'&&/^相談待ち[:：]/.test(it.last.reason)?'相談待ち':workLaneStages[it.last.event]):'活動情報なし',
+  stage:it.last?(it.last.event==='work'&&/^相談待ち[:：]/.test(it.last.reason)?'相談待ち':it.last.event==='work'&&/^検討中[:：]/.test(it.last.reason)?it.last.owner+'検討中':workLaneStages[it.last.event]):'活動情報なし',
   owner:it.last?.owner||'',time:it.last?.shortTime||'',reason:it.last?.reason||'',
   start:it.start?'依頼 '+it.start.shortTime:(it.last?'開始は記録範囲外または未記録':'')
  }));
@@ -1087,7 +1088,7 @@ function createApprovalController({fetchRecord,view,isHidden,schedule,cancel,mak
  function visibility(){clear();generation++;fresh=false;if(getController)getController.abort();availability();if(!isHidden())poll();}
  return {poll,act,visibility};
 }
-function createApprovalView({track,history,historySummary,status,policy,all,dialog,detail,close,makeNode}){
+function createApprovalView({track,history,historySummary,status,policy,all,dialog,detail,close,makeNode,signals=false}){
  const cards=new Map();let rows=[],enabled=false,busy=false,action=()=>{},inspected=null;
  const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
  function details(row){
@@ -1107,7 +1108,9 @@ function createApprovalView({track,history,historySummary,status,policy,all,dial
  return {
   bind(fn){action=fn;},
   update(value){
-   rows=value.requests;set(policy,value.policyNotice);set(status,rows.length?'承認待ち '+rows.filter(r=>r.status==='pending').length+'件 · 承認済み '+rows.filter(r=>r.status==='approved').length+'件':'依頼なし');
+   rows=value.requests;set(policy,value.policyNotice);
+   const pending=rows.filter(r=>r.status==='pending').length,approved=rows.filter(r=>r.status==='approved').length,claimed=rows.filter(r=>r.status==='claimed').length;
+   set(status,signals?([pending&&'🔴 承認待ち '+pending+'件',approved&&'🟢 承認済み・Astra未処理 '+approved+'件',claimed&&'🟡 Astra処理中 '+claimed+'件'].filter(Boolean).join(' · ')||'⚪ 未処理なし'):(rows.length?'承認待ち '+pending+'件 · 承認済み '+approved+'件':'依頼なし'));
    status.dataset.stale='false';
    const keep=new Set(rows.map(r=>r.id));for(const [id,card] of cards)if(!keep.has(id)){card.node.remove();cards.delete(id);}
    const positions=new Map([[track,0],[history,0]]),scrolls=[track.scrollLeft,history.scrollLeft,history.scrollTop];
@@ -1136,7 +1139,7 @@ function createApprovalView({track,history,historySummary,status,policy,all,dial
 function startCommitApprovals(){
  const status=$('approval-status');
  if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';return;}
- const view=createApprovalView({track:$('approval-track'),history:$('approval-history'),historySummary:$('approval-history-summary'),status,policy:$('approval-policy'),all:$('approval-all'),dialog:$('approval-dialog'),detail:$('approval-detail'),close:$('approval-close'),makeNode:tag=>document.createElement(tag)});
+ const view=createApprovalView({track:$('approval-track'),history:$('approval-history'),historySummary:$('approval-history-summary'),status,policy:$('approval-policy'),all:$('approval-all'),dialog:$('approval-dialog'),detail:$('approval-detail'),close:$('approval-close'),makeNode:tag=>document.createElement(tag),signals:true});
  const laneView={update(value){view.update(value);workLaneInstance().approvals(value.requests);},failure(message){view.failure(message);workLaneInstance().approvalFailure();},availability:(value,inProgress)=>view.availability(value,inProgress),bind:fn=>view.bind(fn)};
  const controller=createApprovalController({fetchRecord:fetch,view:laneView,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
  view.bind(controller.act);document.addEventListener('visibilitychange',controller.visibility);controller.poll();

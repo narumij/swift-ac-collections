@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Serve Registry Studio locally; POST /sync runs only the fixed sync.py command, POST /save stores the edited JSON in Inbox/."""
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -10,6 +11,7 @@ from pathlib import Path
 
 import inbox  # edit versions in Inbox/ (OPS-082)
 
+# Restart-notice manual check requested by user (2026-10-18).
 APP = Path(__file__).resolve().parent
 ROOT = APP.parent.parent
 OUTPUT = ROOT / "Maintanance/Cache/RegistryStudio"
@@ -18,6 +20,28 @@ SYNC_LOCK = threading.Lock()
 # exists only so tests can use an isolated folder. Not under Cache/, so sync and restarts keep it.
 INBOX = inbox.INBOX
 MAX_SAVE_BYTES = 10 * 1024 * 1024
+
+
+def runtime_fingerprints():
+    # Only modules retained by this process. sync.py and HTML are read afresh.
+    result = {}
+    for name in ('serve.py', 'inbox.py'):
+        try:
+            result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
+        except OSError:
+            result[name] = None
+    return result
+
+
+STARTUP_FINGERPRINTS = runtime_fingerprints()
+
+
+def runtime_status():
+    current = runtime_fingerprints()
+    changed = [name for name, digest in STARTUP_FINGERPRINTS.items()
+               if current[name] is None or current[name] != digest]
+    return {'restartRecommended': bool(changed), 'changedFiles': changed}
+
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -38,6 +62,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        if self.path == '/server-status':
+            return self.reply(200, runtime_status())
         if self.path == '/workspace':  # the edit version Studio resumes (OPS-082); null when nothing is saved
             return self.reply(200, json.dumps(inbox.latest(INBOX), ensure_ascii=False).encode())
         if self.path not in ('/', '/index.html', '/registry.json'):

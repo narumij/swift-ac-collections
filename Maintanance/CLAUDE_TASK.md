@@ -31,6 +31,10 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-093：Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
+
+OPS-094：姫へ正式依頼。「接続を見る」のカード表示追加、返却待ち。
+
 OPS-091：2026-10-18 Astra受入済み、ユーザーcommit承認によりDONE。実装依頼終了。
 
 RBT-049：2026-10-17 Claude返却をCodex受入、DONE。固定版・macOSの限定比較調査を完了。原Returnの出現行数補正と受入範囲は[正本のCodex受入節](Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md#codex受入2026-10-17)を参照。追加実装依頼なし。CIへの採用・Linuxの有効性・全体合格は未認定。
@@ -248,3 +252,13 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 [正本のAstra受入](Current/REGISTRY_STUDIO_NODE_NEIGHBORHOOD.md)のとおり限定受入。独立verify・操作smoke・同期照合成功、実画面未確認。追加作業なし、commitはユーザー確認待ち。
 
 2026-10-18：OPS-091はユーザーcommit承認によりDONE。追加依頼なし。
+
+## OPS-093 — 接続表示の選択追従修正（2026-10-18 / Astra）
+
+ユーザー承認による正式依頼。[正本](Current/REGISTRY_STUDIO_NEIGHBOR_SELECTION_FIX.md)に従い、見取り図・独立タスク欄で選んだカードが「接続を見る」の中心に反映されない問題を再現・修正してください。タブとインスペクタボタンの両経路、入力保護、既存の手動展開を限定検証。対象実装を姫へ受渡し、Astraは返却待ち。Astraの未コミット再起動案内帯等は保持。画面操作・実データ変更・commitなし。Returnは正本へ。
+
+## OPS-094 — 接続を見るのカード表示（2026-10-18 / Astra）
+
+ユーザー指定の正式依頼。[正本](Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md)に従い、既存の文字一覧に加えて中心・接続ノードのカード表示を追加してください。1段/展開の対象一致、方向、選択追従と入力保護を確認。OPS-093はAstraの独立検証で受入済み。未commit差分を保持し、指定範囲を姫へ受渡し。画面操作・実データ変更・commitなし。Returnは正本へ。
+
+2026-10-18：ユーザーcommit承認によりOPS-092の試験・記録とOPS-093の修正受入を完了。OPS-094は姫の作業・返却待ちを維持し、今回のcommitは依頼準備まで。

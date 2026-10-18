@@ -138,6 +138,12 @@
 
 | `OPS-091` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] Studioに選択ノード中心の接続表示を追加する | 2026-10-18ユーザー依頼。選択ノードの前提・後続を1段表示し、必要な先を明示操作で展開する。閲覧専用、版別表示とは別。正本の状態・接続や保存契約は変更しない。2026-10-18 Astra受入。独立verify・操作smoke・sync/check成功。リスト形式の1段接続表示・手動展開・入力保持を確認。実画面未確認。実装依頼終了、ユーザーcommit承認により完了 | `Maintanance/Current/REGISTRY_STUDIO_NODE_NEIGHBORHOOD.md` |
 
+| `OPS-092` | `DONE` | Astra | [DISCOVERY] 接続タスクの表示網羅性・排他性を試験する | 2026-10-18ユーザー依頼。接続を持つタスクは恒久タスクの木に表示されるものを除き、見取り図または独立タスク欄にちょうど1回表示されることを検査する。QUALITY-005・DOC-026を回帰例とする。試験・結果記録完了、ユーザーcommit承認により完了。全版29件中QUALITY-005とDOC-026の2件が重複（各2回）、表示漏れなし。HEAD以降でも2件の重複を再現。要求未達・表示修正は未実施。追加の全61辺正本照合は一致、可視線の重複なし。最終版START→ENDが非表示になる点を記録。線や配置の変更は含めない | `Maintanance/Current/REGISTRY_STUDIO_DISPLAY_PARTITION_TEST.md` |
+
+| `OPS-093` | `DONE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 接続表示の中心を選択カードに追従させる | 2026-10-18ユーザー報告・依頼。見取り図と独立タスク欄のどちらで選択しても接続表示の中心が変わらない問題を調査・修正。入力保護と閲覧専用を維持。Astra受入済み。独立smoke2本・同期照合成功。依頼終了、ユーザーcommit承認により完了。表示重複・配置・線の修正は対象外 | `Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_SELECTION_FIX.md` |
+
+| `OPS-094` | `ACTIVE` | 姫（実装・検証） / Astra（受入） | [EXECUTION] 接続を見るにカード表示を追加する | 2026-10-18ユーザー依頼。既存文字一覧を残し、中心と接続ノードをカードで確認できる表示を追加。範囲・展開・選択を既存表示と揃え、閲覧専用と入力保護を維持。姫へ依頼、返却待ち | `Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md` |
+
 ### リリース後の立て直し
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
@@ -338,6 +344,9 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-089` |
 | `OPS-048` | `OPS-090` |
 | `OPS-048` | `OPS-091` |
+| `OPS-048` | `OPS-092` |
+| `OPS-048` | `OPS-093` |
+| `OPS-048` | `OPS-094` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |
 | `DOC-030` | `OPS-058` |

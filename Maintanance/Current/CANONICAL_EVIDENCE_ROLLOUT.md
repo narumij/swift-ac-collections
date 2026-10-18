@@ -1,26 +1,33 @@
 # 根拠と更新条件の追記の全体展開
 
-2026-10-17 / OPS-076 / 作成：Astra。ユーザー「全体展開タスク追加して」に基づく登録。親OPS-070、必須前提OPS-074。ユーザー直接指示の先行試行後、下記第2区切りを正式依頼。状態はRegistry。
+## TL;DR（人間向け）
 
-## 目的と入力
+現行正本への浅い根拠・更新条件の追記を段階的に適用し、初回77件を追記19件・既存追記・対象外・保留等へ対応付けた記録。その後、事実照合を越えた15記述を範囲限定・取り下げを含めて補正し、優先精査で受入した。初回整備は完了したが、全判断の有効性や現行版の再現成功を一括保証するものではない。
 
-判断の根拠を探し直す作業を減らし、本質的判断に集中できるようにする。[OPS-074](CANONICAL_INVENTORY_APPEND.md)の追加返却を固定版で再現・受入した結果を入力に、現行正本への浅い事実確認と根拠・更新条件の追記を段階展開する。OPS-074は方式の補完・受入、本taskはその後の適用を担う。
+2026-10-17 / OPS-076 / Author Astra. Registered at user request 「全体展開タスク追加して」. Parent OPS-070, required OPS-074. After an explicitly directed advance trial, formally assigned round 2 below. State belongs to Registry.
 
-## 対象と手順
+<a id="目的と入力"></a>
+## Purpose and inputs
 
-まずMaintanance/Currentの現行正本全体を候補一覧にし、対象・対象外・保留の理由を残す。履歴や全repositoryへ無制限に広げない。ユーザー確定文書・他担当の作業中範囲は編集対象外。保護・占有を照合し、浅く確認できるものから区切って依頼する。担当予定は姫、受入はAstra。正式依頼前には着手しない。
+Reduce repeated evidence searches to focus on substantive judgment. Use fixed-revision reproduction/acceptance of [OPS-074](CANONICAL_INVENTORY_APPEND.md) additional return to progressively append shallow facts/evidence/update triggers to current canonicals. OPS-074 completes/accepts method; this task applies it.
 
-- 判断を変えうる事実を優先し、完全SHA・パス・その版の行範囲・確認した主張と方法を、役立つ箇所だけ記す。存在確認など行を持たない事実には行範囲を要求しない。
-- 更新のきっかけと再確認する範囲、未確認を添える。差分に応じた再確認に使い、全項目を埋めることを目的にしない。
-- 未コミット内容や環境・外部結果はコミットだけで固定したと扱わない。確認済み／食い違い／未確認を区別する。
-- 既存本文と原返却は保持し、末尾の追記と証拠で返す。本文短縮・削除、判断や委任の失効、制度採用、深い挙動の検証、製品・CI変更は対象外。
-- 判断が必要な箇所、確認コストが見込みを超える箇所は、理由と次に必要な入力を残して返す。探索や記録を義務化して負担を増やさない。
+<a id="対象と手順"></a>
+## Targets and procedure
 
-## 完了と評価
+First inventory current canonicals under Maintanance/Current, recording inclusion/exclusion/pending reasons. No unlimited history/repository expansion. Exclude user-finalized and concurrently owned areas. Check protection/ownership and assign bounded shallow checks; planned assignee 姫, acceptance Astra. No start before formal assignment.
 
-区切りごとに入力版・対象一覧・実施結果・保留・残りを返し、Astraが根拠を抜き取り照合する。全体の候補一覧について実施済み／対象外／保留と理由が追跡でき、合意した適用範囲が受け入れられれば完了。未確認の解消や全資料の書換えを完了条件にしない。
+- Prioritize facts affecting judgments; record complete SHA/path/revision lines/claim/method only where useful. No line range for existence facts lacking lines.
+- Add review triggers/scope/unknowns for change-based rechecking; filling every field is not the objective.
+- Uncommitted/environment/external results are not fixed by commit alone. Separate confirmed/discrepant/unverified.
+- Preserve body/original returns; append at end with evidence. No shortening/deletion, invalidation of judgments/delegation, system adoption, deep behavioral validation or product/CI changes.
+- Return decision points or excessive-cost checks with reasons/next inputs. Do not add obligations and burden through exploration/recording.
 
-再探索を省けた例と、記録の作成・維持に手間がかかった例を短く残す。本質的判断の省略を効果とは数えない。新制度の一括導入や別AIの自動起動は行わない。
+<a id="完了と評価"></a>
+## Completion and evaluation
+
+Each round returns input revision, targets, results, deferrals and remainder for Astra sampling. Complete when all candidates map to performed/excluded/pending with reasons and agreed scope accepted; no requirement to resolve all unknowns/rewrite every source.
+
+Briefly record cases of avoided research and costly record creation/maintenance. Skipping essential judgment is not a benefit. No blanket system rollout or automatic other-agent starts.
 
 ## 第1区切り返却（2026-10-17 / 姫・Opus 5.5）
 
@@ -36,21 +43,23 @@
 
 **未確認**：GitHub上のCI実走、保留42件の性質（運用文書が多いと見込むが未読）。正本本文・Registryは変更していない。
 
-## 第1区切りのAstra受入と補正（2026-10-17）
+<a id="第1区切りのastra受入と補正2026-10-17"></a>
+## Round 1 Astra acceptance/correction (2026-10-17)
 
-ユーザー直接依頼による先行実施を受領。固定版876d405bのCurrent直下は77件。候補表冒頭の76件は誤記で、返却の77件を採る。候補区分は一次仕分けで、DONEや担当名だけで編集権限を確定しない。全体完了にはしない。
+Received advance execution under direct user request. Fixed 876d405b Current has 77 files; candidate table's 76 is a typo, adopt returned 77. Classification preliminary; DONE/owner alone do not establish editing authority. Not full completion.
 
-RELEASE-084追記のworkflow179〜195行と、記載baseline SHAから固定入力版までのBenchmarks/Sources・Benchmarks/Libraries・Sources差分ゼロを独立確認し、限定追記を受入。tag集合はcommitのtreeでは固定されないため、最新tagの判定は観測時点のref集合に依存する。「tag更新だけ見れば足りる」とはせず、追記表にあるworkflow・コード変更も更新条件に残す。GitHub CI実走の成功は未認定。
+Independently checked RELEASE-084 appendix workflow lines179〜195 and zero Benchmarks/Sources, Benchmarks/Libraries and Sources differences from baseline SHA to fixed input; accepted limited appendix. Tags are not fixed by commit tree; latest-tag conclusion depends on observed refs. Not 「tag更新だけ見れば足りる」: retain workflow/code triggers too. GitHub CI success unestablished.
 
-## 姫への第2区切り依頼（2026-10-17 / Astra）
+<a id="姫への第2区切り依頼2026-10-17--astra"></a>
+## Round 2 assignment to 姫 (2026-10-17 / Astra)
 
-ユーザー「各種受け入れと姫へのアサイン」に基づく。OPS-074受入済み。今回は残り6件に限定する：CANONICAL_CONFIRMED_SCOPE_SUMMARY.md、OPS_072_ACCEPTANCE.md、PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md、RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md、REGISTRY_STUDIO_MILESTONE_CONNECT.md、REGISTRY_STUDIO_SINGLE_LINE_KIND.md。
+Based on user 「各種受け入れと姫へのアサイン」; OPS-074 accepted. Limit to remaining six: CANONICAL_CONFIRMED_SCOPE_SUMMARY.md, OPS_072_ACCEPTANCE.md, PROVISIONAL_AGREEMENT_JUDGMENT_INVENTORY_PILOT.md, RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md, REGISTRY_STUDIO_MILESTONE_CONNECT.md, REGISTRY_STUDIO_SINGLE_LINE_KIND.md.
 
-着手時の版と占有・保護を確認し、浅く照合できる主張だけ、根拠と更新条件を末尾に追記する。各文書を全部埋めず、適用できない文書は理由付き保留でよい。判定・レビューの本質的判断を機械的存在確認に置換しない。OPS-073の案は参考で、制度として適用しない。
+Check start revision/ownership/protection; append evidence/update triggers only for shallow-verifiable claims. No obligation to fill whole documents; defer with reasons if unsuitable. Do not replace substantive evaluation with existence checks. OPS-073 is reference, not adopted system.
 
-編集範囲は上記6文書の新規追記、Evidence/OPS-076/の新規証拠・訂正記録、本書末尾のReturn。旧返却・本文・原証拠を保存する。候補表の76/77訂正も別記録に残す。42件の保留の深掘り、他担当の作業範囲、製品・CI・Studio・Registry変更は対象外。必要な判断が出た箇所は止めて返す。
+Editable: new appendices in six documents, new evidence/corrections in Evidence/OPS-076/, final Return here. Preserve old returns/body/evidence; record 76/77 correction separately. No deep investigation of 42 pending, others' scopes, product/CI/Studio/Registry edits. Stop/return decisions.
 
-固定SHA・パス・必要な行範囲・主張・確認方法・更新条件、対象ごとの実施/保留理由と残りが揃えば区切り完了。Astraが抜き取り照合して受入する。依頼完成をもって指定範囲を姫へ受渡し、Astraは返却まで同範囲を編集しない。commit・外部操作は含めない。
+Completion: fixed SHA/path/necessary lines/claim/method/triggers, per-target result/deferral reason/remainder. Astra samples. Hand off specified scope, Astra waits until Return. No commit/external actions.
 
 ### 第2区切りReturn（姫記入）
 
@@ -72,27 +81,27 @@ RELEASE-084追記のworkflow179〜195行と、記載baseline SHAから固定入�
 
 **残り・未確認**：保留42件（本区切りの対象外）。ブラウザ・製品テスト・CIは実行していない。行番号は入力版のもの。本文・Registry・Studioは変更していない。commitはしていない。
 
-## 第2区切りAstra受入（2026-10-17）
+<a id="第2区切りastra受入2026-10-17"></a>
+## Round 2 Astra acceptance (2026-10-17)
 
-6文書への末尾追記、ROUND2手順、76/77訂正を受入。固定版56005d06で4文書の冒頭ブロック、DocCレビュー版からSources/Package.swiftの差分ゼロ、Studioの拒否処理57・336行を独立照合。試行対象3文書はfec74691の全文が本版の先頭に保たれていることを比較した（削除行0だけより強い照合）。製品試験・ブラウザは再実行していない。
+Accepted six appendices, ROUND2 procedure and 76/77 correction. At 56005d06 independently compared four opening blocks, zero Sources/Package.swift diff since DocC review, Studio rejection lines57/336. For three trial sources compared full fec74691 text retained at start (stronger than zero deletions). No product/browser reruns.
 
-読み方の補正：冒頭3行目だけの照合はブロックの存在を確認するもので、内容の正しさ・証拠維持を保証しない。commit解決も内容の成立とは別。DocCはSources差分だけで環境・生成設定・導線すべてを保証せず、更新箇所の影響に応じて確認範囲を選ぶ。Studioの拒否処理はコード上の確認で、今回実行試験したものではない。原追記を保持し、本節を受入範囲とする。
+Limits: matching opening line establishes presence, not correctness/evidence retention; commit resolution is not claim validity. Sources diff alone does not guarantee DocC environment/settings/all links; choose checks based on impact. Studio rejection is code inspection, not execution. Preserve original appendices; this section defines acceptance scope.
 
-これで当初対象7件の限定追記を受入済み。候補一覧全体の棚卸しは未完、OPS-076はACTIVEを維持する。
+Initial seven appendices accepted; entire inventory incomplete, OPS-076 remains ACTIVE.
 
-## 姫への第3区切り依頼：保留42件の浅い仕分け（2026-10-17 / Astra）
+<a id="姫への第3区切り依頼保留42件の浅い仕分け2026-10-17--astra"></a>
+## Round 3 assignment: shallow classification of 42 pending (2026-10-17 / Astra)
 
-ユーザー「受け入れと再アサインを」に基づく。対象は第1区切りCANDIDATES.mdで保留になった42文書のみ。最新の入力commitを固定し、元一覧との差（移動・消失・状態変更）を区別する。
+User 「受け入れと再アサインを」. Only 42 pending in original CANDIDATES.md. Fix current input commit and separate moves/disappearances/state changes since original list.
 
-各文書の冒頭・関係する節と現行Registryを必要な範囲だけ確認し、(1)浅い根拠追記の候補、(2)運用・提案・意図など今回の機械照合に不向き、(3)占有・ユーザー判断待ち、(4)低コストでは未確認、へ理由付きで仕分ける。分類は案であり、Registryの状態や編集権限を変更しない。DONEや参照なしだけで編集可としない。
+Inspect openings/relevant sections/current Registry only as needed; classify with reasons: (1) candidate evidence appendix, (2) unsuitable operations/proposals/intent, (3) occupied/user-reserved, (4) not cheaply checked. Classification is proposal, not state/authority changes; DONE/unreferenced does not imply editable.
 
-候補には、判断に効く主張を原則1件、確認先、確認方法、更新条件の案を短く添える。実体を安く照合できればSHA・パス・必要な行範囲を記し、未確認なら未確認でよい。全主張の列挙・全履歴探索はしない。中身を調べる費用が見込みを超えた文書は止めて残す。42件を一度に読み切る義務はなく、区切りで返してよい。
+For each candidate, ordinarily one judgment-relevant claim, source/method/trigger. Record SHA/path/necessary lines if cheap; otherwise unknown. No exhaustive claims/history. Stop excessive-cost files with reasons; bounded returns allowed instead of reading 42 at once.
 
-**編集範囲**：Evidence/OPS-076/の新規ROUND3資料と本書末尾のReturnのみ。対象42文書そのものは今回は編集しない。既存7件・旧返却・原一覧は保持。Registry・製品・Tests・CI・Studio・他担当の文書、深い試験、本文短縮、判断の失効は対象外。
+Editable: new ROUND3 evidence and final Return only. Do not edit 42 targets; retain old seven/returns/list. No Registry/product/Tests/CI/Studio/other owners' files, deep tests, shortening or invalidation.
 
-**完了条件**：元42件に対し、確認済みの分類と理由・候補の主張・未確認・未実施の残りが一対一で分かること。Astraが候補と占有を確認して次の追記範囲を決める。今回の受渡しで方式採用や対象文書の編集を自動承認しない。
-
-依頼完成をもって上記新規出力範囲を姫へ受渡し、Astraは返却まで同範囲を編集しない。commit・外部操作は含めない。
+Completion: one-to-one 42-item results/reasons/candidate claims/unknowns/unperformed remainder. Astra checks candidates/ownership then chooses appendices. No automatic method adoption/target editing permission. Hand over new outputs; Astra does not edit before Return. No commit/external operations.
 
 ### 第3区切りReturn（姫記入）
 
@@ -113,23 +122,25 @@ RELEASE-084追記のworkflow179〜195行と、記載baseline SHAから固定入�
 
 **次の判断（Astra）**：(1)の12件に追記するか、どれから入れるか。(3)の7件は各担当・ユーザーの範囲。commitはしていない。
 
-## 第3区切りAstra受入（2026-10-17）
+<a id="第3区切りastra受入2026-10-17"></a>
+## Round 3 Astra acceptance (2026-10-17)
 
-42件の一次仕分けを受入。候補12＋追記済1＋不向き17＋占有等7＋低コスト未確認5＝42を確認。固定版1175e583のPackage.swiftの通常・互換target構成、candidate.ymlのASan＋ENABLE_DEATH_TESTS、sync.pyの--check分岐を抜き取り照合した。対象本文が未編集であることを差分で確認。分類は今回の浅い棚卸しに対するもので、恒久的な文書の価値・権限判定ではない。
+Accepted primary classification: 12 candidates+1 already appended+17 unsuitable+7 occupied/etc+5 not cheap=42. Sampled normal/compat Package.swift targets, candidate.yml ASan+ENABLE_DEATH_TESTS, sync.py --check at 1175e583. Diff confirms targets unedited. Classification is for this shallow inventory, not permanent value/authority.
 
-**補正**：RBT-047の3ファイル同一性だけから「再現結果は今も有効」「hashだけ見れば足りる」とは認定しない。呼出先のCoW・index解決、テスト、構成・toolchain等にも依存する。確認できたのは対象実装が変わっていないという再調査を絞る材料で、過去の実行結果を現行版の実行結果にはしない。RBT-048のユーザー判断も代行しない。
+Correction: three unchanged RBT-047 files do not establish 「再現結果は今も有効」 or 「hashだけ見れば足りる」; CoW/index callees, tests/config/toolchain matter too. Identity narrows reinvestigation; old runs are not current runs. Do not decide RBT-048 for user.
 
-移行計画の構成一致は計画全体の完了ではなく、その構成に限る。過去のレビューに差分があることもレビュー無効を意味しない。外部repoはそのrepoのSHA等で固定できるが、今回のrepoのSHAだけでは足りないため未確認として止めた判断を受入。tag照会とgit check-ignoreは現在のref/作業ツリーに依存するため、固定版の事実として使う際は区別する。
+Matching migration target structure does not complete whole plan; review diffs do not invalidate reviews. External repositories need their own SHA, not this one; accepted leaving them unverified. Tag queries/git check-ignore depend on current refs/working tree, distinct from fixed-tree facts.
 
-## 姫への第4区切り依頼（2026-10-17 / Astra）
+<a id="姫への第4区切り依頼2026-10-17--astra"></a>
+## Round 4 assignment to 姫 (2026-10-17 / Astra)
 
-継続の受入・再アサイン指示に基づく。ROUND3の候補12件（#2、#9〜13、#17、#23、#33、#35、#36、#41）に限り、着手時の占有・保護を確認して浅い根拠と更新条件を新規末尾節へ追記する。ユーザー確定・作業中と分かったものは追記せず理由付き保留。各文書1〜3主張を目安とし、無理に埋めない。
+Under continued acceptance/reassignment instruction, only ROUND3's 12 candidates (#2,#9〜13,#17,#23,#33,#35,#36,#41). Check ownership/protection then append shallow evidence/triggers in new final sections. Defer finalized/in-progress documents with reasons; about 1〜3 claims each, no quota.
 
-上の補正を守る。特にRBT-047は実装同一性と過去結果の所在までとし、現行の再現成功や判断の有効性を保証しない。レビュー5件とアウトラインは対象版・差分の所在まで、指摘の再レビューはしない。調査結果を本質的判断へすり替えない。
+Observe prior correction: RBT-047 identity/past-result location only, no current reproduction/judgment assurance. Five reviews/outline: revision/diff location, no rereview. Facts do not substitute substantive judgment.
 
-編集は指定12文書への新規追記、Evidence/OPS-076/の新規ROUND4資料、本書末尾のReturnのみ。原本文・原返却・旧証拠は保持。残る17＋7＋5件の再探索、製品/テスト/CI/Studio/Registry変更、制度採用、本文短縮は対象外。安く確かめられない箇所は未確認で返す。
+Edit only 12 appendices, new ROUND4 evidence and final Return. Preserve sources/returns/evidence. No reexploration of remaining17+7+5, product/tests/CI/Studio/Registry changes, adoption or shortening. Leave costly points unverified.
 
-完全SHA・パス・必要な行範囲・確認方法・成立範囲・更新条件、対象別の実施/保留と理由が揃えば区切り完了。固定treeで確認したものと実行環境やref集合に依存するものを区別する。Astraが抜き取り受入する。依頼完成をもって指定範囲を姫へ受渡し、返却までAstraは同範囲を編集しない。commit・外部操作は含めない。
+Complete SHA/path/necessary lines/method/scope/triggers, per-file outcome/reasons. Distinguish fixed tree from runtime/refs. Astra samples; hand off scope until Return. No commit/external actions.
 
 ### 第4区切りReturn（姫記入）
 
@@ -147,11 +158,12 @@ RELEASE-084追記のworkflow179〜195行と、記載baseline SHAから固定入�
 
 **残り・未確認**：(2)17件・(3)7件・(4)5件は本区切りの対象外。実行・CI・再レビューはしていない。commitはしていない。
 
-## 第4区切りAstra受入・初回展開完了（2026-10-17）
+<a id="第4区切りastra受入初回展開完了2026-10-17"></a>
+## Round 4 acceptance and initial rollout complete (2026-10-17)
 
-12文書の追記を受入。全12文書が既存本文を保持した末尾追記であることを確認。固定版1175e583b1857819e9e0b07b83a1cb5fc8be657aのRBT対象3ファイルのSHA-256を独立照合し、f6e181b2ab31dcd17c51c11236a6b5dd4b1024b8以降のRedBlackTreeCollections差分なしも確認した。ASan・レビュー返却・試作文書の追記を抜き取り確認。前回の補正（実装同一性と現行再現成功の区別）は反映済み。製品テスト・CI再実行・全指摘の再レビューは行っていない。
+Accepted all 12 appendices, confirming original bodies retained. Independently compared RBT three-file SHA-256 at 1175e583b1857819e9e0b07b83a1cb5fc8be657a and no RedBlackTreeCollections changes since f6e181b2ab31dcd17c51c11236a6b5dd4b1024b8. Sampled ASan/review/prototype appendices; identity-versus-current-reproduction correction applied. No product/CI rerun or all-findings rereview.
 
-初回77件は、新規追記19件（第1区切り1＋第2区切り6＋第4区切り12）、追記済み1、初回対象外28、不向き17、占有・判断待ち7、低コスト未確認5で対応が付いた。未確認を解消済みにはせず、CANDIDATESとROUND3の理由を保持する。この限定した初回整備を完了とし、継続保守は[OPS-077](JUDGMENT_EVIDENCE_MAINTENANCE.md)へ接続する。元の判断の再承認・制度全体の採用認定ではない。
+Mapped initial77 to new19 (1+6+12), already1, initial excluded28, unsuitable17, occupied/user-wait7, not-cheap5. Unknowns remain unknown; retain CANDIDATES/ROUND3 reasons. Complete this bounded initial setup; ongoing maintenance [OPS-077](JUDGMENT_EVIDENCE_MAINTENANCE.md). Not reapproval of original judgments/adoption of whole system.
 
 ## 判断にはみ出した記述の再検証と再送（2026-10-17 / 姫・Opus 5.5、CP-20261017-016）
 
@@ -174,14 +186,14 @@ RELEASE-084追記のworkflow179〜195行と、記載baseline SHAから固定入�
 
 元の追記・Return・証拠は保持し、書き換えていない。判断そのものの精査（根拠が支えるかの評価）はOPS-077の範囲で、ここでは行っていない。commitはしていない。
 
-## 再送の優先精査・Astra受入（2026-10-17）
+<a id="再送の優先精査astra受入2026-10-17"></a>
+## Prioritized review and acceptance of resubmission (2026-10-17)
 
-CP-20261017-016をOPS-077の個別保守として統合し、OPS-076の補正記録として接続する。OPS-076はDONEを維持。15項目を読み、特にJ2/J9/J10/J12の取り下げと第2・第3区切り受入、ROUND3 #18の元文書を照合した。固定版1175e583b1857819e9e0b07b83a1cb5fc8be657aのserve.pyとsync.pyの直接の処理・出力先も抜き取り確認した。精査区分は優先精査であり、全依存層の再検証ではない。
+Integrated CP-20261017-016 into OPS-077 maintenance and linked as OPS-076 corrections; OPS-076 stays DONE. Read all15, particularly J2/J9/J10/J12 withdrawals against round2/3 acceptance and ROUND3#18 source. Sampled direct serve.py/sync.py operations/outputs at1175e583b1857819e9e0b07b83a1cb5fc8be657a. Prioritized review, not every dependency layer.
 
-再送を次の限定付きで受入する。
+Accept resubmission with limits:
+- J10 「差分があれば見直しが要る」 means diff identifies impact-check candidates, not mandatory rereview for irrelevant changes. Even unchanged code can need checking after environment changes. Same limit applies to round2 acceptance.
+- J12 corrected to 「依存を調べていない」, not absence. Handoff-history source can remain excluded from this appendix scope, not permanently unnecessary.
+- 「支持7件」 supports only row facts/scope. J14 body status declaration is not independent user-approval evidence. J1 no direct workflow reference does not prove no indirect use. J5 sync.py calls other scripts; direct-output checks do not guarantee no writes on all paths. No such blanket guarantees accepted.
 
-- J10の「差分があれば見直しが要る」も、差分は影響確認の候補を示す、と読む。無関係な差分だけで再レビューを必須にしない。差分なしでも環境変更は確認条件になり得る。第2区切りの既存受入にも同じ限界がある。
-- J12は「依存を調べていない」へ訂正。不在を認定しない。元文書は受渡し履歴であり、今回の限定追記から外す扱いは維持できるが、恒久的な不要判定ではない。
-- 「支持7件」は各行に書いた事実と範囲を支持する意味に限る。J14の本文の状態宣言はユーザー承認の独立証拠ではない。J1のworkflow直接参照の不在だけでは呼出先全体の不使用を証明しない。J5もsync.pyが別スクリプトを起動するため、記載された直接出力先の照合だけで全経路の無書込みを保証しない。これらの全面的な保証は今回受け入れない。
-
-追記19件・仕分け77件は実施件数として保持する。全判断の有効性・分類の恒久的妥当性の再承認ではない。旧本文を履歴として保持し、再利用時はJUDGMENT_RECHECKの成立範囲と本受入補正を適用する。今回の補正記録の受入を超える精査は開始しない。
+Retain19 appendices/77 classifications as execution counts, not reapproval of every judgment or permanent classification. Keep historical body; on reuse apply JUDGMENT_RECHECK scope and these corrections. No review beyond this correction acceptance begins.

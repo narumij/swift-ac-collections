@@ -1,5 +1,9 @@
 # Public API naming deliberative score report — round 2
 
+## TL;DR（人間向け）
+Round 2の議論後に収束した命名候補と残るユーザー判断を記録します。点数やAIの一致は採用決定ではありません。これは当時の協議記録です。
+
+
 Status: completed on 2026-10-13. This report records convergence and remaining disagreement after
 all participants could read the round-1 scores and reasons. It does not adopt a public name.
 

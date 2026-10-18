@@ -1,28 +1,36 @@
 # 前提・後続にマイルストーンを選ぶ接続操作
 
-2026-10-18 / OPS-084 / 親OPS-048 / Astra作成、姫実装・検証、Astra受入。
+## TL;DR（人間向け）
 
-## 目的・ユーザー指示
+正式task・追加案の前提と後続へ中間マイルストーンを選べるようにし、矢印方向を保存・再開でも保つ操作を追加した記録。SPIから追加案への接続などを隔離データと独立試験で受け入れ、完了した。実Inboxは変更せず、END・版ゲート等の制限を保持し、Safari実表示は未確認。
 
-「接続操作で前提も後続もマイルストーンを選べないので、UI追加でも構わないからできるようにするよう姫にいらいしてほしい」。具体例は追加案「SPI登録後のタスク出し」（メモ：バッジ対応の他に試験結果への対応を検討する）をSPIの後ろにつなぐこと。
+2026-10-18 / OPS-084 / parent OPS-048. Astra authored/accepted; Hime implemented/verified.
 
-## 確定範囲
+<a id="目的ユーザー指示"></a>
+## Purpose and user instruction
 
-- 正式タスク・追加案の接続操作で、前提にも後続にも中間マイルストーンを選べること。少なくとも「SPI → 追加案」と「追加案 → 中間マイルストーン」を明示した向きで追加できること。既存タスクにも同じ操作を提供する。
-- 既存の選択欄を広げるか、専用UIを足すかは任せる。前提／後続と矢印方向を取り違えない表示にする。追加・つなぎ替え・除去・保存・再開で方向が保たれること。
-- task間の依存はedges、マイルストーンとの接続はmilestoneRelationsとして既存形式を維持する。新規・変更条件は相談待ち。接続を自動着手・条件達成に読み替えない。
-- START/ENDの構造上の意味、版ゲートへの直接接続制限、配置から生成する骨格は維持する。表示上のゲートを選ばせる場合は実データのSTART/ENDへの対応を明示する。今回の意図を満たすために骨格の編集や既存制限の全面解除はしない。
-- 不正端点・自己接続・重複・循環は拒否し、拒否時に元データを変えない。既存保存版・baseline・ユーザーの編集は維持する。
+「接続操作で前提も後続もマイルストーンを選べないので、UI追加でも構わないからできるようにするよう姫にいらいしてほしい」. Example: connect the proposal 「SPI登録後のタスク出し」 (note: consider responses to test results as well as badge work) after SPI.
 
-## 編集範囲と手順
+<a id="確定範囲"></a>
+## Confirmed scope
 
-RegistryApp/index.template.html、verify.cjs、必要なら限定したsync/serve側整合修正、RegistryApp/README.md、本書の内訳・Return、Current/Evidence/OPS-084/。最初に短い内訳を記入する。開始HEADと既存差分を確認する。DESIGN・実Registry・Rules・マイルストーン配置・ユーザーのInbox保存データ・製品は変更しない。
+- Let formal tasks/proposals select intermediate milestones as prerequisites and successors. Support at least 「SPI → 追加案」 and 「追加案 → 中間マイルストーン」 in the stated directions, with the same operations for existing tasks.
+- Extending existing selectors or adding dedicated UI is delegated. Make prerequisite/successor and arrow direction unambiguous; retain direction through add/rewire/remove/save/resume.
+- Keep existing formats: edges for task dependencies, milestoneRelations for milestone connections. New/changed conditions remain awaiting discussion; a connection is not automatic start or fulfilled conditions.
+- Preserve structural START/END meaning, direct version-gate restrictions and placement-generated backbone. If a displayed gate is selectable, explicitly identify its actual START/END mapping. No backbone editing or blanket removal of restrictions.
+- Reject invalid endpoints, self-links, duplicates and cycles without mutating original data. Preserve saved revisions, baseline and user edits.
 
-実ユーザーの追加案を正式採番したり、保存内容へ依頼者の代わりに接続を適用したりしない。同等の隔離fixtureで検証する。今回commitや外部操作は含まない。依頼完成により指定範囲を姫へ受渡し、Astraは返却待ち。
+<a id="編集範囲と手順"></a>
+## Editing scope and procedure
 
-## 完了条件
+RegistryApp/index.template.html, verify.cjs, bounded sync/serve consistency repairs if needed, RegistryApp/README.md, this breakdown/Return and Current/Evidence/OPS-084/. Write a brief breakdown first and inspect starting HEAD/existing differences. No DESIGN, actual Registry/Rules, milestone placement, user's Inbox saves or product changes.
 
-前提/後続両方向について既存taskと追加案で操作し、SPI→追加案を見取り図に表示できること。保存→再開後も接続とbaselineを保持すること。既存のSTART/END操作と骨格保護、循環等の拒否、未保存保護が崩れていないこと。sync/verifyと操作スモークを確認。Safari未確認なら明記。Returnには入力SHA・差分・検証・未確認・一時作業物処理を書く。
+Do not formally number the user's real proposal or apply connections to saved content on their behalf. Verify with equivalent isolated fixtures. No commit/external operations. Completion of this assignment hands the specified scope to Hime; Astra awaits return.
+
+<a id="完了条件"></a>
+## Completion conditions
+
+Exercise both directions for existing tasks/proposals and show SPI→proposal in the map. Save/resume must preserve connections/baseline. Existing START/END operations, backbone protection, cycle/invalid rejection and unsaved-input protection must remain intact. Run sync/verify and operation smoke; explicitly note Safari nonverification. Return input SHA, diff, tests, unknowns and artifact handling.
 
 ## 作業内訳（姫記入）
 
@@ -83,8 +91,9 @@ RegistryApp/index.template.html、verify.cjs、必要なら限定したsync/serv
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-ユーザーの受入指示に基づき、前提・後続の中間マイルストーン接続を受入。コード差分と返却を照合し、独立sync/verify 26 PASS、OPS-084操作smoke PASS、OPS-082更新保護smoke v3 PASS、--checkずれなしを確認。SPI→追加案、既存taskへの接続、保存再開時の方向・baseline保持、不正接続拒否を確認した。Safari実表示は未確認。実ユーザーのInbox保存内容は変更していない。受入済み・commit待ちとしてWAITING_USER、実装依頼終了。
+Accepted intermediate milestone connections in both directions under the user's acceptance request. Compared code/Return; independent sync/verify 26 PASS, OPS-084 smoke PASS, OPS-082 update-protection smoke v3 PASS, --check matched. Checked SPI→proposal, existing-task connections, direction/baseline across save/resume and rejection of invalid links. Safari display unverified; real user Inbox unchanged. Accepted as WAITING_USER for commit; implementation assignment ended.
 
-2026-10-18：ユーザーのcommit指示によりcommit待ちを解消、DONE。受入範囲と未確認事項は上記のまま。
+User commit instruction on 2026-10-18 resolves commit wait and makes DONE. Acceptance limits/unknowns above remain.

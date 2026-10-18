@@ -3,59 +3,52 @@
 
 # Permutation documentation handoff audit
 
+## TL;DR（人間向け）
+本書は旧COW版Permutationの公開面、test根拠、命名・契約履歴を利用者向け文書作業へ渡すための証拠監査を記録する。2026-10-08に監査と引継ぎ判定が完了し、現行runtime-check版の契約資料ではない。
+
+この監査の当時の割当、判断基準、古いAPI名は現行の指示や未実施依頼として扱わない。現行契約と作業状態は、現行Quality ProfileおよびTask Registryを参照する。
+
 最終更新: 2026-10-08 / Codex
 
-本書はcommit `15c8f965`前後の旧COW実装を利用者向け文書作業へ渡した時点の証拠packageであり、
-現行API ledgerではない。現在の公開契約と検証状態は`Maintanance/Quality/Profiles/NextPermutationModule.md`、
-`CurrentQualityAssessment.md`、`RuntimeCheckedPermutationTestPlan.md`、`Maintanance/Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md`を参照する。
+This document is an evidence package from the handoff of the old COW implementation around commit `15c8f965` to user-facing documentation work; it is not a ledger for the current API. For the current public contract and verification status, see `Maintanance/Quality/Profiles/NextPermutationModule.md`, `CurrentQualityAssessment.md`, `RuntimeCheckedPermutationTestPlan.md`, and `Maintanance/Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md`.
 
 ## 目的
 
-PermutationをCodexの利用者向け文書作業へ渡す前に、現在の公開面、仕様test、名称・契約の履歴を
-独立した証拠packageとして揃える。文書の構成、使用例の選定、公開契約、互換modeとの文書境界は
-この監査では決めない。
+Before handing Permutation to Codex for user-facing documentation work, assemble the then-current public surface, specification tests, and naming/contract history into an independent evidence package. This audit does not decide document structure, example selection, public contracts, or the documentation boundary with compatibility mode.
 
 ## 共通境界
 
-- Claudeは指定された証拠表だけをこの文書へ追記する。
-- `Sources/`、`Tests/`、利用者向け文書、既存の品質評価、Registryは変更しない。
-- 現行実装から望ましい契約を推測せず、記録された事実と未確認を分ける。
-- defect、公開契約の不一致、新しい判断点を見つけた場合は、根拠と安全な最小再現を記録して停止する。
-- 別packageの不足をその場で埋めない。該当packageへの疑義として報告する。
-- Codexが各packageの網羅性を検収し、利用者向け文書への入力を統合する。
+- Claude was assigned to append only the specified evidence tables to this document.
+- Do not change `Sources/`, `Tests/`, user-facing documents, existing quality assessments, or the Registry.
+- Do not infer a desirable contract from the current implementation; distinguish recorded facts from unverified points.
+- If a defect, public-contract mismatch, or new decision point is found, record the evidence and a safe minimal reproduction, then stop.
+- Do not fill gaps in another package on the spot; report them as concerns for that package.
+- Codex checks each package for coverage and integrates the inputs for user-facing documentation.
 
 ## Claude assignments
 
 ### Public API and documentation ledger
 
-対象は`Sources/PermutationModule/NextPermutations.swift`。`public`宣言を一件ずつ、型、member種別、source位置、
-宣言上のgeneric制約、ドキュメントコメントの有無へ対応付ける。`@inlinable`など性能属性は事実列として
-記録してよいが、要否を評価しない。成果物は`## Public API ledger`節の表。全宣言の件数を再集計して停止する。
+The assigned source was `Sources/PermutationModule/NextPermutations.swift`. Map every `public` declaration to its type, member kind, source location, declared generic constraints, and whether it has a documentation comment. Performance attributes such as `@inlinable` may be recorded as facts, but do not assess whether they are needed. The deliverable is a table in `## Public API ledger`. Recount all declarations and stop.
 
 ### Test evidence matrix
 
-対象は`Tests/PermutationTests/NextPermutationsSequence/`の番号付きtest。公開宣言と、列挙順、空・単要素、
-重複要素、値セマンティクス、`Permutation` collection、他moduleとの共存、境界停止の既存testを対応付ける。
-各testが実際に固定する事実だけを書き、未検証契約を列挙する。成果物は`## Test evidence matrix`節の表。
-test追加や改名は行わない。
+The assigned inputs were numbered tests in `Tests/PermutationTests/NextPermutationsSequence/`. Map public declarations to existing tests for enumeration order, empty and single-element input, duplicate elements, value semantics, the `Permutation` collection, coexistence with other modules, and bounds failures. Record only facts each test actually establishes and list unverified contracts. The deliverable is a table in `## Test evidence matrix`. Do not add or rename tests.
 
 ### Naming and contract history ledger
 
-対象は`Permutations.swift`、上記test、`Maintanance/Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md`、
-`ProductReadinessAssessment.md`、`AtCoder2025CompatibilityPlan.md`と、それらに直接関係するgit履歴。
-現行3公開型の名称、削除済みAPI、通常版と互換modeの境界について、決定済み、履歴上の事実、未決定を
-区別する。成果物は`## Naming and contract history`節の表。互換modeを再開せず、文書境界を提案しない。
+The assigned inputs were `Permutations.swift`, the tests above, `Maintanance/Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md`, `ProductReadinessAssessment.md`, `AtCoder2025CompatibilityPlan.md`, and directly related Git history. Distinguish decisions, historical facts, and unresolved matters for the names of the three current public types, removed APIs, and the boundary between normal and compatibility modes. The deliverable is a table in `## Naming and contract history`. Do not restart compatibility mode or propose a documentation boundary.
 
 ## Codex intake
 
-3 packageの完了後、Codexは次を確認する。
+After all three packages were complete, Codex was to check the following:
 
-- 公開宣言が全件ledgerへ含まれること。
-- 利用者へ約束する各契約について、test根拠または未検証の表示があること。
-- 現行名称、削除済みAPI、互換modeが混同されていないこと。
-- 品質評価reviewと合わせ、利用者向け文書作業で決める事項が独立していること。
+- Every public declaration is included in the ledger.
+- Each contract promised to users has test evidence or is marked unverified.
+- Current names, removed APIs, and compatibility mode are not conflated.
+- When combined with the quality-assessment review, the decisions for user-facing documentation remain independent.
 
-検収後も、この文書自体は利用者向け文書にはしない。
+Even after acceptance, this document itself is not user-facing documentation.
 
 ## Public API ledger
 
@@ -159,30 +152,26 @@ facade経由の利用: `Tests/AcCollectionsTests/AcCollectionsTests.swift:73`（
 
 ## Codex evidence intake（2026-10-08）
 
-`PERM-020`〜`PERM-022`は、指定された成果物、禁止事項、停止条件を満たす証拠packageとして受け入れる。
-これは未検証事項をすべてtestへ追加する判断、古い文書を直ちに修正する判断、互換modeやfacadeの方針を
-確定する判断ではない。
+`PERM-020` through `PERM-022` were accepted as an evidence package meeting the specified deliverables, prohibitions, and stop conditions. This did not decide to turn every unverified item into a test, immediately correct old documents, or settle policy for compatibility mode or the facade.
 
-引き渡し判定へ残す事項:
+Items left for the handoff decision:
 
-- 公開宣言14件と公開適合9件を、利用者向け文書の公開面入力として使う。
-- 仕様testの未検証一覧は契約との必要性をCodexが選別し、不足という理由だけでtask化しない。
-- `Permutation`の0始まり`Int`添字は現行testで契約と明記される一方、互換計画には未決定という旧記述が
-  ある。通常版の現行契約と互換modeの未決定事項を分けて`PERM-017`と引き渡し判定で整理する。
-- 旧型名、削除済みprotocol経路、facade再公開状態の古い記述は、履歴資料として残すものと現行説明を
-  訂正するものに分ける。Claudeは対象外文書を変更しない。
-- 互換modeとの文書境界、利用者向け使用例、facade再公開方針はこの証拠監査では決めない。
+- Use the 14 public declarations and nine public conformances as input to the public surface in user-facing documentation.
+- Codex selects which unverified specification-test items are necessary for the contract; do not create tasks solely because gaps exist.
+- Current tests explicitly define zero-based `Int` indices for `Permutation`, while the compatibility plan contains old text calling this undecided. Separate the current normal-mode contract from unresolved compatibility-mode matters in `PERM-017` and the handoff decision.
+- Separate obsolete references to old type names, removed protocol paths, and facade reexport state into those retained as historical records and those requiring correction in current explanations. Claude does not change documents outside scope.
+- This evidence audit does not decide the documentation boundary with compatibility mode, user-facing examples, or facade-reexport policy.
 
 ## Codex documentation handoff decision（2026-10-08）
 
-品質評価R-1〜R-4 reviewの完了後、公開面、test根拠、履歴、品質評価を次のとおり検収した。
+After the quality-assessment R-1 through R-4 reviews were complete, the public surface, test evidence, history, and quality assessment were accepted as follows:
 
-- 公開宣言14件と公開適合9件はledgerに一度ずつ収録され、通常版の公開面を再構築できる。
-- 利用者へ説明する主要契約は番号付きTest as Specificationまたはdocumentation commentへ対応し、未検証事項も分離されている。
-- 現行3型名、削除済みAPI、通常版、未実装の互換modeは混同されていない。
-- 通常版`Permutation`の0始まり`Int`添字は現行仕様testで確定済みと扱う。互換計画の「未決定」は旧記述または未実装の互換mode側の記録であり、通常版の契約を覆さない。
-- 品質評価は初版レビューを完了し、現行通常版を利用者向け文書作業へ渡せる。性能効率性などの`部分`評価は既知事項であり、文書着手の阻害条件ではない。
+- The 14 public declarations and nine conformances appear exactly once in the ledger, allowing reconstruction of the normal-mode public surface.
+- Major user-facing contracts are mapped to numbered Test as Specification tests or documentation comments, and unverified matters are separated.
+- The three current type names, removed APIs, normal mode, and unimplemented compatibility mode are not conflated.
+- Treat zero-based `Int` indices for normal-mode `Permutation` as established by current specification tests. The compatibility plan's “undecided” statement is old or records the unimplemented compatibility mode; it does not override the normal-mode contract.
+- The quality assessment completed its initial review and allowed the current normal mode to move to user-facing documentation work. Known `部分` ratings, such as performance efficiency, were not blockers to starting documentation.
 
-文書作業へ残す判断は、文書形式、通常版と互換modeの文書境界、性能数値の掲載、利用例の選定、facade再公開の説明範囲である。いずれも公開面と仕様根拠の監査をやり直す必要はなく、複数の判断を一つのtaskへ束ねずに扱う。
+Decisions remaining for documentation work were document format, the boundary between normal and compatibility modes, whether to publish performance numbers, example selection, and how to explain facade reexports. None required repeating the public-surface and specification-evidence audit; handle them separately instead of bundling multiple decisions into one task.
 
-以上により、PermutationはCodexの利用者向け文書作業へ引き渡し可能と判定する。この監査文書は引き続き内部の証拠packageであり、利用者向け文書そのものにはしない。
+On that basis, Permutation was judged ready for handoff to Codex's user-facing documentation work. This audit remains an internal evidence package and is not itself user-facing documentation.

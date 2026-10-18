@@ -1,100 +1,94 @@
 # ElementBuffer Test as Specification レビュー反映
 
+## TL;DR（人間向け）
+ElementBufferの既存契約に対する仕様test不足をA〜Eに整理し、借用競合、全座標access、寸法検査、空領域、参照型要素の寿命を対象とした。返却・受入・確認記録には実装と検証範囲、未実施事項が残されている。
+
+これは完了済みのレビュー反映を記録したアーカイブ資料である。本文中の当時の依頼や停止条件は現行の作業指示ではなく、ElementBuffer全体の品質受入を示すものでもない。
+
 ## 目的・担当・開始条件
 
-- 作成者: Astra（レビュー原案・依頼正本）
-- 固定ID: `BARE-046`
-- 種別: `EXECUTION`
-- 実施予定: Claude（姫）。Codexが返却された証拠を照合してRegistryを更新する。
-- 2026-10-15、ユーザーが仕様観点、特にテスト不足のレビューを依頼。レビュー後に「アサイン予定姫のレビュー反映タスクと正本追加」を指示した。
-- 2026-10-15、ユーザーの依頼追加指示により、`Maintanance/CLAUDE_TASK.md`でClaudeへ正式に実行依頼した。
-- 現行の状態は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` の該当行を正とする。
+- Author: Astra (review draft and assignment source)
+- Fixed ID: `BARE-046`
+- Type: `EXECUTION`
+- Planned assignee: Claude (Hime). Codex would check the returned evidence and update the Registry.
+- On 2026-10-15, the user requested a specification-focused review, particularly for missing tests. After the review, the user instructed that a review-implementation task be assigned to Hime and added as a canonical document.
+- On 2026-10-15, following the user's additional instruction, Claude was formally assigned through `Maintanance/CLAUDE_TASK.md`.
+- The current state is governed by the relevant row in `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`.
 
-ElementBufferはSwift 6.2で1.0競技供用、Swift 6.4で1.0一般供用である。提供方針は
-`Maintanance/Current/QUALITY_REQUIREMENTS.md`、設計判断は
-`Sources/ElementBufferModule/Documentation/Quality-Profile.md`を参照する。
-非mutating値更新の廃止や、未保証の並行利用を新たに保証する仕事ではない。
+At the time of this record, ElementBuffer was designated for 1.0 competitive use with Swift 6.2 and 1.0 general use with Swift 6.4. Refer to `Maintanance/Current/QUALITY_REQUIREMENTS.md` for release policy and `Sources/ElementBufferModule/Documentation/Quality-Profile.md` for design decisions. This work does not remove nonmutating value updates or introduce guarantees for concurrency that is currently unsupported.
 
 ## レビューの範囲と証拠
 
-公開source、`Tests/ElementBufferModuleTests/`、
-`Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`と
-`Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`を静的に照合した。
-レビュー時点では再実行も実装不具合の再現もしていない。以下はテストで検出できない仕様違反の候補である。
-既存テストで十分な項目は追加せず、該当テストと理由を返す。
+The review statically compared the public source, `Tests/ElementBufferModuleTests/`, `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`, and `Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`. At review time, tests were not rerun and implementation defects were not reproduced. The items below are candidate specification violations that existing tests might fail to detect. Do not add tests for requirements already adequately covered; identify the existing test and explain why it suffices.
 
 ## 反映事項
 
 ### A — 借用継続中の排他アクセス拒否（優先）
 
-現在のcompiler fixtureは所有者外へのescapeを4次元分検査するが、借用中の競合を検査しない。
-参照を競合操作の後にも使用して借用が生存している例を作る。
+The current compiler fixture checks escape beyond the owner in four dimensions but does not check conflicting access during a borrow. Construct examples that use the reference after a conflicting operation so that the borrow remains live.
 
-- 所有者への直接read／set、二つ目の借用参照の取得、所有者の消費・置換について、現行の排他借用契約に反する操作を拒否すること。
-- 借用終了後には同種の操作を許す正常例を対にする。
-- 偶然の別エラーで失敗したものを成功に数えず、目的のcompiler診断を確認する。
-- 標準MutableRef自体の網羅試験ではなく、本moduleが返す参照と所有者の関係を検査する。
+- Reject direct owner reads or writes, acquisition of a second borrowed reference, and consuming or replacing the owner when those operations violate the current exclusive-borrow contract.
+- Pair these with valid examples where the same operations are allowed after the borrow ends.
+- Verify the intended compiler diagnostic; do not count an incidental, unrelated error as success.
+- Check the relationship between references returned by this module and their owner, not the standard `MutableRef` type exhaustively.
 
 起点: `Tests/ElementBufferModuleTests/BareArray_7_BorrowedReferenceTests.swift`、上記compiler fixtureと検証script。
 
 ### B — 借用参照の全座標対応と更新の局所性（優先）
 
-現在の正常系は各次元1座標、ゼロ初期値への書込みと読戻しが中心である。
+Current positive tests focus on one coordinate per dimension and writing to and reading back zero-initialized values.
 
-- 非対称寸法と座標ごとに異なる初期値を使い、1D〜4Dの借用参照で全座標の初期値を読む。
-- 各座標への更新が意図した要素だけに反映され、他の要素を変えないことを、公開値アクセス等の別経路でも観測する。
-- readとwriteが同じ誤った位置を参照しても通る自己比較を避ける。
+- Use asymmetric dimensions and coordinate-specific initial values to read every position through borrowed references in one through four dimensions.
+- Observe through a separate path, such as public value access, that updates affect only the intended element and leave all others unchanged.
+- Avoid self-comparisons that could pass when both reads and writes use the same incorrect position.
 
 起点: `Tests/ElementBufferModuleTests/BareArray_7_BorrowedReferenceTests.swift`。
 
 ### C — 初期化時の軸別非負条件（優先）
 
-現行の2D〜4Dの負寸法例は最初の2軸を同時に負にしており、各軸の検査漏れを区別できない。
+Current negative-dimension examples for two through four dimensions make the first two axes negative at once, so they cannot identify a missing check on an individual axis.
 
-- repeating版とclosure版で、各軸を一つずつ負にし、他の軸を正にした場合の拒否を確認する。
-- ゼロ軸と負軸が共存しても拒否することを確認する。空領域の早期処理が非負条件を迂回しないことが目的。
-- 意図した事前条件違反を観測する。allocation失敗など別の失敗を証拠にしない。
+- For both repeating and closure initializers, check rejection when each axis is negative individually and all other axes are positive.
+- Check rejection when a zero axis coexists with a negative axis. This ensures early handling of an empty region does not bypass the nonnegative-dimension requirement.
+- Observe the intended precondition violation; do not use unrelated failures such as allocation failure as evidence.
 
 起点: `Tests/ElementBufferModuleTests/BareArray_99_DeathTests.swift`。
 
 ### D — ゼロ寸法と空領域
 
-現行はclosure版の限られたゼロ配置を検査している。
+Current tests cover only a limited zero-dimension arrangement for the closure initializer.
 
-- repeating版・closure版で各軸がゼロの場合を扱い、closureが呼ばれないことを確認する。
-- 内側がゼロでも`indices`は最外軸の範囲であることを確認する。
-- 空領域の座標0へのread／set／referenceを拒否することを確認する。
-- 既存の「途中積がoverflowしてもゼロ次元なら空」の例を保持する。仕様上の違いを代表する入力を選び、全組合せを展開しない。
+- Cover each zero-axis position for both repeating and closure initializers, and verify that the closure is not called.
+- Verify that `indices` still spans the outermost axis when an inner dimension is zero.
+- Verify that reads, writes, and reference acquisition at coordinate zero are rejected for an empty region.
+- Retain the existing case where an intermediate product overflows but a zero dimension still makes the region empty. Choose representative inputs for distinct specification behavior rather than enumerating every combination.
 
 起点: `BareArray_1_InitializationTests.swift`、`BareArray_4_IndicesTests.swift`、`BareArray_96_BorrowedReferenceDeathTests.swift`、`BareArray_97_CoordinateValueAccessDeathTests.swift`（いずれも`Tests/ElementBufferModuleTests/`）。
 
 ### E — 参照型要素の共有と寿命
 
-現行の検査はbufferが単独所有する要素の上書き・破棄が中心である。
+Current checks focus on overwriting and destroying elements solely owned by the buffer.
 
-- `element(at:)`で得た参照を保持すれば、buffer破棄後も要素を利用できること。
-- 外部にも参照があれば、slot上書きだけではオブジェクトが破棄されないこと。
-- repeating初期化の複数slotが同じオブジェクトを保持し、最後の参照を手放すと一度だけ破棄されること。
-- `withExtendedLifetime`等で観測時点を明確にし、slotの所有解放とオブジェクトのdeinitを区別する。
+- If a reference obtained through `element(at:)` is retained, verify that the element remains usable after the buffer is destroyed.
+- If an external reference also exists, verify that overwriting a slot alone does not destroy the object.
+- Verify that multiple slots initialized with the repeating initializer can retain the same object and that it is destroyed exactly once when the final reference is released.
+- Use `withExtendedLifetime` or similar to make observation timing explicit and distinguish release of slot ownership from the object's `deinit`.
 
 起点: `Tests/ElementBufferModuleTests/BareArray_5_ReferenceLifetimeTests.swift`、`BareArray_6_CoordinateValueAccessTests.swift`、`BareArray_7_BorrowedReferenceTests.swift`。
 
 ## 作業範囲・停止条件
 
-変更対象は上記の仕様テスト、compiler fixtureと検証script、および正式依頼時に割り当てる返却欄。
-production実装・公開API・性能基準・供用方針・Registryは実施担当の変更対象に含めない。
-既存契約を検査するテスト補強として実施し、契約の新設・変更や実装修正が必要になったら、該当項目の事実と再現を返す。
-テストを通すために期待値を弱めたり、独断で実装を変更したりしない。
-現行packageはSwift 6.4を要求するため、6.4上で値アクセスの試験が通ったことを6.2 toolchainでの成功と記録しない。
-新しい6.2検証基盤の構築はこの反映taskへ暗黙に含めない。
+The assigned changes were limited to the specification tests above, compiler fixture and verification script, and a return section assigned through a formal request. The assignee was not authorized to change production implementation, public API, performance criteria, release policy, or Registry. Treat the work as tests that strengthen checks for existing contracts. If a new or changed contract or an implementation fix is needed, return the relevant facts and reproduction instead. Do not weaken expectations merely to pass tests or change implementation unilaterally.
+
+The current package requires Swift 6.4, so success of value-access tests on 6.4 must not be reported as success on the Swift 6.2 toolchain. Building a new 6.2 verification environment is not implicitly included in this implementation task.
 
 ## 完了・返却条件
 
-1. A〜Eそれぞれに、追加・既存で充足・契約上の判断待ちのいずれかと根拠を対応づける。
-2. 追加した通常テスト・Death Test・compiler診断を必要な構成で実行し、toolchain、OS、Debug／Release、実行コマンド、結果を残す。未実施と成功を区別する。
-3. 関連する既存テストの回帰を確認する。compilerの拒否例には正常例と期待診断を対応づける。
-4. production変更がないこと、各テストがどの仕様違反を検出するかを示す。
-5. Codexが結果を照合し、残る判断待ちがなければ、作業・検証完了を記録して`WAITING_USER`でコミット許可を尋ねる（2026-10-15からの試行）。許可後のコミット確認、またはユーザーのコミット不要判断を記録して`DONE`とする。既にコミット済みの成果を未完了へ戻さず、追加記録のコミット待ちと区別する。レビュー反映完了を1.0品質全体の受け入れとは扱わない。
+1. For each of A–E, identify whether it was added, already adequately covered, or awaits a contract decision, with supporting evidence.
+2. Run added ordinary tests, Death Tests, and compiler diagnostics in the required configurations. Record toolchain, OS, Debug/Release, commands, and results, distinguishing unrun checks from successes.
+3. Check regressions in related existing tests. Pair compiler rejection cases with valid examples and the expected diagnostic.
+4. Show that production code was unchanged and identify the specification violation each test detects.
+5. Codex checks the results and, if no contract decisions remain, records implementation and verification completion and asks for commit permission in `WAITING_USER` (a trial started on 2026-10-15). After permission and commit confirmation, or the user's decision that no commit is needed, record `DONE`. Do not mark an already committed result incomplete; distinguish it from a pending commit for additional records. Completion of this review implementation is not acceptance of overall 1.0 quality.
 
 ## 返却欄（Claudeが記入）
 
@@ -151,18 +145,18 @@ redirectしても色付き診断（ANSI escape）を出し、`error: lifetime-de
 
 ## Codex受入
 
-2026-10-15、返却差分とA〜Eの対応を照合し、production変更がないことを確認した。
-`VerifyBareArrayCompilerDiagnostics.sh`を独立に再実行し、正常例21関数、escape診断4件、borrow-conflict診断20件、その他のerror 0件で成功した。
-Xcodeのactive test plan `swift-ac-collections`から`ElementBufferModuleTests` 81件を指定して再実行し、81件成功、失敗0件、skip 0件、未実行0件を確認した。
-直接の`swift test --filter ElementBufferModuleTests`は実行環境の`sandbox-exec: sandbox_apply: Operation not permitted`で開始できなかったため、その失敗をtest failureとは扱わず、Xcode実行結果を受入証拠とした。
-未実施として返却されたD・Eのmutation検査、Linux、Swift 6.2 toolchainは受入範囲外のまま残す。A〜Eの既存契約を検出するtest補強として受け入れ、1.0品質全体の受入とは扱わない。
+On 2026-10-15, Codex compared the returned diff with the A–E mapping and confirmed that production code was unchanged.
+Codex independently reran `VerifyBareArrayCompilerDiagnostics.sh`; it passed with 21 valid functions, four escape diagnostics, 20 borrow-conflict diagnostics, and zero other errors.
+Using the active Xcode test plan `swift-ac-collections`, Codex reran all 81 `ElementBufferModuleTests` and confirmed 81 passed, zero failed, zero skipped, and zero not run.
+The direct `swift test --filter ElementBufferModuleTests` invocation could not start because the environment reported `sandbox-exec: sandbox_apply: Operation not permitted`. This was not treated as a test failure; the Xcode run was used as acceptance evidence.
+The unperformed D/E mutation checks, Linux run, and Swift 6.2 toolchain run remain outside acceptance. The work was accepted as test reinforcement for existing A–E contracts, not as acceptance of overall 1.0 quality.
 
 
 ## Astra確認（2026-10-15）
 
-- 確認者: Astra。
-- 対象: 反映commit `4b44e758c8a1ce455b4b37f319686c2f2a6a5f95`の仕様テスト・compiler fixture・検証scriptと、現行のClaude返却・Codex受入記録。
-- 判定: A〜Eのレビュー反映を、既存契約のテスト補強として確認した。Aは借用継続中の5操作×4次元の拒否例と借用終了後の正常例、Bは非対称寸法の全座標と更新対象以外の保持、Cは各軸単独の負寸法とゼロ・負の共存、Dは各ゼロ軸の初期化・最外軸indices・空領域access拒否、Eは外部参照・取得済み参照・複数slotによる共有寿命に対応している。反映commitにproduction実装の変更はない。
-- 検証範囲: 今回はソース・差分・記録の静的照合。テストの再実行はしていない。81件成功とcompiler診断再実行の結果は上記「Codex受入」の証拠として参照し、Astra自身の実行結果とはしない。Swift 6.2・Linux・D/Eのmutation検査は引き続き未実施。
-- 診断scriptの限定: `all_errors`は指定fixtureファイルに紐づくerrorだけを数える。「他のerror 0件」はこの範囲であり、ビルド出力全体の別ファイル・driver由来errorを排除する検査にはなっていない。A〜Eのテスト追加を否定する問題ではないが、全出力のerrorを拒否する保証とは区別する。Claudeの原返却は改変せず、この確認欄で補足する。
-- コミット状態: テスト反映と従来の受入記録は上記commitで保存済み。今回の作成者・完了手順・Astra確認の追記、および対応するRegistry更新は、2026-10-15のユーザー許可に基づき本記録のコミットへ含める。
+- Reviewer: Astra.
+- Scope: The specification tests, compiler fixture, and verification script in implementation commit `4b44e758c8a1ce455b4b37f319686c2f2a6a5f95`, together with the current Claude return and Codex acceptance record.
+- Finding: Confirmed the A–E review work as test reinforcement for existing contracts. A covers rejection of five operations across four dimensions while a borrow remains active, plus valid examples after the borrow ends. B covers all coordinates in asymmetric dimensions and confirms that other positions remain unchanged. C covers each axis being negative by itself and the coexistence of zero and negative dimensions. D covers initialization for each zero axis, outermost-axis `indices`, and rejection of accesses to empty regions. E covers shared lifetime involving external references, retained references, and multiple slots. The implementation commit contains no production-code changes.
+- Verification scope: This was a static comparison of source, diff, and records; tests were not rerun. The 81 passing tests and compiler-diagnostic rerun are cited from the Codex acceptance above, not presented as Astra's own executions. Swift 6.2, Linux, and D/E mutation checks remain unperformed.
+- Diagnostic-script limitation: `all_errors` counts only errors associated with the specified fixture files. “Zero other errors” applies only to that scope and does not exclude errors from other files or the driver in the full build output. This does not invalidate the A–E test additions, but it is narrower than a guarantee that the entire output contains no errors. The original Claude return is preserved; this confirmation adds the limitation.
+- Commit status: The test changes and previous acceptance records were saved in the commit above. This confirmation, the author/completion procedure, and the corresponding Registry update were included in a record commit under the user's 2026-10-15 authorization.

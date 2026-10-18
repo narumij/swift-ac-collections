@@ -1,5 +1,11 @@
 # Release 0.5.3 実行task
 
+## TL;DR（人間向け）
+
+0.5.3の候補build・DocC・CI確認から、mainへの統合、tag作成・push、後続branch作成までを終えた記録です。実行中に不足していたtag pushの判断とユーザー操作を追加し、release工程を完了しています。
+
+表中のREADY・BLOCKED・未実施は起動時の枠組みとして残る表現です。完了結果と区別して読み、当時の手順を現在の操作許可や再開依頼にはしません。
+
 生成日時: 2026-10-10 / Codex
 Source template commit: `4fa3d318`
 
@@ -58,32 +64,30 @@ Source template commit: `4fa3d318`
 
 ## Step execution
 
-Task Registryを`REL-000`から順に一taskずつ実行する。`DECISION`では一問だけ提示し、回答前に後続taskを実行しない。
-正常系はこの順序を基準線とし、失敗、No、外部状態の不一致が起きた場合は、AIが必要な調査、task分解、依存の組み替え、
-結果記録、cleanupを行う。
+Execute the Task Registry one task at a time, starting at `REL-000`. For a `DECISION`, present one question only and do not run a dependent task before the user answers. Use this order as the normal path. If a failure, “No,” or mismatch with external state occurs, the AI performs the necessary investigation, task decomposition, dependency adjustment, result recording, and cleanup.
 
 ## Release boundary
 
-- 実際のbranch作成、commit、pushは、それぞれ直前に一問でユーザー許可を得る。
-- candidate branch pushとGitHub mergeはユーザーが実行し、完了報告後に後続へ進む。
-- candidate確定後はtracked fileを変更せず、進行中の証拠を`ACTIVE.md`へ記録する。
-- 終了時は`COMPLETED`または`CANCELLED`としてcleanupする。
+- Obtain user approval in a separate question immediately before creating an actual branch, making a commit, or pushing.
+- The user performs the candidate-branch push and GitHub merge; continue only after the user reports completion.
+- After fixing the candidate, do not modify tracked files; record ongoing evidence in `ACTIVE.md`.
+- At the end, clean up with the registry in `COMPLETED` or `CANCELLED` state.
 
 ## Release終了時の共通cleanupチェックリスト
 
-- [x] Registry全体を`COMPLETED`または`CANCELLED`へ移す。
-- [x] 判断結果、release結果、外部副作用、残存物の所有者を通常Task Registryへ還元する。
-- [x] リリースTask Registryの完了処理の最後に`_ReleaseTask/ACTIVE.md`を削除する。
+- [x] Move the entire Registry to `COMPLETED` or `CANCELLED`.
+- [x] Return decisions, release results, external side effects, and ownership of remaining artifacts to the regular Task Registry.
+- [x] Delete `_ReleaseTask/ACTIVE.md` as the final cleanup step for the release Task Registry.
 
 ## 実行結果
 
 - Candidate: `5c22e2cf`
-- Debug build: Xcode BuildProject（test target込み）成功
-- Release build: `swift build -c release --disable-sandbox`成功
-- Documentation: RedBlackTreeCollectionsのRelease DocCを`--warnings-as-errors`で生成成功
-- Candidate branch: `develop/misc/54`をユーザーがpushし、CI greenを確認
-- Main: merge commit `139ffef8`への包含とCI greenを確認
-- Tag: annotated tag `0.5.3`（message `Release 0.5.3`）を`139ffef8`へ作成
-- Tag push: ユーザーが`refs/tags/0.5.3`だけをpush。remote tag object `a6f12ffd`、peeled target `139ffef8`を確認
-- Release後branch: tag `0.5.3`から`develop/misc/55`を作成
-- Template補正: 実行中に欠落していたtag push判断・ユーザー操作をactive Registryへ追加して完了
+- Debug build: Xcode BuildProject succeeded, including the test target.
+- Release build: `swift build -c release --disable-sandbox` succeeded.
+- Documentation: Release DocC for RedBlackTreeCollections was generated successfully with `--warnings-as-errors`.
+- Candidate branch: the user pushed `develop/misc/54`, and CI was confirmed green.
+- Main: inclusion in merge commit `139ffef8` and green CI were confirmed.
+- Tag: annotated tag `0.5.3` (message `Release 0.5.3`) was created at `139ffef8`.
+- Tag push: the user pushed only `refs/tags/0.5.3`; remote tag object `a6f12ffd` and peeled target `139ffef8` were confirmed.
+- Post-release branch: `develop/misc/55` was created from tag `0.5.3`.
+- Template correction: the missing tag-push decision and user operation were added to the active Registry during execution, and the task was completed.

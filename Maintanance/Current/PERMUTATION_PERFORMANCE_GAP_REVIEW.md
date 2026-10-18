@@ -6,17 +6,17 @@
 
 この完了は、調査を実施した・性能が改善したという認定ではありません。再び測るときは対象版・範囲・担当を定め直します。
 
-<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+<!-- OPS-133: 2026-10-19 / Astra. Reading entry; does not replace canonical decisions/status. Review when conclusions/boundaries change. -->
 
+PERM-080 / Author: Astra / 2026-10-16. Registered CP-20261016-016 as a proposal, initially PROPOSED.
 
-PERM-080 / 作成Astra / 2026-10-16。CP-20261016-016を提案として登録。当初はPROPOSEDとして登録。
+After the 0.5.4 release, fix its runtime-check version as a baseline and investigate performance opportunities while retaining contracts. Start from regular CI's two batched cases, one end-to-end case, and quality measurements; inspect costs using interleaved measurements, machine code and profiles. Compare old 0.5.3, the borrowed version and C++ only as references with contract differences explicit, not as regression standards under old contracts.
 
-0.5.4リリース後、そのruntime-check版を固定baselineとして、契約を維持した性能改善候補を調べる。通常CIのbatched 2件・end-to-end 1件と品質測定を入口に、交互計測・機械語・profileで費用を確認する。旧0.5.3、borrowed版、C++は契約差を明示した参考比較とし、旧契約を回帰基準にしない。
+Before starting, fix the target SHA, measurement environment and ordering against PERM-064's display-name migration, and approve scope/owner. Completing 0.5.4 does not authorize automatic execution. Deliver candidates, measurement evidence and unverified items. Implementation adoption, weaker contracts, threshold changes and the 0.5.4 judgment are excluded. If contract changes are needed, stop and return them to the user.
 
-開始前に対象SHA、測定環境、PERM-064の表示名移行との順序を固定し、範囲と担当を承認する。0.5.4完了は自動着手の許可ではない。成果は候補・測定証拠・未確認の一覧。実装採否、契約弱化、閾値変更、0.5.4判定は対象外。契約変更が必要なら止めてユーザーへ返す。
+Original proposal: CP-20261016-016 in CLAUDE_PENDING_TASKS.md. Acceptance here records the proposal, not an established performance deficiency.
 
-原提案はCLAUDE_PENDING_TASKS.mdのCP-20261016-016。今回の受入は提案の記録であり性能不足の確定ではない。
+<a id="2026-10-18-ユーザー状態更新"></a>
+## User status update — 2026-10-18
 
-## 2026-10-18 ユーザー状態更新
-
-Studio保存版 `20261018T014717178322Z-c0ad4b23` の取込指示によりDONEへ変更し、END-0.6.1との仮接続を除去。調査の実施・性能改善の達成をAIが認定したものではない。上記は当初提案の記録として保持する。
+The instruction to import Studio save `20261018T014717178322Z-c0ad4b23` changed this to DONE and removed the provisional connection to END-0.6.1. AI did not establish that investigation occurred or performance improved. Preserve the above as the initial proposal.

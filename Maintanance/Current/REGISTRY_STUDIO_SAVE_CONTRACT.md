@@ -1,101 +1,122 @@
 # Studio保存機構の試行契約・仕様化
 
-2026-10-18 / OPS-087 / 親OPS-048 / 担当Astra。
+## TL;DR（人間向け）
 
-## 目的・委任
+Studioの保存・再開・履歴・AI取込・失敗時の約束を、実装方式から分けてまとめた試行保存契約。末尾の仕様化完了記録では、既決6項目を実装と受入証拠へ照合し、未決と保証外を分離している。恒久採用、新機能の実装、通信断や強制終了への完全な復旧保証を決めたものではない。
 
-ユーザー指定で、保存機構の安定すべき約束を実装方法から分離して仕様化する。仕様化後に姫へユーザビリティ改善提案（OPS-088）を依頼する。現在は仕様化作業中であり、以下は整理対象。恒久採用や新しい保証を自動確定しない。
+2026-10-18 / OPS-087 / Parent OPS-048 / Owner Astra.
 
-## 対象
+<a id="目的委任"></a>
+## Purpose and delegation
 
-1. 保存単位：編集の土台と適用済み編集結果。未適用入力を保存済みと呼ばない。
-2. 保存中の追加編集：要求時のスナップショットと、その後の未保存編集を区別する。
-3. 更新と再開：正本再生成でユーザー編集版を消さず、保存版から再開する。
-4. 履歴：保存版を上書きせず、古い画面からの保存も既存保存を消さない。
-5. 正本取込：保存と反映を分け、土台・編集結果・現行正本を照合。競合を上書きせず、保存ID・仮ID対応・部分反映を記録し二重登録を防ぐ。
-6. 失敗時：失敗を成功表示せず、手元の編集を保持する。通信応答喪失など未確認の保証は明記する。
+At user direction, specify stable save promises separately from implementation. After specification, request usability proposals from 姫 (OPS-088). At this initial stage specification is in progress; the following are items to organize, not automatic permanent adoption/new guarantees.
 
-## 調べる範囲と成果
+<a id="対象"></a>
+## Topics
 
-入力はOPS-082/086の依頼・受入・証拠、RegistryAppの保存/再開/更新/取込実装と利用手順。関係する部分だけを照合する。各約束について適用対象、成功/失敗、証拠、未検証を記す。再試験は既存証拠で足りない点に限る。
+1. Save unit: editing base and applied edits; unapplied input is not saved.
+2. Edits during saving: distinguish request snapshot from later unsaved changes.
+3. Refresh/resume: canonical regeneration must not delete user edits; resume saved versions.
+4. History: append, not overwrite; saves from older screens must not delete existing saves.
+5. Import: distinguish save/reflection, compare base/edited/current canonical, preserve conflicts; record save IDs/draft mappings/partial import to prevent duplicates.
+6. Failure: no false success, retain local edits; disclose unverified guarantees such as lost responses.
 
-本文をこの文書にまとめ、READMEから参照する。旧依頼・Returnは証拠として保持し、現行規約の重複定義を必要な範囲で整理する。実装を変更する仕事ではない。JSON/SQLite等の内部方式を必須仕様にしない。
+<a id="調べる範囲と成果"></a>
+## Investigation scope and outputs
 
-未適用入力の再起動後復元、複数系列の選択、履歴削除、部分取込後の再開運用は既決部分と未決部分を分ける。未決を勝手に補完せず、未決欄を残すことで仕様化を完了できる。
+Inputs: OPS-082/086 assignments/acceptance/evidence, RegistryApp save/resume/refresh/import implementation and guide. Compare only relevant portions; document applicability, success/failure, evidence and unknowns for each promise. Retest only gaps in existing evidence.
 
-## 完了条件
+Write specification here and link README. Keep prior assignments/Returns as evidence; organize duplicate rules only as needed. No implementation changes; do not mandate JSON/SQLite internals.
 
-6項目の境界と根拠が辿れ、試行契約・実装状況・未決が区別できること。ユーザー操作とAI取込の責務を明記し、姫が変更してよいUIと守るべき約束を判別できること。仕様化完了を記録してOPS-088の入力を固定し、正式依頼を発行する。commitは別許可。
+Separate decided/unresolved handling for persistent unapplied-input recovery, choosing multiple branches, history deletion and post-partial-import resumption. Leaving explicit unresolved items can complete specification; do not invent answers.
 
-## 作業記録
+<a id="完了条件"></a>
+## Completion criteria
 
-- 2026-10-18 登録。仕様本文・根拠照合は未完。
+Six boundaries/evidence are traceable; trial contract, implementation and unresolved matters distinguishable. Define user/AI-import responsibilities so 姫 can separate permitted UI changes from protected promises. Record specification completion, fix OPS-088 inputs and issue formal assignment. Commit needs separate permission.
 
-## 試行保存契約 v1（2026-10-18 / Astra）
+<a id="作業記録"></a>
+## Work record
 
-対象はローカルサーバーで使うStudio。保存・復元・正本への取込の約束を本節に集約する。恒久採用ではなく、現行試行の既決事項を抽出した仕様である。file://のダウンロードは従来の別経路であり、サーバー保存成功と同一視しない。
+- Registered 2026-10-18; specification/evidence comparison initially incomplete.
 
-### 用語と状態
+<a id="試行保存契約-v12026-10-18--astra"></a>
+## Trial save contract v1 (2026-10-18 / Astra)
 
-- **正本**：Registryとマイルストーン等の正式文書。画面は写し。
-- **土台**：編集開始時のsource/baseline。最新正本を取得しても保存版の土台を書き換えない。
-- **未適用入力**：フォームに入力したが編集版へまだ適用/追加していない内容。
-- **未保存編集**：編集版に適用したが保存の成功応答を得ていない内容。
-- **保存版**：保存IDを持つ編集結果と土台。正本反映済みという意味ではない。
-- **取込済み**：AIが正本との差分を照合・処理し、取込記録を残した保存版。部分反映は全体取込済みと区別する。
+Applies to Studio on the local server. This section collects saving/restoration/import promises extracted from current trial decisions, not permanent adoption. file:// download is a separate legacy path, not server-save success.
 
-### S1 保存単位と成功
+<a id="用語と状態"></a>
+### Terms and states
 
-保存要求時点の土台と適用済み編集結果を一つの保存単位とする。未適用入力を含めず、含まれないことを利用者へ知らせる。成功応答を受けた保存IDと対象版を区別できること。未適用入力の保持は画面上の保護であり、永続保存の保証ではない。
+- **Canonical source**: formal Registry/Milestones documents; screen is a projection.
+- **Base**: source/baseline at edit start. Fetching current canonicals does not rewrite a saved base.
+- **Unapplied input**: form content not yet applied/added to the editing document.
+- **Unsaved edits**: applied edits without a successful save response.
+- **Saved version**: edited result and base with save ID, not canonical reflection.
+- **Imported**: save compared/processed against canonicals with import record. Partial reflection differs from whole import.
 
-### S2 応答待ち中の編集
+<a id="s1-保存単位と成功"></a>
+### S1 Save unit and success
 
-保存待ち中の追加編集を、先に送った版と一緒に保存済み扱いしない。未保存のまま画面に保持する。保存待ち中の未適用入力も消さず、保存されていないと案内する。
+Save request-time base and applied edits as one unit. Exclude unapplied input and tell users. Identify successful save ID/version. Protecting unapplied input in the screen is not a persistence guarantee.
 
-### S3 更新・再開
+<a id="s2-応答待ち中の編集"></a>
+### S2 Edits while awaiting response
 
-正本再生成とユーザー編集版の再開を分ける。更新で土台と編集結果を最新正本へ自動置換しない。未保存/未適用入力がある更新は止め、更新待ち中に変更が入れば再読込しない。保存版はサーバー再起動後も再開できる。最新正本から新しく始める操作は明示的に行い、既存の保存履歴を残す。
+Do not mark edits added during a pending save as part of the sent version. Retain them unsaved. Keep later unapplied input and explain it is unsaved too.
 
-### S4 履歴
+<a id="s3-更新再開"></a>
+### S3 Refresh and resume
 
-保存ごとに識別可能な新しい版を残し、既存版を上書きしない。古い親版からの保存も後続保存を消さず別系列として保持する。自動期限削除・取込後削除は行わない。これは通常保存の約束であり、媒体故障やプロセス強制終了に対する完全な耐久性まで保証しない。
+Separate canonical regeneration from resuming the user editing document. Refresh must not replace base/results with current canonicals. Block refresh with unsaved/unapplied input; if edits arrive while waiting, do not reload. Saved versions resume after server restart. Explicitly start anew from canonicals, retaining saved history.
 
-### S5 AIへの取込
+<a id="s4-履歴"></a>
+### S4 History
 
-ユーザーの取込依頼に基づき、保存版の土台・編集後データ・現行正本を照合する。changesは案内であり、差分はデータから再計算する。競合を黙って上書きせず、明確な独立部分のみ先に反映できる。状態/接続変更を未委任の実行許可へ読み替えない。
+Each save adds an identifiable version, never overwriting old ones. Saving from an old parent keeps later saves and creates another branch. No expiry/import-triggered deletion. This covers ordinary saving, not complete durability against media failure or forced process termination.
 
-新規案は既存taskとの重複を確かめ、仮IDと正式IDの対応を残す。既存IDへ統合する場合も記録する。部分反映と保留は作業正本に記録し、全体の処理が済むまで保存版全体を取込済みとしない。全体処理後に保存ID・対応関係・未反映の意図的な扱いを取込記録へ残す。元の保存版は変更しない。
+<a id="s5-aiへの取込"></a>
+### S5 AI import
 
-二重登録防止は、取込担当の照合と保存ID記録の両方で成立する。取込記録コマンドの同一ID拒否だけで、異なる保存IDや再送案の重複を自動防止できるとは扱わない。
+At user request, compare saved base, edited data and current canonicals. changes is guidance; recompute differences from data. Do not silently overwrite conflicts; clear independent portions may apply first. Do not reinterpret state/connection edits as undelegated execution permission.
 
-### S6 失敗・不明
+Check proposal duplicates and record draft→formal mappings, including merges into existing IDs. Record partial application and deferred items in work canonicals; do not mark whole save imported before all processing finishes. Then record save ID, mappings and deliberate treatment of unreflected intent; do not change original save.
 
-保存/更新の失敗で手元の編集を消さず、成功として表示しない。通信断などで応答を得られない場合、サーバーに保存されていないとは断定できない。再送前後の照合で保存版の有無を確認する。応答喪失時の重複要求を一回へまとめる保証は現行にはない。
+Duplicate prevention relies on both responsible comparison and save-ID records. Rejecting one ID twice alone does not automatically detect duplicates across IDs/resubmitted proposals.
 
-### 実装状況・証拠の境界
+<a id="s6-失敗不明"></a>
+### S6 Failure and uncertainty
 
-確認版は `18e881e8`（保存実装は `291d38a6`、一覧変更は `eb15c98c`）。記録追加commit `47cf771b` は実装を変えていない。固定版で以下の関数/証拠へ辿れる。
+Retain local edits on save/refresh failure; no success display. No response after disconnection does not prove no server save. Compare before/after resend to establish saved versions. Current implementation does not guarantee exactly-once handling after lost response.
 
-| 契約 | 実装と受入証拠 | 限界 |
+<a id="実装状況証拠の境界"></a>
+### Implementation and evidence boundaries
+
+Checked revision `18e881e8` (save implementation `291d38a6`, list changes `eb15c98c`). Record-only `47cf771b` did not change implementation. At fixed revision:
+
+| Contract | Implementation / accepted evidence | Limits |
 | --- | --- | --- |
-| S1/S2/S6 | RegistryApp/index.template.html のsaveハンドラ、serve.pyのsave、OPS-082受入、Evidence/OPS-082/smoke_v2.cjs、OPS-086/smoke_form.cjs | 成功応答後の画面挙動が中心。電源断・容量不足・通信断の網羅試験はしていない |
-| S3 | 同HTMLのrefresh、resumeWorkspace、restart、Evidence/OPS-082/smoke_v3.cjsとOPS-086補修受入 | Safari実操作未確認。強制終了時の未保存入力は復元しない |
-| S4 | RegistryApp/inbox.pyのappend_save/latest、Evidence/OPS-082/server_trial.sh・server_trial_result.txt、OPS-082受入 | 単一サーバーの運用。複数サーバープロセス間の排他や原子的耐障害書込みは未保証 |
-| S5 | RegistryApp/READMEの取込手順、inbox.pyのrecord_import、TASK_REGISTRY_APP.mdの2026-10-18取込記録 | 人間/AIによる照合手順。正本更新と取込記録は一括トランザクションではない |
+| S1/S2/S6 | RegistryApp/index.template.html save handler; serve.py save; OPS-082 acceptance; Evidence/OPS-082/smoke_v2.cjs; OPS-086/smoke_form.cjs | Primarily post-response screen behavior; no exhaustive power/capacity/disconnection tests |
+| S3 | Same HTML refresh/resumeWorkspace/restart; Evidence/OPS-082/smoke_v3.cjs; OPS-086 repair acceptance | Safari unverified; forced termination does not restore unsaved input |
+| S4 | RegistryApp/inbox.py append_save/latest; Evidence/OPS-082/server_trial.sh and server_trial_result.txt; OPS-082 acceptance | Single server; multiprocess exclusion/atomic fault-tolerant writes not guaranteed |
+| S5 | RegistryApp/README import guide; inbox.py record_import; TASK_REGISTRY_APP.md 2026-10-18 import record | Human/AI comparison; canonical changes/import record are not one transaction |
 
-コード照合で現在の範囲を確認した。受入済み証拠を再利用し、本仕様化で製品コード変更や新しい実機試験はしていない。
+Compared code for current scope, reused accepted evidence; no product changes/new device tests in this specification work.
 
-### 未決・改善余地（契約を勝手に拡大しない）
+<a id="未決改善余地契約を勝手に拡大しない"></a>
+### Unresolved matters and improvement room (do not expand contract)
 
-- 未適用入力の永続復元、自動保存、系列選択UI、履歴削除の許可条件。
-- 現行再開は全系列で直近の保存。取込済みの版も再開対象で、取込完了によって最新版正本へ自動切替しない。取込後にいつ新しい土台で始めるかの分かりやすさは改善対象。
-- 一部反映後の残差分・他の保存版への反映波及は自動追跡していない。
-- 通信断時の保存確認、破損保存の案内、強制終了時の復旧、複数プロセス運用は保証範囲の追加判断が必要。
+- Persistent unapplied-input restoration, autosave, branch-selection UI, permitted history deletion.
+- Resume currently uses latest save across all branches, including imported versions; completed import does not switch to current canonicals. Clarifying when to start a new base after import is an improvement topic.
+- Remaining differences after partial reflection and effects on other saved versions are not tracked automatically.
+- Disconnection save confirmation, corrupt-save guidance, forced-exit recovery and multiprocess operation require decisions to expand guarantees.
 
-### 更新条件
+<a id="更新条件"></a>
+### Update triggers
 
-保存/再開/更新/取込の約束、入力の保存対象、履歴寿命を変えるときに本仕様を見直す。表示・内部方式だけを変える場合は契約が保たれる証拠を確認し、契約の文言を実装に合わせて安易に緩めない。実装変更時は上表の固定版との関連差分を確認し、証拠を更新する。READMEは操作案内、本節は保存契約、過去依頼/Returnは証拠とする。
+Review when save/resume/refresh/import promises, saved input scope or history lifetime change. For presentation/internal changes, verify contract retention; do not weaken wording to match implementation casually. Compare implementation changes with fixed revision above and update evidence. README is operating guidance, this section contract, past assignments/Returns evidence.
 
-## 仕様化完了（2026-10-18）
+<a id="仕様化完了2026-10-18"></a>
+## Specification complete (2026-10-18)
 
-Astraが既決6項目を実装・受入証拠と照合し、保証外・未決を分離した。OPS-087の仕様化は完了、成果commit待ち。仕様化完了を前提にOPS-088へ渡す。新しい機能の実装や未決方針の承認は含まない。
+Astra compared six decided items with implementation/acceptance evidence and separated unresolved/unsupported guarantees. OPS-087 specification complete, awaiting commit; hand to OPS-088. No new feature implementation or approval of unresolved policy.

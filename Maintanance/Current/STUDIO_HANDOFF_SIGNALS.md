@@ -1,22 +1,28 @@
 # Studioの受渡し・終了表示と担当別ランプ（OPS-127）
 
-2026-10-19 Astra。親OPS-048。ユーザーが配色の相談を経て姫との連続動作を指示。見た目は姫の推奨を材料に小さく実装し、受入後WAKEとACKまで行う。
+## TL;DR（人間向け）
 
-## 要求と境界
+次の受取人・今回の仕事の終了と、担当別の新着・待機状態をStudioで示す限定実装の記録。最終受入では構造化したnext/presence、承認色の優先、取得不調中のタイマーなどの補修を検査し、WAKEへのACKまで確認した。通知なしは不明で、生存保証ではない。直近200件・担当最大6件の表示範囲とSafari実操作未確認を残す。
 
-- 最近の作業・承認まわりで、承認待ち以外に「次に誰が拾う番か」「今回の一連の仕事が終わったか」を読み取れるようにする。
-- 担当ごとの小さなランプを別に設け、実際の新着連絡時だけ一瞬光る。待機・終了・不明を区別する。無通信を停止や故障と推定しない。色だけでなく短い文字も併記。目が悪くても把握しやすく、強い点滅を避け、reduced-motionを尊重する。
-- カード内の状態と担当ランプ、既存の承認色の意味を混ぜない。新しい承認操作や自動承認を加えない。
-- WAKE ACKは待機終了であり作業中ではない。単なるPING ACKとは分ける。コミットだけで一連の終了を推定しない。
-- 疎通専用レーンは常設から外す方向の相談あり。今回まず案を提示し、疎通手段・履歴は残す。
-- 任意文章から受渡し先を推測しない。現状に情報がなければ「不明」とし、必要な通知項目を最小限提案する。複数タスク・複数担当を一つの直近イベントだけで断定しない。
-- 製品Sources・Registryのタスク状態・保存契約・実ユーザー編集データは変更しない。
+2026-10-19, Astra. Parent OPS-048. After color consultation, user requested continuous work with 姫. Use 姫's visual advice for a small implementation, then WAKE/ACK after acceptance.
 
-## 第1依頼：対応表と小さな実装内訳
+<a id="要求と境界"></a>
+## Requirements and boundaries
 
-姫へ。現在のactivity/最近の作業/承認表示の必要部分だけ読み、表示→根拠の対応表を作る。特に待機、受渡し先、連続仕事の終了、WAKE ACK、通信失敗の情報源と未記録時の扱いを明示する。既存イベントだけで確定できる部分と、構造化通知が必要な部分を分ける。
+- In recent work/approvals, distinguish next receiver (「次に誰が拾う番か」) and completion (「今回の一連の仕事が終わったか」) as well as approval waiting.
+- Separate small owner lamps flash only for actual new messages. Distinguish waiting/ended/unknown; no communication does not imply stopped/broken. Use short text with color; legible, gentle, reduced-motion compliant.
+- Keep card state, owner lamps and approval colors distinct. No new approval actions/automatic approvals.
+- WAKE ACK means waiting ended, not working; distinguish PING ACK. Commit alone does not imply sequence completion.
+- Consider moving permanent probe lane inward; first propose, retaining means/history.
+- Do not infer receiver from prose. Missing information is unknown; propose minimal structured fields if needed. Do not collapse multiple tasks/owners into one latest event.
+- No product Sources, Registry states, save contract or actual user-data changes.
 
-編集範囲は本書の姫第1Returnのみ。実装なし。最大で表1枚とファイル別内訳、判断点は多くても3つ。これで合意できたら次の限定実装依頼へ進む。一般的なエージェント監視基盤へ広げない。追加開始確認不要。work/returnはOPS-127で記録。返却後連続待機へ戻り、WAKEで終了。
+<a id="第1依頼対応表と小さな実装内訳"></a>
+## First assignment: mapping table and small implementation breakdown
+
+Read only relevant activity/recent-work/approval code and map displays to evidence, especially waiting, receiver, sequence completion, WAKE ACK, fetch failure and missing records. Distinguish derivable existing data from needed structured notifications.
+
+Edit only 「姫第1Return」. No implementation; at most one table and per-file breakdown, three decisions. After agreement assign limited implementation. No general monitoring platform. No additional start confirmation. Record OPS-127 work/return, resume continuous waiting and end with WAKE.
 
 ## 姫第1Return
 
@@ -69,21 +75,22 @@ reasonの書式（`ACK WAKE-…`）に頼っている部分も、2つ目の項�
 参照したキャッシュ：なし。
 
 
-## Astra応答と第2依頼：限定実装
+<a id="astra応答と第2依頼限定実装"></a>
+## Astra response and second assignment: limited implementation
 
-第1案を材料として受入。次担当と在席の省略可能な通知を足す。待機への切替1回の記録は実際のイベントであり、定期の空通知はしない。疎通欄は最近の作業の折畳みへ移す。これは今回の表示要求を実現するための限定実装であり、一般監視基盤ではない。
+Accepted first proposal as material. Add optional next-receiver/presence notifications. A single actual switch-to-wait record is allowed; no periodic empty events. Move probes into recent-work details. Limited display implementation, not general monitoring.
 
-追加の不変条件：
-- next=noneは当該taskの今回の仕事を閉じる明示。後の新しい実務イベントでは、古いnext/終了を引き継がず、未指定なら不明へ戻す。疎通ACKではtaskのnextを変更しない。
-- presenceは担当単位。waiting/endedの後に本人の実務work等が来たら古い在席を表示し続けず、明示がなければ不明へ。沈黙・経過時間だけでは変えない。取得失敗はレーン全体の不明として区別する。
-- 初回読込や再取得で過去のイベントを新着点滅にしない。担当の新しいIDの到着だけ一度光る。短い文字を併記し、reduced-motionを尊重。仕事中であるとの生存保証にはしない。
-- 現在の文字帯もWAKE ACKを作業としない。ランプは待機終了を表示し、履歴は原文のまま残す。
-- カードの受渡し先・終了に色を使う。承認待ちを最優先にし、凡例と文字で意味を補う。担当名ごとに大量の色を増やさない。
-- 新項目の値・長さを検証し、旧イベントはそのまま読める。サーバーAPIに新項目が届くことも確認。保存/承認の契約を変えない。
+Additional invariants:
+- next=none explicitly closes this task's current work. Later practical events do not inherit old next/end; absent fields return to unknown. Probe ACKs do not alter task next.
+- presence is owner-based. After waiting/ended, later practical work clears stale presence to unknown unless explicit. Silence/time alone do not change it. Fetch failure is distinct lane-wide unknown.
+- Initial/refetched historical events never flash. Only new IDs flash once, with text/reduced-motion. No liveness guarantee.
+- Current text strip must not count WAKE ACK as work. Lamps show waiting ended; raw history retained.
+- Color receiver/end on cards; approval waiting takes priority. Explain text/legend; avoid many owner-specific colors.
+- Validate values/lengths, retain old records and check fields through API. Preserve save/approval contract.
 
-編集範囲：RegistryApp/activity.py、index.template.html、README.md、test-activity.py、test-activity.cjs、test-work-lane.cjs、新規test-handoff-signals.cjs、本書の姫第2Return、Current/Evidence/OPS-127/check.cjs・results.json・wide.png・narrow.png。サーバーや他ファイルの変更が必要なら最小範囲を返す。
+Editable: RegistryApp/activity.py, index.template.html, README.md, test-activity.py, test-activity.cjs, test-work-lane.cjs, new test-handoff-signals.cjs, this 「姫第2Return」 and Current/Evidence/OPS-127/check.cjs/results.json/wide.png/narrow.png. If more files/server changes needed, return minimal scope.
 
-短い内訳を書いて範囲内は開始再確認不要。隔離Inbox・模擬イベント/承認・独立headlessのみ。実サーバー・画面・実編集データを操作しない。旧記録互換、複数task/担当、初回・重複取得、待機→実務、終了→再依頼、承認優先、取得失敗・回復、focus/入力保持を検査。既存activity/work-lane/approval試験とsync/check、独立headless証拠を残す。試験プロセス・一時領域を片付け、commitなし。返却後連続待機。新CLIの実運用はAstraの受入後から。
+Write short breakdown; no reconfirmation within scope. Only isolated Inbox, mock events/approvals and independent headless; no live server/screen/user edits. Test old-record compatibility, multiple tasks/owners, initial/duplicate fetch, waiting→work, end→new request, approval priority, failure/recovery, focus/input. Run existing activity/work-lane/approval and sync/check, save headless evidence, stop temporary processes/clean artifacts. No commit; return then wait. Astra acceptance precedes live new-CLI use.
 
 ## 姫第2Return
 
@@ -144,15 +151,16 @@ reasonの書式（`ACK WAKE-…`）に頼っている部分も、2つ目の項�
 参照したキャッシュ：なし。
 
 
-## Astra第2確認・限定補修依頼
+<a id="astra第2確認限定補修依頼"></a>
+## Astra second review and limited repair assignment
 
-2026-10-19。activity.py 4 tests、activity/work-lane/handoffのJS試験を独立再実行して通過。次の表示境界だけ補修し、同じReturn末尾へ結果を追記してください。
+2026-10-19. Independently passed activity.py 4 tests and activity/work-lane/handoff JS checks. Repair only these display boundaries and append results to the same Return:
 
-1. 新着の3秒タイマーが取得失敗後に発火すると、paintが「不明（取得不調）」を「不明」に戻す。test-handoff-signals.cjsのlampsへ、新イベントupdate→failure→そのタイマー発火を加えると再現。失敗表示は回復まで保持すること。
-2. 同じタイマーが、直近6担当から外されて削除された担当をpaintで復活させないこと。担当が除かれた後のタイマーを検査する。
-3. CSSの相談待ち[data-stage]のborder-colorが後置され、承認待ち[data-next]の赤い左線を上書きする。同じカードが相談待ち＋承認pendingでも承認色が最優先になることを確認・補修する。
+1. New-arrival timer after fetch failure repaints 「不明（取得不調）」 as 「不明」. Reproduced with new update→failure→timer in test-handoff-signals.cjs lamps. Keep failure until recovery.
+2. Timer must not revive owners removed from latest six; test after removal.
+3. Later consultation [data-stage] border-color overrides approval [data-next] red left border. Check/repair simultaneous consultation+pending so approval color wins.
 
-既存の許可ファイル内のみ。必要な回帰検査と、色はheadlessで計算済みstyleを確認。実サーバー・ユーザー画面は操作せず、コミットなし。終了後は連続待機。追加機能・一般化は不要。
+Only allowed files. Necessary regressions; computed color via headless. No live-server/user-screen operations or commit; then continuous waiting. No features/generalization.
 
 ## 姫 限定補修Return（2026-10-19）
 
@@ -175,12 +183,13 @@ reasonの書式（`ACK WAKE-…`）に頼っている部分も、2つ目の項�
 参照したキャッシュ：なし。
 
 
-## Astra最終受入（2026-10-19）
+<a id="astra最終受入2026-10-19"></a>
+## Astra final acceptance (2026-10-19)
 
-依頼範囲を技術受入。第2Returnと限定補修を確認し、activity Python 4件、approvals Python 8件、およびactivity/work-lane/handoff-signals/approvalsのJS試験を独立再実行して通過。承認HTTP試験はsandbox内でbind権限により一度停止し、隔離ポート許可下で8件通過した。diffの空白検査も通過。
+Technically accepted assigned scope. Checked second Return/repair and independently passed activity Python 4, approvals Python 8 and activity/work-lane/handoff-signals/approvals JS tests. Approval HTTP tests initially blocked by sandbox bind permission, then 8 passed on allowed isolated port. Whitespace diff passed.
 
-初回・再取得と新着の区別、task単位のnext、担当単位のpresence、PINGとWAKE、再依頼で古い終了を持ち越さない処理をコードと回帰試験で確認。タイマー中の取得失敗/担当削除、相談待ちと承認待ちの色競合は補修済み。姫の隔離WebKit証拠（results・wide/narrow）を確認し、入力保持・動き軽減・承認色優先を受入の根拠とする。Astraによる利用中Safari操作は実施していない。
+Code/regressions distinguish initial/refetch/new arrival, task next, owner presence, PING/WAKE and new request without stale completion. Timer failure/removal and consultation/approval color collisions fixed. Reviewed 姫's isolated WebKit results/wide/narrow evidence for input retention/reduced-motion/approval priority. No Astra operation of live Safari.
 
-実運用で新しい省略可能なnext/presenceを使用可。通知がない状態は不明であり、生存/作業継続を保証しない。直近200件・担当最大6件の表示範囲。利用中サーバーはactivity.pyを起動時に読み込むため、新項目の表示には再起動が必要。再起動おすすめ検出の対象であることを確認した。実サーバー停止/再起動は実施していない。
+New optional next/presence may be used operationally. No notification means unknown, not continued work/liveness. Display limits: 200 events, 6 owners. Running server loads activity.py at startup, so fields require restart; confirmed restart-recommendation detection covers it. No actual stop/restart.
 
-WAKE-20261019-Bを送り、2026-10-18T16:41:21Zの姫のACK（presence=ended）を確認。連続待機終了まで完了。通知はActivity/events.jsonlに保持。
+Sent WAKE-20261019-B and confirmed 姫 ACK at 2026-10-18T16:41:21Z (presence=ended). Continuous waiting ended. Notifications retained in Activity/events.jsonl.

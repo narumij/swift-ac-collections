@@ -1,59 +1,69 @@
 # ASan＋Death Test実行経路の調査
 
-作成者: Astra。2026-10-16、ユーザーの調査依頼。Task: RBT-033。
+## TL;DR（人間向け）
 
-## 範囲
+最小packageでmacOSのASan＋Death Test失敗を再現し、子プロセス生成前の環境復元で3件成功した調査。後のstrip_env=0証拠も限定受入したが、製品全体・Linux・別Swift版の保証や適用判断ではない。
 
-macOSの成功記録と失敗記録を比較し、隔離再現で成立する起動経路を探索する。製品・既存試験・CIは変更しない。旧証拠は[0.6.0評価の証拠](../Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md)に保存済み。
+Author: Astra. User investigation request, 2026-10-16. Task: RBT-033.
 
-## 調査中
+<a id="範囲"></a>
+## Scope
 
-Swift 6.4 (swiftlang-6.4.0.34.1)、arm64。現在のASan CIはLinuxでENABLE_DEATH_TESTSを指定していないため、CI成功だけではmacOSの併用成功を証明しない。
+Compare macOS success/failure records and explore a working launch route with isolated reproduction. Do not change product, existing tests or CI. Old evidence is in [0.6.0 evaluation evidence](../Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md).
 
-## 結果
+<a id="調査中"></a>
+## During investigation
 
-製品コードを含まないSwift Testing最小packageで再現した。
+Swift 6.4 (swiftlang-6.4.0.34.1), arm64. Current ASan CI on Linux does not specify ENABLE_DEATH_TESTS, so CI success alone does not establish combined operation on macOS.
 
-| 条件 | 結果 |
+<a id="結果"></a>
+## Results
+
+Reproduced with a minimal Swift Testing package containing no product code.
+
+| Condition | Result |
 | --- | --- |
-| native build、ASan、環境復元なし | 正常exit(0)とfatalErrorの両子プロセスがSIGABRT。2件失敗 |
-| シェルからDYLD_INSERT_LIBRARIESを指定 | 同じ2件失敗 |
-| swiftpm-testing-helperを直接起動しruntimeを注入 | 同じ2件失敗 |
-| suite初期化でDYLD_INSERT_LIBRARIESを復元 | 正常exit(0)とSIGTRAPの2件成功 |
-| 復元後、heap領域外の直接storeも加える | 3件成功。異常storeはAddressSanitizer: heap-buffer-overflowをstderrに出して失敗終了し、検出器が有効であることを確認 |
+| Native build, ASan, no environment restoration | Both normal exit(0) and fatalError child processes received SIGABRT; 2 failures |
+| Set DYLD_INSERT_LIBRARIES from shell | Same 2 failures |
+| Launch swiftpm-testing-helper directly and inject runtime | Same 2 failures |
+| Restore DYLD_INSERT_LIBRARIES during suite initialization | Normal exit(0) and SIGTRAP: 2 successes |
+| Add a direct out-of-heap store after restoration | 3 successes; invalid store printed AddressSanitizer: heap-buffer-overflow to stderr and failed, confirming detector activity |
 
-シェルから注入した最終試験でも、suite初期化時のgetenvは`<unset>`だった。子プロセス生成より前に値を復元すると成功する。この観測は環境継承の問題を支持するが、変数を消したコードの特定まではしていない。
+Even in the final shell-injected test, getenv during suite initialization was `<unset>`. Restoring the value before child creation succeeded. This supports an environment-inheritance problem but does not identify the code removing the variable.
 
-初期の負例はUnsafeMutablePointer.initialize(to:)による領域外初期化だったが、診断されず正常終了した。直接subscript storeへ変えて検出を確認した。失敗した負例もログを保持し、ASanが全てのunsafe操作を検出するとは主張しない。
+The initial negative control used UnsafeMutablePointer.initialize(to:) out of bounds but exited normally without diagnosis. Changed to a direct subscript store and confirmed detection. Retained failed-control logs; do not claim ASan detects all unsafe operations.
 
-## 再現
+<a id="再現"></a>
+## Reproduction
 
-[証拠フォルダ](ASAN_DEATH_TEST_EVIDENCE_2026-10-16)のPackage.swiftを隔離ディレクトリの根へ、Probe.swiftをTests/ProbeTests/へ配置する。
+Place Package.swift from the [evidence directory](ASAN_DEATH_TEST_EVIDENCE_2026-10-16) at the isolated directory root and Probe.swift under Tests/ProbeTests/.
 
 ```sh
 CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache swift test --package-path /tmp/astra-asan-probe --disable-sandbox --sanitize address --build-system native
 ```
 
-Probe.swiftのsuite初期化は、この環境のASan runtime絶対パスをsetenvする調査用実装である。製品用の共通fixtureとしてそのまま採用しない。失敗の再現はsuiteのinitを除去し、正常終了とtrapの2件のみを実行する。各ログは試験内容の要約と件数を含む。最終3件は終了status 0を確認した。
+Probe.swift's suite initializer is an investigative implementation that setenvs this environment's absolute runtime path. Do not adopt it unchanged as a shared product fixture. To reproduce failure, remove suite init and run only the normal-exit/trap cases. Each log includes a test summary/count. Confirmed exit status 0 for the final three.
 
-## 過去記録との関係
+<a id="過去記録との関係"></a>
+## Relation to earlier records
 
-- 10月15日のRBT-032は子プロセスruntime遅延ロードの完全ログを保存済み。今回、製品を含まない試験でも同種の失敗を再現した。
-- OptionalElementBuffer/ElementBufferの品質評価にはASanとDeath Testの成功記載がある。成功時の完全な起動環境は今回復元できず、今回との違いは未確定。
-- 現行Linux ASan CIはENABLE_DEATH_TESTSを指定していない。macOS上の併用確認とは別の証拠である。
+- RBT-032 on October 15 retained full child-runtime late-load logs. This time, reproduced similar failure without product code.
+- OptionalElementBuffer/ElementBuffer quality records report combined ASan/Death Test success. Their complete launch environments could not be recovered here; differences remain unresolved.
+- Current Linux ASan CI does not specify ENABLE_DEATH_TESTS; it is separate evidence from macOS combined operation.
 
-## 提案と境界
+<a id="提案と境界"></a>
+## Proposal and boundaries
 
-候補は「ASan構成に限り、子プロセス生成前に実際にロードされたruntimeのパスを保持・復元する試験側の準備」。採用時には既存DYLD設定を上書きしないこと、並列実行中のprocess-global環境変更を避けること、runtimeパスの固定を避けることが必要。
+Candidate: test-side preparation limited to ASan configurations, preserving/restoring the actually loaded runtime path before child creation (「ASan構成に限り、子プロセス生成前に実際にロードされたruntimeのパスを保持・復元する試験側の準備」). Adoption must avoid overwriting existing DYLD settings, process-global environment changes during parallel execution, and hard-coded runtime paths.
 
-今回の成立証拠は最小packageの3件に限る。4型の全Death Test、姫の追加試験、Linux、別Swift版では未検証。製品コード、既存Tests、Package.swift、CI、CLAUDE_TASKは変更していない。正式適用と全体検証は後続の実装範囲とする。
+Evidence here is limited to three minimal-package cases. All four types' Death Tests, 姫's additions, Linux and other Swift versions are unverified. Product code, existing Tests, Package.swift, CI and CLAUDE_TASK were unchanged. Formal adoption/full verification belong to later implementation scope.
 
-## 追加調査の受入（2026-10-16 / Astra）
+<a id="追加調査の受入2026-10-16--astra"></a>
+## Acceptance of additional investigation (2026-10-16 / Astra)
 
-CP-20261016-014を本調査への追加証拠として統合。原報告は[strip_env調査](Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md)。Probeを読み、setenvによる復元なしで、正常終了・trap・ASan領域外検出を確認する構成であること、保存ログの3件成功およびDeathTests 213件成功／既定条件360 issuesを照合した。今回は再実行していない。
+Integrated CP-20261016-014 as additional evidence. Original: [strip_env investigation](Evidence/ASAN-strip-env-2026-10-16/ASAN_DEATH_TEST_STRIP_ENV_REPORT.md). Read Probe and compared its no-setenv normal-exit/trap/ASan-overflow setup, saved three-test success, and DeathTests 213 successes / 360 default-condition issues. No rerun here.
 
-受入範囲はmacOSでstrip_env=0により改善した保存実験の証拠。compiler-rt内部の原因確定、版を固定した製品全体の合格、Linux CIでの有効性は未確認。元のRBT-033 DONEは初回調査の完了として維持し、追加の固定版検証はRBT-049へ分離する。製品・Tests・CIへの適用は行わない。
-
+Accepted saved experimental evidence of improvement with strip_env=0 on macOS. compiler-rt internal cause, fixed-revision whole-product success and Linux CI effectiveness remain unverified. Keep RBT-033 DONE as initial investigation completion; separate added fixed-revision validation into RBT-049. No product/Tests/CI adoption.
 
 ## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
 

@@ -1,34 +1,42 @@
 # Studio連携オペレーションの見直し（OPS-128）
 
-2026-10-19 Astra。親OPS-048。ユーザーが姫との協議を依頼。今回は現行操作の棚卸しと改善案・実施内訳の作成まで。実装、既存契約の変更、AGENTS変更、コミットは含めない。
+## TL;DR（人間向け）
 
-## 目的と入力
+手動でつないでいた返却操作を見直し、正本の節と次担当を確認する任意の返却経路を限定試行した記録。実装と囲み補修を受入後、自然な返却3回を観察して経路維持を結論とした。参照やnextの漏れ確認には役立ったが、本文完成や通知後の追記は保証せず、長期の負担削減・漏れ防止は未実証。
 
-OPS-127で、正式依頼・活動通知・返却・受入記録・Registry更新・承認確認・コミット・生成・WAKE/ACKを手でつないだ。ユーザー案は「必要な情報を添付しないとACKできない経路にすれば更新忘れが減るのでは」。機能追加のためではなく、操作回数と記録漏れを減らしたい。
+2026-10-19 / Astra, parent OPS-048. The user requested consultation with Hime. Initially limited to inventorying current operations and proposing improvements/implementation breakdown, excluding implementation, existing-contract or AGENTS changes and commit.
 
-現行の連絡・連続動作・通知項目はRegistryApp/README.md、通知実装はRegistryApp/activity.py。必要な部分だけ確認する。OPS-127の詳細はSTUDIO_HANDOFF_SIGNALS.md。過去資料の全探索は不要。
+<a id="目的と入力"></a>
+## Purpose and inputs
 
-## Astraの協議案
+OPS-127 manually linked formal assignment, activity notification, return, acceptance records, Registry update, approval check, commit, generation and WAKE/ACK. The user's idea: 「必要な情報を添付しないとACKできない経路にすれば更新忘れが減るのでは」. The aim is fewer operations/record omissions, not extra features for their own sake.
 
-- 受信ACK、成果返却、受入、待機終了ACKを混同しない。受信に成果証拠は要求しない。
-- 受渡しの一操作に、対応する依頼・結果参照・次担当など、その段階に必要な情報だけを載せ、同じ入力から活動表示を更新する。別途更新を覚える負担を減らす。
-- 入力必須化は内容の正しさや受入成功を保証しない。受入判断・ユーザー承認は別のまま。
-- 二重送信、失敗、再開で通知だけ成功/正本だけ成功となる場合を見積もる。新しい管理台帳を安易に増やさない。
-- 人間の直接依頼や従来の連絡が締め出されない移行にする。必須項目を増やしすぎて返却できない状態にしない。
+Current communication/continuous-operation/notification items are in RegistryApp/README.md; notification implementation is RegistryApp/activity.py. Read only relevant parts. OPS-127 details: STUDIO_HANDOFF_SIGNALS.md. No search of all past materials.
 
-## 姫への第1依頼
+<a id="astraの協議案"></a>
+## Astra's discussion proposal
 
-現行の実作業に照らして上の案に賛否・修正をください。
-1. 現行の各段階で、誰が何を何箇所へ書くかを小さな表にする。
-2. 一操作へまとめると効果が大きいものを最大3件。減る操作と新たな維持負担を対で示す。
-3. 各操作に必須の情報、任意の情報、失敗時の戻り方を提案する。具体的な呼出例を1つ。
-4. 最小の試行案と、ファイル別内訳・確認方法。採用しないほうがよい案もあれば指摘。
+- Distinguish receipt ACK, deliverable return, acceptance and waiting-end ACK. Receipt does not require deliverable evidence.
+- Put stage-relevant assignment/result references/next owner into one handoff operation; derive activity display from that same input to reduce separately remembered updates.
+- Required fields do not guarantee correctness or acceptance. Acceptance judgment/user approval remain separate.
+- Consider duplicate sending, failure and resumption that can leave notification-only or canonical-only success. Avoid casually adding a management ledger.
+- Keep direct human assignments and existing communication available during transition. Do not require so many fields that return becomes impossible.
 
-編集は本書の「姫Return」のみ。コード・制度・Registry・実サーバーには触れない。短い回答で十分。activityにOPS-128のwork/returnを記録し、返却はnext=Astra。実際に連続待機へ入る場合だけpresence=waitingを別記録する。開始の再確認は不要。既に待機終了しているため、この依頼だけで起動したと推定しない。
+<a id="姫への第1依頼"></a>
+## First assignment to Hime
 
-## 完了条件
+Comment on/correct the proposal against actual work.
+1. Tabulate who writes what, where, and to how many locations at each stage.
+2. Suggest at most three high-value combined operations, pairing saved actions with new maintenance costs.
+3. Propose mandatory/optional inputs and failure recovery; provide one concrete invocation.
+4. Give a minimal trial, file breakdown and checks; identify ideas better rejected.
 
-姫の意見をAstraが照合し、採る案・採らない案・残るユーザー判断と最小実施内訳を本書にまとめる。実装へ進む前にユーザーへ提示する。
+Edit only 「姫Return」 here. No code/policy/Registry/active-server changes. A short response suffices. Record work/return under OPS-128 with next=Astra. Record presence=waiting separately only when actually entering continuous waiting. No renewed start confirmation; because prior waiting ended, this assignment alone does not prove automatic startup.
+
+<a id="完了条件"></a>
+## Completion conditions
+
+Astra compares Hime's advice and records adopted/rejected options, remaining user decisions and minimum implementation breakdown here. Present to the user before implementation.
 
 ## 姫Return
 
@@ -94,18 +102,19 @@ python3 -B Maintanance/RegistryApp/activity.py --task OPS-128 --event return --o
 参照したキャッシュ：なし。
 
 
-## Astra第1応答・第2協議
+<a id="astra第1応答第2協議"></a>
+## Astra first response and second consultation
 
-方向A（既存通知に結果参照＋nextを集約）は賛成。ただし初回試行は判定を軽くしたい。次の修正版への賛否と、残る落とし穴だけを姫第2Returnへ短く返してください。実装なし。
+Agree with direction A: combine result reference/next with existing notifications, but keep initial validation light. Briefly respond in Hime's second Return with agreement/pitfalls only; no implementation.
 
-- 本文中の「作業中」「未返却」の語を検出して拒否しない。過去経緯や引用にも現れ、本文解釈をコードに持ち込むため。明示的な返却操作が完了申告を兼ねる。参照先が存在し、節が一意に見つかり空でないことまでを機械確認。内容の充足は受入で確認する。
-- 新しい確認経路に限りdoc/nextを必須。旧CLIは互換のまま。ただし任意経路なので「更新漏れを全て防げる」とは言わず、試行者はこの経路を使う。ownerも従来どおり必要。
-- 初回はハッシュによる重複排除を入れない。同じ本文でも次担当の訂正や別依頼があり、task＋節＋本文ハッシュだけでは正当な通知を落とす。自動再送もしない。書込結果が不明な場合は履歴を確認してから再送。冪等性が必要になったとき依頼/操作IDを設計する。
-- 参照検査は送信時点の確認に過ぎない。後の正本変更や並行編集まで防がない。「通知だけある状態がなくなる」と保証しない。
-- 節の範囲は次の同じか浅い見出しまで。重複見出しは拒否して曖昧に選ばない。Markdown一般解析へ広げず、実際のReturn書式を対象にする。
-- BのWAKE ACK補助は後回し、Cの受入検査も後回し。試行3返却では、追加操作の数、訂正/拒否、通知漏れ、実際の負担をReturnに一行で記録。少数で有効性を断定しない。
+- Do not reject text containing 「作業中」「未返却」: history/quotes can contain them, and code should not interpret prose. Explicit return also declares completion. Mechanically check only document existence and a unique, nonempty section; acceptance checks content.
+- Require doc/next only in the new checked route; old CLI remains compatible. Since optional, do not claim 「更新漏れを全て防げる」; trial participants use this route. Owner stays required.
+- No initial hash deduplication: identical text can accompany next-owner corrections or another assignment. task+section+body hash could suppress valid notifications. No automatic retry. If outcome is unknown, inspect history before resending; design request/operation IDs only if idempotence becomes necessary.
+- Reference validation applies only at send time, not later canonical edits/concurrency. Do not guarantee 「通知だけある状態がなくなる」.
+- A section ends at the next equal/higher heading; reject duplicates rather than choosing ambiguously. Target actual Return formatting, not general Markdown parsing.
+- Defer B's WAKE-ACK helper and C's acceptance checks. For three trial returns, record operations, corrections/rejections, omissions and burden in one line; a small sample does not establish effectiveness.
 
-正本の更新と通知を原子的にするのではなく「正本を書いたあと、参照つき返却を一回呼ぶ」限定案です。この程度でも姫側の実用効果があるか、必須情報が足りないかを確認したい。返却後は連続待機、WAKEで終了。
+This is a bounded method: 「正本を書いたあと、参照つき返却を一回呼ぶ」 (write the canonical, then call reference-bearing return once), not atomic canonical+notification updates. Ask whether it helps Hime and contains necessary information. After return, wait continuously until WAKE ends the wait.
 
 ## 姫第2Return
 
@@ -133,40 +142,44 @@ python3 -B Maintanance/RegistryApp/activity.py --task OPS-128 --event return --o
 参照したキャッシュ：なし。
 
 
-## 協議結果・Astraまとめ（2026-10-19）
+<a id="協議結果astraまとめ2026-10-19"></a>
+## Discussion outcome: Astra synthesis (2026-10-19)
 
-第1・第2Returnを協議材料として受領。採用を勧める案は「既存activityの返却に参照確認を加える限定試行」。制度とコードはまだ変更しない。
+Received first/second Returns as discussion material. Recommended 「既存activityの返却に参照確認を加える限定試行」: add reference checks to existing activity returns. No rule/code changes yet.
 
-### 最小試行案
+<a id="最小試行案"></a>
+### Minimal trial
 
-- 正本のReturnを書いたあと、既存の返却呼出に `--doc PATH --section 見出し --next 担当` を添える。task・ownerも従来どおり必須。docを指定した経路だけ追加項目を必須とし、従来経路は維持する。
-- repoルート相対の文書パスを、実行cwdによらず解決。repo外（シンボリックリンク経由を含む）は拒否。見出しは完全一致・一意、節は次の同じか浅い見出しまで、空でないことを確認する。対象は既存ReturnのMarkdown書式。コードブロック中の見出しを誤認しない。候補見出しをエラーに示す。
-- 確認した参照（パス・節名）を省略可能な構造化項目としてイベントに残す。API読出しと旧記録互換を保つ。参照リンクUIは初回範囲に含めず、まずAIが通知から返却先を確認できるようにする。
-- 受信ACKと成果返却は別。完了申告の中身や成果の妥当性は受入で判断する。検査は送信時点だけで、以後の編集や並行変更を保証しない。
-- 書込失敗時は成功を返さない。結果が不明なら履歴を確認してから再送する。自動再送・ハッシュ重複排除は行わない。重複は履歴を増やし新着も再発火しうるので、無影響とはしない。
-- 次の自然な返却3回で試す。試行のための仕事は増やさない。各Returnに操作数・拒否/訂正・漏れ・負担を一行。実施前に効果を断定しない。
+- After writing canonical Return, attach `--doc PATH --section 見出し --next 担当` to the existing invocation. Task/owner remain required. Additional fields are mandatory only with doc; retain old route.
+- Resolve repository-relative paths independent of cwd; reject outside-repository targets including symlinks. Match heading exactly/uniquely; section extends to next equal/higher heading and must be nonempty. Handle existing Return Markdown and ignore headings inside code fences. Show candidate headings in errors.
+- Save verified path/section as optional structured event fields; retain API/old-record compatibility. No initial reference-link UI; let AI find returned work from notification.
+- Receipt ACK is separate from deliverable return. Acceptance judges completion claims/content. Checks apply only at send time, not later/concurrent edits.
+- Do not return success after write failure. Inspect history before retrying unknown outcomes. No automatic retry/hash deduplication; duplicates add history and may retrigger new-item display, so are not harmless.
+- Try the next three natural returns without inventing work. Each Return has a line on operation count, rejection/correction, omissions and burden. Do not assert effects before use.
 
-### 初回に採らない案
+<a id="初回に採らない案"></a>
+### Ideas excluded initially
 
-本文の「作業中」等の語句による完了判定、同一ハッシュでの通知抑止、新DB、Registry/依頼票の自動変更、WAKE ACK補助、受入通知への必須検査、参照リンクUI。今回の最小の漏れ防止からは分離する。
+Completion inferred from words like 「作業中」, same-hash suppression, new database, automatic Registry/assignment updates, WAKE-ACK helper, mandatory acceptance-notification checks and reference-link UI. Keep them separate from this minimal omission reduction.
 
-### 実装する場合の内訳
+<a id="実装する場合の内訳"></a>
+### Implementation breakdown if adopted
 
-1. activity.py：doc/sectionの入力、参照・next検証、参照項目の保存/読出し。旧記録互換。
-2. test-activity.py：正常・未入力・節なし/重複/空・文書内のコードブロック・repo外/symlink・cwd差・書込失敗・旧記録・API読出しを確認。
-3. RegistryApp/README.md：試行経路と失敗時の扱いを短く追記。
-4. 本書・CLAUDE_TASK：依頼/返却/受入と3回の観察結果のみ。必要な正式実装taskは採用時に登録。
+1. activity.py: doc/section input, reference/next validation, saving/reading reference fields, old-record compatibility.
+2. test-activity.py: valid/missing fields; absent/duplicate/empty sections; code fences; outside-repository/symlink targets; different cwd; write failure; old records/API reads.
+3. RegistryApp/README.md: brief trial-route/failure handling.
+4. This document/CLAUDE_TASK: assignments, returns, acceptance and three observations only. Register implementation task upon adoption.
 
-想定する効果は操作回数の大幅削減ではなく、既存の返却1回に必要情報をまとめてnextや参照先の漏れを減らすこと。初期の案より追加機構を減らした。残るユーザー判断は「この限定試行を実装して3回使うか」の1点。承認を先取りしない。
+Expected effect is fewer missing next/reference fields by bundling required information into the existing single return, not a major reduction in actions. Fewer new mechanisms than the initial idea. One user decision remains: 「この限定試行を実装して3回使うか」. Do not preempt it.
 
+<a id="ユーザー承認とops-129実装依頼2026-10-19"></a>
+## User approval and OPS-129 implementation assignment (2026-10-19)
 
-## ユーザー承認とOPS-129実装依頼（2026-10-19）
+The user approved 「そのまますすめて」「連続どうぞ」, resolving the wait. OPS-128 discussion is complete; bounded implementation/three natural-return observations move to OPS-129. Hime's resumed-wait notification was confirmed.
 
-ユーザーが「そのまますすめて」「連続どうぞ」と承認。上の判断待ちは解消。協議OPS-128は完了し、限定実装・自然な返却3回の観察はOPS-129へ接続する。姫の再待機通知も確認済み。
+Hime: implement 「最小試行案」 and 「実装する場合の内訳」 above. Edit only activity.py, test-activity.py, RegistryApp/README.md and OPS-129 Return here. doc/section applies only to return; reject partial pairs or missing next before write. Reference fields remain optional structured old-compatible data. Do not revalidate current documents when reading history and break old logs. No new UI. Astra's index.template.html label change is excluded.
 
-姫へ：上記「最小試行案」と「実装する場合の内訳」を実装してください。activity.py・test-activity.py・RegistryApp/README.mdと本書のOPS-129 Returnのみ編集可。CLIのdoc/section指定はreturn専用とし、片方だけやnextなしは書込前に拒否。参照項目は旧記録互換の任意構造として読み出せること。履歴を読む際に現在の文書を再検証して過去ログを壊さない。新しいUIは不要。既存のindex.template.htmlラベル修正はAstra分なので触らない。
-
-開始再確認不要。短い内訳を書いて着手、試験は一時領域・模擬ログで実行。実サーバー・編集Inbox・承認store操作なし。実装後は自分のReturnをこの新経路で返却して初回試行1回とし、観察一行を同Returnへ残す。成果確認はAstraが行う。残り2回のために仕事を増やさない。commitなし。返却後連続待機、WAKEで終了。
+No renewed start confirmation. Write a brief breakdown, then work with temporary/mocked logs. No real server/editing Inbox/approval-store operations. Return your own implementation through the new route as observation 1, adding its observation line to that Return. Astra checks output; do not create work for the other two observations. No commit. Wait continuously after return, ending on WAKE.
 
 ## OPS-129 姫Return
 
@@ -180,11 +193,12 @@ python3 -B Maintanance/RegistryApp/activity.py --task OPS-128 --event return --o
 - 初回試行の観察：操作1回（コマンド1行）で通過、拒否・訂正0、欠落なし。負担は節の見出しを正確に打つことだけで、先にReturnを書き終えてから送る順になるので「書く前の返却」は起きにくい（event id `4057a1f2909b4b109509f4bc6c2a2c1d`）。
 
 
-## OPS-129 Astra確認・限定補修
+<a id="ops-129-astra確認限定補修"></a>
+## OPS-129 Astra verification and bounded repair
 
-Python 5試験を独立再実行して通過。初回返却のref/nextも実ログ確認済み。ただし4個のバッククォートで囲んだコード中に3個のバッククォートがあると、そこで囲みが閉じた扱いになり、コード中の `## Fake` を参照先として受理する。FENCEが先頭3文字だけを見るため。これはコード内見出し除外条件を壊すので限定補修してください。
+Independently reran five Python tests, PASS, and confirmed initial return's ref/next in real logs. However, a triple-backtick line inside a four-backtick fence incorrectly closes it, allowing code's `## Fake` as a target. FENCE examines only the first three characters. Repair this violation of code-heading exclusion only.
 
-開いた囲みの文字種と長さを保持し、同種かつ同じ長さ以上で末尾が空白だけの行で閉じること。短い囲みや本文付きの同種行で閉じない回帰を足す。Markdown全般対応へ広げない。許可ファイル内のみ、実サーバー操作なし、commitなし。補修結果を本書の別見出し「OPS-129 姫補修Return」へ書き、新経路で返却。これは自然に発生した実補修なので観察2回目として記録。返却後待機。
+Remember fence character/length and close only on the same character with at least that length and whitespace-only remainder. Add regressions against shorter fences and same-character lines with trailing text. No general Markdown expansion; stay within allowed files, no real server/commit. Write separate 「OPS-129 姫補修Return」 and use the new route. This naturally occurring repair is observation 2. Wait after return.
 
 ## OPS-129 姫補修Return
 
@@ -195,17 +209,18 @@ Python 5試験を独立再実行して通過。初回返却のref/nextも実ロ�
 - 観察2回目（実補修）：操作1回で通過、拒否・訂正0、欠落なし。新しい見出しを先に書いてから送るので、手間は初回と同じ。
 
 
-## OPS-129 Astra実装受入・観察継続（2026-10-19）
+<a id="ops-129-astra実装受入観察継続2026-10-19"></a>
+## OPS-129 Astra implementation acceptance; observations continue (2026-10-19)
 
-限定実装と囲み補修を受入。Python 5試験・既存activity JS試験を独立実行し通過。初回/補修返却の実イベントでrefとnextを確認。参照読出し時の再検証なし、旧CLI互換、失敗時の成功通知なしをコードと試験で確認。実サーバーは操作していない。稼働中サーバーでrefを読むにはactivity.py読込更新（再起動）が必要だが、ファイルへの返却記録は成立している。
+Accepted bounded implementation/fence repair. Independently passed five Python tests/existing activity JS tests and verified ref/next in actual initial/repair events. Code/tests establish no read-time reference revalidation, old CLI compatibility and no success on failure. No real server operation. The active server needs activity.py reload/restart to read ref, but file-based return recording succeeds.
 
-観察は2/3回（初回実装返却・実際の補修返却）。いずれも操作1回、拒否・訂正0との姫報告で、実ログの必要項目を照合。残り1回は次の自然な返却で記録し、負担と漏れの総評を追記する。現時点で長期効果や一般運用の完成とはしない。OPS-129は観察のためACTIVEを維持し、今回の姫の実装依頼は閉じる。
+Observations 2/3: initial implementation and actual repair returns. Hime reports one operation, zero rejection/correction each; required real-log fields were checked. Record the final observation on the next natural return and assess burden/omissions. No claim of long-term effects or complete general operation. OPS-129 remains ACTIVE for observation; close Hime's implementation assignment.
 
-WAKE-20261019-Dへの姫ACK（2026-10-18T17:09:03Z、presence=ended）を確認し、今回の連続待機を終了。
+Confirmed Hime ACK to WAKE-20261019-D (2026-10-18T17:09:03Z, presence=ended); this continuous wait ended.
 
+<a id="ops-129-観察3回終了2026-10-19"></a>
+## OPS-129: three observations complete (2026-10-19)
 
-## OPS-129 観察3回終了（2026-10-19）
+Third observation is actual OPS-131 server-refactoring return (7f5cf22ebcbd4d97910298174df34e4f). Confirmed real ref/next log and received Hime's report of one action/zero rejection or correction. Required fields existed in all three. On observations 1 and 3, however, the observation line was added after notification, so acceptance read the earlier content.
 
-3回目はOPS-131サーバー整理の実返却（7f5cf22ebcbd4d97910298174df34e4f）。ref/nextが付いた実ログを確認し、操作1回・拒否/訂正0という姫の報告を受領。3回とも必要項目はそろったが、初回と3回目で観察の一行が通知後に追記され、受入側が追記前に読む行き違いがあった。
-
-結論：参照つき返却の限定経路は維持する。操作回数は既存通知と同じ1回で、参照/nextの入力確認に役立った。本文完成や後の追記を保証するものではなく、通知後の重要な追記は追加通知する運用をCOMMUNICATION_PROTOCOL.mdへ反映。少数観察で長期的な漏れ防止や負担削減を断定しない。3回試行のtaskは完了。
+Conclusion: retain the bounded reference-bearing return route. It still takes one operation like old notification and helped check reference/next inputs. It guarantees neither body completion nor later additions. COMMUNICATION_PROTOCOL.md now calls for another notification after important post-notification additions. Three observations do not establish long-term omission prevention or lower burden. The three-observation task is complete.

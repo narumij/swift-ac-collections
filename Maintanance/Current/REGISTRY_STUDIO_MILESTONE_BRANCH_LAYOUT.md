@@ -1,26 +1,33 @@
 # 途中マイルストーン配下のタスク群配置
 
-Task: OPS-096 / 親 OPS-048
-作成: Astra、2026-10-18。ユーザー承認により姫へ正式依頼。
+## TL;DR（人間向け）
+
+途中マイルストーンから出る複数カード群をその下へまとめ、単独後続はユーザーが意図した右上へ残した配置修正。上下の水平オフセットを共通化し、幅不足時の必要区間拡張を限定試験・独立確認で受け入れて完了した。局所図・実辺は保持し、複数起点の優先規則と実ブラウザ確認は未確定のまま。
+
+Task: OPS-096 / parent OPS-048
+Authored by Astra, 2026-10-18. Formal assignment to Hime under user approval.
 
 > 現行要求は恒久正本と末尾の追加依頼。初回の「単独も下」の解釈はユーザー判断により撤回。
 
-## 目的と要求
+<a id="目的と要求"></a>
+## Purpose and requirements
 
-恒久正本[TASK_REGISTRY_APP.md](TASK_REGISTRY_APP.md#途中マイルストーンから始まるタスク群の配置)を参照。DOC-027が最下段に離れる状況を、MS-SPIの下へまとまる配置へ修正する。対象は全体の依存見取り図。局所接続図は変更しない。
+See permanent canonical [TASK_REGISTRY_APP.md](TASK_REGISTRY_APP.md#途中マイルストーンから始まるタスク群の配置). Bring DOC-027, currently isolated at the bottom, into the group below MS-SPI. Target the overall dependency map; leave the local connection view unchanged.
 
-## 実施・受入条件
+<a id="実施受入条件"></a>
+## Execution and acceptance conditions
 
-1. 現行データのDOC-027の配置原因を確認し、途中マイルストーンを起点とするタスク群の配置ルールとして修正する。ID固有の固定座標にしない。
-2. DOC-027をMS-SPIの下のまとまりへ置く。DOC-026→DOC-027など他の前提の線も、その実際の両端間に保持する。他の前提まで自動的に同じ群へ所属させる必要はない。
-3. 全体・HEAD以降・該当版で表示対象に入る場合、同じ配置意図を維持する。別の接続群やマイルストーン骨格が不必要に全体再配置されないよう確認する。
-4. タスク・辺の欠落、重複、カード重なりを防ぎ、OPS-095の配置先ルールを維持する。見た目のために正本の辺・状態・条件を変更しない。
-5. 実データのMS-SPI/DOC-027とIDを変えたfixtureで、単独後続・後続鎖・外からの前提を検査する。配置が決まらない複数起点などが現行修正を妨げる場合は事実と選択肢だけを返し、独断で優先規則を確定しない。
-6. 限定回帰試験、既存verify、OPS-095配置試験、局所図/選択追従smoke、sync/checkを実施。既存の座標期待を変更する場合は本要求との対応を説明する。画面操作なし、実ブラウザー未確認を明記する。
+1. Establish DOC-027's placement cause in current data and fix the rule for groups originating at intermediate milestones, without ID-specific fixed coordinates.
+2. Place DOC-027 below MS-SPI; retain other prerequisites' edges, including DOC-026→DOC-027, between their actual endpoints. Other prerequisites need not automatically join the same group.
+3. Preserve this placement intent in all/after-HEAD/relevant-version views where included. Avoid unnecessary global relayout of other groups or the milestone backbone.
+4. Prevent missing/duplicate tasks/edges and card overlap, retaining OPS-095 placement rules. Do not change canonical edges, states or conditions for appearance.
+5. Test MS-SPI/DOC-027 and renamed-ID fixtures for a single successor, chains and external prerequisites. If multiple origins or other unresolved placement blocks the fix, return facts/options without inventing a priority rule.
+6. Run bounded regression, existing verify, OPS-095 placement, local-view/selection-following smoke and sync/check. Explain altered coordinate expectations against these requirements. No UI operation; explicitly note real-browser nonverification.
 
-## 範囲・受渡し
+<a id="範囲受渡し"></a>
+## Scope and handoff
 
-編集可: RegistryApp/index.template.html、verify.cjs、Evidence/OPS-096/、本書Return欄。必要な生成可。恒久正本・Registry・Rules・Milestones・実Inbox・他者差分は変更しない。対象実装の占有を姫へ委任し、Astraは返却待ち。全レイアウトの再設計や別件修正へ広げない。commit依頼なし。
+Editable: RegistryApp/index.template.html, verify.cjs, Evidence/OPS-096/ and this Return; necessary generation allowed. No permanent canonical, Registry, Rules, Milestones, real Inbox or others' changes. Hime owns the implementation while Astra awaits return. No whole-layout redesign or unrelated fixes. No commit requested.
 
 ## Return（姫記入）
 
@@ -36,25 +43,28 @@ Task: OPS-096 / 親 OPS-048
   1. 単独タスクの上側退避レーン：入口が骨格マイルストーンで後続のない単独タスク（実データ PERM-079 ← GATE-0.6.0、fixture X1）は、従来どおりマイルストーンの右上（y=55）に置いており、「下」ではない。選択肢：(a) 現状維持（最下段送りではなく隣接）、(b) これも下列へ移す（PERM-079 の座標が変わる）。
   2. 複数起点：fixture（A1→M1→M2、A2→M2）は従来配置で健全（M1 は A1 列、M2 は A2 列）。優先規則は決めていない。
 
-## Astra検収（2026-10-18）
+<a id="astra検収2026-10-18"></a>
+## Astra review (2026-10-18)
 
-独立実行でlayout.cjs全項目PASS、OPS-095配置試験31件・8表示で違反なし、sync --checkずれなし。DOC-027がMS-SPI下へ配置されることを全体・HEAD以降・0.6.0で確認。辺は維持。
+Independent layout.cjs passed all checks; OPS-095 placement covered 31 cases/eight views without violations; sync --check matched. DOC-027 was below MS-SPI in all/after-HEAD/0.6.0 views; edges retained.
 
-ただし単独後続fixtureの期待値は「下」ではなく既存の上側隣接を許している。本試験のALL PASSを配置要求全体の充足とは扱わない。DOC-027の改善は確認済み、task全体の完了受入は単独後続の扱いについてユーザー確認待ち。複数起点は依頼時から優先規則未決としており、今回は既存配置維持。実画面未確認。追加補修依頼・commitなし。
+The single-successor fixture permits existing upper adjacency rather than 「下」. ALL PASS therefore does not establish every placement requirement. DOC-027's improvement is confirmed; overall acceptance awaits the user's single-successor decision. Multiple-origin priority was unresolved from assignment; preserve existing placement. Real screen unverified; no additional repair assignment/commit.
 
-## ユーザー判断と追加依頼（2026-10-18 / Astra）
+<a id="ユーザー判断と追加依頼2026-10-18--astra"></a>
+## User decision and additional assignment (2026-10-18 / Astra)
 
-単独後続の上側配置はユーザーが意図して利用しているため維持。初回検収で返した単独後続の判断待ちは解消した。上下選択機能は将来希望として恒久正本に保持し、今回は追加しない。
+Retain upper placement of single successors because the user intentionally uses it; the initial decision wait is resolved. Keep upper/lower selection as a future wish in the permanent canonical, without implementing it now.
 
-### 姫への追加作業
+<a id="姫への追加作業"></a>
+### Additional work for Hime
 
-- 単独後続は従来の右上、複数カードのスタックは下。下スタックの水平オフセットを上側配置と共通にする（現実装の上側は起点x+step。値の重複定義ではなく共通の配置ルールにする）。
-- 下スタックの必要幅が次のマイルストーン等に干渉する場合、マイルストーン間の間隔を広げる。下側を別の横位置へ逃がして解消しない。拡張は必要な区間とその後続位置への影響に限定し、骨格順序を保つ。
-- 単独上側、複数下側、両者の水平オフセット一致、幅不足時の間隔拡張とカード非重複をfixtureで確認。現データDOC-027の群も検査する。
-- 間隔拡張に伴う後続位置の変化は今回許容される必要な変化。既存の「群外不動」試験を機械的に守るために要求を曲げない。変更箇所と理由をReturnに説明する。
-- 辺・表示対象・入力保護・局所図は維持。元依頼の回帰試験とsync/checkを実行。複数起点の優先判断は引き続き範囲外。
+- Single successors remain upper right; multiple-card stacks go below. Share the horizontal offset with upper placement (currently origin x+step) as one rule, not duplicate constants.
+- If the lower stack's required width interferes with the next milestone, widen milestone spacing. Do not move lower cards to another horizontal offset. Limit widening to necessary intervals and effects on following positions; retain backbone order.
+- Fixtures check single-above/multiple-below, matching offsets, widening when needed and no overlap. Check the current DOC-027 group too.
+- Subsequent position shifts caused by widening are allowed necessary changes. Do not bend requirements merely to satisfy the old 「群外不動」 test. Explain changes/reasons in Return.
+- Retain edges, displayed targets, input protection and local view. Run original regressions/sync/check. Multiple-origin priority remains outside scope.
 
-指定範囲を姫へ再委任、Astraは追加Return待ち。元Returnは保存する。画面操作・commitなし。
+Redelegate this scope to Hime; Astra awaits additional Return. Preserve original Return. No UI operations/commit.
 
 ## 追加Return（姫記入）
 
@@ -68,8 +78,9 @@ Task: OPS-096 / 親 OPS-048
 - 回帰：sync（verify.cjs 通過）／`--check` 差分なし、OPS-095 placement（31件・8表示、問題0）、OPS-094 smoke_map PASS、OPS-093 smoke PASS、OPS-092 display-partition 違反0、edge-audit 従前と同結果。辺・表示対象・入力保護・局所図に変更なし。
 - 範囲外：複数起点の優先判断は未着手。
 
-## Astra追加分受入（2026-10-18）
+<a id="astra追加分受入2026-10-18"></a>
+## Astra acceptance of additional work (2026-10-18)
 
-layout.cjsを独立実行し全項目PASS。全体・HEAD以降・0.6.0で、単独上側維持、DOC-027群の下積み、上下共通295pxオフセット、骨格順序と実辺保持を確認。幅不足fixtureの必要区間拡張と非重複も成功。OPS-095配置31件・8表示、局所図/選択追従smokeも成功、sync --check一致。ユーザー追加判断の範囲で受入。複数起点の優先規則は未決のまま、実ブラウザー未確認。依頼終了、commit待ち。
+Independently ran layout.cjs, all PASS. In all/after-HEAD/0.6.0 views confirmed single-above, DOC-027 group below, common 295px offsets, backbone order and actual edges. Width-shortage fixture widened the necessary interval without overlap. OPS-095's 31 cases/eight views and local-view/selection smoke passed; sync --check matched. Accepted within the user's additional decision. Multiple-origin priority remains unresolved; real browser unverified. Assignment ended; awaiting commit.
 
-2026-10-18：ユーザーcommit承認によりOPS-096をDONEとする。
+User commit approval on 2026-10-18 makes OPS-096 DONE.

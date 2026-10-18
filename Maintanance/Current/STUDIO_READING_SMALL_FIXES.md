@@ -4,16 +4,18 @@
 
 作業カードの色の説明を常時表示から折りたたみにし、恒久研究OPS-103が独立欄へ出る分類漏れを直します。研究や承認の意味は変えません。
 
-## 依頼・原因・変更
+<a id="依頼原因変更"></a>
+## Assignment, cause and change
 
-OPS-134 / 2026-10-19 / Astra。ユーザーが凡例の常時表示とOPS-103の独立欄表示を指摘。
+OPS-134 / 2026-10-19 / Astra. The user pointed out the always-visible legend and OPS-103 in the independent section.
 
-- 凡例は閉じたdetailsへ移し、「作業カードの色の説明」から必要時だけ開く。
-- OPS-103はRegistryと詳細正本で恒久と決定済みだが、sync.pyが読むTASK_RULES_V2の常設ID一覧から漏れていた。決定を変えず一覧へ追加し、permanent=trueとして生成する。子taskも既存親子関係で恒久図へ出す。
-- HTMLと既決事項の分類補正のみ。研究内容・承認権限・状態・依存線の変更なし。
+- Move the legend into closed details, opened only when needed from 「作業カードの色の説明」.
+- Registry and canonical details already designate OPS-103 permanent, but it was absent from the standing-ID list in TASK_RULES_V2 read by sync.py. Add it without changing the decision and generate permanent=true. Children appear in the permanent diagram through existing parent links.
+- HTML/classification correction of existing decisions only; no changes to research content, approval authority, states or dependency lines.
 
-## 検証・受入
+<a id="検証受入"></a>
+## Verification and acceptance
 
-要約作業とまとめて生成確認する。承認済みの前回UI commitとは別の差分。
+Check generation together with summary work. This is separate from the previous approved UI commit.
 
-2026-10-19 Astra受入。凡例は閉じたdetails内にあり初期非表示。既存UI試験PASS。生成JSONでOPS-103のpermanent=true、実際のindependentGroups関数で一般独立欄に含まず恒久側に含むことを確認。既存の恒久図網羅試験もPASS。実画面操作なし。
+2026-10-19, Astra acceptance. Legend is initially hidden in closed details. Existing UI tests PASS. Generated JSON has OPS-103 permanent=true; the actual independentGroups function excludes it from general independent items and includes it in permanent items. Existing permanent-diagram coverage also PASS. No real screen operations.

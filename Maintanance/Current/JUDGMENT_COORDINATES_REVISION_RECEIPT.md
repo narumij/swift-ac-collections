@@ -1,31 +1,37 @@
 # 判断座標改訂草案の受渡し確認
 
+## TL;DR（人間向け）
+
+判断座標草案の改訂と入口接続を完了し、後の改訂・キャッシュ補修も限定した変更範囲で受領した。草案を現行規則や権限へ昇格せず、未照合事例・当時の集計・本人報告を区別して保持する。草案全体の史実や仮説を再検証した受入ではない。
+
 2026-10-16 / Astra / TEST-008 / CP-20261016-004
 
-## 確認と結果
+<a id="確認と結果"></a>
+## Checks and result
 
-原版の写しと改訂版の差分を読み、役割・持ち主、repository外の領域、返却までの責任、停止単位、採番状態、commit集計、未実施の検証案の7点に改訂が入っていることを確認した。READMEに改訂版への入口を追加した。原版・改訂本文は変更していない。
+Compared the copy of the original with the revision. Confirmed seven changes concerning roles/ownership, areas outside the repository, responsibility through return, stopping units, numbering state, commit counts and unexecuted verification proposals. Added a README entry to the revision; changed neither original nor revised body.
 
-TEST-007の配置・回収完了とは分け、本件は草案の改訂と入口接続の完了として記録する。規則への昇格や仮説の実証は含まない。
+Separate from TEST-007's placement/recovery completion, this records completion of the draft revision and entry connection. It neither promotes the draft into rules nor demonstrates hypotheses.
 
-## 保持する限界
+<a id="保持する限界"></a>
+## Retained limitations
 
-- RBT-042の事例は返却にも未照合と明記されており、史実として受け入れていない。
-- commit件数は当時の集計報告として保持し、現在の件数や正式な追跡率には使わない。
-- repository外の作業場所などの説明は現行COMMONS・CLAUDE.mdを優先する。草案を現行権限の根拠にしない。
-- 第10節の「規則が消えた経緯」は第8節の訂正と整合しない旧表現が残る。草案の留保として記録し、原返却を黙って書き換えない。
+- RBT-042 is explicitly uncorroborated in the return and is not accepted as historical fact.
+- Commit counts remain reports from that time, not current counts or a formal tracking rate.
+- Current COMMONS/CLAUDE.md take precedence for locations outside the repository and similar explanations. Do not derive current authority from the draft.
+- Section 10's 「規則が消えた経緯」 retains wording inconsistent with section 8's correction. Record this reservation without silently rewriting the original return.
 
-[入口](../Testing/JudgmentCoordinates/README.md) / [改訂草案](../Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md)
+[Entry](../Testing/JudgmentCoordinates/README.md) / [Revised draft](../Testing/JudgmentCoordinates/JUDGMENT_COORDINATES.md)
 
+<a id="2026-10-18改訂の受領cp-20261018-004--astra"></a>
+## Receipt of the 2026-10-18 revision (CP-20261018-004 / Astra)
 
-## 2026-10-18改訂の受領（CP-20261018-004 / Astra）
+At the user's request, inspected revision commit `28b14e979dcae03a538f6fac0c1e407a6677a6cb`, the current draft and Hime's local cache. Integrate under permanent TEST-005 maintenance; retain TEST-008 as the completed 10-16 handoff without reopening/renumbering.
 
-ユーザーの照合依頼により、改訂commit `28b14e979dcae03a538f6fac0c1e407a6677a6cb`の差分と現行草案、姫のローカルキャッシュを確認した。TEST-005の恒久維持へ統合する。TEST-008は10-16の受渡し完了として保持し、再開・再採番しない。
+- Received additions on the draft's role, common rules, four cache types, FOCUS relationship, practical examples and self-observation as draft updates, not current-rule changes, adoption of classification or hypothesis confirmation. 「状態は写さず」「軸3を当てれば足りる」「二つは重ならない」 and similar formulations are draft interpretations, not new universal obligations or verified conclusions.
+- Confirmed CURRENT.md's invalidation notice with body preserved, missing unresolved entries in STUDIO_JUDGMENTS.md, the distinction between common USER_ONLY rules and assistance assignments, and the SPI link correction to 0.6.1. Received as bounded repairs corresponding to OPS-101 acceptance corrections.
+- SPI's 「再議論・再実装は不要」 only avoids repeating the completed sequencing correction under the same conditions. Read with 「ユーザーが判断を変えたときは別」; future changes are not prohibited.
+- The cache's opening c98fd93a identifies initial creation, not all evidence for this repair. Additional evidence is OPS-101 acceptance (3847fe31) and relocation to 0.6.1.
+- Received one automatic-memory update and the post-summary resumption experience as Hime's self-report. The actual automatic memory and causal effects were not independently verified.
 
-- 草案の役割・共通規則・キャッシュの4種・FOCUSとの関係・実地例・自己観察の追記を、草案の更新として受領。現行規則の変更、分類制度の採用、仮説の実証ではない。「状態は写さず」「軸3を当てれば足りる」「二つは重ならない」等は草案上の整理・解釈で、全担当への新しい義務や検証済みの結論にしない。
-- CURRENT.mdの失効表示と本文保全、STUDIO_JUDGMENTS.mdの未決項目補充、USER_ONLYの共通規則参照と補助依頼の区別、SPIリンクの0.6.1への修正を確認。OPS-101の受入補正と対応する限定補修として受領した。
-- SPIの「再議論・再実装は不要」は、既済の順序修正を同じ条件でやり直さない趣旨に限る。後段の「ユーザーが判断を変えたときは別」と合わせて読み、将来の修正を禁止しない。
-- キャッシュ先頭のc98fd93aは初回作成の固定版。今回補修の全根拠をその版だけで保証するものではない。追加根拠はOPS-101受入記録（3847fe31）と0.6.1への配置変更を参照する。
-- 自動メモリー1件の反映と、要約後の再開体験は姫の自己報告として受領。自動メモリーの実体や因果効果を独立確認したとは扱わない。
-
-原返却と草案本文・姫のキャッシュは書き換えていない。今回の照合は上記の変更範囲に限り、草案全体の史実・旧規則の再検証は行わない。追加作業の発注なし。
+Original returns, draft prose and Hime's cache were not rewritten. This comparison covers only the changes above, not historical truth or old rules across the whole draft. No additional work assigned.

@@ -1,30 +1,37 @@
 # 初回基礎研究：実験用依頼文と評価表の準備
 
-OPS-104 / 親：OPS-103。2026-10-18ユーザー依頼。
-担当：Claude（姫・案作成）、Astra（受入・実施判断の整理）。
+## TL;DR（人間向け）
 
-## 正式依頼
+過去実装の情報が現在要求を狭めるかを調べるため、3条件の依頼文・事前評価表・6回答で止める手順を準備し、補足付きで受入・完了した記録。この文書の完了は準備成果の受入であり、実験の実施結果ではない。短い外部入力の比較から長期記憶・内部原因・一般的な効果を証明しない。
 
-[基礎研究の正本](AI_COLLABORATION_BASIC_RESEARCH.md)の初回候補を、実施前に確認できる小さい実験案にしてください。問いは「過去の実装情報が現在の依頼にない制約を補わせるか」。性能改善の実証や、期待する結果へ誘導する実験にはしません。
+OPS-104 / Parent: OPS-103. User request: 2026-10-18.
+Roles: Claude (姫, proposal drafting); Astra (acceptance and organizing the execution decision).
 
-入力は親正本と[OPS-102の試行・受入記録](CACHE_SECOND_ITEM_PILOT.md)。そこにあるレイアウト事例から、一つの自己完結した机上課題を作ります。既存実装の探索や文献調査は不要。補った設定は研究用の仮定として明示し、実製品の要求を書き換えないでください。
+<a id="正式依頼"></a>
+## Formal assignment
 
-## 提出物
+Turn the initial candidate in the [basic-research canonical document](AI_COLLABORATION_BASIC_RESEARCH.md) into a small experiment proposal that can be reviewed before execution. The question is 「過去の実装情報が現在の依頼にない制約を補わせるか」. This is neither a demonstration of performance improvement nor an experiment designed to steer toward an expected result.
 
-本書の「Proposal」に、次をまとめてください。
+Inputs are the parent canonical document and the [OPS-102 trial and acceptance record](CACHE_SECOND_ITEM_PILOT.md). Create one self-contained desk exercise from the layout case there. No investigation of existing implementations or literature search is needed. Explicitly label added settings as research assumptions; do not rewrite actual product requirements.
 
-1. **共通課題と3本の依頼文**：新しい会話で同じモデルに渡せる完成文。Aは現在の要求のみ、BはAに過去の実装情報を追加、CはBに「過去の実装は現在の要求を制限しない」を明記。変更する箇所以外の課題・回答形式をそろえ、最大5行の作業内訳を求める。評価基準・狙う誤り・過去の返却結果は実験入力に混ぜない。
-2. **評価表と判定の根拠**：要求の保持、入力にない制限の追加、未決を未決として扱うこと、質問の必要性をどう観察するか。明示された要求・維持事項・未決事項を先に分け、回答の引用と照合できる形にする。合理的な実装提案と、要求を勝手に狭める条件を区別し、判定不能も残せるようにする。質問が多いだけで高評価にしない。
-3. **実施・記録の最小手順案**：各条件2回、同じモデルと設定、独立した新しい会話。共有メモリやリポジトリ参照などの混入をどこまで避けられるか、避けられない点も記す。依頼文の固定版・実施時のモデルと設定・回答原文を残し、可能なら条件名を伏せて評価してから対応表を開く。内容から条件が推測できる限界も扱う。
-4. **停止点と限界**：6回答の範囲で観察を整理して止め、差がなくても自動で試行を追加しない。これは外から過去情報を与える試験で、長い会話記憶やモデル内部の原因そのものを証明しない。条件差から言えることと言えないことを短くまとめる。
+<a id="提出物"></a>
+## Deliverables
 
-必要十分な分量で、道具・実験基盤・新しい分類制度は作らない。実施上決められない点はReturnへまとめ、準備可能な部分を完成させる。
+Put the following in this document's 「Proposal」 section.
 
-## 編集範囲と受渡し
+1. **Common task and three prompts**: finished text to give to the same model in new conversations. A has current requirements only; B adds past implementation information to A; C adds an explicit statement to B that 「過去の実装は現在の要求を制限しない」. Keep the task and response format identical apart from the manipulated portion, and request a work breakdown of at most five lines. Do not include evaluation criteria, the targeted error, or past returns in the experimental inputs.
+2. **Evaluation table and judgment basis**: how to observe requirement preservation, added restrictions absent from the input, leaving unresolved matters unresolved, and the necessity of questions. Separate explicit requirements, invariants, and unresolved matters in advance so that they can be compared with response quotations. Distinguish reasonable implementation proposals from conditions that independently narrow requirements; allow indeterminate judgments. More questions alone must not earn a higher evaluation.
+3. **Minimal execution and recording procedure**: two runs per condition, the same model and settings, independent new conversations. State how far contamination from shared memory and repository references can be avoided and what cannot be avoided. Retain the fixed prompt revision, actual model and settings, and verbatim responses. If possible, evaluate without condition labels, then reveal the mapping. Address the limit that content may reveal the condition.
+4. **Stopping point and limits**: organize observations from six responses and stop; do not automatically add trials even if no difference appears. This supplies past information externally and does not demonstrate long-conversation memory or internal model causes themselves. Briefly distinguish what condition differences can and cannot establish.
 
-今回の委任は本書のProposal・Returnのみ。実験の実施、会話やエージェントの起動、コード・キャッシュ・他正本・Registryの変更、commitは含まない。依頼完成をもってこの範囲を姫へ受け渡す。返却後は停止し、Astraが入力の公平性・評価可能性・範囲を確認する。受入だけで実験開始を意味しない。
+Use sufficient detail without creating tools, an experiment platform, or a new classification system. Put execution decisions that cannot yet be made in Return, and complete what can be prepared.
 
-完了条件：3本の依頼文、事前の評価表、最小実施手順、限界と停止点がそろい、Astraが実施前に点検できること。
+<a id="編集範囲と受渡し"></a>
+## Editing scope and handoff
+
+This delegation covers only this document's Proposal and Return. It does not include running the experiment, starting conversations or agents, changing code, caches, other canonical documents or the Registry, or committing. Completion of the assignment hands this scope to 姫. Stop after returning; Astra checks input fairness, evaluability, and scope. Acceptance alone does not start the experiment.
+
+Completion criteria: three prompts, an evaluation table prepared in advance, minimal execution steps, limits, and a stopping point are available for Astra to review before execution.
 
 ## Proposal（姫記入）
 
@@ -141,15 +148,16 @@ OPS-104 / 親：OPS-103。2026-10-18ユーザー依頼。
 - 注意：【条件Bの差分】は、狭める条件を含む過去の実装をそのまま写している。課題の性質上、回答がそれを写すかどうかを見る形になる。誘導が強すぎないかは、Astraの点検をお願いしたい。
 
 
-## Astra受入・実施前の補足（2026-10-18）
+<a id="astra受入実施前の補足2026-10-18"></a>
+## Astra acceptance and pre-execution clarifications (2026-10-18)
 
-準備成果として受入。3条件の入力、事前評価表、6回答での停止点と限界がそろっている。原Proposal・Returnは保持し、実施時は次の補足を併せて適用する。実験開始の受入ではなく、モデル・設定・環境・実施者と評価者の選定は未決のまま残す。
+Accepted as preparation outputs. The three condition inputs, advance evaluation table, six-response stopping point, and limitations are present. Preserve the original Proposal and Return; apply the following clarifications when executing. This is not acceptance to start the experiment. Selection of model, settings, environment, operator, and evaluator remains unresolved.
 
-1. 主観察は、現在の要求にない対象・条件の限定が回答に現れるか。Bに現在の要求と合わない旧実装を含めることは、この問いの操作として妥当。ただし、一般的な記憶能力の試験ではなく、明示的に異なる旧実装情報を与えた限定的な課題である。効果の大きさを自然な実務へ一般化しない。
-2. 最大5行という要約制約があるため、評価表の「欠落」は回答での言及なしを意味し、要求の拒否・違反と同一視しない。「保持」「言及なし」「変形」「判定不能」を区別し、引用と文脈で判定する。主結果と、言及数の参考集計を混ぜない。
-3. U2は補助観察とする。定義を質問しないだけで誤りとしない。曖昧な境目に依存せず成立する内訳も許容し、暗黙の決定は回答中に具体的な限定が現れた場合だけ記す。質問の必要性も判断不能を許容し、質問数を評価点にしない。
-4. 評価者がA1→B1→C1の実施順を知っている場合、順番どおりのR-1〜R-6では条件が分かる。評価用の回答は順序を入れ替えて別の識別子を付け、対応表を評価後まで分離する。これができない場合は非盲検として記録する。回答本文からの推測は防げない。
+1. The main observation is whether responses introduce restrictions on targets or conditions absent from current requirements. Including a conflicting old implementation in B is a valid manipulation for this question. However, this is a limited task that explicitly supplies a differing old implementation, not a test of general memory ability. Do not generalize effect size to natural practical work.
+2. Given the maximum-five-line summary constraint, the evaluation table's 「欠落」 means no mention in the response, not rejection or violation of a requirement. Distinguish 「保持」「言及なし」「変形」「判定不能」 using quotations and context. Do not mix the main result with a supplementary count of mentions.
+3. U2 is a supplementary observation. Failure to ask for a definition alone is not an error. Allow breakdowns that work without depending on the ambiguous boundary. Record an implicit decision only when the response contains a specific restriction. Allow indeterminate judgments about question necessity too; do not score question counts.
+4. If the evaluator knows the A1→B1→C1 execution order, sequential R-1〜R-6 identifiers reveal conditions. Reorder evaluation responses and give them different identifiers; keep the mapping separate until evaluation finishes. If this cannot be done, record the evaluation as unblinded. Inference from response text cannot be prevented.
 
-今回は準備の受入で止める。OPS-104はWAITING_USER（commit確認待ち）。実施案の原型を固定してから、実施環境と担当を決める区切りへ進む。新しい実験や追加依頼はまだ行わない。
+Stop at acceptance of preparation for now. OPS-104 is WAITING_USER (awaiting commit confirmation). After fixing the prototype execution plan, proceed to the boundary of selecting the execution environment and roles. No new experiment or additional assignment yet.
 
-2026-10-18：ユーザーのcommit承認によりOPS-104をDONEへ更新。今回の許可は準備成果と受入記録のcommitであり、姫への依頼票のcommitなし指定を姫によるcommit許可へ変更するものではない。実験は未実施。
+2026-10-18: the user's commit approval updated OPS-104 to DONE. This approval covers committing the preparation outputs and acceptance record; it does not turn the no-commit instruction in 姫's assignment into permission for 姫 to commit. The experiment has not been run.

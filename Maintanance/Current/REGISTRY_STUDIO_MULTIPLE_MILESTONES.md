@@ -1,32 +1,39 @@
 # 同版の複数中間マイルストーンを扱う検査の修正
 
-2026-10-18 / OPS-079 / Astra作成。親OPS-048。実装・検証：姫、受入：Astra。ユーザー「複数対応をあるべき姿にして、未対応なら姫へバグ修正依頼」に基づく。
+## TL;DR（人間向け）
 
-## 確認済みと正しい構造
+同版の中間カードを各々STARTとENDへ直結させる誤った検査を、ファイル名順の鎖を検証する形へ修正して受け入れた記録。ユーザーの最新DESIGNに従いGOAL.mdは置物として除外する。この受入時点では番号なし通常カードの生成器による取りこぼしは残り、今回の検査修正を仕様全体への適合完了とはしない。
 
-入力commit 5c274e38（完全SHAは着手時に解決して記録）。現在の版フォルダには中間カードは各1件、0.5.4には0件。0.7.0/GATE-0.8.0.mdには旧MS-080を統合した履歴があるが、復元・新ID付与・版計画変更は今回行わない。
+2026-10-18 / OPS-079 / written by Astra. Parent OPS-048. Implementation and verification: Hime; acceptance: Astra. Based on the user's 「複数対応をあるべき姿にして、未対応なら姫へバグ修正依頼」.
 
-ユーザー作成の[構造仕様](../Milestones/DESIGN.md)に従い、同版の中間カードはファイル名順の鎖になる。0件はSTART→END、1件はSTART→A→END、複数件はSTART→A→B→…→END。ファイル名は順序、内部IDは識別子であり、ID順に並べない。番号付きファイル名は推奨であって必須ではない。
+<a id="確認済みと正しい構造"></a>
+## Confirmed facts and the correct structure
 
-静的確認：efc3868a8で更新されたverify.cjsのcardsループは、番号アンダースコア名の各カードにSTART→カードとカード→ENDを要求する。複数カードの正しい鎖とは両立しない。生成器add_endsはSTART、中間カード群、ENDを並べる形である。今回Astraは複数カードの動的再現までは実行していない。
+Input commit 5c274e38 (the full SHA is resolved and recorded at the start). The current version folders have one intermediate card each, and 0.5.4 has none. 0.7.0/GATE-0.8.0.md has history that merged the old MS-080, but restoring it, giving a new ID or changing the version plan is not done this time.
 
-## 姫への依頼・編集範囲
+According to the user-written [structure specification](../Milestones/DESIGN.md), the intermediate cards of the same version form a chain in file-name order. 0 cards: START → END; 1 card: START → A → END; several: START → A → B → … → END. The file name is the order and the internal ID is the identifier; do not order by ID. Numbered file names are recommended, not required.
 
-verify.cjsの該当検査を、版フォルダの実ファイル順と内部IDから期待する隣接関係を導く検査へ直す。生成器または描画の複数対応にも不具合が判明したら、その事実を返す（画面設計まで独自に広げない）。独立した期待値を用い、生成された辺をそのまま期待値として検査しない。ゲートに隠れるSTARTから最初のカードへの表示も確認する。MS接頭辞・番号アンダースコア名だけを検査対象にしない。
+Static check: the cards loop in verify.cjs updated in efc3868a8 requires START → card and card → END for every card with a number-underscore name. This is incompatible with the correct chain of several cards. The generator add_ends lines up START, the intermediate cards and END. This time Astra did not dynamically reproduce the several-card case.
 
-編集可：RegistryApp/verify.cjs、必要な限定fixture・検証コード、READMEの該当検証説明、本書Return、Evidence/OPS-079/。一時fixtureはCOMMONSの記録・片付け手順に従う。既存のユーザー配置・本文を変更しない。隔離したfixtureまたはコピーで実施し、実配置へ架空カードを残さない。
+<a id="姫への依頼編集範囲"></a>
+## Request to Hime and editing scope
 
-対象外：DESIGN.md各書、製品、Registry、実マイルストーンの追加・移動・改名・計画変更、版間ゲート接続方式の改修、18件固定など別の検査問題。範囲外の不具合は場所と再現を返して止める。
+Fix the relevant check in verify.cjs into a check that derives the expected adjacency from the actual file order in the version folder and the internal IDs. If defects in the generator's or drawing's handling of several cards also turn up, return that fact (do not expand into screen design on your own). Use independent expected values; do not check the generated edges using themselves as expected values. Also check the display from START, hidden by the gate, to the first card. Do not limit the check targets to the MS prefix or number-underscore names.
 
-## 検証・完了条件
+Editable: RegistryApp/verify.cjs, the needed limited fixtures and verification code, the relevant verification explanation in the README, the Return of this document, and Evidence/OPS-079/. Temporary fixtures follow COMMONS' recording and cleanup procedure. Do not change the user's existing placement or text. Work in isolated fixtures or copies, and do not leave fictitious cards in the real placement.
 
-- 修正前に2枚以上の正しい鎖が検査で失敗することを再現し、エラーを保存。
-- 同版0枚・1枚・2枚以上、名前順の変更（IDは維持）で正しい接続を確認。番号なしの中間ファイルとMS以外のIDも扱う。
-- 欠落・逆順・余計な直結を検査が拒むことを確認し、検査を削除するだけの対応にしない。
-- 現配置でsyncとverify、--checkが成功。ユーザー配置に差分を残さない。Safari未実施なら明記。
-- 入力完全SHA、再現条件、変更、実行結果、未確認、残課題、作業物の片付けをReturnへ。変更は機能修正と証拠・記録としてまとまる形にする。今回commit許可は含めない。
+Out of scope: each DESIGN.md, the product, the Registry, adding/moving/renaming real milestones or changing plans, reworking the inter-version gate connection method, and other check problems such as the hard-coded 18. Return the location and reproduction of out-of-scope defects and stop.
 
-依頼完成で上記出力範囲を姫へ受渡し、Astraは返却まで編集しない。今回の目的は複数カードの仕様適合であり、Registry全体の再設計ではない。
+<a id="検証完了条件"></a>
+## Verification and completion conditions
+
+- Reproduce, before the fix, that a correct chain of two or more cards fails the check, and save the error.
+- Confirm correct connections for 0, 1 and 2+ cards in the same version and for a change of name order (keeping IDs). Also handle unnumbered intermediate files and IDs other than MS.
+- Confirm the check rejects missing edges, reversed order and extra direct links; do not respond by merely deleting the check.
+- sync, verify and --check succeed with the current placement. Leave no diff in the user's placement. State it if Safari was not done.
+- Put the full input SHA, reproduction conditions, changes, run results, unconfirmed items, remaining issues and cleanup of work items in the Return. Shape the change as a functional fix plus evidence and records. Commit permission is not included this time.
+
+With the request complete, the output scope above is handed to Hime, and Astra does not edit it until the return. The purpose this time is conformance to the specification for several cards, not a redesign of the whole Registry.
 
 ## Return（姫記入）
 
@@ -69,10 +76,11 @@ verify.cjsの該当検査を、版フォルダの実ファイル順と内部ID�
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-姫のverify.cjs差分と4件の証拠を確認。生成済みカードの名前順から独立に期待する隣接を作り、0・1・複数枚・並び替え・不正辺を検査する変更を受入。現配置でsync/verifyを独立実行し23 PASS、missing: none、--checkずれなし。隔離worktreeの再現は保存証拠を受領し、受入側では再実行していない。Safari未確認。
+Checked Hime's verify.cjs diff and the 4 pieces of evidence. Accepted the change that builds the expected adjacency independently from the name order of the generated cards and checks 0, 1 and several cards, reordering, and invalid edges. Independently ran sync/verify with the current placement: 23 PASS, missing: none, --check no drift. The reproduction in the isolated worktree was received as saved evidence and not re-run by the accepting side. Safari unconfirmed.
 
-最新のユーザー編集DESIGNには「GOAL.mdは置物として無視」が追記された。DESIGN自体は変更せず、Astraが受入時にverifyの期待値からGOAL.mdを除外し、その除外fixtureを追加。番号なしカードのfixture名はGOAL.mdからEXTRA.mdへ訂正した。姫の原Returnは旧仕様時点の返却として保持する。GOALを生成しないことは不具合ではなく、版計画判断も不要。
+The latest user-edited DESIGN added 「GOAL.mdは置物として無視」 (ignore GOAL.md as an ornament). DESIGN itself is not changed; at acceptance Astra excluded GOAL.md from verify's expected values and added a fixture for that exclusion. The fixture name of the unnumbered card was corrected from GOAL.md to EXTRA.md. Hime's original Return is kept as a return made under the old specification. Not generating GOAL is not a defect, and no version-plan decision is needed.
 
-OPS-079は依頼範囲の検査修正としてDONE。番号なし通常カードEXTRA.mdの生成器による取りこぼしは残る。修正には別の委任範囲が必要なためOPS-048の次の修正候補に記録し、仕様全体への適合完了とはしない。生成器が読み落としたカードは現verifyの入力にも存在せず検出できない限界を保持する。実マイルストーン配置は変更していない。
+OPS-079 is DONE as a check fix within the requested scope. The generator's dropping of the unnumbered ordinary card EXTRA.md remains. Fixing it needs a separate delegated scope, so it is recorded as the next fix candidate of OPS-048, and this is not treated as completing conformance to the whole specification. The limit that cards the generator missed are also absent from the current verify's input and cannot be detected is kept. The real milestone placement was not changed.

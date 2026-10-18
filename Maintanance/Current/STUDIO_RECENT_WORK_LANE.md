@@ -1,29 +1,36 @@
 # 最近の作業レーン実装（OPS-119）
 
-2026-10-18 Astra。親OPS-048、入力OPS-118の案とAstra補足。ユーザーは最近活動の表示を選び、実装継続を承認した。
+## TL;DR（人間向け）
 
-## 姫への正式依頼
+直近200件の活動と未完承認から、タスク単位の「最近の作業」を導出表示した実装・補修・技術受入の記録。承認UIを一つにまとめ、疎通専用書式と実務の言及を区別する試験が成功した。全taskの現在地や同taskの並行依頼は識別せず、正式状態は生成時の正本から表示する。実ブラウザは未確認。
 
-通知を受けたらCLAUDE_TASKと本書を確認し、本件に限り追加開始確認なしで着手してよい。設計案 `STUDIO_WORK_LANE_PROPOSAL.md` の補修と受入を基に、次の境界で最小実装する。
+2026-10-18, Astra. Parent OPS-048; inputs: OPS-118 proposal/Astra supplements. The user chose recent-activity display and approved continuing implementation.
 
-### 成果と境界
+<a id="姫への正式依頼"></a>
+## Formal assignment to 姫
 
-- 現在の事前承認レーンの位置に、最近の作業をtask単位の小さいカードで示す。表示は「直近200件の活動＋未完の承認」、全taskの現在地ではないことを明示。
-- 同一taskの実務イベントから最近の工程・担当・時刻・短い説明を出す。Registryの正式状態を別表示。開始点不明は不明とし、requestが見えないだけで過去のworkを検討中と断定しない。新たな検討開始には既存work＋説明を使える。
-- 最新commitは「記録コミット済み」、completeは「作業区切り」。RegistryのDONEへ変換しない。RBT-026のWAITING_USER＋commitを回帰例にする。recheckで別の回を作らない。complete後のawaiting-commitを扱う。
-- 承認は同じtaskのpending/approved/claimedをtask単位で表示。時刻で回へ結び付けない。未完承認だけのtaskも落とさず「活動情報なし」。同一taskの並行依頼は識別しないと明示。consumed/cancelledは既存履歴で保持。
-- 個別承認・取消・表示中の全部承認は既存コントローラと対象集合の契約を保持。承認詳細を折り畳みにまとめてもよいが、未承認件数と操作への入口を見失わせず、二重の承認操作を増やさない。作業カードは承認を代行しない。
-- 疎通は既存PING/WAKE/ACKの専用表記を根拠に段階判定から除外する。一般の説明でPINGに言及しただけの実務を除外しない。具体的な判別をReturnに書き、陽性・陰性fixtureで検証する。原イベント帯には残す。
-- 既存activity帯は履歴として保持。レーンの再描画はactivity/approval取得時のみの局所更新。未保存編集・入力・選択・スクロール・承認中のフォーカスを壊さない。取得失敗時は最後の正常表示＋不調表示を維持。既存の非表示停止・timeoutを維持。
-- サーバー/API/DB/schemaは変更しない。作業レーンは導出表示だけ。自動起動・自動着手・新たな承認権限は作らない。
+On notification, read CLAUDE_TASK and this document; no additional start confirmation for this task. Minimally implement the repaired/accepted `STUDIO_WORK_LANE_PROPOSAL.md` under these boundaries.
 
-### 占有と検証
+<a id="成果と境界"></a>
+### Outputs and boundaries
 
-姫の編集範囲：`Maintanance/RegistryApp/index.template.html`、新規`Maintanance/RegistryApp/test-work-lane.cjs`、`Maintanance/RegistryApp/README.md`のレーン説明、下記Returnのみ。既存smokeの環境補修が必須なら自分で広げず報告する。Registry・他正本・サーバー・activity.py・approvals.py・AGENTS編集なし。commit・サーバー再起動・ユーザー画面操作なし。
+- At the prior approval-lane location, show small task-based recent-work cards. Clearly limit to 「直近200件の活動＋未完の承認」, not all tasks' current positions.
+- Derive latest stage/owner/time/short reason from practical events, with Registry state separate. Unknown start stays unknown; missing request does not mean old work is consideration. New consideration can use existing work+description.
+- Latest commit means 「記録コミット済み」; complete means 「作業区切り」, not Registry DONE. Regress RBT-026 WAITING_USER+commit. recheck does not create a new cycle; handle awaiting-commit after complete.
+- Show pending/approved/claimed by task, not inferred cycles/timestamps. Include approvals-only tasks as no activity information. Same-task parallel requests remain indistinguishable. Keep consumed/cancelled history.
+- Preserve existing approval controller/target-set contract for individual, cancel and approve-all-visible. Details may fold, but pending count/action entry must remain visible. One approval UI; work cards do not approve.
+- Exclude only dedicated PING/WAKE/ACK formats from stage inference, keeping general practical mentions. Explain concrete positive/negative fixtures; retain source event strip.
+- Keep activity strip as history. Update lane locally only on activity/approval fetch, preserving edits/input/selection/scroll/focus. On failure retain last display plus warning; preserve hidden-page pause/timeout.
+- No server/API/DB/schema changes, new authority or automatic start; derived view only.
 
-最初にReturnへ短い内訳を書き、範囲内なら続行。純粋関数の状態遷移・古い起点・承認のみ・同task複数承認・ACK等除外・RBT-026例、DOMの局所更新と入力/フォーカス保持、既存activity/approval試験、sync/verifyを確認する。sync生成物はキャッシュへ。実画面未確認なら明記。
+<a id="占有と検証"></a>
+### Ownership and verification
 
-着手/検証/返却の実イベントをOPS-119・owner姫でactivityへ記録。返却は変更ファイル、具体的規則、試験結果、限界、参照キャッシュ一行を添える。返却後は本件作業を止めてAstra受入待ち。
+Editable by 姫: `Maintanance/RegistryApp/index.template.html`, new `Maintanance/RegistryApp/test-work-lane.cjs`, relevant lane prose in `Maintanance/RegistryApp/README.md`, Return below. Report required old-smoke environment repair rather than expanding. No Registry/other canonicals/server/activity.py/approvals.py/AGENTS edits, commit, restart or user-screen operations.
+
+Write a short initial breakdown and continue within scope. Check pure-function transitions, old/unknown starts, approvals-only/multiple approvals, probe exclusions, RBT-026, local DOM/input/focus, existing activity/approval checks, sync/verify. Generate to cache; state real-screen limitations.
+
+Record actual work/verification/return events as OPS-119, owner 姫. Return changed files, rules, tests, limits and consulted-cache line. Stop for Astra acceptance.
 
 ## 姫 Return
 
@@ -74,14 +81,15 @@
 
 参照したキャッシュ：なし。
 
-## Astra確認・限定補修依頼
+<a id="astra確認限定補修依頼"></a>
+## Astra review and limited repair assignment
 
-2026-10-18。新規test-work-lane.cjsを独立実行しPASS。受入前に次の2点だけ補修する。初回Returnは保持し、末尾に第2回Returnを追記する。編集範囲・開始確認不要・サーバー操作禁止は同じ。
+2026-10-18. Independently ran new test-work-lane.cjs: PASS. Repair only these two before acceptance; retain first Return and append second. Same scope, no start reconfirmation/server operations.
 
-1. 最近の作業と従来の承認が大きな別セクションで並んでいる。ユーザーの二重レーン解消意図に合わせ、最近の作業レーン内に承認詳細を折り畳みでまとめる。未承認件数と操作入口は常時見え、既存の承認コントローラ・対象集合・履歴は維持。承認UIは一つだけとし、構造も試験で確認する。
-2. isProbeEventは文中の疎通IDへの言及も除外する。たとえば「PING-20261018-Aの判定不具合を修正」は実務として残すこと。実際の疎通送信・ACKの専用書式に限定して判定し、実際の疎通例とこの陰性例を試験する。新schemaは不要。
+1. Recent work and approvals remain two large sections. Fold existing approval details into recent work to match user's one-lane intent. Keep counts/action entry, controller/targets/history; one approval UI, structurally tested.
+2. isProbeEvent also excludes practical mentions of probe IDs. Keep 「PING-20261018-Aの判定不具合を修正」 as practical work. Restrict detection to dedicated send/ACK formats, with actual positives and this negative. No new schema.
 
-その他の表示環境未確認は維持。追加改善へ広げず、この2点を返却してください。
+Preserve other unverified display-environment limits; no additional improvements.
 
 ## 第2回Return（姫記入）
 
@@ -107,8 +115,9 @@
 
 参照したキャッシュ：なし。
 
-## Astra技術受入（2026-10-18）
+<a id="astra技術受入2026-10-18"></a>
+## Astra technical acceptance (2026-10-18)
 
-初回と第2回Returnを照合し受入。独立実行でtest-work-lane、test-activity、test-approvals、test-work-progressの4本PASS、git diff --check正常。承認UIが単一で作業レーン内に折り畳まれ、件数と入口が残る構造を確認。疎通専用書式と実務でのID言及の区別、Registry状態と記録コミット済みの区別を試験で確認した。サーバー/API変更なし。正式状態はページ生成時seedに基づく。実ブラウザの見た目・操作は未確認で、技術受入を視覚確認の代用とはしない。追加依頼なし。
+Compared both Returns and accepted. Independently ran test-work-lane/activity/approvals/work-progress: all four PASS; git diff --check clean. Confirmed single folded approval UI with counts/entry visible. Tests distinguish dedicated probes/practical ID mentions and Registry state/record committed. No server/API changes. Formal state uses generation-time canonical seed. Real browser appearance/interaction unverified; technical acceptance does not substitute for visual inspection. No further assignment.
 
-事前承認675d98979eb7448fb913da58ebc842deを受入時にapprovedと確認。指定ファイルをコミットする。
+Approval 675d98979eb7448fb913da58ebc842de was approved at acceptance. Commit the specified files.

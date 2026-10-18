@@ -1,36 +1,44 @@
 # 赤黒木本文レビューの受入
 
-2026-10-16 / Astra / DOC-040〜044（親DOC-034）
+## TL;DR（人間向け）
 
-## 受入結果
+赤黒木5件の本文レビューを受け入れ、指摘対応と既存78例の再検証を実施した記録。原返却・固定入力は保持し、本文のユーザー受入や全契約・全テストの保証とは分ける。ブラウザ目視は未実施。
 
-5件の返却に確認範囲・根拠・指摘・最小修正案・未確認・作業終了の記録があることを確認し、レビュー成果として受け入れる。ユーザーのコミット承認により5件をDONEにする。原返却は変更しない。本文完成・DOC-037のユーザー受入とは別。
+2026-10-16 / Astra / DOC-040〜044 (parent DOC-034).
 
-固定入力20件のSHA-256を独立照合し全件一致。未コミット変更は5返却ファイルのみだった。Set日本語のBound出力コメント、Dictionaryの宣言断片不在、MultiSetのequivalentと実装の==、MultiMapのhintの前提条件を実物に照合した。DictionaryのPerformanceにView作成・独立変更時CoWの説明がないことも確認した。
+<a id="受入結果"></a>
+## Acceptance result
 
-新たなbuild・テストは行っていない。姫の「公開阻害なし」は今回のレビュー範囲での所見として保持し、公開合格の確定に転用しない。Test as Spec参照は返却で個別のテスト名・箇所が示されていないため、全契約をテストと照合済みという保証にはしない。
+Confirmed that five returns record scope, evidence, findings, minimal correction proposals, unknowns and work completion; accepted them as review outputs. The user's commit approval makes all five DONE. Do not alter original returns. This is separate from completed prose or DOC-037 user acceptance.
 
-## DOC-034に残す対応
+Independently compared SHA-256 for all 20 fixed inputs: all matched. Only five return files had uncommitted changes. Checked Set Japanese Bound output comments, the missing Dictionary declaration fragment, MultiSet equivalent versus implementation ==, and MultiMap hint preconditions against the artifacts. Also confirmed Dictionary Performance lacks View creation and CoW on independent modification.
 
-- Set日本語例のOptional表記を修正する。
-- Set・MultiSet・MultiMap型コメントの、存在しない宣言ブロックへの参照文を除く。
-- Dictionary日英のView作成・独立View変更時CoWの説明を補う。公開コメントとの同期も確認する。
-- MultiSetのupdateメソッドコメントを実装の==に合わせる。ただしComparableに整合しない型の挙動を保証するという説明は採らない。
-- MultiSet・MultiMapの日本語の継ぎ足し文を整える。
-- MultiMapのhint説明の補足候補もDOC-043から拾う（横断一覧では落ちている）。任意改善はSet例順とMultiSetのAPI名補記。
+No new build/tests. Retain 姫's 「公開阻害なし」 as a finding within this review, not publication approval. Returns do not identify individual Test as Spec names/locations, so they do not guarantee comparison of all contracts with tests.
 
-既存スニペット追加・削除をしないユーザー決定を維持する。outlineの必須例とDictionary宣言ブロックの不足は、この決定を覆す理由にせず0.8.0側の候補として保持する。宣言ブロックも今回は追加しない。今回の受入でoutline完全充足とは扱わない。
+<a id="doc-034に残す対応"></a>
+## Actions retained in DOC-034
 
-MultiSetの失敗時CoWは製品観察としてDOC-042に残る。バグ認定・製品修正・新規着手はしていない。
+- Correct Optional notation in the Japanese Set example.
+- Remove Set/MultiSet/MultiMap type-comment references to nonexistent declaration blocks.
+- Add View creation and independent View modification CoW explanations to Japanese/English Dictionary, checking public-comment synchronization.
+- Align MultiSet update comments with implementation ==, without promising behavior for types inconsistent with Comparable.
+- Smooth appended Japanese text in MultiSet/MultiMap.
+- Include the MultiMap hint supplement candidate from DOC-043, omitted from the cross-cutting list. Optional improvements: Set example order and MultiSet API names.
 
-## 現在地
+Preserve the user decision not to add/remove snippets. Keep missing outline-required examples and Dictionary declaration blocks as 0.8.0 candidates without overriding that decision; no declaration block is added now. Acceptance does not establish complete outline coverage.
 
-レビューは終了。DOC-034の本文訂正・再検証は下記のとおり実施済み。入力固定はレビュー時の証拠として維持し、後続修正では元のhash一覧を上書きせず修正後の版を別記録にする。
+MultiSet failure-path CoW remains a product observation in DOC-042. No bug designation, product fix or new execution.
 
-## 指摘対応・再検証（2026-10-16 / Astra）
+<a id="現在地"></a>
+## Current position
 
-技術訂正4項目、文章修正、MultiMap hint補足とMultiSet API名の明記を反映。日英本文と公開コメントを対応させた。Setの例順変更は任意改善として今回は見送り、構成を保持した。MultiSetの失敗時CoWは範囲外の観察のまま製品変更なし。
+Review is closed. DOC-034 corrections/revalidation occurred as below. Retain fixed review inputs as evidence; record later corrected revisions separately rather than overwriting original hashes.
 
-既存78実行可能例を再抽出してcompile/run成功。4型8本文の見出しと各成果物のフェンス数を維持し、Swiftソースは文書コメント以外がHEADと一致。Release DocCはnative方式・warnings-as-errorsで成功。既定方式はdsymutilのOperation not permittedで失敗し、ログを併記した。ブラウザ目視・全テスト再実行はしていない。
+<a id="指摘対応再検証2026-10-16--astra"></a>
+## Finding resolution and revalidation (2026-10-16 / Astra)
 
-証拠: `Evidence/DOC-034-review-fixes-2026-10-16/`。旧レビュー入力と原返却は保存。今回の変更はAstraによる対応・確認であり、修正後を姫が再レビューしたとはしない。
+Applied four technical corrections, prose edits, the MultiMap hint supplement and explicit MultiSet API names. Aligned Japanese/English prose with public comments. Deferred optional Set example reordering, retaining structure. Failure-path CoW remains an out-of-scope observation, with no product change.
+
+Re-extracted all 78 existing executable examples and successfully compiled/ran them. Preserved headings across eight documents for four types and fence counts for each artifact; Swift source outside documentation comments matched HEAD. Release DocC passed with native builds and warnings-as-errors. Default builds failed at dsymutil with Operation not permitted; retained both logs. No browser visual inspection or full test rerun.
+
+Evidence: `Evidence/DOC-034-review-fixes-2026-10-16/`. Retained old review inputs/original returns. These fixes/checks were by Astra, not a 姫 rereview of the corrected text.

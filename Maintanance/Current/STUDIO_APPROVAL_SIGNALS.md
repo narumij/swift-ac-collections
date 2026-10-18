@@ -1,15 +1,22 @@
 # 承認レーンの信号表示（OPS-121）
 
-2026-10-18 ユーザー承認「そうそう」によりAstra実装。親OPS-048。
+## TL;DR（人間向け）
 
-## 要求と対応
+承認レーンの件数を赤・緑・黄と文字で示し、未取得や失敗を「未処理なし」と誤表示しない変更記録。既存試験と表示生成の確認を技術受入した。承認権限や保存方式は変更せず、実ブラウザ表示は未確認。
 
-承認レーンの見出しで、pendingを🔴承認待ち、approvedを🟢承認済み・Astra未処理、claimedを🟡Astra処理中として件数表示する。複数状態は併記。すべて0なら⚪未処理なし。consumed/cancelledは既存履歴に残す。取得中・失敗時は従来の確認中・不調表示を優先し、未取得を未処理なしと呼ばない。色に加えて文字で区別する。疎通レーンは変更しない。
+Implemented by Astra on 2026-10-18 after user approval 「そうそう」. Parent OPS-048.
 
-## 範囲
+<a id="要求と対応"></a>
+## Requirement and response
 
-index.template.htmlの表示のみ。承認権限・保存・API・サーバー操作は変更しない。
+In the approval-lane heading, show counts with pending as 🔴承認待ち, approved as 🟢承認済み・Astra未処理, and claimed as 🟡Astra処理中. Show multiple states side by side. If all are 0, show ⚪未処理なし. consumed/cancelled stay in the existing history. While loading or on failure, the existing checking / trouble display takes precedence; never call an unloaded state 未処理なし. States are distinguished by text as well as colour. The probe lane is unchanged.
 
-## 確認・技術受入
+<a id="範囲"></a>
+## Scope
 
-既存test-approvals.cjsとtest-work-lane.cjsはPASS。実装の表示生成部分を直接実行し、空・履歴のみ→白、3状態混在→赤緑黄各1件を確認した。git diff --check正常。実ブラウザ未確認。
+Display in index.template.html only. Approval authority, storage, API and server operations are unchanged.
+
+<a id="確認技術受入"></a>
+## Checks and technical acceptance
+
+The existing test-approvals.cjs and test-work-lane.cjs PASS. Ran the display-building part of the implementation directly and confirmed: empty / history only → white; three states mixed → one each of red, green and yellow. git diff --check is clean. Not checked in a real browser.

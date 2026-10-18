@@ -563,3 +563,11 @@ Registry登録済み。[正式依頼・固定版の材料](Current/MAPPED_VALUES
 ## OPS-145 — 停止時の占有ルール確認
 
 [限定確認依頼](Current/FILE_OCCUPANCY_HANDOFF.md)へ。運用案の矛盾・不足を短く返却。実装・旧翻訳再開・commitなし。
+
+## OPS-142 — 正本の詳細英語化（姫分担）
+
+[正式依頼](Current/CANONICAL_LANGUAGE_MIGRATION.md)のHime translation requestへ。固定対象はEvidence/OPS-142/hime.json。History除外、日本語要約・原文証拠保持。commitなし。返却後連続待機。
+
+## OPS-142 — 追加候補の限定再開 H-20261019-02
+
+[正本末尾の追加割当](Current/CANONICAL_LANGUAGE_MIGRATION.md)へ。additional-completed.jsonの17件のみ。旧24件/復元14件は固定、再編集しない。停止・役割協議完了後のユーザー再開指示に基づく。窓口Astra調整、commitなし、返却後連続待機。

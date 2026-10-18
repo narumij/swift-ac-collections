@@ -1,40 +1,48 @@
 # Studioから新規タスク案を追加する
 
-2026-10-18 / OPS-081 / Astra作成。親OPS-048。実装・検証は姫、受入はAstra。ユーザー「見取り図か独立タスクに限定だけど、新規追加していきたい」「姫に依頼を」に基づく。入力はOPS-080受入commit 73afe42f以降、着手時の完全SHAと差分範囲をReturnに記録する。
+## TL;DR（人間向け）
 
-## 目的・確定範囲
+Studioで正式登録前のタスク案を追加・編集・接続・取消し、保存してAIへ渡す機能の依頼と受入記録。Astra受入では独立検査と操作スモークの成功を確認している。正式採番・正本反映・着手許可は別で、Safari実表示と実ダウンロードは未確認。
 
-ユーザーがStudio上で一般タスク案を作り、独立タスク欄または依存の見取り図で組み立てて相談できるようにする。正式taskの採番・登録前の案として扱い、既存taskの意味や権限を自動変更しない。
+2026-10-18 / OPS-081 / Astra, parent OPS-048. Hime implements/verifies; Astra accepts. Based on user requests 「見取り図か独立タスクに限定だけど、新規追加していきたい」「姫に依頼を」. Input follows OPS-080 acceptance commit 73afe42f; record full starting SHA and differences in Return.
 
-- 「タスク追加」からタイトル（必須）とメモ（任意）を入力する。
-- 独立タスクとして置くか、接続先を選んで見取り図へ追加する。追加案同士の接続も可能とする。既存の接続方向・循環拒否・条件未設定／相談待ちの扱いを使う。
-- 仮IDを正式ID・マイルストーンIDと衝突しない別名前空間で生成し、編集・保存・読込の間で保持する。正式採番やRegistryの採番カウンタ更新はしない。
-- 仮タスクは「追加案」と分かる表示にする。既存カード・選択・インスペクタとの操作を揃える。追加案のタイトル・メモ訂正、取消を可能にし、取消時に接続を残さない。
-- 編集結果JSONに追加案と接続を含め、AIへ渡せる。baselineは元の正式データのまま保持する。追加案に正本リンクを捏造しない。
+<a id="目的確定範囲"></a>
+## Purpose and confirmed scope
 
-恒久タスク・マイルストーンの新規作成、既存タスクの項目/条件編集の解禁、サーバーからRegistryへの直接書込み、AIによる自動採番・自動実行は対象外。
+Let users create general-task proposals in Studio and arrange/discuss them in the independent area or dependency map. These precede formal numbering/registration and do not automatically change existing task meaning or authority.
 
-## 作業内訳と編集範囲
+- 「タスク追加」 accepts a required title and optional note.
+- Add independently or select connections for the map, including proposal-to-proposal links. Reuse direction/cycle rejection and unset/awaiting-discussion condition handling.
+- Generate provisional IDs in a separate noncolliding namespace from formal task/milestone IDs; retain them through edit/save/load. Do not formally number or update Registry counters.
+- Label provisional tasks 「追加案」 and align card/selection/inspector behavior. Permit title/note correction and cancellation without leftover edges.
+- Save proposals/connections in result JSON for AI handoff; baseline stays original formal data. Do not invent canonical links.
 
-最初に本書へ短い実装内訳を記録してから、確定範囲内で実装する。データ表現は既存の保存・再読込・検証経路を調べて最小限に定め、READMEに記載する。既存JSONを扱えることと、新形式を旧形式として誤処理しないことを両立する。必要ならschemaを明示的に区別する。
+Exclude new permanent tasks/milestones, broader editing of existing items/conditions, direct server writes to Registry and AI automatic numbering/execution.
 
-編集可：RegistryApp/index.template.html、verify.cjs、保存・読込・生成整合に必要な限定変更（sync.py等）、README、本書の作業内訳/Return、Evidence/OPS-081/。実Registry・Rules・DESIGN・実マイルストーン・製品は編集しない。新規追加案の正式採番・正本作成はユーザーがJSONを渡した際の調整担当の仕事。
+<a id="作業内訳と編集範囲"></a>
+## Breakdown and editing scope
 
-## 取込手順に追加する内容
+Write a short implementation breakdown here first. Inspect current save/reload/validation paths and choose a minimal representation documented in README. Support existing JSON without mistaking the new form for old; distinguish schema explicitly if necessary.
 
-取込AIはbaselineと編集後から差分を再計算し、追加案・既存変更・削除を分離する。追加案の重複と意図を確認し、現在の採番規則に従い正式IDを付け、正本を作成する。仮ID→正式IDの対応を一括で接続へ反映し、未解決参照を残さない。意味の未確定な条件は相談する。再送された同じ案を二重登録しないよう、取込記録に対応を残す。取込前の追加案は正式taskでも着手許可でもない。
+Editable: RegistryApp/index.template.html, verify.cjs, bounded save/load/generation consistency changes such as sync.py, README, this breakdown/Return and Evidence/OPS-081/. No actual Registry/Rules/DESIGN/milestones/product changes. Formal numbering/canonical creation belongs to the coordinator when the user hands over JSON.
 
-## 検証・完了条件
+<a id="取込手順に追加する内容"></a>
+## Additions to import procedure
 
-- 独立案の追加、見取り図への追加、案同士・既存task・到達点との許される接続、選択とタイトル/メモ編集を確認。
-- 仮ID重複、自己接続、循環、存在しない端点を拒む。既存の固定ID改変・正式タスクの無断追加を拒む検査を、追加案の仕組みのために一律解除しない。
-- 保存→再読込で仮ID・メモ・接続・相談待ちとbaselineが保持される。追加取消で残骸がない。既存編集だけのJSONも維持。
-- 更新/再生成で未保存案を黙って消さない。既存の未保存変更保護と整合させる。
-- 既存verify、sync、--checkが通る。操作スモークテストと出力JSONの照合を実施し、Safari未確認なら明記。
+Importing AI recomputes differences from baseline/edit result and separates new proposals, existing changes and deletions. Check duplicates/intent, assign IDs under current numbering rules and create canonicals. Map provisional→formal IDs across all connections together, leaving no unresolved references. Discuss unsettled conditions. Retain mapping in import records to prevent double registration on resend. Unimported proposals are neither formal tasks nor execution permission.
 
-依頼の範囲を超える仕様判断・大規模なデータ移行が必要なら、選択肢と影響を返して停止する。別件をついでに修正しない。一時作業物はCOMMONSに従い記録・片付ける。Returnには入力完全SHA、変更、検証、未確認、作業物の処理を記載。機能差分と証拠・記録をレビューしやすくまとめる。今回commit・外部操作の許可は含めない。
+<a id="検証完了条件"></a>
+## Verification and completion
 
-依頼完成により指定出力範囲を姫へ受渡し、Astraは返却まで同範囲を編集しない。
+- Check independent/map additions, permitted connections to proposals/tasks/milestones, selection and title/note editing.
+- Reject provisional-ID duplication, self-links, cycles and missing endpoints. Do not blanket-disable existing fixed-ID/unapproved-formal-task protections to accommodate proposals.
+- Save/reload retains provisional IDs/notes/connections/awaiting-discussion state and baseline. Cancellation leaves no remnants. Existing-only JSON still works.
+- Update/regeneration must not silently erase unsaved proposals; preserve existing unsaved-change protection.
+- Existing verify/sync/--check pass. Run operation smoke and compare output JSON; note Safari nonverification.
+
+Return options/impact and stop if out-of-scope decisions or major migration are needed. No incidental repairs. Record/clean artifacts under COMMONS. Return full input SHA, changes, checks, unknowns and artifacts; organize functional diff/evidence/records for review. No commit/external permission.
+
+Assignment completion hands the output scope to Hime; Astra does not edit it until return.
 
 ## 作業内訳（姫記入）
 
@@ -101,12 +109,13 @@
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-ユーザーの「こみっとして、うけいれしてこみっと」に基づき受入。確認時HEADは`cf8547b5`、対象は姫の未コミット差分と本依頼の登録記録。原Returnは保持する。
+Accepted under 「こみっとして、うけいれしてこみっと」. Review HEAD `cf8547b5`; scope is Hime's uncommitted changes and this assignment's registration record. Preserve original Return.
 
-- 追加案を正式taskと分けるデータ表現、baseline保持、参照・循環拒否、追加取消時の接続除去をコードと検証で照合。
-- 独立実行したsync/verifyは25 PASS、内蔵文書missingなし。操作スモーク（独立案・END接続・案同士の接続・編集・保存再読込・取消）PASS、`--check`ずれなし。
-- 直前のAstraによるMilestones README改訂で、生成器が出典検索する一文を削っていたため初回syncが停止。仕様に矛盾しない原文をREADMEへ復元し、再実行成功。姫の実装不具合とは区別する。
-- Safari実表示・実ダウンロードは未確認。旧Studioで独立案が表示されない制限を引き継ぎ、追加案は対応済みStudioで扱う。正式採番・正本反映・着手許可は今回の機能に含めない。
-- ユーザーのcommit許可に基づきDONE。追加依頼なし。
+- Compared representation separating proposals from formal tasks, baseline retention, invalid-reference/cycle rejection and connection removal on cancellation against code/tests.
+- Independent sync/verify 25 PASS, no bundled documents missing. Operation smoke (independent proposal, END connection, proposals interconnected, edit, save/reload, cancellation) PASS; `--check` matched.
+- Initial sync stopped because Astra's preceding Milestones README edit removed a sentence the generator searches as source. Restored compatible original wording and reran successfully; distinguish from Hime's implementation defects.
+- Safari display/actual download unverified. Retain the limitation that old Studio cannot display independent proposals; use a compatible Studio. Formal numbering/canonical application/start permission is not part of this feature.
+- DONE under user commit permission. No additional assignment.

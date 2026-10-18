@@ -4,14 +4,17 @@
 
 上へ戻らなくても承認状況が分かるよう、追従するトップバーにも承認信号と一括承認を置きます。下の欄と同じ依頼・状態・操作を共有します。
 
-## 依頼と境界
+<a id="依頼と境界"></a>
+## Assignment and boundaries
 
-OPS-135 / 2026-10-19 / Astra。ユーザー「コミット事前承認：⚪ 未処理なし[表示中の未承認0件を承認]をトップバーにも配置」。既存欄は維持。二重の通信・別承認状態は作らず、同一view/controllerの出力先を増やす。処理中・取得不調・ローカルファイル表示の制限も同じにする。メニュー化の相談は別で、今回の承認追加と混ぜない。
+OPS-135 / 2026-10-19 / Astra. User request: 「コミット事前承認：⚪ 未処理なし[表示中の未承認0件を承認]をトップバーにも配置」. Retain the existing section. Add an output target to the same view/controller without duplicate communication or separate approval state. Preserve busy/fetch-failure/local-file limitations. Menu discussion is separate from this approval addition.
 
-## 受入条件
+<a id="受入条件"></a>
+## Acceptance criteria
 
-両方の表示・件数・有効/無効が一致し、上のボタンも既存のID/revision単位の一括承認を一度だけ呼ぶ。新規依頼・処理中・失敗・空一覧を確認。ユーザーの実承認は試験で操作しない。
+Both displays, counts and enabled states must match. The upper button invokes existing ID/revision-based bulk approval once. Check new requests, busy, failure and empty lists. Do not exercise actual user approvals in tests.
 
-## Astra受入（2026-10-19）
+<a id="astra受入2026-10-19"></a>
+## Astra acceptance (2026-10-19)
 
-承認viewの出力先を2箇所にし、controller・通信は従来の1本を維持。新規依頼・件数・信号・処理中・失敗・再有効化・同じID/revisionへの一度の操作を試験で確認。既存approval/activity/handoff/header試験PASS。隔離WebKitで1400px・390pxのトップバー承認欄とボタンが画面幅に収まることを確認（静的HTML、実API・実承認・ユーザー画面は未操作）。生成・構造確認を通して受入。メニュー化は未実施。
+Approval view now has two output targets while controller/communication remain one. Tests covered new requests, counts/signals, busy/failure/re-enable, and one action for the same ID/revision. Existing approval/activity/handoff/header tests PASS. Isolated WebKit at 1400px/390px confirmed top-bar approval fields/buttons fit (static HTML; no live API, actual approvals or user screen operations). Accepted after generation/structural checks. Menu conversion not implemented.

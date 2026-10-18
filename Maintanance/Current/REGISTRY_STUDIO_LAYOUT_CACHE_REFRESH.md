@@ -1,32 +1,39 @@
 # Studio配置判断のキャッシュ更新
 
-Task: OPS-097 / 親 OPS-048
-作成: Astra、2026-10-18。姫へ正式依頼。
+## TL;DR（人間向け）
 
-## 入力と範囲
+受入済みの配置要求と局所接続図を、固定版から姫の判断キャッシュへ反映し、受入・完了した記録。単独の右上維持・複数の下積み・共通オフセットと未決事項を区別する。任意の感想は観察として受領し、新しい常設規則や掃除依頼へ昇格させていない。
 
-更新前の固定commit: `b2f9e8e4`。受入済み配置修正をcommitしてから依頼する順番を遵守した。
+Task: OPS-097 / Parent OPS-048.
+Author: Astra, 2026-10-18. Formal assignment to 姫.
 
-必要な部分だけを読み、姫自身の判断キャッシュを更新する。
+<a id="入力と範囲"></a>
+## Inputs and scope
 
-- `Current/TASK_REGISTRY_APP.md`の配置要求: 恒久木は別扱い。辺あり一般タスクは見取り図、辺なしだけ独立欄。マイルストーン未接続と辺なしを混同しない。
-- 同書の途中マイルストーン配下の配置と`Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`のユーザー判断・追加分受入: 単独は右上を意図的に維持（送り出すイメージ）。複数スタックは下。上下で水平オフセットを共有し、幅不足は必要区間のマイルストーン間隔を広げる。
-- `Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md`の最終依頼・受入: 接続を見るは中心カードと左右を実辺で結ぶ局所図。旧3段カード列案は現行ではない。
-- 保留: 複数起点群の優先配置は未決。上下選択機能は将来希望で未依頼。対象版のない接続群は全体に表示する既存挙動を維持し、版別での扱いは別判断。最終版START→END非表示も別件。これらを今探索・実装しない。
+Fixed commit before update: `b2f9e8e4`. Committed accepted layout changes before assigning the cache update as required.
 
-判断・理由・適用範囲・参照元・更新条件だけを短く残す。正本変更、ユーザーによる配置判断変更、再現する不一致などを再確認契機とし、古いReturnから判断を復活させない。正本の複製や全履歴の再探索は不要。
+Read only necessary portions and update your own judgment cache.
 
-## 編集範囲と完了条件
+- Placement requirements in `Current/TASK_REGISTRY_APP.md`: permanent trees are separate. General tasks with edges go in the diagram; only edge-free tasks are independent. No milestone connection is not the same as no edge.
+- Intermediate-milestone placement there and user decision/additional acceptance in `Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`: intentionally retain single successors upper-right (launching image); multiple-card stacks below. Share horizontal offset and widen necessary milestone intervals if space is insufficient.
+- Final assignment/acceptance in `Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md`: local diagram connects center and side cards with actual edges. Old three-row card-list proposal is not current.
+- Pending: multiple-origin priority undecided; upper/lower choice is a future wish, not assigned. Preserve full-view display of groups without target version; version-specific treatment is a separate decision. Hiding final START→END is separate too. Do not investigate/implement these now.
 
-`Maintanance/Cache/Hime/`内の必要な判断キャッシュと本書Returnのみ。キャッシュの構成は姫に任せる。Git管理外を維持する。他担当キャッシュ・製品・Registry・正本は変更しない。保存先、参照した固定版と該当節、更新条件、保留をReturnへ記録。完了の判断はAstraの受入で行う。commitなし。指定範囲を姫へ受渡し、Astraは返却待ち。
+Briefly retain only judgment, reason, applicability, source and update triggers. Recheck on canonical changes, user placement decisions or reproducible discrepancies; do not revive judgments from old Returns. No source duplication or full-history exploration.
 
-## 任意のキャッシュメンテ感想
+<a id="編集範囲と完了条件"></a>
+## Editing scope and completion criteria
 
-ユーザー提案による小さい試行。回答は任意で、空欄でも作業の完了を妨げない。独立したインタビュー制度の導入は未決。
+Only necessary judgment caches under `Maintanance/Cache/Hime/` and this Return. Cache structure at 姫's discretion; keep Git exclusion. No other owners' caches, product, Registry or canonical changes. Record destination, fixed revision/sections, triggers and pending items in Return. Astra acceptance decides completion. No commit. Hand scope to 姫; Astra awaits Return.
 
-1. 実際に再探索を減らしたキャッシュはどれか。覚えている例だけでよい。
-2. 更新時に迷った・重かった・古くなっていた箇所はあるか。
-3. 残す／まとめる／捨てる候補や、更新契機の改善案はあるか。提案までで、範囲外の掃除はしない。
+<a id="任意のキャッシュメンテ感想"></a>
+## Optional cache-maintenance impressions
+
+Small user-proposed trial. Optional response; leaving it empty does not prevent completion. A separate interview system is undecided.
+
+1. Which caches actually reduced reexploration? Recalled examples suffice.
+2. Any confusing, burdensome or stale areas during update?
+3. Candidates to retain/merge/discard or better triggers? Proposals only; no out-of-scope cleanup.
 
 ## Return（姫記入）
 
@@ -47,10 +54,11 @@ Task: OPS-097 / 親 OPS-048
 2. 迷った点：同じ件で「初回Return」「追加依頼」「受入」と層が重なっていて、どれが現行かを依頼冒頭の注記（「単独も下」は撤回）で判定した。この注記がなければ重かったと思う。
 3. 提案のみ：`CURRENT.md`（10-16時点）は内容が古く、捨てるかまとめる候補。更新契機は「依頼の受入でDONEになったとき」に、該当キャッシュ項目の要否を一行確かめる程度が軽そう。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-STUDIO_LAYOUT.mdの実体を確認し、配置・局所図・理由・適用範囲・保留を固定版b2f9e8e4の指定3正本と照合した。正本は同版から差分なし。新規配置キャッシュと既存STUDIO_JUDGMENTS.mdのGit除外も確認。今回の更新を受入、依頼終了・commit待ち。
+Inspected STUDIO_LAYOUT.md and compared placement/local-diagram/reasons/applicability/pending items with three specified sources at b2f9e8e4. Sources unchanged since that revision. Confirmed Git exclusion of new layout cache and existing STUDIO_JUDGMENTS.md. Accepted update; assignment closed, awaiting commit.
 
-任意の感想は観察として受領。SPIバッジの既決判断が再探索を減らした例、依頼冒頭の現行注記が役立った点、旧CURRENT.mdの整理候補とDONE時の軽い確認案を保持する。感想から新しい常設規則・掃除依頼は作らない。ユーザーの今日は掃除しない方針も維持する。
+Received optional impressions as observations: the decided SPI badge order reduced reexploration; current-state note at the assignment start helped; old CURRENT.md is a cleanup candidate; a light DONE-time check was proposed. Do not create standing rules or cleanup assignments from impressions. Preserve the user's no-cleanup-today direction.
 
-2026-10-18：ユーザーcommit承認によりOPS-097をDONEとする。キャッシュ本体はGit管理外のまま。ユーザーとの振り返りでは、独立したインタビューより更新依頼に任意の感想欄を添える形で足りそうとの認識を共有した。
+2026-10-18: user commit approval makes OPS-097 DONE. Cache remains Git-excluded. In reflection, shared the view that optional impressions with updates may suffice instead of a separate interview.

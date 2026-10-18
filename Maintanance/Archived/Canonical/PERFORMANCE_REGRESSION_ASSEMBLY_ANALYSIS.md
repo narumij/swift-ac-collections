@@ -8,6 +8,10 @@
 > no getter or `lastAscentIndex` call, and differs in placement. The original review
 > below is retained as an independent hypothesis, not as the accepted cause.
 
+
+## TL;DR（人間向け）
+この記録は、性能回帰時の逆アセンブル比較で見つかったgetter分離仮説と、その後hot loopの実測から棄却された経緯を残します。構造上の観察は有用ですが、測定回帰の原因としては採用されていません。これは過去の調査記録で、現在の修正指示ではありません。
+
 ## Status
 
 - Status: Structural observations retained; H1 rejected as the measured regression's cause

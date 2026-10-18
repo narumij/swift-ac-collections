@@ -1,36 +1,44 @@
 # Studioの保存・編集操作のユーザビリティ改善提案
 
-2026-10-18 / OPS-088 / 親OPS-048 / 姫提案、Astra受入。
+## TL;DR（人間向け）
 
-## 目的と開始条件
+保存状態と次の操作を分かりやすくする5件の改善提案と、その受入記録。取込済み版が再開される現状は隔離データで再現したが、見つけやすさや表示効果は実ブラウザ未確認の仮説を含む。提案の受入は採否・実装承認ではなく、判断は別のユーザー専任資料へ渡している。
 
-ユーザー指定。OPS-087の保存契約がまとまってから、ユーザーが保存状態と次の操作を理解しやすくする案を姫へ依頼する。現在は前提待ちで、正式依頼は未発行。本書だけでは着手しない。
+2026-10-18 / OPS-088 / parent OPS-048 / proposed by Hime, accepted by Astra.
 
-## 依頼予定の範囲
+<a id="目的と開始条件"></a>
+## Purpose and start condition
 
-保存契約と現行画面の編集→適用→保存→更新/再開→AI取込の流れを限定確認し、紛らわしい表示・操作・結果を具体例とともに挙げる。追加ボタンの発見、未適用/未保存/保存済み/反映済みの区別、古い編集版と最新正本の区別を重点とする。
+User-specified. After OPS-087's save contract is settled, ask Hime for proposals that help the user understand the save state and the next operation. Currently waiting for the prerequisite; the formal request has not been issued. This document alone does not start the work.
 
-小さい改善案を優先度・効果・作業規模・契約変更の要否とともに返す。提案数を埋めるために問題を増やさない。推測と実操作で観察した事実を分け、Safari未確認なら明記する。
+<a id="依頼予定の範囲"></a>
+## Planned scope of the request
 
-実装・正本の契約変更・実Inbox変更・全面再設計・commitは含めない。新しい保証や未決方針に触れる案は判断事項として分離する。現行保存版の保全を優先する。
+Check, in a limited way, the save contract and the current screen's flow of edit → apply → save → update/resume → AI import, and list confusing displays, operations and results with concrete examples. Focus on finding the add button, distinguishing unapplied / unsaved / saved / imported, and distinguishing an old edit version from the latest canonical.
 
-## 入力固定・正式依頼
+Return small improvement proposals with priority, effect, size of work and whether the contract must change. Do not add problems to fill a quota of proposals. Separate guesses from facts observed by actual operation, and state it if Safari was not checked.
 
-OPS-087完了後にAstraが対象版・読む節・編集範囲・返却先を記入し、CLAUDE_TASKへ正式依頼する。
+Implementation, changes to the canonical contract, changes to the real Inbox, a full redesign and commit are not included. Proposals touching new guarantees or undecided policies are separated as decision items. Preserving the current saved versions takes priority.
+
+<a id="入力固定正式依頼"></a>
+## Fixed input and formal request
+
+After OPS-087 completes, Astra fills in the target version, the sections to read, the editing scope and the return destination, and makes the formal request in CLAUDE_TASK.
 
 ## Return
 
-未依頼・未返却。
+Not requested, not returned.
 
-## 正式依頼（2026-10-18 / Astra）
+<a id="正式依頼2026-10-18--astra"></a>
+## Formal request (2026-10-18 / Astra)
 
-OPS-087の仕様化が完了したため、ユーザー指定の後続作業を姫へ依頼する。入力は保存契約の「試行保存契約 v1」以降と現行Studio（実装基準18e881e8、記録追加47cf771b）。未commitの仕様・本依頼はこの受渡し時点で固定する。
+OPS-087's specification is complete, so the follow-up work the user specified is requested of Hime. The input is the save contract from 「試行保存契約 v1」 onward and the current Studio (implementation base 18e881e8, records added in 47cf771b). The uncommitted specification and this request are fixed at the time of this handover.
 
-まず短い作業内訳を本書へ書き、提案まで実施してください。保存・適用・更新・再開・AI取込を重点とし、最大5件程度の有効な案へ絞る。とくに取込済み編集版の再開、未適用入力、正本と編集版の見分けを検討する。現行READMEには旧方式の記述があるので、契約はOPS-087を参照し、UI/案内の食い違いは提案に含めてよい。
+First write a short work breakdown in this document, then carry it through to proposals. Focus on save, apply, update, resume and AI import, and narrow it to at most about 5 valid proposals. In particular consider resuming an imported edit version, unapplied input, and telling the canonical from an edit version. The current README still describes the old method, so refer to OPS-087 for the contract; discrepancies in the UI or guidance may be included in the proposals.
 
-各案は具体的な困り方、最小変更、期待効果、契約を変えるか、検証方法を示す。コードや運用の修正は行わない。契約変更が必要なら未決案として分ける。実Inboxを編集せず、必要な操作確認は隔離データで行う。証拠は見た範囲に限定し、実ブラウザ未確認なら明示する。
+Each proposal shows the concrete trouble, the minimal change, the expected effect, whether it changes the contract, and how to verify it. Do not modify code or operations. If a contract change is needed, separate it as an undecided proposal. Do not edit the real Inbox; do the needed operation checks with isolated data. Limit evidence to what was seen, and state it explicitly if not checked in a real browser.
 
-編集可能範囲は本書の作業内訳/Return、Current/Evidence/OPS-088/のみ。入力契約・Registry・README・実装・DESIGNは変更しない。依頼完成で指定出力範囲を姫へ渡し、Astraは返却待ち。commitなし。
+The editable scope is only the work breakdown/Return of this document and Current/Evidence/OPS-088/. Do not change the input contract, Registry, README, implementation or DESIGN. With the request complete, the specified output scope is handed to Hime and Astra waits for the return. No commit.
 
 ## 作業内訳（姫記入）
 
@@ -101,10 +109,11 @@ OPS-087の仕様化が完了したため、ユーザー指定の後続作業を�
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-ユーザー依頼に基づき5件の改善提案を受入。採否・実装承認ではない。入力eb5a6f7dの保存/更新/再開/状態表示コードと提案を照合し、隔離一時Inboxで保存→取込記録→latestを独立再現。取込済み版が再開され、取込済みの印が応答にないことを確認。一時領域は検証後削除。製品コード・実Inboxは変更していない。
+Accepted the 5 improvement proposals based on the user's request. This is not adoption or implementation approval. Checked the save/update/resume/state-display code of input eb5a6f7d against the proposals, and independently reproduced save → import record → latest with an isolated temporary Inbox. Confirmed that the imported version is resumed and that the response has no imported mark. The temporary area was deleted after verification. Product code and the real Inbox were not changed.
 
-表示位置・発見しやすさは実ブラウザ観察ではなく仮説。工数見積もりも未検証。案1の4状態は同時に成立し得るため、一語の排他的表示で他の注意を隠さない設計が必要。案2の取込済みは全体処理後の記録に限り、現在表示中の土台が最新かとは別に判定する。案5の旧語句検索はfile://経路の正当な説明まで消す根拠にしない。
+Display position and discoverability are hypotheses, not real-browser observations. Effort estimates are also unverified. The 4 states in proposal 1 can hold at the same time, so the design must not let a one-word exclusive display hide other cautions. "Imported" in proposal 2 is limited to the record after whole processing, and is judged separately from whether the currently displayed base is the latest. The old-wording search in proposal 5 is not a ground for removing even the legitimate explanation of the file:// route.
 
-提案受入を完了しcommit待ち。採否は新規USER_ONLYのOPS-089に集約。実装依頼は発行しない。後続はOPS-090の限定キャッシュ更新。
+Proposal acceptance is complete, waiting for commit. Adoption decisions are gathered in the new USER_ONLY OPS-089. No implementation request is issued. The follow-up is OPS-090's limited cache update.

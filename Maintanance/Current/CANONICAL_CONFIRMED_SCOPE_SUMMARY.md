@@ -1,58 +1,65 @@
 # 正本冒頭に確定範囲と未確認事項を示す
 
-2026-10-17 / OPS-066 / 作成：Astra。ユーザー指示「1と4をあすとらさんがタスク化して、4はユーザー判断にしといて」。
+## TL;DR（人間向け）
 
-## 目的と境界
+受入済み対象・証拠・未確認・次の確認点を正本冒頭へ示す形式を、4文書で試して補正付き受入した記録。本文と履歴を保持し、状態の正本はRegistryへ一元化する。全正本への展開や未確認事項の追加検証は、この試行の完了に含めない。
 
-インタビュー改善案1。受入済み対象・証拠commit・未確認事項・次の確認点を正本冒頭へ短く置く。対象を絞って試行する候補として登録。登録時点では本文改修は未着手だった。後続の試行と受入は下記に記録する。Registry状態の複製や全正本の一括移行はしない。
+2026-10-17 / OPS-066 / Author Astra. User instruction: 「1と4をあすとらさんがタスク化して、4はユーザー判断にしといて」.
 
-## 入力
+<a id="目的と境界"></a>
+## Purpose and boundaries
 
-[運用インタビュー](TASK_REGISTRY_OPERATION_INTERVIEW.md)と、そこから参照するAstra・Fableの回答。回答は改善提案であり、個別の権限・契約変更の許可ではない。
+Interview improvement proposal 1: briefly put accepted scope, evidence commits, unknowns and next check at the start of canonical documents. Registered as a limited trial candidate; body edits were initially unstarted. Later trial/acceptance are recorded below. No duplicated Registry states or bulk migration.
 
-## 完了条件
+<a id="入力"></a>
+## Inputs
 
-対象と実施範囲を確定して着手後、受入済み対象・証拠・未確認・次の確認点を、既存履歴を保持して冒頭に提示する。既存正本との整合と、必要な証拠へ辿れることを確認する。現在のtask状態はRegistryに残し、二重管理しない。
+[Operational interview](TASK_REGISTRY_OPERATION_INTERVIEW.md) and its Astra/Fable responses: proposals, not permission to change specific authority/contracts.
 
-## 形式（試行、2026-10-17 / Fable）
+<a id="完了条件"></a>
+## Completion criteria
 
-題名の直後に引用ブロックを1つ置く。見出しは作らず、既存の本文・履歴は動かさない。
+After fixing targets/scope and starting, present accepted scope/evidence/unknowns/next check at the beginning while preserving history. Compare existing canonicals and evidence access. Current task states stay exclusively in Registry.
+
+<a id="形式試行2026-10-17--fable"></a>
+## Format (trial, 2026-10-17 / Fable)
+
+Place one quotation immediately after title, without a new heading or moving prior body/history.
 
 > **確定範囲（日付、OPS-066試行）** 受入済み：何を誰が受け入れたか。証拠：commit hash・証拠の置き場。未確認：やっていないこと。次の確認点：次に見るべき一つ。状態の正本はRegistry。
 
-- 状態（ACTIVE/DONE等）は書かない。状態はRegistryの行だけが持つ（二重管理しない）。
-- 受入済みは「対象」と「受入者」を書き、自己受入ならその旨とユーザー指示を添える。
-- 証拠はcommit hashと証拠ディレクトリまで。本文の再掲はしない。
-- 後から事実が変わったら、履歴を残さず上書きせず、変更理由と根拠を末尾に追記したうえでブロックの該当句だけ直す（失効の記述は「〜で失効」と残す）。
+- Do not repeat ACTIVE/DONE states; only Registry rows carry them.
+- Specify accepted target/acceptor (「対象」「受入者」); self-acceptance includes user instruction.
+- Evidence: commit hash/directory, no repeated body text.
+- On change, do not overwrite without history. Append reason/evidence at end, then correct only affected phrases; retain invalidation as 「〜で失効」.
 
-## 試行（2026-10-17 / Fable、ユーザー「OPS-066をやって」）
+<a id="試行2026-10-17--fableユーザーops-066をやって"></a>
+## Trial (2026-10-17 / Fable; user 「OPS-066をやって」)
 
-対象は完了済みの正本4件。Fableが直接知る2件と、受入節が末尾にある他担当の2件を選び、冒頭ブロックの効果（末尾まで読まずに受入範囲と未確認が分かるか）を比べられるようにした。
+Four completed canonicals: two known directly to Fable and two from others with acceptance at end, to compare whether opening blocks expose scope/unknowns without reading to the end.
 
-| 正本 | task | 根拠 |
+| Canonical | Task | Evidence |
 | --- | --- | --- |
-| `REGISTRY_STUDIO_MILESTONE_CONNECT.md` | OPS-061 | Fable自身の作業。commit `9ddb150f` |
-| `REGISTRY_STUDIO_SINGLE_LINE_KIND.md` | OPS-062 | Fable自身の作業。commit `9ddb150f` |
-| `ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` | RBT-049 | 本文の「Codex受入（2026-10-17）」節と末尾のLinux節、commit `46d50288`・`7a092b72`から転記 |
-| `RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md` | DOC-045 | 本文の完了条件・保証範囲の節、commit `039b2141`から転記 |
+| `REGISTRY_STUDIO_MILESTONE_CONNECT.md` | OPS-061 | Fable's work, commit `9ddb150f` |
+| `REGISTRY_STUDIO_SINGLE_LINE_KIND.md` | OPS-062 | Fable's work, commit `9ddb150f` |
+| `ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md` | RBT-049 | Copied from 「Codex受入（2026-10-17）」 and final Linux section, commits `46d50288` / `7a092b72` |
+| `RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md` | DOC-045 | Copied from completion/scope sections, commit `039b2141` |
 
-他担当の2件は本文に書かれた事実の転記であり、新たな検証はしていない。Registryの行・状態は変更していない。全正本への一括適用はしない（本taskの境界どおり）。
+Other owners' two blocks copy existing facts, with no new validation. Registry rows/states unchanged. No full rollout within this task.
 
-試行返却時の受入依頼：2026-10-17ユーザー指定により、形式と4件の内容の受入はAstra。確認後にOPS-066をDONEにするか、対象を広げる別taskにするかを決める。
+Trial acceptance request: user specified Astra acceptance of format/four contents on 2026-10-17. After checking, decide whether OPS-066 is DONE or expansion belongs to a separate task.
 
+<a id="astra受入2026-10-17"></a>
+## Astra acceptance (2026-10-17)
 
-## Astra受入（2026-10-17）
+At user request, compared all four opening blocks with body, prior acceptance and referenced commits. Confirmed prior text retained at trial commit `25518fdd1`, four evidence commits resolve and RBT-049 evidence directory exists.
 
-ユーザーのOPS-066受入依頼に基づき、4件の冒頭ブロックを本文・既存受入記録・参照commitと照合した。試行commit `25518fdd1`で既存本文が保持されていること、証拠commit4件が解決できること、RBT-049の証拠ディレクトリが存在することを確認した。
+Corrections at acceptance:
+- RBT-049: explicit default failure/strip_env=0 success, distinguishing unperformed fixed-Linux comparison from separate candidate-CI success report.
+- DOC-045: narrowed API⇄guide wording to actual inspected paths from type pages to representative APIs/common guides.
+- This document: initial unstarted status explicitly historical; clarified updating only affected block phrases after appending reasons/evidence at the end.
 
-受入時に次を補正した。
-
-- RBT-049：既定条件の失敗とstrip_env=0の成功を明記。固定版Linux比較の未実施と、別経路のLinux候補CI成功報告を区別した。
-- DOC-045：API⇄ガイドという表現を、実際に確認した型ページから代表API・共通ガイドへの導線に限定した。
-- 本書：登録時点の未着手を履歴として明示し、冒頭ブロックの更新は理由・根拠を末尾に残して該当句を直す手順に明確化した。
-
-受入済み範囲・証拠・未確認・次の確認点を冒頭で区別でき、現在の状態をRegistryに一元化する形式として受け入れる。対象は4件の試行まで。全正本への展開や未確認事項の追加実施は開始しない。製品テスト・ブラウザ操作は再実行せず、既存成果の検証範囲を拡大していない。
-
+Accepted as a format distinguishing accepted scope/evidence/unknowns/next check, with status canonical in Registry. Only four-document trial; no broader rollout or additional verification. No product-test/browser reruns or expansion of earlier validation claims.
 
 ## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）
 

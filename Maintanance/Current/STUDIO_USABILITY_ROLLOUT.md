@@ -1,23 +1,29 @@
 # Studioユーザビリティ改善の段階実施（OPS-126）
 
-2026-10-18 Astra。親OPS-048、材料OPS-125。ユーザーが「受け入れ仕分けしながら姫と相談しながらすすめて」と委任、姫待機済み。今回の可逆な表示改善の実施を認めたもので、保存契約・権限・工程の変更ではない。
+## TL;DR（人間向け）
 
-## Astraの暫定仕分け
+表示・閲覧に関する8案を、姫との相談と限定実装・確認に分けて進めた記録。最終受入では全8案の段階実施を完了し、関連試験とWebKit/Chromiumの保存証拠を照合した。Safari実機、通知開閉時の本文移動、単語途中の改行などの制約を残し、保存契約・権限・接続の意味を変えたものではない。
 
-| 案 | 扱い | 境界 |
+2026-10-18 / Astra. Parent OPS-048; material OPS-125. The user delegated 「受け入れ仕分けしながら姫と相談しながらすすめて」; Hime was already waiting. This authorizes reversible display improvements, not save-contract, authority or process changes.
+
+<a id="astraの暫定仕分け"></a>
+## Astra's provisional triage
+
+| Proposals | Treatment | Boundary |
 |---|---|---|
-| 1・2 | 最初の実施候補 | 固定範囲を題名・操作行に絞り、移動先の隠れを解消。操作や活動表示を削らない |
-| 3 | 小変更として進める候補 | 不明という情報を消さず短くする。「開始：不明」を優先、詳細では範囲外/未記録を説明 |
-| 4 | 次の区切り | 局所図の題名2行。接続・配置骨格を変えず、全文へのアクセスを維持 |
-| 5 | 再現後に限定修正 | スクロールでtooltipが残ることをheadlessで再現。実機未確認は別記 |
-| 6 | 次の区切り | 追加欄を折り畳む。入力途中の値や警告、開閉状態を再描画で消さない |
-| 7 | 1・2後に再評価 | 小画面で残る問題だけ直す。hover頼みの操作にしない |
-| 8 | 別枠で相談 | 線の接続点変更。順序やグラフの意味を変えずに改善可能か調査案まで。まだ実装しない |
+| 1/2 | First implementation candidates | Keep only title/operation row fixed; prevent scrolled destinations being hidden, without removing operations/activity. |
+| 3 | Candidate small change | Shorten unknown-start wording to 「開始：不明」 while retaining outside-record/unrecorded detail. |
+| 4 | Next stage | Two-line local-card titles without changing connections/backbone; retain full-text access. |
+| 5 | Bounded repair after reproduction | Reproduce tooltip remaining on scroll in headless; record real-device uncertainty separately. |
+| 6 | Next stage | Collapse add forms; retain in-progress input, warnings and open state across redraw. |
+| 7 | Reassess after 1/2 | Repair remaining narrow-screen problems only; do not rely on hover. |
+| 8 | Discuss separately | Investigate minimal connection-anchor changes preserving order/graph meaning; no implementation yet. |
 
-## 姫への第1依頼：短い相談
+<a id="姫への第1依頼短い相談"></a>
+## First assignment to Hime: brief consultation
 
-編集は本書「姫第1回答」のみ。暫定仕分けに異論や見落としがあれば返し、最初の区切り（1・2）のファイル別作業内訳と検証案を示してください。特にstickyの親要素による固定範囲、ヘッダー高さの可変、ボタンの折返し、スクロール位置の退行、活動帯へのアクセスを確認。全コード監査は不要。
-追加開始確認不要。実装・commit・使用中サーバー操作なし。必要なら独立したheadlessブラウザで読み取り確認可。既存データへ保存・承認・更新を行わない。作成した試験環境は終了・削除し、残す証拠は所在を記録する。返却後、次の限定依頼を待つ。work/returnをOPS-126で記録、参照キャッシュ一行。
+Edit only 「姫第1回答」. Return disagreements/omissions and file-level breakdown/checks for proposals 1/2, especially sticky-parent limits, variable header height, button wrapping, scroll regressions and activity access. No whole-code audit.
+No renewed start confirmation, implementation, commit or active-server operation. If needed, read-only checking in an independent headless browser is allowed, without saving/approving/updating existing data. Close/remove test environments and record retained evidence. Return then await the next bounded assignment. Record OPS-126 work/return and one cache-reference line.
 
 ## 姫第1回答
 
@@ -62,16 +68,17 @@
 
 参照したキャッシュ：なし。
 
-## Astra応答と第2依頼：案3・5の限定実装
+<a id="astra応答と第2依頼案35の限定実装"></a>
+## Astra response and second assignment: proposals 3/5
 
-案2の効く対象の訂正を受領。案1の現在作業1行を固定するかはユーザーへ質問中。案7は後回し。案1・2は回答まで実装しない。代わりに独立した案3・5を実施する。
+Received the correction to proposal 2's effects. Awaiting user answer on fixing proposal 1's current-work line; defer 7 and do not implement 1/2 before that answer. Implement independent proposals 3/5 instead.
 
-- 案3：開始が見つからない表示は「開始：不明」に短縮。既存title等に「記録範囲外または未記録」を残す。不明を成功や未着手に置換しない。
-- 案5：試験専用headlessでhover後wheelによる残留を再現してから、ページまたは見取り図のスクロール・領域外移動時に閉じる限定修正。hover有効時に再度出せること、OFF設定やクリック選択を壊さないことを確認する。
+- 3: shorten missing-start display to 「開始：不明」; retain 「記録範囲外または未記録」 in existing title/detail. Unknown must not become success or unstarted.
+- 5: reproduce hover-then-wheel residue in test-only headless first, then close tooltip on page/map scroll or leaving the area. Verify it reappears with hover enabled and preserves OFF/click selection.
 
-編集占有：index.template.html、test-work-lane.cjs、新規test-tooltip-scroll.cjs、READMEの該当説明、本書の「姫第2Return」、Current/Evidence/OPS-126/案3・5の証拠のみ。サーバー実装・使用中サーバー・実データ・他正本は変更しない。独立サーバーと隔離Inbox、headless操作を許可し、保存・承認を試すなら必ず模擬データのみ。起動したプロセス・一時領域は終了後片付け。commitなし。
+Editing occupancy: index.template.html, test-work-lane.cjs, new test-tooltip-scroll.cjs, relevant README, 「姫第2Return」 and proposal-3/5 evidence under Current/Evidence/OPS-126/. No server implementation/active server/real data/other canonicals. Independent server, isolated Inbox and headless are allowed; saves/approvals use mock data only. Close processes/clean temporary areas afterward. No commit.
 
-短い内訳をReturnに書いて範囲内なら続行。追加開始確認不要。既存activity/approval/work-lane試験とsync/check。実画面証拠は変更前後と再実行可能な手順を残す。外部パッケージや一般的な試験基盤の導入は不要。返却後次の限定依頼を待つ。
+Write a brief Return breakdown then proceed within scope without renewed confirmation. Run existing activity/approval/work-lane tests and sync/check. Retain before/after screen evidence and reproducible steps. No external packages/general testing platform. Await next bounded assignment afterward.
 
 ## 姫第2Return
 
@@ -118,21 +125,23 @@
 参照したキャッシュ：なし。
 
 
-## Astra第2受入とユーザー回答（2026-10-19）
+<a id="astra第2受入とユーザー回答2026-10-19"></a>
+## Astra second acceptance and user answer (2026-10-19)
 
-案3・5を限定受入。Astraは実差分とbefore/afterの記録を照合し、tooltip・work-lane・activity・approvals・work-progressの5試験およびsync --checkを独立実行、すべて通過。実ブラウザの測定は姫の証拠に依拠し、Astraによる再実行とはしない。案5は残留し続ける不具合ではなく、一瞬の遅延を解消する改善として受け入れる。原観察の訂正を保持する。
+Accepted 3/5 within bounds after comparing actual changes/before-after records and independently passing tooltip/work-lane/activity/approvals/work-progress tests and sync --check. Browser measurements rely on Hime's evidence, not Astra reruns. Proposal 5 removes a momentary delay rather than an indefinitely stuck tooltip; retain the corrected observation.
 
-ユーザーの「迷ったら姫によせといて」「ビジュはねぇ」により、見た目の判断は姫の推奨へ寄せる。案1は活動表示をすべて通常スクロールへ移し、題名・操作を固定。案7の小画面固定解除は結果を見てから。この委任を保存契約・権限・工程へ広げない。
+Under 「迷ったら姫によせといて」「ビジュはねぇ」, favor Hime's visual recommendation. For 1, scroll all activity normally while fixing title/operations. Reassess narrow-screen unfixing (7) afterward. Do not extend this visual delegation to save contracts, authority or process.
 
-## 第3依頼：案1・2の限定実装
+<a id="第3依頼案12の限定実装"></a>
+## Third assignment: proposals 1/2
 
-第1回答の内訳に基づき、題名と操作行を固定し、説明・現在作業・イベント帯を直後の通常スクロール領域へ移してください。高さを実測してスクロール余白へ反映し、折返し・通知開閉に追従。通知を固定領域に残す案は可。ただしstickyも通常フローの高さを持つため「本文位置が変わらない」は未保証として、通知開閉も実測すること。不要な自動スクロール補正は加えない。
+Follow the first response's breakdown: fix title/operation row, moving explanation/current work/event strip immediately afterward in normal flow. Measure header height for scroll clearance and follow wrapping/notification toggles. Notification may remain fixed, but sticky elements still occupy normal-flow height; 「本文位置が変わらない」 is unverified, so measure toggles too. Do not add unnecessary automatic scroll correction.
 
-編集占有：RegistryApp/index.template.html、新規RegistryApp/test-header-layout.cjs、RegistryApp/README.mdの該当説明、本書の姫第3Return、Current/Evidence/OPS-126/header-check.cjs・header-results.json・header-wide.png・header-narrow.pngのみ。既存Returnと案3・5の証拠は保持。他ファイル変更が必要なら理由を返す。
+Occupancy: RegistryApp/index.template.html, new RegistryApp/test-header-layout.cjs, relevant RegistryApp/README.md, Hime's third Return, and only Current/Evidence/OPS-126/header-check.cjs, header-results.json, header-wide.png, header-narrow.png. Preserve old Returns and 3/5 evidence; return reasons for other needed files.
 
-1400×900・390×844・900px幅の独立headlessで固定高さ、差分パネル移動先、通知開閉、活動更新時のスクロール位置、先頭へ戻った活動帯の表示と操作を確認。使用中サーバー・ユーザー画面・実データへ触れない。模擬APIまたは隔離試験サーバーのみ、保存や承認は模擬データのみ。追加インストールなし。試験環境は終了・掃除。既存関連試験とsync/checkを実行。commitはAstraが扱うので行わない。
+At 1400×900, 390×844 and 900px widths, use independent headless to check fixed height, difference-panel destination, notification toggles, scrolling during activity updates and activity display/operations after returning to top. No active-server/user-screen/real-data interaction; mocked API or isolated server, with saves/approvals on mock data only. No installations; close/clean test environments. Run related tests and sync/check. Astra handles commit; do not commit.
 
-範囲内の短い内訳をReturnに書いて続行、開始再確認不要。work/returnをOPS-126で通知。返却後は次の限定依頼を待つ。
+Write bounded breakdown and proceed without renewed confirmation. Notify OPS-126 work/return; await next assignment.
 
 ## 姫第3Return
 
@@ -175,20 +184,22 @@
 参照したキャッシュ：なし。
 
 
-## Astra第3受入（2026-10-19）
+<a id="astra第3受入2026-10-19"></a>
+## Astra third acceptance (2026-10-19)
 
-案1・2を受入。実差分・計測スクリプト・3幅の結果を照合。Astraはheader-layout・approvals・work-laneを独立実行しPASS。headless実測は姫の証拠に依拠。固定高さ55px（通常幅）/125px（390幅）、活動更新中のscrollY不変、カードの表示を確認。通知開閉による本文のずれは既存の通常フローの結果で、今回の合格を「ずれなし」と表現しない。第3Return末尾の「固定の外の流れへ出せばずれない」という代案も未保証（通常フローなら高さ変化は残る）として採用しない。通知の再設計は今回追加しない。
+Accepted 1/2 after comparing changes, measurement script and three-width results. Independently passed header-layout/approvals/work-lane. Headless results rely on Hime's evidence: fixed height 55px normally/125px at 390, unchanged scrollY during activity updates and visible cards. Notification-induced body movement follows existing normal flow; do not claim 「ずれなし」. The third Return's alternative 「固定の外の流れへ出せばずれない」 also lacks assurance because normal-flow height still changes; do not adopt it. No notification redesign added.
 
-## 第4依頼：案4・6の限定実装と案7・8の短い相談
+<a id="第4依頼案46の限定実装と案78の短い相談"></a>
+## Fourth assignment: proposals 4/6 and brief consultation on 7/8
 
-案4：接続を見る局所図のカード題名を2行まで表示し、全文は既存の説明とインスペクタから読めるようにする。中央選択・左右接続の意味、辺、選択操作は変更しない。
-案6：カード一覧の版・中間カード編集欄を「版・中間カードの編集」の折畳みにし、初期状態は閉じる。タブ切替・再描画で入力途中の値、開閉状態、未保存警告を消さない。保存契約や追加処理は変更しない。
+4: show local-map card titles in at most two lines, retaining full text through existing explanations/inspector. Preserve center selection, left/right connections, edges and selection operations.
+6: put version/intermediate-card editing under initially closed 「版・中間カードの編集」 disclosure. Retain input, open state and unsaved warnings across tab switches/redraw. No save-contract/addition changes.
 
-編集範囲：RegistryApp/index.template.html、RegistryApp/README.md、新規RegistryApp/test-usability-cards.cjs、本書の姫第4Return、Current/Evidence/OPS-126/cards-check.cjs・cards-results.json・cards-view.pngのみ。既存テストの変更が必要なら、その最小範囲を先に返す。既存の返却・証拠を上書きしない。
+Scope: RegistryApp/index.template.html, RegistryApp/README.md, new RegistryApp/test-usability-cards.cjs, Hime's fourth Return, and only Current/Evidence/OPS-126/cards-check.cjs, cards-results.json, cards-view.png. Return minimum scope before changing existing tests; do not overwrite returns/evidence.
 
-短い内訳を書いて範囲内は続行、追加開始確認不要。既存関連試験、sync/check、隔離headlessで長い題名、クリック選択、折畳み開閉、入力→タブ切替→復帰/再描画の保持を確認。画面・実データ・使用中サーバーには触れず、模擬APIまたは隔離環境のみ。起動プロセス・一時ファイルは片付け。commitなし。work/return通知。
+Write brief breakdown and proceed without renewed confirmation. Check related tests/sync/check plus isolated headless long titles, click selection, disclosure and input→tab away/back/redraw retention. No real user screen/data/active server; mocked or isolated only. Close processes/clean temporary files; no commit; work/return notification.
 
-案7は390幅で今回の変更後に残る支障と推奨を短く返す。案8は線集中を減らす最小変更と不変条件の案まで、実装しない。この2件は第4Returnで相談し、次の限定依頼を待つ。
+For 7, briefly report remaining problems/recommendation at 390 width. For 8, propose minimum line-concentration improvement/invariants only, no implementation. Discuss both in fourth Return, then await next bounded assignment.
 
 ## 姫第4Return
 
@@ -250,20 +261,22 @@
 参照したキャッシュ：なし。
 
 
-## Astra第4受入・残案の決定（2026-10-19）
+<a id="astra第4受入残案の決定2026-10-19"></a>
+## Astra fourth acceptance and remaining choices (2026-10-19)
 
-案4・6を受入。実差分とcards-results.jsonを照合し、usability-cards/header-layout/work-laneとsync --checkを独立実行、通過。headlessは姫の証拠に依拠。単語途中の折返しは今回の制約として保持し、別の改善へ広げない。
+Accepted 4/6, comparing changes/cards-results.json and independently passing usability-cards/header-layout/work-lane/sync --check. Headless relies on Hime's evidence. Retain mid-word wrapping as a current limit rather than extending repairs.
 
-見た目を姫推奨へ寄せる委任内で、案7は600px以下の操作列・タブを横スクロール化。案8は入力側の終点分散だけを試す。出力側の分散は今回加えない。カード位置や接続意味が変わる場合は実装せず戻す。
+Within the visual delegation, choose horizontally scrolling controls/tabs at ≤600px for 7; for 8, try spreading incoming endpoints only. No outgoing spread. Return without implementation if card placement or connection meaning would change.
 
-## 第5依頼：案7・8の限定実装（最終区切り）
+<a id="第5依頼案78の限定実装最終区切り"></a>
+## Fifth assignment: proposals 7/8, final stage
 
-案7：600px以下で題名・操作を1行の横スクロールにし、タブも1行の横スクロール。キーボードで端の操作へ到達でき、フォーカスが見えること。幅を戻したときは通常表示へ戻る。スクロール可能とわかる余地を残す。保存操作や契約は変更しない。
-案8：左から右へ入る線が同じカードへ2本以上集まる場合に、始点縦位置順で終点を左端の上下へ分散。順序同値時は安定したID順などで決定。単独線・同列上下線・カード位置・接続元先・方向・線の種類・クリック選択を維持。出力側は変更しない。配置ルールを再設計しない。
+7: ≤600px, place title/operations and tabs in single horizontally scrollable rows. Reach end controls with visible keyboard focus; return to ordinary layout on widening. Leave an affordance for scrolling. No save operations/contracts changed.
+8: when at least two left-to-right edges enter one card, spread endpoints vertically on its left edge in source-height order, with stable ID or equivalent tie-break. Retain single edges, same-column vertical edges, card positions, actual endpoints/directions/types and click selection. Do not change outgoing side or redesign layout rules.
 
-編集範囲：RegistryApp/index.template.html、RegistryApp/README.md、新規RegistryApp/test-usability-final.cjs、本書の姫第5Return、Current/Evidence/OPS-126/final-check.cjs・final-results.json・final-wide.png・final-narrow.pngのみ。既存テスト変更が必要なら最小範囲を先に返す。
+Scope: RegistryApp/index.template.html, RegistryApp/README.md, new RegistryApp/test-usability-final.cjs, Hime's fifth Return and only Current/Evidence/OPS-126/final-check.cjs, final-results.json, final-wide.png, final-narrow.png. Return minimum scope before existing-test edits.
 
-内訳を短く記入後、範囲内なら開始再確認不要で続行。既存配置・edge-audit・関連UI試験、sync/checkを実行。独立headlessで390幅と通常幅、幅の切替、キーボード操作、辺の端点数と接続ID集合の不変、複数終点の分散、単独・縦辺の不変を確認。見た目の証拠を保存。実データ・使用中サーバー・ユーザー画面に触れず、隔離環境のみ。試験環境は終了・掃除。commitなし。返却時に8案の実施/制約を短く一覧にし、次の作業を自動で始めない。work/return通知。
+After brief breakdown, proceed within scope without renewed confirmation. Run existing placement/edge-audit/related UI tests and sync/check. Independent headless checks 390/normal widths and transitions, keyboard access, unchanged endpoint counts/connection ID sets, spread multiple destinations and unchanged single/vertical edges. Save visual evidence. Use only isolated environments, no real data/server/user screen; close/clean afterward. No commit. Return a brief implementation/limit list for all eight; do not automatically start more work. Notify work/return.
 
 ## 姫第5Return
 
@@ -323,15 +336,16 @@
 参照したキャッシュ：なし。
 
 
-## Astra最終受入（2026-10-19）
+<a id="astra最終受入2026-10-19"></a>
+## Astra final acceptance (2026-10-19)
 
-案7・8を受入、8案の段階実施を完了。Astraは実差分・final-check.cjsと両ブラウザ結果を照合し、usability-final/usability-cards/activity/approvals/header-layoutを独立実行、全通過。sync（verify含む）と--checkも通過。実画面測定は姫の証拠に依拠し、Astraの独立ブラウザ実行とはしない。カード位置・接続意味は不変。狭幅の固定高さはWebKit58px、Chromium61px。Safari実機は未確認。既述の通知開閉と単語途中改行は制約として残す。
+Accepted 7/8, completing staged implementation of all eight. Compared changes/final-check.cjs/both-browser results; independently passed usability-final/usability-cards/activity/approvals/header-layout, sync including verify and --check. Actual screen measurements rely on Hime's evidence, not Astra browser reruns. Card positions/connection meaning unchanged. Narrow fixed height: WebKit58px, Chromium61px. Real Safari unverified; notification-toggle movement and mid-word wrapping remain limits.
 
-ユーザー追加の「差し戻し」→「返却」は第5Returnに未反映だったため、Astraが返却後にactivityLabels.return、READMEのイベント説明、test-activityの期待値を補完。内部キーreturn・保存履歴は変更していない。追加依頼節は第5Returnの更新時に消えたため、ユーザー決定と補完経緯をここへ復元した。今後は進行中Returnの後方へ追加依頼を置く場合、返却時の消失にも注意する。
+The user's additional 「差し戻し」→「返却」 was absent from fifth Return, so Astra afterward updated activityLabels.return, README event explanation and test-activity expectations. Internal key return/history unchanged. The extra-assignment section vanished when fifth Return was updated; restore the user decision/repair history here. Future extra instructions after an in-progress Return may also disappear on return; watch for this.
 
-技術受入完了、コミット承認待ち。初期登録から複数区切りが同じファイルへ重なり、当初カード外の証拠も増えたため、未使用の段階別承認は取り消し、全対象を明示した一件へ統合する。既承認を未承認の対象へ流用しない。
+Technical acceptance complete; awaiting commit approval. Several stages accumulated in this file, adding evidence outside initial cards. Cancel unused stage approvals and consolidate into one explicitly listing all targets. Do not reuse existing approval for unapproved scope.
 
+<a id="完了記録2026-10-19"></a>
+## Completion record (2026-10-19)
 
-## 完了記録（2026-10-19）
-
-統合承認91e683eabb1c4d69815278d605d8dd53がapprovedであることを確認。技術受入済みの全対象を照合し、OPS-126をDONEとして同じコミットに含める。追加依頼なし。
+Confirmed consolidated approval 91e683eabb1c4d69815278d605d8dd53 is approved. Compare all technically accepted targets and include OPS-126 DONE in the same commit. No additional assignment.

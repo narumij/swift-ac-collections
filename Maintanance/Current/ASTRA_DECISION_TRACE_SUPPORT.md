@@ -1,42 +1,51 @@
 # Astraの判断追跡負荷を軽くする — 限定試作
 
-2026-10-16、作成・受入：Astra。ユーザー指定の「アストラさんを元気にするタスク」。固定ID OPS-056、恒久OPS-048配下。
+## TL;DR（人間向け）
 
-## 目的
+有効な判断と原文へ辿る負担を減らす限定試作を評価した。原文リンクと判断待ち／実作業待ちの区別は役立ったが、対象別置換の誤適用と印の維持負荷があり、現行運用には組み込まない。正式UIや制度の採用ではなく、限界を明らかにした評価成果として完了した。
 
-関係する判断を探し直し、古い判断との食い違いを解く負担を軽くする。記憶力に依存せず、作業やゲートの前に有効な判断・待ち条件と原文へ辿れることを目指す。管理欄や必読資料を増やすこと自体を成果にしない。
+2026-10-16 / authored and accepted by Astra. The user's designated 「アストラさんを元気にするタスク」. Fixed ID OPS-056, under permanent OPS-048.
 
-[姫の原提案](GATE_DECISION_DIGEST_PROPOSAL.md)（CP-20261016-006）は原文のまま保存する。正式化は提案方式の採用を意味しない。今回は一件の試作と評価を依頼し、正式UI・制度への反映は返却後に扱う。
+<a id="目的"></a>
+## Purpose
 
-## Astraの要望・修正点
+Reduce the effort of rediscovering relevant decisions and resolving conflicts with old decisions. Before work or a gate, make effective decisions, waiting conditions and their originals reachable without relying on memory. More management fields or mandatory reading are not outcomes in themselves.
 
-1. ユーザー担当と判断待ちを同一視しない。判断待ち、ユーザー実作業待ち、材料待ち、確定済みの判断を区別し、分類できないものは未確認とする。DONEだけから肯定の判断を推測しない。
-2. ゲートの上流探索は読む範囲を絞る入口にする。必須条件・判断材料・再開判断など辺の意味を残す。ゲート上流外でも、対象taskへ適用される制約を拾える形を考える。
-3. 正本本文にある判断へ辿る。引用・ファイル・節・入力版を示し、一覧は生成された写しとする。記録の配置換えや第二の判断正本は作らない。
-4. 新しい日付だけで旧判断を失効させない。明示された置換・変更範囲だけを扱い、一部変更なら残る条件を保持する。関係が不明なら矛盾候補として返す。
-5. 判断の印は候補である。対象が複数task・マイルストーンに及ぶ場合も扱える最小の形を試す。全既存文書への印付け、固定書式の制度化、全履歴走査はしない。
+Preserve [Hime's original proposal](GATE_DECISION_DIGEST_PROPOSAL.md), CP-20261016-006, verbatim. Formal registration does not adopt its proposed method. This assignment requests one prototype and evaluation; formal UI or policy integration is considered after return.
 
-## 試作範囲と受入条件
+<a id="astraの要望修正点"></a>
+## Astra's requirements and corrections
 
-実例は「今回の0.6.0文書作業では既存スニペットを増減しない。拡充・再検討は0.8.0へ配置する」というユーザー判断一件。入力はRELEASE_0_8_0.md、RELEASE_0_6_0.md、DOC-033〜039のRegistry行と詳細正本、現行Studio snapshotの関係する部分。
+1. Do not equate user ownership with a pending decision. Distinguish awaiting judgment, user execution, material and already settled decisions; leave unclassifiable cases unverified. DONE alone does not imply an affirmative decision.
+2. Use upstream gate traversal to narrow reading, retaining the meaning of edges such as prerequisites, decision material and resumption judgment. Consider how to find applicable constraints even outside the gate's upstream set.
+3. Reach decisions in canonical prose. Show quotations, file, section and input revision; the list is a generated copy. Do not relocate records or create another decision authority.
+4. A newer date alone does not invalidate an older decision. Apply only explicit replacement/change scope, retaining unaffected conditions for partial changes. Return unclear relationships as possible conflicts.
+5. Decision marks are candidates. Try a minimal form that can cover multiple tasks/milestones. Do not annotate every existing document, institutionalize a fixed format or scan all history.
 
-- MS-060を選んだときとDOC-034を選んだときの、判断・条件一覧の見本を作る。元の判断がどこにあり、どの作業にどう効くかを辿れること。
-- 候補の印・抽出器または手順を限定した試作ファイルで示す。現行正本へ印を書き込まず、抽出できない箇所・人手が必要な箇所を明記する。
-- ユーザー作業を未決判断と誤認しない例、部分的な変更で残る条件を失わない例も確認する。仮想例は実在判断と混ぜず、試験用と明記する。
-- 記録時に増える手間と、追跡時に減る手間を比較し、Astraが日常で使えるか、より簡単な方法はないかを率直に返す。
+<a id="試作範囲と受入条件"></a>
+## Prototype scope and acceptance
 
-実装の採用、公開契約変更、タスク完了、判断の有効性の新規決定は対象外。成果が不十分でもその理由を返せる。新しいユーザー判断が必要なら勝手に埋めず論点として残す。
+Use one actual user decision: 「今回の0.6.0文書作業では既存スニペットを増減しない。拡充・再検討は0.8.0へ配置する」. Inputs are RELEASE_0_8_0.md, RELEASE_0_6_0.md, Registry rows and detailed canonicals for DOC-033–039, and relevant portions of the current Studio snapshot.
 
-## 受渡し
+- Produce sample decision/condition lists for selecting MS-060 and DOC-034. Make the decision's source and effect on work traceable.
+- Demonstrate candidate marks and an extractor or procedure in isolated prototype files. Do not mark current canonicals; identify parts that cannot be extracted or need manual handling.
+- Check examples that distinguish user execution from unresolved judgment and preserve conditions after partial changes. Label hypothetical examples as tests, separate from real decisions.
+- Compare additional recording effort with reduced tracking effort. Report candidly whether Astra could use this daily and whether a simpler method would suffice.
 
-依頼票はMaintanance/CLAUDE_TASK.mdのOPS-056節。Claudeは `Maintanance/Current/GateDecisionDigestPrototype/` 内の試作・評価と依頼票のReturn欄を編集できる。この正本・原提案・入力資料は固定。原回答を書き換えず、Astraが検証と受入記録を追記する。
+Adopting implementation, changing public contracts, completing tasks or newly deciding validity of decisions is outside scope. Inadequacy with reasons is a valid result. Leave new user decisions as questions rather than filling them in.
 
-## Astra確認記録
+<a id="受渡し"></a>
+## Handoff
 
-2026-10-16 / Astra。CLAUDE_TASKの原Return、試作8ファイル、抽出器の実装を確認し、限定した試作・評価の成果として受入。正式方式の採用やUI統合は行わない。ユーザーのcommit承認により完了。
+The assignment is in Maintanance/CLAUDE_TASK.md, OPS-056. Claude may edit prototype/evaluation files in `Maintanance/Current/GateDecisionDigestPrototype/` and the assignment's Return. This canonical, original proposal and input materials are fixed. Astra appends verification and acceptance without rewriting the original response.
 
-現行snapshotでMS-060・DOC-034・MS-070を再実行し出力成功。分類関数でユーザー実作業待ち／判断待ち／DONEから肯定を推定しない扱いを確認した。DOC-035 --testでは、DOC-034に限定した仮想置換がDOC-035でも置換済みになる欠陥を再現した。原返却時からRegistry等は更新されているため、当時の件数・hashを再現したとはしない。保存された原返却・見本は変更していない。
+<a id="astra確認記録"></a>
+## Astra's verification record
 
-調査の受入条件は、不十分な点も理由付きで返せる限定評価である。したがって欠陥を隠して実用品と認定せず、対象別置換の限界と記入負荷を明らかにした成果として受け入れる。条項×対象の修正や新しい印の制度化は今回行わない。
+2026-10-16 / Astra inspected the original CLAUDE_TASK Return, eight prototype files and extractor implementation, and accepted the bounded prototype/evaluation. No formal method adoption or UI integration. Completed following user commit approval.
 
-Astraの評価：原文へのリンクと判断待ち／作業待ちの区別は役立つ。一方、判断ごとの印の維持は現在のゲートキャッシュより負担が大きく、範囲誤適用の欠陥もあるため、現行の運用へ組み込まない。必要な判断・制約をゲートで要約する既決の運用を続ける。一般化や追加改修の仕事は自動では作らない。
+Reruns for MS-060, DOC-034 and MS-070 on the current snapshot produced output. Classification distinguishes awaiting user execution from judgment and does not infer affirmation from DONE. DOC-035 --test reproduced a defect: a hypothetical replacement scoped to DOC-034 also marks DOC-035 replaced. Registry and other inputs changed since the original return, so this does not reproduce its counts/hashes. Original saved returns and samples remain unchanged.
+
+Acceptance permitted reporting deficiencies with reasons. The result is accepted for exposing per-target replacement limits and annotation effort, not certified as a usable tool by hiding defects. No clause-by-target repair or institutionalization of new marks was performed.
+
+Astra's evaluation: original links and the judgment/work waiting distinction help. However, maintaining marks for each decision costs more than the current gate cache, and the scope misapplication defect remains; do not integrate it into current operation. Continue the already decided practice of summarizing relevant decisions/constraints at gates. Do not automatically create generalization or further repair work.

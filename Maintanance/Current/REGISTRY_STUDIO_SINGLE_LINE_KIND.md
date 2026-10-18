@@ -1,62 +1,74 @@
 # マイルストーン接続の線の種類を廃止し、条件を制約文へ移す（OPS-062）
 
-> **確定範囲（2026-10-17、OPS-066試行）** 受入済み：線の種類の廃止、Registry「マイルストーン接続」の3列化と15行の条件明記、旧形式JSONの明示拒否。Fable自己受入（ユーザー指示）。証拠：commit `9ddb150f`、verify.cjs 22項目、`sync.py --check`、stub DOM。未確認：Safariでの一色の線の見え方、旧JSONを「JSONを開く」から読んだときの画面表示。次の確認点：Safariで線の表示と旧JSONの読み込みを一度確認。状態の正本はRegistry。
+## TL;DR（人間向け）
 
-2026-10-17 / 正本・実装・検証・受入 Fable（調整代理、OPS-044）。親は恒久task OPS-048（Studio）。ユーザー同席、Astra助言。
+到達点へつなぐ線の種類を廃止し、その意味を正本の条件文へ移した変更記録。線の統一、3列表、旧形式JSONの明示拒否を受入済みで、後の根拠追記では当時15行だった表が確認版で28行に増えたことを区別している。線だけで着手・完了を判定せず、Safariの見え方と旧JSONの画面表示は未確認。
 
-## 発端と方針
+> **Settled scope (2026-10-17, OPS-066 trial)** Accepted: abolishing the line kinds, making the Registry 「マイルストーン接続」 table 3 columns with the conditions of its 15 rows written out, and explicitly rejecting old-format JSON. Self-accepted by Fable (user instruction). Evidence: commit `9ddb150f`, 22 verify.cjs items, `sync.py --check`, stub DOM. Unconfirmed: how the single-colour lines look in Safari, and the screen display when an old JSON is read via 「JSONを開く」. Next check: confirm once in Safari the line display and loading an old JSON. The Registry is canonical for state.
 
-ユーザー「今回は5種類の制度化ではなく、線の種類を減らしたい。既存の接続と条件の意味を失わず、種類を廃止できるか確認してほしい。種類でしか表現されていない条件があれば、正本の条件文へ移す案を出して。Studioの線は一種類に統一する方向で」。
+2026-10-17 / canonical, implementation, verification and acceptance by Fable (acting coordinator, OPS-044). Parent is the permanent task OPS-048 (Studio). With the user present; Astra advised.
 
-Fableの調査：種類は Registry「マイルストーン接続」15行（required 8、material 5、after 1、resume 1）と「ゲート経路の関係種類」17行（stage 15、required 1、after 1）にあり、Studioでは色・太さ・破線と凡例にだけ使われ、配置と構造検査（一本の列、版ゲートへ入るのはENDだけ、版フォルダのDAG）には使われていなかった。種類だけが担っていた意味は、required 8行の「この到達点の前に完了が必要」と、material 5行の「判断材料であって合否を縛らない」。after/resume はすでに文中にあった。列の2行はカード本文と配置で意味が残る。
+<a id="発端と方針"></a>
+## Origin and policy
 
-Astra助言：「接続は原則として必須完了」を既定にするのは避ける（線から条件を読む仕組みが残る）。前書きは「接続はタスクと到達点の関係を示す。完了・着手・再開の条件は各行の制約文に記載し、線の有無や向きだけでは判定しない」とし、required の8行にも各行で明記する。到達後の線も同じ見た目でよい。線は関係の所在、条件は文章。
+The user: 「今回は5種類の制度化ではなく、線の種類を減らしたい。既存の接続と条件の意味を失わず、種類を廃止できるか確認してほしい。種類でしか表現されていない条件があれば、正本の条件文へ移す案を出して。Studioの線は一種類に統一する方向で」 (rather than institutionalizing 5 kinds, reduce the line kinds; check whether the kinds can be abolished without losing the meaning of existing connections and conditions; propose moving any condition expressed only by a kind into the canonical condition text; unify Studio's lines into one kind).
 
-ユーザー補足：同じcommitにHTML・検査・生成物まで含める。旧形式の編集JSONは黙って条件を失わず、非対応なら明示的に拒否する。自己受入でよい（ブラウザ確認と未確認事項を残す条件）。骨格の太さも統一。
+Fable's investigation: the kinds were in 15 rows of the Registry 「マイルストーン接続」 (required 8, material 5, after 1, resume 1) and 17 rows of 「ゲート経路の関係種類」 (stage 15, required 1, after 1). In Studio they were used only for colour, width, dashes and the legend, not for placement or the structure checks (a single row, only END enters a version gate, the version-folder DAG). The meanings carried only by kinds were "must be completed before this arrival point" for the 8 required rows and "decision material, not binding pass/fail" for the 5 material rows. after/resume were already in the text. The 2 rows of the row line keep their meaning through card bodies and placement.
 
-## 範囲
+Astra's advice: avoid making "a connection means required completion by default" the default (it would leave a mechanism of reading conditions from lines). The preface should say 「接続はタスクと到達点の関係を示す。完了・着手・再開の条件は各行の制約文に記載し、線の有無や向きだけでは判定しない」, and the 8 required rows should also state it on each row. Lines after arrival may look the same. Lines show where a relation is; conditions are text.
 
-- 対象：Registry「マイルストーン接続」「ゲート経路の関係種類」、`Milestones/README.md`、`RegistryApp/sync.py`・`index.html`・`verify.cjs`・`README.md`、Studio生成物。
-- 対象外：タスク間依存のFlow（SEQUENCE／PARALLEL_JOIN）は別の軸で不変。到達点カード・列の編集、HEAD。
+User supplement: include the HTML, checks and generated outputs in the same commit. Old-format edit JSON must not silently lose conditions; if unsupported, reject it explicitly. Self-acceptance is fine (on condition of leaving browser checks and unconfirmed items). Unify the skeleton's width too.
 
-## 正本の変更
+<a id="範囲"></a>
+## Scope
 
-- 「マイルストーン接続」：前書きをAstraの文に差し替え、表を4列→3列（接続元・接続先・制約）。15行の制約文の先頭を「この到達点の前に完了が必要。」（旧 required 8行）、「判断材料。…合否を縛る必須条件ではない。」（旧 material 5行）、「到達後。…の前提ではない。」（旧 after/resume 2行）とした。RELEASE-072/075/076 の貼り付け行（`\| … \|`）は文に直した。語は原文のまま。
-- 「ゲート経路の関係種類」：節ごと廃止。列の線は配置だけから作る。
-- 原文（4列表と関係種類の表）は[Archived](../Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md)へ逐語保存し、Registry「過去の記録への入口」から辿れる。
-- `Milestones/README.md`：線の種類の参照を「線に種類はない。条件はRegistryの制約文と各カードの本文」に。
+- Targets: the Registry 「マイルストーン接続」 and 「ゲート経路の関係種類」, `Milestones/README.md`, `RegistryApp/sync.py`, `index.html`, `verify.cjs`, `README.md`, and Studio's generated outputs.
+- Out of scope: the Flow of task-to-task dependencies (SEQUENCE / PARALLEL_JOIN) is a separate axis and unchanged. Editing arrival-point cards and rows; HEAD.
 
-## Studioの変更
+<a id="正本の変更"></a>
+## Canonical changes
 
-- `sync.py`：接続表を3列で読む（4列だと「expected 3 columns」で停止）。関係種類の読み取り・検証を削除。列の線は種類なし、制約文は「接続はゲートの配置から生成。条件は各カードの本文。」。差分報告から種類表記を外した。
-- `index.html`：`check()` は種類の検査を外し、`relation` キーを持つ JSON（現行・baseline とも）を「旧形式（線の種類あり）のJSONは読み込めません。…」で拒否する。読み込み（JSONを開く）と保存前の検査が同じ `check()` を通るので、画面では「読み込めません：旧形式…」と出る。線は一色・一太さ（1.5）に統一し、骨格の太さの差も外した。タスク間依存の破線（PARALLEL_JOIN）は別軸として維持。凡例を「線は関係の所在、条件は文章」に。到達点への接続かタスク間依存かの判定は `isMilestoneLink`（端点が到達点か）で行い、種類に頼らない。「到達点へつなぐ」から関係の選択を外し、到達点を選ぶだけにした。つなぎ替えの後続候補から版ゲートを外し、データ操作でも版ゲートへのつなぎ替えを拒否。
-- `README.md`：手順と説明を種類なしの文に。
+- 「マイルストーン接続」: replaced the preface with Astra's sentence and made the table 3 columns instead of 4 (source, target, constraint). The 15 constraint sentences now begin with 「この到達点の前に完了が必要。」 (old required, 8 rows), 「判断材料。…合否を縛る必須条件ではない。」 (old material, 5 rows), and 「到達後。…の前提ではない。」 (old after/resume, 2 rows). The pasted rows of RELEASE-072/075/076 (`\| … \|`) were turned into sentences. Wording is as in the original.
+- 「ゲート経路の関係種類」: the whole section abolished. Row lines are made from placement alone.
+- The originals (the 4-column table and the relation-kind table) are saved verbatim in [Archived](../Archived/TASK_REGISTRY_RELATION_KINDS_2026-10-17.md) and reachable from the Registry's 「過去の記録への入口」.
+- `Milestones/README.md`: references to line kinds changed to 「線に種類はない。条件はRegistryの制約文と各カードの本文」.
 
-## 検証
+<a id="studioの変更"></a>
+## Studio changes
 
-- `verify.cjs`：種類を見ていた検査を書き換え。追加した検査は、`relation` キーを持つデータ（現行・baseline）の拒否、追加した接続に `relation` が無いこと、到達点への表示線が全て同じ flow、つなぎ替えで版ゲートを拒否しENDを許すこと。構造検査（一本の列、ENDからだけ、版フォルダのDAG）は無変更で通過。
-- `sync.py`：完了、verify 全項目 PASS、`--check` ずれなし、`registry.json` に `relation` キーなし。
-- stub DOM スモークテスト（OPS-059 で `editor()`）：到達点の選択肢は END と MS のみで関係の選択欄なし。END-0.5.4 へ接続（32→33、`relation` なし、相談待ち、dirty）。保存差分に `milestoneRelations`。一覧の削除で元の32へ。RELEASE-084 の線を END-0.6.0 へつなぎ替え可、GATE-0.6.0 へは拒否。`relation` を持つ旧JSONは `check()` で拒否。到達点への表示線25本は全て PARALLEL_JOIN で `relation` なし。
-- 未検証：Safari での実表示（一色の見え方）、実クリック、保存JSONの実ダウンロード、旧JSONを「JSONを開く」から読んだときの画面表示。既存機能と同じ制約で、ユーザー試用で確認する。
+- `sync.py`: reads the connection table as 3 columns (4 columns stop with "expected 3 columns"). Removed reading and validating relation kinds. Row lines have no kind, and their constraint text is 「接続はゲートの配置から生成。条件は各カードの本文。」. Removed kind notation from the diff report.
+- `index.html`: `check()` dropped the kind checks and rejects JSON with a `relation` key (both current and baseline) with 「旧形式（線の種類あり）のJSONは読み込めません。…」. Loading (「JSONを開く」) and the pre-save check go through the same `check()`, so the screen shows 「読み込めません：旧形式…」. Lines are unified into one colour and one width (1.5), and the skeleton's width difference was removed too. Dashed task-to-task dependencies (PARALLEL_JOIN) are kept as a separate axis. The legend says 「線は関係の所在、条件は文章」. Whether a line is a connection to an arrival point or a task dependency is judged by `isMilestoneLink` (whether an end point is an arrival point), without relying on kinds. Removed the relation choice from 「到達点へつなぐ」; it now only selects the arrival point. Removed version gates from the successor candidates when rewiring, and data operations also reject rewiring to a version gate.
+- `README.md`: procedures and explanations rewritten without kinds.
 
-## 受入（Fable、ユーザー指示による自己受入）
+<a id="検証"></a>
+## Verification
 
-2026-10-17。Astraの方針どおり既定に頼らず全行に条件を明記したこと、原文を逐語で保存し入口を残したこと、正本・生成器・画面・検査・生成物を同じ単位で揃えたこと、旧形式を明示的に拒否すること、Flowに触れていないことを確認して受け入れる。Safari 実表示は未確認のまま残す。OPS-062 は DONE、親 OPS-048 は ACTIVE のまま。
+- `verify.cjs`: rewrote the checks that looked at kinds. Added checks: rejecting data with a `relation` key (current and baseline), added connections have no `relation`, all displayed lines to arrival points have the same flow, and rewiring rejects version gates and allows END. The structure checks (a single row, only from END, the version-folder DAG) pass unchanged.
+- `sync.py`: completed, all verify items PASS, `--check` no drift, no `relation` key in `registry.json`.
+- Stub DOM smoke test (`editor()` from OPS-059): the arrival-point choices are only END and MS, with no relation choice field. Connected to END-0.5.4 (32 → 33, no `relation`, waiting for consultation, dirty). `milestoneRelations` in the save diff. Deleting from the list returns to the original 32. RELEASE-084's line can be rewired to END-0.6.0, and rewiring to GATE-0.6.0 is rejected. An old JSON with `relation` is rejected by `check()`. All 25 displayed lines to arrival points are PARALLEL_JOIN without `relation`.
+- Unverified: the real display in Safari (how a single colour looks), real clicks, real download of saved JSON, and the screen display when an old JSON is read via 「JSONを開く」. Same constraints as existing features; checked through user trial.
 
-## 取り込み側の手順（Studioから保存されたJSONを受けるAIへ）
+<a id="受入fableユーザー指示による自己受入"></a>
+## Acceptance (Fable, self-acceptance by user instruction)
 
-`changes` の `milestoneRelations` に `conditionReview: 相談待ち` かつ `source.path` が空の行があれば Studio で新しく足された接続。ユーザーと条件文を決め、「この到達点の前に完了が必要。」「判断材料。」「到達後。」のいずれかで始まる文にして、Registry「マイルストーン接続」へ `| 接続元 | 接続先（END-*またはMS-*） | 制約 |` の行を足し、`sync.py` を回す。線があるだけで自動開始・凍結解除・判断の代行にはしない。
+2026-10-17. Accepted after confirming: conditions are written on every row without relying on a default, as Astra advised; the originals are saved verbatim and an entry point is left; the canonical, generator, screen, checks and generated outputs are aligned in one unit; the old format is explicitly rejected; and Flow is untouched. The real display in Safari is left unconfirmed. OPS-062 is DONE; the parent OPS-048 stays ACTIVE.
+
+<a id="取り込み側の手順studioから保存されたjsonを受けるaiへ"></a>
+## Procedure on the importing side (for an AI receiving JSON saved from Studio)
+
+If `milestoneRelations` in `changes` has rows with `conditionReview: 相談待ち` and an empty `source.path`, they are connections newly added in Studio. Decide the condition text with the user, write a sentence beginning with one of 「この到達点の前に完了が必要。」, 「判断材料。」 or 「到達後。」, add a row `| 接続元 | 接続先（END-*またはMS-*） | 制約 |` to the Registry 「マイルストーン接続」, and run `sync.py`. A line alone does not mean automatic start, unfreezing, or making a decision on someone's behalf.
 
 
-## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）
+<a id="根拠と更新条件の追記2026-10-17--姫opus-55--ops-076第2区切り"></a>
+## Grounds and update conditions, appended (2026-10-17 / Hime, Opus 5.5 / OPS-076 break 2)
 
-入力版`56005d06d1ad97ed544cda914e12ee725692dc58`。本文・旧記録は変えていない。各行は「その版で確かめた主張・方法」。確認は`git`の読み取りだけで、ブラウザ・製品テスト・CIは実行していない。
+Input version `56005d06d1ad97ed544cda914e12ee725692dc58`. The body and old records were not changed. Each row is "a claim checked in that version, and the method". Checked only by reading with `git`; no browser, product tests or CI were run.
 
-| 主張 | 確認方法と結果 | 更新のきっかけ |
+| Claim | Check method and result | Trigger for update |
 | --- | --- | --- |
-| Registry「マイルストーン接続」は3列で、制約文が3つの書き出しのどれかで始まる | Registry本版331〜360行：3列、データ28行（実施時の15行から増加）。28行とも「この到達点の前に完了が必要」「判断材料」「到達後」のいずれかで始まる | 接続表の行の追加・変更。新しい行が書き出しの規則に従うかを見る |
-| 「ゲート経路の関係種類」節は廃止 | Registry本版に同名の見出しなし（227行目の過去記録への入口だけ） | 節の復活 |
-| 4列の表を読むと止まる | `sync.py`本版254行目に`expected 3 columns` | `sync.py`の表読み取りの変更 |
-| 旧形式JSONを拒否する | `index.template.html`本版57行目に「旧形式（線の種類あり）のJSONは読み込めません」。320行目に`isMilestoneLink` | `check()`の変更 |
+| The Registry 「マイルストーン接続」 has 3 columns and its constraint sentences begin with one of the 3 openings | Registry lines 331–360 in that version: 3 columns, 28 data rows (up from 15 at the time of the work). All 28 begin with 「この到達点の前に完了が必要」, 「判断材料」 or 「到達後」 | Rows added to or changed in the connection table. Check that new rows follow the opening rule |
+| The 「ゲート経路の関係種類」 section is abolished | No heading of that name in the Registry of that version (only the entry to past records at line 227) | The section returning |
+| Reading a 4-column table stops | `expected 3 columns` at line 254 of `sync.py` in that version | Changes to `sync.py`'s table reading |
+| Old-format JSON is rejected | Line 57 of `index.template.html` in that version has 「旧形式（線の種類あり）のJSONは読み込めません」; line 320 has `isMilestoneLink` | Changes to `check()` |
 
-範囲の`index.html`は`bbddb7ff3`で`index.template.html`へ改名。行数「15行」は実施時点の値で、今は28行（条件明記の判断は変わらない）。Safari実表示と旧JSONの画面表示は未確認のまま。
+The scope's `index.html` was renamed to `index.template.html` in `bbddb7ff3`. The row count 「15行」 is the value at the time of the work; it is now 28 rows (the judgment to write out conditions is unchanged). The real Safari display and the screen display of old JSON remain unconfirmed.

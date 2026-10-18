@@ -1,46 +1,54 @@
 # 移行史の追加探索 — 残したもの・撤去したもの
 
-作成：2026-10-16 / Astra。固定ID：HIST-002。種別：DISCOVERY。
-親：HIST-001（AtCoder 2025移行史の常設node）。担当：V3オーサー。受入：Astra。
-ユーザーが追加調査の準備と登録を承認した。ユーザーから本書を渡されたV3が実施する個別依頼であり、読んだ別の担当への割当ではない。
+## TL;DR（人間向け）
 
-## 目的
+UnsafeNodeの2026-01-18〜22の削除・再導入を調べ、型本体と主要責務は連続し、実際のfactory・Equatable・名称変更は別の変更として区別した。AstraがGitから独立照合して受入済み。作者の意図・当時のテスト成功・HEAD外の系譜は未確認で、移行史全体の完了や後続調査の開始を意味しない。
 
-移行史でまだ説明しきれていない転換点を一つ掘り、既存の説明を支える証拠、修正する証拠、または証拠の限界を返す。既存の成功談を補強することや、全履歴を網羅することを目的にしない。
+Created 2026-10-16 by Astra. Fixed ID HIST-002; type DISCOVERY.
+Parent HIST-001 is the permanent AtCoder 2025 migration-history node. Assigned to V3 author; accepted by Astra.
+The user authorized preparation and registration of this additional investigation. It is an individual assignment for V3 when handed this document by the user, not an assignment to anyone else who reads it.
 
-入力は`Maintanance/History/RefactoringFromAtCoder2025/README.md`と`EVIDENCE.md`。まず関係する節だけを読み、必要なGit履歴・保存されたソースとテストへ進む。過去の記憶は探索の手掛かりに使えるが、事実の根拠は実物へつなぐ。Archivedは履歴証拠であり、現行の作業指示には戻さない。
+<a id="目的"></a>
+## Purpose
 
-## 任せる探索
+Investigate one insufficiently explained turning point in the migration history and return evidence supporting or correcting the account, or the limits of that evidence. Reinforcing an existing success story or exhaustively covering all history is not the objective.
 
-この移行史の範囲で、問い・調べる順序・証拠への当たり方はV3に任せる。以下はAstraの候補であり、全件の課題表でも優先順位でもない。別の問いを選んでもよい。
+Inputs are `Maintanance/History/RefactoringFromAtCoder2025/README.md` and `EVIDENCE.md`. Start with relevant sections and proceed to necessary Git history, preserved source and tests. Past memory may guide discovery; connect factual claims to artifacts. Archived materials are historical evidence, not revived current instructions.
 
-- 参照count・strong uniquenessの短命な試行で、導入前後と撤去後に何が変わったか。撤去理由が記録にあるか、構造からの推測に留まるか。
-- 2026-01-18〜22のUnsafeNode削除・再導入で、名前、実装、責務の何が連続し、何が切れたか。
-- Keystoneの検査を緩めた区間から、特定の不変条件一つを選び、後のどの検査へ渡ったか。渡った記録がない場合もそのまま示す。
+<a id="任せる探索"></a>
+## Delegated investigation
 
-最初は一つの問い・一つの区間または責務に絞る。成果に直結する隣接箇所は追ってよい。重ければ範囲を縮めるか、確認できた位置と次の手掛かりを残して返す。候補を全部消化する義務、定期追記、作業量のノルマはない。
+V3 chooses the question, investigation order and approach to evidence within this history. The following are Astra's suggestions, neither a complete checklist nor priorities; another question may be chosen.
 
-自由に任せるのは探索方法である。新しい製品方針・契約の決定、凍結解除、実装変更は含まない。それらが必要になったら論点を返す。
+- For the short-lived reference-count/strong-uniqueness trial, what changed at introduction and removal? Is the reason documented, or only inferred from structure?
+- During UnsafeNode removal/reintroduction on 2026-01-18–22, what continued or changed in name, implementation and responsibility?
+- Choose one invariant in the period of relaxed Keystone checks and trace its later check, explicitly noting if no transfer record is found.
 
-## 証拠と返却
+Start with one question and one interval or responsibility. Follow adjacent material directly relevant to the result. If costly, narrow scope or return the established point and next lead. No obligation to exhaust the suggestions, add periodic entries or meet a work quota.
 
-本書末尾の返却欄へ、次を必要な分だけ記録する。
+Freedom concerns investigation method. It excludes new product policy/contracts, unfreezing or implementation changes; return those as questions if needed.
 
-- 選んだ問いと範囲、調査時のHEAD。
-- 確認できた事実。commitと当時のpathなど、他者が追える根拠。
-- 事実からの解釈と、説明できない点。作者の意図は直接の記録がなければ推測と明記する。
-- README / EVIDENCEへ反映する価値があれば、その箇所と短い案。反映不要という結論でもよい。
-- 完了または途中返却、残る手掛かり、編集範囲を返したこと。
+<a id="証拠と返却"></a>
+## Evidence and return
 
-ソースにテストがあることと、当時実行され成功したことを区別する。commit messageだけでgreenを確定せず、証拠が見つからないことを未実施の証明にしない。現在の再実行を当時の実行証拠としない。本依頼では過去構成の再ビルド・性能再計測までは求めない。
+Record only what is needed in the Return below:
 
-編集対象は本書の返却欄のみ。既存の移行史本文・証拠別紙は固定入力として扱い、反映案を返す。Registry、採番、製品source、test、他者の作業範囲は変更しない。別途の常設委任はその条件に従う。commit・pushの許可は含まない。
+- Selected question, scope and investigation HEAD.
+- Established facts and traceable evidence such as commits and historical paths.
+- Interpretations and unexplained points; mark author intent as inference unless directly documented.
+- A location and brief proposed update to README / EVIDENCE if worthwhile; no update is also valid.
+- Completion or partial return, remaining leads and release of editing ownership.
 
-## 受入条件
+Distinguish existence of tests from historical execution and success. A commit message alone does not prove green; failure to find evidence does not prove non-execution. A present rerun is not evidence of historical execution. This assignment does not require rebuilding old configurations or remeasuring performance.
 
-一つの問いについて、根拠付きの到達点と未確認の境界が分かれば受入可能。新発見は必須ではなく、既存説明で十分という結果や、限定範囲では確定できないという結果も対象になる。範囲を無制限に広げないと答えられない場合は、調べた範囲と行き止まりを示す。単なる未着手は完了としない。
+Edit only this document's Return. Treat existing migration history and evidence appendix as fixed inputs and return proposed changes. No Registry, numbering, product source, tests or others' work changes. Separate permanent delegations retain their own conditions. No commit/push permission is included.
 
-Astraが証拠と反映案を確認し、必要な反映とRegistryの状態更新を行う。親のHIST-001は常設のままとし、本件の完了を親の完了や後続調査の自動開始にはしない。親子関係は整理上の所属であり、Task precedenceの必須依存辺は追加しない。
+<a id="受入条件"></a>
+## Acceptance conditions
+
+A traceable conclusion and unverified boundary for one question suffice. New discoveries are optional: confirmation that the existing account suffices, or inability to settle a bounded question, are acceptable outcomes. If an answer requires unlimited expansion, identify the investigated scope and dead end. Mere non-start is not completion.
+
+Astra checks evidence and proposed updates, makes necessary document/Registry updates and retains HIST-001 as permanent. Completing this child neither completes the parent nor automatically starts further investigations. Parentage is organizational; no mandatory Task precedence edge is added.
 
 ## 返却欄（V3記入）
 
@@ -95,12 +103,13 @@ commit messageは`many`、`remove`、`file`、`some`等に留まり、削除と�
 編集したのは本書の返却欄だけで、移行史本文、証拠別紙、Registry、製品source、testには触れていない。
 
 
-## 独立受入（2026-10-16 / Astra）
+<a id="独立受入2026-10-16--astra"></a>
+## Independent acceptance (2026-10-16 / Astra)
 
-V3の完了返却と編集終了を受け、記載11commitが現行HEADの祖先であること、3回のR100と同一blob、削除・追加の時刻とblob差分、factory・Equatable・identity名称の変更をGitから独立照合した。主張に食い違いはなく受入。原返却は変更していない。
+After V3's completed return and release, independently checked from Git that the eleven cited commits are ancestors of current HEAD, the three R100 moves and identical blobs, deletion/addition times and blob differences, and factory/Equatable/identity-name changes. No discrepancy; accepted without changing the original return.
 
-EVIDENCE.mdのUnsafeNode行と未確認欄を更新し、再検査できる根拠を追記した。READMEの一般的説明を変更する必要はなかった。当時の実行成功・作者意図・HEAD外の試作は未確認のまま。過去構成のbuildやtestは実行していない。
+Updated the UnsafeNode row and unverified field in EVIDENCE.md and added reproducible evidence. No change to README's general account was needed. Historical test success, author intent and off-HEAD experiments remain unverified. No historical build/test execution.
 
-HIST-002は受入済み、commit確認待ちのWAITING_USER。親HIST-001は常設ACTIVEのまま。新しい調査は発注していない。
+HIST-002 was accepted, WAITING_USER for commit confirmation; permanent parent HIST-001 remained ACTIVE. No new investigation was assigned.
 
-2026-10-16、ユーザーのcommit指示を受領。受入済みのHIST-002をDONEとして保存する。
+On 2026-10-16 the user's commit instruction was received; save accepted HIST-002 as DONE.

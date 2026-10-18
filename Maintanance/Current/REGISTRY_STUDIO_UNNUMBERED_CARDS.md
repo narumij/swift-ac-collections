@@ -1,32 +1,39 @@
 # 番号なし通常カードの生成漏れ修正
 
-2026-10-18 / OPS-080 / Astra。親OPS-048。姫へ実装・検証を依頼、Astraが受入。ユーザー「コミットして、その修正依頼しよう」に基づく。
+## TL;DR（人間向け）
 
-## 入力・確認済み
+番号なしの通常カードが生成時に落ちる不具合を直し、実ファイル集合との照合を追加した記録。GOALだけを除外する読込みと欠落検知をAstraが受入し、現配置の同期・検査を独立実行した。隔離試験の結果は姫の保存証拠に依拠し、Safari表示や別件のゲート接続方式まで確認済みとはしない。
 
-入力はOPS-079受入commit b07c1b8e（着手時に完全SHAを記録）。[OPS-079](REGISTRY_STUDIO_MULTIPLE_MILESTONES.md)と[再現証拠](Evidence/OPS-079/generator_unnumbered.txt)を参照。sync.pyのread_gatesは番号付きまたはGATE形式のファイルだけを選択し、EXTRA.mdのような通常カードを黙って落とす。生成データだけを見るverifyではこの欠落を検知できない。
+2026-10-18 / OPS-080 / Astra. Parent OPS-048. Implementation and verification requested of Hime; accepted by Astra. Based on the user's 「コミットして、その修正依頼しよう」.
 
-[ユーザー仕様](../Milestones/DESIGN.md)では、版フォルダ内の中間カードはファイル名順。番号は推奨であって必須ではない。GOAL.mdは置物であり無視する。この例外を通常カードへ広げない。
+<a id="入力確認済み"></a>
+## Input and confirmed facts
 
-## 依頼範囲
+The input is OPS-079's acceptance commit b07c1b8e (the full SHA is recorded at the start). See [OPS-079](REGISTRY_STUDIO_MULTIPLE_MILESTONES.md) and [the reproduction evidence](Evidence/OPS-079/generator_unnumbered.txt). sync.py's read_gates selects only numbered or GATE-form files and silently drops ordinary cards such as EXTRA.md. A verify that looks only at generated data cannot detect this loss.
 
-- sync.pyのカード選択を修正し、GOAL.mdを除いた通常のMarkdownカードを読み取る。既存のカード情報・ID・正本等の妥当性検査を維持し、不正カードを黙って無視しない。
-- verify等で実ファイル集合と生成カードの対応を照合する。生成結果だけから期待集合を作らず、番号なしカードの読み落としを検出する。仮想START/ENDとGOAL除外を区別する。
-- READMEの検証説明、本書Return、必要なEvidence/OPS-080/を更新する。
+In [the user specification](../Milestones/DESIGN.md), the intermediate cards in a version folder are in file-name order. Numbers are recommended, not required. GOAL.md is an ornament and is ignored. Do not extend this exception to ordinary cards.
 
-編集可：RegistryApp/sync.py、verify.cjs、必要な限定検証コード、README、本書Return、Evidence/OPS-080/。生成キャッシュの更新可。製品、DESIGN各書、実マイルストーンの本文・配置・ID、Registry、画面設計、版間ゲート名と接続先の方式、18件固定など別件は対象外。範囲外の修正が必要なら事実と理由を返して止める。
+<a id="依頼範囲"></a>
+## Requested scope
 
-## 検証・完了条件
+- Fix sync.py's card selection to read ordinary Markdown cards except GOAL.md. Keep the existing validity checks of card information, IDs, canonical and so on, and do not silently ignore invalid cards.
+- In verify or the like, check the correspondence between the actual file set and the generated cards. Do not build the expected set from the generated result alone; detect missed unnumbered cards. Distinguish the virtual START/END and the GOAL exclusion.
+- Update the verification explanation in the README, the Return of this document, and the needed Evidence/OPS-080/.
 
-1. 隔離環境でEXTRA.mdが消える修正前挙動を再現し、修正後は同じIDが名前順の鎖へ含まれること。
-2. 0・1・複数枚、番号付きと番号なしの混在、ファイル名変更による順序変更、MS以外のIDを確認する。
-3. GOAL.mdはカード情報を持っていても生成対象外。通常カードの不正情報は明示エラーになること。
-4. 実ファイルがあるのに生成カードが欠けるケースを検査が拒むこと。OPS-079の隣接・逆順・余分な直結の拒否検査も維持。
-5. 現配置でsync/verifyと--checkが成功。実配置に試験用差分を残さない。Safari未実施なら明記。
+Editable: RegistryApp/sync.py, verify.cjs, the needed limited verification code, README, the Return of this document, and Evidence/OPS-080/. Updating the generated cache is allowed. Out of scope: the product, each DESIGN document, the bodies/placement/IDs of real milestones, the Registry, screen design, the method of inter-version gate names and connection targets, and other matters such as the hard-coded 18. If an out-of-scope fix is needed, return the facts and reasons and stop.
 
-一時環境はCOMMONSに従って作成時に記録し、証拠保存後に自分の作業物だけを片付ける。Returnには入力完全SHA、変更、再現方法、実行結果、限界と片付けを記載。修正と証拠・記録をまとめてレビューできる形にする。commitと外部操作の許可は含めない。
+<a id="検証完了条件"></a>
+## Verification and completion conditions
 
-依頼完成で上記出力範囲を姫へ受渡し、Astraは返却まで編集しない。
+1. In an isolated environment, reproduce the pre-fix behaviour in which EXTRA.md disappears; after the fix, the same ID is included in the name-order chain.
+2. Check 0, 1 and several cards, a mix of numbered and unnumbered, order changes by file renames, and IDs other than MS.
+3. GOAL.md is not generated even if it has card information. Invalid information in an ordinary card becomes an explicit error.
+4. The check rejects the case where a real file exists but the generated card is missing. Keep OPS-079's checks rejecting adjacency gaps, reversed order and extra direct links.
+5. sync/verify and --check succeed with the current placement. Leave no test diffs in the real placement. State it if Safari was not done.
+
+Record the temporary environment at creation per COMMONS, and after saving evidence clean up only your own work items. The Return contains the full input SHA, changes, reproduction method, run results, limits and cleanup. Shape the fix, evidence and records so they can be reviewed together. Commit and external operations are not permitted.
+
+With the request complete, the output scope above is handed to Hime, and Astra does not edit it until the return.
 
 ## Return（姫記入）
 
@@ -62,8 +69,9 @@
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-入力a788adcc4f8c66c02af5c46fffd0180ed30c8e16に対するsync.py・verify.cjs差分と保存証拠を照合し受入。GOAL.mdのみを除外したカード読込みと、ファイル集合を独立入力とする欠落検知を確認。現配置でsync/verifyを独立実行し24 PASS、missing: none、--checkずれなし。隔離環境の番号なし・改名・不正カード・旧生成器の拒否は姫の保存証拠を受領し、受入側での隔離再実行はしていない。Safari実表示は未確認。
+Checked the sync.py and verify.cjs diffs against input a788adcc4f8c66c02af5c46fffd0180ed30c8e16 and the saved evidence, and accepted. Confirmed card reading that excludes only GOAL.md, and loss detection that uses the file set as an independent input. Independently ran sync/verify with the current placement: 24 PASS, missing: none, --check no drift. The isolated-environment results for unnumbered cards, renames, invalid cards and rejection of the old generator were received as Hime's saved evidence; the accepting side did not re-run them in isolation. The real display in Safari is unconfirmed.
 
-依頼範囲を完了しOPS-080をDONEとする。版間ゲート接続方式・配置維持件数固定など別件の対応完了は含まない。ユーザーから今回の受入とcommitを明示許可された。
+The requested scope is complete and OPS-080 is DONE. Completion of other matters such as the inter-version gate connection method or the fixed count of placement protections is not included. The user explicitly permitted this acceptance and commit.

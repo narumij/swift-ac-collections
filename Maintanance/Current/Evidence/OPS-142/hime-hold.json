@@ -1,0 +1,91 @@
+[
+  {
+    "path": "Maintanance/Current/AI_COLLABORATION_BASIC_RESEARCH.md",
+    "states": [
+      "ACTIVE"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/BRANCH_NAMING_DISCUSSION.md",
+    "states": [
+      "PROPOSED"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/CLAUDE_ACTIVITY_RULE_REVIEW.md",
+    "states": [
+      "WAITING_USER"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/CLAUDE_QUEUE_RECONCILIATION_2026-10-16.md",
+    "states": [
+      "ACTIVE"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/HIME_TRADE_NAME_DECISION.md",
+    "states": [
+      "PROPOSED"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/INDEX_UPDATE_FAILURE_COW_USER_DECISION.md",
+    "states": [
+      "USER_ONLY"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/PROVISIONAL_TASK_AGREEMENT_STUDY.md",
+    "states": [
+      "PROPOSED"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md",
+    "states": [
+      "WAITING_USER"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/RELEASE_CI_RECOVERY.md",
+    "states": [
+      "DONE",
+      "PROPOSED"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/SPI_REGISTRATION_GATE.md",
+    "states": [
+      "ACTIVE"
+    ]
+  },
+  {
+    "path": "Maintanance/Current/TASK_REGISTRY_APP.md",
+    "states": [
+      "ACTIVE",
+      "DONE",
+      "DONE"
+    ]
+  },
+  {
+    "path": "Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md",
+    "states": [
+      "ACTIVE"
+    ]
+  },
+  {
+    "path": "Maintanance/Milestones/0.6.1/GATE-0.7.0.md",
+    "states": [
+      "USER_ONLY",
+      "USER_ONLY",
+      "USER_ONLY"
+    ]
+  },
+  {
+    "path": "Maintanance/Milestones/0.7.0/10_VALIDATION_REVIEW.md",
+    "states": [
+      "USER_ONLY"
+    ]
+  }
+]

@@ -9,58 +9,66 @@
 <!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
 
 
-OPS-101 / 2026-10-18 / Astra。ユーザーの「制度整備としてはオリジナル判断とコピー判断を分ける運用を試験開始」「タスク化」により登録。今回は試行taskの準備であり、既存キャッシュの分類・変更は未実施。
+OPS-101 / 2026-10-18 / Astra. Registered at the user's request: 「制度整備としてはオリジナル判断とコピー判断を分ける運用を試験開始」「タスク化」. This initial entry prepares the trial; existing caches had not yet been classified or changed.
 
-## 目的
+<a id="目的"></a>
+## Purpose
 
-判断キャッシュは基本的に正本の判断を写すものというユーザーの意図を保つ。少数の記録で出どころを識別する運用を試し、安全に退避できる条件と、記録維持の負担を確認する。オリジナル判断が現に混在しているという事実認定はしていない。
+Retain the user's intention that decision caches primarily copy canonical decisions. Test identifying provenance in a few entries, conditions for safe offloading and record-maintenance effort. No finding is made that original judgments are actually mixed into existing caches.
 
-## 試す区分
+<a id="試す区分"></a>
+## Trial categories
 
-| 区分 | 判定の材料 | 扱い |
+| Category | Evidence for classification | Treatment |
 | --- | --- | --- |
-| コピー判断 | 参照元の決定が特定でき、要約の意味と適用範囲を支える | 出典・該当箇所・更新条件とともに扱う。コピーであることだけで最新・正しいとは保証しない |
-| オリジナル判断 | 作業中に生まれた解釈・仮説・提案であることが記録から分かる | 未確定の提案等としてコピーと分ける。必要なものだけ判断者へ返し、自動で正本へ昇格させない |
-| 出典未確認 | 限定した照合では根拠や成立過程を確かめられない | 不明のまま、確認範囲と次の手掛かりを残す。原判断の創作・誤り・不存在と断定しない |
+| Copied decision | An identifiable source decision supports the summary's meaning and applicability | Retain source, location and update conditions. Being a copy does not guarantee freshness or correctness. |
+| Original judgment | Records establish that it is an interpretation, hypothesis or proposal arising during work | Separate it as an unsettled proposal, return only necessary items to the decision owner, and do not automatically promote it into a canonical decision. |
+| Unverified provenance | Bounded comparison cannot establish evidence or origin | Leave unknown, recording checked scope and next leads. Do not infer invention, error or nonexistence of an original decision. |
 
-出どころと承認状態は別の軸。ユーザーが決定した元の判断を「オリジナルだから未承認」と扱わない。この試行で分離する対象は、正本の写しと、作業中に生まれた未確定の解釈等である。判断権は既存規則に従う。
+Origin and approval are separate axes. Do not treat a source decision made by the user as 「オリジナルだから未承認」. This trial separates canonical copies from unsettled interpretations arising in work. Decision authority remains governed by existing rules.
 
-## 実施前の範囲固定
+<a id="実施前の範囲固定"></a>
+## Fixing scope before execution
 
-対象担当、対象文書と少数の判断項目、件数、参照版、記入先を指定する。対象キャッシュの編集が必要な場合はその担当の占有を確認し、更新前commitの既存規則を守る。対象が未確定のまま全キャッシュや自動メモリーを探索しない。
+Specify the owner, documents, small set of entries, count, reference revision and output location. If cache editing is needed, confirm its owner's occupancy and follow existing pre-update commit rules. Do not explore every cache or automatic memory while scope remains undefined.
 
-## 最小の試行と返却
+<a id="最小の試行と返却"></a>
+## Minimal trial and return
 
-- 選んだ項目の出典と意味を限定照合し、区分・根拠・確認範囲を試行記録に残す。まず別記録で扱い、原文は保持する。
-- 一つの記録に写しと追加解釈が混在すれば、どの部分かを示す。出典がないことだけを理由にオリジナル扱いしない。
-- 判定が難しい例、再探索を避けられた例、維持に要した手間を返す。厳密な時間測定は必須にしない。
-- 探索が膨らむ場合は出典未確認として止める。不要・危険と気づいた事項は報告し、範囲外の整理を始めない。
+- Compare selected entries' sources and meanings within bounds; record category, evidence and checked scope in a separate trial record first, preserving originals.
+- Identify portions where copies and interpretations coexist. Missing provenance alone does not establish originality.
+- Report difficult classifications, avoided rediscovery and maintenance effort; precise timing is optional.
+- Stop expanding searches as unverified provenance. Report unnecessary/dangerous findings without starting out-of-scope cleanup.
 
-## 完了条件と次への接続
+<a id="完了条件と次への接続"></a>
+## Completion and next step
 
-指定範囲の分類結果、区別の有用性、負担・誤分類の懸念、未確認を返し、受け取れる状態にする。試行結果は[OPS-099](JUDGMENT_CACHE_LRU_PROPOSAL.md)の検討材料へ渡す。恒久制度への採用、対象拡大、LRU実装、キャッシュ削除、正本の判断変更は別のユーザー判断。採用を前提にしない。
+Return classifications for the assigned scope, usefulness, burden/misclassification concerns and unknowns in a receivable form. Feed results into [OPS-099](JUDGMENT_CACHE_LRU_PROPOSAL.md). Permanent adoption, scope expansion, LRU implementation, cache deletion and canonical decision changes require separate user decisions; do not assume adoption.
 
-## 結果
+<a id="結果"></a>
+## Result
 
-未実施。
+Not yet executed at this point in the record.
 
-## 複数回の依頼計画（2026-10-18ユーザー指定）
+<a id="複数回の依頼計画2026-10-18ユーザー指定"></a>
+## Multi-round plan (user-specified 2026-10-18)
 
-同じOPS-101の中で3回に分ける。各回の返却をAstraが確認してから、次回の対象と依頼を確定する。全回の自動着手はしない。目的はOPS-099の「何を安全に手元から外せるか」の検討材料であり、分類制度の完成や全件網羅へ広げない。少数で十分な材料が得られれば、次回を減らして終了できる。
+Three rounds within OPS-101. Astra checks each return before fixing the next scope and assignment. Do not automatically start every round. The purpose is material for OPS-099's 「何を安全に手元から外せるか」, not completing a classification system or exhaustive coverage. End early if a small sample provides enough material.
 
-1. **第1回：既存3項目の分類。今回の正式依頼。** 姫のSTUDIO_LAYOUT.mdから配置・単独／複数配置・局所図に関する3項目を照合し、分類の難しさを返す。
-2. **第2回：別の少数項目で運用確認。未発注。** 第1回で曖昧だった境界と記録負担を確認するため、別の項目を最大3件選ぶ。分類を無理に揃えず、実際に出どころが区別できるか確かめる。具体的対象は第1回受入時に固定する。
-3. **第3回：結果の整理。未発注。** それまでの記録だけから、有用だった区別・維持負担・退避への含意・未確認をまとめる。新しい全件調査はせず、OPS-099へ返す材料とする。
+1. **Round 1: classify three existing entries; the present formal assignment.** Compare Hime's STUDIO_LAYOUT.md entries on placement, single/multiple placement and the local view, reporting classification difficulties.
+2. **Round 2: test operation on another small sample; not yet assigned.** Select at most three other entries to check ambiguous boundaries and record effort. Test whether provenance is distinguishable without forcing uniform categories. Fix targets at round-1 acceptance.
+3. **Round 3: consolidate results; not yet assigned.** Use existing records to summarize useful distinctions, burden, implications for offloading and unknowns. No new exhaustive survey; return material for OPS-099.
 
-## 第1回の正式依頼：姫
+<a id="第1回の正式依頼姫"></a>
+## Round 1 formal assignment: Hime
 
-- 対象：`Maintanance/Cache/Hime/STUDIO_LAYOUT.md`の、辺あり／辺なしの配置、単独上・複数下の配置、中心カードと実辺の局所図に関する3項目。該当項目がなければ欠落と報告し、別の項目へ無断で広げない。
-- 照合元：各項目にある参照元の該当節。主にTASK_REGISTRY_APP.md、REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md、REGISTRY_STUDIO_NEIGHBOR_CARDS.md。最初はキャッシュ記載の固定版と照合し、現行との差があれば別欄へ分ける。古いこととコピーでないことを混同しない。
-- 証拠：開始時HEAD、照合した正本のcommit・パス・節または行、キャッシュの項目名とファイルhashを残す。未コミット資料を根拠にした場合はその旨を記録する。キャッシュ本文の全文複製は不要。
-- 出力：項目ごとに区分、支える根拠、追加解釈の有無、不明点を本書Returnへ。参照元と必要な直接参照先で決められなければ「出典未確認」で止める。オリジナル判断を見つけるノルマはない。
-- 経験：判定に迷った箇所、短い分類記録を維持できそうかを添える。分類の証拠と感想を分ける。
-- 編集範囲：本書の第1回Returnのみ。姫の任意感想ログへの既存権限は維持する。キャッシュ・正本・Registry・コードを変更しない。キャッシュ更新作業ではないため、更新前commitはこの読取試行の着手条件ではない。commitなし。
-- 返却後は停止。第2回の依頼を待つ。Astraは返却まで指定回答欄を編集しない。
+- Target only the three entries in `Maintanance/Cache/Hime/STUDIO_LAYOUT.md`: placement with/without edges, single-above/multiple-below placement, and the local view with center card and actual edges. Report missing entries without substituting others.
+- Compare the referenced sections, chiefly TASK_REGISTRY_APP.md, REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md and REGISTRY_STUDIO_NEIGHBOR_CARDS.md. Start with the cache's fixed revision and record differences from current separately. Age does not mean a non-copy.
+- Record starting HEAD, source commit/path/section or lines, cache entry names and file hash. Identify uncommitted evidence explicitly. No full cache duplication is needed.
+- For each entry, return category, supporting evidence, added interpretations and unknowns. If source and necessary direct references do not settle it, stop at 「出典未確認」. There is no quota for original judgments.
+- Add classification difficulties and whether brief records appear maintainable. Keep classification evidence separate from observations.
+- Edit only round-1 Return. Existing optional observations-log permission remains. No cache/canonical/Registry/code changes. This read-only trial is not a cache update, so pre-update commit is not a start condition. No commit.
+- Stop after return and await round 2; Astra leaves the assigned response area unchanged until then.
 
 ## 第1回 Return（姫記入）
 
@@ -97,22 +105,24 @@ OPS-101 / 2026-10-18 / Astra。ユーザーの「制度整備としてはオリ�
 - 見つけ方：オリジナルが混ざっていたのは、「理由」「見直すとき」「正しい」のように、私が結論を付け足す欄だった。判断本体の文は、ほぼ正本の言い換えだった。
 - 負担：3項目で、正本の該当行を引くのに一往復ずつで足りた。固定版と行番号がキャッシュ側に書いてあったので、探索は膨らまなかった。短い分類記録（項目ごと「区分＋根拠の行＋混在箇所」）なら維持できそう。ただし、キャッシュに行番号まで書くと正本の編集でずれるので、節名＋固定版が限度だと思う（推定）。
 
-## 第1回 Astra受入（2026-10-18）
+<a id="第1回-astra受入2026-10-18"></a>
+## Round 1 Astra acceptance (2026-10-18)
 
-対象キャッシュのhashを独立照合し一致を確認。指定3正本の固定版b2f9e8e4から現行までの差分が空であること、配置要求・追加依頼／Return・局所図受入の該当記述を確認した。第1回を分類試行の成果として受入。原Returnは保持する。
+Independently matched the cache hash, verified no differences from fixed b2f9e8e4 to current in the three assigned canonicals, and checked placement requirements, additional assignment/Return and local-view acceptance. Accepted as a classification trial; preserve original Return.
 
-判断本体の写しに、実装事実、作成者の理由づけ・評価語・確認契機の選択が同居していた。追加解釈があることと、ユーザー判断を変更したことは同義ではない。今回、元の判断の改変や全キャッシュの混在率を認定してはいない。「オリジナル判断」の一括ラベルより、出どころと内容の種類を分けた注記が役立ちそうという検討材料を得た。制度の確定やキャッシュ補修はしない。
+Copies of decisions coexisted with implementation facts, author reasoning/evaluative wording and choices of verification triggers. Added interpretation does not necessarily change a user decision. No original-decision alteration or overall mixing rate is established. The material suggests provenance/content annotations may help more than a blanket 「オリジナル判断」 label. No settled policy or cache repair.
 
-## 第2回の正式依頼：別の3項目で境界を確認
+<a id="第2回の正式依頼別の3項目で境界を確認"></a>
+## Round 2 formal assignment: boundaries in three other entries
 
-第1回受入後の限定依頼。今回の編集範囲を姫へ委任し、Astraは返却待ち。
+Bounded assignment after round-1 acceptance. Hime receives this response scope; Astra awaits return.
 
-- 対象：`Cache/Hime/STUDIO_JUDGMENTS.md`の§1（保存契約）、§3（OPS-089）、§4（SPIバッジ）の3項目だけ。
-- 第1回と同じ出どころの分類に加え、必要な箇所だけ「決定の写し／実装・状態の事実／作成者の解釈・評価／確認の手掛かり」を注記する。新しい必須項目制度ではなく試行用の補助。
-- 記載された固定版・参照先で裏づけられるかと、現在も有効かを別に記す。§4の旧リンク先は0.6.1へ移動済みなので、現在の`Milestones/0.6.1/10_SPI.md`とRegistryのMS-SPI→DOC-027を照合してよい。リンク移動だけを判断変更と扱わない。
-- 出典確認は当該参照元と必要な直接参照まで。状態名や「決着済み」から新しい権限を導かない。決められなければ出典未確認で停止する。
-- 開始HEAD・キャッシュhash・照合した版と箇所を記録。未コミット資料を使う場合は区別する。最後に「参照したキャッシュ：STUDIO_JUDGMENTS §1・§3・§4」を一行添える試行を行い、負担の感想を短く返す。この一行は参照記録で、実効利用頻度の測定や全員の恒久義務ではない。
-- 編集は本書第2回Returnのみ。キャッシュ更新・リンク修正・Registry・コード変更・commitなし。任意感想ログの既存権限は維持。第3回は未発注、返却後に停止。
+- Only `Cache/Hime/STUDIO_JUDGMENTS.md` §1 (save contract), §3 (OPS-089), §4 (SPI badge).
+- Alongside the same origin categories, annotate where useful: 「決定の写し／実装・状態の事実／作成者の解釈・評価／確認の手掛かり」. This is trial assistance, not new mandatory fields.
+- Separate support by the stated fixed revision/source from current validity. The old §4 SPI target moved to 0.6.1; comparison with current `Milestones/0.6.1/10_SPI.md` and Registry MS-SPI→DOC-027 is allowed. Link relocation alone is not a changed decision.
+- Check only the source and necessary direct references. Do not derive new authority from state labels or 「決着済み」. Stop with unverified provenance if unresolved.
+- Record starting HEAD, cache hash, compared revisions/locations and any uncommitted inputs. Try a final line 「参照したキャッシュ：STUDIO_JUDGMENTS §1・§3・§4」 and briefly describe its burden. It records reference, not effective-use frequency or a permanent universal obligation.
+- Edit only round-2 Return. No cache updates, link repairs, Registry/code edits or commit. Existing optional observations permission remains. Round 3 is not assigned; stop after return.
 
 ## 第2回 Return（姫記入）
 
@@ -168,24 +178,26 @@ OPS-101 / 2026-10-18 / Astra。ユーザーの「制度整備としてはオリ�
 
 参照したキャッシュ：STUDIO_JUDGMENTS §1・§3・§4
 
-## 第2回 Astra受入・補正（2026-10-18）
+<a id="第2回-astra受入補正2026-10-18"></a>
+## Round 2 Astra acceptance and correction (2026-10-18)
 
-キャッシュhashの一致、保存契約・ユーザー判断正本の固定版からの差分なしを独立確認。縮約による項目の欠落、旧SPIリンクと配置移動の区別、参照記録の試行結果を検討材料として受入。原Returnは変更しない。
+Independently confirmed matching cache hash and no differences from the fixed save-contract/user-decision canonicals. Accepted omissions caused by compression, the distinction between old SPI links and relocation, and the reference-record trial as material for consideration. Preserve original Return.
 
-§3の「催促しない」を独自の運用付け足しとする分類は補正する。TASK_RULES_V2.md「状態の扱い」のUSER_ONLYに「本体の着手・代行・委任・催促をしない」があり、AGENTS.md「現在の仕事と正本」にも実行を促さない規定がある。個別正本に書かれていないことは、共通規則の根拠がないことを意味しない。「今は追わない」は補助依頼まで拒む意味なら過大なので、元の規則が制限するtask本体と、明示依頼された補助を分けて読む。
+Correct classification of §3's 「催促しない」 as an independent operating addition. TASK_RULES_V2.md's USER_ONLY under 「状態の扱い」 says 「本体の着手・代行・委任・催促をしない」; AGENTS.md's 「現在の仕事と正本」 also prohibits prompting execution. Absence from the individual canonical does not establish absence of common-rule authority. 「今は追わない」 would be overbroad if it rejected assistance too; distinguish restricted task execution from explicitly requested assistance.
 
-姫の「現在」の照合はHEADに限ったものと明記されており、作業ツリー全体の現行性の認定にはしない。コピーの完全性、鮮度、出典の有無は別の軸。要約の省略がすべて欠陥とは限らず、適用判断を変える省略かを必要時に見る。Return一行は参照記録として受入、実効利用頻度の測定とはしない。キャッシュ補修・全件照合は実施しない。
+Hime explicitly limited its 「現在」 comparison to HEAD, not the entire working tree's currency. Completeness, freshness and provenance are separate. Not every summary omission is a defect; check whether it affects application when needed. Accept the Return line as reference recording, not measurement of effective-use frequency. No cache repair or exhaustive comparison.
 
-## 第3回の正式依頼：結果整理のみ
+<a id="第3回の正式依頼結果整理のみ"></a>
+## Round 3 formal assignment: consolidate only
 
-第2回の上記補正を入力に含め、今回の回答範囲を姫へ委任する。
+Include the round-2 corrections above and delegate this response scope to Hime.
 
-- 入力は本書の第1・2回ReturnとAstra受入・補正、OPS-099の目的。新しいキャッシュ項目や履歴の探索は不要。
-- 最大1ページ程度で、(1) 有用だった区別、(2) 誤分類しやすい境界、(3) 最小の記録方法、(4) 安全な退避へ何が言え、何はまだ言えないか、(5) 継続／縮小／不採用の推奨を整理する。
-- コピー／オリジナルの出どころと、決定／事実／解釈の種類、鮮度・要約範囲を混同しない。共通規則由来の判断を、個別正本にないだけで独自判断としない。根拠不明なら出典未確認で止める。
-- 参照記録の一行は候補として評価する。未記載を未使用と数えず、参照を実効利用と同一視しない。
-- 全制度の完成案やLRU実装案を作る必要はない。6項目の試行から全キャッシュの混在率・削減効果を一般化しない。
-- 編集は本書第3回Returnのみ。キャッシュ、Registry、他正本、コード変更・commitなし。任意感想ログの既存権限は維持する。返却後停止。AstraがOPS-099への検討材料として受け取る。採否はユーザー判断。
+- Inputs are this document's round-1/2 Returns and Astra acceptance/corrections, plus OPS-099's purpose. No discovery of new entries/history.
+- In roughly one page maximum, summarize (1) useful distinctions, (2) likely misclassification boundaries, (3) minimal recording, (4) what can/cannot be said about safe offloading, (5) recommendation to continue/reduce/reject.
+- Distinguish copy/original provenance from decision/fact/interpretation, freshness and summary scope. Do not classify a common-rule decision as independent merely because the individual canonical omits it. Unknown evidence remains unverified provenance.
+- Evaluate the one-line reference record as a candidate. Missing entries are not nonuse; reference is not effective use.
+- No complete institutional or LRU design is needed. Do not generalize mixing rates or savings across caches from six entries.
+- Edit only round-3 Return. No cache/Registry/other canonical/code changes or commit. Optional observations permission remains. Stop after return; Astra receives material for OPS-099. Adoption is the user's decision.
 
 ## 第3回 Return（姫記入）
 
@@ -227,10 +239,11 @@ OPS-101 / 2026-10-18 / Astra。ユーザーの「制度整備としてはオリ�
 - 次に確かめるなら：項目全体がオリジナルらしい例（作業中の仮説だけのメモ）を1〜2件。または、共通規則由来の判断を含む項目で、退避と再取得が正しくできるか。どちらもユーザーの採否の後で、今は着手しない。
 - 不採用にする場合：既存キャッシュは今のままで支障は見つかっていない。失うのは、〔解〕の欄を見分ける習慣だけ。
 
-## 第3回 Astra受入・試行の総括（2026-10-18）
+<a id="第3回-astra受入試行の総括2026-10-18"></a>
+## Round 3 Astra acceptance and trial conclusion (2026-10-18)
 
-第3回Returnを第1・2回の記録と受入補正に照合し、指定6項目の結果整理として受入。3回の依頼は終了し、OPS-099へ検討材料を接続する。原Returnは保持する。ユーザーのcommit承認によりDONE。追加調査・キャッシュ変更・制度採用は依頼していない。
+Compared round-3 Return with prior records/corrections and accepted consolidation of the six assigned entries. All three assignments ended; connect material to OPS-099. Preserve original Return. DONE following user commit approval. No additional investigation, cache changes or policy adoption requested.
 
-受入上の留保：今回確認できたのは、キャッシュを保持した状態で参照元に対応箇所を見つけられたこと。実際の退避・復元を試してはいないため、「再取得できた」を復元試験成功とは扱わない。「既存キャッシュに支障は見つかっていない」も、全体の安全性を保証しない。旧リンクや過大に読める表現は既に記録されている。第3回(3)の項目ごとの区分案と(5)の区分廃止案は、未確定の候補として受け取り、統一制度にはしない。
+Acceptance limits: source locations were found while retaining caches. No actual offloading/restoration trial occurred; 「再取得できた」 does not mean successful restoration testing. 「既存キャッシュに支障は見つかっていない」 is not a guarantee of overall safety; old links and potentially overbroad wording are already recorded. Receive round-3 (3)'s per-entry categories and (5)'s abolition of categories as unsettled alternatives, not a unified system.
 
-Astraの整理：項目全体へのラベル追加より、正本の写しに添えた解釈・評価・確認の手掛かりを必要箇所で区別する方が、今回の混同を直接防げる。出典の有無と、内容の種類・鮮度・要約範囲は別に考える。ただし6項目だけで全体分類の廃止を決めず、全キャッシュへの書式追加も行わない。参照記録の一行は軽い候補として残すが、実利用頻度や未使用判定には使わない。採否・追加試行はユーザー判断とする。
+Astra's synthesis: distinguishing added interpretation, evaluation and verification leads where needed more directly addresses the observed confusion than labeling whole entries. Treat provenance separately from content type, freshness and summary scope. Six entries do not justify abolishing overall classification or adding a format to every cache. Retain the reference line as a lightweight candidate, not a use-frequency or nonuse metric. Adoption and further trials remain user decisions.

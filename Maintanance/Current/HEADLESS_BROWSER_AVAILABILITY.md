@@ -1,21 +1,27 @@
 # 試験専用ブラウザの利用確認（OPS-120）
 
-2026-10-18 Astra。親OPS-048。ユーザーは姫への試験専用起動許可を用意し、Astraへ利用確認からの進行を依頼した。
+## TL;DR（人間向け）
 
-## Astra確認結果
+試験専用のChromium・WebKitで、独立ページのクリック・入力・フォーカスを確認し、姫の返却をAstraが受け入れた記録。Astraと姫では起動に必要な権限が異なった。この結果は各時点の実行環境と基本操作に限られ、Studio実画面の検証完了を意味しない。
 
-Node v26.12.0、npm 11.20.0、Playwright 1.64.1。モジュールは `/opt/homebrew/lib/node_modules/playwright`、ブラウザはユーザーLibrary/Caches/ms-playwrightに導入済み。追加インストール不要。
-Astra通常sandboxではChromiumがMachPort Permission denied、WebKitも起動失敗。許可された権限付き実行では両方headlessで起動し、setContentした独立ページでクリック→文字変更、入力、フォーカスの3項目PASS。finallyでブラウザ終了。ユーザーのサーバー・ブラウザには未接続。この成功を姫の環境でも成功すると一般化しない。
+2026-10-18 / Astra. Parent OPS-048. The user arranged permission for Hime to launch a test-only browser and asked Astra to proceed from availability verification onward.
 
-## 姫への正式依頼
+<a id="astra確認結果"></a>
+## Astra's verification
 
-今回の限定依頼はユーザーの「つづけて」に基づく。追加開始確認不要。ただし実行環境の権限要求は正規の許可経路を使い、拒否されたら迂回せず返却する。
+Node v26.12.0, npm 11.20.0, Playwright 1.64.1. The module is `/opt/homebrew/lib/node_modules/playwright`; browsers are already installed in the user's Library/Caches/ms-playwright. No additional installation is needed.
+Chromium failed with MachPort Permission denied in Astra's normal sandbox; WebKit also failed to launch. With authorized elevated execution, both launched headless and passed click→text change, input and focus checks on an independent setContent page. Browsers closed in finally. No connection to the user's server or browser. Do not generalize this success to Hime's environment.
 
-1. 上記インストール済みPlaywrightを絶対パスrequireして、姫の環境でChromiumとWebKitをheadless起動できるか確認する。Astraで制限下起動が失敗したので、同じ失敗を反復しない。
-2. setContentで試験専用のボタンと入力欄を作り、クリック・入力・フォーカスを確認する。既存サーバーへの接続や起動は今回不要。使用中のブラウザ・サーバー・Studio保存データへ触れない。
-3. 起動したブラウザはfinallyで終了する。失敗なら具体的エラーと必要な許可だけ返す。OS設定変更・追加インストール・製品修正・commitはしない。
+<a id="姫への正式依頼"></a>
+## Formal assignment to Hime
 
-編集占有は本書の姫Returnのみ。試験コードが必要なら一時領域に作り終了後削除。活動の着手・返却はOPS-120で記録可。参照キャッシュ一行を添える。成功後のStudio実画面検証は、今回の返却を受けて別途範囲を定める。
+This bounded assignment follows the user's 「つづけて」; no additional start confirmation is needed. Use the normal permission mechanism for environment privileges and report denial without bypassing it.
+
+1. Require the installed Playwright by absolute path and verify headless Chromium/WebKit launch in Hime's environment. Do not repeat the restricted-launch failure already observed by Astra.
+2. Use setContent to create a test-only button and input field; verify click, input and focus. No existing server connection or launch is needed. Do not touch the user's active browser/server or Studio save data.
+3. Close launched browsers in finally. On failure, return the concrete error and required permission only. No OS setting changes, installation, product repair or commit.
+
+Editing ownership is limited to Hime's Return here. Create any required test code temporarily and remove it afterward. Work/return activity may be recorded under OPS-120; add one cache-reference line. Subsequent Studio screen verification needs separately defined scope after this return.
 
 ## 姫Return
 
@@ -36,6 +42,7 @@ Astra通常sandboxではChromiumがMachPort Permission denied、WebKitも起動�
 - Astraの環境との差：Astraの通常sandboxで出たMachPort Permission deniedは、姫の環境では出なかった。理由は調べていない。この成功は、この時点の姫の実行環境についてだけのもの。
 - 参照したキャッシュ：なし。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-姫のReturnを利用確認結果として受入。Astra自身の独立起動試験でも両エンジンの3項目は成功しており、姫側でも追加権限なしで同項目を確認できたと返却された。実行環境による権限差は残す。今回確認したのは独立ページの基本操作までで、Studio実画面の検証完了ではない。姫の試験コードは終了後削除済みのため同コードの再実行による受入ではなく、返却と独立試験の照合による受入。追加依頼なし。
+Accepted Hime's Return as availability verification. Astra's own independent launches had passed the same three checks on both engines; Hime reported the same checks without extra privileges. Retain the environment-dependent permission difference. This verifies only basic operations on an independent page, not completion of Studio screen verification. Hime deleted the test code afterward, so acceptance compares the return with independent testing rather than rerunning that same code. No additional assignment.

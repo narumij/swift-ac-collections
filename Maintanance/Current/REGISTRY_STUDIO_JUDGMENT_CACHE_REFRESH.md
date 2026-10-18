@@ -1,26 +1,32 @@
 # Studio関連判断の限定キャッシュ更新
 
-2026-10-18 / OPS-090 / 姫（更新）、Astra（受入） / 親OPS-048。
+## TL;DR（人間向け）
 
-## 正式依頼
+保存契約・改善提案・ユーザー専任判断・SPIバッジの順序の4点を、固定版の正本から姫自身のキャッシュへ反映し、受入・完了した記録。キャッシュは補助であり、試行契約の恒久採用や提案の実装承認にはしない。「再実装不要」は順序記録を掘り返さない意味で、製品側バッジを実施済みと認定していない。
 
-ユーザーの「受け入れして、それ依頼」に基づく。OPS-088の提案受入後の判断を、姫自身の判断キャッシュへ反映してください。管理文書の全件再探索や別担当キャッシュの書換えはしない。
+2026-10-18 / OPS-090 / 姫 (update), Astra (acceptance) / Parent OPS-048.
 
-入力は以下の必要な節だけ：
-- REGISTRY_STUDIO_SAVE_CONTRACT.md：試行保存契約v1、未決・更新条件。仕様化完了、恒久採用ではない。
-- REGISTRY_STUDIO_SAVE_USABILITY.md：Astra受入。5件は提案として受入、実装は未依頼。
-- REGISTRY_STUDIO_USABILITY_DECISION.md：採否はOPS-089 USER_ONLY。今は追わない。
-- ../Milestones/0.6.0/10_SPI.md とRegistryのMS-SPI→DOC-027：バッジは登録後。反映漏れは18e881e8で修正済み。再議論・再実装不要。
+<a id="正式依頼"></a>
+## Formal assignment
 
-今回変わった判断、正本へのリンク、追わない境界、再確認する条件を短く記録する。キャッシュを判断の正本にせず、正本が変わったときだけ対応部分を更新できる形にする。文書内容の複製や全履歴の要約は不要。
+Based on the user's 「受け入れして、それ依頼」. Reflect decisions after OPS-088 proposal acceptance in your own judgment cache. Do not reexplore all management documents or rewrite another owner's cache.
 
-編集可能範囲：Maintanance/Cache/Hime/内の今回に必要な判断キャッシュと、本書のReturn。キャッシュ名とまとめ方は姫に任せる。Astra/Fable領域・Registry・元の正本・製品は変更しない。既存キャッシュと競合する場合は正本を優先し、由来不明の判断は確定させない。キャッシュはGit管理外のまま、Returnに保存先と参照した正本・更新条件・保留を残す。
+Read only necessary sections:
+- REGISTRY_STUDIO_SAVE_CONTRACT.md: trial save contract v1, unresolved items/update triggers. Specification complete, not permanent adoption.
+- REGISTRY_STUDIO_SAVE_USABILITY.md: Astra acceptance. Five proposals accepted; no implementation assigned.
+- REGISTRY_STUDIO_USABILITY_DECISION.md: adoption is OPS-089 USER_ONLY; do not pursue now.
+- ../Milestones/0.6.0/10_SPI.md and Registry MS-SPI→DOC-027: badges follow registration. Missing reflection fixed in 18e881e8; no renewed debate or reimplementation.
 
-依頼完成で指定範囲を姫へ受渡し、Astraは返却待ち。commitなし。
+Briefly record changed judgments, canonical links, boundaries not to pursue, and recheck triggers. The cache is not canonical for judgment; allow corresponding updates only when sources change. No document duplication or full-history summary.
 
-## 完了条件
+Editable: necessary judgment cache under Maintanance/Cache/Hime/ and this Return. Name/organization at 姫's discretion. Do not change Astra/Fable areas, Registry, source canonicals or product. Prefer canonical sources on conflict; do not establish judgments of unknown origin. Keep caches Git-excluded; record destination, consulted canonicals, update triggers and pending matters in Return.
 
-今回の4点を正本リンクとともに引ける。未決事項に着手しない境界が明示され、再探索を減らせる。記録がない別領域の整備へ広げない。
+Assignment completion hands the specified scope to 姫; Astra awaits Return. No commit.
+
+<a id="完了条件"></a>
+## Completion criteria
+
+The four points are retrievable with canonical links. Explicit non-execution boundaries for unresolved matters reduce reexploration. Do not expand into unrecorded areas.
 
 ## Return（姫記入）
 
@@ -45,12 +51,13 @@
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-ユーザーの受入依頼に基づき完了受入。STUDIO_JUDGMENTS.mdの4項目を固定版c98fd93aの根拠と照合した。参照先4文書は現行まで差分なし。試行契約と恒久採用、提案受入と実装承認、USER_ONLY、登録後バッジの順序を区別し、正本リンク・追わない境界・更新条件が揃っている。キャッシュがGit管理外であることも確認した。
+Accepted completion at the user's request. Compared four STUDIO_JUDGMENTS.md items with evidence at c98fd93a; four referenced documents have no changes through current. Distinguishes trial/permanent adoption, proposal acceptance/implementation approval, USER_ONLY and badge-after-registration order. Canonical links, stop boundaries and update triggers are present. Confirmed Git exclusion.
 
-「再実装不要」は順序の記録修正を繰り返さない意味であり、DOC-027の製品側バッジ反映を実施済みと認定しない。旧CURRENT.mdの全面更新は依頼範囲外で、今回の受入に含めない。原Returnと他担当のキャッシュは変更していない。
+「再実装不要」 means do not repeat the order-record correction, not that DOC-027's product badge work is done. Full update of old CURRENT.md is outside scope and acceptance. Original Return and other owners' caches unchanged.
 
-OPS-090は受入済みcommit待ち。姫への限定更新依頼は終了、追加依頼なし。
+OPS-090 accepted, awaiting commit. Limited assignment to 姫 closed; no additional assignment.
 
-2026-10-18：ユーザーcommit承認により受入記録を確定し、OPS-090をDONEへ更新。キャッシュ本体はGit管理外のまま。
+2026-10-18: user commit approval finalized acceptance and updated OPS-090 to DONE. Cache itself remains Git-excluded.

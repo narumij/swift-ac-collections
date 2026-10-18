@@ -1,21 +1,27 @@
 # Studioサーバーの限定リファクタリング（OPS-131）
 
-2026-10-19 ユーザーがサーバーコードのリファクタリングと連続作業を依頼。親OPS-048。Astra調整・受入、姫実装。
+## TL;DR（人間向け）
 
-## 依頼
+StudioサーバーのGET/POST入口を短い処理へ分け、外部動作を保った限定リファクタリングの記録。Astraは隔離HTTPを含む20試験を独立実行して受入し、通信規約の確認とWAKEへのACKまで終えた。実サーバーは操作せず、出力欠落時の応答やsave本文読取のtimeout不足は既存の別件として残す。
 
-serve.pyは243行で、大規模な分割は不要。GETの経路判定、POSTのアクセス確認、sync実行がHandler内に重なっている。責務を短い関数/メソッドへ分け、固定経路と処理を読み取りやすくする。まず短い内訳をReturnに書き、そのまま開始可。
+2026-10-19. User requested server refactoring and continuous work. Parent OPS-048; Astra coordination/acceptance, 姫 implementation.
 
-- 変更はserve.py内の限定整理を基本とする。新フレームワーク・汎用ルーター・DB・新エンドポイントは不要。
-- URL、HTTP status、本文、エラー表現、Host/Origin/X-Registry-Studio検査、保存先、ロック、タイムアウト、起動/再起動通知を維持する。
-- saveとapprovalの入力検査には現状差がある。無理に共通化し挙動を変えない。別の不具合を見つけたらReturnに分けて報告する。
-- 許可ファイル：RegistryApp/serve.py、新規RegistryApp/test-serve.py、既存test-activity.py・test-approvals.py・test-work-progress.py（必要最小限）、本書Return。Astraが並行編集するREADME・通信規約・Registryには触れない。
-- 回帰は現行の経路、拒否条件、sync成功/失敗/timeout/同時実行とロック解放、保存/承認呼出しを確認。先に既存動作を試験で固定してから整理する。既存関連試験も実行。モックと隔離HTTPポート・一時Inboxのみ、実サーバー停止/起動、実編集・承認storeへの書込なし。
-- Returnに差分・実行した試験・限界を記録し、参照つき返却（doc/section/next）を使用。OPS-129の自然な観察3回目として操作数・拒否/訂正・負担を一行で報告。commitなし。返却後連続待機、WAKEで終了。
+<a id="依頼"></a>
+## Assignment
 
-## 完了条件
+serve.py is 243 lines; no large split needed. GET routing, POST access checks and sync execution overlap in Handler. Separate short responsibilities so fixed routes/processing are readable. Write a short breakdown in Return then start without reconfirmation.
 
-外部動作を保ち、HTTP入口から個別処理の見通しが改善され、限定回帰が通ること。Astra受入後に記録を閉じる。
+- Mainly organize within serve.py; no new framework, generic router, DB or endpoint.
+- Preserve URLs, statuses, bodies/errors, Host/Origin/X-Registry-Studio checks, save paths, locks/timeouts and startup/restart notices.
+- save/approval validation currently differs; do not force common code and change behavior. Report separate defects in Return.
+- Allowed: RegistryApp/serve.py, new RegistryApp/test-serve.py, minimal necessary edits to test-activity.py/test-approvals.py/test-work-progress.py, this Return. Do not touch Astra's concurrent README/protocol/Registry edits.
+- First freeze existing behavior with tests, then refactor. Cover current routes/rejections, sync success/failure/timeout/concurrency and lock release, save/approval calls. Run related existing checks. Only mocks, isolated HTTP ports and temporary Inbox; no real-server stop/start or actual user/approval data writes.
+- Return diff/tests/limits through doc/section/next reference path. As natural OPS-129 observation 3, record operation count/rejections/corrections/burden in one line. No commit. Wait continuously after returning; end with WAKE.
+
+<a id="完了条件"></a>
+## Completion criteria
+
+External behavior preserved, HTTP-to-handler flow clearer, limited regressions pass. Close records after Astra acceptance.
 
 ## 姫Return
 
@@ -29,9 +35,10 @@ serve.pyは243行で、大規模な分割は不要。GETの経路判定、POST�
 - OPS-129観察3回目：操作1回で通過、拒否・訂正0。見出しが短い`姫Return`でも一意なので問題なし。負担は初回と同じで、見出しを確かめる手間だけ（event id `7f5cf22ebcbd4d97910298174df34e4f`）。
 
 
-## 追加の限定確認（OPS-130／OPS-129）
+<a id="追加の限定確認ops-130ops-129"></a>
+## Additional limited check (OPS-130 / OPS-129)
 
-サーバー返却を受領、Astraが検査中。姫は並行してCOMMUNICATION_PROTOCOL.mdの初版を読み、今回の運用と食い違う箇所・手動経路や疎通手順の欠落があるか短く確認してください。コード追加変更なし。編集は本書末尾「姫規約確認Return」のみ。OPS-129観察3回目の操作数・拒否/訂正・負担も一行で補ってください（前の返却はこの点がまだ未記載）。参照つき返却、返却後待機。
+Server return received; Astra checking. In parallel, read initial COMMUNICATION_PROTOCOL.md and briefly check discrepancies with this operation or omissions in manual/probe routes. No more code. Edit only final 「姫規約確認Return」. Add one line for OPS-129 observation 3 operation count/rejections/corrections/burden (not yet recorded in the previous return). Use reference-bearing return, then wait.
 
 ## 姫規約確認Return
 
@@ -47,12 +54,13 @@ serve.pyは243行で、大規模な分割は不要。GETの経路判定、POST�
 OPS-129観察3回目は、§1の`姫Return`末尾に追記済み（操作1回、拒否・訂正0、負担は見出しの確認だけ）。追記が通知より後になった点は上の1のとおり。
 
 
-## Astra受入（2026-10-19）
+<a id="astra受入2026-10-19"></a>
+## Astra acceptance (2026-10-19)
 
-serve.py差分を照合。GETの固定経路ごとの処理分離、POSTの入口検査とsync処理分離で、保存/承認の既存検査・応答を維持。隔離HTTP試験5、activity5、approvals8、work-progress2（計20）を独立実行し通過。実サーバーは操作していない。
+Compared serve.py diff: separated fixed GET handlers, POST access checks and sync while preserving save/approval validation/responses. Independently ran isolated HTTP 5, activity 5, approvals 8 and work-progress 2 tests (20 total): pass. No real-server operations.
 
-出力ファイル欠落時の応答、save本文読取のtimeout不足は既存の別件として本書に保持。今回の動作維持の範囲では変更しない。Content-Length負値のstatus差は互換挙動であり、差があることだけで不具合と断定しない。
+Keep missing-output response and missing save-read timeout as existing separate issues; no change in this behavior-preserving task. Negative Content-Length status difference is compatibility behavior, not a defect just because it differs.
 
-通信規約レビューは5点を文書へ反映。特に通知後の観察追記で実際の行き違いがあったため、重要な追記/訂正を追加通知する手順を記載。現在のXcode間の手動経路はユーザー仲介であると明示。
+Reflected five protocol-review points. Actual misordering from post-notification observation edits prompted a procedure to notify important additions/corrections. Explicitly stated current manual Xcode-to-Xcode route uses user mediation.
 
-WAKE-20261019-Eに対応する姫ACK（2026-10-18T17:23:29Z）を確認し連続待機終了。
+Confirmed 姫 ACK for WAKE-20261019-E (2026-10-18T17:23:29Z); continuous waiting ended.

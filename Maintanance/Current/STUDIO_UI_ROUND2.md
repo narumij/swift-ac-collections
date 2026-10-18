@@ -1,18 +1,24 @@
 # Studio UI改善2周目（OPS-132）
 
-2026-10-19。ユーザーが「UI改善2周目、連続」を委任。親OPS-048。Astra調整・受入、姫観察・実装。前回はOPS-126、その後の活動/承認/担当ランプを含む現行が対象。
+## TL;DR（人間向け）
 
-## 要求・境界
+UI改善2周目で、作業カードの次担当・終了を見出し直下に示し、見取り図の操作欄をコンパクトにした記録。関連試験と隔離WebKitの広幅・狭幅証拠を基に受入し、WAKEへのACKを確認した。この記録時点では主要操作のメニュー化は保留で、長文はtitle属性に保持するがキーボード・タッチでの全文表示、実ユーザー画面・Chromiumは未確認。
 
-日常の閲覧・正本確認・編集・承認を見やすく操作しやすくする。ユーザーは視認性を重視し、承認待ちや次の受取人、終了が色と文字で分かることを希望。小さく可逆な改善を優先。保存/承認/権限/通信契約、タスクや接続の意味、グラフ配置規則は変えない。実ユーザー画面と利用中サーバーを操作しない。
+2026-10-19. The user delegated 「UI改善2周目、連続」. Parent OPS-048. Astra coordinates and accepts; Hime observes and implements. The previous round was OPS-126; the target is the current state, including the later activity, approval and owner lamps.
 
-## 姫第1依頼：現状確認と候補
+<a id="要求境界"></a>
+## Requirements and boundaries
 
-独立headless・模擬API/一時Inboxで広幅と狭幅を確認し、今残る具体的な使いにくさを最大3件提案。操作の流れと現象、効果、ファイル別内訳、検証方法を短く記す。推測だけの問題は区別。前回の全監査をやり直さない。現行index.template.htmlの必要箇所と前回記録だけを起点にする。
+Make everyday viewing, checking canonicals, editing and approving easier to see and operate. The user values visibility and wants waiting-for-approval, the next recipient and an end to be recognizable by colour and text. Prefer small, reversible improvements. Do not change the save / approval / authority / communication contracts, the meaning of tasks and connections, or the graph placement rules. Do not operate the real user screen or the server in use.
 
-この区切りは実装なし。編集は本書「姫第1Return」とCurrent/Evidence/OPS-132/の確認用script・結果・画像のみ。作業用プロセスは終了し一時データを掃除。実データへのsave・承認・sync呼出しなし。開始再確認不要、参照つきreturn（next=Astra）、返却後連続待機。commitなし。
+<a id="姫第1依頼現状確認と候補"></a>
+## First request to Hime: current state and candidates
 
-Astraが案を選び、限定実装を次の依頼で渡す。既存方針で決められない新判断はユーザーへ返す。連続動作はWAKE/ACKまで。
+Check wide and narrow layouts with an independent headless browser, mocked APIs and a temporary Inbox, and propose at most 3 concrete difficulties that remain. Briefly write the flow of operation and phenomenon, the effect, a per-file breakdown and the verification method. Distinguish problems that are only guesses. Do not redo the previous full audit. Start only from the needed parts of the current index.template.html and the previous records.
+
+No implementation at this break. Edits only to this document's 「姫第1Return」 and the check script, results and images in Current/Evidence/OPS-132/. End the work processes and clean the temporary data. No save, approval or sync calls against real data. No need to re-confirm the start; return with reference (next=Astra) and keep waiting continuously after returning. No commit.
+
+Astra selects proposals and hands over a limited implementation in the next request. New decisions that existing policy cannot settle go back to the user. Continuous operation lasts until WAKE/ACK.
 
 ## 姫第1Return
 
@@ -39,17 +45,17 @@ Astraが案を選び、限定実装を次の依頼で渡す。既存方針で決
 
 見送り（観察のみ）：上部の帯で「現在：…」と時系列の札（OPS-901・Astra・依頼…）が出ていて、作業レーンのカードと内容が重なる。札は出来事ごと、カードはtaskごとなので役割は違う。表示を減らすかどうかは判断事項なので候補には入れなかった。狭い画面では札が途中から始まって見える（`ミット待ち`）。担当ランプは仕様どおり「不明」に戻っていた（待機の後に実務の記録があるため）。
 
+<a id="astra選択第2依頼"></a>
+## Astra selection and second request
 
-## Astra選択・第2依頼
+Carry out candidates 2 and 3. Candidate 1 hides main operations and changes discoverability, so it is held this time. The other conversation's content described as 「ユーザーの着想」 could not be confirmed in this request and is not used as a ground for approval. Keep the existing operations and history at the top.
 
-候補2・3を実施。候補1は主要操作を隠し発見性を変えるため今回は保留。「ユーザーの着想」とある他会話の内容はこの依頼で確認できず、承認根拠にしない。上部の既存操作と履歴は維持する。
+2: put the next recipient / end on its own line right under the heading, shown in the colour and bold matching the existing left line. Approval comes first. Keep wrapping / access to the full text so that needed characters do not become invisible with long owner names or Japanese/English text. Do not remove the owner, time, reason, Registry, approval or start information.
+3: on wide screens arrange version, help, zoom and the hover switch compactly. On narrow screens do not force one row; let it wrap. Opened help content gets enough width. Keep keyboard operation, the selected value, zoom and focus on redraw. Do not change the graph placement itself.
 
-2：次担当/終了を見出し直下に独立させ、既存の左線と対応する色・太字で示す。承認最優先。長い担当名や日本語/英字で、必要文字が見えなくならないよう折返し/全文へのアクセスを保つ。担当・時刻・理由・Registry・承認・開始の情報は消さない。
-3：広幅で版・解説・ズーム・説明切替をコンパクトに並べる。狭幅では無理に一列にせず折り返す。解説を開いた内容は十分な幅を持つ。キーボード操作、選択値、ズーム、再描画時のフォーカスを維持。グラフ配置自体は変えない。
+Permitted: index.template.html, test-work-lane.cjs, test-handoff-signals.cjs, the change explanation in README.md, the new test-ui-round2.cjs, this document's 姫第2Return, and Evidence/OPS-132/check.cjs, results.json, wide-after.png and narrow-after.png. Keep the existing look materials. If additional files are needed, return only the reason.
 
-許可：index.template.html、test-work-lane.cjs、test-handoff-signals.cjs、README.mdの変更説明、新規test-ui-round2.cjs、本書姫第2Return、Evidence/OPS-132/check.cjs・results.json・wide-after.png・narrow-after.png。既存look資料は保持。追加ファイルが必要なら理由だけ返す。
-
-限定実装→関連試験・sync/check→隔離headlessで前後比較。カードの次担当優先と全文、承認優先、版/ズーム/解説/説明切替、入力/フォーカス保持を確認。実サーバー・ユーザーデータは触らない。commitなし。参照つき返却後連続待機。
+Limited implementation → related tests and sync/check → before/after comparison in isolated headless. Check next-recipient priority and full text on cards, approval priority, version/zoom/help/hover switch, and keeping input/focus. Do not touch the real server or user data. No commit. Keep waiting continuously after returning with reference.
 
 ## 姫第2Return
 
@@ -78,12 +84,13 @@ Astraが案を選び、限定実装を次の依頼で渡す。既存方針で決
   - 2行で切れた長い名前は、マウスのtitle表示かフォーカスでしか全文を読めない。
   - 試験用サーバーは終了し、一時データは削除した。
 
-## Astra受入
+<a id="astra受入"></a>
+## Astra acceptance
 
-2026-10-19、候補2・3を受入。関連3試験（test-ui-round2・test-work-lane・test-handoff-signals）を独立再実行しPASS。隔離WebKitの広幅・狭幅の画像と差分を確認。次担当/終了の識別と操作欄の省スペース化を確認した。保存・承認契約、グラフ配置は変更していない。
+2026-10-19, accepted candidates 2 and 3. Independently re-ran the 3 related tests (test-ui-round2, test-work-lane, test-handoff-signals): PASS. Checked the isolated WebKit wide and narrow images and the diff. Confirmed the next recipient / end can be identified and the controls take less space. The save and approval contracts and the graph placement were not changed.
 
-返却の「フォーカスで全文」は保証しない。確認できたのはtitle属性への全文保持で、ネイティブtooltipのキーボード/タッチ表示は未検証。従来の全文保持経路を維持した限定改善として受け入れる。実ユーザー画面・Chromiumは未確認。
+The return's 「フォーカスで全文」 (full text on focus) is not guaranteed. What was confirmed is keeping the full text in the title attribute; showing the native tooltip by keyboard or touch is unverified. Accepted as a limited improvement that keeps the existing full-text route. The real user screen and Chromium are unconfirmed.
 
-第2依頼の着手通知とPING-Fの対応ACKは未確認だが、実装返却は到達した。返却をPING ACKの代替とは数えない。主要操作メニュー化案は今回未実施。
+The start notification of the second request and the ACK corresponding to PING-F are unconfirmed, but the implementation return arrived. The return is not counted as a substitute for the PING ACK. The proposal to put the main operations into a menu was not carried out this time.
 
-WAKE-20261019-Gに対する姫の同番号ACK（17:40:02 UTC）を確認。連続待機終了。
+Confirmed Hime's ACK with the same ID to WAKE-20261019-G (17:40:02 UTC). Continuous waiting ended.

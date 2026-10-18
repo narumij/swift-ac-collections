@@ -4,19 +4,23 @@
 
 正本を開いたとき、何の話か・何が決まり何が未決かを短く読めるようにする仕事です。本文や判断は変えず、その入口だけを追加します。
 
-## 依頼と範囲
+<a id="依頼と範囲"></a>
+## Request and scope
 
-2026-10-19、ユーザーが人間向けTL;DRを見取り図の範囲まで遡って追加するよう依頼。OPS-133、Astra担当。入力はe754a022。StudioのgraphData→versionView(@head)で現在位置以降の39ノードを抽出し、重複を除いた参照Markdownと実体のゲートカード40文書を対象とした。独立欄・恒久図全体、コード・workflowは対象外。
+On 2026-10-19 the user requested retrospective human TL;DR additions through the overview-map scope. OPS-133, owner Astra, input e754a022. Extracted 39 nodes at/after the current location via Studio graphData→versionView(@head); targeted 40 documents after deduplicating referenced Markdown and including physical gate cards. The independent area, whole permanent-task diagram, code and workflows were outside scope.
 
-## 書き方と更新
+<a id="書き方と更新"></a>
+## Writing and maintenance
 
-冒頭に短い2段落。用途、結論と境界、必要なら未決のユーザー判断を示す。状態一覧を別に作らず、詳細は本文とRegistryへ戻る。本文の結論・対象・判断境界が変わったときに同時に見直す。要約だけで判断・実施許可を作らない。履歴は履歴、固定版試験はその版の結果と明示する。報告文書の先頭画像はユーザー指定どおり先頭に維持。
+Use two short opening paragraphs covering purpose, conclusion/boundaries and, if needed, unresolved user decisions. Do not create another state list; return to the body and Registry for details. Update the summary when the body's conclusion, scope or decision boundary changes. A summary alone creates no judgment or execution permission. Identify history as history and fixed-revision test results as applying to that revision. Preserve a report's leading image at the beginning as the user specified.
 
-## 今回は解消しない不整合
+<a id="今回は解消しない不整合"></a>
+## Inconsistencies left unresolved
 
-ゲートの本文には移動前の版名・チェック先が残り、正本リンクの一部は履歴または報告へ向く。RELEASE_PROCESSにはrelease branch方式が残る。これらを要約の都合で現行方針へ書き換えず、要約で読み分けを案内する。判断や接続変更が必要な修正は本作業に含めない。
+Gate bodies retain old version names/check locations; some canonical links point to history or reports. RELEASE_PROCESS retains a release-branch method. Do not rewrite these into current policy merely to simplify summaries; explain how to distinguish them. Repairs requiring decision or connection changes are outside this work.
 
-## 対象
+<a id="対象"></a>
+## Targets
 
 - `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 - `Maintanance/Current/ASAN_STRIP_ENV_FIXED_REVISION_VALIDATION.md`
@@ -59,13 +63,16 @@
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md`
 
-## 検証・受入
 
-追記部分を除く本文の一致、要約の配置、生成後の表示データと正本の整合を確認する。製品試験や対象taskの完了認定は行わない。
+<a id="検証受入"></a>
+## Verification and acceptance
 
-## 追加範囲：独立タスク
+Check body equality after removing additions, summary placement, and consistency of generated display data with canonicals. Do not run product tests or declare the target tasks complete.
 
-2026-10-19、ユーザー追加依頼。補正後のindependentGroups.regularにある7件の7文書を追加。計47文書。恒久図へ戻したOPS-103はこの独立欄には含まない。
+<a id="追加範囲独立タスク"></a>
+## Additional scope: independent tasks
+
+Additional user request on 2026-10-19: add seven documents for the seven entries in corrected independentGroups.regular, bringing the total to 47. OPS-103, returned to the permanent diagram, is not in this independent area.
 
 - `Maintanance/Current/MAINTENANCE_STABILITY_USER_DECISION.md`
 - `Maintanance/Current/JUDGMENT_CACHE_LRU_PROPOSAL.md`
@@ -75,6 +82,7 @@
 - `Maintanance/Current/MAINTENANCE_ROLE.md`
 - `Maintanance/Current/RELEASE_CI_RECOVERY.md`
 
-## Astra受入（2026-10-19）
+<a id="astra受入2026-10-19"></a>
+## Astra acceptance (2026-10-19)
 
-計47文書へ要約を追加。追記ブロックを取り除くと入力本文と完全一致することを機械照合。本文の見出し・リンク・判断・状態は保持。要約は本文の用途・結論・限定範囲を基に記述し、旧記録を現行の実施許可へ変えていない。MILESTONESの先頭画像も保持。Studio再生成と既存構造検査を通す。新規リンクは追加していない。ユーザーの実画面での読みやすさは未確認。
+Added summaries to 47 documents. Mechanically verified that removing the added blocks reproduces the input bodies exactly. Headings, links, decisions and states were retained. Summaries describe the body's purpose, conclusions and limits without converting old records into current execution permission. MILESTONES retained its leading image. Run Studio regeneration and existing structural checks. No new links were added. Readability on the user's actual screen remains unverified.

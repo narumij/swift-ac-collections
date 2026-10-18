@@ -1,30 +1,38 @@
 # Registry Studio同期の一コマンド化
 
-2026-10-16、作成：Astra。OPS-057、恒久OPS-048配下。ユーザーが姫への仕上げ依頼を指示。
+## TL;DR（人間向け）
 
-## 目的・範囲
+正本からStudioのtask・依存・親子・常設区分とJSON/HTMLを同期し、書込みなしの差分検知も行う試作を仕上げて受け入れた。属性削除・出典版変更・seed欠落の扱いを補修し、同期・既存検証・差分なしを確認した。当時はマイルストーンを既存JSONから持ち越す方式で、実画面や将来のゲート方式を保証するものではない。
 
-CP-20261016-007で作成したsync.pyを使い、正本からtasks・edges・親子・常設区分、JSON、HTML seed、内蔵文書・採番待ち表示まで更新し、既存検証まで一回で回せるようにする。--checkは書込みなしで同期漏れを検出する。現行表示の属性を意図せず失わない。
+2026-10-16 / Astra. OPS-057 under permanent OPS-048. The user requested the finishing assignment to Hime.
 
-マイルストーン・その関係は既存JSONから持ち越す。自動導出は追加しない。持越部分の出典不一致を黙って最新扱いにせず報告する。ゲート正本・判断アーカイブの方式決定やレイアウトの再設計は別件。
+<a id="目的範囲"></a>
+## Purpose and scope
 
-## 仕上げと確認
+Use sync.py from CP-20261016-007 to update tasks, edges, parentage, permanent categories, JSON, HTML seed, bundled documents and pending-numbering display from canonicals and run existing validation in one operation. --check detects missed synchronization without writing. Do not unintentionally lose current display attributes.
 
-- 既存試作の通常更新と--checkを確認し、task・依存・親子・常設・出典の差分、JSONとseedの不一致を検知する。
-- マイルストーン本体と関係の引用全体・出典版を確認する。自動修正できない変更は明示し、成功と偽らない。
-- Nodeとmarkedの実在する実行環境を指定できるようにし、生成・既存検証の失敗や省略を正常完了と区別する。
-- 再実行で意味のない差分を増やさず、失敗時の書換え範囲と復旧方法を分かるようにする。
-- READMEに日常の更新手順と持越部分の限界を記載する。配布用HTMLも同じ版にする手順を含める。
+Carry milestones/relations forward from existing JSON; do not add derivation. Report carried-source mismatches rather than silently treating them as current. Gate-canonical/decision-archive method decisions and layout redesign are separate.
 
-入力・実行結果・変更ファイル・未対応の限界を返す。完全な汎用化は要求しない。必要な範囲で壊れたら直す試作として運用する。
+<a id="仕上げと確認"></a>
+## Finishing and verification
 
-## 受渡し・受入
+- Check normal update/--check and detect task/dependency/parent/permanent/source differences and JSON/seed mismatch.
+- Check whole milestone/relation quotations and source revisions; identify changes that cannot be automatically repaired rather than falsely reporting success.
+- Allow actual Node/marked runtimes to be specified; distinguish failed/skipped generation or existing tests from successful completion.
+- Avoid meaningless differences on rerun and explain what failures rewrite and how to recover.
+- Document daily updates, carried-forward limitations and matching distributable HTML in README.
 
-正式依頼と占有範囲はCLAUDE_TASK.mdのOPS-057節。返却後Astraが検証する。2026-10-16、返却をAstraが確認し受入。ユーザーcommit承認済み・完了。
+Return inputs, execution results, changed files and unsupported limits. No complete generalization is required; operate as a prototype repaired when needed within scope.
 
-## Astra受入記録（2026-10-16）
+<a id="受渡し受入"></a>
+## Handoff and acceptance
 
-姫の原返却を保持して確認。親子属性の削除とRules版・HEAD等の差分検知を補修し、マイルストーン出典の変化は確認前に正常終了しないようにした。seed欠落も復旧対象の例外へ変更。削除されたparentTask・Rules hash変化・無変更の検知を独立確認した。現行データの同期、既存verify.cjs全項目、続く--check差分なしを確認。出典引用は全文存在を確認し、今回までのゲート追記・リンク変更に合わせてhashと行番号を更新した。実画面の描画を検証済みとはしない。
+Formal assignment/occupancy is CLAUDE_TASK.md, OPS-057; Astra verifies after return. On 2026-10-16 Astra checked and accepted the return. User commit approval received; complete.
+
+<a id="astra受入記録2026-10-16"></a>
+## Astra acceptance record (2026-10-16)
+
+Reviewed with Hime's original return preserved. Repaired detection of parent-attribute deletion and Rules revision/HEAD changes; milestone source changes no longer return normal success before verification. Missing seed is now a recoverable exception. Independently checked removed parentTask, changed Rules hash and no-change detection. Current-data synchronization and all existing verify.cjs checks passed; subsequent --check had no differences. Checked full existence of source quotations and updated hashes/line numbers for gate additions/link changes through this work. This does not establish actual-screen rendering verification.
 
 
 ## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）

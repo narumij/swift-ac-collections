@@ -1,37 +1,46 @@
 # Studioの永続編集領域を試行する
 
-2026-10-18 / OPS-082 / 親OPS-048。Astra作成、姫実装・検証、Astra受入。
+## TL;DR（人間向け）
 
-## 現行範囲への入口
+ダウンロード・添付を減らし、Studioの編集版をローカルへ保存して再開する試行の仕様・実装・補修・技術受入をまとめる。最終受入では保存中や更新待ち中の後続編集を保持することを独立検査した。恒久採用とは別で、自動保存なし、全系列で直近の保存を再開、AIによる取込照合が必要という制限とSafari未確認を残す。
 
-2026-10-18ユーザー追加指示により、現行仕様・依頼は末尾の「永続編集領域の試行仕様」と「姫への改訂依頼」。当初の単発保存依頼・Return・限定差し戻しは経緯として保持する。今回の試行で方式を恒久採用したとは扱わない。
+2026-10-18 / OPS-082 / Parent OPS-048. Astra drafted/accepted; 姫 implemented/verified.
 
-## 目的と依頼
+<a id="現行範囲への入口"></a>
+## Entry to current scope
 
-ユーザーが求めているのは「JSONをダウンロードしてAIへ渡す手間をなくす」こと。Studioの保存操作でローカルサーバー側へ編集結果を蓄積し、AIが保存先を読んで従来の差分照合・反映を行えるようにする。保存そのものはRegistryへの反映や作業の着手許可ではない。
+Under the user's 2026-10-18 addition, current specification/assignment are final 「永続編集領域の試行仕様」 and 「姫への改訂依頼」. Keep initial one-shot-save assignment/Return/limited rework as history. This trial does not permanently adopt the method.
 
-## 今回の範囲
+<a id="目的と依頼"></a>
+## Purpose and assignment
 
-- サーバー利用時の「編集結果を保存」は、現行の編集JSON（source・baseline・proposals・接続・changes）をサーバーへ渡して保存する。ダウンロード・添付は不要にする。
-- 受渡し先は `Maintanance/RegistryApp/Inbox/` とする。生成キャッシュと分離し、再生成・更新・再起動で消さない。保存結果は一意な名前で追加し、以前の保存を上書きしない。実際のユーザー保存データを今回の検証やcommitに含めない。
-- サーバーが保存を完了した場合だけ成功表示と未保存状態の解除を行う。失敗時は編集を保持し、再試行できる。入力中の未適用変更は既存の保護を維持する。
-- file://で開いた場合の既存ダウンロード経路は維持してよい。サーバー保存の失敗を黙ってダウンロードへ切り替えない。
-- READMEにAIの受取手順を記載する。ユーザーから取込を頼まれたらInboxを確認し、従来どおりbaselineと現行正本を照合する。保存順に全snapshotを無条件適用しない。処理したファイル名と反映結果・保留を取込記録へ残し、再取込を防ぐ。原JSONは保持する。
-- 今回は保存とAIへの受渡しまで。状態一覧画面、自動ポーリング、自動採番、Registry直接書込み、自動反映は足さない。
+User need: 「JSONをダウンロードしてAIへ渡す手間をなくす」. Studio save accumulates edited results on the local server for AI's existing diff comparison/reflection. Saving is neither Registry reflection nor execution permission.
 
-## 編集範囲・受渡し
+<a id="今回の範囲"></a>
+## Initial scope
 
-`RegistryApp/serve.py`、`index.template.html`、必要な限定検証、`RegistryApp/README.md`、本書の内訳・Return、`Current/Evidence/OPS-082/`。受渡しフォルダの説明ファイルも可。Registry・Rules・DESIGN・マイルストーン・製品は編集しない。
+- Server-mode save sends current editing JSON (source/baseline/proposals/connections/changes) to server, without download/attachment.
+- Destination `Maintanance/RegistryApp/Inbox/`, separate from generated cache; do not erase on regeneration/refresh/restart. Append uniquely named saves, never overwrite. Actual user data excluded from tests/commit.
+- Only completed server save triggers success/unsaved reset. Preserve edits on failure/retry and existing pending-input protections.
+- Retain file:// download; never silently fall back to it on server failure.
+- README documents receiving procedure. On import request, check Inbox and compare baseline/current canonicals as before; never blindly apply every snapshot in save order. Record processed filename/results/deferrals to avoid reimport; keep original JSON.
+- Save/handoff only: no status-list screen, autopolling/numbering, direct Registry write or auto-reflection.
 
-現在の未コミット差分のうち、Astraによるヘッダー追従CSSがindex.template.htmlにある。その差分を保持して作業する。ユーザーのDESIGN差分は触らない。開始時のHEADと既存差分を記録する。作業内訳を短く記入してから実施する。依頼完成で指定編集範囲を姫へ受渡し、Astraは返却待ち。commitは今回依頼に含めない。
+<a id="編集範囲受渡し"></a>
+## Editing scope and handoff
 
-## 完了条件
+`RegistryApp/serve.py`, `index.template.html`, necessary limited checks, `RegistryApp/README.md`, this breakdown/Return, `Current/Evidence/OPS-082/`, handoff-directory explanation. No Registry/Rules/DESIGN/Milestones/product edits.
 
-1. 保存JSONがAIから読め、baseline・追加案・接続を保持する。複数回の保存が上書きされず残る。
-2. 保存失敗時に編集と未保存表示が残る。更新・再起動後も保存結果が残る。
-3. 保存先はサーバー側固定で、クライアントから任意パスに書けない。既存のローカルサーバーのアクセス制限を維持し、不正JSONや過大入力を拒む。
-4. 一時的な隔離保存先で成功・失敗・複数保存を検証し、実ユーザーのInboxを汚さない。既存sync/verifyと保存操作のスモークを確認。Safari未確認なら明記する。
-5. Returnに入力SHA、変更、検証、残る制限、作業物の処理を記録する。
+Retain Astra's uncommitted sticky-header CSS in index.template.html and user's DESIGN changes untouched. Record starting HEAD/prior diffs and brief breakdown. Assignment hands specified scope to 姫; Astra waits. No commit.
+
+<a id="完了条件"></a>
+## Completion criteria
+
+1. AI-readable JSON retains baseline/proposals/connections; repeated saves remain without overwrite.
+2. Failure retains edits/unsaved display; refresh/restart keeps results.
+3. Fixed server path, no client-chosen arbitrary paths; retain local access restrictions; reject invalid/oversize JSON.
+4. Isolated destination tests success/failure/multiple saves without actual Inbox pollution; sync/verify/save smoke; disclose Safari limits.
+5. Return full input SHA, changes, reproduction/tests, limits and artifact handling.
 
 ## 作業内訳（姫記入）
 
@@ -92,59 +101,66 @@
 
 commitはしていない。
 
-## Astra検収・限定差し戻し（2026-10-18）
+<a id="astra検収限定差し戻し2026-10-18"></a>
+## Astra review and limited rework (2026-10-18)
 
-通常経路は独立sync/verify 25 PASS、OPS-082 smoke PASS、--checkずれなし。原Returnは保持する。完了受入は以下の一点で保留。
+Independent sync/verify25 PASS, OPS-082 smoke PASS, --check agrees. Original Return retained; completion blocked on one issue.
 
-保存開始後、fetch応答が返る前に追加案のタイトルを変更・適用すると、応答成功時の無条件`dirty=false`が後続編集の未保存表示も消す。保存済みJSONは変更前のsnapshotなので、画面を閉じると後続編集を失うおそれがある。既存smokeをメモリ上で変更し、成功fetch stub内でタイトル変更・適用を行ってから応答を返すと、`assert(state().dirty)`がfalseで失敗した（ファイルの原証拠は変更していない）。
+Editing/applying a proposal title after save starts but before response causes unconditional `dirty=false` to clear the later edit's unsaved status. Saved snapshot predates it, risking loss on close. In-memory extension of existing smoke altered title within success-fetch stub; `assert(state().dirty)` failed false. Original evidence file unchanged.
 
-### 姫への追加依頼
+<a id="姫への追加依頼"></a>
+### Additional assignment to 姫
 
-保存成功時に、送信したsnapshot以降の編集を保存済み扱いしないよう修正してください。保存中の編集を保護するか、現在データと送信時点を照合するなど、最小の方法でよい。保存中の追加編集・未適用入力・失敗を検証し、未保存の変更が残ることを確認する。表示文も後続編集まで保存済みと誤認させないこと。指定編集範囲は元依頼と同じ、製品や別機能には広げない。追加Returnへ返却、commitなし。
+Do not mark edits after sent snapshot saved. Protect input or compare current data with sent snapshot by minimal method. Test later applied/unapplied edits and failure; preserve unsaved changes and avoid misleading success wording. Same editing scope; no product/other features. Append Return, no commit.
 
-## 永続編集領域の試行仕様（2026-10-18 / ユーザー承認）
+<a id="永続編集領域の試行仕様2026-10-18--ユーザー承認"></a>
+## Persistent editing workspace trial specification (2026-10-18 / user approved)
 
-### 目的・試行の位置づけ
+<a id="目的試行の位置づけ"></a>
+### Purpose and trial status
 
-調整役が長期間不在でも、ユーザーがStudioで編集・保存・再開し、戻ったAIが差分を受け取れるようにする。「ダウンロードして渡す手間をなくす」から具体化したドッグフーディングであり、この方式の善し悪しは実使用で確かめる。保存媒体はJSONでもSQLiteでもよく、方式の選択は実装担当に任せる。ユーザー編集は未反映の意思を含む永続データであり、再生成可能なキャッシュではない。
+Allow users to edit/save/resume during a long coordinator absence, then returning AI receives differences. Dogfooding develops 「ダウンロードして渡す手間をなくす」; evaluate method in actual use. JSON/SQLite choice is implementer's. User edits contain unreflected intent and are persistent data, not regenerable cache.
 
-### 正本・編集版・履歴
+<a id="正本編集版履歴"></a>
+### Canonicals, editing document and history
 
-- 正本、編集開始時の土台、ユーザー編集版を分離する。編集版の土台を更新操作で勝手に差し替えない。
-- 保存履歴は追記で保持する。保存時刻・保存ID・編集系列とその前版・土台の識別情報・編集内容を追えること。保存済み履歴を上書き、期限削除、取込後削除しない。
-- 通常の再起動・再生成・ページ再読込後は、直近の保存済み編集版を再開できる。保存先は生成キャッシュの外に置き、既存Inboxの保存結果も消さない。必要な形式移行は原本を保持する。
-- 保存ボタンを押した時点の適用済み内容を保存する。成功はそのsnapshotが永続化されたことを意味する。応答待ち中の後続編集は未保存のまま保持し、成功表示と区別する。失敗時も編集を保持する。
-- 未適用入力は黙って保存・破棄しない。手動保存前のブラウザ強制終了までの復旧保証や自動保存は今回の範囲外。未保存で離れる際の保護は維持する。
+- Separate canonicals, starting base and user edits; refresh must not silently replace base.
+- Append history, tracking time/save ID/branch/parent/base identity/content. No overwriting, expiry or deletion after import.
+- Resume latest saved edits after normal restart/regeneration/reload. Keep save outside cache, retain old Inbox saves; preserve originals on any format migration.
+- Save applied content at button press. Success refers to that snapshot; later edits remain unsaved and distinguishable. Failure retains edits.
+- Do not silently save/discard unapplied input. No forced-exit-before-save recovery or autosave guarantee; retain leave-page protections.
 
-### 更新
+<a id="更新"></a>
+### Refresh
 
-「更新」は最新正本の取得・再生成であり、編集版の破棄や統合ではない。保存履歴・編集版・画面内の未保存変更と未適用入力を保持する。必要なら未保存中の更新を止めてよいが、「破棄して更新」を既定の解決にしない。
+Refresh fetches/regenerates current canonicals, not discarding/merging edits. Keep history/editing data/unsaved changes/unapplied input. May block refresh while unsaved, but do not default to 「破棄して更新」.
 
-正本の更新があれば、編集版が古い土台に基づくことを短く示す。新しい正本を編集中の版へ自動合成しない。この分離で、利用中の衝突解決を取込時まで延期する。
+Show briefly when base is older than canonicals. No automatic merge; this separation defers conflicts until import.
 
-### AI取込
+<a id="ai取込"></a>
+### AI import
 
-ユーザーの取込依頼を受けたAIが、土台・選択した保存版・現在の正本を比較する。保存順にすべてのsnapshotを繰り返し適用しない。独立した変更は統合し、同じ内容は反映済み、両者が異なる変更をした箇所は競合として相談する。
+On user request, AI compares base, selected save and current canonicals. Do not repeatedly apply all snapshots in order. Merge independent differences; same changes count as reflected; differing changes to same place require consultation.
 
-取込記録は原保存と別に保持し、保存ID、正式採番対応、反映した項目、保留・競合、確認した正本の版を残す。再送や再取込で二重登録しない。取込済みの一部を再び未反映として適用しない。ユーザーがその後も編集していたら、その後続版を取込対象で上書きしない。
+Keep import record separate from source, with save ID/formal numbering mappings/reflected items/deferrals/conflicts/checked canonical revision. Avoid duplicate registration/reimport, including partially imported content. Do not overwrite later user edits with selected import.
 
-AI取込後に土台を最新正本へ揃える場合も、旧版を保持した新しい編集版として明示的に切り替える。保留・競合・未保存入力を消さない。今回、Studioによる自動統合や自動採番は作らず、AIが安全に扱う手順と保存情報を整える。
+Switching base after import must explicitly create a new editing version while retaining old version, pending/conflicting/unapplied content. No Studio auto-merge/numbering; prepare safe AI procedure/save metadata.
 
-### 最小の画面・対象外
+<a id="最小の画面対象外"></a>
+### Minimal display and exclusions
 
-保存結果、再開している保存版、正本に更新があることが分かる最小の表示を用意する。大きな履歴管理画面・一覧タブ・クラウド同期・同時共同編集は不要。複数タブの古い保存で新しい編集を黙って巻き戻さないよう、保存元の版を確認して拒否または別版として保持する。
+Show save result, resumed save and canonical updates minimally. No large history-management screen/list tab/cloud sync/collaboration. Old-tab saves must check parent and reject or branch rather than silently rewind newer edits.
 
-## 姫への改訂依頼（2026-10-18 / Astra）
+<a id="姫への改訂依頼2026-10-18--astra"></a>
+## Revised assignment to 姫 (2026-10-18 / Astra)
 
-上記の試行仕様を満たすよう、既存OPS-082のサーバー保存を拡張してください。当初の「保存だけ」および限定差し戻しより、この改訂依頼を優先する。保存中の後続編集の不具合も含める。
+Expand existing server save to trial specification above, superseding 「保存だけ」/limited-rework assignments, including later-edit save bug.
 
-最初に、保存形式・保存場所・再開方法・更新時の保持方法・AI取込の記録方法を短い内訳にする。合理的な実装選択は任せる。仕様を満たせない点や新しいユーザー判断が必要なら、その点だけ返す。
+First briefly outline format/location/resume/refresh retention/import record. Reasonable implementation choices delegated; return unsupported specifications/new user decisions only.
 
-編集範囲は従来のserve.py・index.template.html・README・限定検証・本書の内訳/追加Return・Evidence/OPS-082/・Inboxの説明に加え、必要な保存処理モジュールと保存データのGit除外設定。実ユーザーの保存データ、DESIGN、Registry、Rules、製品は変更しない。ローカルへの耐久保存をGitへのcommitと混同せず、実データをcommitしない。
+Same allowed serve.py/index.template.html/README/checks/breakdown/additional Return/Evidence/Inbox explanation, plus necessary save module/Git exclusions. No actual saves, DESIGN, Registry, Rules or product edits. Local persistence differs from Git commit; never commit actual data.
 
-検証は隔離データで、保存→再起動→再開、更新後の編集版保持、正本変更と編集版の分離、応答待ち中の後続編集、保存失敗、古いタブの保存、取込記録による二重反映防止の手順を確認する。土台が途中で変わらないこと、原履歴を失わないことを示す。既存検証と変更後の操作スモークを実施し、Safari未確認なら明記する。
-
-返却時に実使用の短い試行手順を添える。試行で見るのは、編集再開のしやすさ、正本との差の分かりやすさ、AI取込時へ負担を押し付けすぎていないか。今回の技術受入と、試行後の恒久採用判断は分ける。commitなし。
+Using isolated data, test save→restart→resume, edit retention on refresh, canonical/edit separation, later edits during response wait, failure, old tabs and duplicate-import procedure. Establish unchanged base/history. Run existing checks/new smoke; disclose Safari. Return short real-use trial steps focusing on resume ease, canonical differences and AI import burden. Technical acceptance and later permanent adoption separate. No commit.
 
 ## 改訂依頼の作業内訳（姫記入、2026-10-18）
 
@@ -233,15 +249,17 @@ AI取込後に土台を最新正本へ揃える場合も、旧版を保持した
 
 commitはしていない。
 
-## Astra再検収（2026-10-18・永続編集領域）
+<a id="astra再検収2026-10-18永続編集領域"></a>
+## Astra rereview (2026-10-18, persistent workspace)
 
-独立sync/verify 25 PASS、smoke_v2 PASS。前回の保存応答待ち中の後続編集保護は確認できた。完了受入は次の不具合で保留。原Returnと証拠は保持する。
+Independent sync/verify25 PASS, smoke_v2 PASS. Save-wait later-edit protection confirmed; completion blocked by another issue. Retain originals/evidence.
 
-更新開始時に未保存編集がなくても、`/sync`応答待ち中には編集できる。応答成功時に`dirty=false; formDirty=false; reload()`を無条件に行うため、その間に追加した編集を警告なしで消す。smoke_v2をメモリ上で拡張し、保存成功後、`/sync`のstubで追加案のタイトルを変更・適用して成功応答を返すと、再読込が実行され「更新待ち中の編集があるのに再読込された」のassertが失敗した。原証拠ファイルは変更していない。
+Even if refresh starts clean, editing is possible while `/sync` waits. Successful response unconditionally executes `dirty=false; formDirty=false; reload()`, deleting intervening edits without warning. Extended smoke_v2 in memory: after saved state, sync stub changes/applies title then succeeds; reload assertion fails 「更新待ち中の編集があるのに再読込された」. Original evidence unchanged.
 
-### 姫への限定補修依頼
+<a id="姫への限定補修依頼"></a>
+### Limited repair assignment to 姫
 
-更新開始後に発生した適用済み編集・未適用入力を保持してください。再読込直前にも保護するか、更新中の編集を安全に制御する最小修正とし、応答待ち中の両ケースを検証する。正本の再生成が成功したことと、編集画面を再読込してよいことを分ける。他の仕様追加は不要。編集範囲は現行依頼のまま、追加Returnへ返却、commitなし。
+Keep applied/unapplied edits made after refresh starts. Minimal final reload guard or safe editing control, testing both while waiting. Separate successful canonical regeneration from permission to reload editing screen. No other specification; same scope, additional Return, no commit.
 
 ## 更新応答待ち中の編集保護の追加Return（姫記入、2026-10-18）
 
@@ -270,10 +288,11 @@ commitはしていない。
 
 commitはしていない。
 
-## Astra技術受入（2026-10-18）
+<a id="astra技術受入2026-10-18"></a>
+## Astra technical acceptance (2026-10-18)
 
-ユーザーの受入・commit指示に基づき、永続編集領域の試行実装を受入。入力は`ea1d7e62`と姫の更新保護の補修差分。
+Under user acceptance/commit instruction, accepted persistent-workspace trial implementation. Input `ea1d7e62` plus 姫 refresh-protection repairs.
 
-独立sync/verify 25 PASS、内蔵文書missingなし、smoke_v2・smoke_v3 PASS、--checkずれなし。保存中の後続編集、更新応答待ち中の適用済み編集・未適用入力が保持され、変更なしの場合だけ再読込することを確認した。サーバーの保存・再起動・別系列・取込記録はコードと姫の隔離試験記録を照合（今回サーバー試験の再実行なし）。
+Independent sync/verify25 PASS, no missing bundled docs, smoke_v2/v3 PASS, --check agrees. Later applied/unapplied edits retained during save/refresh wait; reload only if unchanged. Server save/restart/branch/import code compared with 姫's isolated test records; server trial not rerun here.
 
-Safari実操作は未確認。全系列の直近保存を再開する制限、自動保存なし、AIによる照合・競合判断が必要な点は原Returnどおり。技術受入は恒久採用の判断を意味しない。試行で得た問題は親OPS-048で扱う。ユーザーcommit承認済みにつきOPS-082はDONE、姫への依頼終了。
+Safari actual operations unverified. Keep limits: resume newest across all branches, no autosave, AI comparison/conflict decisions needed. Technical acceptance not permanent adoption; parent OPS-048 handles trial issues. User commit approval obtained, OPS-082 DONE, 姫 assignment closed.

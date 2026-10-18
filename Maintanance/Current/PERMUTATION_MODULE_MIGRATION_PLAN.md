@@ -1,81 +1,94 @@
 # Permutation module移行計画
 
-作成者：Astra。2026-10-15。基準：`6f101a27`。
-入力：[調査受入・統合記録](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md)、[名称決定](PUBLIC_API_NAMING_DECISIONS.md)、[性能CI変更手順](PERFORMANCE_CI_CHANGE_GUIDE.md)。
-段階：計画。以下のユーザー確認済み方針と、Astraが具体化した工程案を区別する。本書は実装完了やCI成功の記録ではない。
+## TL;DR（人間向け）
 
-## ユーザー確認済みの方針
+Permutation moduleを、新名`NextPermutationModule`を主入口、旧名`PermutationModule`を互換入口とする構成へ移した計画と完了記録。工程1〜5はローカル受入・PR #196の全job成功・main到達で完了した。candidate CI経路は未実行で、benchmark名の整理は後段に残し、旧入口の削除もしない。
 
-2026-10-15、ユーザーが「旧名は互換用」「2はギリギリまで遅らせる」と確認し、計画の継続を指示した。
+Written by Astra. 2026-10-15. Base: `6f101a27`.
+Input: [investigation acceptance and merge record](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MIGRATION_INVESTIGATION_ACCEPTANCE.md), [naming decision](PUBLIC_API_NAMING_DECISIONS.md), [performance CI change guide](PERFORMANCE_CI_CHANGE_GUIDE.md).
+Stage: plan. The user-confirmed policy below is distinguished from the step plan Astra made concrete. This document is not a record of implementation completion or CI success.
 
-- 主入口は`NextPermutationModule`。旧`PermutationModule`はmainに互換入口として残す。
-- 新名に実装を置き、旧名は同じ実装を再公開する薄い入口とする。実装・型を二重に定義しない。
-- benchmark名の整理は後段まで遅らせる。module移行の前提や完了条件にしない。実施日・release期限はまだ定めない。
-- 旧入口と既存CI互換を削除しない。名称決定は公開契約やSequence採否を変更しない。
+<a id="ユーザー確認済みの方針"></a>
+## User-confirmed policy
 
-## 具体構成案
+On 2026-10-15 the user confirmed 「旧名は互換用」 (the old name is for compatibility) and 「2はギリギリまで遅らせる」 (delay 2 as long as possible) and instructed continuing the plan.
 
-`AcCollections` productは維持する。target依存を以下とし、facade sourceは新名を再公開する。
+- The main entry is `NextPermutationModule`. The old `PermutationModule` stays in main as a compatibility entry.
+- The implementation lives under the new name; the old name is a thin entry re-exporting the same implementation. Do not define implementation or types twice.
+- Tidying benchmark names is delayed to a later stage. It is not a prerequisite or completion condition of the module migration. No date or release deadline is set yet.
+- Do not delete the old entry or existing CI compatibility. The naming decision does not change the public contract or whether to adopt Sequence.
+
+<a id="具体構成案"></a>
+## Concrete structure proposal
+
+Keep the `AcCollections` product. Make the target dependencies as follows; the facade source re-exports the new name.
 
 ```text
 AcCollections target → NextPermutationModule（実装）
                     → PermutationModule（互換）→ NextPermutationModule
 ```
 
-実装とDocCを`Sources/NextPermutationModule/`へ移し、旧入口は`Sources/_PermutationModule/`の小さいtargetとして明示pathを与える案とする。旧入口のsourceは`@_exported import NextPermutationModule`を基本とする。新名を仮の再公開targetとして先行追加し、後で依存を反転する工程は設けない。
+Proposal: move the implementation and DocC to `Sources/NextPermutationModule/`, and make the old entry a small target in `Sources/_PermutationModule/` with an explicit path. The old entry's source is basically `@_exported import NextPermutationModule`. There is no step that first adds the new name as a temporary re-export target and later reverses the dependency.
 
-通常版と`COMPATIBLE_ATCODER_2025`の条件付き実装は同じ実装target内に維持する。現在のcompiler条件・settingsを保持する。新旧module名の互換と2025互換modeは別々に検証する。
+The normal version and the conditional implementation for `COMPATIBLE_ATCODER_2025` stay in the same implementation target. Keep the current compiler conditions and settings. Compatibility of the new/old module names and the 2025 compatibility mode are verified separately.
 
-この構成で外部clientの新旧importと型同一性が成立することは、次工程の実測条件である。未確認のまま成立扱いにしない。
+That external clients' new/old imports and type identity hold with this structure is a measured condition of the next step. Do not treat it as holding while unconfirmed.
 
-## module移行の工程案
+<a id="module移行の工程案"></a>
+## Step plan for the module migration
 
-| 工程 | 作業とまとめる範囲 | 次へ進む証拠・停止条件 |
+| Step | Work and grouping | Evidence to proceed / stop conditions |
 | --- | --- | --- |
-| 1. 実装前の対象固定 | 現在のHEAD・差分、名称決定、通常版generic parameterの`Element`、新旧入口の保証範囲を照合する。現行説明の「互換未決」は、存続決定と具体方式の区別へ整える | 調査後の変更があれば影響を再照合する。新しい仕様判断が必要ならその点で止める |
-| 2. 一つの整合した変更を作る | manifest、実装配置、旧shim、facade、通常版generic parameter、関連import、test／compiler fixture、DocC catalog・見出し、DocC matrix、現行品質説明を揃える。benchmark sourceのimportも新名へ揃えるが、登録title・library・測定処理は保つ | 実装は一組、target cycle・source重複なし。新旧とfacadeを同時に利用可能にする。途中で壊れた状態をmainへ入れない |
-| 3. ローカル受入 | 対象テスト、compiler正常・期待拒否、外部clientの新名・旧名・facade経路、型の受渡し、通常／2025互換mode、benchmark release buildと登録task一覧、DocC生成を確認する | 検査の実行件数・条件・結果を残す。失敗・未実行を成功で代用しない。型の分裂、契約変化、title差分があれば止めて修正 |
-| 4. PRで継続経路を確認 | 上記を整合したPR単位として提出する。通常テスト、対象別DocC、旧baselineを使う性能CIの測定・比較完走を確認する | 各jobの実結果を確認する。DocCは`continue-on-error`のため、PR全体のgreenだけでは成功としない。candidate経路はそのworkflowに適した候補refと実行条件で確認し、未実行なら明記する |
-| 5. main到達後の確認・引渡し | ユーザーによるmerge後、到達commit、入口、検証証拠、現行文書、残課題を記録する | 新名が主入口、旧名が互換入口として成立し、benchmark名を保った比較が継続すること。旧名削除やbenchmark名整理は要求しない |
+| 1. Fix the target before implementing | Check the current HEAD and diff, the naming decision, the normal version's generic parameter `Element`, and the guaranteed scope of the new/old entries. Reshape the current wording 「互換未決」 into a distinction between the decision to keep it and the concrete method | If there were changes after the investigation, re-check their impact. If a new specification decision is needed, stop at that point |
+| 2. Make one consistent change | Align the manifest, implementation placement, old shim, facade, the normal version's generic parameter, related imports, test/compiler fixtures, the DocC catalog and headings, the DocC matrix and the current quality explanation. Also move benchmark sources' imports to the new name, but keep registered titles, libraries and measurement | One implementation, no target cycles or source duplication. New, old and facade usable at the same time. Do not put a broken intermediate state into main |
+| 3. Local acceptance | Check the target tests, compiler success and expected rejections, external clients via the new name, old name and facade, passing types across, normal / 2025 compatibility mode, the benchmark release build and the list of registered tasks, and DocC generation | Keep the number, conditions and results of the checks run. Do not substitute failures or non-runs for success. Stop and fix on type splitting, contract changes or title differences |
+| 4. Confirm the continuous route in a PR | Submit the above as a consistent PR unit. Confirm normal tests, per-target DocC, and that performance CI using the old baseline measures and compares to completion | Check each job's actual result. DocC has `continue-on-error`, so a green PR as a whole is not success. Confirm the candidate route with a candidate ref and run conditions suited to that workflow; state it if not run |
+| 5. Check and hand over after reaching main | After the user's merge, record the reached commit, entries, verification evidence, current documents and remaining issues | The new name works as the main entry and the old as the compatibility entry, and comparisons keeping benchmark names continue. Deleting the old name or tidying benchmark names is not required |
 
-工程2は編集順を細分化してよいが、manifestだけを先にmergeするなど、途中で成立しない公開状態には分割しない。コミット・push・mergeの実施はrepositoryの操作権限に従う。今回の計画作成では実行しない。
+Step 2 may be split into finer editing orders, but not into public states that do not hold midway, such as merging only the manifest first. Commit, push and merge follow the repository's operation permissions. They are not done in writing this plan.
 
-## 入口ごとの確認
+<a id="入口ごとの確認"></a>
+## Checks per entry
 
-- 外部の小さいclient packageから`AcCollections` productだけに依存し、新名直接import、旧名直接import、facade importをそれぞれ確認する。
-- 新旧を同時にimportしたclientで、旧入口経由の値を新入口側の型として受け渡せること、extensionが曖昧にならないことを確認する。
-- 通常版のnoncopyable・直接初期化不可・非Sequence契約と一時Viewの失効、borrowed版の寿命制約を既存検査で維持する。2025互換modeへ通常版の証拠を流用しない。
-- 新moduleをDocCの主たるAPI説明とし、旧shimには互換入口と新moduleへの案内を置く案とする。新旧両targetをDocC matrixに含め、重複symbol・未解決linkを確認する。旧入口の廃止予定やdeprecated指定は追加しない。
-- READMEの通常例`import AcCollections`は維持し、新旧入口の役割を説明する。SPI URLは登録後の実在確認まで作らない。
-- 過去のbuild・DocC・性能結果は当時の名称のまま残す。現行説明と将来の実行pathだけ更新する。
+- From a small external client package depending only on the `AcCollections` product, check a direct import of the new name, a direct import of the old name, and a facade import.
+- In a client importing both new and old, check that a value via the old entry can be passed as the new entry's type and that extensions are not ambiguous.
+- Keep, with existing checks, the normal version's noncopyable / no direct initialization / non-Sequence contract, invalidation of temporary Views, and the borrowed version's lifetime constraints. Do not reuse the normal version's evidence for the 2025 compatibility mode.
+- Proposal: the new module is DocC's main API explanation, and the old shim has a compatibility entry and guidance to the new module. Include both targets in the DocC matrix and check for duplicate symbols and unresolved links. Do not add a removal schedule or deprecated attribute for the old entry.
+- Keep the README's ordinary example `import AcCollections` and explain the roles of the new and old entries. Do not create the SPI URL until its existence is confirmed after registration.
+- Past build, DocC and performance results stay under the names of their time. Update only the current explanations and future execution paths.
 
-## benchmark名整理の後段
+<a id="benchmark名整理の後段"></a>
+## Later stage: tidying benchmark names
 
-当面は着手せず、今回のmodule移行を妨げない。後段で必要になった時点でユーザーと時期・対象を確定する。旧PERM-063・064の凍結は本計画では解除しない。
+Not started for now, and it does not block this module migration. When it becomes necessary later, settle the timing and targets with the user. This plan does not lift the freeze of the old PERM-063 and 064.
 
-実施時は、完全titleと同一workloadを照合し、PR用`ci.yml`・release candidate用`candidate.yml`双方へ入力変換と結果正規化を先に入れる。その変更がgreenになってから、source登録名とlibrary指定を同時に変更し、旧baselineとの比較完走を確認する。baselineへcurrent sourceを移植しない。既存のArray系互換は維持する。
+When done: check full titles and identical workloads, and first put input conversion and result normalization into both the PR `ci.yml` and the release-candidate `candidate.yml`. After that change is green, change the source registration names and library specifications together, and confirm that comparison with the old baseline completes. Do not port the current source into the baseline. Keep the existing Array-family compatibility.
 
-## 次に具体化する作業
+<a id="次に具体化する作業"></a>
+## Work to make concrete next
 
-工程案を実行単位へ落とし、現在状態と採番表を確認したうえで、担当・編集範囲・検証・返却先を用意する。計画の中で列挙した検証項目を、そのまま別々のtaskへ増やさない。実装担当への発注はまだ行っていない。
+Turn the step plan into execution units and, after checking the current state and numbering table, prepare owners, editing scopes, verification and return destinations. Do not multiply the verification items listed in the plan into separate tasks as they are. No order to an implementer has been placed yet.
 
-## 実行への接続（2026-10-15）
+<a id="実行への接続2026-10-15"></a>
+## Connection to execution (2026-10-15)
 
-ユーザーの「では、すすもう」を受け、工程2・3を一体のローカル実装task `PERM-076`として登録した。[ワーカー依頼書](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md)を1体へ渡す。調査用3体は完了済みであり再起動しない。remote CI・main到達は今回のワーカー範囲に含めず、返却の受入後に扱う。
+On the user's 「では、すすもう」, steps 2 and 3 were registered together as one local implementation task, `PERM-076`. [The worker request](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_IMPLEMENTATION.md) is handed to one worker. The 3 investigation workers have finished and are not restarted. Remote CI and reaching main are not in this worker's scope and are handled after accepting the return.
 
-## 工程完了記録（2026-10-15）
+<a id="工程完了記録2026-10-15"></a>
+## Step completion record (2026-10-15)
 
-工程1〜3はローカル受入、工程4はPR #196の全11 job成功、工程5はmain到達commit `3ef37fc2`の照合をもって完了した。実装は`1f87e37a`、文書・ローカル受入記録は`4cd0ebc2`に保存済み。証拠と確認範囲は[受入記録](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md#pr-cimain到達確認2026-10-15)に記す。
+Steps 1–3 by local acceptance, step 4 by all 11 jobs of PR #196 succeeding, and step 5 by checking the main commit reached, `3ef37fc2`, are complete. The implementation is saved in `1f87e37a`, and the documents and local acceptance records in `4cd0ebc2`. The evidence and checked scope are in [the acceptance record](../Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md#pr-cimain到達確認2026-10-15).
 
-新名を主入口、旧名を互換入口とする今回のmodule移行は完了。candidate CI経路は未実行であり、その成功を含めない。benchmark名整理は後段に残し、本完了によって着手・凍結解除しない。
+This module migration, with the new name as the main entry and the old name as the compatibility entry, is complete. The candidate CI route was not run, and its success is not included. Tidying benchmark names stays in the later stage; this completion does not start it or lift its freeze.
 
 
-## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+<a id="根拠と更新条件の追記2026-10-17--姫opus-55--ops-076第4区切り"></a>
+## Grounds and update conditions, appended (2026-10-17 / Hime, Opus 5.5 / OPS-076 break 4)
 
-入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
+Input version `1175e583b1857819e9e0b07b83a1cb5fc8be657a`. The body and original returns were not changed. Checked only by reading the fixed tree with `git show <版>:…` and the like; no runs or re-review.
 
-| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+| Claim | Check method and result (scope of validity) | Trigger for update |
 | --- | --- | --- |
-| 11行目・21〜22行目の構成（主入口`NextPermutationModule`、互換`PermutationModule`→`NextPermutationModule`） | `Package.swift` 335行目に`name: "NextPermutationModule"`。346〜348行目に`name: "PermutationModule"`・`dependencies: ["NextPermutationModule"]`・`path: "Sources/_PermutationModule"`。この構成は版で成立 | Permutation系targetの変更 |
+| The structure in lines 11 and 21–22 (main entry `NextPermutationModule`, compatibility `PermutationModule` → `NextPermutationModule`) | `Package.swift` line 335 has `name: "NextPermutationModule"`. Lines 346–348 have `name: "PermutationModule"`, `dependencies: ["NextPermutationModule"]`, `path: "Sources/_PermutationModule"`. This structure holds in that version | Changes to the Permutation-family targets |
 
-成立範囲：一致したのはtarget構成だけで、計画全体（5行目「段階：計画」の工程・CI・benchmark名の移行）の完了は判定しない。benchmark名の移行はPERM-064（ACTIVE・Codex）の範囲。
+Scope of validity: only the target structure matched; completion of the whole plan (the steps, CI and benchmark-name migration of line 5's 「段階：計画」) is not judged. The benchmark-name migration is within PERM-064 (ACTIVE, Codex).

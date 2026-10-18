@@ -1,40 +1,49 @@
 # OPS-072関連の受入・総点検
 
-2026-10-17 / Astra。ユーザー依頼「OPS-072関連と姫の受け入れと内容の総点検」。対象は試行・表面案・全体浅点検・Studio孫表示の返却。制度採用や製品変更は含まない。
+## TL;DR（人間向け）
 
-## 受入
+仮契約・仮判断の限定試行と表面案、浅い棚卸し、Studio孫表示を受け入れた記録。集計・過去ファイルの不在・環境依存の結果・凍結表の効力を補正し、原返却を保持した。制度採用や短縮案への本文差替え、製品試験の再実行は行っておらず、後続補完は別taskとして残す。
 
-- OPS-072：試行2件と全体追記の立案を受入。ユーザーが先行実施を明示したため、旧OPS-070/071完了待ちは今回の試行には適用しない。親の検討完了を意味しない。
-- CP-20261017-010：commit 6d04a202の孫表示をOPS-048へ統合。再帰・循環防止・独立列除外・親からの接続をコードで確認。生成検査は今回末尾へ記録。Safari目視は未実施。
-- CP-20261017-013：OPS-074へ登録。本文を改変せず2文書へ追記した第1区切りを、下記補正付きで受入。全体完了にはしない。深い点検は後回しで、今回着手しない。
+2026-10-17 / Astra. User request 「OPS-072関連と姫の受け入れと内容の総点検」. Scope: trial, surface proposal, broad shallow inventory and Studio grandchildren-display returns, not policy adoption/product changes.
 
-## 内容の補正と保証範囲
+<a id="受入"></a>
+## Acceptance
 
-原返却は保持し、本節を受入上の補正とする。
+- OPS-072: accepted two trials and planning broad appendices. Explicit user authorization to proceed overrides earlier OPS-070/071 completion wait for this trial only, not parent-study completion.
+- CP-20261017-010: integrated grandchildren display commit 6d04a202 into OPS-048. Code checks covered recursion/cycle prevention/independent-column exclusion/parent edges; generation checks below. No Safari viewing.
+- CP-20261017-013: registered OPS-074. Accepted first bounded appendices to two unchanged bodies with corrections below; not overall completion. Deeper audit deferred, not started now.
 
-1. SHALLOW_CHECKの「23件」に対し表の合計は26件（4+4+2+10+3+3）。抽出明細・再実行スクリプトが保存されていないため、72文書全件・97hashの集計は報告値であり独立再検証済みとはしない。再現可能な明細保存をOPS-074の残りに置く。
-2. 「DOCUMENTATION_MILESTONES.mdはCurrentに存在したことがない」は誤り。git log --all -- Maintanance/Current/DOCUMENTATION_MILESTONES.md に履歴があり、e2dd63d62で整理されている。現行リンク切れと過去の不在は別である。現行の適切な接続先は担当判断のまま。
-3. AtCoder文書の旧パスには過去の実験・当時の配置も含む。一括置換しない。1f87e37aのrenameと現行NextPermutationModuleの実在は確認した。将来手順として使う部分だけ、互換再開時に再確認する。
-4. SURFACESの「macOSで通すにはstrip_env=0が要る」は広すぎる。RBT-049の固定版81204d22・記載macOS/Swift環境で既定失敗、strip_env=0成功という比較に限定する。Linuxも当該候補CIの成功報告であり、一般的な対処不要の証明ではない。元正本の明示した境界を縮約時に落とさない。
-5. SURFACESの凍結表は現行Registryを置き換える契約ではない。履歴の条件と現行状態を照合してから採用する。監査の長命な記述をRulesへ昇格する提案も未承認。
-6. INVENTORYの「本判断」欄には事実・未検証宣言・解釈が混在する。未確認を「未決」にまとめても過去の実験結果が失効したことにはならない。今後の寿命検討では事実、解釈、委任を区別する。
+<a id="内容の補正と保証範囲"></a>
+## Corrections and assurance scope
 
-## 引継ぎ効果
+Preserve original returns; this section governs acceptance corrections.
 
-Astraは記録された未確認範囲を使い、SignedDistance再実験・PERM-060再現・過去品質評価の再探索を行わずに受入できた。この1回の引継ぎでは停止境界が役立った。継続的な省力効果や制度の正しさまで実証したとはしない。短縮案の本文差替えは未実施。
+1. SHALLOW_CHECK says 「23件」 but table totals 26 (4+4+2+10+3+3). Without extraction details/rerunnable script, counts of 72 documents/97 hashes are reported, not independently reproduced. Reproducible details remain in OPS-074.
+2. 「DOCUMENTATION_MILESTONES.mdはCurrentに存在したことがない」 is false. git log --all -- Maintanance/Current/DOCUMENTATION_MILESTONES.md has history, reorganized at e2dd63d62. Broken current links differ from past absence; suitable current destination remains owner's decision.
+3. Old AtCoder paths include experiments/historical placement; no bulk replacements. Confirmed 1f87e37a rename/current NextPermutationModule. Recheck only future-use steps on compatibility resumption.
+4. SURFACES' 「macOSで通すにはstrip_env=0が要る」 is too broad. Limit to fixed 81204d22 and documented macOS/Swift default-failure/strip_env=0-success comparison. Linux is that candidate-CI success report, not universal no-workaround proof. Retain original limits when shortening.
+5. SURFACES freeze table is not a contract replacing current Registry. Compare historical conditions/current state before adoption. Promoting long-lived audit statements into Rules is unapproved.
+6. INVENTORY's 「本判断」 mixes facts, unverified declarations and interpretations. Calling unknowns 「未決」 does not invalidate past experimental results. Distinguish fact, interpretation and delegation in lifetime studies.
 
-## 次の記録
+<a id="引継ぎ効果"></a>
+## Handoff effects
 
-CP-011のスコープと矛盾判断の区別はOPS-070/071へ材料統合。CP-012はOPS-073（寿命の検討）として登録。ユーザー発言と姫の未確認解釈を分け、既存権限規則を変更しない。CP-009の屋号検討は今回の範囲外として採番待ちのまま保持する。
+Using recorded unknowns, Astra accepted without repeating SignedDistance/PERM-060 experiments or reexploring old quality assessments. Stopping boundaries helped in this one handoff; not proof of lasting savings/system correctness. Proposed shortened text has not replaced bodies.
 
-## 検証結果
+<a id="次の記録"></a>
+## Next records
 
-2026-10-17、`python3 Maintanance/RegistryApp/sync.py`成功。58 task、88文書に欠落なし。親子・孫表示・依存・DAG・JSON往復など既存verify全項目通過。DOM表示とSafari操作は未検証。製品テストの再実行は本レビュー対象外。
+Integrated CP-011 scope-versus-contradiction distinction into OPS-070/071 materials. Registered CP-012 as OPS-073 lifetime study. Separate user statements from 姫's unverified interpretations; do not change authority rules. CP-009 trade-name consideration remains out-of-scope awaiting numbering.
 
-## 調整完了（2026-10-17 / Astra）
+<a id="検証結果"></a>
+## Verification results
 
-続くユーザー指示でCP-009をOPS-075へ登録し、CP-009〜013を原文付き履歴へ移した。Claude/Fableの現行依頼票とqueueを照合し、返却済み成果の受入待ち・採番待ちは0件。OPS-074の補完作業、OPS-073/075の未着手検討は正式taskとして残り、完了を偽装しない。今回の調整処理から新たな発注は行わない。
+2026-10-17: `python3 Maintanance/RegistryApp/sync.py` succeeded: 58 tasks, 88 documents, no missing. All existing verify including parent/grandchild/dependency/DAG/JSON roundtrip passed. DOM/Safari interaction unverified; product reruns outside review.
 
+<a id="調整完了2026-10-17--astra"></a>
+## Coordination completed (2026-10-17 / Astra)
+
+Following user instruction, registered CP-009 as OPS-075 and archived CP-009〜013 with originals. Compared current Claude/Fable assignments/queues: zero awaiting acceptance/numbering. OPS-074 supplements and unstarted OPS-073/075 remain formal tasks, not falsely completed. No new assignment from this coordination.
 
 ## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）
 

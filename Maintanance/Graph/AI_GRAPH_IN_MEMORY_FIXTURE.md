@@ -1,92 +1,99 @@
 # AI smell判定スキームのSQLiteインメモリfixture
 
-最終更新: 2026-10-08 / Claude（GRAPH-007実装結果）。task定義はCodex
+## TL;DR（人間向け）
 
-## 位置づけ
+共有スキーム候補（GRAPH-006）を、SQLite `:memory:`上で一つのcommandから再現できる最小fixtureへ変換したGRAPH-007の正本。Claudeが実装し、Codexが期待件数の一致とlocal DB非依存を確かめてDONEで受け入れた。task→symbol辺はrepository根拠がないため作らず（0件を「導出元なし」として再現）、自動抽出やスキームの正式採用は含まない。
 
-この文書は、`GRAPH-006`で作成した共有スキーム候補を、SQLite `:memory:`上で実行可能な最小fixtureへ
-変換する`GRAPH-007`の正本である。
+Last updated: 2026-10-08 / Claude (GRAPH-007 implementation result). Task definition by Codex
 
-`GRAPH-006`は、人が読んで関係を再調査できるschema候補までを作ったが、DDL、fixture投入、query実行を
-一つのcommandで再現する成果物は作っていない。本taskはその不足だけを埋める。
+<a id="位置づけ"></a>
+## Position
 
-## 担当と受入
+This document is the canonical of `GRAPH-007`, which converts the shared schema candidate made in `GRAPH-006` into a minimal fixture runnable on SQLite `:memory:`.
 
-- 実装担当: Claude
-- 受入担当: Codex
-- ユーザー判断: SQLite `:memory:`を最小fixtureに使うことで確定済み
+`GRAPH-006` produced a schema candidate that people can read and re-investigate relations from, but no deliverable that reproduces DDL, fixture loading and query execution with one command. This task fills only that gap.
 
-## 目的
+<a id="担当と受入"></a>
+## Owners and acceptance
 
-空のSQLiteインメモリDBへ共有schemaとRBT-017 fixtureを投入し、「隣を引く」queryが
-`Graph/AI_GRAPH_SHARED_SCHEMA.md`の期待結果を返すことを、Claude専用DBなしで再現可能にする。
+- Implementation: Claude
+- Acceptance: Codex
+- User decision: settled to use SQLite `:memory:` for the minimal fixture
 
-## 必須成果物
+<a id="目的"></a>
+## Purpose
 
-保存場所はこの文書と同じ`Maintanance/`配下とし、少なくとも次をtracked fileとして作る。
+Load the shared schema and the RBT-017 fixture into an empty SQLite in-memory DB, and make it reproducible, without Claude's private DB, that the "pull the neighbours" query returns the expected results in `Graph/AI_GRAPH_SHARED_SCHEMA.md`.
 
-1. SQLite用DDL
+<a id="必須成果物"></a>
+## Required deliverables
+
+Store them under `Maintanance/`, like this document, and create at least the following as tracked files.
+
+1. DDL for SQLite
    - node
    - edge
    - provenance
    - confidence
-   - 必要な制約とindex
-2. RBT-017 fixtureの`INSERT`
+   - the needed constraints and indexes
+2. `INSERT`s of the RBT-017 fixture
    - `subscript(_:)`
    - `swapAt(_:_:)`
-   - test、document、commit、taskのnode
-   - 既知のedge
-3. 「隣を引く」`SELECT`
-   - symbolを入力としてtest、document、commit、taskを区分して返す
-   - provenance、confidence、evidenceを結果へ含める
-4. 一つのcommandによる再現手順
-   - 空の`:memory:`から開始する
-   - repository外のDB fileを参照しない
-   - 実行後に期待件数を確認できる
-5. 期待結果
-   - `subscript(_:)`: test 2、document 9、commit 6、task 0
-   - `swapAt(_:_:)`: test 4、document 8、commit 7、task 0
+   - test, document, commit and task nodes
+   - the known edges
+3. The "pull the neighbours" `SELECT`
+   - takes a symbol as input and returns test, document, commit and task separately
+   - includes provenance, confidence and evidence in the result
+4. A reproduction procedure with one command
+   - starts from an empty `:memory:`
+   - does not refer to DB files outside the repository
+   - the expected counts can be checked after running
+5. Expected results
+   - `subscript(_:)`: test 2, document 9, commit 6, task 0
+   - `swapAt(_:_:)`: test 4, document 8, commit 7, task 0
 
-SQL fileを分割する場合も、利用者が順番を推測せず一つのcommandで実行できる入口を用意する。
+Even if the SQL is split into files, provide an entry point that runs with one command, without users guessing the order.
 
-## A-1とA-2の扱い
+<a id="a-1とa-2の扱い"></a>
+## Handling A-1 and A-2
 
-### task→symbol辺の不在
+<a id="tasksymbol辺の不在"></a>
+### Absence of task → symbol edges
 
-RBT-017、RBT-018、RBT-026をtask nodeとしてfixtureへ含めてもよいが、repository根拠のある
-`task_scopes` edgeは存在しないため作らない。「本当は関係する」というAI推定をconfirmed edgeへ
-昇格しない。queryのtask結果0件を期待値として固定する。
+RBT-017, RBT-018 and RBT-026 may be included as task nodes in the fixture, but `task_scopes` edges with repository grounds do not exist, so do not create them. Do not promote the AI's guess "they are really related" into a confirmed edge. Fix the query's task result of 0 as the expected value.
 
-### fixtureによる自己参照汚染
+<a id="fixtureによる自己参照汚染"></a>
+### Self-reference contamination by the fixture
 
-本taskは抽出器を実装しないため、SQL fixtureへ投入するdocument nodeを明示列挙する。
-fixtureやtask定義文書自身をdocument nodeへ追加せず、期待値を自己増殖させない。この除外が
-手作業fixture固有であることをREADMEまたは再現手順へ明記する。
+This task does not implement an extractor, so explicitly enumerate the document nodes loaded into the SQL fixture. Do not add the fixture or the task definition document itself as document nodes, so the expected values do not self-multiply. State in the README or the reproduction procedure that this exclusion is specific to the hand-made fixture.
 
-## 対象外
+<a id="対象外"></a>
+## Out of scope
 
-- source、compiler index、Git、Markdownからの自動抽出
-- Claude専用graph DBの読込、変換、更新
-- 永続SQLite fileの作成
-- production source、test、build設定の変更
-- task→symbol辺の保存方式決定
-- shared schemaの正式採用
-- 新しいsmell探索
+- Automatic extraction from source, compiler index, Git or Markdown
+- Reading, converting or updating Claude's private graph DB
+- Creating a persistent SQLite file
+- Changes to production source, tests or build settings
+- Deciding how task → symbol edges are stored
+- Formally adopting the shared schema
+- New smell searches
 
-## 停止条件
+<a id="停止条件"></a>
+## Stop conditions
 
-- SQLite `:memory:`以外の保存基盤が必要になった場合は実装せず停止する。
-- 期待件数を変える必要が生じた場合は、根拠と差を記録してCodexへ返す。
-- fixtureへAI推定のedgeを事実として追加する必要が生じた場合は停止する。
-- 自動抽出が必要になった場合は、本taskへ含めず後続task候補として分離する。
+- If a storage base other than SQLite `:memory:` becomes necessary, do not implement it and stop.
+- If the expected counts need to change, record the grounds and the difference and return them to Codex.
+- If adding AI-guessed edges to the fixture as facts becomes necessary, stop.
+- If automatic extraction becomes necessary, do not include it in this task; separate it as a follow-up task candidate.
 
-## 完了条件
+<a id="完了条件"></a>
+## Completion conditions
 
-- 新しい環境で、一つのcommandから空のSQLite `:memory:`へDDLとfixtureを読み込める。
-- queryが2 symbolについて期待件数と根拠行を返す。
-- task結果0件を「導出元なし」として再現できる。
-- SQLと再現手順だけで実行でき、Claudeのlocal DBを参照しない。
-- Codexがcommandを実行し、結果を受入欄へ記録する。
+- In a new environment, one command loads the DDL and fixture into an empty SQLite `:memory:`.
+- The query returns the expected counts and the evidence rows for the 2 symbols.
+- A task result of 0 can be reproduced as "nothing to derive from".
+- It runs with only the SQL and the reproduction procedure, without referring to Claude's local DB.
+- Codex runs the command and records the result in the acceptance field.
 
 ## Claude実装結果（2026-10-08）
 
@@ -127,12 +134,13 @@ sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql
   - task区分のstatusを`derived`にした場合: `FAIL: 4 mismatch(es)`
   - 期待側と実際側の両方を数えるため、1区分のずれで2件になる。
 
-## Codex受入欄
+<a id="codex受入欄"></a>
+## Codex acceptance field
 
-2026-10-08 / Codex。
+2026-10-08 / Codex.
 
-- 再現command: 受入。repository rootから`sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql`を実行した。
-- 期待件数: 受入。`subscript`のtest 2・document 9・commit 6・task 0、`swapAt`のtest 4・document 8・commit 7・task 0が一致し、`PASS: all 8 section counts match`を確認した。
-- local DB非依存: 受入。空の`:memory:`からtracked SQL 4 fileだけを読み、外部キー違反なし。
-- 既知制約: taskは`nothing to derive from`、fixture文書は手動列挙対象外として期待値の自己汚染を防ぐ。
-- GRAPH-007判定: `DONE`
+- Reproduction command: accepted. Ran `sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql` from the repository root.
+- Expected counts: accepted. `subscript` test 2, document 9, commit 6, task 0 and `swapAt` test 4, document 8, commit 7, task 0 matched, and `PASS: all 8 section counts match` was confirmed.
+- Independence from a local DB: accepted. Only the 4 tracked SQL files are read from an empty `:memory:`, with no foreign-key violations.
+- Known constraints: task is `nothing to derive from`, and the fixture documents are excluded from manual enumeration to prevent self-contamination of the expected values.
+- GRAPH-007 judgment: `DONE`

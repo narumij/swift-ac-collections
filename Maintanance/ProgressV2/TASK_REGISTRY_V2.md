@@ -117,6 +117,7 @@
 | `OPS-133` | `DONE` | Astra | [EXECUTION] 見取り図から読む正本へ人間向け要約を追加 | 2026-10-19ユーザー依頼。HEAD以降の見取り図39ノードの参照40文書と独立欄7文書にTL;DRを追加し受入。判断・本文・状態を変更せず、履歴を現行条件に読み替えない | `Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md` |
 | `OPS-134` | `DONE` | Astra | [EXECUTION] 作業凡例の常時表示と恒久研究の分類漏れを補正 | 2026-10-19ユーザー指摘。凡例を折りたたみ、OPS-103の既決恒久扱いを常設ID一覧へ反映。状態や研究内容は変えない | `Maintanance/Current/STUDIO_READING_SMALL_FIXES.md` |
 | `OPS-135` | `DONE` | Astra | [EXECUTION] トップバーにもコミット承認状態と一括承認を表示 | 2026-10-19ユーザー依頼。既存承認欄と同じ状態・処理を共有し、取得失敗・処理中の停止も同期する | `Maintanance/Current/STUDIO_HEADER_APPROVAL.md` |
+| `OPS-142` | `ACTIVE` | Astra調整（対象・受入） / Sol・姫（補助） | [EXECUTION] 現行・旧正本の日本語要約と詳細英語化 | 停止後照合と再割当済み。固定102件を受入確認中、追加候補17件を姫へ限定依頼。控え保持 | `Maintanance/Current/CANONICAL_LANGUAGE_MIGRATION.md` |
 | `OPS-143` | `DONE` | Astra / 姫 | [DISCOVERY] 速やかな停止と即時停止の区分を協議 | 協議のみ再開。翻訳・実装は停止を維持 | `Maintanance/Current/STOP_MODES_DISCUSSION.md` |
 | `OPS-144` | `DONE` | ユーザー / Astra（相談補助） | [DECISION] コンシェルジュ役の分担を決める | ユーザーが窓口と背後調整役の分担を承認。占有窓口・コミット実行は調整役へ | `Maintanance/Current/CONCIERGE_ROLE_DISCUSSION.md` |
 | `OPS-145` | `DONE` | Astra / 姫（確認） | [EXECUTION] 停止・再開・担当交代の占有ルールを整備 | 既存受渡し規則に補足。翻訳再開・UI実装は含めない | `Maintanance/Current/FILE_OCCUPANCY_HANDOFF.md` |
@@ -212,6 +213,7 @@
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `OPS-142` | `OPS-144` | `SEQUENCE` | ユーザーとの役割協議完了後に再開する。停止中の差分確認から始める |
 | `OPS-144` | `OPS-145` | `SEQUENCE` | 占有の受渡し規則を役割協議の入力にする |
 | `OPS-144` | `OPS-143` | `SEQUENCE` | 停止区分の協議結果を受けてユーザーと役割を相談する |
 | `PERM-081` | `PERM-060` | `SEQUENCE` | 現行再現と公開面の影響整理を判断材料とする。調査完了は案の承認ではない |
@@ -436,6 +438,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-131` |
 | `OPS-048` | `OPS-132` |
 | `DOC-030` | `OPS-133` |
+| `DOC-030` | `OPS-142` |
 | `OPS-048` | `OPS-134` |
 | `OPS-048` | `OPS-135` |
 | `OPS-043` | `OPS-123` |

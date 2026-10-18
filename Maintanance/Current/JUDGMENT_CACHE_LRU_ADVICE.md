@@ -9,24 +9,26 @@
 <!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
 
 
-OPS-100 / 2026-10-18 / 作成Astra。ユーザー指定で姫へ依頼。OPS-099の判断材料を集める仕事。
+OPS-100 / 2026-10-18 / authored by Astra. Assigned to Hime at the user's direction to gather decision material for OPS-099.
 
-## 依頼
+<a id="依頼"></a>
+## Request
 
-[LRU・保持件数制限案](JUDGMENT_CACHE_LRU_PROPOSAL.md)について、姫自身の利用経験から意見をください。賛成を前提にせず、厳密なLRUや上位10件が不要ならその理由と簡単な代案も歓迎します。
+Give advice on the [LRU/retention-count proposal](JUDGMENT_CACHE_LRU_PROPOSAL.md) from your own usage experience. Agreement is not assumed; reasons against strict LRU/top ten and simpler alternatives are welcome.
 
-1. 今のキャッシュで、手元から外せると楽になるものはあるか。具体例は覚えている範囲でよい。
-2. 「読んだ」ではなく「判断に使った」を利用時点とする記録は、軽く運用できるか。ファイル／判断単位、固定枠も含め、維持の手間をどう見るか。
-3. 忘れると危ない情報、再取得時の確認、正本への入口をどう残すか。
-4. 試すなら最小の形と中止条件は何か。現状維持や別方式を含め、理由付きの推奨を短く。
+1. Would removing anything from your immediate cache make work easier? Use concrete examples you remember.
+2. Can records of use mean 「判断に使った」 rather than merely 「読んだ」, without excessive effort? Consider maintenance at file/decision granularity and fixed slots.
+3. What is dangerous to forget, what needs checking on retrieval, and how should canonical entry points remain available?
+4. If testing, what minimum form and stopping conditions would you recommend? Briefly explain, including retaining the present approach or another method.
 
-## 入力・境界
+<a id="入力境界"></a>
+## Inputs and boundaries
 
-主入力はOPS-099の上記提案と、OPS-097の[返却・任意感想](REGISTRY_STUDIO_LAYOUT_CACHE_REFRESH.md)。自分のキャッシュは必要なものだけ参照してよい。全履歴や他担当のキャッシュを巡回しない。測っていない効果は推定、経験と提案は区別する。不明なら不明でよく、意見のための実験・計測は不要。
+Main inputs: the OPS-099 proposal above and OPS-097's [Return/optional observations](REGISTRY_STUDIO_LAYOUT_CACHE_REFRESH.md). Read only necessary parts of your own cache; do not survey all history or other owners' caches. Label unmeasured effects as estimates and distinguish experience from proposals. Unknown is acceptable; no experiment or measurement is needed to give an opinion.
 
-編集対象は本書のReturnのみ（自分の感想ログへの既存の任意記入権は維持）。キャッシュ更新ではないので、キャッシュ更新前commitを要求する作業ではない。キャッシュの移動・削除・利用時刻更新、製品・Studio・Registry・依頼本文の編集、実装、commitは行わない。
+Edit only this document's Return, retaining the existing optional permission for your own observations log. This is not a cache update and therefore does not require a pre-update commit. Do not move/delete caches or update usage times; do not edit product, Studio, Registry or assignment prose, implement changes or commit.
 
-返却で占有をAstraへ戻す。Astraが助言の範囲と不明点を確認してOPS-099へ接続する。採否はユーザー判断であり、姫の推奨を運用規則へ自動昇格させない。
+Return ownership to Astra with the response. Astra checks advice scope/unknowns and connects it to OPS-099. Adoption is the user's decision; Hime's recommendation does not automatically become an operating rule.
 
 ## Return（姫記入）
 
@@ -69,10 +71,11 @@ OPS-100 / 2026-10-18 / 作成Astra。ユーザー指定で姫へ依頼。OPS-099
 - 元に戻す方法：本文は退避先に残っているので、索引の一行から戻せる。
 - 不明：メモリー索引（`MEMORY.md`）にも同じことをするかどうか。効果はこちらのほうが大きいかもしれない（推定）。ただし対象外なので、ここでは意見にとどめる。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-依頼した4観点への回答と、経験・推定・提案・不明の区別を確認し、OPS-099への助言として受入。原Returnは変更しない。キャッシュ量・自動メモリーの負担は姫の自己報告として扱い、Astraによる計測結果や全担当共通の事実にはしない。依頼終了、commit待ち。
+Accepted as advice for OPS-099 after checking answers to the four requested perspectives and distinctions between experience, estimate, proposal and unknown. Preserve the original Return. Cache-volume/automatic-memory burden is Hime's self-report, not Astra's measurements or facts common to all participants. Assignment ended; awaiting commit.
 
-重要な入力は、容量制限より古い状態の写しが問題である可能性、利用記録そのものの負担、低頻度の禁止・保留判断をLRUで失う危険。厳密LRU見送りやDONE時の試行は未採用。Return記載は参照の証拠であって判断への実効利用の測定ではなく、記載がないことも未使用の証明にはしない。5件で退避なしも全般的な無効性の証明ではない。MEMORY.mdへの対象拡張・キャッシュ変更・掃除は依頼しない。
+Important inputs: stale state copies may be the problem rather than capacity, recording use itself has a cost, and LRU may lose infrequent prohibitions/on-hold decisions. Deferring strict LRU or trying a DONE-time check is not adopted. A Return entry evidences reference, not measured effective use in judgment; absence does not prove nonuse. No eviction among five entries does not prove general ineffectiveness. No expansion into MEMORY.md, cache changes or cleanup is requested.
 
-2026-10-18：ユーザーcommit承認によりOPS-100をDONEとする。OPS-101の試行は別件として継続。
+The user's commit approval on 2026-10-18 makes OPS-100 DONE. OPS-101 continues separately.

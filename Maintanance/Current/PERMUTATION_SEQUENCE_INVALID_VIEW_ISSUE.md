@@ -6,51 +6,57 @@
 
 通常公開型はSequence非準拠なので、製品全体のバグ確定や修正完了にはしません。実験アダプターの扱いはPERM-081へ引き継いでいます。
 
-<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+<!-- OPS-133: 2026-10-19 / Astra. Reading entry; does not replace canonical decisions/status. Review with conclusion/boundary changes. -->
 
+Recorded 2026-10-16 by Astra. Task PERM-060.
 
-記録：2026-10-16、Astra。task：PERM-060。
+<a id="ユーザー判断と現在の範囲"></a>
+## User decision and current scope
 
-## ユーザー判断と現在の範囲
+The user directed 「これはバグなので、課題に復活」 and delegated reactivation method. Changed the frozen adoption question 「Sequence表面を製品候補として検討するか」 to ACTIVE DISCOVERY on reproduction, impact and repair requirements. [Task Registry](../ProgressV2/TASK_REGISTRY_V2.md) is canonical for status.
 
-ユーザーが「これはバグなので、課題に復活」と指示し、復帰方法を委任した。旧「Sequence表面を製品候補として検討するか」という凍結判断を、バグの再現・影響範囲・修正要求を整理するDISCOVERYとしてACTIVEへ戻した。状態の正本は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)。
+<a id="問題"></a>
+## Problem
 
-## 問題
+The [experiment](../Technical/NextPermutationsSequenceExperiment.md) passes tests-only RuntimeCheckedPermutationSequence to `Array(sequence)`; later next() and terminal nil invalidate Views, leaving collected elements unreadable. Producing unusable results with ordinary Sequence operations is the issue.
 
-[実験記録](../Technical/NextPermutationsSequenceExperiment.md)では、tests-onlyのRuntimeCheckedPermutationSequenceを`Array(sequence)`へ渡すと、次のnext()と終端nilの取得でViewが失効し、完成した配列の要素を読めなくなる。通常のSequence操作で利用できない結果を作ることが、この課題の対象である。
+Adapter is in [tests](../../Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift). Current [normal public type](../../Sources/NextPermutationModule/NextPermutations.swift) and [borrowed public type](../../Sources/NextPermutationModule/BorrowedNextPermutations.swift) explicitly do not conform to Sequence. Do not claim the same operation is possible in the public product.
 
-実験adapterは[テスト](../../Tests/PermutationTests/NextPermutationsSequenceExperimentTests.swift)内にある。現行の[通常公開型](../../Sources/NextPermutationModule/NextPermutations.swift)と[借用公開型](../../Sources/NextPermutationModule/BorrowedNextPermutations.swift)はSequence非準拠と明記されている。公開製品で同じ操作が可能だという確認には広げない。
+<a id="調査の到達点"></a>
+## Investigation goals
 
-## 調査の到達点
+- Reproduce valid sequential use versus collection invalidation with current toolchain/experimental code.
+- Identify public API, adapter and example impact, including shared advancement/invalidation through iterator copies.
+- Return required user behavior and repair scope with evidence.
 
-- 現行toolchain・現行実験コードで、適法な逐次利用と配列収集時の失効を区別して再現する。
-- 公開API、実験adapter、利用例への影響範囲を特定する。Iteratorコピーによる共有進行と失効が関係する範囲も確認する。
-- 利用者に成立させる必要のある動作と、不具合を防ぐために必要な修正範囲を根拠付きで返す。
+Past successes are evidence, not this task's reruns. At this stage only reactivation/material/public-declaration checks occurred; no reproduction/fix yet.
 
-実験の成功記録は過去の証拠として使い、今回の再実行結果にはしない。今回行ったのは課題復帰と資料・公開宣言の確認であり、再現試験や修正はまだ実施していない。
+<a id="判断と修正の境界"></a>
+## Decision and repair boundaries
 
-## 判断と修正の境界
+Do not decide product Sequence adoption, returned-value ownership or acceptable copy/performance cost here, or designate the entire temporary-View contract a bug. Separate new contract/product decisions from findings and return them to the user. Define approved repairs separately.
 
-Sequenceの製品導入、返す値の所有方式、copy・性能コストの許容を、この調査で決定しない。現行の一時View契約全体をバグとして変更する指示にも広げない。修正に公開契約や製品方針の新しい判断が必要なら、調査結果から判断点を分離し、ユーザーへ返す。方針が定まった修正は別の実行範囲として具体化する。
+Accepted investigation is not a fixed bug. Record handoff of unresolved repair/decisions before closure.
 
-調査結果が受け入れられても、バグ修正済みとは扱わない。未解決の修正・判断の引継ぎ先を記録してから調査を閉じる。
+<a id="経緯"></a>
+## History
 
-## 経緯
+Preserved [frozen original](../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md). This explicit direction replaces old adoption/freeze conditions. Keep fixed ID, no renumbering.
 
-[凍結時の原文](../Archived/PERM-060_BEFORE_REACTIVATION_2026-10-16.md)を保存した。旧採否待ちや凍結条件は今回の明示指示で置き換えられた。固定IDは維持し、再採番しない。
+<a id="現行再現受入2026-10-18--astra"></a>
+## Current reproduction and acceptance (2026-10-18 / Astra)
 
-## 現行再現・受入（2026-10-18 / Astra）
+Evidence revision `76a96cf7123d9dfbd63a1a652160802b27843dff`. Apple Swift 6.4 (swiftlang-6.4.0.34.1), arm64 macOS. `swift test -c debug --filter NextPermutationsSequenceExperiment` succeeded: 6 XCTest + 2 Swift Testing death tests, 8 total/0 failures. [Full log](../Evidence/PERM-060/2026-10-18-debug.log). Release/ASan/compatibility traits excluded; do not use existing timing-test numbers for performance judgment.
 
-根拠版 `76a96cf7123d9dfbd63a1a652160802b27843dff`。Apple Swift 6.4 (swiftlang-6.4.0.34.1)、arm64 macOS。`swift test -c debug --filter NextPermutationsSequenceExperiment` 成功。XCTest 6件とSwift Testing death test 2件、計8件失敗0。[完全ログ](../Evidence/PERM-060/2026-10-18-debug.log)。Release・ASan・互換traitは今回対象外。既存timing testの数値は性能判断に使用しない。
+- Sequential consumption by `map(Array.init)` and in-loop copying passes. New iterators are independent; copied iterators advance shared state.
+- Reading old View startIndex after `Array(sequence)` and reading an old View after next on an iterator copy both produced expected traps.
+- `NextPermutations.next()` closes the generation before branching, including terminal nil. Adapter returns that View directly as Element; retained Views are invalid when collection finishes.
+- Public NextPermutations/BorrowedNextPermutations explicitly do not conform to Sequence; adapter is private in tests. This reproduction alone does not establish needed normal-public-API repairs.
+- `Compatibility/AtCoder2025/PermutationsAtCoder2025.swift` has another Sequence implementation. Tests are under `!COMPATIBLE_ATCODER_2025`; no compatibility safety/defect conclusions included.
 
-- `map(Array.init)` とfor内コピーの逐次消費は成功。新規iterator同士は独立、コピーしたiteratorは同じ状態を進める。
-- `Array(sequence)`後の古いViewのstartIndex読取りと、iteratorコピー側のnext後の古いView読取りは、それぞれ期待したtrapで終了。
-- `NextPermutations.next()`は分岐の前に世代を閉じる。終端nilも例外でない。実験adapterはこのViewをそのままElementとして返すので、収集完了時には保持したViewが有効ではない。
-- 通常公開型NextPermutationsとBorrowedNextPermutationsはSequence非準拠を明記。実験adapterはテストファイル内private。したがって今回の再現から通常公開APIの修正必要性までは導けない。
-- `Compatibility/AtCoder2025/PermutationsAtCoder2025.swift`には別のSequence実装がある。今回の試験は `!COMPATIBLE_ATCODER_2025` 条件内であり、互換側の安全性・不具合有無をこの結果へ含めない。
+Accepted investigation. Product/test code unchanged. Not fixed; hand adapter policy to [PERM-081](PERMUTATION_SEQUENCE_ADAPTER_DECISION.md). Later implementation scope follows that decision.
 
-調査を受入。製品・テストコードは変更していない。修正済みではなく、実験アダプターの扱いを決める[PERM-081](PERMUTATION_SEQUENCE_ADAPTER_DECISION.md)へ引継ぐ。判断後の実装修正は別範囲で定める。
+<a id="一時作業物"></a>
+## Temporary artifacts:
 
-## 一時作業物:
-
-`/tmp/astra-perm060-test.log`（実体 `/private/tmp/astra-perm060-test.log`）、2026-10-18 Astra作成、限定試験ログ。上記Evidenceへ保存済み、削除可。通常の.buildは共有build cacheとして保持。
+`/tmp/astra-perm060-test.log` (realpath `/private/tmp/astra-perm060-test.log`), Astra, 2026-10-18, limited-test log. Saved to Evidence above; deletable. Retain ordinary .build as shared build cache.

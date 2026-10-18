@@ -1,40 +1,49 @@
 # 作業イベント・コミットの二段帯（OPS-111）
 
-2026-10-18 Astra。親OPS-048。OPS-110の現在工程だけの帯を、ユーザーの意図に沿う二段の履歴カード帯へ拡張する。
+## TL;DR（人間向け）
 
-## 目的・受入条件
+担当が記録する作業イベントと実際のGitコミットを二段の履歴帯に示し、往復や差し戻しを観察できるようにした実装記録。隔離試験・独立確認・ユーザーの表示確認を経て完了した。イベント帯は観察用であり正式な状態・受入の正本ではなく、実ブラウザの全操作の非干渉を網羅保証したものでもない。
 
-ユーザーが「差し戻した」「往復が多い」と作業の流れを観察できること。
+2026-10-18, Astra. Parent OPS-048. Expand OPS-110's current-stage-only strip into two history-card rows reflecting the user's intent.
 
-1. 上段は担当が発生時に追記する作業イベント。タスク番号、イベント名、担当、時刻、任意の短い理由を持つ。依頼・作業・確認・受入・差し戻し・再確認・完了・コミット待ち・コミットを扱う。同じタスクの反復も消さない。自動で成功や完了を推測しない。
-2. 下段は現在checkoutのGit HEADから読んだ実際のコミット。短いSHAと件名をカードにし、必要に応じて日時・完全SHAを確認できる。イベントにcommit SHAがある場合は対応を示せる。
-3. 両段とも横スクロール。左から古→新。初回は最新側、端を見ている場合だけ新規追従し、過去を見ている場合は閲覧位置を維持。ポーリングで既存カードを丸ごと作り直さずフォーカスを保つ。
-4. 固定の小さな二段領域。約3秒でこの情報だけ取得。編集版、未保存編集、選択、差分、全体render、syncに影響させない。非表示停止・タイムアウト・重複取得防止を維持。不調は各段で最終正常情報を残して示す。
-5. 上段の原記録はGit対象外 RegistryApp/Activity/events.jsonl（同ディレクトリの.gitignoreで除外）へ追記し、sync・再起動・commit後も削除しない。正式な判断・受入・タスク状態の正本ではない。初回表示は直近200イベント・30コミットでよく、原記録の無断圧縮はしない。
-6. ローカルCLIで安全にイベントを追記できるようにし、書式・起動例をREADMEに。HTTPは読み取り専用固定経路。JSON/文字列検証、textContentによる表示、Gitコマンド固定引数・タイムアウトを守る。過去の工程を推測して埋めない。
+<a id="目的受入条件"></a>
+## Purpose and acceptance criteria
 
-## 作業依頼
+Enable users to observe flow such as 「差し戻した」 and 「往復が多い」.
 
-Sol実装：RegistryApp内の実装・必要なテスト・README・Activity/.gitignoreのみ編集可。Sources、Registry、Rules、その他正本、Inbox、既存利用中サーバーは変更不可。commit・再起動・UI操作なし。初回の現在工程表示を二段帯へ置き換える。互換のために旧work-progress読取関数を残すことは可。実装後に限定テストを実施し返却。live syncによる生成はAstraが担当。
+1. Upper row: owner-appended events at occurrence, with task ID, event, owner, time and optional short reason. Cover request/work/verification/acceptance/return/recheck/completion/awaiting-commit/commit. Keep repetitions; infer neither success nor completion.
+2. Lower row: actual commits read from current checkout Git HEAD, showing short SHA/subject and access to date/full SHA. Events with commit SHA may show correspondence.
+3. Both horizontally scroll old→new. Initially show newest; follow additions only if already at the end, preserving historical viewing position otherwise. Avoid rebuilding cards on polling; retain focus.
+4. Small fixed two-row region fetching only this data about every 3 seconds. No effects on editing document, unsaved edits, selection, diff, global render or sync. Retain hidden-page pause, timeout and nonoverlap. Each row retains last good data on failure.
+5. Append source events to Git-excluded RegistryApp/Activity/events.jsonl using that directory's .gitignore; do not delete on sync/restart/commit. Not canonical for judgments, acceptance or task status. Initially 200 events/30 commits suffice; no unauthorized source compression.
+6. Safe local event CLI, format/examples in README; HTTP read-only fixed routes. Validate JSON/strings, display with textContent, fixed Git arguments/timeouts. Do not invent past stages.
 
-Sol確認：実装後に独立検証し、受入を妨げる指摘だけを返す。修正しない。Astraが受入・記録反映する。
+<a id="作業依頼"></a>
+## Assignments
 
-## 記録
+Implementation Sol: only RegistryApp implementation/necessary tests/README/Activity/.gitignore. No Sources, Registry, Rules, other canonicals, Inbox or live server changes. No commit/restart/UI operations. Replace initial current-stage display with two rows; retaining old work-progress readers for compatibility is allowed. Run limited tests/return. Astra handles live sync.
 
-設計・依頼準備済み。commit承認の事前化は別の制度相談であり、本依頼のcommit許可ではない。
+Checker Sol: independently validate after implementation, return only acceptance-blocking findings; no fixes. Astra accepts/reflects records.
 
-## 実装・返却・受入（2026-10-18）
+<a id="記録"></a>
+## Record
 
-作業SolがRegistryAppのactivity.py・Activity/.gitignore・serve.py・index.template.html・README・専用試験2本と旧JS試験入口を変更。上段は直近200イベント、下段はHEADの直近30コミット。元のイベント履歴は保持する。
+Design/assignment prepared. Advance commit authorization is a separate policy discussion, not permission to commit here.
 
-Astraの途中確認で、表示上限によって先頭カードが外れると閲覧位置がずれる点を差し戻し。残る可視カードと位置の組で維持し、カードにフォーカス中は新着へ追従しないよう補正。検証を追加し、確認Solが独立照合した。今回の実際の往復をイベントCLIで記録した。過去工程の推定記録は作っていない。
+<a id="実装返却受入2026-10-18"></a>
+## Implementation, return and acceptance (2026-10-18)
 
-Python活動試験3件（複数プロセスの追記を含む）、旧読取互換試験2件、JSの反復保持・DOM維持・スクロール位置・通信復帰・非表示停止・重複取得防止・段ごとの失敗分離の試験が成功。確認Solは実HEADの読み取り、履歴保持、固定経路も独立確認。Astraのlive sync/既存verifyも成功。
+Worker Sol changed RegistryApp/activity.py, Activity/.gitignore, serve.py, index.template.html, README, two dedicated tests and the old JS test entry. Upper row: 200 events; lower: HEAD's 30 commits. Original event history retained.
 
-コードと隔離試験の範囲で受入。実ブラウザの見た目・操作維持と、再起動後の実サーバー通信は未確認。既存サーバーや画面は操作していない。サーバー再起動・ページ再読込で利用可能。正式な受入記録は本書、イベント帯は観察用とする。
+Astra requested rework when removing oldest cards at the display limit shifted viewing position. Fixed by preserving a surviving visible card/position pair and not following new arrivals while a card is focused. Added checks; checker Sol independently compared. Recorded actual round trips through the CLI, not reconstructed past stages.
 
-参照した判断キャッシュ：作業Sol・確認Solともになし。実装・受入完了、commit待ち。commitの許可はまだ得ていない。
+Python activity tests 3 (including multiprocess append), old-reader compatibility tests 2, and JS repeated retention/DOM/scroll/recovery/hidden-page/nonoverlap/per-row-failure tests passed. Checker independently checked actual HEAD reading, history retention and fixed routes. Astra live sync/existing verify passed.
 
-## ユーザー確認と終了
+Accepted within code/isolated-test scope. Real browser appearance/interaction retention and restarted live-server communication unverified. Existing server/screens untouched. Available after server restart/page reload. This document is formal acceptance; strip is observational.
 
-2026-10-18、ユーザーから「みれました。コミットを」と表示確認・commit承認を受領し完了。全操作の非干渉を実ブラウザで網羅確認した意味には広げない。commit後は実際のSHAを作業イベントに追記し、これまでの履歴を保持する。
+Judgment caches consulted: neither Sol read any. Implementation/acceptance complete, awaiting commit; permission not yet obtained.
+
+<a id="ユーザー確認と終了"></a>
+## User confirmation and closure
+
+2026-10-18: user display confirmation/commit approval 「みれました。コミットを」; complete. Not comprehensive real-browser noninterference assurance. Append actual SHA after commit and keep prior history.

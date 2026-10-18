@@ -1,28 +1,35 @@
 # 選択ノード中心の接続表示
 
-2026-10-18 / 作成 Astra / OPS-091 / 親 OPS-048。ユーザー「特定のノードと接続されてる辺とノードを表示する機能」「姫に依頼かな」に基づく限定実装依頼。
+## TL;DR（人間向け）
 
-## 目的と範囲
+選択したタスクや到達点の直接の前提・後続を確認し、手動で先へ展開する「接続を見る」機能の記録。実装・独立試験・同期一致を限定受入済みで、閲覧時の入力と編集版の保持を確認した。実画面はユーザー希望により未確認で、過去の全スモーク試験の成功まで保証しない。
 
-版別の全体図とは別に、特定task・マイルストーンの直接の前提と後続を確かめられるようにする。QUALITY-005の表示漏れを契機とするが、そのIDだけの特例にはしない。
+2026-10-18 / Author Astra / OPS-091 / Parent OPS-048. Limited assignment based on the user's 「特定のノードと接続されてる辺とノードを表示する機能」 and 「姫に依頼かな」.
 
-- 選択中のノードを中心に、そのノードと直接接続する前提・後続および辺を1段表示する。依存方向と中心を識別できること。
-- 必要なノードから先をユーザーの明示操作でさらに1段展開できる。自動で全グラフまで探索しない。中心変更・初期1段へ戻す操作を用意する。
-- 表示元は現在開いている編集版。版フィルターによる欠落を持ち込まず、tasks・milestones・proposalsとedges・milestoneRelationsを使う。START/ENDを含む元の端点が分かること。孤立ノードも自身を表示する。
-- カード一覧・インスペクタ等から選択したノードで使える入口を設ける。タブ・パネル等の配置と見た目は姫に任せる。既存の図・一覧・正本リンクは保持する。
-- 閲覧操作のみ。中心変更・展開・戻す操作はdoc、baseline、dirty、入力中の内容を変更しない。条件文を読めるようにし、線だけから着手可否を推定しない。
+<a id="目的と範囲"></a>
+## Purpose and scope
 
-## 受渡しと編集範囲
+Allow checking direct prerequisites/successors of a task or milestone separately from version-wide diagrams. QUALITY-005's omission prompted this, but do not special-case its ID.
 
-姫へindex.template.html、verify.cjs、必要な限定操作テスト、RegistryApp/README.md、本書Returnを受渡し。Registry・Rules・他の正本・保存方式・サーバーAPIの変更は対象外。Astraは返却まで当該実装を変更しない。
+- Show selected node, directly connected prerequisite/successor nodes and edges for one hop; distinguish center and direction.
+- Allow explicit manual one-hop expansion from a needed node, not automatic whole-graph exploration. Provide recenter/reset-to-one-hop operations.
+- Source is current editing document. Do not inherit version-filter omissions; use tasks, milestones, proposals, edges and milestoneRelations. Show original START/END endpoints; isolated nodes show themselves.
+- Provide entry from card list/inspector selections. Placement/style at 姫's discretion; retain existing diagrams/lists/canonical links.
+- Viewing only: center/expand/reset must not change doc, baseline, dirty or pending inputs. Show condition text; do not infer eligibility from lines alone.
 
-現在の作業ツリーにはAstraの未コミット変更（QUALITY-005版フィルター修正と回帰検査）がある。その内容を維持して差分を追加する。他担当の未コミット変更も戻さない。固定commitだけを入力と誤認しない。
+<a id="受渡しと編集範囲"></a>
+## Handoff and editing scope
 
-## 検証・返却
+Hand index.template.html, verify.cjs, necessary limited interaction tests, RegistryApp/README.md and this Return to 姫. Registry, Rules, other canonicals, save mechanisms and server API are excluded. Astra will not alter implementation until Return.
 
-1段の前提／後続、複数段の手動展開、中心変更・リセット、孤立ノード、START/END、追加案、重複防止を検査する。QUALITY-005→DOC-026→DOC-027とMS-SPI→DOC-027の分岐合流も確認。閲覧操作で保存差分や未適用入力が変わらないことを確認する。既存verifyとsync/checkを通す。ブラウザー操作は今回ユーザーが希望していないため行わず、実画面未確認と明記する。
+Astra's uncommitted QUALITY-005 version-filter fix/regression check is in the working tree. Retain it while adding changes; preserve other owners' edits. Do not treat a fixed commit alone as the complete input.
 
-新しい方針判断が必要なら、その点だけ停止して返す。作業拡張や既存未採番の同時処理はしない。commitは今回依頼していない。返却後Astraが受入し、ユーザーにcommitを確認する。
+<a id="検証返却"></a>
+## Verification and return
+
+Check one-hop prerequisites/successors, multi-hop manual expansion, recenter/reset, isolated nodes, START/END, proposals and deduplication. Cover QUALITY-005→DOC-026→DOC-027 and MS-SPI→DOC-027 branching/merging. Confirm view operations leave save diff and pending input unchanged. Run existing verify and sync/check. No browser operation requested by the user; explicitly mark real display unverified.
+
+Return only the new policy decision if needed and stop there. No expansion or simultaneous unnumbered work. Commit is not assigned; Astra accepts then asks the user about commit.
 
 ## Return（姫記入）
 
@@ -58,11 +65,11 @@
 
 
 
-## Astra受入
+<a id="astra受入"></a>
+## Astra acceptance
 
-2026-10-18 Astra：限定受入。実装のneighborhoodと操作ハンドラを読み、verify全項目・OPS-091 smokeを独立再実行して成功。sync/checkの一致を確認。1段の前提と後続、手動展開、中心変更、START/END・孤立・追加案、未適用入力とdoc/dirtyの保持を確認した。UIはグラフ描画ではなく接続リストであり、任せた配置・見た目の範囲として受け入れる。実画面はユーザー希望により未確認。
+2026-10-18, Astra: limited acceptance. Read neighborhood and handlers; independently reran all verify items and OPS-091 smoke successfully; confirmed sync/check agreement. Verified one-hop prerequisites/successors, manual expansion, recenter, START/END, isolated/proposal nodes, and retention of pending inputs/doc/dirty. UI is a connection list rather than graph drawing; accepted within delegated layout/style. Real display remains unverified at user preference.
 
-旧スモークのDOM stub不足は報告として保持し、今回の機能不良とは区別する。過去の検査が現在すべて通るとの保証はしない。追加修正依頼なし。OPS-091はWAITING_USER（commit確認待ち）。
+Keep the old-smoke DOM-stub deficiency report distinct from this feature's failure. Do not guarantee all historical checks currently pass. No further repair assignment. OPS-091 is WAITING_USER (commit confirmation).
 
-
-2026-10-18：ユーザーcommit承認によりOPS-091をDONE。追加依頼なし。
+2026-10-18: user commit approval made OPS-091 DONE. No further assignment.

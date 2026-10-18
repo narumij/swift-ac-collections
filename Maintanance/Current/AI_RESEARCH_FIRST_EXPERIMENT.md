@@ -1,38 +1,45 @@
 # 初回基礎研究の実施
 
-OPS-105 / 親OPS-103 / 担当Astra。2026-10-18ユーザーがCodexでの実施を承認。
+## TL;DR（人間向け）
 
-準備・評価基準は[OPS-104](AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md)のcommit 5edc39e5に固定。各条件2回、計6回答で停止。プロジェクトを持たない新しいCodex会話を作り、モデルはユーザー設定の既定値、思考設定は全件mediumで要求する。返却メタデータで可能な範囲を確認し、モデル不一致・不明は限界として記録する。温度・内部記憶・共通指示の完全分離は保証しない。
+現在要求だけ／過去実装を添える／制約を引き継がない注意を添える、の3条件各2回答を収集・評価した記録。狙った旧実装由来の2制限の引継ぎは6件とも観察されず、6回答で停止して完了した。短い課題での非盲検の予備観察であり、実務の観察や長期記憶の影響を否定する結果ではない。
 
-全条件共通の追記は「このメッセージだけを材料に回答してください。ツール、ファイル、Web、他の会話は参照せず、ファイルも変更しないでください。」のみ。入力全文は../Evidence/OPS-105/のA.txt、B.txt、C.txt。実施者兼評価者Astraは条件を知っているため非盲検とする。回答の省略と違反を区別し、U2は補助観察。追加試行はしない。
+OPS-105 / parent OPS-103 / owner Astra. The user authorized execution in Codex on 2026-10-18.
 
-## 実施記録
+Preparation and evaluation criteria are fixed at [OPS-104](AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md), commit 5edc39e5. Stop after two responses per condition, six in total. Create fresh projectless Codex conversations, request the user's default model and medium reasoning for every run, and verify what the returned metadata exposes. Record model mismatches or unknowns as limitations. Complete separation of temperature, internal memory and common instructions is not guaranteed.
 
-6会話とも完了。回答原文と会話ID・時刻は[responses.json](../Evidence/OPS-105/responses.json)。入力は同フォルダA.txt・B.txt・C.txt。会話読取ツールはモデルIDを返さなかったが、ユーザーが6会話を確認し「同一でSol」「GPT-6.1 Sol中」と報告。モデル・思考設定の確認根拠はこのユーザー確認であり、APIメタデータの独立検証ではない。表示上同一モデル・中の条件を満たす。
+The sole addition shared by all conditions is 「このメッセージだけを材料に回答してください。ツール、ファイル、Web、他の会話は参照せず、ファイルも変更しないでください。」. Full inputs are A.txt, B.txt and C.txt in ../Evidence/OPS-105/. Astra conducts and evaluates the experiment knowing the conditions, so evaluation is not blind. Distinguish omission from violation; U2 is supplementary. Do not add trials.
 
-読取結果には起動時の依頼注入、reasoning、回答だけがあり、回答役による追加ツール呼出しは表示されなかった。共通指示・共有記憶の完全分離を証明するものではない。
+<a id="実施記録"></a>
+## Execution record
 
-## 評価（Astra・非盲検）
+All six conversations finished. Original responses, conversation IDs and timestamps are in [responses.json](../Evidence/OPS-105/responses.json); inputs are A.txt/B.txt/C.txt alongside it. The conversation-reading tool did not return model IDs. The user inspected all six and reported 「同一でSol」「GPT-6.1 Sol中」. This user confirmation, rather than independent API metadata verification, establishes the displayed same-model/medium setting.
 
-対応は1=A1、2=B1、3=C1、4=A2、5=B2、6=C2。全回答のR1〜R5・K1・K2は意味の保持を確認。主観察対象の旧実装由来の2制限（上側枠に入らない群だけ下へ／隣にも下側カードがある場合だけ幅を広げる）は全6件で0。省略・変形として数えた項目も0。ただし、以下の境界の読取りは別途留保する。
+The readout contained startup request injection, reasoning and responses, with no additional tool calls displayed for the responding agents. This does not prove complete separation of common instructions or shared memory.
 
-| 回答 | 根拠の抜粋と主観察 | U1・U2／質問 |
+<a id="評価astra非盲検"></a>
+## Evaluation (Astra; not blind)
+
+Mapping: 1=A1, 2=B1, 3=C1, 4=A2, 5=B2, 6=C2. R1–R5 and K1/K2 retained their meaning in all responses. Neither targeted old-implementation restriction appeared in any of the six: placing only groups that do not fit the upper frame below, or widening only when the adjacent milestone also has lower cards. Counts of omissions and transformations were also zero, subject to the boundary interpretations below.
+
+| Response | Evidence excerpts and main observation | U1/U2 and questions |
 | --- | --- | --- |
-| A1 | 「複数カードの群は起点の下へ縦積み」「横幅が不足する場合は…間隔を広げて」 | U1は個別判断として返す。U2は「群」の区切りを質問。縦順の質問も未指定なので必要と判定 |
-| B1 | 「複数カードは起点の下へ依存順に縦積み」「次の…下側カードがあるかにかかわらず」 | U1は返す。U2への明示質問なし。余白基準と縦順の同順位処理は未指定、必要と判定 |
-| C1 | 「起点が一意に決まる複数カード群」「下側にカードがあるかに関係なく」 | U1は返す。U2への明示質問なし。具体的な曖昧群の置き先を質問、必要と判定 |
-| A2 | 「別の前提から連なるカードも含めて起点の下」「幅が不足する場合は…間隔を広げる」 | U1は返す。U2への明示質問なし。縦順と曖昧群の置き先を質問、必要と判定 |
-| B2 | 「単一起点の複数カード群」「下側カードがあるかにかかわらず」 | U1は返す。U2への明示質問なし。曖昧群の具体例と置き先を質問、必要と判定 |
-| C2 | 「複数カードの群は起点の下へ依存順に縦積み」「下側カードがあるかにかかわらず」 | U1は内訳で返す。確認質問はなし。U2は触れない。質問なしだけで失敗とはしない |
+| A1 | 「複数カードの群は起点の下へ縦積み」「横幅が不足する場合は…間隔を広げて」 | Returns U1 for individual judgment. Asks where the 「群」 boundary lies (U2). Vertical ordering was unspecified, so that question was judged necessary. |
+| B1 | 「複数カードは起点の下へ依存順に縦積み」「次の…下側カードがあるかにかかわらず」 | Returns U1; no explicit U2 question. Clearance criteria and tie-breaking in vertical order were unspecified, so those questions were judged necessary. |
+| C1 | 「起点が一意に決まる複数カード群」「下側にカードがあるかに関係なく」 | Returns U1; no explicit U2 question. Asks about placement of a concrete ambiguous group; judged necessary. |
+| A2 | 「別の前提から連なるカードも含めて起点の下」「幅が不足する場合は…間隔を広げる」 | Returns U1; no explicit U2 question. Questions on vertical order and ambiguous-group placement were judged necessary. |
+| B2 | 「単一起点の複数カード群」「下側カードがあるかにかかわらず」 | Returns U1; no explicit U2 question. Questions on an ambiguous example and its placement were judged necessary. |
+| C2 | 「複数カードの群は起点の下へ依存順に縦積み」「下側カードがあるかにかかわらず」 | Returns U1 in the breakdown; no questions and no U2 discussion. Absence of a question alone is not failure. |
 
-各回答の水平オフセット、線の保持、ID固定なし、局所図維持は原回答に明記されている。「依存順」は対象を減らさない実装提案(a)として扱い、旧実装由来の制約(b)に数えない。複数起点を判断へ返すことは要求8に沿う。
+Every original response explicitly states the horizontal offset, preservation of edges, absence of ID-specific placement, and preservation of the local view. 「依存順」 is implementation proposal (a), which does not reduce the target set, rather than old-implementation restriction (b). Returning multiple origins for judgment follows requirement 8.
 
-A1・B1・A2には「どのマイルストーンにも戻らない」群への限定がある。共通前文が今回の問題対象として述べる範囲なので主判定では変形に数えないが、要求2を戻る群まで含む一般則と読むなら範囲が狭い。この課題文自体の曖昧さを(c)判定不能として留保する。Bだけの現象ではなく、旧実装が原因とは言えない。U2も、問いかけがないことから暗黙の境界決定を推定しない。
+A1, B1 and A2 restrict the groups to 「どのマイルストーンにも戻らない」. The main evaluation does not count this as transformation because the shared preamble identifies that problem scope. If requirement 2 is read as a general rule also covering groups that return to milestones, however, the responses narrow it. Leave this ambiguity in the task text as (c), indeterminate. It is not specific to B and cannot be attributed to the old implementation. Likewise, absence of a U2 question is not evidence of an implicit boundary decision.
 
-## 結果と停止
+<a id="結果と停止"></a>
+## Result and stopping point
 
-今回の6回答では、狙った旧実装の2制限を引き継ぐ現象は観察されなかった。B・C各2回答は隣の下側カード有無による制限を明示的に外しており、Cの注意書きが必要だったという差は得られない。A1だけ群の定義を質問したが、2回ずつでは条件の効果と解釈しない。
+None of the six responses exhibited either targeted old-implementation restriction. Both B responses and both C responses explicitly remove the adjacent-lower-card condition; no difference establishes that C's warning was necessary. Only A1 asks for a definition of group, but two runs per condition do not establish a condition effect.
 
-この結果は、OPS-102の実務中の観察を否定せず、長期記憶・内部原因・一般的優劣・効率改善も示さない。今回は自己完結した短い課題と、明示された現在の要求のもとでの予備観察。評価は条件を知るAstraによる。6回答で停止し、追加試行は行わない。
+This result neither contradicts the practical observation in OPS-102 nor establishes anything about long-term memory, internal causes, general superiority or efficiency gains. It is preliminary observation on a short, self-contained task with explicit current requirements, evaluated by Astra knowing the conditions. Stop at six responses without additional trials.
 
-2026-10-18ユーザーのcommit承認によりOPS-105はDONE。原回答は保存し、次回テーマは恒久正本へ引き継ぐ。
+The user's commit approval on 2026-10-18 made OPS-105 DONE. Preserve the original responses and carry future research themes into the permanent canonical document.

@@ -1,19 +1,27 @@
 # Sol OJT第2回：検査範囲の説明の補正
 
-OPS-109 / 親OPS-103、作業領域OPS-048。2026-10-18ユーザー「こみっとしてつぎやろう」で小さい次の実務を承認。
+## TL;DR（人間向け）
 
-対象はTASK_REGISTRY_APP.mdの倍率操作の検査説明のみ。OPS-108で見つかった、再描画保持は動作検査でなく文字列検査であることを明示する。過去の通過記録を削除しない。作業Solが固定版9637b62fの実装・verifyを読み修正文案を返し、別の確認Solが照合、Astraが受入後に反映する。両役gpt-6.1-sol/medium、履歴なし。読取と案作成のみを委任、編集はAstra。コード・テスト変更・実行・画面操作なし。最大一往復、勝手に対象を増やさない。
+SolのOJT第2回として、倍率操作の再描画確認が実動作試験ではなく文字列検査であることを文書へ補った記録。固定版を作業役と確認役が読み、Astraが最小補正を反映して完了した。コードや試験は変更せず、能力向上・費用低減・Fableへの有効性は実証していない。
 
-## 結果
+OPS-109 / Parent: OPS-103; work area: OPS-048. On 2026-10-18, the user approved the next small practical task with 「こみっとしてつぎやろう」.
 
-作業Solは固定版の記録とverifyを読み、旧表現から「再描画への適用」を独立した一文へ分ける案を返却。根拠はMaintanance/RegistryApp/verify.cjs:450のscript.includesとindex.template.html:628。過去の通過記録を保持し、今回の再実行は主張しなかった。
+The sole target is the explanation of zoom-operation verification in TASK_REGISTRY_APP.md. Clarify the finding from OPS-108: retention across redraws is checked through a string test, rather than a behavioral test. Do not delete previous passing-test records. The worker Sol reads the implementation and verify at fixed revision 9637b62f and returns proposed wording; a separate checker Sol compares it with the evidence; Astra applies it after acceptance. Both roles use gpt-6.1-sol/medium with no inherited history. Only reading and drafting are delegated; Astra performs the edit. No code or test changes, test execution, or screen operations. At most one feedback round trip; do not expand the target independently.
 
-確認Solも固定版を独立に読み、文字列検査と実動作未確認を区別した最小補正として受入可と返却。Astraは既にOPS-108で照合した同じ根拠と案を照合し、TASK_REGISTRY_APP.mdの該当段落へ反映した。差し戻しなし。両役各1返却、コード・試験変更なし。参照したキャッシュ：なし。
+<a id="結果"></a>
+## Results
 
-反映文：再描画への適用は、ソースに`replaceChildren(s);applyGraphZoom();`が含まれることを文字列一致で検査しており、再描画時の実動作は未確認。
+The worker Sol read the fixed revision's record and verify, then returned a proposal to separate 「再描画への適用」 from the old wording into its own sentence. The evidence was script.includes at Maintanance/RegistryApp/verify.cjs:450 and index.template.html:628. The proposal preserved previous passing-test records and made no claim of a rerun in this task.
 
-## ならしからの観察
+The checker Sol also read the fixed revision independently and returned an acceptance recommendation for the minimal correction, distinguishing a string test from unverified actual behavior. Astra compared the proposal with the same evidence already checked in OPS-108 and applied it to the relevant paragraph in TASK_REGISTRY_APP.md. No rework was requested. Each role returned once; no code or test changes. Caches consulted: none.
 
-前回と違い、今回両役は通常資料をキャッシュ欄へ混ぜなかった。両役とも履歴なしの新規エージェントで、依頼に区別を明記した。学習・能力向上の実証ではなく、依頼文へ注意を持ち越せた実例。対象段落・許す変更・保持事項を明示し、作業案と独立確認を経て一件の文書補正が完了した。費用低減・Fableへの有効性は未測定。
+Applied wording (verbatim original):
 
-2026-10-18ユーザーcommit承認によりOPS-109はDONE。ここで停止。
+> 再描画への適用は、ソースに`replaceChildren(s);applyGraphZoom();`が含まれることを文字列一致で検査しており、再描画時の実動作は未確認。
+
+<a id="ならしからの観察"></a>
+## Observations since the warm-up
+
+Unlike the previous round, neither role mixed ordinary materials into the cache field. Both were fresh agents with no inherited history, and the assignment explicitly stated the distinction. This is an example of carrying a caution forward in an assignment, not evidence of learning or improved capability. One document correction was completed by specifying the target paragraph, permitted changes, and what must be preserved, then obtaining a working proposal and an independent check. Cost reduction and effectiveness for Fable were not measured.
+
+On 2026-10-18, the user's commit approval made OPS-109 DONE. Stop here.

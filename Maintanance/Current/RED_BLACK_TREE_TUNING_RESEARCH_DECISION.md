@@ -1,24 +1,32 @@
 # RedBlackTreeチューニング再探索のマイルストーン
 
-2026-10-16、Astra記録。旧RBT-035。
+## TL;DR（人間向け）
 
-## 位置づけ
+RedBlackTreeのチューニング再探索を、独立した判断待ちタスクからマイルストーン管理へ移した記録。到達条件・時期・範囲はまだ決まっておらず、到達も認定していない。旧調査案を必須工程にはせず、性能変更や実測の委任も含まない。
 
-ユーザーの「RBT-035はマイルストーン」という訂正により、独立した「再探索を実施するか」の判断待ちから、[マイルストーン管理](../MILESTONES.md)へ移した。旧taskはEXCLUDEDとして整理する。再探索の完了・到達を認定したものではない。
+Recorded by Astra on 2026-10-16. Formerly RBT-035.
 
-## 対象と未確定の条件
+<a id="位置づけ"></a>
+## Position
 
-対象はRedBlackTreeのチューニング再探索。旧調査案は、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を見つけるものだった。
+Following the user's correction 「RBT-035はマイルストーン」, this moved from a standalone "whether to run the re-search" decision to [milestone management](../MILESTONES.md). The old task is tidied up as EXCLUDED. This does not certify completion or arrival of the re-search.
 
-具体的な到達条件・時期・対象範囲は今回確定していない。旧調査案を、そのまま必須工程や達成条件へ昇格させない。性能変更や実測の実行委任も含まない。必要な実作業が具体化した際は、その範囲をRegistryへ接続する。
+<a id="対象と未確定の条件"></a>
+## Target and open conditions
 
-## 到達記録
+The target is a re-search of RedBlackTree tuning. The old research plan compared past implementations, benchmarks, Git history and tuning records with the current code to find missed improvement candidates, unapplied findings, and hypotheses needing re-verification.
 
-未記録。到達条件と証拠が明らかになった際に記録する。
+The concrete arrival conditions, timing and scope were not settled this time. Do not promote the old plan as-is into required steps or achievement conditions. Delegation of performance changes or measurements is not included. When necessary practical work becomes concrete, connect that scope to the Registry.
 
-## 参照
+<a id="到達記録"></a>
+## Arrival record
 
-- [現行品質評価](../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md)
-- [品質プロファイル](../Quality/Profiles/RedBlackTreeCollections.md)
-- [benchmark資料](../../Benchmarks)
-- [マイルストーン移行前の原文](../Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md)
+Not recorded. Record when the arrival conditions and evidence are clear.
+
+<a id="参照"></a>
+## References
+
+- [Current quality assessment](../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md)
+- [Quality profile](../Quality/Profiles/RedBlackTreeCollections.md)
+- [Benchmark materials](../../Benchmarks)
+- [Original text before the milestone move](../Archived/RBT-035_BEFORE_MILESTONE_2026-10-16.md)

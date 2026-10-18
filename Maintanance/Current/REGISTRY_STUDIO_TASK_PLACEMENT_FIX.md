@@ -1,25 +1,32 @@
 # 接続に基づくタスク配置の修正
 
-Task: OPS-095 / 親 OPS-048
-作成: Astra、2026-10-18。ユーザー依頼による姫への正式依頼。
+## TL;DR（人間向け）
 
-## 要求の正本
+辺を持つ一般タスクを見取り図へ、辺のないものを独立欄へ置き、重複表示を解消した修正記録。Astraの独立試験では配置31件・8表示と関連スモークが成功した。実ブラウザは未確認で、どの版にも結び付かない接続群を版別表示でどう扱うかは将来判断として残す。
 
-[TASK_REGISTRY_APP.md「タスク配置の要求」](TASK_REGISTRY_APP.md#タスク配置の要求)に従う。ここに別の要求を定義しない。既存の[OPS-092試験記録](REGISTRY_STUDIO_DISPLAY_PARTITION_TEST.md)を再現入力とする。
+Task: OPS-095 / Parent OPS-048.
+Author Astra, 2026-10-18. Formal assignment to 姫 at user request.
 
-## 仕事と受入条件
+<a id="要求の正本"></a>
+## Canonical requirements
 
-- 恒久木の扱いを維持し、それ以外の接続を持つタスクを見取り図へ、辺のないものを独立欄へ配置する。マイルストーン未接続の一群も見取り図で関係を確認できるようにする。
-- QUALITY-005・DOC-026の重複を解消する。表示回数だけでなく配置先を独立に検査する。辺あり一群・辺なし・恒久木・マイルストーン接続を含むfixtureで漏れと重複を検出する。
-- 全体表示の網羅性を検査し、版の絞込みだけで独立扱いに変わらないことを確認する。既存版フィルタの意味を独断で変更しない。対象版を決められない接続群の扱いが修正に必要で、既存規則から定まらない場合は、その判断だけ返す。
-- 正本・状態・辺・保存契約を変更しない。局所接続図と選択追従・入力保護を維持する。線の追加や削除で配置問題を隠さない。
-- 修正前に失敗、修正後に合格する試験を残し、既存verify・局所図/選択追従smoke・sync/checkを実行する。画面操作なし。実ブラウザー未確認を明記する。
+Follow [TASK_REGISTRY_APP.md 「タスク配置の要求」](TASK_REGISTRY_APP.md#タスク配置の要求); do not define separate requirements here. Use the existing [OPS-092 test record](REGISTRY_STUDIO_DISPLAY_PARTITION_TEST.md) as reproduction input.
 
-## 範囲・受渡し
+<a id="仕事と受入条件"></a>
+## Work and acceptance criteria
 
-編集可: RegistryApp/index.template.html、verify.cjs、Evidence/OPS-095/の試験、本書Return。OPS-092の既存証拠は上書きせず必要な強化版を本taskに置く。生成物の更新可。全体レイアウトは本要求を満たす必要範囲のみ。最終版START→END非表示やその他の改善は別件。
+- Retain permanent-tree treatment; put all other connected tasks in the diagram and edge-free tasks in the independent section. Show related groups lacking milestone connections too.
+- Remove QUALITY-005/DOC-026 duplication. Independently test destination as well as occurrence counts using connected groups, isolated tasks, permanent trees and milestone fixtures.
+- Test full-view coverage; version filtering alone must not make tasks independent. Do not independently change version-filter semantics. Return any otherwise-undetermined target-version handling decision needed for the fix.
+- Do not change canonicals, states, edges or save contract. Preserve local diagrams, selection-following and input protection. Do not hide placement problems by adding/removing lines.
+- Leave a test failing before/passing after the fix; run verify, local/selection-following smokes and sync/check. No screen operations; explicitly leave actual browser unverified.
 
-指定範囲を姫へ受渡し、Astraは返却待ち。Registry・Rules・恒久要求正本・実Inbox・Milestones・他者の変更は編集しない。今回commitの依頼はなし。原因・変更・検証・残る判断をReturnへ記入。
+<a id="範囲受渡し"></a>
+## Scope and handoff
+
+Editable: RegistryApp/index.template.html, verify.cjs, Evidence/OPS-095/ tests and this Return. Keep OPS-092 evidence unchanged and put enhanced tests here. Generated outputs may update. Global layout changes only as needed for these requirements. Hiding final START→END and other improvements are separate.
+
+Hand scope to 姫; Astra awaits Return. Do not change Registry, Rules, permanent canonical requirements, actual Inbox, Milestones or others' edits. No commit assignment. Return cause/change/verification/remaining decisions.
 
 ## Return（姫記入）
 
@@ -54,10 +61,11 @@ Task: OPS-095 / 親 OPS-048
 
 **作業物**：一時ファイルなし。commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-差分確認と独立再試験により受入。配置強化試験31件・8表示で違反なし。OPS-092の原試験は全体29件・HEAD以降の重複2件とも違反なしに変わった。局所図OPS-094・選択追従OPS-093のsmokeも成功、sync --checkずれなし。変更は独立欄判定と試験に限定され、正本の辺・状態は変えていない。実ブラウザー未確認。
+Accepted after diff inspection and independent retesting. Enhanced placement: 31 cases/8 displays, no violations. Original OPS-092 test now has no violations (29 full-view cases and the two HEAD-onward duplicates resolved). OPS-094 local and OPS-093 selection smokes pass; sync --check agrees. Changes limited to independent-section logic/tests, no canonical edges/states changed. Actual browser unverified.
 
-対象版を持たない接続群は全体表示で確認でき、版別では非表示となる既存挙動を維持。これは今回の修正に必要な判断ではなく、将来の扱いとして保持する。最終版START→ENDの非表示は本taskの対象外のまま。依頼終了、commit待ち。
+Preserved existing behavior: versionless connected groups appear in full view but not version-specific view. Not a decision required for this fix; retain as future handling issue. Hiding final START→END remains out of scope. Assignment closed, awaiting commit.
 
-2026-10-18：ユーザーcommit承認によりOPS-095をDONEとする。受入範囲は上記のとおり。
+2026-10-18: user commit approval made OPS-095 DONE within the accepted scope above.

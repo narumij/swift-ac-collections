@@ -1,23 +1,29 @@
 # 初回研究の状態案内補正（OPS-112）
 
-2026-10-18 Astra。親OPS-103。ユーザーがStudioを変更しない小さな実作業を作業役→確認役→受入で行うことを承認。進行帯には実イベントを記録する。
+## TL;DR（人間向け）
 
-## 依頼と完了条件
+初回研究が未実施と読める古い案内を、受入済み6回答の収集・評価完了に合わせて補正した記録。作業役・確認役・Astraの照合を経て限定補正を完了した。追加実験や効果の一般化は行わず、原回答・全履歴の再読や研究の再実施も含まない。
 
-AI_COLLABORATION_BASIC_RESEARCH.mdの「最初の研究候補（未実施）」とRegistry OPS-103行の「実験自体は未着手」が、完了したOPS-105の正本と古いまま食い違っている。受入済みの事実へ案内を補正する。初回6回答完了・追加実験なし・効果一般化なしを保持する。
+2026-10-18, Astra. Parent: OPS-103. The user approved a small practical task that would leave Studio unchanged and proceed through a worker, a checker, and acceptance. Record actual events in the progress strip.
 
-作業Solの編集範囲はMaintanance/Current/AI_COLLABORATION_BASIC_RESEARCH.mdの初回研究節のみ。初期の計画は計画当時のものと読めるように保持し、現在の実施結果へのリンクを明確にする。Registry OPS-103行の訂正文は返却案にとどめAstraが適用する。入力はAGENTS.md、本依頼、研究恒久正本、AI_RESEARCH_FIRST_EXPERIMENT.mdとRegistry OPS-103/105行。原回答・全履歴を読み直さない。他の節や権限・仮説・結果の再評価は対象外。広げる必要が出れば止めて返す。commit・Studioコード・再起動・画面操作なし。
+<a id="依頼と完了条件"></a>
+## Assignment and completion criteria
 
-確認Solは実装後の差分と同じ根拠を独立照合。変更せず、事実・時制・範囲を確認して返す。判断キャッシュ参照は実際に読んだものだけ、なければなし。
+The heading 「最初の研究候補（未実施）」 in AI_COLLABORATION_BASIC_RESEARCH.md and the statement 「実験自体は未着手」 in the Registry's OPS-103 row are outdated and conflict with the canonical record of completed OPS-105. Correct the guidance to match accepted facts. Preserve these limits: the initial six responses are complete; no additional experiment; no generalization of effects.
 
-Astraが限定補正とRegistry案を受け入れ、現在の状態を更新する。commit承認は未取得。
+The worker Sol may edit only the initial-research section of Maintanance/Current/AI_COLLABORATION_BASIC_RESEARCH.md. Preserve the initial plan so that it reads as the plan at that time, and clarify the link to the current execution results. Return the proposed correction to the Registry's OPS-103 row without applying it; Astra will apply it. Inputs are AGENTS.md, this assignment, the permanent research canonical document, AI_RESEARCH_FIRST_EXPERIMENT.md, and the Registry's OPS-103/105 rows. Do not reread the original responses or the full history. Other sections, authority, hypotheses, and reevaluation of results are outside scope. If expansion becomes necessary, stop and return the issue. No commit, Studio code changes, restart, or screen operations.
 
-## 返却・受入
+The checker Sol independently compares the resulting diff against the same evidence. Make no changes; check facts, tense, and scope, then return the findings. List only judgment caches actually read, or state that none were read.
 
-2026-10-18、作業Solが研究恒久正本の初回研究節だけを補正。「未実施」を「実施済み・当初計画」とし、当初計画を保持したまま実施正本への入口と限定された完了事実を追加した。
+Astra will accept the limited correction and the Registry proposal, then update the current status. Commit approval has not yet been obtained.
 
-確認Solが差分・OPS-105の実施正本・Registryを独立照合し、事実・時制・限定・範囲の一致を確認。差し戻しなし。Astraも差分を確認して受入、OPS-103行は説明の重複を抑え、6回答の収集・評価完了と結果正本への参照に補正した。
+<a id="返却受入"></a>
+## Return and acceptance
 
-文書の限定補正のみ。コード試験や研究の再実施は不要で未実行。判断キャッシュ参照は両Solともになし。原回答・全履歴は再読していない。作業イベントは依頼→作業→確認→受入→完了→commit待ちを実際の工程に合わせて記録。Studioコード・利用中サーバーは未変更。commit待ち。
+On 2026-10-18, the worker Sol corrected only the initial-research section of the permanent research canonical document. The wording changed from 「未実施」 to 「実施済み・当初計画」, retaining the original plan while adding an entry point to the execution canonical document and the limited facts of completion.
 
-2026-10-18、ユーザーが帯の進行を「うごいてた」と確認し、commitを承認。限定した文書補正を完了とする。
+The checker Sol independently compared the diff, OPS-105's execution canonical document, and the Registry, confirming agreement in facts, tense, limitations, and scope. No rework was requested. Astra also reviewed and accepted the diff. The OPS-103 row was corrected to state that collection and evaluation of six responses were complete and to reference the results canonical document, while reducing duplicated explanation.
+
+This was a limited document correction only. Code tests and rerunning the research were unnecessary and were not performed. Neither Sol read any judgment cache. The original responses and full history were not reread. Work events were recorded in line with the actual stages: request → work → verification → acceptance → completion → awaiting commit. Studio code and the running server were unchanged. Awaiting commit.
+
+On 2026-10-18, the user confirmed the strip's progress with 「うごいてた」 and approved the commit. The limited document correction is complete.

@@ -1,42 +1,50 @@
 # 場面ごとに「判断の次に欲しい情報」を探す限定試行
 
-OPS-102 / 2026-10-18 / 作成・受入：Astra / 試行：Claude（姫）。ユーザーが3往復と第1回の発注準備を承認した。
+## TL;DR（人間向け）
 
-## 問いと範囲
+判断の次に欲しい情報を3回の限定試行で探し、維持対象が作業内訳に具体化される一方、入力にない制限も加わることを確認した記録。場面別に根拠の場所・適用境界・追加不要という候補を整理して完了した。固定の共通項目や制度は採用せず、追加情報の独立効果・工数削減・内部原因は未確認。
 
-ユーザーの「場面がかわったときに何をキャッシュすべきか」「初期状態として1番が判断だけど、2番に何が欲しいか」を具体化する。判断を起点に、次に足すと役立つ情報を場面別に探す。判断の理由、成立条件、作業状態などは候補例であり、回答をそこへ誘導しない。何も足さない、場面ごとに違う、も有効な結果。
+OPS-102 / 2026-10-18 / Drafting and acceptance: Astra / Trial: Claude (姫). The user approved three round trips and preparation of the first assignment.
 
-遺伝的アルゴリズムの発想は、組合せを試して役立つものを残す着想として扱う。アルゴリズム実装・自動選抜・LRU・容量制限は行わない。既存キャッシュを削らず、共通規則・権限・現在の依頼は常に有効。実験のためにそれらを隠さない。
+<a id="問いと範囲"></a>
+## Question and scope
 
-## 3回の区切り
+Make concrete the user's questions 「場面がかわったときに何をキャッシュすべきか」 and 「初期状態として1番が判断だけど、2番に何が欲しいか」. Start from a judgment and look for useful additional information by situation. Reasons, validity conditions, and work status are examples, not directions toward which to steer responses. Adding nothing or finding different answers by situation are valid results.
 
-1. 最近の少数事例から、判断だけでは足りず取りに戻った情報と、2番目の候補を挙げる。
-2. 第1回をAstraが受け取り、候補1つと小さい作業を指定して「判断＋候補」を試す。助かった点・余計だった点・なお不足した情報を返す。作業・編集範囲はその時の依頼で固定する。
-3. 既存の結果だけで、場面ごとの候補と適用限界を短く整理する。
+Treat the genetic-algorithm idea as inspiration for trying combinations and retaining useful ones. Do not implement an algorithm, automatic selection, LRU, or capacity limits. Do not trim existing caches; common rules, authority, and the current assignment remain effective. Do not hide them for the experiment.
 
-今回は第1回だけ発注。次回は受入後に明示依頼し、自動継続しない。材料が足りれば短縮でき、結果が出ないからと全履歴探索へ広げない。後続の作業選定で新たなユーザー判断が必要ならそこで返す。
+<a id="3回の区切り"></a>
+## Three rounds
 
-## 完了条件
+1. From a few recent cases, identify information that the judgment alone did not supply and that required going back for, and propose a second item.
+2. After accepting the first round, Astra specifies one candidate and a small task to try judgment plus candidate (「判断＋候補」). Return what helped, what was unnecessary, and what was still missing. Fix the work and editing scope in that assignment.
+3. Using only existing results, briefly organize candidates by situation and their applicability limits.
 
-少数の場面について、何を足すとよさそうか、その根拠・負担・限界を整理する。効果なしも成果。実際の参照、本人の記憶、今からの推測を区別し、文字数や参照回数だけで効率改善を認定しない。全体導入や既存キャッシュの補修は含めない。
+Only round 1 is assigned now. Explicitly assign the next round after acceptance; do not continue automatically. Shorten if there is enough material, and do not expand into searching the full history merely because no result appears. If selecting later work requires a new user judgment, return that point.
 
-## 第1回の正式依頼
+<a id="完了条件"></a>
+## Completion criteria
 
-最近の自分の仕事から、記憶と手近な返却記録で説明できる事例を最大3件選んでください。思い出せる範囲でよく、件数を埋めるために探さない。OPS-096〜101は候補だが、選択は固定しない。
+For a few situations, organize what might be worth adding, with evidence, burden, and limits. No effect is also a result. Distinguish actual reference, personal recollection, and present speculation. Do not establish efficiency improvement from character counts or reference counts alone. Broad adoption and repair of existing caches are excluded.
 
-各件を短く、次の形で返してください。
+<a id="第1回の正式依頼"></a>
+## Formal assignment for round 1
 
-- 場面と、そのとき持っていた判断（何を決めていたか）。
-- 足りずに取りに戻った情報。実際の参照か、記憶による報告か、今からの推測かを明記。
-- それが何に必要だったか。毎回変わるため正本で確認すべき情報と、キャッシュへ添える候補を区別する。
-- 「2番目」として添えるなら何か、または追加不要。候補はまず一つ。まとめて全部を候補にしない。
-- 確かめた根拠は文書・節・固定版。手近な記録で裏付けられなければ未確認で止める。
+Select at most three recent cases from your own work that you can explain from memory and nearby return records. Use what you recall; do not search to fill a quota. OPS-096〜101 are candidates, not a fixed selection.
 
-最後に、第2回で小さく試す候補を一つ勧めてください。本人の経験に基づく提案でよく、唯一の最適解を決める必要はありません。実際に試していない効果は予想と書く。報告は表または短文でおおむね1ページ以内、会話での報告は要点だけで構いません。
+Return each case briefly in this format:
 
-入力は現在の依頼と自分の直近の返却・必要な直接参照まで。開始HEADを記録する。過去の全キャッシュ・全履歴の棚卸し、自動メモリーの調査、実験のための新しい製品作業は不要。
+- Situation and the judgment held at that time (what had been decided).
+- Missing information you went back for. State whether this is an actual reference, a recollection report, or present speculation.
+- Why it was needed. Distinguish information that changes and must be checked in the canonical source each time from candidates to add to a cache.
+- What to add as the second item (「2番目」), or that nothing needs adding. Start with one candidate; do not nominate everything together.
+- Supporting document, section, and fixed revision. If nearby records cannot substantiate it, leave it unverified and stop there.
 
-編集範囲は本書の第1回Returnのみ。原依頼・Registry・規則・キャッシュ・製品・Studio・他正本の変更、commitは委任しない。任意感想ログの常設委任は維持する。返却後は停止し、Astraが受入・次回依頼を担当する。
+Finally, recommend one candidate for a small round-2 trial. A proposal based on personal experience is sufficient; no unique optimum is required. Label untested effects as predictions. Keep the report to roughly one page in a table or short prose; conversational reporting may contain only key points.
+
+Inputs are the current assignment, your most recent returns, and necessary direct references only. Record starting HEAD. No inventory of all past caches/history, investigation of automatic memory, or new product work for the experiment is needed.
+
+Edit only this document's round-1 Return. No delegation to change the original assignment, Registry, rules, caches, product, Studio, or other canonical documents, or to commit. The standing delegation for an optional impressions log remains. Stop after returning; Astra handles acceptance and the next assignment.
 
 ## 第1回 Return（姫記入）
 
@@ -72,34 +80,38 @@ OPS-102 / 2026-10-18 / 作成・受入：Astra / 試行：Claude（姫）。ユ�
 - 効果は試していないので予想。余計になりうる点：「変えないもの」は書き出すと際限がない。そのため、試すときは「その判断を当てるときに、実際に触れる既存挙動だけ」に絞るのがよさそう（予想）。
 
 
-## 第1回 Astra受入（2026-10-18）
+<a id="第1回-astra受入2026-10-18"></a>
+## Astra acceptance of round 1 (2026-10-18)
 
-3事例を候補出しとして受入。b2f9e8e4の`Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`の初回Return・Astra受入・追加依頼で、単独後続の扱いを返し、ユーザーが意図した上側配置を維持したことを確認した。3847fe31の`JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md`で、共通規則への分類補正とSPI移動先の依頼内提示を確認した。原Returnの略称「MILESTONE_BRANCH_LAYOUT.md」と「本パイロット文書」はそれぞれこの実ファイルを指す。
+Accepted the three cases as candidate generation. In the first Return, Astra acceptance, and additional assignment in b2f9e8e4's `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`, confirmed that the single-successor issue was returned and the user's intended upper placement retained. In 3847fe31's `JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md`, confirmed the classification correction to common rules and the SPI destination provided within the assignment. The original Return's abbreviations 「MILESTONE_BRANCH_LAYOUT.md」 and 「本パイロット文書」 refer to these actual files respectively.
 
-「ユーザーの意図はどの記録にもなく」は、全記録での不存在を確認した意味では受け取らない。当時参照した範囲で根拠を得られず質問した、という本人の報告として扱う。事例2は実際に取りに戻った成功例ではなく、取りに戻るべきだった情報。事例3の「追加不要」は場面に限る提案。共通規則を毎回全件読む義務や、全判断に維持事項を足す制度にはしない。
+Do not read 「ユーザーの意図はどの記録にもなく」 as verified absence from all records. Treat it as the person's report of asking after not finding evidence within the sources consulted at the time. Case 2 is information that should have been retrieved, not a successful actual retrieval. Case 3's 「追加不要」 is a situation-specific proposal. Do not turn this into an obligation to read all common rules every time or a system of adding invariants to every judgment.
 
-第2回の候補は「判断が変えない既存挙動と理由」。一つの追加情報として試すが、有効性は未確認。元の判断に維持条件を含めれば同じではないか、情報が重複していないかも観察する。
+The round-2 candidate is 「判断が変えない既存挙動と理由」. Try it as one additional piece of information, with effectiveness unverified. Also observe whether including the invariant in the judgment itself would suffice and whether the information is duplicated.
 
-## 第2回の正式依頼：維持事項を添えた作業内訳の予備試行
+<a id="第2回の正式依頼維持事項を添えた作業内訳の予備試行"></a>
+## Formal assignment for round 2: preliminary work-breakdown trial with invariants
 
-編集は本書の第2回Returnだけ。第1回受入を入力にして、以下の既済事例を再実装せず、短い作業内訳を作ってください。共通規則・現在の依頼は有効なままで、既存キャッシュは変更しない。
+Edit only this document's round-2 Return. Using round-1 acceptance as input, produce a short work breakdown for the completed case below without reimplementing it. Common rules and the current assignment remain effective; do not change existing caches.
 
-### 入力
+<a id="入力"></a>
+### Inputs
 
-- 作業場面：途中マイルストーンから出る複数カード群を、その起点の下へまとめる配置変更の準備。
-- 判断：複数カードは起点の下へ縦積み。水平位置は上側配置と同じオフセットを使い、幅不足はマイルストーン間隔を広げて確保する。
-- 2番目の情報：単独後続は従来の右上に残す。ユーザーが「大気圏外へ送り出す」イメージで意図して使っているため。
-- 根拠固定版：`5780db57`の`Maintanance/Current/TASK_REGISTRY_APP.md`「途中マイルストーン」周辺の配置要求と、`Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`「ユーザー判断と追加依頼」。該当節だけ必要時に確認可。新しい履歴探索は不要。
-- 辺・状態・条件・表示対象・局所図は変更しない。複数起点の優先規則は未決のまま。これは実装依頼ではなく、既済事例を使った机上の小作業。
+- Situation: preparing a layout change to place a group of multiple cards emerging from an intermediate milestone below that origin.
+- Judgment: stack multiple cards vertically below the origin. Use the same horizontal offset as the upper placement; make room for insufficient width by widening milestone spacing.
+- Second information item: retain single successors at the existing upper-right position, because the user intentionally uses the image of 「大気圏外へ送り出す」.
+- Fixed evidence: layout requirements around 「途中マイルストーン」 in `5780db57`'s `Maintanance/Current/TASK_REGISTRY_APP.md` and 「ユーザー判断と追加依頼」 in `Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md`. Consult only relevant sections if needed; no new history search.
+- Do not change edges, states, conditions, displayed targets, or the local diagram. Priority among multiple origins remains unresolved. This is a small desk exercise using a completed case, not an implementation assignment.
 
-### 作業と返却
+<a id="作業と返却"></a>
+### Work and return
 
-1. この入力で、変更すること・維持すること・検証することを合わせて最大5行の作業内訳にする。
-2. 実際に追加で確認した情報があれば、場所と理由を短く残す。確認不要ならそう書く。
-3. 2番目の情報が内訳のどこに役立ったか、余計または判断本体と重複だったか、なお不足があったかを各一言で返す。理由と維持対象のどちらが効いたか区別できなければ未確認でよい。
-4. この一件から継続して試す価値を感じるか、短く返す。
+1. From these inputs, produce at most five lines combining changes, invariants, and verification.
+2. If you actually checked any additional information, briefly record where and why. If none was needed, say so.
+3. Briefly state where the second item helped, whether it was unnecessary or duplicated the judgment itself, and what was still missing. If the effects of the reason and the invariant cannot be distinguished, leave that unverified.
+4. Briefly say whether this case suggests value in continuing to try the approach.
 
-全体は半ページ程度。開始HEADと参照版を残す。既知の事例なので「追加情報なしなら失敗したはず」という反実仮想、所要時間・使用量の削減効果は主張しない。実装・テスト・キャッシュ補修・他正本・Registry変更・commitなし。返却後停止。第3回は受入後に依頼する。
+Keep the whole response to about half a page. Record starting HEAD and consulted revision. Since this is a known case, do not claim the counterfactual that it would have failed without the extra information (「追加情報なしなら失敗したはず」), or reduced time/usage. No implementation, tests, cache repair, changes to other canonical documents or the Registry, or commit. Stop after returning. Round 3 will be assigned after acceptance.
 
 ## 第2回 Return（姫記入）
 
@@ -130,26 +142,28 @@ OPS-102 / 2026-10-18 / 作成・受入：Astra / 試行：Claude（姫）。ユ�
 少しある。維持対象は、内訳の「維持」と「検証」の行にそのまま入った。ただ、判断本体と半分重なっていた。判断本体に維持の条件として書かれていない場合に限って添えると、重複が減りそう（予想）。今回いちばん欲しかったのは、維持対象よりも、判断が当てはまる範囲の境目（「単独」の定義）のほうだった。
 
 
-## 第2回 Astra受入・補正（2026-10-18）
+<a id="第2回-astra受入補正2026-10-18"></a>
+## Astra acceptance and correction of round 2 (2026-10-18)
 
-入力と返却の5行を照合し、情報の効き方を観察した机上試行として受入。実装の正しい計画としての受入ではない。維持対象が維持・検証へ具体化されたこと、理由の効果は未確認、判断本体との重複と適用境界への不足感があったことを結果とする。
+Compared the inputs with the five returned lines and accepted this as a desk trial observing how information was used, not as a correct implementation plan. Findings: invariants became concrete maintenance and verification items; the reason's effect was unverified; there was overlap with the judgment and a perceived lack of applicability boundaries.
 
-作業内訳1の「上側に入りきらない群」と2の「次のマイルストーンの下側カードと重なるときだけ」は、今回入力にない絞込み。判断は複数カード群を下に置き、幅不足で間隔を広げるもので、これらの追加条件へ狭めない。返却自身が挙げた「上側レーンに入りきるか」は実装選択であり、要求と区別する。原Returnは保持し、この条件を新しい要求や修正依頼として採用しない。
+Work-breakdown item 1's 「上側に入りきらない群」 and item 2's 「次のマイルストーンの下側カードと重なるときだけ」 are restrictions absent from this input. The judgment is to place multiple-card groups below and widen spacing when width is insufficient; do not narrow it to those added conditions. The Return itself identifies 「上側レーンに入りきるか」 as an implementation choice; distinguish it from requirements. Preserve the original Return and do not adopt these conditions as new requirements or repair assignments.
 
-適用境界を明確にする必要性は検討材料だが、今回不足を感じたことから新しいキャッシュ項目の採用や実装変更は決めない。既知の事例・正本への再参照・判断本体との重複があるため、追加情報の独立した効果や工数削減は測れていない。
+The need to clarify applicability boundaries is material for consideration, but feeling that lack in this trial does not decide adoption of a new cache field or an implementation change. The case was familiar, canonical documents were consulted again, and the judgment overlapped with the added information, so neither the independent effect of additional information nor effort reduction was measured.
 
-## 第3回の正式依頼：場面別の候補と限界を整理
+<a id="第3回の正式依頼場面別の候補と限界を整理"></a>
+## Formal assignment for round 3: organize candidates and limits by situation
 
-今回の編集範囲を姫へ委任する。入力は本書の第1・2回ReturnとAstraの受入・補正だけ。追加の調査・実装・試行・キャッシュ変更は不要。
+Delegate this round's editing scope to 姫. Inputs are only this document's round-1 and round-2 Returns and Astra's acceptance/corrections. No additional research, implementation, trial, or cache changes are needed.
 
-半ページ程度で次をまとめてください。
+In about half a page, organize the following:
 
-1. 場面ごとの2番目の候補（維持対象、根拠の場所、追加不要、適用範囲の境目）。既に試したものと、提案・不足感だけのものを区別する。
-2. どの条件なら添える価値がありそうか、判断本体に含めれば足りるか。全場面共通の2番を無理に選ばない。
-3. 今回の試行で言えること・言えないこと。内訳に依頼にない条件を加えた点も含め、良い情報を渡せば正しい適用が保証されるとは扱わない。
-4. 実務で必要なときに拾う／追加試行／見送りのうち、現時点の推奨と理由を短く。どれも提案で、ここから新規作業を開始しない。
+1. Second-item candidates by situation: invariants, evidence location, no addition, and applicability boundaries. Distinguish what was tried from proposals or perceived gaps only.
+2. Conditions under which an addition might be worthwhile and whether including it in the judgment would suffice. Do not force a single common second item for all situations.
+3. What this trial can and cannot establish. Include the addition of conditions absent from the assignment; good information does not guarantee correct application.
+4. Briefly recommend collecting information when needed in practical work, further trials, or deferral, with reasons. These remain proposals; do not start new work from them.
 
-感想と事実を分ける。分類制度や必須テンプレートを作らず、Returnだけを編集して停止。commitなし。Astraが受け取り、ユーザーへ結果を返す。
+Separate impressions from facts. Do not create a classification system or mandatory template. Edit only Return, then stop; no commit. Astra will receive it and report results to the user.
 
 ## 第3回 Return（姫記入）
 
@@ -198,14 +212,15 @@ OPS-102 / 2026-10-18 / 作成・受入：Astra / 試行：Claude（姫）。ユ�
 第2回でいちばん驚いたのは、情報が足りなかったことより、自分の記憶が足しすぎたことだった。キャッシュは判断を写すだけでなく、受け手にも「前にこう作った」というキャッシュがある。そちらは、写しの出どころの表示が付かないまま混ざる。
 
 
-## 第3回 Astra受入・限定試行の総括（2026-10-18）
+<a id="第3回-astra受入限定試行の総括2026-10-18"></a>
+## Astra acceptance of round 3 and limited-trial conclusion (2026-10-18)
 
-第1・2回の返却と受入補正に照合し、第3回の整理を受入。3回の限定依頼は終了。OPS-102はWAITING_USER（commit確認待ち）とし、追加の調査・実装・キャッシュ変更は依頼しない。
+Compared with the first two returns and acceptance corrections and accepted round 3's organization. The three limited assignments are closed. Set OPS-102 to WAITING_USER (awaiting commit confirmation); do not assign further research, implementation, or cache changes.
 
-場面に応じて「判断だけでは足りない情報」を拾う方向には、継続して使う価値があるとAstraは評価する。維持対象が内訳に具体化されたことは観察できた。根拠の場所・適用境界・追加不要という候補も得られたが、それぞれの効率改善は未検証。固定の2番目や必須テンプレートを導入する結論ではない。実務で不足が生じたときに候補を使い、既存の正本で安く確かめられることは確認し、未決の判断だけを持ち主へ返す、という提案として残す。
+Astra sees continuing value in collecting information that a judgment alone does not supply (「判断だけでは足りない情報」), according to the situation. Invariants becoming concrete work-breakdown items was observed. Candidates also emerged for evidence location, applicability boundaries, and no addition, but their respective efficiency improvements are unverified. This is not a conclusion to introduce a fixed second item or mandatory template. Retain it as a proposal: use candidates when gaps arise in practical work, check what existing canonical documents can establish cheaply, and return only unresolved judgments to their owner.
 
-第3回Returnの「過去の実装の記憶から来ている」は姫自身の原因説明であり、Astraが独立に確認したのは入力にない2条件が加わった事実まで。良い追加情報があっても適用の正しさは保証されない、という今回の観察と、内部記憶が原因だったという自己報告を区別する。原Returnは保持する。
+Round 3's 「過去の実装の記憶から来ている」 is 姫's own causal explanation. Astra independently confirmed only the fact that two conditions absent from the inputs were added. Distinguish the observation that good additional information does not guarantee correct application from the self-report attributing the cause to internal memory. Preserve the original Return.
 
-工数・使用量の削減、理由を添える独立した効果、未知の仕事への一般化は未確認。今回の成果は、場面別の候補と、情報不足だけでなく既知の内容を足しすぎる危険も見えたこと。全体制度化や自動選抜には進まず、必要な実務で拾える検討材料として残す。
+Effort/usage reduction, the independent effect of adding reasons, and generalization to unfamiliar work remain unverified. This trial produced situation-specific candidates and exposed the risk of adding too much familiar information as well as too little information. Do not proceed to broad institutionalization or automatic selection; retain these as materials to draw on when practical work requires them.
 
-2026-10-18：ユーザーのcommit承認によりOPS-102をDONEへ更新。後続の研究テーマは[OPS-103の恒久正本](AI_COLLABORATION_BASIC_RESEARCH.md)で維持する。初回実験の依頼はまだ行っていない。
+2026-10-18: the user's commit approval updated OPS-102 to DONE. Subsequent research topics are maintained in the [OPS-103 permanent canonical document](AI_COLLABORATION_BASIC_RESEARCH.md). The initial experiment has not yet been assigned.

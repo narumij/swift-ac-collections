@@ -1,45 +1,54 @@
 # Sol OJTならし：Studio表示設定の根拠照合
 
-OPS-108 / 親OPS-103、運用元OPS-077。2026-10-18ユーザー「ちょっとやってみて」で小さい一周を承認。Astraが対象を選び、作業Sol→確認Sol→Astra受入の順で進める。
+## TL;DR（人間向け）
 
-対象：TASK_REGISTRY_APP.md末尾の倍率操作・カード説明表示の2記録とindex.template.html、verify.cjs。固定版は9637b62f。読取だけで、記載と実装の対応・未確認・更新条件を返す。実行試験・画面操作・コード変更・commitなし。各役一回、補正が必要なら最大一往復。範囲外は報告だけで止める。優先精査として、全体監査をしない。
+Solの作業役と確認役が、固定版のStudio表示設定2件を読んで根拠・検査範囲・未確認を照合したならしの記録。Astraは静的照合として受入し、再描画検査の表現を限定すべき点を得た。実行試験や製品変更は行わず、長期学習・使用量削減・Fableへの同じ効果は未実証のまま、この一周を完了した。
 
-今回はサブエージェントを履歴なしで起動し、両役gpt-6.1-sol / mediumを指定する。前回のアプリ会話とは経路が異なる。共通指示・環境の完全分離は保証しない。確認役には元依頼・固定版と作業結果を渡し、根拠を独立に読ませる。
+OPS-108 / Parent: OPS-103; operational basis: OPS-077. On 2026-10-18, the user approved one small cycle with 「ちょっとやってみて」. Astra selects the target; the cycle proceeds from worker Sol to checker Sol to Astra acceptance.
 
-目的：作業成果に加え、ユーザーがFableへの依頼に再利用できそうな渡し方・止め方を観察する。Solの成功をFableの成功保証にしない。
+Targets: the two records at the end of TASK_REGISTRY_APP.md concerning zoom operations and card-description display, plus index.template.html and verify.cjs. Fixed revision: 9637b62f. Read only and return the correspondence between documentation and implementation, what remains unverified, and update triggers. No execution tests, screen operations, code changes, or commit. Each role returns once; at most one feedback round trip if correction is necessary. Report out-of-scope issues and stop there. This is a prioritized focused inspection, not a full audit.
 
-## 返却と受入
+For this round, start subagents without inherited history and specify gpt-6.1-sol / medium for both roles. This differs from the previous app-conversation route. Complete separation of shared instructions and environment is not guaranteed. Give the checker the original assignment, fixed revision, and worker result, and have it read the evidence independently.
 
-2026-10-18：作業Sol、確認Solとも完了。両役は指定どおりgpt-6.1-sol / medium、fork_turns=none。作業役は1回返却＋末尾記録の補正1回、確認役は1回。Astraが対象の記録・倍率実装・検査箇所を読み、優先精査として受入。実行試験・製品変更なし。参照したキャッシュ：なし。
+Purpose: in addition to the work result, observe ways of handing off and stopping work that the user might reuse when assigning work to Fable. Sol's success is not a guarantee of Fable's success.
 
-### 作業役の返却要旨
+<a id="返却と受入"></a>
+## Return and acceptance
 
-固定版9637b62f。以下はすべてMaintanance配下。
+2026-10-18: both worker and checker Sol completed their work. Both used gpt-6.1-sol / medium and fork_turns=none as specified. The worker returned once and corrected the closing record once; the checker returned once. Astra read the target records, zoom implementation, and verification locations and accepted the focused inspection. No execution tests or product changes. Caches consulted: none.
 
-- 倍率：Current/TASK_REGISTRY_APP.md:189–193に対し、RegistryApp/index.template.html:38,615–628,631–647が実装根拠。選択再描画225–228。verify.cjs:440–450はスタブによる寸法・上下限・復帰・横位置・文書不変、再描画は文字列一致検査に留まる。実行成功・実ブラウザー・再読込・dirty非変更は今回未確認。
-- 説明表示：記録195行、実装38,623,626,648行。線の標準titleは616行で別。verify442–444はチェック要素をスタブに置くのみで、オンオフ・フォーカス・切替閉鎖の動作を検査しない。
-- verify1–3の入力は生成済HTML。固定テンプレートとの一致と過去の実行成功は今回未検証。更新条件はSVG/CSS・再描画・保存経路、説明イベント・チェック要素の再生成。
+<a id="作業役の返却要旨"></a>
+### Summary of the worker return
 
-### 確認役の返却要旨
+Fixed revision: 9637b62f. All paths below are under Maintanance.
 
-同じ固定版を独立にgit showで照合し、主要な読み取りに誤りなし。再描画検査は文字列一致に留まるので、記録193行を実際の再描画の動作確認と読むなら過大。通常資料とキャッシュの区別も必要。その他の未確認・更新条件は妥当。
+- Zoom: for Current/TASK_REGISTRY_APP.md:189–193, implementation evidence is RegistryApp/index.template.html:38,615–628,631–647. Selection redraw: 225–228. verify.cjs:440–450 uses stubs to check dimensions, bounds, reset, horizontal position, and document invariance; redraw is checked only by string matching. Successful execution, a real browser, reload, and dirty remaining unchanged were not checked in this task.
+- Description display: record at line 195; implementation at 38,623,626,648. Standard line title at 616 is separate. verify442–444 only places the checkbox element in a stub and does not test toggling, focus, or closing on a setting change.
+- Inputs to verify1–3 are generated HTML. Agreement with the fixed template and previous execution success were not verified in this task. Update triggers are SVG/CSS, redraw and save paths, description events, and checkbox-element regeneration.
 
-### フィードバック一往復
+<a id="確認役の返却要旨"></a>
+### Summary of the checker return
 
-作業役の初回末尾は「参照したキャッシュ：なし／実参照したファイル＋節」と続き、AGENTSや通常正本・コードを同じ欄に列挙した。Astraは追加調査不要・末尾だけ・1〜2行と指定し、キャッシュと通常資料を分けるよう依頼。返却は「参照したキャッシュ：なし。」と「実参照した通常資料：…」の2行に修正された。ファイル編集なし。
+The checker independently compared the same fixed revision using git show and found no error in the main readings. Redraw verification is limited to string matching, so reading record line 193 as behavioral verification of actual redraw would overstate the evidence. Ordinary materials and caches also need to be distinguished. The other unverified areas and update triggers were appropriate.
 
-### Astra受入と残り
+<a id="フィードバック一往復"></a>
+### One feedback round trip
 
-2件の静的根拠照合として受入。確認役は作業役の結論だけでなく固定ソースを読んでいる。再描画の試験範囲の表現を限定する必要が見えたことは、今回の保守成果として残す。元の実装記録・試験・コードは変更しておらず、不具合の存在や実行失敗を認定したものではない。説明表示の動作検査不足も、現在の委任で補修まで広げない。
+The worker's initial closing field continued with 「参照したキャッシュ：なし／実参照したファイル＋節」, listing AGENTS, ordinary canonical documents, and code in the same field. Astra requested a distinction between caches and ordinary materials, specifying no further research, closing field only, and one or two lines. The return was corrected to two lines: 「参照したキャッシュ：なし。」 and 「実参照した通常資料：…」. No file edit.
 
-OPS-108はWAITING_USER（commit確認待ち）。この一周で停止し、継続ワーカーや追加試験を起動しない。
+<a id="astra受入と残り"></a>
+### Astra acceptance and remaining issues
 
-## OJT観察とFableへ転用できそうなヒント
+Accepted as a static comparison of evidence for two items. The checker read the fixed source, not just the worker's conclusion. The need to narrow the wording about redraw test coverage is a maintenance result of this task. The original implementation record, tests, and code were unchanged; this did not establish a defect or a failed execution. The lack of behavioral checks for description display is also not expanded into a repair under the current delegation.
 
-- 固定版・対象2件・返却項目・対象外を先に渡したところ、両役は証拠と未確認を分けて返せた。今回の成功と、この指定方法の因果的な効果は別で、比較試験ではない。
-- 確認役にも元依頼と固定ソースを渡すと、結論の復唱に加えて記録表現の過大さを指摘できた。Astraの確認負担はゼロにはならず、2返却と要所のソース確認が必要だった。使用量削減は未測定。
-- 訂正は『追加調査不要、末尾だけ、1〜2行』と閉じると、その範囲で返ってきた。Fableへの依頼にも試せそうだが、Fableでは未検証。
-- ならしは成立したが、長期学習・難しい実務での能力向上・受入役への最終判断の委譲は実証していない。
+OPS-108 is WAITING_USER (awaiting commit confirmation). Stop after this cycle; do not start a continuing worker or additional tests.
 
+<a id="ojt観察とfableへ転用できそうなヒント"></a>
+## OJT observations and possible hints for Fable
 
-2026-10-18ユーザーcommit承認によりOPS-108はDONE。次の小さい実務への継続指示は別の実施記録へ分ける。
+- Providing the fixed revision, two targets, return fields, and exclusions in advance allowed both roles to separate evidence from unverified claims. Success in this instance is distinct from a causal effect of this assignment format; this was not a comparative test.
+- Giving the checker the original assignment and fixed source allowed it to identify overstated wording as well as review the conclusion. Astra's checking burden was not eliminated: two returns and examination of key source locations were still needed. Usage reduction was not measured.
+- Limiting a correction to 『追加調査不要、末尾だけ、1〜2行』 produced a response within that boundary. This might also be tried with Fable, but has not been verified with Fable.
+- The warm-up worked, but did not demonstrate long-term learning, improved ability on difficult practical tasks, or delegation of final judgment from the accepting role.
+
+On 2026-10-18, the user's commit approval made OPS-108 DONE. Instructions to continue to the next small practical task belong in a separate execution record.

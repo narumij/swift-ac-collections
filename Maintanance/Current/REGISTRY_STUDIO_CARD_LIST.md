@@ -1,26 +1,34 @@
 # 正本を探すためのカード一覧タブ
 
-2026-10-18 / OPS-085 / 親OPS-048 / Astra作成、姫実装・検証、Astra受入。
+## TL;DR（人間向け）
 
-## 目的と委任
+見取り図から探しにくい正本へ短く到達できるよう、接続や版の絞込みに頼らないカード一覧タブを追加した記録。同梱正本だけのリンク・複数選択・入力保護を限定試験と独立確認で受け入れ、完了した。検索は追加しておらず、Safari実表示・実クリックは未確認。
 
-ユーザーは正本を確認したいだけでも見取り図からカードを探せない場合がある。必要なときに開く「カード一覧」タブを追加する。ユーザーは大まかな構成を任せ、姫への依頼を指定した。検索は必須ではない。常設の左ペインを復活させず、正本へ短い操作で到達することを優先する。
+2026-10-18 / OPS-085 / Parent OPS-048 / Astra drafting/acceptance; 姫 implementation/verification.
 
-## 範囲
+<a id="目的と委任"></a>
+## Purpose and delegation
 
-- 依存・恒久・配置維持と並ぶカード一覧タブを追加する。
-- 読み込んだ編集版の正式task（恒久・独立・完了を含む）とマイルストーンを、見取り図の接続や版表示の絞込みに依存せず一覧にする。順序・軽い分類は任せる。表示対象が分かり、カードを見失わないこと。
-- ID・タイトル・状態と、存在する正本を直接開く導線を示す。正本が複数なら既存の選択を再利用し、存在しないリンクを作らない。仮想START/ENDは正本の有無を実データどおり扱う。
-- 追加案を載せる場合は追加案と明示し、正本は付けない。選択は見取り図・インスペクタと共有する。タブ切替と閲覧で未保存編集や未適用入力を失わない。
-- 正本表示は既存のMarkdown表示を再利用する。検索・高度な絞込み・別の編集機能は必須にしない。新しい管理データを正本に増やさない。
+Users may be unable to find a card in the diagram even when they only want its canonical document. Add an on-demand 「カード一覧」 tab. The user delegated broad composition and requested assignment to 姫. Search is optional. Prefer few steps to canonical documents without restoring a permanent left pane.
 
-## 編集範囲・受渡し
+<a id="範囲"></a>
+## Scope
 
-先行OPS-084はAstra受入済み。その未commit差分を保持して実施する。編集可はRegistryApp/index.template.html、verify.cjs、README、本書の内訳/Return、Current/Evidence/OPS-085/。必要な限定変更が他ファイルへ及ぶ場合は理由を示す。DESIGN、Registry、Rules、実マイルストーン、ユーザーInboxは変更しない。最初に短い内訳を記入し、開始HEADと先行差分を記録。依頼完成で姫へ指定範囲を受渡し、Astraは返却待ち。commitなし。
+- Add a card-list tab beside dependency, permanent and placement-protection views.
+- List formal tasks (including permanent, independent and complete) and milestones from the loaded editing document, independent of diagram connections/version filtering. Ordering/light categorization at implementer's discretion; make coverage clear and avoid lost cards.
+- Show ID/title/state and direct existing canonical links. Reuse multi-document selection; invent no links. Treat virtual START/END canonical availability according to data.
+- Label any proposals as proposals with no canonical link. Share selection with diagram/inspector. Preserve unsaved edits and unapplied input through tab changes/viewing.
+- Reuse Markdown display. No mandatory search, advanced filtering or separate editor; add no new canonical management data.
 
-## 検証・完了条件
+<a id="編集範囲受渡し"></a>
+## Editing scope and handoff
 
-孤立task・恒久task・完了task・中間マイルストーンを一覧から見つけ、正本を直接開けること。複数正本・正本なしを誤表示しないこと。タブと選択の連携、未保存・未適用入力の保護を確認する。既存sync/verifyと限定操作スモークを実施し、Safari未確認なら明記。Returnへ差分・検証・未確認・作業物処理を記入する。
+OPS-084 already accepted by Astra; preserve its uncommitted changes. Editable: RegistryApp/index.template.html, verify.cjs, README, this breakdown/Return and Current/Evidence/OPS-085/. Explain any necessary limited changes elsewhere. Do not change DESIGN, Registry, Rules, actual milestones or user Inbox. Write a short initial breakdown and starting HEAD/prior changes. Hand scope to 姫; Astra awaits Return. No commit.
+
+<a id="検証完了条件"></a>
+## Verification and completion criteria
+
+Find isolated/permanent/completed tasks and intermediate milestones from the list and open canonical documents directly. Correctly handle multiple/absent sources. Check tabs/selection and input protection. Run sync/verify and limited interaction smoke; mark Safari unverified if so. Return diff, tests, unknowns and temporary-artifact handling.
 
 ## 作業内訳（姫記入）
 
@@ -71,12 +79,13 @@
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-ユーザーの受入指示に基づきカード一覧タブを受入。入力は`a1dae54f`とOPS-084受入済み差分・OPS-085返却差分。コードの一覧生成、同梱正本への導線、タブ切替を照合した。
+Accepted at user instruction. Inputs: `a1dae54f`, accepted OPS-084 changes and OPS-085 return diff. Compared list generation, bundled-document access and tab switching in code.
 
-独立sync/verify 27 PASS、文書missingなし、OPS-085操作smoke PASS（各区分の掲載、正本の直接表示と複数選択、追加案のリンクなし、選択共有、タブ切替・閲覧中の入力保持）。OPS-084接続smoke、OPS-082更新保護smoke v3もPASS、--checkずれなし。Safari実表示・実クリックは未確認。
+Independent sync/verify: 27 PASS, no missing documents. OPS-085 interaction smoke PASS: categories, direct/multiple-source opening, no proposal links, shared selection and input retention during switching/viewing. OPS-084 connection and OPS-082 update-protection v3 smokes PASS; --check agrees. Safari display/clicks unverified.
 
-検索なしの小さな一覧として範囲を満たす。ユーザーInbox・DESIGNは変更していない。受入済みcommit待ちとしてWAITING_USER、姫への依頼終了。
+Meets scope as a small search-free list. User Inbox/DESIGN unchanged. Accepted, WAITING_USER pending commit; 姫 assignment closed.
 
-2026-10-18：ユーザーのcommit指示によりcommit待ちを解消、DONE。受入範囲と未確認事項は上記のまま。
+2026-10-18: user's commit instruction resolved the wait; DONE. Acceptance scope/unknowns unchanged.

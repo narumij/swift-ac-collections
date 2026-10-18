@@ -1,19 +1,27 @@
 # 作業帯の一行カード化（OPS-113）
 
-2026-10-18 Astra。親OPS-048。ユーザーが画像を示し「OPS-112・完了部分だけ」「中の色は帯と合わせて、外側が作業種別」、コミット帯不要と指定。
+## TL;DR（人間向け）
 
-## 範囲
+作業履歴を小さい一行カードへ縮め、独立したコミット帯を外した変更。最初に取りこぼした現在作業の文字帯もユーザー指摘後に復活し、限定試験と表示確認・commit承認を経て完了した。担当・時刻・理由などの詳細と原履歴は保持する。
 
-作業イベント一段のみ。カードはIDと種別だけで小さく表示し、担当・時刻・理由・SHAは既存の詳細ツールチップへ保持。背景は帯と同じ透明色、外枠色で種別を区別。コミットイベントは作業の流れに残す。コミット履歴の画面と定期取得を外し、既存の読取APIは今回変更しない。原履歴・編集状態・スクロール維持は不変。サーバー再起動・画面操作なし。
+2026-10-18, Astra. Parent OPS-048. The user supplied an image and specified 「OPS-112・完了部分だけ」, 「中の色は帯と合わせて、外側が作業種別」, and no commit strip.
 
-## 検証・受入
+<a id="範囲"></a>
+## Scope
 
-2026-10-18 Astra実装・受入。既存JS試験で一行カード・種別属性・コミット帯なしを確認し、反復保持・スクロール位置・フォーカス・取得制御の検査も通過。実画面は未確認。担当・日時・理由はツールチップに保持。commit待ち。
+One work-event row only. Small cards show ID/type; retain owner, time, reason and SHA in the existing detail tooltip. Match transparent background to the strip and distinguish type with border color. Keep commit events in the work flow. Remove commit-history display/polling without changing the existing read API. Preserve original history, editing state and scroll position. No server restart or screen operations.
 
-## 取りこぼしの訂正
+<a id="検証受入"></a>
+## Verification and acceptance
 
-2026-10-18ユーザー指摘。カードの縮小だけ実施し、最初の文字帯を戻す意図を取りこぼしていた。再依頼によりカードの上へ現在のID・工程、担当・時刻・詳細の二行帯を復活。既存イベント取得の最後の記録から更新し、第二の記録入力や取得処理を増やさない。通信失敗時は最終表示を維持。限定試験で最新詳細の表示と失敗時維持を確認する。
+2026-10-18, implemented/accepted by Astra. Existing JS checks confirmed single-line cards, type attributes and no commit strip; repeated-item retention, scrolling, focus and fetch-control checks passed. Real display unverified. Owner/date/reason remain in tooltips. Awaiting commit.
 
-## 完了
+<a id="取りこぼしの訂正"></a>
+## Correction of an omission
 
-2026-10-18、現在作業の文字帯と一行カードの限定JS試験・sync/verify・差分検査が成功。ユーザーから「もどった。コミットしよう」と表示確認・commit承認を受領し完了。
+User correction on 2026-10-18: only card shrinking had been implemented; the intent to restore the initial text strip was missed. The renewed assignment restored two lines above cards with current ID/stage, owner/time/details. Update from the last existing event-fetch record, without another input or fetch mechanism. Preserve the last display on communication failure. Limited checks verify latest details and failure retention.
+
+<a id="完了"></a>
+## Completion
+
+2026-10-18: limited JS tests for the current-work text strip and single-line cards, sync/verify and diff checks passed. The user confirmed display and approved commit with 「もどった。コミットしよう」; complete.

@@ -1,32 +1,40 @@
 # index指定更新の失敗時CoW調査
 
-2026-10-16 / RBT-047 / 作成・受入Astra、担当Claude（姫）。CP-20261016-010から正式登録。ユーザーが姫への委任を許可した。現在の目標との関係はNEAR（赤黒木品質の不具合候補の切分け）。
+## TL;DR（人間向け）
 
-## 目的と現時点の事実
+index更新がnilで終わっても共有storageが複製されることを3実装で再現し、調査を受け入れた記録。修正案は製品未適用で、nilからfatalErrorへの変更を含む方針はユーザー専任の別判断へ分離した。全体suite・Linux・実測性能は未確認。
 
-更新がnilを返す場合にも共有storageが複製されるかを再現し、修正の必要性と安全な順序変更を判断できる材料を返す。Astraも3実装でensureUniqueが失敗判定に先行することを読解確認した。実行での再現、コスト、バグ認定はまだない。
+2026-10-16 / RBT-047 / Astra drafting/acceptance; Claude (姫) investigation. Registered from CP-20261016-010 with user permission to delegate. Goal relation: NEAR (red-black-tree quality defect-candidate diagnosis).
 
-対象:
-- RedBlackTreeMultiSet.update(_:at:)（通常構成）
-- RedBlackTreeMultiMap.updateValue(_:at:)（通常構成、戻り値Value?）
-- 同互換構成の+Deprecated.swift（COMPATIBLE_ATCODER_2025、戻り値Element?）
+<a id="目的と現時点の事実"></a>
+## Purpose and facts at registration
 
-## 依頼と完了条件
+Reproduce whether shared storage is copied even when update returns nil, and return evidence to judge need for a fix and safe reordering. Astra read all three implementations and confirmed ensureUnique precedes failure detection. Runtime reproduction, cost and bug designation were not yet established.
 
-1. 現行コードで、共有時と非共有時、正常更新とnilで終了する経路を比較する。既存Test as Specの観測方法を使い、共有元・更新先の要素、storageの共有／複製を確認する。MultiSetは有効indexで不一致値、契約でnilを保証する無効indexを区別する。無関係indexの未保証動作を新しい契約にしない。
-2. 互換構成を別に確認する。環境上実行できないものは理由と実行手順を返し、成功扱いしない。
-3. 修正案を文章または差分案として返す。元storageで検査後、CoW後のindexを解決し直す必要性・世代・成功経路の検査回数を説明する。生ポインタをCoW越しに持ち越さない。等価判定の副作用や呼出回数も検討する。
-4. 実行コマンド・終了結果・入力版・再現証拠・修正する場合の回帰テスト案を返す。性能は読解上の見積りと実測を分ける。公開性能の確定、CI起動やpushはしない。
+Targets:
+- RedBlackTreeMultiSet.update(_:at:) (normal)
+- RedBlackTreeMultiMap.updateValue(_:at:) (normal, Value?)
+- Compatibility +Deprecated.swift (COMPATIBLE_ATCODER_2025, Element?)
 
-## 編集範囲
+<a id="依頼と完了条件"></a>
+## Assignment and completion criteria
 
-新規の本件専用テスト `Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift` と `Maintanance/Current/Evidence/RBT-047/`、下記Returnのみ。既存ファイルがあれば上書きせず返す。既存テストの変更、製品ソース、公開文書、Registry、Rules、本依頼本文は編集しない。製品修正は委任していない。調査テストが現行で意図的に失敗するなら通常suiteへ失敗状態を混ぜず、証拠側に再現手順として残す。
+1. Compare shared/unshared storage and success/nil paths in current code. Use existing Test as Spec observations to check source/target elements and sharing/copying. For MultiSet distinguish mismatch at valid index from invalid indices whose nil is contractual; do not create a contract for unrelated-index unspecified behavior.
+2. Check compatibility separately; return reason/procedure for unavailable configurations, not success.
+3. Return prose/diff proposal. Explain checking original storage then resolving index after CoW, generations and success-path check counts. Carry no raw pointer across CoW; consider equality side effects/counts.
+4. Return commands, exits, input revision, reproduction evidence and regression suggestions. Separate read-based cost estimates from measurements. No public-performance conclusions, CI start or push.
 
-着手・終了時に対象3実装のhashを記録。競合時は影響範囲を止める。一時物はCOMMONSに従う。返却後は作業範囲を解放し、成果原文を固定する。commitしない。任意の観察記入とHimeキャッシュの常設許可は維持。
+<a id="編集範囲"></a>
+## Editing scope
 
-## 停止条件
+Only new dedicated `Tests/RedBlackTreeTests/IndexUpdateFailureCoWInvestigationTests.swift`, `Maintanance/Current/Evidence/RBT-047/` and Return below. If already present, return instead of overwrite. No existing tests, product sources, public docs, Registry, Rules or assignment edits. Product repair is not delegated. Keep intentionally failing reproduction out of ordinary suites and preserve its procedure as evidence.
 
-公開契約の変更が必要、または現在の順序が不可欠と判明したら理由を返す。性能改善のため別APIや木全体の設計変更へ広げない。
+Record hashes of three implementations at start/end. Stop affected scope on conflict. Follow COMMONS for temporary artifacts. Release work scope after Return and fix original output. No commit. Standing optional observations/Hime-cache permission remains.
+
+<a id="停止条件"></a>
+## Stopping conditions
+
+Return reasons if public-contract changes are required or current ordering proves necessary. Do not broaden into other APIs or whole-tree design for performance.
 
 ## Return（Claude編集欄）
 
@@ -72,26 +80,29 @@
 
 **作業終了。** 範囲を解放する。commitはしていない。
 
-## Astra検収（2026-10-16）
+<a id="astra検収2026-10-16"></a>
+## Astra acceptance review (2026-10-16)
 
-調査成果を受入。3製品ファイルのhashが返却の入力版と一致し、製品差分がないことを確認。専用テスト・差分案・保存ログを読んだ。通常5経路・互換1経路でcopyCountが期待0に対して1となる失敗ログ、差分案での成功ログを確認した。Astra自身による再実行はまだしていないため、実行結果はClaudeの保存証拠による。製品への適用・全面的な安全性確認は別。
+Accepted investigation. Confirmed three product hashes match input and no product diff. Read dedicated tests, draft diff and logs: five normal/one compatibility failure paths have copyCount 1 versus expected 0; draft-fix logs pass. Astra has not rerun, so execution results rely on Claude's saved evidence. Adoption/full safety are separate.
 
-修正は検査先行・CoW後再解決の方向が妥当と考える。ただし再解決失敗時をnilからfatalErrorへ変える点は、適用前に契約と不変条件を確認する。単純に差分を適用しない。CoW費用をO(n)とする記述も現要素数だけで確定せず、削除履歴等を含むstorageの複製費用として扱う。成功経路への実測影響は未確認。
+Check-first/re-resolve-after-CoW seems reasonable, but changing re-resolution failure from nil to fatalError requires contract/invariant review before applying. Do not simply apply the diff. CoW O(n) refers to storage-copy cost including deletion history, not just live count. Measured success-path effects unknown.
 
-現時点で確定したのは「nilで終わる更新でも共有storageを複製する」という観測。修正を行うかのユーザー判断とcommit確認を待つ。原Returnは保持する。
+Established observation: shared storage is copied for updates ending in nil (「nilで終わる更新でも共有storageを複製する」). Await user repair decision/commit confirmation; preserve original Return.
 
-## ユーザー預かりへの分離（2026-10-16）
+<a id="ユーザー預かりへの分離2026-10-16"></a>
+## Separate user-reserved decision (2026-10-16)
 
-ユーザー指示により、nil→fatalErrorを含む修正方針判断を[ RBT-048](INDEX_UPDATE_FAILURE_COW_USER_DECISION.md)へ分離した。USER_ONLYとして預かり、判断前の製品修正は行わない。本調査の受入記録は保持し、commit確認だけを本taskに残す。
+At user direction, separated repair-policy judgment including nil→fatalError into [ RBT-048](INDEX_UPDATE_FAILURE_COW_USER_DECISION.md), USER_ONLY. No product repair before decision. Preserve acceptance here, retaining only commit confirmation in this task.
 
-## 調査完了記録（2026-10-16）
+<a id="調査完了記録2026-10-16"></a>
+## Investigation completion (2026-10-16)
 
-ユーザーのcommit承認によりRBT-047をDONEとする。RBT-048のユーザー預かり判断は未完了のまま維持し、製品ソースへの修正案の適用はしていない。
+User commit approval makes RBT-047 DONE. RBT-048 remains unresolved; no draft applied to product sources.
 
-## 追加調査による訂正への参照（2026-10-16 / Astra）
+<a id="追加調査による訂正への参照2026-10-16--astra"></a>
+## Reference to additional-investigation correction (2026-10-16 / Astra)
 
-原Returnのdeath test skip記述は、[RBT-048追加調査と受入](INDEX_UPDATE_FAILURE_COW_USER_DECISION.md#追加調査の受入2026-10-16--astra)に訂正を残した。原返却は保持。通常構成の56件成功ログを確認済み。製品修正・判断の承認ではない。
-
+Correction to original Return's death-test skip statement is in [RBT-048 additional investigation/acceptance](INDEX_UPDATE_FAILURE_COW_USER_DECISION.md#追加調査の受入2026-10-16--astra). Original retained. Confirmed normal-configuration 56-success log. Not approval of product repair or policy.
 
 ## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
 

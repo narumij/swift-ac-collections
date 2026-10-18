@@ -1,44 +1,52 @@
 # 依存見取り図の自動配置への助言依頼
 
-2026-10-16、Astra。OPS-052、親OPS-048。担当：Claude（姫）、受入：Astra。
+## TL;DR（人間向け）
 
-## 依頼と境界（固定）
+依存見取り図の配置を、固定IDの指定や手調整からコードでの自動導出へ寄せる案を姫に聞いた助言依頼と、その限定反映の記録。骨格の最長路と骨格間経路の横並びの導出を反映し、全座標の回帰一致とID置換不変を確かめて受け入れた。交差の最適化・枝単位fallback・前回位置の保持・layoutHintsは未実装で、助言の残りを自動で始める許可ではない。
 
-ユーザー依頼：「依存見取り図のレイアウトに関して、AI負担を減らしてコードでの自動を増やすアイデアないか、ひめに依頼して聞いてみよう」。
-現在の実装を読み、AIが個別に配置を調整する負担を減らす、小さく実装可能な改善案を返してください。設計助言までで、方式の確定・実装・Registry更新・commitは含めません。現行案への同意は条件ではありません。
-編集できるのは本書の「Claude回答」以降とCLAUDE_TASK.mdのOPS-052 Return欄です。依頼本文・入力コードは変更しないでください。感想文書への常設追記権限は維持します。
+2026-10-16, Astra. OPS-052, parent OPS-048. Owner: Claude (Hime); acceptance: Astra.
 
-## 固定入力
+<a id="依頼と境界固定"></a>
+## Request and boundaries (fixed)
 
-基準commit：`bd70dc4741c4d80eb850446795081cb6e740ae4b`。以下はこのcommitの内容を参照してください。作業ツリーが変わっていれば`git show <基準commit>:<path>`で読めます。
+User request: 「依存見取り図のレイアウトに関して、AI負担を減らしてコードでの自動を増やすアイデアないか、ひめに依頼して聞いてみよう」 (let's ask Hime for ideas to reduce the AI's burden and increase automation in code for the dependency-map layout).
+Read the current implementation and return small, implementable improvement proposals that reduce the burden of the AI adjusting placement case by case. This is design advice only; settling the method, implementation, Registry updates and commit are not included. Agreeing with the current proposal is not a condition.
+You may edit only from 「Claude回答」 onward in this document and the OPS-052 Return field in CLAUDE_TASK.md. Do not change the request text or the input code. The standing permission to append to the impressions document is kept.
 
-- `Maintanance/RegistryApp/index.html`：graphData、graphLayout、SVGのgraph、依存つなぎ替え。
-- `Maintanance/RegistryApp/registry.json`：実データ（38task・9task辺・6表示milestone・13関係）。
-- `Maintanance/RegistryApp/verify.cjs`：現在の検証。
-- `Maintanance/RegistryApp/README.md`：共通規則と未解決事項。
+<a id="固定入力"></a>
+## Fixed input
 
-巨大な内蔵文書JSONまで通読せず、必要な関数と独立JSONを絞って読んでください。恒久見取り図・文書ビューアは今回の対象外です。
+Base commit: `bd70dc4741c4d80eb850446795081cb6e740ae4b`. Refer to the content of this commit for the following. If the working tree has changed, read with `git show <基準commit>:<path>`.
 
-## ユーザーと調整した表示意図
+- `Maintanance/RegistryApp/index.html`: graphData, graphLayout, the SVG graph, dependency rewiring.
+- `Maintanance/RegistryApp/registry.json`: real data (38 tasks, 9 task edges, 6 displayed milestones, 13 relations).
+- `Maintanance/RegistryApp/verify.cjs`: the current verification.
+- `Maintanance/RegistryApp/README.md`: common rules and unresolved items.
 
-- 骨格を横に追い、合流する枝は下側でまとめたい。
-- 横ずらしはnode幅の黄金比短辺（約38.2%）、縦間隔は共通値。
-- PERM-079を上側に置いた目的は接続線の交差を逃がすこと。仕事の意味・状態の分類ではない。
-- 直列でもRELEASE-075→076は縦、QUALITY-005→DOC-026→DOC-027は横。横縦の混在判断が未解決。
-- 配置は依存や実行順・着手許可を新しく作らない。
-- ローカルHTMLをSafariで開く運用。静的生成時の処理とブラウザ内処理を分けてもよいが、導入・保守負担も評価する。
+Do not read through the huge embedded document JSON; read only the needed functions and the separate JSON. The permanent map and the document viewer are out of scope this time.
 
-## 現状と相談したいこと
+<a id="ユーザーと調整した表示意図"></a>
+## Display intent agreed with the user
 
-現行は合流先・合流段階から枝をまとめ、骨格順とSPI手順3件の横並び指定が残っています。上側配置は「後続骨格へ合流しない枝」という暫定判定で、交差を測っていません。検査が不成立なら全体を依存順配置へ戻します。
+- Follow the skeleton horizontally, and gather merging branches below.
+- Horizontal shift is the short side of the golden ratio of the node width (about 38.2%), and vertical spacing is a common value.
+- The purpose of placing PERM-079 above is to let connecting lines avoid crossing. It is not a classification of the work's meaning or state.
+- Even in series, RELEASE-075 → 076 is vertical while QUALITY-005 → DOC-026 → DOC-027 is horizontal. How to decide mixing horizontal and vertical is unresolved.
+- Placement does not create new dependencies, execution order or permission to start.
+- Operation is opening the local HTML in Safari. Processing may be split between static generation and in-browser, but also evaluate the burden of introducing and maintaining it.
 
-1. 固定ID指定を減らすとき、何を構造から導出でき、何だけ人間の表示意図として残すべきか。
-2. 上下振分け・交差回避・横縦混在を、どの少数の規則や評価指標で処理できるか。直列/並列のFlowを表示方向へ直結させない案も検討する。
-3. 1本の接続変更で全体が大きく動くことを抑えられるか。現在位置の維持と交差削減の折り合い。
-4. 自前の小さいヒューリスティック、既存レイアウト手法・ライブラリの利点/費用。網羅調査ではなく、現状に対する候補比較をお願いします。
-5. 次に試す最小の一歩と、良し悪しを判断するfixture・反例・検証方法。
+<a id="現状と相談したいこと"></a>
+## Current state and what to consult on
 
-コードを読んだ事実、提案、未検証の仮説を分けてください。可能なら概略手順や擬似コードを添えてください。ユーザーの表示意図を推測で置き換えないこと、幾何計算と意味判断の境界を示すことが受入条件です。
+Currently branches are gathered from their merge target and merge stage, and the skeleton order and the horizontal arrangement of the 3 SPI steps remain as designations. Upper placement is a provisional judgment, "a branch that does not merge into a later skeleton node", and crossings are not measured. If the check fails, the whole map reverts to dependency-order placement.
+
+1. When reducing fixed-ID designations, what can be derived from structure, and what alone should remain as the human's display intent?
+2. With what few rules or evaluation metrics can upper/lower assignment, crossing avoidance and horizontal/vertical mixing be handled? Also consider proposals that do not tie serial/parallel Flow directly to display direction.
+3. Can the whole map moving a lot because of one connection change be suppressed? The trade-off between keeping current positions and reducing crossings.
+4. The benefits/costs of a small home-made heuristic versus existing layout methods and libraries. Not an exhaustive survey; a comparison of candidates against the current state.
+5. The smallest next step to try, and the fixtures, counterexamples and verification method for judging good or bad.
+
+Separate facts from reading the code, proposals and unverified hypotheses. If possible, attach outline procedures or pseudocode. Acceptance conditions: do not replace the user's display intent with guesses, and show the boundary between geometric computation and semantic judgment.
 
 ## Claude回答
 
@@ -145,14 +153,15 @@ fixtureと反例：
 
 骨格は「到達点の最長路」という幾何の規則で導くが、到達点かどうかは意味の側の入力である。導出結果が意図と違ったときは、規則を足すのではなく`layoutHints`で上書きする。
 
-## Astra受入
+<a id="astra受入"></a>
+## Astra acceptance
 
-2026-10-16、Astra。助言成果を受入。Claude原回答は変更しない。
+2026-10-16, Astra. Accepted the advice. Claude's original answer is not changed.
 
-- 実データで到達点のみの最長路を計算し、現行の骨格6件と一致した。弱連結成分の入口・出口を調べ、SPI3件が経路、RELEASE-075・076が供給、PERM-079が非合流の枝となることを確認。
-- ユーザーの「拾えるもの拾って反映して」を受け、骨格最長路の導出と、前方の骨格間をつなぐ成分の横並び判定を実装へ反映。固定IDの骨格列とhorizontal集合を撤去した。
-- 反映直前の全node座標をlayout-reference.jsonへ保存し、全座標の完全一致を検証。全IDを別名へ置換しても同じ座標になることも確認。既存の辺除去・接続変更・重複・矩形重なり検査も通過。
-- 部分採用の境界：供給枝の列決定には従来のFlowを含む距離を残した。RBT-011→RBT-001を同一縦列へ畳む全面変更はしていない。枝分類だけから全配置が決まるとは扱わない。
-- 上下交差最適化、枝単位fallback、前回位置保存、layoutHintsは未実装。交差数×1000＋移動量は規模次第で優先順位が逆転するため、採るなら辞書式比較などを検討する。全探索の可否はnode数ではなく枝数で制限する。ライブラリ比較の性能・サイズは今回未検証。
+- Computed the longest path over arrival points only on the real data; it matched the current 6-node skeleton. Examined the entries and exits of weakly connected components and confirmed that the 3 SPI tasks are a route, RELEASE-075 and 076 are feeders, and PERM-079 is a non-merging branch.
+- On the user's 「拾えるもの拾って反映して」 (pick up what you can and apply it), applied to the implementation the derivation of the skeleton's longest path and the horizontal judgment for components connecting earlier and later skeleton nodes. Removed the fixed-ID skeleton row and the horizontal set.
+- Saved all node coordinates just before applying into layout-reference.json and verified an exact match of all coordinates. Also confirmed that replacing every ID with another name gives the same coordinates. The existing checks for edge removal, connection changes, duplicates and rectangle overlaps also pass.
+- Boundary of partial adoption: the column decision for feeder branches keeps the existing distance that includes Flow. No full change folding RBT-011 → RBT-001 into the same vertical column. The branch classification alone is not treated as determining all placement.
+- Not implemented: upper/lower crossing optimization, per-branch fallback, keeping previous positions, and layoutHints. crossings×1000 + displacement can reverse priorities depending on scale, so if adopted, consider lexicographic comparison or the like. Whether exhaustive search is feasible is limited by the number of branches, not nodes. The performance and size of the library comparison were not verified this time.
 
-助言と今回の限定反映は確認済み。OPS-052はユーザーcommit指示によりDONE。追加案の採用・実行は今回の受入で自動開始しない。
+The advice and this limited application are confirmed. OPS-052 is DONE by the user's commit instruction. Adopting or executing the additional proposals does not start automatically with this acceptance.

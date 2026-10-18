@@ -109,7 +109,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 
 ### Canonical document language — provisional trial
 
-User decision, 2026-10-19: for new or substantively updated maintenance canonical documents, keep task/milestone card text and the human-facing `TL;DR` in Japanese; use English for newly written detailed content. Apply this prospectively during ordinary work, without bulk translation or rewriting unchanged sections just for language consistency. Mixed-language documents are acceptable during the trial.
+User decision, 2026-10-19 (updated): keep task/milestone cards and human-facing `TL;DR` in Japanese. Canonicals for unfinished tasks remain Japanese. Completed or excluded task canonicals may use English details; OPS-142 explicitly authorizes migrating existing completed canonicals, including archived ones. Archive placement alone does not establish completion. Keep uncertain cases Japanese pending clarification. History is user-owned and excluded. Mixed-language documents are acceptable where original evidence is preserved.
 
 The Japanese summary must retain the decision, material rationale, open questions, and any action expected from the user. It is a reading aid, not a separate decision authority. Preserve original quotations, historical returns, identifiers, and existing references. This trial does not override document ownership or the language rules of product-facing documentation. Explicit user requests for Japanese take precedence. Review the trial through ordinary feedback; no separate translation or periodic review task is required.
 

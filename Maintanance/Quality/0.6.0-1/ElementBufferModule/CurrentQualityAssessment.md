@@ -1,151 +1,101 @@
 # ElementBufferModule Current Quality Assessment
 
+## TL;DR（人間向け）
+本書はElementBufferの品質評価と後続test・性能検証の記録をまとめ、提供区分の訂正、仕様testの受入、未確認範囲を保存する。複数時点の記録が含まれるため、各判断の日時と証拠範囲を区別する。
+
+このアーカイブ記録だけから現行の品質状態や未完了作業を推定しない。過去のtask指示は再開条件ではなく、現行判断は現在の品質正本とTask Registryによる。
+
 ## 文書の役割
 
-この文書は、ElementBufferModuleの現行品質評価taskの詳細正本である。
-上位品質要求は`Maintanance/Quality/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
-`Maintanance/Quality/Profiles/ElementBufferModule.md`を正本とする。
-本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
+This document was the detailed source for the ElementBufferModule quality-assessment task at the time. The higher-level requirements are governed by `Maintanance/Quality/QUALITY_REQUIREMENTS.md`; module-specific application and evidence boundaries are governed by `Maintanance/Quality/Profiles/ElementBufferModule.md`. This document does not change those sources; it records the recency check for the Quality Profile, assessment scope, completion conditions, and results.
 
 
 > 2026-10-16、進捗表示を整理。以下の評価日・実行結果・当時の型名は、その時点の記録として保持する。現在の作業状態は[Task Registry](../../../ProgressV2/TASK_REGISTRY_V2.md)、提供方針は上記の品質要求・Quality Profileを参照する。
 
 ## 現行の供用区分の訂正（2026-10-15）
 
-ユーザーがElementBufferを1.0提供対象と再確認し、Swift 6.2を「1.0競技供用」（競技専用）、
-Swift 6.4を「1.0一般供用」と区分した。提供区分は`Maintanance/Quality/QUALITY_REQUIREMENTS.md`、
-アクセス方式・設計理由・定性的性能表現の判断は現行Quality Profileに記録した。
-以下の「1.0提供対象外」「保守module」を前提とした判断は過去の経緯であり、現在の提供区分や
-評価の除外根拠に使わない。過去のtask状態・実行結果は改変せず、今回の訂正を品質達成や検証成功とは扱わない。
+The user reconfirmed ElementBuffer as a 1.0 offering, distinguishing Swift 6.2 as “1.0 competitive use” (competition only) and Swift 6.4 as “1.0 general use.” The release classes are recorded in `Maintanance/Quality/QUALITY_REQUIREMENTS.md`; access methods, design rationale, and qualitative performance wording are recorded in the current Quality Profile. Decisions below that assume “not a 1.0 offering” or a “maintenance module” describe earlier history and must not be used as current release status or grounds to exclude assessment. Historical task states and run results were left unchanged; this correction is not evidence of quality completion or successful verification.
 
 ## Deprecated公開面の削除（2026-10-13）
 
-所有1D〜4D型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`をproduction sourceから削除した。
-旧View固有test、writeback Death Test、および旧compiler fixtureが表した退役済み契約は、現行の受入証拠には
-使用しない。既存の初期化、要素access、clone、要素寿命testは`element`／`setElement`へ移行し、Swift 6.4
-向けの`MutableRef`／`reference(at:)`とそのruntime test・compiler fixtureは現行契約として保持した。
+The former chained subscripts on owning one- through four-dimensional types and `BareArray1DView` through `BareArray3DView` were removed from production source. Tests specific to the retired Views, writeback Death Tests, and the retired contract represented by the old compiler fixture are not current acceptance evidence. Existing initialization, element-access, clone, and element-lifetime tests were moved to `element` / `setElement`; the Swift 6.4 `MutableRef` / `reference(at:)` contract and its runtime tests and compiler fixture were retained as current.
 
-BareArrayModuleのXcode Build for Testing、現行通常test 34件、Death Test 26件、およびbenchmark package buildが
-成功した。Xcodeの初回選択実行には削除済みView test 5件がcached test listとして残りnot runになったため、
-SwiftPMで現在のtest discoveryをやり直し、34件＋26件の全60件が成功することを確認した。
+The BareArrayModule Xcode Build for Testing, 34 current ordinary tests, 26 Death Tests, and benchmark package build succeeded. The first selected Xcode run retained five removed View tests in its cached test list and marked them not run. Current test discovery was therefore repeated with SwiftPM, confirming that all 60 tests (34 + 26) passed.
 
 ## 標準MutableRefへの移行（2026-10-13）
 
-project所有の同名`MutableRef`と`Reference` aliasを削除し、Apple OS 27以降でSwift標準ライブラリの
-`MutableRef<Element>`を直接返す契約へ移行した。`reference(at:)`は標準initializerの所有者要件に合わせて
-`mutating`となり、呼出し側は可変ownerから参照を取得し、標準propertyの`value`でread / writeする。
-旧OS・旧toolchain向けに同名の互換型は提供しない。
+The project-owned type also named `MutableRef` and its `Reference` alias were removed, and the API moved to returning the standard-library `MutableRef<Element>` directly on Apple OS 27 or later. `reference(at:)` became `mutating` to meet the standard initializer's owner requirements; callers obtain a reference from a mutable owner and read or write its standard `value` property. No same-named compatibility type is provided for older OS releases or toolchains.
 
-移行後、Xcode Build for Testing、runtime／Death Test／facadeの対象7件、compile-pass 1件と
-owner外escapeを拒否するcompile-fail 4件、およびbenchmark package buildが成功した。benchmarkの参照系
-workloadはmacOS 27以降だけ登録し、値access workloadは従来の対応環境で維持する。これらは標準型への移行で
-既存の借用寿命とowner storageへの反映が保たれた証拠であり、owner型の命名変更を開始する証拠ではない。
+After migration, Xcode Build for Testing, seven runtime / Death Test / facade tests, one compile-pass, four compile-fail cases rejecting escape beyond the owner, and the benchmark package build succeeded. Reference-based benchmark workloads are registered only on macOS 27 or later; value-access workloads remain available on their previous supported environments. These results show that the migration to the standard type retained the existing borrow lifetime and reflection into owner storage; they do not authorize renaming the owner type.
 
-以下の旧View導入・監査・受入記録は履歴として保持する。現在評価、公開面、および変更時の確認事項については、
-この節と現行Quality Profileを優先する。
+The following records of the former View's introduction, audit, and acceptance are retained as history. For the current assessment, public surface, and checks required for changes, this section and the current Quality Profile take precedence.
 
 ## Test as Specification原状回復確認（2026-10-13）
 
-ノンエスケーパブルView導入時に途中扱いのまま残った実行taskを、commit履歴、現行source、fixture、
-番号付き仕様test、および現在の再実行結果で照合した。Xcodeのbuild-for-testing、Debug通常35件・Death Test
-39件、Release通常28件・Death Test 39件、View寿命escape 3件と所有配列writeback exclusivity 3件の
-compiler診断fixtureが成功した。これにより、View 3型のlifetime dependency、実行可能なView経路、
-実行時Death Testからcompiler診断へ移した拒否契約を、旧ノンエスケーパブル化の成果として受け入れる。
+The execution task left marked in progress during introduction of non-escapable Views was checked against commit history, current source, fixtures, numbered specification tests, and current rerun results. Xcode build-for-testing succeeded; Debug ordinary tests (35) and Death Tests (39), Release ordinary tests (28) and Death Tests (39), and compiler diagnostic fixtures for three View-lifetime escapes and three owning-array writeback exclusivity violations all succeeded. On that basis, the lifetime dependency of the three View types, the executable View path, and rejection contracts moved from runtime Death Tests to compiler diagnostics were accepted as results of the former non-escapable-View work.
 
-この受入後、`element(at:)`、`setElement(_:at:)`、Swift 6.4以降の`reference(at:)`と多次元版、および
-旧subscript・Viewのdeprecated指定が別commitで追加された。現行の番号付き8仕様群は旧subscript・View経路を
-通して成功する一方、新しい座標access APIを直接仕様化しておらず、buildではdeprecated warningが多数発生する。
-この後発差分を旧View契約の未完了へ混ぜず、採用・撤回の判断も先取りせず、別の差分監査として扱う。
+After that acceptance, `element(at:)`, `setElement(_:at:)`, `reference(at:)` and its multidimensional variants for Swift 6.4 or later, and deprecation annotations for the old subscripts and Views were added in a separate commit. The current eight numbered specification groups pass through the old subscript/View paths, but do not directly specify the new coordinate-access APIs; the build also emits numerous deprecation warnings. Treat these later changes as a separate API-difference audit rather than mixing them with incomplete work on the retired View contract or preempting an adopt/revert decision.
 
 ### 座標access API差分監査（BARE-036）
 
-2026-10-13、現行source、番号付き8仕様群、compiler診断fixture、benchmark、および追加commit
-`4b023333`を照合した。旧Viewと連鎖subscriptはdeprecatedであり、新しい座標access APIの間接coverageとして
-扱わない。既存testは旧契約の退役までの回帰証拠として維持し、新APIの仕様testは別群へ置換する。
+On 2026-10-13, current source, eight numbered specification groups, compiler diagnostic fixtures, benchmarks, and additional commit `4b023333` were compared. The old Views and chained subscripts are deprecated and are not treated as indirect coverage for the new coordinate-access APIs. Keep the existing tests as regression evidence until the old contract is retired, and put specification tests for the new APIs in a separate group.
 
 #### 直接coverage
 
-次表は`BARE-036`監査時点のsnapshotである。そこで確定した不足は、後段の`BARE-037`・`BARE-038`
-受入結果によって解消済みであり、現在状態はそれらの結果と「現行評価」を正とする。
+The following table is a snapshot from the `BARE-036` audit. The gaps identified there were resolved by the later acceptance results for `BARE-037` and `BARE-038`; use those results and “Current Assessment” below for the present state.
 
-| 対象 | production宣言 | `BARE-036`監査時点のTest as Specification | 判定 |
+| Subject | Production declarations | Test as Specification at the `BARE-036` audit snapshot | Finding |
 | --- | ---: | --- | --- |
-| `element(at:)` | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
-| `setElement(_:at:)` | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
-| `reference(at:)`（Swift 6.4以降） | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
-| `MutableRef.pointee`（Swift 6.4以降） | read / nonmutating write | 直接呼出し0件 | 未検証 |
-| 座標ごとの範囲外停止 | 1D〜4Dの各軸 | Death Test 0件 | 未検証 |
-| `MutableRef`のowner依存寿命（Swift 6.4以降） | `~Escapable`と`@_lifetime(borrow self)` | compile-pass／compile-fail fixture 0件 | 未検証 |
+| `element(at:)` | Four owning types, dimensions 1D–4D | No direct calls | Unverified |
+| `setElement(_:at:)` | Four owning types, dimensions 1D–4D | No direct calls | Unverified |
+| `reference(at:)` (Swift 6.4+) | Four owning types, dimensions 1D–4D | No direct calls | Unverified |
+| `MutableRef.pointee` (Swift 6.4+) | Read / nonmutating write | No direct calls | Unverified |
+| Out-of-bounds trap per coordinate | Every axis in dimensions 1D–4D | No Death Tests | Unverified |
+| Owner-dependent lifetime of `MutableRef` (Swift 6.4+) | `~Escapable` and `@_lifetime(borrow self)` | No compile-pass / compile-fail fixtures | Unverified |
 
-benchmarkは1D〜3Dの一部経路を実行し、性能探索とchecksum確認を行うが、有限のworkloadであり、
-公開契約、全次元、全軸のbounds、要素寿命、およびcompiler拒否を仕様化する証拠にはしない。
+Benchmarks execute some paths in dimensions 1D–3D for performance exploration and checksum checks. Their workloads are finite, so they are not evidence specifying public contracts, all dimensions, all-axis bounds, element lifetime, or compiler rejection.
 
 #### 後継仕様群
 
-新APIを現在名のまま実装へ固定する判断はこの監査で行わない。命名が変わっても保持すべき仕様意図として、
-次を後継Test as Specificationの単位にする。
+This audit does not decide to lock the new APIs into the implementation under their current names. The following units were identified for successor Test as Specification work as behavioral intentions to preserve even if names change.
 
-1. Swift 6.2以降の値access群として、所有1D〜4Dの非対称shapeで、`element(at:)`が全座標を正しい線形位置へ
-   写像する。
-2. Swift 6.2以降の値access群として、`setElement(_:at:)`による変更を`element(at:)`と独立したstorage確認経路で
-   観測し、参照要素の置換時に
-   旧要素がちょうど1回破棄される。
-3. Swift 6.4以降だけの借用参照群として、`reference(at:)`の`pointee` read / writeが同じowner storageへ反映され、
-   参照要素の置換寿命も保つ。
-4. 1D〜4Dの各座標について、負値と上限値をreadとsetで拒否し、Swift 6.4以降ではreferenceも拒否する。
-5. Swift 6.4以降で、`MutableRef`をownerより長くescapeできず、有効scope内では利用できることをcompiler fixtureで
-   確認する。
-6. `AcCollections`再公開経路から新しい公開面へ到達できることを確認する。
+1. For the Swift 6.2+ value-access group, confirm that `element(at:)` maps every coordinate in asymmetric shapes for owning types in dimensions 1D–4D to the correct linear position.
+2. For the Swift 6.2+ value-access group, observe `setElement(_:at:)` changes through a storage-check path independent of `element(at:)`, and confirm that replacing a reference-type element destroys the old element exactly once.
+3. For the Swift 6.4+ borrowed-reference group, confirm that `pointee` reads and writes through `reference(at:)` affect the same owner storage and preserve replacement lifetime for reference-type elements.
+4. For every coordinate in dimensions 1D–4D, reject negative and upper-bound values for reads and writes; on Swift 6.4+, reject them for reference acquisition as well.
+5. On Swift 6.4+, use a compiler fixture to confirm that `MutableRef` cannot escape beyond its owner but can be used within a valid scope.
+6. Confirm that the new public surface can be reached through the `AcCollections` reexport path.
 
-旧View・連鎖subscriptのtestへ新API assertionを追加しない。置換coverageが受け入れられる前に旧testを削除せず、
-置換後のdeprecated表面の削除時期はrelease・移行判断と分ける。
+Do not add assertions for the new APIs to old View/chained-subscript tests. Do not remove old tests before replacement coverage is accepted. Decide when to remove the deprecated surface separately from release and migration decisions.
 
 #### 付随して見つかった文書不整合
 
-`BareArray2DView`と`BareArray3DView`のdeprecated extension messageは、現行sourceに存在しない
-`mutable(at:...)`を案内する。Swift 6.4以降の実際の置換候補は`reference(at:)`であるが、公開名判断と
-toolchain別の移行案内を先取りせず、命名反映時の修正対象として残す。
+The deprecation messages on `BareArray2DView` and `BareArray3DView` extensions point users to `mutable(at:...)`, which does not exist in current source. The actual replacement candidate on Swift 6.4+ is `reference(at:)`; keep this as a correction for when naming is reflected, without preempting a public-name decision or toolchain-specific migration guidance.
 
 #### 現行suiteの基準点
 
-`swift test --disable-sandbox --filter BareArrayModuleTests`を実行し、XCTest 35件とSwift Testing Death Test
-39件が成功した。これらは旧View・連鎖subscriptを中心とする現行suiteの成功であり、上表の座標access API
-未検証を解消しない。user-level SwiftPM cacheがread-onlyというenvironment warningは結果へ影響しなかった。
+`swift test --disable-sandbox --filter BareArrayModuleTests` ran successfully: 35 XCTest cases and 39 Swift Testing Death Tests passed. These results cover the current suite, which focuses on old Views and chained subscripts; they do not resolve the unverified coordinate-access APIs in the table. The environment warning that the user-level SwiftPM cache was read-only did not affect the results.
 
 #### 監査で確定した後続task境界
 
-- `BARE-037`: `element(at:)`と`setElement(_:at:)`の値access群を直接仕様化する。現在の中間ゴールに`DIRECT`。
-- `BARE-038`: Swift 6.4以降の`reference(at:)`と`MutableRef`借用参照群を、runtime testとcompiler fixtureで
-  直接仕様化する。値access群から独立して実行・受入でき、現在の中間ゴールに`DIRECT`。
+- `BARE-037`: Directly specify the value-access group for `element(at:)` and `setElement(_:at:)`. `DIRECT` to the current intermediate goal.
+- `BARE-038`: Directly specify the Swift 6.4+ borrowed-reference group for `reference(at:)` and `MutableRef` with runtime tests and compiler fixtures. It can be executed and accepted independently from the value-access group and is `DIRECT` to the current intermediate goal.
 
-両taskとも現在名の採用判断は行わず、命名変更時にも保持される振る舞いを仕様化する。旧Viewの削除、移行時期、
-deprecated messageの確定は含めない。
+Neither task decides to adopt the current names; both specify behavior to preserve if names change. They do not include removal of old Views, migration timing, or finalizing deprecation messages.
 
 #### 値access群の受入結果（BARE-037）
 
-`BareArray_6_CoordinateValueAccessTests.swift`に、1D〜4Dの非対称shapeによる全座標写像、選択位置だけの
-書換え、および参照要素置換時の破棄回数を追加した。`BareArray_97_CoordinateValueAccessDeathTests.swift`では、
-read / setそれぞれについて全次元・全軸の負値と上限値、合計40 caseを正確なSwift trap signalで確認する。
-`AcCollectionsTests`のfacade到達確認もdeprecated subscriptから値access群へ移した。
+`BareArray_6_CoordinateValueAccessTests.swift` added tests for all-coordinate mapping in asymmetric shapes across dimensions 1D–4D, changing only a selected position, and destruction counts when replacing reference-type elements. `BareArray_97_CoordinateValueAccessDeathTests.swift` checks negative and upper-bound values for reads and writes on every axis in every dimension, 40 cases total, against the exact Swift trap signal. The facade reachability test in `AcCollectionsTests` was also moved from deprecated subscripts to the value-access group.
 
-Debugは通常38件とDeath Test 47件、Releaseは通常31件とDeath Test 47件が成功した。Releaseの通常件数が
-Debugより7件少ないのは、既存のinternal `clone()` testが`#if DEBUG`であるため。旧View由来のdeprecated warningは
-残るが、置換coverage受入前に旧testを削除しない方針どおりであり、値access群の失敗ではない。現branchは
-Swift tools version 6.4であるため、この実行結果をSwift 6.2構成そのもののbuild証拠とは扱わない。
+Debug passed 38 ordinary tests and 47 Death Tests; Release passed 31 ordinary tests and 47 Death Tests. Release has seven fewer ordinary tests because existing internal `clone()` tests are guarded by `#if DEBUG`. Deprecation warnings from old Views remain, consistent with the decision not to remove old tests before replacement coverage is accepted; they are not failures of the value-access group. The current branch uses Swift tools version 6.4, so these results are not build evidence for a Swift 6.2 configuration.
 
 #### 借用参照群の受入結果（BARE-038）
 
-Swift 6.4以降の`reference(at:)`と`MutableRef.pointee`について、1D〜4Dのowner storageへのread / write、
-参照要素置換時の破棄回数、全次元・全軸の負値と上限値20 case、および`AcCollections` facade経路を
-直接仕様化した。Death Testは値access群と同じ正確なSwift trap signalを要求する。
+For Swift 6.4+ `reference(at:)` and `MutableRef.pointee`, direct specification tests cover reads and writes to owner storage in dimensions 1D–4D, destruction counts when replacing reference-type elements, 20 negative/upper-bound cases across every axis and dimension, and the `AcCollections` facade path. Death Tests require the same exact Swift trap signal as the value-access group.
 
-`Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`には、有効なowner scope内の
-compile-pass 1件と、1D〜4Dの参照をowner外へ返すcompile-fail 4件を置いた。診断scriptへ統合し、
-4件すべてが`lifetime-dependent value escapes its scope`で拒否されることを確認した。旧View escape 3件と
-owned writeback exclusivity 3件のfixtureは、対応するdeprecated公開面の削除に伴って退役した。
+`Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/` contains one compile-pass case within a valid owner scope and four compile-fail cases returning a reference in dimensions 1D–4D beyond its owner. They were integrated into the diagnostic script, which confirmed all four are rejected with `lifetime-dependent value escapes its scope`. The three old View-escape fixtures and three owned-writeback exclusivity fixtures were retired when their deprecated public surfaces were removed.
 
-Debugは通常40件とDeath Test 51件、Releaseは通常33件とDeath Test 51件が成功した。facade到達確認も成功した。
-これにより、監査で分離した値access群とSwift 6.4借用参照群の直接Test as Specificationは揃った。
+Debug passed 40 ordinary tests and 51 Death Tests; Release passed 33 ordinary tests and 51 Death Tests. Facade reachability also passed. This completed direct Test as Specification coverage for the value-access group and the Swift 6.4 borrowed-reference group separated by the audit.
 
 ## Task
 
@@ -154,7 +104,7 @@ Debugは通常40件とDeath Test 51件、Releaseは通常33件とDeath Test 51�
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
 
-現在の状態、担当、および再開条件はTask Registryを正本とする。
+The Task Registry is authoritative for current status, ownership, and resumption conditions.
 
 ### 実行内訳
 
@@ -168,14 +118,11 @@ Debugは通常40件とDeath Test 51件、Releaseは通常33件とDeath Test 51�
 
 ## 目的
 
-BareArrayModuleについて、上位品質要求QR-01〜QR-06に対する現行実装の品質を、現在の仕様と
-独立した証拠に基づいて評価可能な状態にする。
+Make the current implementation quality of BareArrayModule assessable against higher-level requirements QR-01–QR-06, using current specifications and independent evidence.
 
-評価開始時にQuality Profile自体の現在性を確認し、上位要求、公開契約、対象、証拠境界に問題が
-あれば、評価を始める前にProfileをリフレッシュする。Profileを固定された前提とは扱わず、評価で
-反証された場合もProfile確認へ戻る。
+At the start of the assessment, check whether the Quality Profile itself is current. If its higher-level requirements, public contracts, scope, or evidence boundaries have a problem, refresh the Profile before beginning the assessment. Do not treat the Profile as a fixed premise; if the assessment refutes it, return to reviewing the Profile.
 
-旧評価の判定を引き継がず、各品質主張を次のいずれかへ分類する。
+Do not carry forward conclusions from the previous assessment. Classify each quality claim as one of the following:
 
 - 確認済み
 - 未達
@@ -185,133 +132,109 @@ BareArrayModuleについて、上位品質要求QR-01〜QR-06に対する現行�
 
 ## 対象
 
-- 所有1D〜4D型と非所有View 1D〜3Dの公開API、実装、Test as Specification、documentation comment
-- storage、初期化、次元、offset、subscript、writeback、要素寿命、View寿命、Sendableの境界
-- benchmark対象、継続測定構成、および現在利用できる性能証拠
-- SwiftPM、`AcCollections`再公開、競技用途の単一file経路
-- CIが実際に扱うtoolchain、platform、build configuration、trait、test
-- strict memory safety、Sanitizer、Death Test、`-Ounchecked`に関する現在の証拠境界
+- Public APIs, implementation, Test as Specification, and documentation comments for owning 1D–4D types and non-owning 1D–3D Views
+- Boundaries for storage, initialization, dimensions, offsets, subscripts, writeback, element lifetime, View lifetime, and Sendable
+- Benchmark targets, ongoing measurement configuration, and currently available performance evidence
+- SwiftPM, `AcCollections` reexports, and the single-file path for competitive programming
+- Toolchains, platforms, build configurations, traits, and tests actually used by CI
+- Current evidence boundaries for strict memory safety, Sanitizers, Death Tests, and `-Ounchecked`
 
 ## 対象外
 
-- 公開契約、性能目標、比較水準、残余リスク許容条件の新規決定
-- 未確定事項をagent判断で製品契約へ取り込むこと
-- 発見した不足の実装修正
-- BareArray以外のモジュールの品質評価
-- 凍結中の性能測定、View寿命・storage再設計・strict memory safety課題の暗黙の再開
+- New decisions about public contracts, performance targets, comparison thresholds, or residual-risk tolerance
+- Incorporating unresolved matters into product contracts based on an agent's judgment
+- Implementing fixes for gaps discovered during the assessment
+- Quality assessment of modules other than BareArray
+- Implicitly resuming frozen performance measurements, View-lifetime work, storage redesign, or strict-memory-safety work
 
 ## Quality Profile現在性監査
 
-評価開始時点は2026-10-11、branch `develop/misc/55`。
+The assessment began on 2026-10-11 on branch `develop/misc/55`.
 
 ### 結果
 
-現行Quality Profileのリフレッシュは不要と判定した。
+It was determined that the current Quality Profile did not need refreshing.
 
-- QR-01〜QR-06への接続は、現行の上位品質要求と一致する。
-- 対象として記載された所有4型、非所有View 3型、および`BareArray.swift`は現行sourceと一致する。
-- 番号付きTest as Specification 8群は現行test配置と一致する。
-- 性能測定、View寿命、並行利用、strict memory safety、`-Ounchecked`を未確定領域として分離しており、
-  現在のRegistryと監査記録を先取りしていない。
-- Profile整備commit `74deff9e`以後、BareArrayのsourceとTest as Specificationに意味的変更はない。
-  評価開始後のフィードバックにより、BareArrayModule targetへ`.strictMemorySafety()`を追加して観測している。この変更は
-  Profileが既に定めるstrict memory safetyの証拠境界を変えず、現在評価の結果だけを更新する。
-- Profileは現在評価を内包せず、評価区分と必要な証拠項目だけを規定しているため、今回の結果をProfileへ
-  追記する必要はない。
+- Its mapping to QR-01–QR-06 matches the current higher-level quality requirements.
+- The four owning types, three non-owning View types, and `BareArray.swift` listed in scope match the current source.
+- The eight numbered Test as Specification groups match the current test layout.
+- Performance measurement, View lifetime, concurrent use, strict memory safety, and `-Ounchecked` are separated as unresolved areas; this does not preempt the current Registry or audit records.
+- Since the Profile-preparation commit `74deff9e`, there have been no semantic changes to BareArray source or Test as Specification. Feedback after the assessment began added `.strictMemorySafety()` to the BareArrayModule target for observation. This does not change the strict-memory-safety evidence boundary already set by the Profile; it updates only the result of the current assessment.
+- The Profile does not contain the current assessment; it defines only assessment categories and required evidence items. Therefore, these results do not need to be added to the Profile.
 
-この判定はProfileの永久固定を意味しない。後続照合で対象、契約、証拠境界への反証が出た場合は、
-評価を止めて本節へ戻る。
+This finding does not make the Profile permanently fixed. If later review refutes its scope, contracts, or evidence boundaries, stop the assessment and return to this section.
 
 ## 作業
 
-1. Quality Profileの対象、品質主張、証拠境界を上位要求、source、test、Registryと照合する。
-2. QR-01〜QR-06ごとに評価対象となる品質主張を抽出する。
-3. 各主張を担当する公開契約、設計契約、Test as Specification、測定、CI構成へ接続する。
-4. 証拠の現在性、対象構成、実行結果、反証、証明できる範囲を確認する。
-5. 各主張を評価区分へ分類し、VerificationとValidationを分離する。
-6. 不足を`DISCOVERY`、一判断ごとの`DECISION`、方針確定後の`EXECUTION`、既存taskへ分ける。
-7. 後続候補の現在の中間ゴールへの必要性と近さを示し、必要なものだけRegistry候補として提示する。
+1. Compare the Quality Profile's scope, quality claims, and evidence boundaries against higher-level requirements, source, tests, and the Registry.
+2. Extract the claims to assess for each of QR-01–QR-06.
+3. Connect each claim to the relevant public contract, design contract, Test as Specification, measurements, and CI configuration.
+4. Check the evidence's currency, configuration, execution results, counterevidence, and what it can establish.
+5. Classify each claim and distinguish Verification from Validation.
+6. Separate gaps into `DISCOVERY`, one-decision `DECISION` tasks, post-policy `EXECUTION` tasks, or existing tasks.
+7. Show each follow-up candidate's necessity and proximity to the current intermediate goal, and present only necessary items as Registry candidates.
 
 ## 成果物
 
-現在評価は本書へ記録する。長い調査ログや再実行用データが必要になった場合は、本書から参照する
-別紙へ分離し、同じ判定を重複して正本化しない。
+Record the current assessment here. If lengthy investigation logs or rerun data are needed, separate them into appendices referenced from this document; do not establish the same conclusion as authoritative in multiple places.
 
-最低限、品質主張、対応する上位要求、仕様の正本、証拠と対象構成、評価区分、根拠、反証または
-未確認範囲、残余リスク、必要な後続task候補を残す。
+At minimum, record the quality claim, corresponding higher-level requirement, authoritative specification, evidence and configuration, assessment category, rationale, counterevidence or unverified scope, residual risk, and necessary follow-up candidates.
 
 ## 完了条件
 
-- Quality Profileの現在性を確認し、必要な場合は評価前にリフレッシュしている。
-- QR-01〜QR-06の各領域について、少なくとも一つの現行評価が記録されている。
-- Verificationから競技利用、C/C++級性能、一般Swift開発での採用というValidationを推定していない。
-- View寿命、Sendable、strict memory safety、`-Ounchecked`の未確定事項をagent判断で閉じていない。
-- 未達・未検証・判断待ち・実行不足が区別され、一判断一taskの規則で後続候補へ分離されている。
-- ユーザーが評価結果と後続候補をレビューできる。
+- The Quality Profile's currency has been checked and, if needed, refreshed before assessment.
+- At least one current assessment is recorded for each area QR-01–QR-06.
+- Validation of competitive use, C/C++-level performance, or adoption in general Swift development is not inferred from Verification.
+- Unresolved matters involving View lifetime, Sendable, strict memory safety, and `-Ounchecked` have not been closed based on an agent's judgment.
+- Unmet, unverified, decision-pending, and execution-insufficient items are distinguished and separated into follow-up candidates under the one-decision-per-task rule.
+- The user can review the assessment results and follow-up candidates.
 
 ## 現行評価
 
-評価日は2026-10-13。旧品質評価の判定は継承せず、現在性を確認したsource、Test as Specification、
-Package設定、benchmark、workflow、および今回の実行結果から評価する。
+The assessment date was 2026-10-13. It did not inherit conclusions from the previous quality assessment; it evaluated the source, Test as Specification, package configuration, benchmarks, workflow, and run results after checking their currency.
 
-| 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
+| Higher-level requirement | Quality claim | Assessment | Current evidence | Unverified scope / residual risk |
 | --- | --- | --- | --- | --- |
-| QR-01 正確性 | 初期化、次元、offset、座標value access、借用参照、破棄が公開契約どおり動作する | 確認済み | deprecated公開面削除後、現行通常test 34件・Death Test 26件が成功。座標value accessとSwift 6.4借用参照の直接仕様群を保持 | 有限な入力と構成による確認であり、任意の次元・要素型の数学的証明ではない |
-| QR-02 性能効率性 | 実装上の計算量と連続storageの設計根拠が公開契約と一致する | 確認済み | 所有4型は要素数分を一括allocateし、座標value accessと借用参照生成は定数回のoffset計算、初期化と破棄は要素数に比例する。benchmark package build成功 | 実装構造とbuildの確認であり、実行時間、allocation cost、最適化結果を証明しない |
-| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | BareArray固有の2D・3D sequential access benchmarkはCIへ登録済み | C++ nested vectorとの外部比較結果と性能比の受入水準は未確定 |
-| QR-03 安全性 | 所有storage、要素寿命、座標範囲拒否、借用寿命が契約どおり動く | 確認済み | 座標value accessと借用参照について要素寿命、全次元・全軸bounds、owner依存寿命を直接仕様化。deprecated削除後も現行60件が成功 | testが通る有限経路の証拠であり、任意の要素型・寸法・操作列の証明ではない |
-| QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種と`MutableRef`を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用。build・runtime testが成功し、借用寿命compiler fixtureを保持 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
-| QR-03 安全性 | `@unchecked Sendable`を含む並行利用と`-Ounchecked`の保証境界が受入可能である | 未検証 | 未確定範囲はQuality Profileと公開コメントに分離されている | data raceを含む並行利用のValidationと、事前条件検査を省略する構成の扱いは未評価 |
-| QR-04 理解可能性 | 座標順、初期化、value access、借用参照、失敗条件を公開文書から理解できる | 部分確認 | 公開Quality Profileとsource commentをdeprecated削除後の公開面へ同期した | DocC再生成と一般利用者による理解のValidationは未実施 |
-| QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功。repository外の一時SwiftPM consumerで直接module import、`AcCollections` import、`PermutationModule`との共存、標準`MutableRef`経路をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。恒久fixture、他platform・toolchainは未確認 |
-| QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
-| QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、compiler診断fixture、Debug・Release・ASanのCI jobがあり、BareArray性能workload 4件は通常CI libraryへ登録済み。これらを含むPR #192のremote CIはall greenで、BareArrayModuleのDocC生成も個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、BareArrayのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない |
+| QR-01 Correctness | Initialization, dimensions, offsets, coordinate value access, borrowed references, and destruction follow the public contract | Confirmed | After removing deprecated public surfaces, 34 current ordinary tests and 26 Death Tests passed. Direct specification groups for coordinate value access and Swift 6.4 borrowed references are retained. | Confirmed only for finite inputs/configurations; not a mathematical proof for arbitrary dimensions or element types. |
+| QR-02 Performance efficiency | Implementation complexity and contiguous-storage rationale match the public contract | Confirmed | The four owning types allocate space for the element count in one operation. Coordinate value access and borrowed-reference creation use a constant number of offset calculations; initialization and destruction scale with element count. The benchmark package built successfully. | Checks of implementation structure and build do not establish runtime, allocation cost, or optimization results. |
+| QR-02 Performance efficiency | Performance is comparable to C/C++ standards | Unverified | BareArray-specific two- and three-dimensional sequential-access benchmarks are registered in CI. | External comparison with C++ nested vectors and an accepted performance ratio remain undecided. |
+| QR-03 Safety | Owned storage, element lifetime, coordinate bounds rejection, and borrow lifetime behave as specified | Confirmed | Element lifetime, bounds on every axis and dimension, and owner-dependent lifetime are directly specified for coordinate value access and borrowed references. The current 60 tests passed after deprecated surfaces were removed. | Evidence covers finite tested paths, not arbitrary element types, dimensions, or operation sequences. |
+| QR-03 Safety | Public API safety boundaries hold under strict memory safety | Confirmed | The four owning types and `MutableRef` are classified as `@safe`; `.strictMemorySafety()` is applied to BareArrayModule. Build and runtime tests passed, and the borrow-lifetime compiler fixture is retained. | Compiler diagnostics and finite execution paths do not prove semantic safety for concurrent use. |
+| QR-03 Safety | Guarantee boundaries for concurrency, including `@unchecked Sendable`, and `-Ounchecked` are acceptable | Unverified | Unresolved scope is separated in the Quality Profile and public comments. | Concurrent-use Validation involving data races and behavior with precondition checks omitted remain unevaluated. |
+| QR-04 Comprehensibility | Users can understand coordinate order, initialization, value access, borrowed references, and failure conditions from public documentation | Partially confirmed | The public Quality Profile and source comments were synchronized with the public surface after deprecated APIs were removed. | DocC regeneration and user-comprehension Validation with general users have not been performed. |
+| QR-05 Usability | The package can be installed through SwiftPM and `AcCollections` and used in supported environments | Confirmed | Debug and Release builds, one facade reexport test, standalone typecheck of `BareArray.swift`, and DocC generation succeeded. A temporary external SwiftPM consumer built and ran direct module import, `AcCollections` import, coexistence with `PermutationModule`, and the standard `MutableRef` path. | The current package exposes only `AcCollections` as a library product; direct module import demonstrates transitive visibility. A permanent fixture and other platforms/toolchains remain unchecked. |
+| QR-05 Usability | Useful for competitive programming | Unverified | The source includes permission for copy-and-paste use and a single-file candidate. | Validation evidence for a real problem, submission, runtime, and memory use was not checked. |
+| QR-06 Sustainability | The public surface, correctness, lifetime, and termination contracts can be rechecked after changes | Partially confirmed | Numbered Test as Specification, direct coordinate-access groups, compiler diagnostic fixtures, and Debug, Release, and ASan CI jobs exist. Four BareArray performance workloads are registered in the ordinary CI library. Remote CI for PR #192, including these jobs, was all green; BareArrayModule DocC generation also succeeded individually. | The CI documentation job covers only RedBlackTreeCollections; no automated path continues to regenerate DocC after changes to BareArray documentation comments. |
 
 ## 実行記録
 
-- 2026-10-11、`swift test --disable-sandbox --filter BareArrayModuleTests`を実行した。
-- XCTestの通常test 35件が成功し、失敗0件だった。
-- Swift TestingのDeath Test 42件が成功し、失敗0件だった。
-- build時にSwiftPM user cacheへ書き込めない環境警告が出たが、製品buildとtestは成功した。
-- `swift test -c release --disable-sandbox --filter BareArrayModuleTests`で通常test 28件とDeath Test 42件が成功した。
-- `swift test --disable-sandbox --sanitize address --filter BareArrayModuleTests`で通常test 35件とDeath Test
-  42件が成功した。build中のwarningは他moduleの既知testに由来し、BareArrayのSanitizer失敗はなかった。
-- `AcCollectionsTests.test_importAcCollections_exposesBareArray`が成功した。
-- BareArrayModuleのDocC生成が成功した。
-- `BareArray.swift`単独のSwift 6 typecheckが成功した。
-- strict memory safetyを指定した単独typecheckは終了コード0だったが、型7件のunsafe storageとunsafe式
-  20件、合計27 warningを報告した。旧調査の22箇所は現在値として用いない。
-- 評価のフィードバックを受け、BareArrayModule targetへ`.strictMemorySafety()`を追加して観測している。
-  採用状態の分類は行っていない。
-- allocation、pointer受け渡し、writeback時のpointer比較に明示的な`unsafe` scopeを付け、unsafe式20件を
-  解消した。strict typecheckとPackage経路のDebug buildには公開7型の警告だけが残る。
-- この変更後も通常test 35件とDeath Test 42件が成功した。
-- `Benchmarks/`にBareArray固有のworkloadまたはlibrary登録は見つからなかった。
-- 0.6.0品質として再開後、現行実装を対象にDebug通常test 35件、Release通常test 28件、両構成の
-  Death Test 39件、View寿命escape 3件と所有配列writeback exclusivity 3件のcompiler診断fixtureが
-  成功した。
-- Address Sanitizer構成では通常test 35件とDeath Test 39件が成功し、BareArrayに由来するSanitizer
-  failureはなかった。
-- facade再公開test 1件とBareArrayModuleのDocC生成が成功した。
-- candidate `693b1bab`をlocal path dependencyにしたrepository外SwiftPM consumerをApple Swift 6.4、
-  macOS 27.0.1、arm64、debugで実行。直接module import、`AcCollections`再公開、`PermutationModule`との共存、
-  標準`MutableRef.value`のscope内複数更新とowner storageへの反映を、4 executableで確認した。多次元の
-  内側寸法はpublic propertyから取得できず、consumerがshapeを保持する必要があることを理解可能性の候補へ残した。
-- Swift 6.4のLifetimes実験機能下でのView寿命とstrict memory safetyは確認済みとした。一方、
-  `@unchecked Sendable`を含む並行利用、`-Ounchecked`、一般Swift利用、競技利用、外部性能は、この
-  Verificationから成功を推定せず未検証として維持する。
+- On 2026-10-11, ran `swift test --disable-sandbox --filter BareArrayModuleTests`.
+- All 35 ordinary XCTest cases passed with zero failures.
+- All 42 Swift Testing Death Tests passed with zero failures.
+- The build emitted an environment warning that the SwiftPM user cache was not writable, but the product build and tests succeeded.
+- `swift test -c release --disable-sandbox --filter BareArrayModuleTests` passed 28 ordinary tests and 42 Death Tests.
+- `swift test --disable-sandbox --sanitize address --filter BareArrayModuleTests` passed 35 ordinary tests and 42 Death Tests. Build warnings came from known tests in another module; no BareArray sanitizer failure occurred.
+- `AcCollectionsTests.test_importAcCollections_exposesBareArray` passed.
+- BareArrayModule DocC generation succeeded.
+- Standalone Swift 6 typechecking of `BareArray.swift` succeeded.
+- Standalone typechecking with strict memory safety exited with code 0 but reported 27 warnings: unsafe storage in seven types and 20 unsafe expressions. The previous investigation's count of 22 is not the current count.
+- Following assessment feedback, `.strictMemorySafety()` was added to the BareArrayModule target for observation. Its adoption status was not classified.
+- Explicit `unsafe` scopes were added for allocation, pointer passing, and pointer comparison during writeback, resolving 20 unsafe-expression warnings. Strict typechecking and a Debug build through the Package path then retained warnings only for seven public types.
+- After this change, 35 ordinary tests and 42 Death Tests still passed.
+- No BareArray-specific workload or library registration was found under `Benchmarks/`.
+- After reopening the 0.6.0 quality assessment, the current implementation passed 35 Debug ordinary tests, 28 Release ordinary tests, 39 Death Tests in each configuration, and compiler diagnostic fixtures for three View-lifetime escapes and three owning-array writeback exclusivity cases.
+- Under Address Sanitizer, 35 ordinary tests and 39 Death Tests passed; there was no sanitizer failure attributable to BareArray.
+- One facade reexport test passed, and BareArrayModule DocC generation succeeded.
+- An external SwiftPM consumer using candidate `693b1bab` as a local-path dependency was run with Apple Swift 6.4, macOS 27.0.1, arm64, and Debug configuration. Four executables checked direct module import, `AcCollections` reexport, coexistence with `PermutationModule`, and multiple in-scope updates to standard `MutableRef.value` reflected in owner storage. Because inner dimensions are not available as public properties, the consumer had to retain the shape; this was left as a candidate issue for comprehensibility validation.
+- View lifetime under Swift 6.4's experimental Lifetimes feature and strict memory safety were treated as confirmed. Concurrent use, including `@unchecked Sendable`, `-Ounchecked`, general Swift use, competitive use, and external performance remain unverified; success was not inferred from this Verification.
 
 ### 外部性能判定taskの見直し（2026-10-14・当時の判断）
 
 > 現在の供用区分は冒頭の2026-10-15訂正を参照。この節の対象外という前提を現行評価へ適用しない。
 
-BareArrayは1.0提供対象外の保守moduleとなった。この提供区分では、1.0適合判定のためにC++ nested
-vectorとの固定性能比を先に決め、正式assessmentを実行する必要はない。このため`BARE-032`と
-`BARE-007`を`EXCLUDED`とする。
+At that time, BareArray became a maintenance module outside the 1.0 offering. Under that offering class, there was no need to define a fixed performance ratio against C++ nested vectors and run a formal assessment as a prerequisite for 1.0 conformance. Accordingly, `BARE-032` and `BARE-007` were marked `EXCLUDED`.
 
-外部性能が確認済みになったという意味ではない。既存benchmarkとCI回帰workloadは、保守する実装の
-性能変化を観測する証拠として保持する。将来、提供対象への復帰を検討する場合は、当時の実装、利用目的、
-workload、比較対象に基づいて新しい評価を設計し、今回の固定閾値taskを再利用しない。
+This did not mean that external performance had been verified. Existing benchmarks and CI regression workloads were retained as evidence for observing performance changes in the maintained implementation. If returning to an offering is considered in the future, design a new assessment based on the implementation, usage purpose, workload, and comparison target at that time; do not reuse the fixed-threshold task from this record.
 
 ## 後続task候補
 
@@ -322,9 +245,7 @@ workload、比較対象に基づいて新しい評価を設計し、今回の固
 | `BARE-017` | `DISCOVERY` | `DIRECT` | BareArray利用Validation scenario設計 | QR-04・QR-05について、一般Swift利用と競技利用の代表scenario、導入経路、観測方法、必要な後続判断を整理する |
 | `BARE-028` | `EXECUTION` | `DIRECT` | Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後、変更影響範囲の検証を再実行して完了ゲートへ渡す |
 
-`BARE-006`は後続のユーザー指示で再開し、下記の設計を確定した。`DOC-010`の凍結は本評価によって解除しない。
-`BARE-017`は判断を確定せず、一般利用と競技利用で実行・判断境界が異なる場合は後続taskへ分離する。
-`BARE-028`は、Claudeのレビューと手直しが受け入れられるまで凍結する。
+`BARE-006` was resumed under a later user instruction and the design below was finalized. This assessment does not unfreeze `DOC-010`. `BARE-017` does not settle any decisions; if general use and competitive use have different execution or decision boundaries, separate them into follow-up tasks. `BARE-028` remains frozen until Claude's review and fixes are accepted.
 
 ## 多次元access性能測定設計
 
@@ -335,45 +256,33 @@ workload、比較対象に基づいて新しい評価を設計し、今回の固
 
 ### 測定対象
 
-競技プログラミングの動的計画法で一般的な、2Dと3Dの全要素をstorage順に読み書きする
-連鎖subscript accessを対象とする。BareArrayの公開access路として非所有Viewを経由する
-`array[y][x]`と`array[z][y][x]`を測定する。1Dはnested containerとしての差が現れず、4Dは
-代表的利用scenarioを追加せず測定次元だけを増やすため、この評価には含めない。
+The measurement targets chained-subscript access that reads and writes every element in storage order in two- and three-dimensional dynamic programming, a common competitive-programming workload. Measure `array[y][x]` and `array[z][y][x]`, the public BareArray access paths through non-owning Views. One dimension does not expose differences between nested containers, and four dimensions would add a dimension without adding a representative usage scenario, so neither is included.
 
-各次元に次の2 workloadを設ける。
+Define two workloads for each dimension.
 
-| workload | 計測内の操作 | 計測外の処理 |
+| Workload | Operations inside measurement | Operations outside measurement |
 | --- | --- | --- |
-| sequential read checksum | storage順に全要素を連鎖subscriptで読み、`Int`へ加算 | shape生成、0からの連番値で初期化、checksum検証 |
-| sequential write | storage順に連鎖subscriptで0からの連番値を書き込む | shape生成、0初期化、全要素のchecksum検証 |
+| Sequential read checksum | Read all elements in storage order using chained subscripts and accumulate into `Int` | Shape construction, initialization with sequential values starting at zero, checksum verification |
+| Sequential write | Write sequential values starting at zero to all elements in storage order using chained subscripts | Shape construction, zero initialization, checksum verification over all elements |
 
-allocation、初期化、shape構築、および事後検証は計測時間に含めない。readとwriteを分けることで、
-回帰時にどちらのaccess路が変化したかを局所化する。
+Do not include allocation, initialization, shape construction, or post-run verification in the measured time. Separating reads and writes helps localize which access path changed when a regression occurs.
 
 ### inputとshape
 
-Benchmarkの正の`size`を総要素数とし、素因数を軸へできるだけ均等に配分する。2Dは最内軸から
-順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と一致させる。素数の
-`size`では一部の軸が1になるが、入力は丸めない。これにより同一の要素数で次元だけが
-異なる経路を比較でき、CIの入力上限を三乗で超えない。
+Treat the benchmark's positive `size` as the total element count and distribute its prime factors as evenly as possible among the axes. Use two axes in 2D and three in 3D, growing from the innermost axis, and keep their product exactly equal to `size`. For prime `size`, some axes will be 1; do not round the input. This compares paths with different dimensionality at the same element count and avoids cubing the CI input limit.
 
-checksumは要素数`n`に対する`0 ..< n`の和とし、SwiftとC++の両方で同一の結果を検証する。
-C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`とする。
+Define the checksum as the sum of `0 ..< n` for `n` elements, and verify the same result for Swift and C++. Use `std::intptr_t` in C++ to match the word width of Swift `Int`.
 
 ### 比較境界
 
-- CI回帰層はSwift BareArrayの4 workloadのみを既存`CI.json`へ登録し、base / currentの退行を検出する。
-- 外部assessment層では、Swiftと同じshape・要素値・走査順・checksumのC++ nested
-  `std::vector`を対応workloadとして追加する。C++ workloadは通常CIには含めない。
-- assessmentはmacOS限定とし、専用library、環境情報、生JSON、PNG chartを
-  `Benchmarks/QualityAssessment/macOS/BareArray/`以下へ保存する。
-- 「C++標準に匹敵」と判定する性能比は測定設計の入力にしない。対応workloadの暫定実測後に、
-  実際の差とばらつきを証拠としてユーザー判断taskへ渡す。
+- For CI regression checks, register only the four Swift BareArray workloads in the existing `CI.json` and detect regressions between base and current.
+- For external assessment, add corresponding C++ nested `std::vector` workloads with the same shapes, element values, traversal order, and checksum as Swift. Do not include C++ workloads in ordinary CI.
+- Limit assessment to macOS and store the dedicated library, environment details, raw JSON, and PNG charts under `Benchmarks/QualityAssessment/macOS/BareArray/`.
+- Do not make a performance ratio for “comparable to C++ standards” an input to the measurement design. After preliminary measurements of corresponding workloads, provide the observed differences and variability as evidence for a user-decision task.
 
 ### 完了結果
 
-対象操作、shape、計測内外、checksum、Swift / C++の対応、CI回帰と外部assessmentの境界を
-確定した。本設計でユーザー判断は必要なく、次はSwift workloadのCI回帰登録とする。
+The target operations, shapes, measured and unmeasured work, checksum, Swift/C++ correspondence, and boundaries between CI regression and external assessment were finalized. This design did not require a user decision; the next step was registering the Swift workloads for CI regression.
 
 ### CI回帰Benchmark登録結果
 
@@ -382,36 +291,24 @@ C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`と�
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
 
-`BareArrayBenchmarks.swift`に2D・3Dのsequential read checksumとsequential writeの4 workloadを
-追加し、benchmark toolと`CI.json`へ登録した。Benchmarkが生成する2のべき乗間のsizeも総要素数と
-一致させるため、正のsizeを素因数分解し、各軸へできるだけ均等に配分する。
+Four workloads were added to `BareArrayBenchmarks.swift`: two- and three-dimensional sequential read checksum and sequential write. They were registered with the benchmark tool and `CI.json`. To keep generated benchmark sizes between powers of two equal to the total element count, each positive size is factored and distributed as evenly as possible among the axes.
 
-次の実行証拠を確認した。
+The following run evidence was recorded:
 
-- Benchmarks packageのRelease buildが成功した。
-- 4 workloadをsize 1、3、16で直接実行し、checksumを含めて成功した。
-- `CI.json`の26 taskをsize 1から64kまで60 size実行し、失敗0で完走した。
-- 出力JSONに4 workloadがそれぞれ一意に記録された。
+- The Benchmarks package Release build succeeded.
+- The four workloads ran directly at sizes 1, 3, and 16, with checksum validation, and succeeded.
+- All 26 tasks in `CI.json` completed across 60 sizes from 1 to 64k, with zero failures.
+- The output JSON recorded each of the four workloads exactly once.
 
-0.5.3にこのworkloadが存在しないため、導入PRでのbase / current比較は成立条件にしない。
-BareArrayとOptionalArrayのworkloadを揃えたmerge commitを初回baselineとし、後続PRから回帰比較する。
+Because these workloads did not exist in 0.5.3, a base/current comparison in the introducing PR was not a valid acceptance condition. The merge commit aligning BareArray and OptionalArray workloads was to serve as the initial baseline; regression comparisons would start with subsequent PRs.
 
 ### C++ nested vector workloadと暫定チャート
 
-Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査、checksumに対応する
-C++ nested `std::vector<intptr_t>` workloadを4件追加した。通常CI libraryには含めず、
-`BareArrayAssessment.json`の専用libraryからだけ選択する。
+Four C++ nested `std::vector<intptr_t>` workloads were added to match the Swift version's exact-product two- and three-dimensional shapes, contiguous traversal from the innermost axis, and checksum. They are excluded from the ordinary CI library and selectable only through the dedicated library in `BareArrayAssessment.json`.
 
-Release build後、BareArray / Swift nested Array / C++ nested vectorの合4件をsize 1・3・16で3反復し、
-checksum検証を含め成功した。さらに12 workloadをsize 1から64kまで60 size・5 cycle実行し、生JSONと
-3系列を含む4枚のPNGを
-`Benchmarks/QualityAssessment/macOS/BareArray/`へ暫定証拠として保存した。この結果は比較経路と
-可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
+After a Release build, the four workloads across BareArray, Swift nested Array, and C++ nested vector were run for three iterations at sizes 1, 3, and 16, including checksum validation. In addition, 12 workloads were run over 60 sizes from 1 to 64k for five cycles. Raw JSON and four PNGs containing the three series were saved under `Benchmarks/QualityAssessment/macOS/BareArray/` as provisional evidence. This confirms that the comparison path and visualization work; it is not an acceptance decision on performance ratios or a formal assessment.
 
-`Benchmarks/run-bare-array-assessment.sh`を追加し、正式測定時にはtimestampとcommitから作る同一の
-測定IDで、生JSON、4枚のPNG、およびcommit・macOS・hardware・Swift・Clangの環境記録を保存する
-構成を整えた。scriptのshell構文と、既存の暫定JSONから生成される4つのchart入力pathを確認した。
-正式測定の実行と性能比の判定は、後続のユーザー判断および実行taskへ残す。
+`Benchmarks/run-bare-array-assessment.sh` was added to save raw JSON, four PNGs, and environment details (commit, macOS, hardware, Swift, and Clang) under one measurement ID derived from the timestamp and commit for a formal run. The script's shell syntax and the four chart input paths generated from existing provisional JSON were checked. Running the formal measurement and deciding performance ratios were left to later user decisions and execution tasks.
 
 ## Viewノンエスケーパブル化
 
@@ -420,18 +317,11 @@ checksum検証を含め成功した。さらに12 workloadをsize 1から64kま�
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
 
-View 3種を`~Escapable`化し、所有元から返すinitializerと多段subscriptへ必要なlifetime dependencyを
-追加する。BareArrayのViewは、所有storageを複製せず部分領域を参照する非所有・ノンコピーViewとして
-設計されている。通常の`Escapable`な値のままでは所有元を越える保持を型システムで拘束できず、
-安全性のために所有化するとノンコピーという設計目的が崩れる。そのため、`~Escapable`化は今回新たに
-採否を検討する案ではなく、Swift 6.4の提供まで実装を待っていた既定方針である。
+The task was to make the three View types `~Escapable` and add the necessary lifetime dependencies to initializers returning them from owners and to chained subscripts. BareArray Views are designed as non-owning, noncopyable Views that refer to part of the storage without copying the owned storage. As ordinary `Escapable` values, the type system cannot prevent them from being retained beyond their owner; making them owning would undermine the noncopying design. Therefore, `~Escapable` was not a new option to decide in this task but an established policy whose implementation awaited Swift 6.4 availability.
 
-Swift 6.4のLifetimes実験機能を用い、compilerがViewの所有元越えを拒否すること、多段subscriptと
-writebackが成立すること、および既存testへの影響を確認する。コンパイル時拒否へ移る既存契約は、
-実行時Death Testから適切なcompiler診断のVerificationへ移す。
+Using Swift 6.4's experimental Lifetimes feature, verify that the compiler rejects Views escaping their owner, that chained subscripts and writeback still work, and how existing tests are affected. Move existing contracts that are now rejected at compile time from runtime Death Tests to appropriate compiler-diagnostic Verification.
 
-このtask自体では公開型の`@safe`／`@unsafe`分類を確定しない。ただし、その分類、storage境界、
-strict memory safetyの採否はいずれも品質検証を再開する前提であり、完了後へ先送りしない。
+This task itself does not decide whether public types are `@safe` or `@unsafe`. However, that classification, the storage boundary, and whether to apply strict memory safety are all prerequisites to resuming quality Verification and must not be deferred until after it.
 
 ### 完了条件
 
@@ -444,37 +334,22 @@ strict memory safetyの採否はいずれも品質検証を再開する前提で
 
 ### 2026-10-11 途中結果と再停止点
 
-- View 3種の`~Escapable`化、所有元をborrowするinitializer、親Viewのdependencyをcopyするinitializer、
-  および多段subscriptのlifetime dependencyを追加した。
-- BareArrayModuleのproduction moduleはSwift 6.4のLifetimes実験機能下でcompileできた。
-- 既存testの`array[2] = array[1]`は、右辺Viewが所有元をborrowしている間に左辺setterが同じ所有元へ
-  排他accessするため、compilerがoverlapping accessとして拒否した。
-- 従来はこの式をcompile可能とし、実行時にwriteback位置違反で停止するDeath Testだった。拒否契約は
-  変わらず、Verification手段だけが実行時Death Testからコンパイル時診断へ移ったと確認したため、
-  一時作成した判断task `BARE-019`は製品判断ではないものとして除外した。
-- この作業中にユーザーが直接sourceを修正した時点で実装を停止し、差分を正式実装の途中状態として
-  保存した。その後、ユーザーの明示的な再開指示を受けてtask graphを再構成し、分割taskから再開した。
-- 会話中の事実訂正、既存契約の確認、暫定的な`#if false`、および製品判断を区別する。相互の勘違いを
-  訂正した発言やVerification手段の変化を、新しい製品判断として登録しない。
-- View 3種を`~Escapable`とし、所有配列のsubscript resultは所有元をborrow、多段Viewのsubscript resultは
-  親Viewのdependencyをcopyする途中実装がある。BareArrayModuleのproduction compileは成功した。
-- 独立したcompile-fail fixtureを2つ追加し、所有元を越えてViewを返す3件が
-  `lifetime-dependent value escapes its scope`、所有配列の同時read/write 3件がoverlapping accessとして
-  拒否されることを検証した。
-- 所有配列writebackの3件をDeath Testからcompiler診断fixtureへ移し、暫定的な`#if false`を解消した。
-  残るDeath Test 39件はDebug・Releaseの両構成で成功した。
-- 通常testはDebug 35件、Release 28件が成功し、facadeからのBareArray公開testも両構成で成功した。
-- strict memory safetyの公開7型warningは残る。この分類を含め、今回の途中実装と検証を正式成果として
-  受け入れるかは確定していない。
-- 実装と局所検証の成功をもって品質評価上の完了まで進めたのは先取りだったため、`BARE-018`と分割taskを
-  凍結した。storage、公開型の安全性分類、strict memory safetyを独立した並行前提として閉じた後、
-  ユーザーが品質検証の再開を判断する。
+- The three View types were made `~Escapable`; initializers borrowing the owner and initializers copying the parent View's dependency were added, along with lifetime dependencies for chained subscripts.
+- The BareArrayModule production module compiled with Swift 6.4's experimental Lifetimes feature.
+- The existing test expression `array[2] = array[1]` was rejected as overlapping access because the left-hand setter accesses the same owner exclusively while the right-hand View borrows it.
+- Previously, the expression compiled and a runtime Death Test trapped for a writeback-position violation. Since the rejection contract was unchanged and only Verification moved from runtime Death Test to compile-time diagnostic, the temporary decision task `BARE-019` was excluded as not being a product decision.
+- Implementation stopped when the user directly edited source during this work; the diff was preserved as an in-progress implementation. After the user explicitly instructed a restart, the task graph was rebuilt and work resumed through split tasks.
+- Distinguish factual corrections in conversation, confirmation of existing contracts, temporary `#if false`, and product decisions. Do not register corrections of misunderstandings or changes in Verification method as new product decisions.
+- An in-progress implementation made all three Views `~Escapable`; owning-array subscript results borrow the owner and chained View results copy the parent View's dependency. The BareArrayModule production target compiled.
+- Two independent compile-fail fixtures were added and verified: three cases returning a View beyond its owner are rejected with `lifetime-dependent value escapes its scope`; three simultaneous reads/writes on an owning array are rejected as overlapping accesses.
+- Three owning-array writeback cases were moved from Death Tests to compiler-diagnostic fixtures, removing the temporary `#if false`. The remaining 39 Death Tests passed in Debug and Release.
+- Ordinary tests passed: 35 in Debug and 28 in Release. The BareArray public-surface test through the facade also passed in both configurations.
+- Warnings remained for seven public types under strict memory safety. Acceptance of this in-progress implementation and verification as a formal deliverable, including its safety classification, had not been decided.
+- Because treating implementation and local-check success as completion of the quality assessment was premature, `BARE-018` and its split tasks were frozen. The user would decide whether to resume quality Verification after independently closing storage, public-type safety classification, and strict memory safety as prerequisites.
 
 ### 再開までのtask graph
 
-`BARE-018`は個別実装を抱えるtaskではなく、分割した成果の受入と評価記録を閉じる完了ゲートとする。
-品質検証の再開前に、storage、公開型の安全性分類、strict memory safetyを独立した並行系統として閉じる。
-View寿命はノンエスケーパブル化と同一の論点であり、独立taskを作らない。
+`BARE-018` was defined as a completion gate for accepting split results and closing the assessment record, not as a task containing its own implementation. Before resuming quality Verification, close storage, public-type safety classification, and strict memory safety as independent parallel tracks. View lifetime is part of non-escapable conversion and does not need a separate task.
 
 | ID | 種別 | 内容 | 完了条件 |
 | --- | --- | --- | --- |
@@ -489,51 +364,30 @@ View寿命はノンエスケーパブル化と同一の論点であり、独立t
 | `BARE-028` | `EXECUTION` | Claude手直し後の差分再検証 | 受け入れた変更の影響範囲を再検証し、現行証拠との差分を確認する |
 | `BARE-018` | `EXECUTION` | 完了ゲート | 分割成果を受け入れ、既存契約への影響と未確認範囲を本書へ記録する |
 
-storage、安全性分類、strict memory safetyの3系統を`PARALLEL_JOIN`で品質検証の再開判断へ合流させる。
-再開が決定した場合だけ品質検証を実行し、その結果を`BARE-018`の完了判定へ渡す。storage再設計などの
-後続作業は現在の必須経路へ置かず、必要性が実際に発見された時点で別taskとして整理する。
+The three tracks—storage, safety classification, and strict memory safety—converge through `PARALLEL_JOIN` at the decision to resume quality Verification. Run the assessment only if resumption is decided, then pass the results to the `BARE-018` completion gate. Do not place later work such as storage redesign on the current mandatory path; organize it as a separate task only if it is shown to be necessary.
 
 ### 公開7型の安全性分類
 
-2026-10-11、所有型4種とノンエスケーパブルView型3種を`@safe`に分類した。生ポインタは実装内部へ
-閉じ込め、所有型は初期化・範囲・破棄を管理し、View型は`~Escapable`とlifetime dependencyによって
-所有元を越える利用を拒否する安全な抽象として扱う。公開型を利用するだけの呼び出し側へ`unsafe`の承認を
-伝播させる`@unsafe`分類は採用しなかった。
+On 2026-10-11, the four owning types and three non-escapable View types were classified as `@safe`. Raw pointers remain inside the implementation; owning types manage initialization, bounds, and destruction; and Views are treated as safe abstractions whose `~Escapable` and lifetime dependencies reject use beyond their owners. The `@unsafe` classification, which would propagate unsafe authorization to callers merely using a public type, was not adopted.
 
-7宣言への`@safe`付与後、Xcodeのテスト用buildが成功し、公開7型のstrict memory safety warningは
-解消した。BareArrayの通常testはDebug 35件・Release 28件、Death Testは両構成39件が成功した。
-compiler診断fixtureも、View寿命escape 3件と所有配列writeback exclusivity 3件を引き続き拒否した。
-この完了は公開7型の分類だけを対象とし、個別memberやconformanceの分類を先取りしない。
+After applying `@safe` to the seven declarations, Xcode's test build succeeded and strict-memory-safety warnings for the seven public types were resolved. BareArray ordinary tests passed: 35 Debug and 28 Release; Death Tests passed: 39 in both configurations. Compiler diagnostic fixtures continued to reject three View-lifetime escapes and three owning-array writeback exclusivity cases. This completion covers only classification of the seven public types and does not decide classifications for individual members or conformances.
 
 ### strict memory safety適用
 
-公開7型の分類完了後、BareArrayModuleへ`.strictMemorySafety()`を適用した状態では未承認のunsafe利用を
-示すwarningが残らず、既存のDebug・Release・compiler診断fixtureも成功する。設定を外す必要を示す
-反証はなく、上位品質要求が求めるunsafe境界の継続確認にも寄与するため、この設定を品質検証の対象として
-維持する。
+After classification of the seven public types, enabling `.strictMemorySafety()` for BareArrayModule produced no warnings indicating unapproved unsafe use; existing Debug, Release, and compiler-diagnostic fixtures also succeeded. There was no counterevidence requiring removal of the setting, and retaining it supports the higher-level quality requirement to keep checking unsafe boundaries, so it remains part of quality Verification.
 
-この結論は、公開7型の分類未確定によって採否が判断に見えていた前提が解消した結果である。独立した
-ユーザー判断は残らず、事実確認と既存品質要求の適用によって完了した。
+This conclusion followed resolution of an apparent adoption decision that had arisen from the unresolved classification of the seven public types. No independent user decision remained; the work was completed by confirming facts and applying existing quality requirements.
 
-2026-10-11、`BARE-020`、`BARE-021`、`BARE-022`には実装・診断・回帰確認の途中証拠が揃ったが、
-成果の受入と`BARE-018`への合流は確定していない。storage、安全性分類、strict memory safetyの
-3系統と品質検証の再開判断を経るまで、関連taskを凍結する。
+On 2026-10-11, `BARE-020`, `BARE-021`, and `BARE-022` had interim evidence for implementation, diagnostics, and regression checks, but acceptance of those results and convergence into `BARE-018` had not been decided. The related tasks remained frozen until the three tracks—storage, safety classification, and strict memory safety—and the decision to resume quality Verification were completed.
 
 ### 0.6.0品質検証の結果
 
-2026-10-11、storage境界、公開7型の`@safe`分類、strict memory safety適用を確定した前提として、
-ノンエスケーパブル化の品質検証を再開した。
+On 2026-10-11, quality Verification for non-escapable conversion resumed with the storage boundary, `@safe` classification of seven public types, and strict-memory-safety application established as prerequisites.
 
-- Verificationでは、Debug・Releaseの有効利用経路、両構成のDeath Test、無効な寿命escapeと
-  overlapping accessのcompiler診断fixture、Address Sanitizer、facade再公開、DocC生成が成功した。
-- View 3種の`~Escapable`化により、所有元越えを型システムで拒否しながら、連鎖subscriptと
-  writebackをノンコピーで維持する実装目的は、検証したSwift 6.4構成で成立した。
-- strict memory safetyでは、公開7型の分類後に未承認のunsafe利用warningは残らなかった。
-- Validationについて、一般Swift利用者の理解・採用、競技での実問題・実提出、外部性能は確認して
-  いない。これらを今回のVerificationから推定しない。
-- `@unchecked Sendable`を含む並行利用の意味的安全性、`-Ounchecked`、任意の要素型・寸法・操作列は
-  未検証として残す。Swift 6.4のLifetimesが実験機能であることもtoolchain依存の残余リスクである。
+- Verification succeeded for valid-use paths in Debug and Release, Death Tests in both configurations, compiler-diagnostic fixtures rejecting invalid lifetime escapes and overlapping accesses, Address Sanitizer, facade reexport, and DocC generation.
+- With the three View types made `~Escapable`, the implementation goal—rejecting escapes beyond the owner through the type system while preserving noncopying chained subscripts and writeback—held in the tested Swift 6.4 configuration.
+- Under strict memory safety, no warnings for unapproved unsafe use remained after classifying the seven public types.
+- Validation did not establish comprehension or adoption by general Swift users, successful real competitive-programming problems/submissions, or external performance. Do not infer these from the Verification results.
+- Semantic safety of concurrent use, including `@unchecked Sendable`, `-Ounchecked`, and arbitrary element types, dimensions, or operation sequences remain unverified. The experimental status of Lifetimes in Swift 6.4 is also a toolchain-dependent residual risk.
 
-以上により、0.6.0品質として要求されたノンエスケーパブル化の現行品質検証は完了した。Claudeの
-レビューと手直しが受け入れられた場合は、別taskで変更影響範囲を再検証してから`BARE-018`の完了を
-判定する。
+This completed the current quality Verification required for non-escapable conversion in 0.6.0. If Claude's review and fixes are accepted, a separate task will recheck the affected scope before deciding whether `BARE-018` is complete.

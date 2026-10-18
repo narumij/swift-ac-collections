@@ -1,28 +1,35 @@
 # 接続表示の選択追従修正
 
-Task: OPS-093 / 親 OPS-048
-作成: Astra、2026-10-18。ユーザー承認により姫へ正式依頼。
+## TL;DR（人間向け）
 
-## 現象と目的
+別カードを選んでも接続表示の中心が以前のまま残る問題を修正した記録。入力保護を通過した選択時に中心と展開状態を更新し、限定回帰試験・独立再実行とユーザーの改善報告を経て完了した。実ブラウザでの網羅確認は行っておらず、別件の線・配置修正は対象外。
 
-ユーザー画面では、見取り図または独立タスク欄で別カードを選んでも、「接続を見る」の中心が以前のカードのまま変わらない。まず現行コードで再現・原因を確認し、選択したカードの接続を確認できるよう修正する。原因はまだ断定していない。
+Task: OPS-093 / parent OPS-048
+Written by Astra, 2026-10-18. Formally requested of Hime with user approval.
 
-## 姫への依頼・受入条件
+<a id="現象と目的"></a>
+## Phenomenon and purpose
 
-1. 見取り図でカードA→Bを選択してから「接続を見る」を開くと、Bが中心となる。
-2. 独立タスク欄でカードA→Bを選択した場合も同じ。タブから開く経路とインスペクタのボタンから開く経路を確認する。
-3. 接続表示中に選択カードを変更できる経路がある場合、その選択にも中心が追従する。
-4. 「ここを中心に」「この先を展開」「1段に戻す」の既存操作を壊さない。別カードを新たに選んだ際に前の中心の展開状態を持ち込まない。
-5. 接続閲覧だけでは未適用入力を勝手に確定・破棄せず、正本・接続・状態・保存済み編集版を変更しない。カード選択時の既存の入力保護を維持する。
-6. 修正前の再現を検出し、修正後に通る限定回帰試験、既存verify、sync/checkを実行する。画面操作はしない。実ブラウザー未確認は明記する。
+On the user's screen, even after selecting another card in the map or the independent-task column, the centre of 「接続を見る」 stays on the previous card. First reproduce it in the current code and check the cause, then fix it so that the connections of the selected card can be checked. The cause has not been determined yet.
 
-## 占有・範囲
+<a id="姫への依頼受入条件"></a>
+## Request to Hime and acceptance conditions
 
-編集可: RegistryApp/index.template.html、必要なverify.cjsと本task専用Evidence/OPS-093/、本書Return欄。必要な生成は可。対象実装の占有を姫へ渡しAstraは返却待ち。
+1. After selecting card A → B in the map and then opening 「接続を見る」, B is the centre.
+2. The same when selecting A → B in the independent-task column. Check both the route opening from the tab and the route from the inspector's button.
+3. If there is a route to change the selected card while the connection view is shown, the centre follows that selection too.
+4. Do not break the existing operations 「ここを中心に」, 「この先を展開」 and 「1段に戻す」. When a different card is newly selected, do not carry over the previous centre's expansion state.
+5. Viewing connections alone must not commit or discard unapplied input on its own, and must not change the canonical, connections, states or saved edit versions. Keep the existing input protection on card selection.
+6. Run a limited regression test that detects the reproduction before the fix and passes after it, the existing verify, and sync/check. No screen operation. State that it is unconfirmed in a real browser.
 
-現作業ツリーにある再起動案内帯などAstraの未コミット差分を保持する。serve.py、Registry、Rules、他者の文書、実Inbox・Milestonesは変更しない。OPS-092の表示重複、線、レイアウトの修正は広げず対象外。範囲外の発見は短く返却する。
+<a id="占有範囲"></a>
+## Occupancy and scope
 
-今回はcommitの依頼なし。修正・検証後にReturnを記入し、Astraへ返却する。
+Editable: RegistryApp/index.template.html, the needed verify.cjs, this task's own Evidence/OPS-093/, and the Return field of this document. Needed generation is allowed. Occupancy of the target implementation is handed to Hime and Astra waits for the return.
+
+Keep Astra's uncommitted diffs in the current working tree, such as the restart-notice band. Do not change serve.py, the Registry, Rules, others' documents, or the real Inbox or Milestones. Do not extend into fixing OPS-092's duplicate display, lines or layout; they are out of scope. Return out-of-scope findings briefly.
+
+No commit is requested this time. After fixing and verifying, fill in the Return and return it to Astra.
 
 ## Return（姫記入）
 
@@ -52,8 +59,9 @@ Task: OPS-093 / 親 OPS-048
 
 commitはしていない。
 
-## Astra受入（2026-10-18）
+<a id="astra受入2026-10-18"></a>
+## Astra acceptance (2026-10-18)
 
-返却差分確認とOPS-093・OPS-091操作smokeの独立再実行が成功、sync --checkずれなし。select()の入力確認後の中心更新と展開リセットを受入。実画面は未操作。ユーザーからも改善の報告あり。依頼終了、commit待ち。
+Checking the returned diff and independently re-running the OPS-093 and OPS-091 operation smokes succeeded, and sync --check shows no drift. Accepted updating the centre after the input check in select() and resetting the expansion. The real screen was not operated. The user also reported an improvement. Request finished; waiting for commit.
 
-2026-10-18：ユーザーcommit承認により本taskをDONEとする。記録済みの未解決事項・検証範囲は変更しない。
+2026-10-18: by the user's commit approval this task is DONE. The recorded unresolved items and verification scope are unchanged.

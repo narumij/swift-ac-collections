@@ -1,5 +1,9 @@
 # Maintenance health check after archival
 
+## TL;DR（人間向け）
+
+アーカイブ後に、タスクの整合（OPS-045）と文書参照の整合（DOC-031）をClaudeが読み取りで点検し、Astraが受け入れた記録。ID再利用・恒久nodeの列挙漏れ・古いgate文言・処理済みqueue・移動漏れの参照2件・外部URL 1件を指摘し、受入時に修正した。点検した範囲についての結果で、全履歴やDocCシンボル解決、プロジェクト全体の正しさを保証するものではない。
+
 Author: Astra / 2026-10-16. Registry IDs: `OPS-045` and `DOC-031`.
 The user requested these checks from Claude after permanent-task setup and archival. This is a bounded inspection, not authority to repair records or adopt proposals.
 
@@ -187,12 +191,12 @@ DOC-031 scope released. No inspected document was edited.
 
 ## Astra acceptance — 2026-10-16
 
-HEAD `db3ee2bd`から返却とscope releaseを確認。両検査を受入、commit確認待ち。QUALITY-002/003のID衝突は10-11 archiveとe5abf435のRegistryを独立比較して確認。番号は変更せず履歴の同定規則を追記した。恒久nodeの列挙・維持文書、RBT-045の古いgate文言、処理済みCP-20261015-007を修正した。queue原文はArchivedへ保存しPERM-072の回答・集約・DONE記録に照合した。
+Confirmed the returns and scope releases from HEAD `db3ee2bd`. Both checks accepted; waiting for commit confirmation. The QUALITY-002/003 ID collision was confirmed by independently comparing the 10-11 archive with the Registry at e5abf435. Numbers were not changed; a rule for identifying history entries was added. Fixed the list of permanent nodes and their maintained documents, RBT-045's stale gate wording, and the processed CP-20261015-007. The queue's original text was saved in Archived and checked against PERM-072's answer, aggregation and DONE record.
 
-参照の移動漏れ2件を実ファイルと照合して修正。README日英のSwiftPM URLは代替の公式/latest/ページへの到達を独立確認して変更した。外部anchor・全URL・DocC生成は独立再検査していない。Claudeの101文書の全件検査や全履歴を繰り返したという意味ではなく、返却の方法・限界と具体的指摘の照合による受入である。履歴のパスは一括変更しない。任意提案の基準パス注記は今回必須修正にしない。
+The 2 references missed in the move were checked against the real files and fixed. The SwiftPM URL in the README (ja/en) was changed after independently confirming that the alternative official /latest/ page is reachable. External anchors, all URLs and DocC generation were not independently re-checked. This does not mean Claude's full check of 101 documents or the whole history was repeated; it is an acceptance by checking the return's method and limits and the concrete findings. Historical paths are not changed in bulk. The optional proposal of path-base notes is not made a required fix this time.
 
-RBT-041は既に着手可能。次の仕事の選択と発注は現在のRegistryとユーザー依頼に従い、検査受入を製品品質全体の合格とは扱わない。
+RBT-041 is already startable. Selecting and ordering the next work follows the current Registry and user requests, and accepting the checks is not treated as passing product quality as a whole.
 
-2026-10-16、ユーザーのcommit許可を受領。OPS-045・DOC-031をDONEとして受入記録と修正を保存する。
+On 2026-10-16 the user's commit permission was received. OPS-045 and DOC-031 are accepted as DONE, and the acceptance record and fixes are saved.
 
 <!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

@@ -1,27 +1,32 @@
 # 「接続を見る」へのカード表示追加
 
-Task: OPS-094 / 親 OPS-048
-作成: Astra、2026-10-18。ユーザーの明示依頼に基づき姫へ依頼。
+## TL;DR（人間向け）
+
+「接続を見る」を、選択カードが中央・実際の前提が左・後続が右に見える局所見取り図へ変更した記録。当初の3段カード列を置き換え、実辺・対象一致・選択追従・入力保護を限定試験と独立再実行で受け入れ、完了した。旧カード列の証拠は履歴として残し、実ブラウザでの線の重なりや見え方は未確認。
+
+Task OPS-094 / parent OPS-048. Astra, 2026-10-18; assigned to Hime at the user's explicit request.
 
 > 現行依頼は末尾「ユーザー期待に合わせた再依頼」。当初依頼・限定補修は経緯として保持し、新たに実行しない。
 
-## 目的・受入条件
+<a id="目的受入条件"></a>
+## Purpose and acceptance
 
-既存の文字情報を残したまま、接続を見るタブにカード表示を追加する。
+Add cards to the connection-view tab while retaining existing text.
 
-- 中心と現在表示対象の接続ノードをカードで表示し、ID・タイトル・状態を読めること。既存カードの見た目を再利用し、正本リンクは利用可能なものを表示する。
-- 前提・中心・後続の方向が判別できること。配置の細部は姫に任せる。全体見取り図の配置方式を改修する必要はない。
-- 既存の1段表示・手動展開・中心変更・1段に戻すとカード表示が同期する。文字一覧とカードで対象が食い違わず、同一ノードを重複カードにしない。
-- OPS-093の選択追従と入力保護を維持する。接続閲覧だけで編集を適用・破棄せず、正本・状態・接続・保存済みデータを変更しない。
-- タスク・マイルストーン・接続のないノードを扱い、限定回帰試験と既存smoke/verify・sync/checkで確認する。画面操作はしない。実ブラウザー未確認は明記。
+- Show center/displayed connected nodes as cards with readable ID/title/state, existing styling and available canonical links.
+- Distinguish prerequisite/center/successor direction. Placement details are delegated; the overall map layout need not change.
+- Synchronize with one-level view, manual expansion, center changes/reset. Match text/card targets, without duplicate cards for a node.
+- Preserve OPS-093 selection-following/input protection. Viewing connections neither applies/discards edits nor changes canonicals/states/connections/saved data.
+- Handle tasks, milestones and isolated nodes. Run bounded regression and existing smoke/verify/sync/check. No UI operation; note real-browser nonverification.
 
-## 範囲と受渡し
+<a id="範囲と受渡し"></a>
+## Scope and handoff
 
-編集可: RegistryApp/index.template.html、必要なverify.cjs、本task専用Evidence/OPS-094/、本書Return欄。生成物の更新可。対象実装の占有を姫へ渡しAstraは返却待ち。
+Editable: RegistryApp/index.template.html, necessary verify.cjs, Evidence/OPS-094/ and this Return. Generated updates allowed. Hime owns the implementation while Astra awaits return.
 
-Astraの未コミット再起動案内帯とOPS-093修正を保持する。Registry・Rules・serve.py・実Inbox・Milestones・他者文書は変更しない。全体見取り図の重複表示・線・レイアウト修正は範囲外。仕様拡大が必要なら返却する。
+Preserve Astra's uncommitted restart notice and OPS-093 repair. No Registry/Rules/serve.py/real Inbox/Milestones/others' document changes. Overall-map duplicate display, lines and layout are outside scope. Return necessary specification expansions.
 
-今回はcommit依頼なし。完了後Returnに原因・変更・検証と未確認範囲を記録して返却する。
+No commit requested. Return cause, changes, verification and unknown scope after completion.
 
 ## Return（姫記入）
 
@@ -54,49 +59,55 @@ Astraの未コミット再起動案内帯とOPS-093修正を保持する。Regis
 
 
 
-## Astra検収（2026-10-18）— 受入保留
+<a id="astra検収2026-10-18-受入保留"></a>
+## Astra review (2026-10-18): acceptance withheld
 
-OPS-094・OPS-093のsmokeを独立実行しPASS、sync --checkずれなし。実画面は未操作。
+Independent OPS-094/OPS-093 smoke PASS; sync --check matched. No real UI operation.
 
-追加検査で方向分類の不整合を確認。中心MS-SPI、展開DOC-027の場合、実辺はMS-SPI→DOC-027およびDOC-026→DOC-027だが、neighborhoodSides()はDOC-026をpost（後続）へ分類する。最初に訪れた側をその後の逆向き探索にも引き継ぐため、共通の後続を持つ別の前提が中心の後続に見える。受入条件「前提・中心・後続の方向が判別できる」を満たさないため完了受入は保留。
+Additional checking found inconsistent direction classification. With center MS-SPI and expanded DOC-027, actual edges are MS-SPI→DOC-027 and DOC-026→DOC-027, but neighborhoodSides() assigns DOC-026 to post (successor). It carries the initially visited side into reverse traversal, making another prerequisite of a shared successor appear downstream of the center. This fails 「前提・中心・後続の方向が判別できる」, so overall acceptance is withheld.
 
-修正候補: 中心から有向経路で到達する前提/後続と、展開で見つかったその他の関連ノードを区別し、後者を前提/後続と断定しない。文字一覧との対象一致と重複なしは維持する。今回新しい補修依頼は未発行。元Returnは保持する。
+Possible repair: distinguish directed-path predecessors/successors from other expanded related nodes, without asserting direction for the latter. Preserve text/card target equality and uniqueness. No repair assignment issued yet; original Return retained.
 
-## 限定補修の再依頼（2026-10-18 / Astra）
+<a id="限定補修の再依頼2026-10-18--astra"></a>
+## Bounded repair reassignment (2026-10-18 / Astra)
 
-ユーザー承認によりOPS-094を姫へ差し戻す。上記検収の方向分類だけを補修する。元Returnと検収記録は変更しない。
+User approval returns OPS-094 to Hime for direction classification alone. Preserve original Return/review.
 
-### 受入条件
+<a id="受入条件"></a>
+### Acceptance conditions
 
-- 中心への有向経路があるノードを前提、中心から有向経路があるノードを後続として扱う。方向判定は現在表示している接続に基づく。
-- 展開によって現れた、それ以外のノードは「関連」など方向を断定しない欄へ表示する。既存3欄に無理に押し込まない。全表示対象をちょうど1回カード表示する。
-- 再現例: MS-SPIを中心にDOC-027を展開しても、DOC-026をMS-SPIの後続や前提とは表示しない。DOC-026→DOC-027の文字情報は保持する。
-- 対称例: A→中心、A→Bでは、Bを中心の前提とは表示しない。単純な直列の上流・下流は従来どおり。
-- 選択追従・展開・リセット・入力保護・文字一覧との対象一致を維持し、回帰試験を追加して既存smoke/verify・sync/checkを実施する。
+- A node with a directed path to center is a prerequisite; one reachable from center is a successor. Use currently displayed connections.
+- Other expanded nodes belong in a nondirectional area such as 「関連」, not forced into the three existing columns. Exactly one card per displayed node.
+- Reproduction: center MS-SPI, expand DOC-027; do not label DOC-026 a prerequisite/successor of MS-SPI. Retain DOC-026→DOC-027 text.
+- Symmetric example A→center, A→B: B is not the center's prerequisite. Simple linear upstream/downstream remains unchanged.
+- Retain selection-following, expansion/reset, input protection and matching text targets; add regression and run existing smoke/verify/sync/check.
 
-編集範囲は元依頼と同じ。必要な純粋関数・カード欄・限定試験のみ。全体見取り図、正本の接続、実Inbox、保存契約は変更しない。画面操作・commitなし。指定範囲の占有を姫へ再委任し、Astraは補修Return待ち。
+Same editing scope; only necessary pure functions, card areas and bounded tests. No overall map, canonical connections, real Inbox or save-contract changes. No UI operation/commit. Redelegate occupancy; Astra awaits repair Return.
 
 ## 補修Return（姫記入）
 
 未返却。
 
-## ユーザー期待に合わせた再依頼（2026-10-18 / Astra）
+<a id="ユーザー期待に合わせた再依頼2026-10-18--astra"></a>
+## Reassignment matching user expectations (2026-10-18 / Astra)
 
-ユーザー訂正：「選択カードがほんとに真ん中にあって、左右に接続線がみえてほしい」。分類したカード列という解釈が期待と違っていた。ユーザー承認により、本節が当初のカード列・上記の「関連欄」追加依頼を置き換える。元Returnは改変しない。
+User correction: 「選択カードがほんとに真ん中にあって、左右に接続線がみえてほしい」. Classified card columns did not match the expectation. With user approval this section replaces the original columns and 「関連欄」 addition assignment; preserve original Return.
 
-### 作るもの・受入条件
+<a id="作るもの受入条件"></a>
+### Deliverable and acceptance
 
-- 文字一覧を残し、その上に選択カード中心の局所的な見取り図を表示する。3段のカード列ではない。
-- 選択カードを表示領域の中央に置き、直接の前提を左、直接の後続を右に配置する。左右の件数が偏っていても中心が片側へ寄らない。初期表示・中心変更時に中央のカードが見えること。広がる場合は局所図内のスクロール等で収める。
-- 表示対象の実接続を、実際の両端カード間の矢印付き線として各1本表示する。中心につながらない辺を勝手に中心につながない。カードや線の重なりを抑え、前提と後続を追えること。
-- 手動展開したノードも実際の相手へ線を結ぶ。例: MS-SPI→DOC-027←DOC-026では、DOC-026をDOC-027につなぎ、MS-SPIの後続と誤読させない。欄名で全ノードを前提・後続へ分類する必要はない。
-- カードにはID・タイトル・状態と利用可能な正本リンク。中心を明示し、文字一覧と同じ表示ノード・辺を使う。各ノードは1カード。
-- 選択追従、1段表示・展開・中心変更・リセット、未適用入力保護、閲覧専用の契約を維持する。実データは変えない。
-- 中心のみ、左右に複数、片側のみ、展開で共通後続を持つ例を検査。カード/辺の網羅・重複なし、中央配置、左右関係、選択と入力保護を限定試験にする。既存smoke/verify・sync/checkも実行。画面操作なし、実ブラウザー未確認を明記する。
+- Retain text and place a local map centered on the selected card above it, not three stacked card rows.
+- Keep the selected card at the area's center, direct prerequisites left and direct successors right, even when counts differ. Center must be visible initially/after center changes; contain expansion within local scrolling or equivalent.
+- Render each displayed actual connection once as an arrow between its real endpoint cards. Do not redirect noncenter edges to center. Limit card/line overlap so direction is traceable.
+- Expanded nodes connect to their actual neighbors. In MS-SPI→DOC-027←DOC-026, connect DOC-026 to DOC-027 without implying it follows MS-SPI. No need to classify all nodes through area names.
+- Cards show ID/title/state and available canonical links; distinguish center and use the same nodes/edges as text. One card per node.
+- Preserve selection-following, one-level/expand/center/reset, unapplied input protection and read-only contract. Real data unchanged.
+- Check isolated center, multiple/one-sided neighbors and expanded shared-successor examples. Test full/unique cards/edges, centering, direction and selection/input protection. Run existing smoke/verify/sync/check. No UI operation; note real-browser nonverification.
 
-### 受渡し
+<a id="受渡し"></a>
+### Handoff
 
-編集範囲は当初と同じ。局所図の配置・描画の具体的方法は姫に任せ、全体見取り図の配置修正へ広げない。旧限定補修に着手済みなら、その区切りで停止し途中成果を保持、本節への切替をReturn冒頭に明記してから続行する。旧作業を捨てたり、両案を並行実装する必要はない。現時点で補修Returnは未返却であり、稼働状態は断定していない。Astraは実装を変更しない。commitなし。
+Same editing scope. Hime chooses local placement/drawing without overall-map repair. If earlier repair has started, stop at its stage, retain interim output and state the switch at the next Return's beginning; do not discard it or implement both alternatives in parallel. At this point no repair Return is received and activity state is unknown. Astra does not change implementation. No commit.
 
 ## 局所見取り図Return（姫記入）
 
@@ -131,8 +142,9 @@ OPS-094・OPS-093のsmokeを独立実行しPASS、sync --checkずれなし。実
 
 
 
-## Astra局所見取り図受入（2026-10-18）
+<a id="astra局所見取り図受入2026-10-18"></a>
+## Astra local-map acceptance (2026-10-18)
 
-最新版差分を確認し、smoke_map.cjsとOPS-093/smoke.cjsを独立再実行して両方PASS。sync --checkずれなし。中心の対称配置、直接前提の左・後続の右、文字一覧と一致する実辺、展開例DOC-026→DOC-027の両端、選択追従・入力保護を確認。旧カード列の方向分類は置換済み、限定受入。実ブラウザーの見え方・線の重なりは未確認。旧smoke.cjsは過去のカード列の証拠、現行検証はsmoke_map.cjs。依頼終了、commit待ち。
+Inspected latest changes; independently reran smoke_map.cjs and OPS-093/smoke.cjs, both PASS; sync --check matched. Confirmed symmetric centering, direct prerequisites left/successors right, actual edges matching text, DOC-026→DOC-027's endpoints, selection-following and input protection. Old directional columns are replaced; bounded acceptance. Actual-browser appearance/line overlap remain unverified. Old smoke.cjs records the past columns; current verification is smoke_map.cjs. Assignment ended; awaiting commit.
 
-2026-10-18：ユーザーcommit承認によりOPS-094をDONEとする。受入範囲・実画面未確認は上記のとおり。
+User commit approval on 2026-10-18 makes OPS-094 DONE; acceptance limits/real-screen nonverification remain as above.

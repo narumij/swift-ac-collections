@@ -1,49 +1,59 @@
 # Studioのマイルストーン計画編集・限定試行
 
-2026-10-18 / OPS-086 / 親OPS-048 / 作成・受入Astra、実装・検証Claude（姫）。
+## TL;DR（人間向け）
 
-## 目的と委任
+Studioの編集版で中間カードの名称・条件・並替え・版間移動・追加と未接続版の追加を行い、差分を保存・再開する限定試行。追加フォームの入力消失を補修して独立検査で受け入れ、完了した。実マイルストーンへの反映、版比較・ゲート操作・実ファイル命名方針の確定は含まず、未追加フォームは永続保存対象外。
 
-ユーザーがStudio上でマイルストーン計画を組み替え、調整役不在でも保存・再開できるようにする。ユーザーの「依頼お願い」「つづけてください」に基づく実装依頼。利用枠50%という申告は完遂可能量の保証とは扱わない。短い内訳を書いてから、小さい区切りで実装・検証する。まず既存版の中間カード編集を成立させ、残量不足なら動く区切りで返却する。部分返却を全体完了としない。
+2026-10-18 / OPS-086 / parent OPS-048. Astra authors/accepts; Claude (Hime) implements/verifies.
 
-## 方針と境界
+<a id="目的と委任"></a>
+## Purpose and delegation
 
-- 編集するのはOPS-082の永続ユーザー編集版。実マイルストーンのファイル操作・Registryへの自動反映は行わない。既存baselineと保存履歴を維持し、最新正本と編集案を混同しない。
-- 対象操作は、版追加、中間カード追加、同版内の順序変更、別版への移動、中間カードの表示名・条件文の変更。小さいフォームや上下移動でよく、ドラッグ操作は必須ではない。
-- 既存カードのIDとtaskからの接続は移動・並替え・名称変更でも保持する。版ENDへの接続を中間カード移動に追従させない。新規案は正式IDと衝突しない仮IDとし、未反映の案だと表示する。
-- 中間カードの並びはSTART→カード列→ENDへ導出する。実ファイルへの反映時に必要な配置・順序の差分を、AIが読める保存データとして残す。正本への適用は別の受入・反映依頼で行う。
-- HEAD変更、版名変更、既存版/カード削除、ゲートの追加/移動/削除、状態の自動完了、リリース操作は今回含めない。計画変更で到達済み・合格と判定しない。
-- 表示名・条件文の変更はユーザー案として保持する。正本リンクは既存の正本を表示し、編集案を反映済みの正本として見せない。新規案には存在しない正本リンクを付けない。
+Allow users to rearrange milestone plans in Studio and save/resume without the coordinator. Implementation follows 「依頼お願い」「つづけてください」. Reported 50% remaining usage is not a guarantee of feasible completion. Write a brief breakdown and implement/verify in small stages: first intermediate-card editing within existing versions, returning a working stage if resources run short. Partial return is not overall completion.
 
-## 原型仕様と未決事項
+<a id="方針と境界"></a>
+## Policy and boundaries
 
-構造の正本は `Maintanance/Milestones/DESIGN.md`、現行運用説明は同README。どちらのDESIGNもユーザー所有で編集禁止。
+- Edit OPS-082's persistent user editing revision, not real milestone files or automatic Registry writes. Preserve baseline/save history and distinguish the latest canonical from editing proposals.
+- Operations: version addition, intermediate-card addition, within-version reordering, movement between versions, and intermediate-card name/condition changes. Small forms/up/down controls suffice; dragging is optional.
+- Retain existing card IDs/task connections through movement, reordering and renaming. Do not make version-END connections follow an intermediate card's movement. New proposals use noncolliding provisional IDs and are labeled unapplied proposals.
+- Derive START→card sequence→END. Save machine-readable placement/order differences needed for eventual file application. Applying to canonicals needs a separate acceptance/application request.
+- Exclude HEAD/version-name changes, existing version/card deletion, gate add/move/delete, automatic state completion and release operations. Plan changes do not establish arrival/passing.
+- Names/conditions remain user proposals. Existing canonical links show existing canonicals, not proposals as already applied. Do not invent links for new proposals.
 
-版フォルダ比較方法は「利用者が定める」とされており、現行生成器の比較実装を恒久の承認済み仕様にしない。版追加の順序に新しい判断が必要なら、その部分を停止し、最小の質問と影響を返す。既存版のカード操作など独立した確定範囲は進めてよい。原型の未接続版・末尾ゲートの許容と現行生成器には既知の差がある（Milestones/README参照）。今回のために上位仕様を変えたり、全面改修へ広げたりしない。必要な変更が境界を越えるなら作業内訳で切り出して返す。
+<a id="原型仕様と未決事項"></a>
+## Prototype specification and unresolved matters
 
-## 作業の区切り
+Structural authority: `Maintanance/Milestones/DESIGN.md`; current operating explanation: its README. Both DESIGN documents are user-owned and must not be edited.
 
-1. 現行保存形式・骨格生成を限定確認し、変更ファイルと短い作業内訳を記入。開始HEADと既存差分も残す。
-2. 既存版の中間カードの名称/条件編集・並替え・版間移動を編集版で実装。保存・再開まで検証する。
-3. 中間カード追加、判断を要しない範囲の版追加。新規版はゲートなしの案でよく、接続を勝手に補わない。未決事項があれば分離して返す。
-4. 見取り図・カード一覧・インスペクタの整合、既存操作の回帰を確認しReturn。
+Version-folder comparison is 「利用者が定める」; do not turn the current generator's implementation into a permanently approved specification. Stop only the part requiring a new ordering decision and return the minimal question/impact; independent settled existing-card operations may proceed. Known differences between prototype allowances for disconnected versions/final gates and the generator remain (Milestones/README). Do not change higher specifications or widen into comprehensive repair; identify boundary-crossing work in the breakdown.
 
-各区切りで検証結果を残す。技術的な実装方法と小さいUIの構成は任せる。新しい方針判断は埋めない。
+<a id="作業の区切り"></a>
+## Work stages
 
-## 編集範囲と占有
+1. Inspect current save format/backbone generation within scope; record changed files, brief breakdown, starting HEAD and existing differences.
+2. Implement name/condition edits, reorder and cross-version movement for existing cards; verify save/resume.
+3. Add intermediate cards and versions where no new judgment is required. A new version may remain a gate-free proposal; do not invent connections. Separate unresolved questions.
+4. Check map/card-list/inspector consistency and regression of existing operations, then return.
 
-RegistryApp/index.template.html、sync.py、verify.cjs、serve.py、inbox.py、README.mdの必要部分、本書の作業内訳/Return、Current/Evidence/OPS-086/。保存形式に説明が必要ならRegistryApp/Inbox/README.mdも可。全ファイル変更を必須としない。
+Record verification per stage. Implementation technique and small UI design are delegated; new policy decisions are not.
 
-Registry・Rules・CLAUDE_TASK・DESIGN・実Milestones配置・実ユーザーInboxは変更しない。他者の未commit差分は保持。生成物は既存Cacheへ生成する。依頼完成をもって指定範囲を姫へ受渡し、Astraは返却まで同範囲を編集しない。commit・push・ブランチ作成は今回委任しない。
+<a id="編集範囲と占有"></a>
+## Editing scope and ownership
 
-## 受入条件と検証
+Necessary parts of RegistryApp/index.template.html, sync.py, verify.cjs, serve.py, inbox.py, README.md, this breakdown/Return and Current/Evidence/OPS-086/. RegistryApp/Inbox/README.md may explain save format if needed. Changing every listed file is not required.
 
-- 隔離データで複数カードの並替え・移動後にIDと既存task接続が保持され、骨格が新しい順序になる。失敗する操作は適用前の編集内容を壊さない。
-- 新規案のID衝突・不正接続・循環を拒否する。既存の保存版も読み込める。形式変更が必要なら既存版を黙って捨てず、対応範囲を明記する。
-- 保存→再開、更新→再開で計画案が残り、保存/更新応答待ち中の追加編集と未適用入力も保持される。保存履歴・baselineを上書きしない。
-- AIがbaseline・編集案・最新正本を比較するための追加/移動/並替え/文言差分を取得できる。実正本とHEADは不変。
-- 既存sync/verify・--checkと、必要な操作スモークを実施。実Inbox・実Milestonesはfixtureに使わない。Safari実操作を確認できなければ未確認と記す。
-- Returnに実装済み操作、未実装/判断待ち、変更ファイル、固定入力版、証拠、再開方法、一時作業物の扱いを残す。受入・Registry更新はAstraが行う。
+No Registry, Rules, CLAUDE_TASK, DESIGN, real Milestones placement or real user Inbox changes. Preserve others' uncommitted differences. Generate into existing Cache. The completed assignment hands this scope to Hime; Astra does not edit it before return. No commit/push/branch creation delegated.
+
+<a id="受入条件と検証"></a>
+## Acceptance and verification
+
+- On isolated data, reorder/move multiple cards while retaining IDs/task connections and generating the new backbone. Rejected operations must preserve pre-operation edits.
+- Reject provisional-ID collisions, invalid connections and cycles. Read existing saves; if format changes are needed, state compatibility rather than silently discarding old saves.
+- Preserve plan proposals across save/resume and update/resume, including later edits/unapplied inputs during pending responses. Do not overwrite history/baseline.
+- Expose add/move/reorder/text differences for comparing baseline, proposal and latest canonical. Real canonicals/HEAD remain unchanged.
+- Run existing sync/verify, --check and necessary operation smoke. Real Inbox/Milestones are not fixtures. Note unverified Safari operation explicitly.
+- Return implemented operations, missing/pending decisions, files, fixed input, evidence, resume instructions and artifact handling. Astra handles acceptance/Registry updates.
 
 ## 作業内訳（姫記入）
 
@@ -111,28 +121,30 @@ Registry・Rules・CLAUDE_TASK・DESIGN・実Milestones配置・実ユーザーI
 
 commitはしていない。
 
-## Astra検収（2026-10-18）
+<a id="astra検収2026-10-18"></a>
+## Astra review (2026-10-18)
 
-ユーザーの受入依頼と「差分なので実マイルストーンファイルには反映されていなくてよい」という確認に基づく。実ファイルへの適用は今回の受入条件ではない。原Returnは保持する。
+Based on user acceptance request and confirmation 「差分なので実マイルストーンファイルには反映されていなくてよい」. Actual-file application is not an acceptance condition. Preserve original Return.
 
-独立sync/verify 28 PASS、OPS-086操作smoke PASS。コード差分の骨格再生成・baseline保持・差分取得を照合。名称/条件・並替え・移動・追加・保存再開の検証範囲は成立。Safari実操作は未確認。
+Independent sync/verify 28 PASS; OPS-086 smoke PASS. Compared backbone regeneration, baseline retention and difference extraction. Name/condition/reorder/move/add/save-resume checks stand; Safari operation remains unverified.
 
-ただし完了受入は保留。`renderPlanTools()`の新規カード名と版名は未適用入力として追跡されず、再描画で消える。独立再現：OPS-086 smokeのDOM harnessでカード一覧を開く→`planAddName`へ「まだ追加していない入力」を入力→`ctx.select('MS-SPI')`。`formDirty=false`のまま、入力値が空文字へ変わった。実Inbox・実Milestonesは使用/変更していない。更新中の未適用入力も同じ追跡漏れの影響範囲として補修時に確認が必要。
+Overall acceptance is withheld: `renderPlanTools()` does not track new-card/version names as unapplied input, so redraw loses them. Independent reproduction: open card list in OPS-086 smoke DOM harness, enter 「まだ追加していない入力」 into `planAddName`, then `ctx.select('MS-SPI')`. Input becomes empty while `formDirty=false`. No real Inbox/Milestones used/changed. Check input entered during update as another consequence of the same tracking gap.
 
-必要な補修は追加フォームの未適用入力保持/破棄確認と、その回帰検証に限定する。実マイルストーンへの書込みは不要。番号振直しは編集版上の配置案として検収し、実ファイル命名方針の承認とは扱わない。未接続版の正式な接続・比較規則も未決のまま。今回新たな実装依頼は発行していない。
+Limit repair to add-form input retention/discard confirmation and regression. No real milestone writes. Renumbering is an editing-revision placement proposal, not approval of file naming policy. Formal connection/comparison rules for unconnected versions remain unsettled. No new implementation assignment at this point.
 
-## 限定補修の再依頼（2026-10-18 / Astra）
+<a id="限定補修の再依頼2026-10-18--astra"></a>
+## Bounded repair reassignment (2026-10-18 / Astra)
 
-上記検収後、ユーザーが姫への補修依頼を承認。現在の依頼はこの節。既存の成果・原Return・他者差分を保持し、追加フォームの入力保護だけを補修してください。
+After review, the user approved repair by Hime. This section is the current assignment. Preserve existing output, original Return and others' differences; repair add-form input protection only.
 
-- 対象はカード一覧の新規中間カード名・追加先の版・新規版名。カード選択、タブ切替、再描画で未適用入力を無言で失わないこと。保持、または破棄前の明示確認を用い、確認を取り消した場合は入力を保つ。
-- 「追加」操作は入力追跡によって自分自身を実行不能にしないこと。成功時に処理した入力のみをクリアし、失敗時は入力を保持。他方の追加欄やインスペクタの未適用入力を巻き添えで消さない。
-- 未適用入力がある更新操作と、保存/更新の応答待ち中に追加した入力を保護する。未適用入力を保存済みと表示したり、応答時に再読込して消したりしない。フォーム入力の永続保存機能を新設する依頼ではない。
-- まず上記のカード選択による消失を検査で再現し、両追加欄・追加の成功/失敗・応答待ちの保護を限定検証。既存OPS-086操作smokeとsync/verify、--checkも確認する。
+- Protect new intermediate-card name, destination version and new version name through card selection, tab changes and redraw. Retain them or explicitly confirm discard; cancellation preserves input.
+- Tracking must not make 「追加」 itself unusable. Success clears only processed input; failure retains it. Do not erase the other add form or unapplied inspector input.
+- Protect update with unapplied inputs and inputs entered while save/update responses are pending. Do not mark them saved or reload them away. Persistent form saving is not requested.
+- First reproduce selection-induced loss, then check both forms, successful/failed addition and pending-response protection. Run existing OPS-086 smoke, sync/verify and --check.
 
-編集可：RegistryApp/index.template.html、verify.cjs、必要ならREADME.md、本書の追加Return、Evidence/OPS-086/の補修証拠。その他へ必要な変更が及ぶ場合は理由を返す。実Milestones・HEAD・DESIGN・実Inbox・Registry・Rulesは変更しない。実ファイル反映・版順序/命名方針の確定は不要。
+Editable: RegistryApp/index.template.html, verify.cjs, README.md if necessary, this additional Return and repair evidence under Evidence/OPS-086/. Return reasons for necessary changes elsewhere. No real Milestones/HEAD/DESIGN/Inbox/Registry/Rules changes. No actual-file application or decision on version ordering/naming is needed.
 
-指定範囲を姫へ再委任し、Astraは返却待ち。commitは含めない。追加Returnに変更点、再現/修正確認、未確認事項を記す。
+Redelegate to Hime; Astra awaits return. No commit. Additional Return records changes, reproduction/fix checks and unknowns.
 
 ## 補修Return（姫記入）
 
@@ -166,10 +178,11 @@ commitはしていない。
 
 commitはしていない。
 
-## Astra補修受入・完了（2026-10-18）
+<a id="astra補修受入完了2026-10-18"></a>
+## Astra repair acceptance and completion (2026-10-18)
 
-ユーザーの受入・commit指示に基づき限定試行を受入。`618460c62`に対する返却差分の入力保持・更新前後の保護・保存表示を照合。独立sync/verify 28 PASS、OPS-086 smokeとsmoke_formともにPASS、--checkずれなし、git diff --check成功。追加欄3項目の選択/再描画後の保持、追加失敗/成功時の扱い、インスペクタ入力保護、保存/更新応答待ちの入力保持を確認した。
+Accepted the bounded trial under the user's acceptance/commit instruction. Compared returned changes against `618460c62` for input retention, update protection and saved-state messaging. Independent sync/verify 28 PASS; OPS-086 smoke/smoke_form PASS; --check matched; git diff --check passed. Checked three fields after selection/redraw, success/failure handling, inspector protection and inputs entered during save/update waits.
 
-実マイルストーンへの反映は不要というユーザー確認に従い、編集版と差分保存の範囲で完了。未適用の追加欄は永続保存対象外で、離脱確認と未保存の案内で保護する。Safari実操作は未確認。版比較・ゲート操作・実ファイルの命名方針の確定は今回の完了に含めない。
+Completed for the editing revision and saved differences, following user confirmation that real milestone application is unnecessary. Unapplied add-form values are not persistent; leave confirmation and unsaved notices protect them. Safari operation is unverified. Version comparison, gates and real-file naming policy are not completed by this acceptance.
 
-OPS-086をDONEとし、姫への限定依頼は終了。ユーザーのcommit許可は本成果・依頼/受入記録に適用し、ユーザー変更のDESIGN 2件は含めない。
+OPS-086 is DONE; Hime's bounded assignment ended. User commit permission covers this output and request/acceptance records, excluding the user's two DESIGN changes.

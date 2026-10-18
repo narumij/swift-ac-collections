@@ -236,6 +236,19 @@ const firstFeed=[{id:'m1',kind:'milestone'},{id:'m2',kind:'milestone'},{id:'f1'}
 const firstEdges=[{prerequisite:'m1',successor:'m2'},{prerequisite:'f1',successor:'f2',flow:'SEQUENCE'},{prerequisite:'f2',successor:'m1'}];
 const firstLayout=ctx.graphLayout(firstFeed,firstEdges);assert(!firstLayout.fallback);assertGeometry(firstLayout,firstFeed,firstEdges);
 console.log('PASS: leading feeder column, no global fallback, renamed IDs and first-milestone chain.');
+{ // OPS-116: a task that never reaches the backbone but follows a task in a lower column (PERM-060→PERM-081) was left
+ // unplaced, so the whole map fell back to dependency columns and the skeleton row broke. Check every view and a renamed fixture.
+ ctx.doc=original;const views=['','@head',...new Set(original.milestones.map(m=>(m.gate||'').split('/')[2]).filter(Boolean))];
+ for(const view of views){const g=ctx.versionView(ctx.graphData(),view),l=ctx.graphLayout(g.nodes,g.edges);if(!g.edges.length)continue;
+  assert(!l.fallback,'no whole-map fallback in view '+(view||'all'));assertGeometry(l,g.nodes,g.edges);
+  for(const id of l.backbone)assert.equal(l.pos.get(id)[1],l.pos.get(l.backbone[0])[1],'skeleton stays on one row: '+id);}
+ const nodes=['m1','m2','m3'].map(id=>({id,kind:'milestone'})).concat(['f1','t1','t2','g1','u1'].map(id=>({id,kind:'task'})));
+ const edges=[['m1','m2'],['m2','m3'],['f1','m2'],['f1','t1'],['t1','t2'],['g1','m3'],['f1','u1'],['g1','u1']].map(([prerequisite,successor])=>({prerequisite,successor}));
+ const l=ctx.graphLayout(nodes,edges);assert(!l.fallback,'dead-end tails after feeders must not trigger fallback');assertGeometry(l,nodes,edges);
+ for(const id of ['m2','m3'])assert.equal(l.pos.get(id)[1],l.pos.get('m1')[1]);
+ assert.equal(l.pos.get('t1')[0],l.pos.get('f1')[0]);assert(l.pos.get('f1')[1]<l.pos.get('t1')[1]&&l.pos.get('t1')[1]<l.pos.get('t2')[1],'tail continues below its prerequisite');
+ assert.equal(l.pos.get('u1')[0],l.pos.get('g1')[0],'a tail with prerequisites in two columns goes to the rightmost one');
+ console.log('PASS: OPS-116 dead-end tails after lower-column tasks; no whole-map fallback in',views.length,'views; skeleton row kept.');}
 
 assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-037'));assert(historical.edges.some(e=>e.prerequisite==='DOC-037'&&e.successor==='DOC-035'));assert(!historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-035'));
 

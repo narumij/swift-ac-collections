@@ -324,6 +324,17 @@ function graphLayout(tasks,edges){
    if(source)groupById.get(source.prerequisite).escape.push(t.id);
   }
  }
+ // A task that never reaches the backbone but follows a task in a lower column (a later task after a feeder) continues
+ // that column below its prerequisites, in the rightmost such column (OPS-116). Left unplaced, it made the whole map fall back.
+ const escapeIds=new Set(branches.filter(b=>b.kind==='escape').flatMap(b=>b.ids)),allGroups=[leadGroup,...groups];
+ const listed=id=>allGroups.some(g=>g.header===id||g.below.includes(id)||g.route.includes(id)||g.escape.includes(id));
+ for(let changed=true;changed;){changed=false;
+  for(const t of tasks){
+   if(groupById.has(t.id)||escapeIds.has(t.id)||listed(t.id))continue;
+   const homes=edges.filter(e=>e.successor===t.id).map(e=>allGroups.findIndex(g=>g.below.includes(e.prerequisite))).filter(i=>i>=0);
+   if(homes.length){allGroups[Math.max(...homes)].below.push(t.id);changed=true;}
+  }
+ }
  function reaches(a,b,seen=new Set()){if(a===b)return true;if(seen.has(a))return false;seen.add(a);return (outgoing.get(a)||[]).some(n=>reaches(n,b,seen));}
  function chainOrder(ids){
  const remaining=new Set(ids),ordered=[];

@@ -23,7 +23,7 @@ assert.equal(one([ev('OPS-202','work','相談待ち：正本の姫 Returnを確�
 
 // 2. Old or missing start: work without a visible request is still 作業中, not 検討中; the start is reported as unknown.
 const old=one([ev('OPS-203','work','着手')]);
-assert.equal(old.stage,'作業中');assert.equal(old.start,'開始は記録範囲外または未記録');
+assert.equal(old.stage,'作業中');assert.equal(old.start,'開始：不明');assert.equal(old.startNote,'開始：不明（記録範囲外または未記録）','the detail keeps why the start is unknown');
 assert(one([ev('OPS-204','request'),ev('OPS-204','work')]).start.startsWith('依頼 '));
 
 // 3. Approvals are counted per task, never assigned to a request; approval-only tasks are kept.
@@ -74,6 +74,7 @@ lane.activityFailure();assert.equal(track.children.length,2,'last cards kept');a
 lane.approvalFailure();assert(status.textContent.includes('承認の取得不調'));
 lane.activity(rows([ev('OPS-401','return')]));assert(!status.textContent.includes('活動の取得不調'));assert(status.textContent.includes('承認の取得不調'));
 assert(card401.children[1].textContent.includes('姫'),'owner shown as text');
+assert.equal(card401.children[3].textContent,'開始：不明');assert(card401.title.includes('開始：不明（記録範囲外または未記録）'),'unknown start explained in the card title');
 
 // 8. Wiring: the lane is fed by the existing pollers only, and the template keeps the approval controls.
 assert(html.includes("const view={update(rows){timeline.update(rows);workLaneInstance().activity(rows);}"));

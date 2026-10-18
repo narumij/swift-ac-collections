@@ -1,0 +1,95 @@
+{
+ "lines": {
+  "edges": 39,
+  "paths": 39,
+  "cardsMoved": 0,
+  "multi": 6,
+  "multiOk": 6,
+  "single": 7,
+  "singleOk": 7,
+  "vertical": 5,
+  "verticalOk": 5,
+  "examples": [
+   {
+    "into": "GATE-0.7.0",
+    "lines": 7,
+    "distinctEnds": 7,
+    "ordered": true
+   },
+   {
+    "into": "GATE-0.8.0",
+    "lines": 6,
+    "distinctEnds": 6,
+    "ordered": true
+   },
+   {
+    "into": "GATE-1.0.0",
+    "lines": 2,
+    "distinctEnds": 2,
+    "ordered": true
+   }
+  ]
+ },
+ "clickSelected": true,
+ "wide": {
+  "header": 55,
+  "row": {
+   "wrap": "wrap",
+   "overflowX": "visible",
+   "scrollable": false,
+   "height": 31
+  },
+  "tabs": {
+   "wrap": "wrap",
+   "overflowX": "visible",
+   "scrollable": false,
+   "height": 37
+  }
+ },
+ "narrow": {
+  "header": 58,
+  "row": {
+   "wrap": "nowrap",
+   "overflowX": "auto",
+   "scrollable": true,
+   "height": 34
+  },
+  "tabs": {
+   "wrap": "nowrap",
+   "overflowX": "auto",
+   "scrollable": true,
+   "height": 40
+  }
+ },
+ "keyboard": {
+  "reachedLast": true,
+  "focused": "restart",
+  "inView": true,
+  "right": 378,
+  "rowRight": 378,
+  "outline": "solid 2px",
+  "rowScrollLeft": 291
+ },
+ "tabsKeyboard": {
+  "focused": "neighborTab",
+  "inView": true,
+  "outline": "solid"
+ },
+ "backToWide": {
+  "header": 55,
+  "row": {
+   "wrap": "wrap",
+   "overflowX": "visible",
+   "scrollable": false,
+   "height": 31
+  },
+  "tabs": {
+   "wrap": "wrap",
+   "overflowX": "visible",
+   "scrollable": false,
+   "height": 37
+  }
+ },
+ "engine": "webkit",
+ "errors": []
+}

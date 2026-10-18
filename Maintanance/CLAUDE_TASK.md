@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-102：第1回を姫へ依頼。最近の最大3事例から「判断の次に欲しい情報」の候補を返す。第2・3回は未発注。
+
 OPS-101：第1〜3回をAstra受入済み。限定依頼は終了、結果をOPS-099へ接続。ユーザーcommit承認によりDONE。追加調査・キャッシュ変更の依頼なし。
 
 OPS-100：Astraが助言として受入済み。OPS-099へ整理を接続、ユーザーcommit承認によりDONE・依頼終了。試行・キャッシュ変更の追加依頼なし。
@@ -340,3 +342,8 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-101 — 全3回受入・依頼終了（2026-10-18 / Astra）
 
 [正本の総括](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md#第3回-astra受入試行の総括2026-10-18)に従い限定試行を受入。原Returnを保持し、退避・復元は未試験と明記してOPS-099へ接続した。追加作業なし、ユーザーcommit承認によりDONE。
+
+
+## OPS-102 — 第1回：判断の次に欲しい情報の候補出し
+
+[正式依頼](Current/CACHE_SECOND_ITEM_PILOT.md)に従い、最近の最大3事例から候補を返してください。事実・記憶・推測を区別し、件数を埋めるための探索は不要です。同書第1回Returnだけを姫へ委任。キャッシュ変更や実装、commitなし。返却後停止し、Astraの受入を待ってください。

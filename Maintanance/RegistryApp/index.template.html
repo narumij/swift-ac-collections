@@ -4,6 +4,7 @@
 .graph-tooltip{position:fixed;z-index:10;max-width:min(420px,calc(100vw - 24px));max-height:65vh;overflow:hidden;pointer-events:none;white-space:pre-wrap;overflow-wrap:anywhere;background:#183c36;color:#fff;border:1px solid #75968a;border-radius:9px;padding:14px 16px;box-shadow:0 8px 28px #173c3633;font-size:12px;line-height:1.7}
 .layout.sidebar-hidden{grid-template-columns:minmax(0,1fr)}
 .independent-strip{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px}
+.neighbor-map{max-height:520px;overflow:auto;margin:8px 0 14px}
 #cardList .independent-strip{flex-wrap:wrap;overflow-x:visible}.independent-strip .task{flex:0 0 250px;width:250px;margin:0;min-height:100px}.independent-strip .task span{display:block}
 .task{overflow:hidden;display:flex;flex-direction:column;padding:12px 0 0}.task>strong,.task>span:not(.state-band){margin-left:12px;margin-right:12px}.task>span:not(.state-band){margin-bottom:10px}.task .state-band{display:block;align-self:stretch;margin-top:auto;padding:6px 12px;font-size:11px;font-weight:600;letter-spacing:.25px}.task.selected{box-shadow:0 0 0 2px #126c58 inset}
 dialog{width:min(680px,94vw);max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:24px;color:var(--ink)}dialog::backdrop{background:#183c3666}
@@ -445,6 +446,24 @@ function neighborhood(data,center,expanded){
   for(const e of lines)if(e.prerequisite===id||e.successor===id){const other=e.prerequisite===id?e.successor:e.prerequisite;edges.set(e.prerequisite+'>'+e.successor,e);if(!shown.has(other))shown.set(other,depth+1);}}
  return {center,nodes:[...shown].map(([id,depth])=>({...(nodes.get(id)||{id,item:'（データにないID）',state:'',kind:'unknown'}),depth,expanded:id===center||(expanded&&expanded.has(id))})),edges:[...edges.values()]};
 }
+// Local map layout (OPS-094): columns relative to the center (center = column 0, prerequisites left, successors right).
+// Every shown line a → b ends in a column right of its start; the center never moves. Rows are spread around the middle.
+// Lines are drawn between their real ends, so a node found by expansion is tied to its actual neighbor, not to the center.
+function neighborhoodLayout(view){
+ const col=new Map([[view.center,0]]),queue=[view.center];
+ while(queue.length){const id=queue.shift();for(const e of view.edges){
+  if(e.prerequisite===id&&!col.has(e.successor)){col.set(e.successor,col.get(id)+1);queue.push(e.successor);}
+  else if(e.successor===id&&!col.has(e.prerequisite)){col.set(e.prerequisite,col.get(id)-1);queue.push(e.prerequisite);}}}
+ for(let i=0,changed=true;changed&&i<=view.nodes.length*view.edges.length+1;i++){changed=false;for(const e of view.edges){
+  const a=col.get(e.prerequisite),b=col.get(e.successor);if(a===undefined||b===undefined||b>a)continue;
+  if(e.successor!==view.center&&(a>=0||e.prerequisite===view.center))col.set(e.successor,a+1);else col.set(e.prerequisite,b-1);changed=true;}}
+ const byCol=new Map();for(const n of view.nodes){const c=col.has(n.id)?col.get(n.id):0;if(!byCol.has(c))byCol.set(c,[]);byCol.get(c).push(n.id);}
+ const pos=new Map();for(const [c,ids] of byCol){const list=c===0?[view.center,...ids.filter(x=>x!==view.center)]:ids;
+  // Center column: the center in the middle row, others alternately below and above. Other columns: centered around the middle.
+  list.forEach((id,i)=>pos.set(id,[c,c===0?(i===0?0:(i%2?1:-1)*Math.ceil(i/2)):i-(list.length-1)/2]));}
+ const span=Math.max(0,...[...col.values()].map(Math.abs)),rows=Math.max(0,...[...pos.values()].map(p=>Math.abs(p[1])));
+ return {pos,span,rows};
+}
 let neighborCenter=null;const neighborExpanded=new Set();
 function renderNeighborhood(){
  const box=$('neighborBox');if(!box)return;box.replaceChildren();if(!neighborCenter)neighborCenter=selected;
@@ -453,6 +472,24 @@ function renderNeighborhood(){
  const byId=new Map(view.nodes.map(n=>[n.id,n])),label=id=>{const n=byId.get(id);return id+(n?' · '+(n.kind==='milestone'?'到達点':n.kind==='proposal'?'追加案':n.state):'');};
  const top=el('div',undefined,'buttons'),reset=el('button','1段に戻す');reset.onclick=()=>{neighborExpanded.clear();renderNeighborhood();};top.append(reset);box.append(top);
  const c=byId.get(neighborCenter);box.append(el('h3','中心：'+label(neighborCenter)),el('p',c.item||'','muted'));
+ // Local map (OPS-094): the center in the middle, prerequisites left, successors right, each shown line between its real ends.
+ // Same nodes and lines as the text list below. Clicking a card selects it (the center follows, OPS-093).
+ {const L=neighborhoodLayout(view),W=210,H=84,GX=90,GY=26,source=new Map([...(doc.tasks||[]),...proposalNodes(doc),...(doc.milestones||[])].map(t=>[t.id,t]));
+  const cols=2*L.span+1,width=cols*W+(cols-1)*GX+40,height=(2*L.rows+1)*H+2*L.rows*GY+40,cx=id=>20+(L.pos.get(id)[0]+L.span)*(W+GX),cy=id=>20+(L.pos.get(id)[1]+L.rows)*(H+GY);
+  const s=svg('svg',{width,height,viewBox:`0 0 ${width} ${height}`,role:'group','aria-label':neighborCenter+' を中心にした局所見取り図'}),defs=svg('defs',{}),m=svg('marker',{id:'neighborArrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'});m.append(svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#78998c'}));defs.append(m);s.append(defs);
+  for(const e of view.edges){const x1=cx(e.prerequisite)+W,y1=cy(e.prerequisite)+H/2,x2=cx(e.successor),y2=cy(e.successor)+H/2;
+   const path=svg('path',{d:`M${x1},${y1} C${x1+GX/2},${y1} ${x2-GX/2},${y2} ${x2},${y2}`,fill:'none',stroke:'#78998c','stroke-width':1.5,'marker-end':'url(#neighborArrow)','data-edge':e.prerequisite+'>'+e.successor});path.append(svg('title',{},e.prerequisite+' → '+e.successor+'\n'+e.kind+' / '+(e.constraint||'条件文なし')));s.append(path);}
+  for(const n of view.nodes){const t=source.get(n.id)||{id:n.id,item:'（データにないID）',state:'',detail:''},x=cx(n.id),y=cy(n.id),center=n.id===neighborCenter;
+   const g=svg('g',{class:'node',tabindex:0,role:'button','aria-label':n.id+' '+(t.item||''),'data-node':n.id,transform:`translate(${x} ${y})`});
+   g.append(svg('rect',{width:W,height:H,rx:7,fill:center?'#d4edbc':n.kind==='milestone'?'#fff1c9':'#fff',stroke:center?'#126c58':'#b8ccc0','stroke-width':center?2.5:1,'stroke-dasharray':t.proposal?'5 3':''}),
+    svg('text',{x:10,y:17,fill:'#657477'},n.id+(center?' · 中心':n.kind==='milestone'?' · 到達点':t.proposal?' · 追加案':'')),svg('text',{x:10,y:38,fill:'#213b32','font-weight':600},(t.item||'').replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,'').slice(0,16)));
+   const band=stateStyle(t.proposal?'追加案':(t.state||''));g.append(svg('path',{d:`M0 58 H${W} V${H-7} Q${W} ${H} ${W-7} ${H} H7 Q0 ${H} 0 ${H-7} Z`,fill:band.bg}),svg('text',{x:10,y:76,fill:band.fg,'font-weight':600},t.proposal?'追加案':(t.state||'')));
+   g.onclick=()=>select(n.id);g.onkeydown=ev=>{if(ev.key==='Enter')select(n.id);};s.append(g);
+   const paths=t.proposal?[]:cardDocumentPaths(t,documentBundle);if(paths.length){const a=svg('a',{href:'#document',tabindex:0,'aria-label':n.id+' の正本を読む',transform:`translate(${x+W-46} ${y+2})`});a.append(svg('rect',{width:42,height:20,fill:'transparent'}),svg('text',{x:8,y:14,fill:'#126c58'},'正本'));
+    a.onclick=ev=>{ev.preventDefault();ev.stopPropagation();if(paths.length===1){openDocument(paths[0]);return;}const dialog=$('documentDialog');$('documentTitle').textContent=n.id+' の正本';$('documentStamp').textContent='読む文書を選択してください';$('documentBody').replaceChildren(documentLinks(paths.join('\n')));if(!dialog.open)dialog.showModal();};s.append(a);}}
+  const area=el('div',undefined,'graph neighbor-map');area.append(s);box.append(area);
+  // Keep the center card in view: scroll the local map so its middle column is centered.
+  if(typeof area.scrollLeft==='number'&&area.clientWidth)area.scrollLeft=Math.max(0,(width-area.clientWidth)/2);}
  const row=(e,other,arrow)=>{const n=byId.get(other),div=el('div',undefined,'edge-row');div.append(el('strong',arrow),el('p',e.kind+(e.flow?' · '+e.flow:'')+' / '+(e.constraint||'条件文なし'),'muted'));
   if(n&&n.kind!=='unknown'){const go=el('button','ここを中心に');go.onclick=()=>{neighborCenter=other;neighborExpanded.clear();renderNeighborhood();};div.append(go);
    if(!n.expanded){const more=el('button','この先を展開');more.onclick=()=>{neighborExpanded.add(other);renderNeighborhood();};div.append(more);}}

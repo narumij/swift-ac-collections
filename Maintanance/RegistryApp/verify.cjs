@@ -397,3 +397,20 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  v=ctx.neighborhood(withP,'MS-SPI',new Set());assert(v.nodes.some(n=>n.id===r.id&&n.kind==='proposal'),'proposal in the neighborhood');
  assert.deepEqual(ctx.neighborhood(d,'NO-SUCH',new Set()).nodes,[]);assert.equal(JSON.stringify(d),before,'neighborhood never changes the data');
  console.log('PASS: neighborhood one step, manual expansion (QUALITY-005 → DOC-026 → DOC-027 with MS-SPI → DOC-027), START/END, isolated node, proposal, no duplicates, data unchanged.');}
+// Local map layout (OPS-094): center at column 0 in the middle row, every shown line runs left to right, lines keep their real ends.
+{const d=copy(original),L=v=>ctx.neighborhoodLayout(v),col=(l,id)=>l.pos.get(id)[0],row=(l,id)=>l.pos.get(id)[1];
+ const check=(v,l)=>{assert.equal(col(l,v.center),0);assert.equal(row(l,v.center),0);assert.equal(l.pos.size,v.nodes.length,'one position per shown node');
+  for(const e of v.edges)assert(col(l,e.successor)>col(l,e.prerequisite),'line runs left to right: '+e.prerequisite+'>'+e.successor);
+  const cells=[...l.pos.values()].map(p=>p.join(','));assert.equal(new Set(cells).size,cells.length,'no two cards share a cell');
+  assert(l.span>=Math.max(0,...[...l.pos.values()].map(p=>Math.abs(p[0]))),'symmetric span keeps the center column in the middle');};
+ let v=ctx.neighborhood(d,'DOC-027',new Set()),l=L(v);check(v,l);assert(col(l,'DOC-026')<0&&col(l,'MS-SPI')<0,'prerequisites left');
+ v=ctx.neighborhood(d,'MS-SPI',new Set(['DOC-027']));l=L(v);check(v,l);assert(col(l,'DOC-027')>0,'successor right');
+ assert(v.edges.some(e=>e.prerequisite==='DOC-026'&&e.successor==='DOC-027')&&!v.edges.some(e=>(e.prerequisite==='DOC-026'&&e.successor==='MS-SPI')||(e.prerequisite==='MS-SPI'&&e.successor==='DOC-026')),'DOC-026 is tied to DOC-027 only');
+ assert(col(l,'DOC-026')<col(l,'DOC-027'),'DOC-026 sits left of DOC-027 (its real successor)');
+ const fx={tasks:['C','A','B','P1','P2','S1'].map(id=>({id,state:'ACTIVE',owner:'',item:id,condition:'',detail:'',raw:''})),edges:[['A','C'],['A','B'],['P1','C'],['P2','C'],['C','S1']].map(([p,q])=>({prerequisite:p,successor:q,flow:'SEQUENCE',constraint:''})),milestones:[],milestoneRelations:[]};
+ v=ctx.neighborhood(fx,'C',new Set(['A']));l=L(v);check(v,l);assert(col(l,'B')>col(l,'A'),'A → C, A → B: B is drawn after A, not as a prerequisite of C');assert(!v.edges.some(e=>e.prerequisite==='B'&&e.successor==='C'));
+ v=ctx.neighborhood(fx,'C',new Set());l=L(v);check(v,l);assert(['A','P1','P2'].every(id=>col(l,id)===-1)&&col(l,'S1')===1,'many left, one right; center stays at 0');
+ v=ctx.neighborhood(fx,'S1',new Set());l=L(v);check(v,l);assert.equal(col(l,'C'),-1,'one side only');
+ const lone=ctx.independentGroups(d).regular.find(t=>!d.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)&&!d.milestoneRelations.some(e=>e.prerequisite===t.id||e.successor===t.id));
+ if(lone){v=ctx.neighborhood(d,lone.id,new Set());l=L(v);check(v,l);assert.equal(l.span,0);}
+ console.log('PASS: local map layout (center fixed in the middle, prerequisites left / successors right, lines left to right with real ends, expanded shared successor, one-sided and isolated cases, no overlapping cells).');}

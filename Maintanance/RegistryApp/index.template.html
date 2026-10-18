@@ -383,21 +383,19 @@ function independentGroups(data){
  // Grouped by state color in the STATES order, Registry order within a color (2026-10-17).
  const ORDER=typeof STATES!=='undefined'?STATES:['ACTIVE','WAITING_USER','WAITING_EXTERNAL','FROZEN','USER_ONLY','PROPOSED','DONE','EXCLUDED','ARCHIVED'];
  const stateRank=s=>{const r=ORDER.indexOf(s);return r<0?ORDER.length:r;};
- // General tasks without a route to a milestone remain discoverable even when they depend on another task.
+ // Placement (OPS-095, TASK_REGISTRY_APP.md「タスク配置の要求」): outside the permanent tree, a task with any line — a task
+ // dependency or a milestone connection — belongs on the dependency map (including groups not connected to a milestone);
+ // only tasks without lines go to the independent strip. 「独立」 means no lines, not "not connected to a milestone".
+ // The version filter only hides lines and does not move a task here.
  const links=data.edges.concat(data.milestoneRelations||[]);
- const attached=new Set((data.milestones||[]).map(m=>m.id)),msIds=new Set(attached),startSide=new Set();
- for(let grew=true;grew;){grew=false;for(const e of links)if(attached.has(e.successor)&&!attached.has(e.prerequisite)){attached.add(e.prerequisite);grew=true;}}
- // Start-side work (OPS-069): tasks downstream of a version START, and their downstream task chains, belong to that version.
- for(let grew=true;grew;){grew=false;for(const e of links)if(!msIds.has(e.successor)&&!attached.has(e.successor)&&(msIds.has(e.prerequisite)||startSide.has(e.prerequisite))){  // also after an intermediate card (OPS-084)
- attached.add(e.successor);startSide.add(e.successor);grew=true;}}
+ const used=new Set(links.flatMap(e=>[e.successor,e.prerequisite]));
  const permanentIds=new Set(data.tasks.filter(t=>t.permanent).map(t=>t.id));
  // Sub-tasks at any depth under a permanent task are drawn in the permanent map (2026-10-17, OPS-070 children).
  const byId=new Map(data.tasks.map(t=>[t.id,t]));
  const underPermanent=t=>{const seen=new Set();for(let p=t.parentTask;p&&!seen.has(p);p=byId.get(p)?.parentTask){if(permanentIds.has(p))return true;seen.add(p);}return false;};
- const regular=data.tasks.filter(t=>!t.permanent&&!attached.has(t.id)&&!underPermanent(t));
- const used=new Set(links.flatMap(e=>[e.successor,e.prerequisite]));
- // Task proposals (OPS-081) without a route to a milestone follow the regular tasks.
- const proposals=(typeof proposalNodes==='function'?proposalNodes(data):[]).filter(p=>!attached.has(p.id));
+ const regular=data.tasks.filter(t=>!t.permanent&&!used.has(t.id)&&!underPermanent(t));
+ // Task proposals (OPS-081) follow the same rule.
+ const proposals=(typeof proposalNodes==='function'?proposalNodes(data):[]).filter(p=>!used.has(p.id));
  return {regular:regular.sort((a,b)=>stateRank(a.state)-stateRank(b.state)).concat(proposals),permanent:data.tasks.filter(t=>t.permanent&&!used.has(t.id))};
 }
 function independent(){

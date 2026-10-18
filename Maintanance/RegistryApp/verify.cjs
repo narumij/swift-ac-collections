@@ -64,7 +64,10 @@ vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexO
 vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,groups.regular.length+groups.permanent.length);
 const discoveryFixture={tasks:[{id:'ROOT',permanent:true},{id:'POLICY',parentTask:'ROOT'},{id:'NESTED',parentTask:'POLICY'},{id:'WORK'},{id:'LINKED'}],edges:[{prerequisite:'POLICY',successor:'WORK'}],milestones:[{id:'END-test'}],milestoneRelations:[{prerequisite:'LINKED',successor:'END-test'}]};
 // NESTED is a sub-task of a sub-task: it is drawn in the permanent map, not the regular list (2026-10-17).
-assert.deepEqual(Array.from(ctx.independentGroups(discoveryFixture).regular,t=>t.id),['WORK']);
+// WORK depends on POLICY: since OPS-095 a task with any line belongs on the dependency map, so the strip is empty here
+// (the earlier expectation ['WORK'] followed the superseded "no route to a milestone" rule).
+assert.deepEqual(Array.from(ctx.independentGroups(discoveryFixture).regular,t=>t.id),[]);
+{const lone={...discoveryFixture,tasks:[...discoveryFixture.tasks,{id:'ALONE'}]};assert.deepEqual(Array.from(ctx.independentGroups(lone).regular,t=>t.id),['ALONE'],'only a task without lines goes to the strip');}
 discoveryFixture.milestoneRelations.push({prerequisite:'WORK',successor:'END-test'});assert.equal(ctx.independentGroups(discoveryFixture).regular.length,0);
 console.log('PASS: independent regular/permanent partition, no omissions or duplicates.');
 

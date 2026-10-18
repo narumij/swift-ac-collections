@@ -994,7 +994,7 @@ function createActivityView(track,status,makeNode,getActive=()=>null,current=nul
     if(track.children[index]!==node)track.insertBefore(node,track.children[index]||null);
    });
    if(follow)track.scrollLeft=track.scrollWidth;else if(anchor)track.scrollLeft+=anchor.node.getBoundingClientRect().left-track.getBoundingClientRect().left-offset;else track.scrollLeft=oldLeft;
-   if(current){const latest=rows.at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
+   if(current){const latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
    first=false;set(status,rows.length?'': '記録なし');status.dataset.stale='false';
   },
   failure(){set(status,'取得不調 · 最終情報を保持');status.dataset.stale='true';}

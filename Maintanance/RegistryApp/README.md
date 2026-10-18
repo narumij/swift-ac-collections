@@ -384,3 +384,8 @@ repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT
 固定APIは `GET /commit-approvals` とユーザー操作の `POST /commit-approvals`（`approve` / `cancel`、ID+revision集合）です。保存は `Approvals/` 内のSQLiteで、sync・再起動・commitで消しません。CLIには承認操作やcommit等のGit変更機能を設けません。読み取りで実commitの対応を照合します。契約の正本は[コミット事前承認レーン](../Current/COMMIT_PREAPPROVAL_LANE.md)です。新しいAPIを使うにはサーバーの手動再起動とHTMLの生成・ページ再読込が必要です。
 
 限定検証：`node Maintanance/RegistryApp/test-approvals.cjs`（独立した疑似DOM・通信でクリック対象固定、競合・取得失敗、古い応答、非表示・タイムアウト、フォーカス保持を確認）。実際の依頼・承認は試験で作成しません。
+
+
+### 現在作業の疎通除外（2026-10-19）
+
+現在作業の文字帯は、最近の作業と同じ専用PING/WAKE・ACK判定で疎通を除き、最後の実務イベントを表示する。疎通の履歴カードは残す。疎通しかない取得範囲では「未登録」と表示し、ACKを姫の作業中とは扱わない。

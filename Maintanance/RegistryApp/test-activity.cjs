@@ -2,7 +2,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const html=fs.readFileSync(__dirname+'/index.template.html','utf8');
 const source=html.slice(html.indexOf('const activityLabels='),html.indexOf('function startActivityTimelines('));
-const c={};vm.createContext(c);vm.runInContext(source,c);
+const c={};vm.createContext(c);vm.runInContext(source+'\n'+html.slice(html.indexOf('function isProbeEvent('),html.indexOf('function workLaneItems(')),c);
 const event=(n,kind='return')=>({schemaVersion:1,id:n.toString(16).padStart(32,'0'),taskId:'OPS-111',event:kind,owner:'<img src=x onerror=alert(1)>',timestamp:'2026-10-18T12:00:00Z',reason:'repeat '+n,commitSha:'a'.repeat(40)});
 const rows=ns=>c.validateActivityRows(ns.map(n=>event(n)),'events');
 assert.equal(rows([1,2]).length,2);
@@ -42,6 +42,23 @@ class Node{
  active=track.children[5];const old=track.scrollLeft;view.update(rows([2,3,4,5,6,7,8,9]));assert.equal(track.scrollLeft,old,'focused card inhibits follow');
  const detailBefore=current.detail.textContent;view.failure();assert.equal(current.detail.textContent,detailBefore,'failure retains latest detail');assert(status.textContent.includes('最終情報を保持'));assert.equal(track.children.length,8);
  view.update(rows([2,3,4,5,6,7,8,9]));assert.equal(status.dataset.stale,'false');
+}
+// WAKE/ACK remain in history but must not replace the most recent real work.
+{
+ const track=new Node('track'),status=new Node('status');
+ const current={heading:new Node('heading'),detail:new Node('detail')};
+ const view=c.createActivityView(track,status,t=>new Node(t),()=>null,current);
+ const real={...event(20,'commit'),reason:'受入済みをコミット'};
+ const wake={...event(21,'request'),reason:'WAKE-20261019-A：会話へ戻る'};
+ const ack={...event(22,'work'),reason:'ACK WAKE-20261019-A：待機終了'};
+ view.update(c.validateActivityRows([real,wake,ack],'events'));
+ assert(current.heading.textContent.endsWith('コミット'));
+ assert.equal(track.children.length,3,'probe history retained');
+ view.update(c.validateActivityRows([wake,ack],'events'));
+ assert.equal(current.heading.textContent,'現在の作業：未登録','probe-only window has no real work');
+ const mention={...event(23,'work'),reason:'WAKE-20261019-Aの判定を修正'};
+ view.update(c.validateActivityRows([mention],'events'));
+ assert(current.heading.textContent.endsWith('作業'),'ordinary mention is real work');
 }
 async function main(){
  let hidden=false,calls=0,pending,last,failed=0,aborts=0,id=0;

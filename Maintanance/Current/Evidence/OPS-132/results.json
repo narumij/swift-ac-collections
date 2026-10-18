@@ -1,0 +1,410 @@
+{
+ "wide": {
+  "viewport": [
+   1400,
+   900
+  ],
+  "lane": {
+   "top": 200,
+   "left": 28,
+   "w": 1344,
+   "h": 289
+  },
+  "track": {
+   "top": 261,
+   "left": 41,
+   "w": 1318,
+   "h": 138
+  },
+  "graph": {
+   "top": 638,
+   "left": 47,
+   "w": 1306,
+   "h": 1265
+  },
+  "controls": [
+   {
+    "s": "#versionPicker",
+    "top": 599,
+    "left": 64,
+    "w": 167,
+    "h": 20
+   },
+   {
+    "s": ".graph-help > summary",
+    "top": 602,
+    "left": 247,
+    "w": 91,
+    "h": 15
+   },
+   {
+    "s": "#graphZoomOut",
+    "top": 591,
+    "left": 354,
+    "w": 37,
+    "h": 37
+   },
+   {
+    "s": "#graphHoverEnabled",
+    "top": 603,
+    "left": 522,
+    "w": 12,
+    "h": 12
+   }
+  ],
+  "controlsBox": {
+   "top": 591,
+   "left": 47,
+   "w": 1306,
+   "h": 37
+  },
+  "topmostGraphCard": 694,
+  "cards": [
+   {
+    "id": "OPS-906 · 返却・受入待ち",
+    "next": "次：Reviewer-とても長い担当名とても長い担当名とても長い担当名とても長い担当名 Long English Owner Name",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": true,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-906 · 返却・受入待ち",
+     "次：Reviewer-とても長い担当名とても長い担当名とても長い担当名とても長い担当名 Long English Owner Name",
+     "姫 · 10/19 10:00:07 · 長い担当名の返却",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-905 · Fable検討中",
+    "next": "次：不明",
+    "kind": "unknown",
+    "colour": "rgb(101, 116, 119)",
+    "weight": "400",
+    "left": "rgb(184, 204, 192)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-905 · Fable検討中",
+     "次：不明",
+     "Fable · 10/19 10:00:06 · 検討中：別件",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-904 · 受入済み",
+    "next": "この仕事は終了",
+    "kind": "ended",
+    "colour": "rgb(79, 91, 87)",
+    "weight": "700",
+    "left": "rgb(154, 166, 162)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-904 · 受入済み",
+     "この仕事は終了",
+     "Astra · 10/19 10:00:05 · 受入",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-903 · コミット待ち",
+    "next": "次：ユーザー（承認待ち）",
+    "kind": "approval",
+    "colour": "rgb(192, 57, 43)",
+    "weight": "700",
+    "left": "rgb(192, 57, 43)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-903 · コミット待ち",
+     "次：ユーザー（承認待ち）",
+     "Astra · 10/19 10:00:04 · 承認待ち",
+     "Registry：不明 · 承認 待ち1 · 済み0",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-902 · 返却・受入待ち",
+    "next": "次：Astra",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-902 · 返却・受入待ち",
+     "次：Astra",
+     "姫 · 10/19 10:00:03 · 返却",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-901 · 依頼済み",
+    "next": "次：姫",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-901 · 依頼済み",
+     "次：姫",
+     "Astra · 10/19 10:00:01 · UI確認の依頼",
+     "Registry：不明 · 承認なし",
+     "依頼 10/19 10:00:01"
+    ],
+    "titleHasAll": true
+   }
+  ],
+  "errors": [],
+  "helpOpen": {
+   "open": true,
+   "width": 1306,
+   "rowWidth": 1306,
+   "belowZoom": true
+  }
+ },
+ "version": {
+  "options": 10,
+  "value": "@head",
+  "expected": "@head",
+  "focus": "versionPicker"
+ },
+ "keyboardOrder": [
+  "summary",
+  "graphZoomOut",
+  "graphZoomReset",
+  "graphZoomIn",
+  "graphHoverEnabled"
+ ],
+ "zoom": {
+  "label": "125%",
+  "focus": "graphZoomIn"
+ },
+ "hoverOff": true,
+ "inputKept": true,
+ "laneAfterPoll": 7,
+ "narrow": {
+  "viewport": [
+   390,
+   844
+  ],
+  "lane": {
+   "top": 227,
+   "left": 12,
+   "w": 366,
+   "h": 334
+  },
+  "track": {
+   "top": 333,
+   "left": 25,
+   "w": 340,
+   "h": 138
+  },
+  "graph": {
+   "top": 731,
+   "left": 31,
+   "w": 328,
+   "h": 1265
+  },
+  "controls": [
+   {
+    "s": "#versionPicker",
+    "top": 656,
+    "left": 48,
+    "w": 167,
+    "h": 20
+   },
+   {
+    "s": ".graph-help > summary",
+    "top": 658,
+    "left": 231,
+    "w": 91,
+    "h": 15
+   },
+   {
+    "s": "#graphZoomOut",
+    "top": 684,
+    "left": 31,
+    "w": 37,
+    "h": 37
+   },
+   {
+    "s": "#graphHoverEnabled",
+    "top": 696,
+    "left": 199,
+    "w": 12,
+    "h": 12
+   }
+  ],
+  "controlsBox": {
+   "top": 656,
+   "left": 31,
+   "w": 328,
+   "h": 65
+  },
+  "topmostGraphCard": 787,
+  "cards": [
+   {
+    "id": "OPS-907 · 依頼済み",
+    "next": "次：姫",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-907 · 依頼済み",
+     "次：姫",
+     "Astra · 10/19 10:00:08 · 新しい依頼",
+     "Registry：不明 · 承認なし",
+     "依頼 10/19 10:00:08"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-906 · 返却・受入待ち",
+    "next": "次：Reviewer-とても長い担当名とても長い担当名とても長い担当名とても長い担当名 Long English Owner Name",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": true,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-906 · 返却・受入待ち",
+     "次：Reviewer-とても長い担当名とても長い担当名とても長い担当名とても長い担当名 Long English Owner Name",
+     "姫 · 10/19 10:00:07 · 長い担当名の返却",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-905 · Fable検討中",
+    "next": "次：不明",
+    "kind": "unknown",
+    "colour": "rgb(101, 116, 119)",
+    "weight": "400",
+    "left": "rgb(184, 204, 192)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-905 · Fable検討中",
+     "次：不明",
+     "Fable · 10/19 10:00:06 · 検討中：別件",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-904 · 受入済み",
+    "next": "この仕事は終了",
+    "kind": "ended",
+    "colour": "rgb(79, 91, 87)",
+    "weight": "700",
+    "left": "rgb(154, 166, 162)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-904 · 受入済み",
+     "この仕事は終了",
+     "Astra · 10/19 10:00:05 · 受入",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-903 · コミット待ち",
+    "next": "次：ユーザー（承認待ち）",
+    "kind": "approval",
+    "colour": "rgb(192, 57, 43)",
+    "weight": "700",
+    "left": "rgb(192, 57, 43)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-903 · コミット待ち",
+     "次：ユーザー（承認待ち）",
+     "Astra · 10/19 10:00:04 · 承認待ち",
+     "Registry：不明 · 承認 待ち1 · 済み0",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-902 · 返却・受入待ち",
+    "next": "次：Astra",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-902 · 返却・受入待ち",
+     "次：Astra",
+     "姫 · 10/19 10:00:03 · 返却",
+     "Registry：不明 · 承認なし",
+     "開始：不明"
+    ],
+    "titleHasAll": true
+   },
+   {
+    "id": "OPS-901 · 依頼済み",
+    "next": "次：姫",
+    "kind": "known",
+    "colour": "rgb(47, 109, 181)",
+    "weight": "700",
+    "left": "rgb(47, 109, 181)",
+    "nextLines": 0,
+    "nextClipped": false,
+    "cardOverflow": false,
+    "lines": [
+     "OPS-901 · 依頼済み",
+     "次：姫",
+     "Astra · 10/19 10:00:01 · UI確認の依頼",
+     "Registry：不明 · 承認なし",
+     "依頼 10/19 10:00:01"
+    ],
+    "titleHasAll": true
+   }
+  ],
+  "errors": [],
+  "helpOpen": {
+   "open": true,
+   "width": 328,
+   "rowWidth": 328,
+   "belowZoom": true
+  }
+ },
+ "blockedPosts": []
+}

@@ -113,6 +113,7 @@
 | `OPS-129` | `DONE` | 姫（実装） / Astra（受入・観察） | [EXECUTION] 参照つき返却経路を実装し自然な返却3回で試行する | 限定実装と自然な3返却を確認。経路維持、通知後追記の行き違いを通信規約へ反映。長期効果は未断定 | `Maintanance/Current/STUDIO_OPERATION_REVIEW.md` |
 | `OPS-130` | `DONE` | Astra | [EXECUTION] 二系統の通信規約初版を記述する | 2026-10-19初版作成、姫の運用照合5点を反映。二経路・疎通・切替・改訂を記述。未実装保証は分離 | `Maintanance/Current/COMMUNICATION_PROTOCOL.md` |
 | `OPS-131` | `DONE` | 姫（実装） / Astra（受入） | [EXECUTION] Studioサーバーを動作維持で整理する | 2026-10-19責務分離をAstra受入。隔離HTTP含む関連20試験通過。既存timeout等の別件は正本に保持。実サーバー操作なし | `Maintanance/Current/STUDIO_SERVER_REFACTOR.md` |
+| `OPS-132` | `DONE` | Astra（調整・受入） / 姫（観察・実装） | [EXECUTION] Studio UI改善2周目 | 2026-10-19ユーザー連続作業依頼。現状確認から可逆な表示改善を限定実施。保存/承認契約とグラフ規則は維持 | `Maintanance/Current/STUDIO_UI_ROUND2.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
 | `OPS-124` | `DONE` | Astra | [EXECUTION] 作業イベントカードに担当名を表示する | タスクID・担当・工程を併記。表示のみ | `Maintanance/Current/STUDIO_ACTIVITY_OWNER.md` |
@@ -425,6 +426,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-129` |
 | `OPS-048` | `OPS-130` |
 | `OPS-048` | `OPS-131` |
+| `OPS-048` | `OPS-132` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

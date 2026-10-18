@@ -1,0 +1,178 @@
+{
+ "wide": {
+  "viewport": [
+   1400,
+   900
+  ],
+  "header": {
+   "top": 0,
+   "left": 0,
+   "w": 1400,
+   "h": 55
+  },
+  "headerRow": {
+   "top": 12,
+   "left": 28,
+   "w": 1344,
+   "h": 31
+  },
+  "title": {
+   "top": 16,
+   "left": 28,
+   "w": 136,
+   "h": 23
+  },
+  "toolbar": {
+   "top": 12,
+   "left": 874,
+   "w": 498,
+   "h": 31
+  },
+  "headerInfo": {
+   "top": 55,
+   "left": 0,
+   "w": 1400,
+   "h": 133
+  },
+  "lane": {
+   "top": 200,
+   "left": 28,
+   "w": 1344,
+   "h": 257
+  },
+  "tabs": {
+   "top": 491,
+   "left": 28,
+   "w": 1344,
+   "h": 37
+  },
+  "graph": {
+   "top": 691,
+   "left": 47,
+   "w": 1306,
+   "h": 1265
+  },
+  "firstGraphCardTop": 1013,
+  "cards": [
+   {
+    "text": "OPS-905 · Fable検討中 Fable · 10/19 10:00:06 · 検討中：別件 次：不明 · Registry：不明 · 承認なし 開始：不明",
+    "next": "unknown",
+    "left": "rgb(184, 204, 192)"
+   },
+   {
+    "text": "OPS-904 · 受入済み Astra · 10/19 10:00:05 · 受入 この仕事は終了 · Registry：不明 · 承認なし 開始：不明",
+    "next": "ended",
+    "left": "rgb(154, 166, 162)"
+   },
+   {
+    "text": "OPS-903 · コミット待ち Astra · 10/19 10:00:04 · 承認待ち 次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0 開",
+    "next": "approval",
+    "left": "rgb(192, 57, 43)"
+   },
+   {
+    "text": "OPS-902 · 返却・受入待ち 姫 · 10/19 10:00:03 · 返却 次：Astra · Registry：不明 · 承認なし 開始：不明",
+    "next": "known",
+    "left": "rgb(47, 109, 181)"
+   },
+   {
+    "text": "OPS-901 · 依頼済み Astra · 10/19 10:00:01 · UI確認の依頼 次：姫 · Registry：不明 · 承認なし 依頼 10/19 10:00:01",
+    "next": "known",
+    "left": "rgb(47, 109, 181)"
+   }
+  ],
+  "lamps": [
+   "Fable：不明",
+   "Astra：不明",
+   "姫：不明"
+  ],
+  "errors": []
+ },
+ "narrow": {
+  "viewport": [
+   390,
+   844
+  ],
+  "header": {
+   "top": 0,
+   "left": 0,
+   "w": 390,
+   "h": 58
+  },
+  "headerRow": {
+   "top": 12,
+   "left": 12,
+   "w": 366,
+   "h": 34
+  },
+  "title": {
+   "top": 16,
+   "left": 12,
+   "w": 136,
+   "h": 23
+  },
+  "toolbar": {
+   "top": 12,
+   "left": 172,
+   "w": 498,
+   "h": 31
+  },
+  "headerInfo": {
+   "top": 58,
+   "left": 0,
+   "w": 390,
+   "h": 159
+  },
+  "lane": {
+   "top": 227,
+   "left": 12,
+   "w": 366,
+   "h": 302
+  },
+  "tabs": {
+   "top": 553,
+   "left": 12,
+   "w": 366,
+   "h": 40
+  },
+  "graph": {
+   "top": 756,
+   "left": 31,
+   "w": 328,
+   "h": 1265
+  },
+  "firstGraphCardTop": 1078,
+  "cards": [
+   {
+    "text": "OPS-905 · Fable検討中 Fable · 10/19 10:00:06 · 検討中：別件 次：不明 · Registry：不明 · 承認なし 開始：不明",
+    "next": "unknown",
+    "left": "rgb(184, 204, 192)"
+   },
+   {
+    "text": "OPS-904 · 受入済み Astra · 10/19 10:00:05 · 受入 この仕事は終了 · Registry：不明 · 承認なし 開始：不明",
+    "next": "ended",
+    "left": "rgb(154, 166, 162)"
+   },
+   {
+    "text": "OPS-903 · コミット待ち Astra · 10/19 10:00:04 · 承認待ち 次：ユーザー（承認待ち） · Registry：不明 · 承認 待ち1 · 済み0 開",
+    "next": "approval",
+    "left": "rgb(192, 57, 43)"
+   },
+   {
+    "text": "OPS-902 · 返却・受入待ち 姫 · 10/19 10:00:03 · 返却 次：Astra · Registry：不明 · 承認なし 開始：不明",
+    "next": "known",
+    "left": "rgb(47, 109, 181)"
+   },
+   {
+    "text": "OPS-901 · 依頼済み Astra · 10/19 10:00:01 · UI確認の依頼 次：姫 · Registry：不明 · 承認なし 依頼 10/19 10:00:01",
+    "next": "known",
+    "left": "rgb(47, 109, 181)"
+   }
+  ],
+  "lamps": [
+   "Fable：不明",
+   "Astra：不明",
+   "姫：不明"
+  ],
+  "errors": []
+ }
+}

@@ -325,7 +325,11 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  for(const x of [...original.tasks,...original.milestones])for(const p of ctx.cardDocumentPaths(x,bundle))assert(bundle.files[p],'only bundled documents: '+p);
  assert.deepEqual(ctx.cardDocumentPaths({id:'X',detail:'Maintanance/Current/NO_SUCH_DOCUMENT.md'},bundle),[],'missing document not linked');
  assert.deepEqual(ctx.cardDocumentPaths(ctx.proposalNodes(r.data)[0],bundle),[],'proposal has no document');
- const multi=original.tasks.find(t=>ctx.cardDocumentPaths(t,bundle).length>1);assert(multi,'some task has several documents');
+ // Exercise multiple documents independently of the current Registry contents.
+ const fixturePaths=['Maintanance/Current/FIXTURE_A.md','Maintanance/Current/FIXTURE_B.md'];
+ const fixtureBundle={files:Object.fromEntries(fixturePaths.map(p=>[p,{}]))};
+ const fixtureTask={id:'FIXTURE-001',detail:[...fixturePaths,fixturePaths[0],'Maintanance/Current/FIXTURE_MISSING.md'].join(' / ')};
+ assert.deepEqual(Array.from(ctx.cardDocumentPaths(fixtureTask,fixtureBundle)),fixturePaths,'multiple bundled documents retained once, missing document excluded');
  console.log('PASS: card list covers every task, milestone and proposal once, in their groups; only bundled documents are linked (single, several, none, proposal).');}
 // Milestone plan in the edit version (OPS-086): reorder, move, rename/condition, add card, add version; IDs and task lines stay.
 {const base=copy(original);base.baseline.milestones=copy(original.milestones);const chain=(d,v)=>expectedMilestoneChains(d).find(c=>c.version===v).chain;

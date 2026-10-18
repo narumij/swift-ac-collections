@@ -436,3 +436,16 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  c.planDraftPending=()=>true;c.renderCanonicalRestartSuggestion();assert(notice.hidden);c.planDraftPending=()=>false;c.workspace=null;c.renderCanonicalRestartSuggestion();assert(notice.hidden);
  console.log('PASS: canonical restart suggestion requires reflected edits; partial/missing/proposal/unsaved/input states are suppressed.');
 }
+
+// Display zoom is independent of editable data and keeps the SVG viewBox intact.
+{const attrs={viewBox:'0 0 1200 600'},svg={getAttribute:k=>attrs[k],setAttribute:(k,v)=>attrs[k]=v};
+ const controls={graph:{querySelector:()=>svg,scrollLeft:300,scrollTop:0,clientWidth:400,clientHeight:200},graphZoomOut:{},graphZoomIn:{},graphZoomReset:{},graphHoverEnabled:{checked:true},graphTip:{hidden:false}};
+ const z={$:id=>controls[id],doc:copy(original)};vm.createContext(z);const before=JSON.stringify(z.doc);
+ vm.runInContext(script.slice(script.indexOf('let graphZoom=100;'),script.indexOf('function field(')),z);
+ z.applyGraphZoom();assert.equal(attrs.width,1200);controls.graphZoomOut.onclick();assert.equal(attrs.width,900);assert.equal(attrs.height,450);assert.equal(controls.graph.scrollLeft,175);assert.equal(controls.graphZoomReset.textContent,'75%');
+ controls.graphZoomIn.onclick();assert.equal(attrs.width,1200);assert.equal(controls.graph.scrollLeft,300);
+ z.setGraphZoom(-100);assert.equal(attrs.width,300);assert(controls.graphZoomOut.disabled);z.setGraphZoom(999);assert.equal(attrs.width,2400);assert(controls.graphZoomIn.disabled);
+ controls.graphZoomReset.onclick();assert.equal(attrs.width,1200);assert.equal(controls.graphZoomReset.textContent,'100%');assert(!controls.graphZoomOut.disabled&&!controls.graphZoomIn.disabled);
+ z.setGraphZoom(50);z.applyGraphZoom();assert.equal(attrs.width,600);assert.equal(attrs.viewBox,'0 0 1200 600');assert.equal(JSON.stringify(z.doc),before);assert(controls.graphTip.hidden);
+ assert(script.includes("replaceChildren(s);applyGraphZoom();"),'redraw preserves zoom');
+ console.log('PASS: display zoom bounds, reset, dimensions, scroll anchor and unchanged document.');}

@@ -31,7 +31,7 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
-OPS-101第1回：判断の出どころ分類、3項目の読取試行。下記依頼を姫へ受渡し。第2・3回は未発注。
+OPS-101：第1〜3回をAstra受入済み。限定依頼は終了、結果をOPS-099へ接続。ユーザーcommit承認によりDONE。追加調査・キャッシュ変更の依頼なし。
 
 OPS-100：Astraが助言として受入済み。OPS-099へ整理を接続、ユーザーcommit承認によりDONE・依頼終了。試行・キャッシュ変更の追加依頼なし。
 
@@ -328,3 +328,15 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 ## OPS-101 第1回：判断の出どころの3項目分類
 
 [正本の第1回正式依頼](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md)に従い、STUDIO_LAYOUTの指定3項目だけを照合し、同書第1回Returnへ記入してください。コピー・オリジナル・出典未確認を区別し、証拠と感想を分ける。分類を揃えるノルマなし。指定回答欄を姫へ委任。キャッシュ・他正本・Registry・コード変更、commitなし。返却後は次回依頼まで停止。
+
+## OPS-101 第2回：別の3項目で分類の境界を確認
+
+[正本の第2回正式依頼](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md)に従い、指定3項目を照合して第2回Returnへ記入してください。出どころと情報の種類、固定版の根拠と現在の有効性を分け、参照キャッシュ一行記録も試してください。指定回答欄を姫へ委任。キャッシュ補修・他正本・Registry・コード変更・commitなし。返却後停止。
+
+## OPS-101 第3回：分類試行の結果整理
+
+[正本の第3回正式依頼](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md)に従い、既存のReturnと受入補正だけから最大1ページ程度に整理してください。新しい調査は不要。第3回Returnを姫へ委任。キャッシュ・他正本・Registry・コード変更・commitなし。返却後停止。
+
+## OPS-101 — 全3回受入・依頼終了（2026-10-18 / Astra）
+
+[正本の総括](Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md#第3回-astra受入試行の総括2026-10-18)に従い限定試行を受入。原Returnを保持し、退避・復元は未試験と明記してOPS-099へ接続した。追加作業なし、ユーザーcommit承認によりDONE。

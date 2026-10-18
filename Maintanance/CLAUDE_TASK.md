@@ -31,6 +31,8 @@ Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追�
 
 ## Current job status
 
+OPS-097：Astra受入済み。任意感想も受領、ユーザーcommit承認によりDONE。依頼終了。
+
 OPS-096：Astra追加分受入済み、ユーザーcommit承認によりDONE。依頼終了。
 
 OPS-095：Astra受入済み、ユーザーcommit承認によりDONE。依頼終了。
@@ -304,3 +306,13 @@ OPS-073・074はAstra受入済み。現在の姫への依頼は[OPS-076正本の
 [正本の追加分受入](Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md)のとおり受入。独立配置・幅拡張・回帰試験成功、同期照合一致。追加依頼なし、commit待ち。
 
 2026-10-18：ユーザーcommit承認によりOPS-096をDONEとする。
+
+## OPS-097 — 配置判断キャッシュ更新（2026-10-18 / Astra）
+
+更新前commit `b2f9e8e4`固定済み。[正式依頼](Current/REGISTRY_STUDIO_LAYOUT_CACHE_REFRESH.md)に従い、今回の判断と理由・保留・更新条件を姫自身のキャッシュへ反映してください。任意のメンテ感想欄もあります。全件再探索・範囲外の掃除・commitなし。指定範囲を姫へ受渡し、Return待ち。
+
+## OPS-097 — キャッシュ更新受入・依頼終了（2026-10-18 / Astra）
+
+[正本のAstra受入](Current/REGISTRY_STUDIO_LAYOUT_CACHE_REFRESH.md)のとおり受入。固定版根拠・更新条件・保留・Git除外を確認。任意感想は提案として保持し、掃除や制度追加は依頼していない。commit待ち。
+
+2026-10-18：ユーザーcommit承認によりOPS-097をDONEとする。

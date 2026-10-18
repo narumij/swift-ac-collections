@@ -47,10 +47,11 @@ header{position:sticky;top:0;z-index:20;padding:12px 28px}.header-info{backgroun
 .work-lane .work-card[data-next="ended"] .work-next{color:#4f5b57}
 .work-lane .work-card[data-next="unknown"] .work-next{font-weight:400;color:var(--muted)}.work-lane .work-card[data-next="approval"]{border-left-color:#c0392b}.work-lane .work-card[data-next="known"]{border-left-color:#2f6db5}.work-lane .work-card[data-next="ended"]{border-left-color:#9aa6a2;background:#f4f6f5}.presence-lamps{display:inline-flex;flex-wrap:wrap;gap:4px 10px}.presence-lamp{font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid transparent}.presence-lamp::before{content:"";display:inline-block;width:8px;height:8px;margin-right:4px;border:1.5px dashed #9aa6a2;vertical-align:middle}.presence-lamp[data-state="waiting"]::before{border:1.5px solid #2f6db5}.presence-lamp[data-state="ended"]::before{border:1.5px solid #6b7672;background:#6b7672}.presence-lamp[data-fresh="true"]{border-color:#2f6db5;animation:lamp-glow 1.2s ease-out 1}@keyframes lamp-glow{from{background:#dbe8f8}to{background:transparent}}@media(prefers-reduced-motion:reduce){.presence-lamp[data-fresh="true"]{animation:none}}.presence-lamps[data-stale="true"]{color:#a44e1d}.work-lane .approval-lane{margin:8px 0 0}.work-card span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.work-card[data-stage="相談待ち"]{border-color:#bb8b32}.work-card[data-stage="記録コミット済み"],.work-card[data-stage="作業区切り"]{background:#f7f7f4}#approval-detail{max-height:65vh;overflow:auto}#approval-dialog h2{font-size:16px}@media(max-width:600px){.approval-lane{margin:10px 12px 0}}
 @media(max-width:600px){header .header-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}header h1,header .toolbar>*{flex:0 0 auto;white-space:nowrap}header .toolbar{flex-wrap:nowrap}.buttons[role=tablist]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:3px}.buttons[role=tablist]>button{flex:0 0 auto;white-space:nowrap}header .header-row :focus-visible{outline:2px solid #f0c75e;outline-offset:-3px}.buttons[role=tablist]>button:focus-visible{outline:2px solid #126c58;outline-offset:-3px}}
+.header-approval{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-top:7px;font-size:12px}.header-approval button{padding:4px 8px;font-size:11px}
 </style>
 <div id="canonicalRestartNotice" role="status" hidden style="background:#e5f3e9;color:#234e36;padding:10px 20px;border-bottom:1px solid #b5d5be">保存した編集内容が正本に反映されています。正本から新しく始めるのがおすすめです。 <button id="canonicalRestartAction">正本から新しく始める</button></div>
 <div id="serverRestartNotice" role="status" hidden style="background:#fff1c2;color:#593c00;padding:12px 20px;border-bottom:1px solid #d5b95c"></div>
-<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header><section class="header-info" aria-label="作業の状況"><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section class="activity-current" aria-label="現在の作業詳細"><div id="activity-current-heading">現在の作業：読み込み待ち</div><div id="activity-current-detail">担当・時刻・詳細をここに表示します</div></section><section class="activity-timelines" aria-label="作業イベントの履歴"><div class="activity-row"><div class="activity-label"><small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div></section></section>
+<header><div class="header-row"><h1>Registry Studio</h1><div class="toolbar"><label class="file">JSONを開く<input id="open" type="file" accept=".json,application/json"></label><button id="save" class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh" title="ローカルサーバーでJSONを再生成します">更新</button><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button></div></div><div class="header-approval" aria-label="コミット事前承認"><span>コミット事前承認：<span id="header-approval-status">読み込み待ち</span></span><button type="button" id="header-approval-all" disabled>表示中の未承認0件を承認</button></div><details id="canonicalNotice" hidden><summary id="canonicalSummary"></summary><p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p><pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre><p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p></details></header><section class="header-info" aria-label="作業の状況"><p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p><section class="activity-current" aria-label="現在の作業詳細"><div id="activity-current-heading">現在の作業：読み込み待ち</div><div id="activity-current-detail">担当・時刻・詳細をここに表示します</div></section><section class="activity-timelines" aria-label="作業イベントの履歴"><div class="activity-row"><div class="activity-label"><small id="activity-events-status" role="status">読み込み待ち</small></div><div id="activity-events" class="activity-track" aria-label="作業イベント（古い順）" tabindex="0"></div></div></section></section>
 <section class="approval-lane work-lane" aria-label="最近の作業とコミット事前承認"><div class="approval-heading"><h2>最近の作業</h2><span id="work-lane-status" role="status">読み込み待ち</span><span id="presence-lamps" class="presence-lamps" role="status" aria-label="担当ごとの在席（新しい連絡があった担当は短く「新着」）"></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status" role="status">読み込み待ち</span></span><button type="button" id="approval-all" disabled>表示中の未承認0件を承認</button></div><p class="approval-policy" title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの並行した依頼は区別しません。疎通確認（PING・WAKE・ACK）は工程に数えません。">直近200件の活動＋未完の承認から（全taskの現在地ではありません · 正式な状態はRegistry · 同じtaskの並行依頼は区別しません）</p><div id="work-lane-track" class="approval-track" aria-label="最近の作業（新しい順）" tabindex="0"></div><details id="approval-details"><summary>コミット事前承認の詳細（個別の承認・取消・履歴）</summary><p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="approval-history-summary">使用・取消の履歴（0件）</summary><div id="approval-history" class="approval-history"></div></details></details><details id="work-lane-help"><summary>作業カードの色の説明</summary><p class="approval-policy work-lane-legend">カードの左の線：赤＝承認待ち（最優先。上の承認信号の🔴と同じ意味）・青＝次の担当あり・灰＝この仕事は終了・薄い線＝次は不明</p></details><details class="approval-lane" id="probe-panel"><summary>疎通確認（動作確認専用）</summary><div class="approval-heading"><h2>疎通確認</h2><strong id="probe-result" aria-live="polite">まだ処理されていません</strong><span id="probe-status" role="status">読み込み待ち</span><button type="button" id="probe-all" disabled>表示中の未承認0件を承認</button></div><p id="probe-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p><div id="probe-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div><details><summary id="probe-history-summary">使用・取消の履歴（0件）</summary><div id="probe-history" class="approval-history"></div></details></details></section>
 <dialog id="approval-dialog" aria-labelledby="approval-dialog-title"><h2 id="approval-dialog-title">コミット依頼の詳細</h2><pre id="approval-detail" tabindex="0"></pre><button type="button" id="approval-close">閉じる</button></dialog>
 <dialog id="probe-dialog" aria-labelledby="probe-dialog-title"><h2 id="probe-dialog-title">疎通ジョブの詳細</h2><pre id="probe-detail" tabindex="0"></pre><button type="button" id="probe-close">閉じる</button></dialog>
@@ -1173,8 +1174,11 @@ function createApprovalController({fetchRecord,view,isHidden,schedule,cancel,mak
  function visibility(){clear();generation++;fresh=false;if(getController)getController.abort();availability();if(!isHidden())poll();}
  return {poll,act,visibility};
 }
-function createApprovalView({track,history,historySummary,status,policy,all,dialog,detail,close,makeNode,signals=false}){
+function createApprovalView({track,history,historySummary,status,policy,all,dialog,detail,close,makeNode,signals=false,extraStatuses=[],extraAllButtons=[]}){
  const cards=new Map();let rows=[],enabled=false,busy=false,action=()=>{},inspected=null;
+ const statuses=[status,...extraStatuses],allButtons=[all,...extraAllButtons];
+ const setStatus=text=>statuses.forEach(node=>{if(node.textContent!==text)node.textContent=text;});
+ const stale=value=>statuses.forEach(node=>{node.dataset.stale=value;});
  const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
  function details(row){
   inspected=row.id;
@@ -1182,21 +1186,21 @@ function createApprovalView({track,history,historySummary,status,policy,all,dial
  }
  close.onclick=()=>dialog.close();
  function controls(){
-  const count=rows.filter(r=>r.status==='pending').length;set(all,'表示中の未承認'+count+'件を承認');all.disabled=!enabled||!count;
+  const count=rows.filter(r=>r.status==='pending').length;for(const button of allButtons){set(button,'表示中の未承認'+count+'件を承認');button.disabled=!enabled||!count;}
   for(const {row,approve,revoke} of cards.values()){
    approve.hidden=row.status!=='pending';approve.disabled=!enabled||row.status!=='pending';
    revoke.hidden=!['pending','approved','claimed'].includes(row.status);revoke.disabled=!enabled||!['pending','approved'].includes(row.status);
    set(revoke,row.status==='claimed'?'取消不可':'取消');
   }
  }
- all.onclick=()=>action('approve',rows.filter(r=>r.status==='pending').map(({id,revision})=>({id,revision})));
+ for(const button of allButtons)button.onclick=()=>action('approve',rows.filter(r=>r.status==='pending').map(({id,revision})=>({id,revision})));
  return {
   bind(fn){action=fn;},
   update(value){
    rows=value.requests;set(policy,value.policyNotice);
    const pending=rows.filter(r=>r.status==='pending').length,approved=rows.filter(r=>r.status==='approved').length,claimed=rows.filter(r=>r.status==='claimed').length;
-   set(status,signals?([pending&&'🔴 承認待ち '+pending+'件',approved&&'🟢 承認済み・Astra未処理 '+approved+'件',claimed&&'🟡 Astra処理中 '+claimed+'件'].filter(Boolean).join(' · ')||'⚪ 未処理なし'):(rows.length?'承認待ち '+pending+'件 · 承認済み '+approved+'件':'依頼なし'));
-   status.dataset.stale='false';
+   setStatus(signals?([pending&&'🔴 承認待ち '+pending+'件',approved&&'🟢 承認済み・Astra未処理 '+approved+'件',claimed&&'🟡 Astra処理中 '+claimed+'件'].filter(Boolean).join(' · ')||'⚪ 未処理なし'):(rows.length?'承認待ち '+pending+'件 · 承認済み '+approved+'件':'依頼なし'));
+   stale('false');
    const keep=new Set(rows.map(r=>r.id));for(const [id,card] of cards)if(!keep.has(id)){card.node.remove();cards.delete(id);}
    const positions=new Map([[track,0],[history,0]]),scrolls=[track.scrollLeft,history.scrollLeft,history.scrollTop];
    for(const row of rows){
@@ -1217,14 +1221,14 @@ function createApprovalView({track,history,historySummary,status,policy,all,dial
    track.scrollLeft=scrolls[0];history.scrollLeft=scrolls[1];history.scrollTop=scrolls[2];
    set(historySummary,'使用・取消の履歴（'+rows.filter(r=>['consumed','cancelled'].includes(r.status)).length+'件）');controls();
   },
-  availability(value,inProgress){enabled=value;busy=inProgress;controls();if(busy)set(status,'変更を確認中 · 操作停止中');},
-  failure(message){set(status,message);status.dataset.stale='true';}
+  availability(value,inProgress){enabled=value;busy=inProgress;controls();if(busy)setStatus('変更を確認中 · 操作停止中');},
+  failure(message){setStatus(message);stale('true');}
  };
 }
 function startCommitApprovals(){
  const status=$('approval-status');
- if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent='ローカルサーバーで表示できます';return;}
- const view=createApprovalView({track:$('approval-track'),history:$('approval-history'),historySummary:$('approval-history-summary'),status,policy:$('approval-policy'),all:$('approval-all'),dialog:$('approval-dialog'),detail:$('approval-detail'),close:$('approval-close'),makeNode:tag=>document.createElement(tag),signals:true});
+ if(location.protocol==='file:'||typeof fetch!=='function'){status.textContent=$('header-approval-status').textContent='ローカルサーバーで表示できます';return;}
+ const view=createApprovalView({track:$('approval-track'),history:$('approval-history'),historySummary:$('approval-history-summary'),status,policy:$('approval-policy'),all:$('approval-all'),dialog:$('approval-dialog'),detail:$('approval-detail'),close:$('approval-close'),makeNode:tag=>document.createElement(tag),signals:true,extraStatuses:[$('header-approval-status')],extraAllButtons:[$('header-approval-all')]});
  const laneView={update(value){view.update(value);workLaneInstance().approvals(value.requests);},failure(message){view.failure(message);workLaneInstance().approvalFailure();},availability:(value,inProgress)=>view.availability(value,inProgress),bind:fn=>view.bind(fn)};
  const controller=createApprovalController({fetchRecord:fetch,view:laneView,isHidden:()=>document.hidden,schedule:setTimeout,cancel:clearTimeout,makeController:()=>new AbortController()});
  view.bind(controller.act);document.addEventListener('visibilitychange',controller.visibility);controller.poll();

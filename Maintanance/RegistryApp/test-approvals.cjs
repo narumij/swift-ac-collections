@@ -61,3 +61,19 @@ async function main(){
  console.log('PASS: actual approval view + controller; safe complete detail, retained DOM/scroll; individual and all click snapshots; empty/stale/duplicate rejection; claimed cancellation guard; conflict/offline/timeout/recovery; late GET cannot rewind POST; no duplicate/hidden polling.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});
+
+// Header and lower lane use one view/controller, not a second polling loop.
+{
+ const nodes={};for(const key of ['track','history','historySummary','status','policy','all','dialog','detail','close','topStatus','topAll'])nodes[key]=new Node(key);
+ const view=c.createApprovalView({...nodes,makeNode:t=>new Node(t),signals:true,extraStatuses:[nodes.topStatus],extraAllButtons:[nodes.topAll]});
+ let calls=[];view.bind((action,targets)=>calls.push({action,targets:plain(targets)}));
+ const same=()=>{assert.equal(nodes.status.textContent,nodes.topStatus.textContent);assert.equal(nodes.status.dataset.stale,nodes.topStatus.dataset.stale);assert.equal(nodes.all.textContent,nodes.topAll.textContent);assert.equal(nodes.all.disabled,nodes.topAll.disabled);};
+ view.update(list());view.availability(true,false);same();assert(nodes.topAll.disabled);
+ view.update(list(row('new', 'pending', 3)));same();assert(!nodes.topAll.disabled);
+ nodes.topAll.onclick();assert.deepEqual(calls,[{action:'approve',targets:[{id:'new',revision:3}]}]);
+ view.availability(false,true);same();assert(nodes.topAll.disabled);assert(nodes.topStatus.textContent.includes('操作停止中'));
+ view.failure('取得不調');same();assert.equal(nodes.topStatus.dataset.stale,'true');
+ view.update(list(row('new','approved',4)));view.availability(true,false);same();assert(nodes.topAll.disabled);
+ view.update(list(row('second')));same();assert(!nodes.topAll.disabled);
+ console.log('PASS: header approval mirrors count, signal, failure, busy state and shared action; new requests enable both buttons.');
+}

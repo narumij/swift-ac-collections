@@ -1020,6 +1020,22 @@ function validateActivityRows(value,kind){
   if(seen.has(row.id))throw Error('Duplicate identity');seen.add(row.id);return row;
  });
 }
+// OPS-151: the one parser for a formal request ID at the very start of a reason ("H-20261019-05着手：…", "D-20261019-02：…").
+// The ID ends at a non-alphanumeric boundary, so 02 never matches 020. Connectivity and update IDs are not requests.
+function leadingRequestId(reason){
+ const m=/^([A-Z][A-Z0-9]*-\d{8}-[A-Z0-9]+)(?![A-Za-z0-9])/.exec(reason||'');
+ return m&&!/^(?:PING|WAKE|UPDATE)-/.test(m[1])?m[1]:'';
+}
+// A work record with a presence is a state notice and stays out of the lanes, except a confirmed start: working, whose
+// leading request ID matches an earlier request of the same task addressed to this owner. Nothing else is guessed as a start.
+function confirmedStarts(rows){
+ const asked=new Set(),starts=new Set();
+ for(const row of rows){const r=row.raw,id=r&&leadingRequestId(r.reason);if(!id)continue;
+  if(row.event==='request'&&r.next)asked.add(id+'\n'+r.taskId+'\n'+r.next);
+  else if(row.event==='work'&&r.presence==='working'&&asked.has(id+'\n'+r.taskId+'\n'+r.owner))starts.add(row.id);}
+ return starts;
+}
+function isStateNotice(row,starts){return !!(row.raw?.presence&&row.event==='work'&&!starts.has(row.id));}
 function createActivityPoller({kind,fetchRecord,view,isHidden,schedule,cancel,makeController}){
  let inFlight=false,timer=null,controller=null;
  async function poll(){
@@ -1054,7 +1070,7 @@ function createActivityView(track,status,makeNode,getActive=()=>null,current=nul
     if(track.children[index]!==node)track.insertBefore(node,track.children[index]||null);
    });
    if(follow)track.scrollLeft=track.scrollWidth;else if(anchor)track.scrollLeft+=anchor.node.getBoundingClientRect().left-track.getBoundingClientRect().left-offset;else track.scrollLeft=oldLeft;
-   if(current){const latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!(row.raw?.presence&&row.event==='work')).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
+   if(current){const starts=confirmedStarts(rows),latest=rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!isStateNotice(row,starts)).at(-1);set(current.heading,latest?'現在：'+latest.heading:'現在の作業：未登録');set(current.detail,latest?latest.detail:'担当が更新する進行記録です。');current.heading.title=latest?.title||'';current.detail.title=latest?.title||'';}
    first=false;set(status,rows.length?'': '記録なし');status.dataset.stale='false';
   },
   failure(){set(status,'取得不調 · 最終情報を保持');status.dataset.stale='true';}
@@ -1124,18 +1140,18 @@ function isProbeEvent(reason){
  return new RegExp('^ACK '+id+'(?![A-Za-z0-9])').test(reason||'')||new RegExp('(?:^|[\\s\u3000])'+id+'[：:]').test(reason||'');
 }
 function workLaneItems(events,approvals,registryState=()=>''){
- const byTask=new Map(),item=id=>byTask.get(id)||byTask.set(id,{taskId:id,last:null,start:null,approvals:{pending:0,approved:0,claimed:0},registryState:registryState(id)||''}).get(id);
+ const starts=confirmedStarts(events),byTask=new Map(),item=id=>byTask.get(id)||byTask.set(id,{taskId:id,last:null,start:null,approvals:{pending:0,approved:0,claimed:0},registryState:registryState(id)||''}).get(id);
  for(const row of events){
-  const r=row.raw;if(!r||isProbeEvent(r.reason)||(r.presence&&row.event==='work'))continue;  // OPS-141: a return with a presence stays
+  const r=row.raw;if(!r||isProbeEvent(r.reason)||isStateNotice(row,starts))continue;  // OPS-141: a return with a presence stays
   const it=item(r.taskId);
-  if(!it.last||Date.parse(r.at)>=Date.parse(it.last.at))it.last={event:row.event,...r};
+  if(!it.last||Date.parse(r.at)>=Date.parse(it.last.at))it.last={event:row.event,...r,start:starts.has(row.id)};
  }
  for(const row of events){const r=row.raw,it=r&&byTask.get(r.taskId);if(it&&row.event==='request'&&!isProbeEvent(r.reason)&&(!it.start||Date.parse(r.at)>Date.parse(it.start.at)))it.start=r;}
  for(const row of approvals)if(['pending','approved','claimed'].includes(row.status))item(row.taskId).approvals[row.status]++;
  const time=it=>it.last?Date.parse(it.last.at):0;
  return [...byTask.values()].filter(it=>it.last||it.approvals.pending+it.approvals.approved+it.approvals.claimed).sort((a,b)=>time(b)-time(a)||a.taskId.localeCompare(b.taskId)).map(it=>({
   taskId:it.taskId,registryState:it.registryState,approvals:it.approvals,
-  stage:it.last?(it.last.event==='work'&&/^相談待ち[:：]/.test(it.last.reason)?'相談待ち':it.last.event==='work'&&/^検討中[:：]/.test(it.last.reason)?it.last.owner+'検討中':workLaneStages[it.last.event]):'活動情報なし',
+  stage:it.last?(it.last.start?'着手':it.last.event==='work'&&/^相談待ち[:：]/.test(it.last.reason)?'相談待ち':it.last.event==='work'&&/^検討中[:：]/.test(it.last.reason)?it.last.owner+'検討中':workLaneStages[it.last.event]):'活動情報なし',
   owner:it.last?.owner||'',time:it.last?.shortTime||'',reason:it.last?.reason||'',
   // OPS-127: who picks it up next, from this task's latest practical event only (older values are not carried over).
   next:it.approvals.pending?{kind:'approval',text:'次：ユーザー（承認待ち）'}:it.last?.next==='none'?{kind:'ended',text:'この仕事は終了'}:it.last?.next==='user'?{kind:'known',text:'次：ユーザー'}:it.last?.next?{kind:'known',text:'次：'+it.last.next}:{kind:'unknown',text:'次：不明'},
@@ -1172,35 +1188,57 @@ function createWorkLaneView({track,status,makeNode,getActive=()=>null}){
 const LEGACY_ACK_BOUNDARY={id:'feeb9d2cde9c43d0bc7d8cc0fa080e4b',at:'2026-10-18T19:35:45+00:00'};
 const PRESENCE_LABELS={working:'作業中',waiting:'待機中',ended:'待機終了',unknown:'未申告'};
 function presenceStates(rows){
- const states=new Map(),limit=Date.parse(LEGACY_ACK_BOUNDARY.at);
+ const states=new Map(),limit=Date.parse(LEGACY_ACK_BOUNDARY.at),starts=confirmedStarts(rows);
  for(const row of rows){const r=row.raw;if(!r||r.owner==='ユーザー')continue;
   const s=states.get(r.owner)||{state:'unknown',at:'',legacy:false,last:null,seen:''};s.seen=r.at;
   if(r.presence){s.state=r.presence;s.at=r.at;s.legacy=false;}
   else if(/^ACK WAKE-\d{8}-[A-Z0-9]+(?![A-Za-z0-9])/.test(r.reason)&&Date.parse(r.at)<=limit){s.state='ended';s.at=r.at;s.legacy=true;}
-  if(!isProbeEvent(r.reason)&&!(r.presence&&row.event==='work'))s.last={at:r.at,label:activityLabels[row.event]||row.event};
+  if(!isProbeEvent(r.reason)&&!isStateNotice(row,starts))s.last={at:r.at,label:activityLabels[row.event]||row.event};
   states.set(r.owner,s);}
  // every member in the record window is shown (newest first); no silent cap — the member area wraps
  return new Map([...states].sort((a,b)=>Date.parse(b[1].seen)-Date.parse(a[1].seen)));
 }
+// OPS-151: a request with a leading ID opens "開始待ち" for its recipient. Only the recipient's own record with the same ID
+// and task closes it, and only as working, ended or a return; a waiting with that ID leaves it open and unmarked. A declaration without that ID, or with another ID — an old WAKE ACK,
+// an ended from before — never closes it and only marks it "対応未確認". There is no cancel record yet (format undecided).
+// Per owner: a Map of open entries in request order; selfSeen tells "no own record yet" apart from "unanswered".
+function startPendings(rows){
+ const open=new Map(),owners=new Set();
+ for(const row of rows){const r=row.raw;if(!r||r.owner==='ユーザー')continue;const id=leadingRequestId(r.reason),key=id+'\n'+r.taskId;
+  if(row.event==='request'&&id&&r.next&&!['none','user','unknown','ユーザー',r.owner].includes(r.next)){
+   const mine=open.get(r.next)||open.set(r.next,{entries:new Map(),selfSeen:owners.has(r.next)}).get(r.next);
+   mine.entries.delete(key);mine.entries.set(key,{id,taskId:r.taskId,from:r.owner,at:r.at,unmatched:false});continue;}
+  owners.add(r.owner);const mine=open.get(r.owner);if(mine)mine.selfSeen=true;
+  if(!mine||!(r.presence||row.event==='return'))continue;
+  if(id&&mine.entries.has(key)){if(r.presence==='working'||r.presence==='ended'||row.event==='return')mine.entries.delete(key);continue;}
+  for(const e of mine.entries.values())e.unmatched=true;
+ }
+ for(const [owner,mine] of open)if(!mine.entries.size)open.delete(owner);
+ return open;
+}
+function pendingLines(p){
+ if(!p)return '';const list=[...p.entries.values()].reverse(),shown=list.slice(0,3);
+ return shown.map(e=>'\n開始待ち '+e.id+'（'+e.from+' '+memberTime(e.at)+'）'+(e.unmatched?'・対応未確認':p.selfSeen?'':'・本人記録なし')).join('')+(list.length>3?'\nほか'+(list.length-3)+'件の開始待ち':'');
+}
 function memberTime(at){const d=new Date(at);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ja-JP',{hour12:false}):'';}
 function createPresenceLamps({box,makeNode,schedule=(fn,ms)=>setTimeout(fn,ms)}){
- const lamps=new Map();let seen=null,states=new Map(),continuity=()=>'継続 未確認',continuityOwners=[];
+ const lamps=new Map();let seen=null,states=new Map(),pendings=new Map(),continuity=()=>'継続 未確認',continuityOwners=[];
  const set=(node,text)=>{if(node.textContent!==text)node.textContent=text;};
- const text=(owner,s,fresh)=>owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':'')+(fresh?'・新着':'')+'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+'\n'+continuity(owner);
+ const text=(owner,s,fresh)=>owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':'')+(fresh?'・新着':'')+'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+pendingLines(pendings.get(owner))+'\n'+continuity(owner);
  function paint(owner,s,fresh){
   let lamp=lamps.get(owner);if(!lamp){lamp={node:makeNode('span'),fresh:0};lamp.node.className='presence-lamp';lamps.set(owner,lamp);}
   if(box.children[[...lamps.keys()].indexOf(owner)]!==lamp.node)box.appendChild(lamp.node);
-  lamp.node.dataset.state=s.state;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
+  lamp.node.dataset.state=s.state;if(pendings.has(owner))lamp.node.dataset.pending='true';else delete lamp.node.dataset.pending;if(fresh){lamp.fresh++;const mine=lamp.fresh;lamp.node.dataset.fresh='true';schedule(()=>{
    // Only the latest flash of a lamp that is still shown clears; a fetch failure keeps its text until recovery.
    if(lamps.get(owner)!==lamp||lamp.fresh!==mine)return;delete lamp.node.dataset.fresh;if(box.dataset.stale==='true')return;paint(owner,members().get(owner)||s,false);},3000);}
   set(lamp.node,text(owner,s,!!lamp.node.dataset.fresh));
  }
- // members = activity owners plus owners that only have a continuity mark (their state is 未申告, not invented)
- const members=()=>{const all=new Map(states);for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,{state:'unknown',at:'',legacy:false,last:null});return all;};
+ // members = activity owners, recipients with an open 開始待ち, and owners with only a continuity mark (未申告, not invented)
+ const members=()=>{const all=new Map(states);for(const o of pendings.keys())if(!all.has(o))all.set(o,{state:'unknown',at:'',legacy:false,last:null});for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,{state:'unknown',at:'',legacy:false,last:null});return all;};
  const render=freshOwners=>{const all=members();for(const [owner,lamp] of lamps)if(!all.has(owner)){lamp.node.remove();lamps.delete(owner);}for(const [owner,s] of all)paint(owner,s,freshOwners.has(owner));};
  return {
   update(rows){
-   states=presenceStates(rows);const ids=new Set(rows.map(r=>r.id)),freshOwners=new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]);
+   states=presenceStates(rows);pendings=startPendings(rows);const ids=new Set(rows.map(r=>r.id)),freshOwners=new Set(seen?rows.filter(r=>!seen.has(r.id)).map(r=>r.raw?.owner):[]);
    seen=seen?new Set([...seen,...ids]):ids;render(freshOwners);delete box.dataset.stale;
   },
   continuity(fn,owners){continuity=fn;continuityOwners=owners||[];if(box.dataset.stale!=='true')render(new Set());},

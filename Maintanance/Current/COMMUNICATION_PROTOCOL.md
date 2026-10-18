@@ -52,11 +52,13 @@
 For each member, keep three things separate and never infer one from another:
 
 - **Declared state**: `working` (作業中), `waiting` (待機中), `ended` (待機終了). Only the member's own explicit presence changes it. Practical records, requests, PINGs and ACKs do not change it. Without a declaration it is "未申告" (not declared).
-- **Last activity**: the type and time of the member's last practical record (excluding presence-only work records and probes). It is not read as "working".
+- **Last activity**: the type and time of the member's last practical record (excluding state notices and probes). It is not read as "working". A state notice is a work record with a presence, except a confirmed start (below).
 - **Confirmation freshness**: the time of the member's own continuity mark (`continuity.py`). Over 55 s it is shown as "確認が古い" (confirmation is old); the declared state is not changed. Continuity `ended` means the end of a continuous run, which is different from the end of a wait. No mark is "未確認"; a failed read is "不調".
 
 Rules:
 - A return and the next state may be recorded together (`--event return --presence waiting`). Such a return stays in the work lane.
+- Start (OPS-151): a member's first record for a request starts its `reason` with that request's ID (`H-20261019-05着手：…`, `D-20261019-02：…`). A work record with `presence=working` whose leading ID matches an earlier request of the same task addressed to that member is a **confirmed start**: it appears in the work lane as "着手". Other work records with a presence stay state notices.
+- 開始待ち (start pending, OPS-151): a request whose `reason` starts with an ID (not PING / WAKE / UPDATE) and whose `next` is a member shows "開始待ち <ID>（sender time）" in that member's status, next to the declared state, which it never changes. Only that member's own record with the same ID and task closes it: a working, an ended or a return. A waiting with that ID leaves it open. A declaration without the ID, or with another ID (an old WAKE ACK, an earlier ended), never closes it and marks it "対応未確認". A recipient with no record of its own is listed with "本人記録なし". There is no cancel record yet; its format is undecided, so no text is matched as a cancel.
 - An ACK to a WAKE only confirms receipt. To end a wait, the member records `--presence ended`. "ACK済み" on the wake button means receipt as well.
 - Old records: up to the boundary event `feeb9d2cde9c43d0bc7d8cc0fa080e4b` (2026-10-18T19:35:45Z), an `ACK WAKE` keeps its old reading as "wait ended". It is labelled as the old reading and is never shown as the member's own declaration.
 - Two conversations using the same name cannot be told apart. Use different display names when they work at the same time.
@@ -95,6 +97,7 @@ Rules:
 | 重複・中断 | 自動重複排除なし。appendロック・末尾不完全時の拒否。結果不明時は手動確認 |
 | 手動フォールバック | 上記手順を定義。通知ツール停止からの往復を通した実地試験は未実施 |
 | 継続確認（OPS-139/141） | Each member writes one-shot `continuity.py --owner <name> --state alive` marks at milestones and around waits, and `ended` at an intended end of a continuous run. Studio shows them in the Work page member status (not the top bar) as "継続 hh:mm", "確認が古い" over 55 s, "連続動作の終了", "未確認" or "不調". "確認が古い" only means no recent confirmation; it does not change the declared state or assert a stop. Long tool runs also look old. No background heartbeat. Within a minute only while the page is in front and the server runs |
+| 開始待ち・着手（OPS-151） | Derived in Studio from the leading request ID, task and recipient of the recent 200 records (one parser; the ID ends at a non-alphanumeric boundary). Not implemented: platform "実行確認済み", cancel records, proxy stop confirmation (OPS-149) and derivation from the whole log; a request outside the 200-record window is not shown |
 | 待機完了の依頼（OPS-138） | Studioの「待機完了」から、ユーザーが担当を選んでWAKEを送る。番号・関連task・文面はサーバーが決める。未応答の依頼が同じ担当にあれば、新しく作らずにそれを返す。完了扱いは、宛先本人が同じ番号の`ACK`を書いたときだけ。自動の再送や起動はしない |
 
 現行の待機終了送信は `--event request --reason 'WAKE-YYYYMMDD-X：待機終了依頼'`、返信は `--event work --reason 'ACK WAKE-YYYYMMDD-X：会話へ戻る' --presence ended`。task/ownerは従来どおり添える。これは疎通PINGとは別の操作。

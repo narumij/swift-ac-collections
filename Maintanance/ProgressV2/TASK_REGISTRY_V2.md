@@ -130,6 +130,10 @@
 | `OPS-147` | `PROPOSED` | ユーザー / Astra調整（検討補助） | [DECISION] 継続コミット承認モードの導入可否を検討 | 未着手候補。将来依頼へ有効な範囲付き委任と確認承認の切替。現行承認や自動レビューを変更せず実装しない | `Maintanance/Current/COMMIT_APPROVAL_MODES_STUDY.md` |
 | `OPS-148` | `PROPOSED` | Astra / 姫 | [DISCOVERY] 協働システムに感じる設計思想を往復で整理 | 登録・依頼準備のみ。実運用の観察から共通点/相違点/限界を整理し、ユーザー思想の代弁や制度追加はしない | `Maintanance/Current/ORCHESTRATION_PHILOSOPHY_DISCUSSION.md` |
 | `OPS-149` | `WAITING_USER` | Astra調整 / 姫 | [DISCOVERY] 停止確認とメンバー表示の通信仕様を協議 | 姫と2往復完了。区間付き代理確認・表示案を提案、実装移行判断待ち。規約本体・実装変更なし | `Maintanance/Current/MEMBER_STOP_COMMUNICATION_DISCUSSION.md` |
+| `OPS-150` | `WAITING_USER` | Astra調整 / スタジオ評価役 | [DISCOVERY] スタジオ評価役の限定試行 | 初回限定検査受入、fixture3本PASS・新規不一致なし。仕様/実装/未判定を分離、仕様は姫と協議。第2〜4評価完了、実装不一致1件を独立検出・補正確認。今回試行終了、commit待ち | `Maintanance/Current/DEBUG_AGENT_PILOT.md` |
+| `OPS-151` | `WAITING_USER` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] 起動依頼後に旧終了表示が残る空白を解消 | 限定技術受入。開始待ちと実着手カード、独立評価1件補正済み。実画面未確認・commit待ち。旧宛先残存は仕様側/通常 | `Maintanance/Current/MEMBER_START_VISIBILITY_FIX.md` |
+| `OPS-152` | `PROPOSED` | Astra調整 / 独立確認役 | [DISCOVERY] コミット承認照合の独立確認を限定試行する準備 | 常駐せず実行前/後の差分と有効承認を照合。会話承認と分割範囲も扱う。未確認は後続commit保留、無断巻戻し/全員停止なし | `Maintanance/Current/COMMIT_AUTHORIZATION_REVIEW_PILOT.md` |
+| `OPS-153` | `WAITING_USER` | Astra調整 / 姫 | [DISCOVERY] Studioの表示状態をViewModelへ集約する設計協議 | 姫2往復完了。単一snapshot/deriveと二段試験、4区切り移行案。非同時API/200件窓の限界を維持。実装移行判断待ち | `Maintanance/Current/STUDIO_VIEW_MODEL_DISCUSSION.md` |
 | `OPS-136` | `DONE` | 姫（実装） / Astra（受入） | [EXECUTION] トップバーの操作を左上メニューへ集約 | 2026-10-19ユーザー依頼。作業が左・初期、タスクが右、中央タイトル。メニューはタスク側へ。最終配置受入済み、既存操作契約は維持 | `Maintanance/Current/STUDIO_HEADER_MENU.md` |
 | `OPS-126` | `DONE` | Astra（仕分け・受入） / 姫（相談・限定実装） | [EXECUTION] Studioユーザビリティ改善を相談しながら段階実施する | 2026-10-19 8案と返却表示を技術受入。保存契約変更なし。統合コミット承認済み、完了 | `Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md` |
 | `OPS-125` | `DONE` | Astra（ユーザー委任による仕分け） / User（好みの判断） | [DECISION] Studioの表示・閲覧に関する改善案8件の採否を決める | CP-20261018-005を提案資料として受領。固定ヘッダー・移動位置・開始不明・局所図題名・ホバー・編集欄・狭幅・線集中。保存操作のOPS-089とは別。ユーザーが相談しながらの進行を委任、OPS-126で段階実施。原案の実機未確認は維持 | `Maintanance/Current/STUDIO_USABILITY_PROPOSAL_HIME_20261018.md` |
@@ -461,6 +465,10 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-147` |
 | `OPS-103` | `OPS-148` |
 | `OPS-048` | `OPS-149` |
+| `OPS-048` | `OPS-150` |
+| `OPS-048` | `OPS-151` |
+| `OPS-044` | `OPS-152` |
+| `OPS-048` | `OPS-153` |
 | `OPS-043` | `OPS-123` |
 | `OPS-043` | `OPS-063` |
 | `DOC-030` | `OPS-066` |

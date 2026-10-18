@@ -417,3 +417,18 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  const lone=ctx.independentGroups(d).regular.find(t=>!d.edges.some(e=>e.prerequisite===t.id||e.successor===t.id)&&!d.milestoneRelations.some(e=>e.prerequisite===t.id||e.successor===t.id));
  if(lone){v=ctx.neighborhood(d,lone.id,new Set());l=L(v);check(v,l);assert.equal(l.span,0);}
  console.log('PASS: local map layout (center fixed in the middle, prerequisites left / successors right, lines left to right with real ends, expanded shared successor, one-sided and isolated cases, no overlapping cells).');}
+// Recommendation must not mistake a partial import for a completed import.
+{
+ const c={};vm.createContext(c);vm.runInContext(script.slice(script.indexOf('function editsReflected('),script.indexOf('function renderCanonicalRestartSuggestion(')),c);
+ const base={tasks:[{id:'T',state:'ACTIVE',owner:'User'}],edges:[],milestoneRelations:[{prerequisite:'T',successor:'END-A',constraint:'old'}],milestones:[]};
+ const edit=copy(base);edit.tasks[0].state='DONE';edit.milestoneRelations[0].successor='END-B';
+ assert(!c.editsReflected(base,edit,base));const partial=copy(base);partial.tasks[0].state='DONE';assert(!c.editsReflected(base,edit,partial));
+ const latest=copy(edit);latest.milestoneRelations[0].constraint='reviewed prose';assert(c.editsReflected(base,edit,latest));
+ assert(!c.editsReflected(base,base,base));assert(!c.editsReflected({},edit,latest));assert(!c.editsReflected(base,{...edit,proposals:[{id:'draft-1'}]},latest));
+ const notice={hidden:true};Object.assign(c,{$:()=>notice,workspace:{saveId:'saved'},dirty:false,formDirty:false,planDraftPending:()=>false,doc:{...edit,baseline:base},suggestionSnapshot:latest});
+ vm.runInContext(script.slice(script.indexOf('function renderCanonicalRestartSuggestion('),script.indexOf('async function checkCanonicalRestartSuggestion(')),c);
+ c.renderCanonicalRestartSuggestion();assert(!notice.hidden);
+ for(const flag of ['dirty','formDirty']){c[flag]=true;c.renderCanonicalRestartSuggestion();assert(notice.hidden);c[flag]=false;}
+ c.planDraftPending=()=>true;c.renderCanonicalRestartSuggestion();assert(notice.hidden);c.planDraftPending=()=>false;c.workspace=null;c.renderCanonicalRestartSuggestion();assert(notice.hidden);
+ console.log('PASS: canonical restart suggestion requires reflected edits; partial/missing/proposal/unsaved/input states are suppressed.');
+}

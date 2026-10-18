@@ -24,6 +24,13 @@ the user's latest instructions or authorize resuming frozen work.
 
 ## Request routing for Claude and Fable
 
+For a direct user request to import a Studio Inbox save or refresh judgment caches,
+use the bounded [maintenance role](Maintanance/Current/MAINTENANCE_ROLE.md).
+It authorizes the requested canonical/Registry reconciliation without appointing
+a general coordinator or requiring a second coordinator to repeat the import.
+This user-authorized exception applies to the ordinary return/reconciliation rules
+below; ownership, protected documents, judgment boundaries and commit approval remain.
+
 For the user-authorized temporary Fable coordinator role, consult
 [the deputy delegation](Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md). It explicitly
 includes Registry updates and cleanup, and defines runtime-model identification.

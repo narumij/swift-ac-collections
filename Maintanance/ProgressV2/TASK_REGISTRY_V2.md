@@ -102,6 +102,8 @@
 
 ### 調整・運用の個別課題
 
+| `OPS-108` | `DONE` | Sol（作業・独立確認） / Astra（受入） | [DISCOVERY] Sol OJTならしとして表示設定2件の根拠を照合する | 2026-10-18ユーザー実施承認。読取限定・作業役→確認役→Astraで一周。追加調査を広げず補正最大一往復。2件の静的照合を補足付き受入。キャッシュ欄の訂正一往復完了、実装・試験未変更。ユーザーcommit承認により完了 | `Maintanance/Current/SOL_OJT_WARMUP.md` |
+| `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |
 | `OPS-106` | `ACTIVE` | Astra（蓄積・手入れ） / 他担当は個別依頼で参加 | [DISCOVERY] 実務のキャッシュ参照一行記録を蓄積する | 2026-10-18ユーザー承認。既存Return等に実参照したファイル＋節を残し、恒久研究の手入れ時に小さく見返す。効果は未知。件数埋め・過去分補完・利用頻度による削除なし。負担も観察して継続方法を見直す | `Maintanance/Current/CACHE_REFERENCE_OBSERVATION_PILOT.md` |
 | `OPS-105` | `DONE` | Astra | [DISCOVERY] Codexの新規会話で旧実装情報の影響を6回答比較する | 2026-10-18ユーザー実施承認。OPS-104の入力・評価基準を固定し各条件2回で停止。6回答を収集・評価済み。ユーザー確認で全件GPT-6.1 Sol中。旧実装の2制限の引継ぎは観察なし。課題の範囲曖昧さ・非盲検・記憶分離の限界を記録。追加試行なし、ユーザーcommit承認により完了 | `Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md` |
 | `OPS-104` | `DONE` | Claude（姫・案作成） / Astra（受入） | [DISCOVERY] 基礎研究の初回実験用依頼文と評価表を準備する | 2026-10-18ユーザー依頼。3条件の依頼文・事前評価表・最小実施手順・限界を正本Proposalへ作成し返却。実験実施・コード変更・commitなし。Astraが準備成果として補足付き受入。省略と違反の区別、U2の補助観察化、評価用順序の分離を記録。ユーザーcommit承認により準備完了。実施環境・モデル・担当は未決、実験開始なし | `Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT_PREPARATION.md` |
@@ -349,6 +351,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-103` | `OPS-104` |
 | `OPS-103` | `OPS-105` |
 | `OPS-103` | `OPS-106` |
+| `OPS-103` | `OPS-107` |
+| `OPS-103` | `OPS-108` |
 | `OPS-048` | `OPS-059` |
 | `OPS-048` | `OPS-061` |
 | `OPS-048` | `OPS-062` |

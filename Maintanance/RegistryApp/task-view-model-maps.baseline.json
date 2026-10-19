@@ -1,0 +1,950 @@
+{
+ "about": "OPS-154 task-map compatibility baseline (dependency graph, independent strip, permanent map, card list, selection sharing, hover tip, input retention). Captured from 5149327f before the map view-model extraction by task-view-model-capture.cjs: file:// copy of the generated page with the seed replaced, WebKit, viewport 1400x900, TZ=UTC, locale ja-JP, canvas measureText = 7 px per character. Fixture a: completed-document-layout-fixture.json with the retired relation key removed (task-view-model-fixtures.py); fixture b: task-view-model-fixture-b.json (anonymized Registry structure plus one proposal). It shows the output stayed the same; it is not a proof of correctness.",
+ "knownLimits": [
+  "real fonts are not measured (fixed 7 px per character); the look is checked separately",
+  "the protection and neighborhood tabs are outside this baseline",
+  "input retention records the existing behavior: a version-filter change re-renders the editor and drops an unapplied value"
+ ],
+ "fixtures": {
+  "a": {
+   "errors": [],
+   "inputRetention": {
+    "field": "owner",
+    "afterType": "入力中の値",
+    "afterTabs": "入力中の値",
+    "afterCardOrder": "入力中の値",
+    "afterVersionChange": "User（判断） / Astra・Claude（姫）（議論・材料整理）"
+   },
+   "steps": [
+    {
+     "name": "load",
+     "parts": {
+      "graph": {
+       "sha256": "102a630f923b96edb42c8b599e729cde1460dfcb6ec7c6018f41bf7b2cdecbc9",
+       "length": 334
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "325bcd527ad75c3b4249a2171bb9a64e0977ee4f683ac60e74d1eaa5ca9df004",
+       "length": 19699
+      },
+      "cardList": {
+       "sha256": "c33b6e040a05665f7cca3daacf51a54661e6af85fbad3e84dd3e58e536771500",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "@head",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "GRAPH-001 · 常設タスク",
+     "tip": {
+      "hidden": true,
+      "text": ""
+     }
+    },
+    {
+     "name": "version: all",
+     "parts": {
+      "graph": {
+       "sha256": "90aadeeeca2491bd7338c587dbe00c031516bccc5afbd18fe42a99efc721403d",
+       "length": 51660
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "325bcd527ad75c3b4249a2171bb9a64e0977ee4f683ac60e74d1eaa5ca9df004",
+       "length": 19699
+      },
+      "cardList": {
+       "sha256": "c33b6e040a05665f7cca3daacf51a54661e6af85fbad3e84dd3e58e536771500",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "GRAPH-001 · 常設タスク",
+     "tip": {
+      "hidden": true,
+      "text": ""
+     }
+    },
+    {
+     "name": "select a graph node",
+     "parts": {
+      "graph": {
+       "sha256": "5eb7271fd3bfb37c04d4e26576bff1a9bfda18172b89a056aee54d61c8aedcf3",
+       "length": 51663
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "bc4b4649fd4e57410a0f00b76965a41af0e3d79e49c0744b5165255f159dd9fe",
+       "length": 19697
+      },
+      "cardList": {
+       "sha256": "25a28aebf3212597ecd3aee86c767e0ea61fb0389e5208c8d5ad5a8c129677d1",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "DOC-035",
+     "tip": {
+      "hidden": true,
+      "text": "DOC-035\n[EXECUTION] 0.6.0全公開対象の文書初版確認\n\n状態：DONE\n担当：Astra\n\n条件：2026-10-16 RELEASE-078照合とDOC-037受入を入力に実施。4対象＋共通入口のRelease DocC成功。6既存例compile/run・値出力確認、赤黒木78例の不変入力と受入済み証拠を再利用。旧Sequence表現・Optionalの実験/同期制約・README導線を訂正。スニペット増減なし。2026-10-16ユーザーが成果報告後にcommitを承認し完了。ブラウザ目視・外部URL・Linux・全試験は未実施、release開始ではない。"
+     }
+    },
+    {
+     "name": "hover a node",
+     "parts": {
+      "graph": {
+       "sha256": "5eb7271fd3bfb37c04d4e26576bff1a9bfda18172b89a056aee54d61c8aedcf3",
+       "length": 51663
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "bc4b4649fd4e57410a0f00b76965a41af0e3d79e49c0744b5165255f159dd9fe",
+       "length": 19697
+      },
+      "cardList": {
+       "sha256": "25a28aebf3212597ecd3aee86c767e0ea61fb0389e5208c8d5ad5a8c129677d1",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "DOC-035",
+     "tip": {
+      "hidden": false,
+      "text": "DOC-034\n[EXECUTION] 赤黒木4型の本文完成と派生成果の同期\n\n状態：DONE\n担当：Astra\n\n条件：2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。"
+     }
+    },
+    {
+     "name": "cards by id",
+     "parts": {
+      "graph": {
+       "sha256": "5eb7271fd3bfb37c04d4e26576bff1a9bfda18172b89a056aee54d61c8aedcf3",
+       "length": 51663
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "bc4b4649fd4e57410a0f00b76965a41af0e3d79e49c0744b5165255f159dd9fe",
+       "length": 19697
+      },
+      "cardList": {
+       "sha256": "25a28aebf3212597ecd3aee86c767e0ea61fb0389e5208c8d5ad5a8c129677d1",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "DOC-035",
+     "tip": {
+      "hidden": true,
+      "text": "DOC-034\n[EXECUTION] 赤黒木4型の本文完成と派生成果の同期\n\n状態：DONE\n担当：Astra\n\n条件：2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。"
+     }
+    },
+    {
+     "name": "select a card",
+     "parts": {
+      "graph": {
+       "sha256": "4bac8d851d0ccf590513234d51c856e9b362a7ae9e7ad218072017ee8718da19",
+       "length": 51663
+      },
+      "independent": {
+       "sha256": "aba2a09943bd68bb195dfe4af53098109b33898682768f8cd1cd4c4a29e6481c",
+       "length": 6337
+      },
+      "permanentMap": {
+       "sha256": "bc4b4649fd4e57410a0f00b76965a41af0e3d79e49c0744b5165255f159dd9fe",
+       "length": 19697
+      },
+      "cardList": {
+       "sha256": "30be35498717cbf993115186d0806f12fa11aea0f8a8f1f5d76d2e9da1a62d6f",
+       "length": 18906
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "DOC-027",
+     "tip": {
+      "hidden": true,
+      "text": "DOC-034\n[EXECUTION] 赤黒木4型の本文完成と派生成果の同期\n\n状態：DONE\n担当：Astra\n\n条件：2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。"
+     }
+    },
+    {
+     "name": "select an independent task",
+     "parts": {
+      "graph": {
+       "sha256": "90aadeeeca2491bd7338c587dbe00c031516bccc5afbd18fe42a99efc721403d",
+       "length": 51660
+      },
+      "independent": {
+       "sha256": "1a04491a6d2736014e1e234ab8b8d886d87e57c1ae8dfb415b78144df5937c73",
+       "length": 6345
+      },
+      "permanentMap": {
+       "sha256": "bc4b4649fd4e57410a0f00b76965a41af0e3d79e49c0744b5165255f159dd9fe",
+       "length": 19697
+      },
+      "cardList": {
+       "sha256": "bf3c7a0d5079595865ac41903ace569c830c0959893efc7e9f572f708e081fdb",
+       "length": 18594
+      }
+     },
+     "counts": [
+      "12件",
+      "10件",
+      "62件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（? 以降）"
+       ]
+      ]
+     },
+     "selectedTitle": "RBT-026",
+     "tip": {
+      "hidden": true,
+      "text": "DOC-034\n[EXECUTION] 赤黒木4型の本文完成と派生成果の同期\n\n状態：DONE\n担当：Astra\n\n条件：2026-10-16 独立レビュー5件受入済み、技術訂正・文章修正・公開コメント同期を実施。既存78例compile/run、見出し・掲載数維持、製品処理不変、Release DocC成功。ユーザーのcommit承認により本文作業完了。既存スニペット追加・削除なし、outlineの例不足と宣言断片は0.8.0候補へ留保。ユーザー受入はDOC-037。"
+     }
+    }
+   ]
+  },
+  "b": {
+   "errors": [],
+   "inputRetention": {
+    "field": "owner",
+    "afterType": "入力中の値",
+    "afterTabs": "入力中の値",
+    "afterCardOrder": "入力中の値",
+    "afterVersionChange": "メンバー12"
+   },
+   "steps": [
+    {
+     "name": "load",
+     "parts": {
+      "graph": {
+       "sha256": "7bbdb6925c77ccdcda81dc6d1675e6f478586a3170dc07ffc8905d49378ac36a",
+       "length": 51175
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "7b089c65a7821b89ae984c208558cbf1020ba5f25008bb483279a3978dc6c746",
+       "length": 49415
+      },
+      "cardList": {
+       "sha256": "64f97303a58ddb2755ff04574319b08f45276136ed1382af9947de9db970e764",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "@head",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "OPS-063",
+     "tip": {
+      "hidden": true,
+      "text": ""
+     }
+    },
+    {
+     "name": "version: all",
+     "parts": {
+      "graph": {
+       "sha256": "60789750ada9a50eb1613b97d7039274fa779ab66a9436d6531a741c90a08f8b",
+       "length": 64722
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "7b089c65a7821b89ae984c208558cbf1020ba5f25008bb483279a3978dc6c746",
+       "length": 49415
+      },
+      "cardList": {
+       "sha256": "64f97303a58ddb2755ff04574319b08f45276136ed1382af9947de9db970e764",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "OPS-063",
+     "tip": {
+      "hidden": true,
+      "text": ""
+     }
+    },
+    {
+     "name": "version: 0.5.3",
+     "parts": {
+      "graph": {
+       "sha256": "b9d8ca75dafe248908ee3b17898a99abaeef466185b61e5de8cbdf65b18bb4a1",
+       "length": 3361
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "7b089c65a7821b89ae984c208558cbf1020ba5f25008bb483279a3978dc6c746",
+       "length": 49415
+      },
+      "cardList": {
+       "sha256": "64f97303a58ddb2755ff04574319b08f45276136ed1382af9947de9db970e764",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "0.5.3",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "OPS-063",
+     "tip": {
+      "hidden": true,
+      "text": ""
+     }
+    },
+    {
+     "name": "select a graph node",
+     "parts": {
+      "graph": {
+       "sha256": "dc50c86a72207370b5b5085af6f677516857c4364b3df408608d196cd847d05e",
+       "length": 64725
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "0cbad75dd2176ba4f085257437c68e43e9e84250eebb637e496c24f72e34480c",
+       "length": 49413
+      },
+      "cardList": {
+       "sha256": "9740c51396ed0b43ab29c59b460f5d47c12eecce79927637a47208014fdbf901",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "RBT-048",
+     "tip": {
+      "hidden": true,
+      "text": "RBT-048\n[DECISION] 作業項目作業項目作業項目作業項目作業項目作業\n\n状態：USER_ONLY\n担当：メンバー12\n\n条件：条件 RBT-048"
+     }
+    },
+    {
+     "name": "hover a node",
+     "parts": {
+      "graph": {
+       "sha256": "dc50c86a72207370b5b5085af6f677516857c4364b3df408608d196cd847d05e",
+       "length": 64725
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "0cbad75dd2176ba4f085257437c68e43e9e84250eebb637e496c24f72e34480c",
+       "length": 49413
+      },
+      "cardList": {
+       "sha256": "9740c51396ed0b43ab29c59b460f5d47c12eecce79927637a47208014fdbf901",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "RBT-048",
+     "tip": {
+      "hidden": false,
+      "text": "OPS-058\n[DECISION] 作業項目作業項目作業項目作業項目作業項目作\n\n状態：WAITING_USER\n担当：メンバー11\n\n条件：条件 OPS-058"
+     }
+    },
+    {
+     "name": "cards by id",
+     "parts": {
+      "graph": {
+       "sha256": "dc50c86a72207370b5b5085af6f677516857c4364b3df408608d196cd847d05e",
+       "length": 64725
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "0cbad75dd2176ba4f085257437c68e43e9e84250eebb637e496c24f72e34480c",
+       "length": 49413
+      },
+      "cardList": {
+       "sha256": "9740c51396ed0b43ab29c59b460f5d47c12eecce79927637a47208014fdbf901",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "RBT-048",
+     "tip": {
+      "hidden": true,
+      "text": "OPS-058\n[DECISION] 作業項目作業項目作業項目作業項目作業項目作\n\n状態：WAITING_USER\n担当：メンバー11\n\n条件：条件 OPS-058"
+     }
+    },
+    {
+     "name": "select a card",
+     "parts": {
+      "graph": {
+       "sha256": "fd712a6f6e6298a644b25867d3a50243cff785eca55f294781aae716c91f7f9a",
+       "length": 64725
+      },
+      "independent": {
+       "sha256": "fb8e764fd1657de82d4f18db8366e7395bf62bfd5a2fb9fd042d6c7fd75e7c23",
+       "length": 1089
+      },
+      "permanentMap": {
+       "sha256": "0cbad75dd2176ba4f085257437c68e43e9e84250eebb637e496c24f72e34480c",
+       "length": 49413
+      },
+      "cardList": {
+       "sha256": "c88bd8974c2f1d4fceae9d1f6b54112464d68d023d96e1c49a1dfa63c25ace1c",
+       "length": 32446
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "DOC-027",
+     "tip": {
+      "hidden": true,
+      "text": "OPS-058\n[DECISION] 作業項目作業項目作業項目作業項目作業項目作\n\n状態：WAITING_USER\n担当：メンバー11\n\n条件：条件 OPS-058"
+     }
+    },
+    {
+     "name": "select an independent task",
+     "parts": {
+      "graph": {
+       "sha256": "60789750ada9a50eb1613b97d7039274fa779ab66a9436d6531a741c90a08f8b",
+       "length": 64722
+      },
+      "independent": {
+       "sha256": "a19c931cfd7d7c1848da82a172f6e8520fe610bbb6adfd26d137bac7582b5d07",
+       "length": 1097
+      },
+      "permanentMap": {
+       "sha256": "0cbad75dd2176ba4f085257437c68e43e9e84250eebb637e496c24f72e34480c",
+       "length": 49413
+      },
+      "cardList": {
+       "sha256": "6743f6c3eb5328e06bb81d7623bcc4657bbeea64ec20c6c2ea9a99fbb93ad2e9",
+       "length": 31972
+      }
+     },
+     "counts": [
+      "3件",
+      "12件",
+      "99件"
+     ],
+     "picker": {
+      "value": "",
+      "options": [
+       [
+        "",
+        "全体"
+       ],
+       [
+        "@head",
+        "HEAD から（0.6.0 以降）"
+       ],
+       [
+        "0.5.3",
+        "0.5.3"
+       ],
+       [
+        "0.5.4",
+        "0.5.4"
+       ],
+       [
+        "0.6.0",
+        "0.6.0"
+       ],
+       [
+        "0.6.1",
+        "0.6.1"
+       ],
+       [
+        "0.7.0",
+        "0.7.0"
+       ],
+       [
+        "0.8.0",
+        "0.8.0"
+       ],
+       [
+        "0.9.0",
+        "0.9.0"
+       ],
+       [
+        "1.0.0",
+        "1.0.0"
+       ]
+      ]
+     },
+     "selectedTitle": "OPS-083",
+     "tip": {
+      "hidden": true,
+      "text": "OPS-058\n[DECISION] 作業項目作業項目作業項目作業項目作業項目作\n\n状態：WAITING_USER\n担当：メンバー11\n\n条件：条件 OPS-058"
+     }
+    }
+   ]
+  }
+ }
+}

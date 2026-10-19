@@ -259,3 +259,10 @@ LTR-20261019-1D96ADBC422C4EA3A409630EC6DB9581を受領。set_focusとset_recorde
 95 task、8版を差分ゼロで取込。世代`gen-1d0b9780ab114593931e911eb83e1ae2`、revision 0。backup検証成功。Registry/Rules/STRUCTUREを生成、入口とMilestones READMEへV3正本の境界を明記。[運用手順](REGISTRY_V3_OPERATIONS.md)を用意した。V3 sync成功、129文書・参照欠落なし。説明追記後もview再生成equal、生成表変更なし。
 
 現在はユーザーによるV3サーバー起動待ち。基本のHTTP確認・保存/再開/正式反映の確認はまだ行っていない。切替完了・OPS-167 DONEとはしない。
+
+## 本番切替の基本確認完了（Astra、2026-10-19）
+ユーザーがV3引数で起動。HTTP registry・ページseed・read-only DB exportが一致し、初回129文書に欠落なし。OPS-167担当を切替担当Astraへ更新する保存をAPIへ送信、workspaceで同一saveIdの再開を確認。既存CLI apply-groupsで正式反映し、運用手順のdetailリンクをDB update_taskで追加した。revision 2、view再生成equal、反映前後backup検証成功。保存はIMPORTSに反映記録を残し、削除していない。
+
+実画面の手操作確認ではなく、実テンプレートの編集関数harness＋実HTTP保存/再開＋CLI＋DB/view照合で確認した。初回harnessで編集不可detailを指定して失敗し、初回HTTPでは必要ヘッダー不足で403となったが、保存/DB変更前の拒否。担当欄と既存studio_clientを用いた再試行で成功した。これはAstraの操作誤りであり製品不具合に数えない。
+
+切替基本確認は完了。単独writerの切替期間を解除するが、通常の同時書込制限は維持。次は両者の評価・感想・個別レポート。その後、判断DBに進む。OPS-167はその記録を閉じるまでACTIVEを維持する。

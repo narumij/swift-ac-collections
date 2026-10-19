@@ -365,19 +365,41 @@ class LetterMixin:
                 x['stopReason'] = stop['note'] if stop else None
             return {'owner': owner, 'letters': open_}
 
-    def letters_brief(self, task=None, member=None, state=None, limit=50):
+    def letters_brief(self, task=None, member=None, state=None, limit=50, cursor=None, sender=None, recipient=None):
         """H-20261019-30: the list without any text. The queries read metadata, event kinds and revision numbers only;
-        no body column is selected, so a long list does not read every original text."""
+        no body column is selected, so a long list does not read every original text.
+
+        H-20261019-34: one page, newest first. Letters are append-only and never deleted, so their rowid is a stable order
+        (unique, also for equal times); `cursor` ('r<rowid>') continues below the last letter of the previous page, so
+        letters added meanwhile neither shift nor repeat an older page. Filters are applied here, before the page is cut.
+        `nextCursor` and `hasMore` say whether older matches exist. A page is not a snapshot of the whole history: a
+        letter whose state changes while pages are read is seen as it is when its page is read."""
         if state is not None and state not in STATES:
             raise ValueError('Unknown state')
         limit = int(limit)
         if not 0 < limit <= 1000:
             raise ValueError('Invalid limit')
+        below = None
+        if cursor is not None:
+            if not isinstance(cursor, str) or not re.fullmatch(r'r[1-9][0-9]{0,18}', cursor):
+                raise ValueError('Invalid cursor')
+            below = int(cursor[1:])
         with self.transaction() as con:
-            out = []
-            for row in con.execute('SELECT id, kind, sender, recipient, task_id, received_at FROM letters ORDER BY rowid DESC').fetchall():
-                if task and row['task_id'] != task or member and member not in (row['sender'], row['recipient']):
-                    continue
+            out, next_cursor, has_more = [], None, False
+            sql, args = 'SELECT rowid, id, kind, sender, recipient, task_id, received_at FROM letters', []
+            where = []
+            if below is not None:
+                where.append('rowid < ?')
+                args.append(below)
+            for column, value in (('task_id', task), ('sender', sender), ('recipient', recipient)):
+                if value:
+                    where.append(f'{column} = ?')
+                    args.append(value)
+            if member:
+                where.append('(sender = ? OR recipient = ?)')
+                args += [member, member]
+            sql += (' WHERE ' + ' AND '.join(where) if where else '') + ' ORDER BY rowid DESC'
+            for row in con.execute(sql, args).fetchall():
                 events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
                 current = None
                 for e in events:
@@ -385,6 +407,9 @@ class LetterMixin:
                         current = e['event']
                 if state and current != state:
                     continue
+                if len(out) >= limit:
+                    has_more = True
+                    break
                 revisions = dict(con.execute('SELECT part, MAX(revision) FROM letter_texts WHERE letter_id=? GROUP BY part', (row['id'],)).fetchall())
                 received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
                 seen = None
@@ -397,9 +422,8 @@ class LetterMixin:
                             'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
                             'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
                             'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None})
-                if len(out) >= limit:
-                    break
-            return {'letters': out, 'brief': True}
+                next_cursor = f'r{row["rowid"]}'
+            return {'letters': out, 'brief': True, 'limit': limit, 'cursor': cursor, 'hasMore': has_more, 'nextCursor': next_cursor if has_more else None}
 
     def letters(self, task=None, member=None, state=None, limit=200):
         if state is not None and state not in STATES:

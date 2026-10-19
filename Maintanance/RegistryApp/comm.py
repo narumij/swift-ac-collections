@@ -18,6 +18,8 @@ Letters (H-20261019-25; the original texts are kept by the server, with every re
   comm.py letter close LTR-... --actor Astra                          (after a reply, a decline or a stop answer)
   comm.py letter revise LTR-... --part request|reply --actor A --reason '理由' --body-file new.md
   comm.py letter list [--task T] [--member M] [--state sent|received|started|returned|declined|withdrawn|stopped|closed] [--brief]
+      --brief pages: [--sender S] [--recipient R] [--cursor C] [--all]. One page (newest first) prints nextCursor;
+      --all follows every page. A sender reads its replies with: --brief --sender Astra --state returned --all
   comm.py letter watch --owner 姫 --state-file F   (one GET of my inbox, compared with F: new / state / revision / stop)
       exit 0 = something changed (printed), 3 = nothing new, 1 = server trouble (F unchanged), 2 = F is damaged or
       belongs to another owner or server, 4 = changes printed but F could not be saved (F unchanged; they will be
@@ -84,6 +86,9 @@ def main():
     for name in ('task', 'member', 'state', 'limit'):
         lst.add_argument('--' + name)
     lst.add_argument('--brief', action='store_true')
+    for name in ('sender', 'recipient', 'cursor'):
+        lst.add_argument('--' + name)
+    lst.add_argument('--all', action='store_true')
     watch = letter.add_parser('watch')
     watch.add_argument('--owner', required=True)
     watch.add_argument('--state-file', required=True)
@@ -155,9 +160,21 @@ def letter_command(args):
                                   refDoc=args.ref_doc, refSection=args.ref_section))
     if args.letter == 'list':
         query = {k: v for k, v in (('task', args.task), ('member', args.member), ('state', args.state), ('limit', args.limit)) if v}
-        if args.brief:
-            query['brief'] = '1'
-        return studio_client.get('/letters' + ('?' + urllib.parse.urlencode(query) if query else ''))
+        paging = {k: v for k, v in (('sender', args.sender), ('recipient', args.recipient), ('cursor', args.cursor)) if v}
+        if (paging or args.all) and not args.brief:
+            raise ValueError('--sender, --recipient, --cursor and --all need --brief')
+        if not args.brief:
+            return studio_client.get('/letters' + ('?' + urllib.parse.urlencode(query) if query else ''))
+        query = query | paging | {'brief': '1'}
+        page = studio_client.get('/letters?' + urllib.parse.urlencode(query))
+        if not args.all:
+            return page
+        letters, pages = list(page['letters']), 1
+        while page.get('hasMore'):
+            page = studio_client.get('/letters?' + urllib.parse.urlencode(query | {'cursor': page['nextCursor']}))
+            letters += page['letters']
+            pages += 1
+        return {'letters': letters, 'brief': True, 'pages': pages, 'hasMore': False, 'nextCursor': None}
     if args.set:
         if not args.recorded_by:
             raise ValueError('--set needs --recorded-by')

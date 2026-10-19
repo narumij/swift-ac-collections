@@ -261,6 +261,57 @@ class StoreTests(Base):
             f = full[l['id']]
             self.assertEqual((l['state'], l['requestRevision'], l['revisedAfterReceipt']), (f['state'], f['request']['revision'], f['revisedAfterReceipt']), 'the brief list agrees with the full one')
 
+    def test_brief_pages_are_stable_complete_and_filtered_on_the_server(self):
+        self.s.set_senders(['Astra', 'ユーザー', '姫'], 'ユーザー')
+        made, who = [], {}
+        for i in range(130):
+            sender, recipient = (('Astra', '姫'), ('Astra', 'Fable'), ('ユーザー', '姫'), ('姫', 'Astra'))[i % 4]
+            made.append(self.send(sender=sender, recipient=recipient, body=f'#{i}')['id'])
+            who[made[-1]] = (sender, recipient)
+        newest_first = list(reversed(made))
+        def pages(**kw):
+            seen, cursor, count = [], None, 0
+            while True:
+                page = self.s.letters_brief(limit=50, cursor=cursor, **kw)
+                count += 1
+                self.assertLessEqual(len(page['letters']), 50)
+                seen += [l['id'] for l in page['letters']]
+                if not page['hasMore']:
+                    self.assertIsNone(page['nextCursor'])
+                    return seen, count
+                cursor = page['nextCursor']
+        everything, n = pages()
+        self.assertEqual((everything, n), (newest_first, 3), 'every letter once, newest first, over 3 pages')
+        first = self.s.letters_brief(limit=50)
+        self.assertEqual((first['limit'], first['hasMore'], len(first['letters'])), (50, True, 50))
+        # letters added between pages neither shift nor repeat the older pages
+        added = [self.send(body='new')['id'] for _ in range(5)]
+        who.update({a: ('Astra', '姫') for a in added})
+        second = self.s.letters_brief(limit=50, cursor=first['nextCursor'])
+        self.assertEqual([l['id'] for l in second['letters']], newest_first[50:100])
+        self.assertEqual([l['id'] for l in self.s.letters_brief(limit=5)['letters']], list(reversed(added)))
+        # filters on the server, before the page is cut
+        all_ids = list(reversed(made + added))
+        for kw, keep in (({'sender': 'Astra'}, lambda s, r: s == 'Astra'), ({'recipient': '姫'}, lambda s, r: r == '姫'),
+                         ({'member': 'Astra'}, lambda s, r: 'Astra' in (s, r)), ({'sender': 'Astra', 'recipient': 'Fable'}, lambda s, r: (s, r) == ('Astra', 'Fable'))):
+            expect = [i for i in all_ids if keep(*who[i])]
+            got, _ = pages(**kw)
+            self.assertEqual(got, expect, kw)
+        # a sender picks up every reply, however many
+        replies = [i for i in made if who[i][0] == 'Astra'][:60]
+        self.assertEqual(len(replies), 60)
+        for lid in replies:
+            l, actor = {'id': lid}, who[lid][1]
+            self.ev(l, 'received', actor=actor)
+            self.ev(l, 'started', actor=actor)
+            self.ev(l, 'returned', actor=actor, body='返答')
+        got, n = pages(sender='Astra', state='returned')
+        self.assertEqual((sorted(got), n), (sorted(replies), 2), '60 replies over 2 pages, none dropped')
+        with self.assertRaises(ValueError):
+            self.s.letters_brief(cursor='x5')
+        with self.assertRaises(ValueError):
+            self.s.letters_brief(cursor='r0')
+
     def test_body_limits_and_optional_references(self):
         with self.assertRaises(ValueError):
             self.send(body='   ')
@@ -505,6 +556,22 @@ class HttpTests(Base):
         code, out = watch()
         self.assertEqual((code, [c['id'] for c in json.loads(out)['changes']]), (0, [sent['id']]), 'printed again: not lost')
         self.assertEqual(json.loads(self.cli('letter', 'list', '--brief')[1])['brief'], True)
+
+    def test_list_pages_through_comm_cli(self):
+        for i in range(55):
+            self.send(body=f'#{i}')
+        code, out = self.cli('letter', 'list', '--brief')
+        page = json.loads(out)
+        self.assertEqual((code, len(page['letters']), page['hasMore'], page['nextCursor'] is not None), (0, 50, True, True), 'one page prints its next cursor')
+        code, out = self.cli('letter', 'list', '--brief', '--cursor', page['nextCursor'])
+        self.assertEqual(len(json.loads(out)['letters']), 5)
+        code, out = self.cli('letter', 'list', '--brief', '--sender', 'Astra', '--recipient', '姫', '--all')
+        every = json.loads(out)
+        self.assertEqual((code, len(every['letters']), every['pages']), (0, 55, 2))
+        self.assertEqual(len({l['id'] for l in every['letters']}), 55, 'no repeats')
+        self.assertEqual(self.cli('letter', 'list', '--all')[0], 1, '--all needs --brief')
+        with self.assertRaisesRegex(studio_client.StudioError, '400'):
+            studio_client.get('/letters?cursor=r5')
 
     def test_http_guards_and_queries(self):
         call = lambda path, action, body: studio_client._call('POST', path, action, body)

@@ -720,3 +720,13 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — 待機導入手順 H-20261019-33
 
 [連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H33へ。コード固定中に規約/READMEと待機運用を照合、新返却欄のみ。live/道具変更なし、返却後連続待機。
+
+
+## OPS-156 — 履歴のページング H-20261019-34
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H34へ。50件の打切りを明示しページングと送り手フィルタをAPI/CLI/UIへ。51件以上の隔離試験。実稼働変更・commitなし、返却後連続待機。
+
+
+## OPS-156 — フィルタ変更中の旧cursor補正 H-20261019-35
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H35へ。旧ページ値を新フィルタの結果に見せず、取得キー不一致時のページ送りを防ぐ。template/letters試験だけ、返却後連続待機、commitなし。

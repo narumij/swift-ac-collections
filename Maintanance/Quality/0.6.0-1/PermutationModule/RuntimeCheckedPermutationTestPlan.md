@@ -1,5 +1,10 @@
 # Runtime-Checked Permutation Test as Specification Plan
 
+## TL;DR（人間向け）
+これは、現行のruntime-check版`NextPermutations`について、旧COW仕様から分離した後継Test as Specificationの構成・実施記録である。実装境界、旧testの処置、後継test群、受入済みの実施結果を記録する。
+
+この記録は完了済みの調査・test実装を説明するものであり、アーカイブされた作業指示や未完了の依頼を再開するものではない。現在の状態はTask Registryと現行Quality Profileを参照する。
+
 ## Task
 
 - ID: `PERM-052`
@@ -226,12 +231,11 @@ are returned evidence; Codex performs acceptance and Registry updates.
 
 - Xcode build-for-testing: success、error 0。
 - `swift test --disable-sandbox --filter PermutationTests`: success。
-- XCTestは27件成功した。内訳はborrowed版25件と`EtcTests` 2件であり、runtime-check通常版を直接扱う
-  通常testは手動列挙1件だけである。
-- Swift Testingは`RuntimeCheckedPermutationDeathTests` 2件が成功した。
-- user-level SwiftPM cacheがread-onlyというenvironment warningは出たが、buildとtest結果には影響しなかった。
+- 27 XCTest cases passed: 25 for the borrowed implementation and two `EtcTests`. Only one ordinary test directly exercises manual enumeration in the normal runtime-check implementation.
+- Two Swift Testing cases in `RuntimeCheckedPermutationDeathTests` passed.
+- SwiftPM emitted an environment warning that the user-level cache was read-only; it did not affect the build or test results.
 
-この成功は現行scratch checksの基準点であり、後継Test as Specificationが揃ったことを意味しない。
+This success is a baseline for the current scratch checks; it does not mean that successor Test as Specification coverage is complete.
 
 ## PERM-053 return（2026-10-13 Claude）
 
@@ -269,16 +273,13 @@ G0、G2、G4、G5、production source、Registry、Quality Profileには触れ�
 
 ## PERM-053 acceptance（2026-10-13 Codex）
 
-- G1、G3、範囲外Death Testを、確定台帳と現行runtime-check契約へ照合して受け入れた。
-- `EtcTests.swift`から削除された手動列挙scratchは、G1の列挙順testに包含されている。Span scratchとG2の
-  失効scratch 2件が維持されていることも確認した。
-- Xcodeの現行scheme／test planで、追加23件と残存Span scratch 1件の計24件をCodexが独立再実行し、
-  24件成功、失敗・skip・not run各0件を確認した。
-- CLIによる同じ再実行はXcode環境のsandboxがmanifest起動を拒否したため成立しなかった。これはtest失敗の
-  証拠ではなく、Claudeが記録したDebug／Release CLI各24件成功を置き換えるものでもない。
-- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+ - G1, G3, and the out-of-range Death Tests were accepted against the established ledger and current runtime-check contract.
+ - The manual-enumeration scratch test removed from `EtcTests.swift` is covered by the G1 enumeration-order test. The Span scratch test and two G2 invalidation scratch tests were confirmed to remain.
+ - Codex independently reran the 23 added tests and one retained Span scratch test (24 total) using the current Xcode scheme/test plan. All 24 passed, with zero failures, skips, or not-run tests.
+ - The equivalent CLI rerun could not start because the Xcode environment sandbox blocked manifest launch. This is not evidence of test failure and does not supersede Claude's recorded Debug and Release CLI results of 24 passed each.
+ - Pre-existing changes to `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` were not part of this task and were excluded from acceptance.
 
-これにより`PERM-053`は完了とする。G2、G4、G0／G5は、それぞれ独立した後続taskとして残る。
+This completes `PERM-053`. G2, G4, and G0/G5 remain as separate follow-up tasks.
 
 ## PERM-054 return（2026-10-13 Claude）
 
@@ -316,16 +317,13 @@ G0、G1、G3、G4、G5、production source、Registry、Quality Profileには触
 
 ## PERM-054 acceptance（2026-10-13 Codex）
 
-- G2のpositive control 1件とDeath Test 9件を、確定したruntime view失効契約へ照合して受け入れた。
-- 新しいViewを返す`next()`、終端で`nil`を返す`next()`、owner破棄、View copyについて、
-  `startIndex`、`endIndex`、subscriptからGateKeeperが失効を検出することを確認した。
-- `EtcTests.swift`から削除されたscratch 2件は、広い`.failure`から正確な`expectedSwiftTrapSignal`契約へ
-  昇格されている。無関係なSpan scratchは維持されている。
-- Xcodeの現行scheme／test planで、受入済みG1・G3・範囲外Death Testと新G2を合わせた33件を
-  Codexが独立再実行し、33件成功、失敗・skip・not run各0件を確認した。
-- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+ - The G2 positive control and nine Death Tests were accepted against the established runtime View-invalidation contract.
+ - For a `next()` that returns a new View, a terminal `next()` returning `nil`, owner destruction, and a View copy, GateKeeper invalidation is detected through `startIndex`, `endIndex`, and subscript access.
+ - The two scratch tests removed from `EtcTests.swift` were promoted from broad `.failure` checks to exact `expectedSwiftTrapSignal` checks. The unrelated Span scratch test remains.
+ - Codex independently reran the accepted G1, G3, out-of-range Death Tests, and new G2 (33 total) in the current Xcode scheme/test plan. All 33 passed, with zero failures, skips, or not-run tests.
+ - Pre-existing changes to `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` were not part of this task and were excluded from acceptance.
 
-これにより`PERM-054`は完了とする。G4とG0／G5は、それぞれ独立した後続taskとして残る。
+This completes `PERM-054`. G4 and G0/G5 remain as separate follow-up tasks.
 
 ## PERM-055 return（2026-10-13 Claude）
 
@@ -362,16 +360,13 @@ G0、G1、G2、G3、G5、production source、Registry、Quality Profileには触
 
 ## PERM-055 acceptance（2026-10-13 Codex）
 
-- G4の内部仕様test 7件を、現行owned bufferの所有・破棄境界へ照合して受け入れた。
-- source変更からの独立、未開始・途中・完走・空の各破棄経路、奇数長suffix反転におけるobject identityと
-  exactly-once解放、escaped invalid Viewがelement storageを延命しないことを確認した。
-- GateKeeper自体の寿命はproductionへ観測点を足さず、契約が要求するstorage側だけを観測している。
-  失効ViewへアクセスしないことでG2との責務も分離されている。
-- Xcodeの現行scheme／test planで、受入済みG1・G2・G3と新G4を合わせた40件をCodexが独立再実行し、
-  40件成功、失敗・skip・not run各0件を確認した。
-- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+ - The seven G4 internal specification tests were accepted against the current owned-buffer ownership and destruction boundaries.
+ - The tests verify independence from later source changes; destruction before starting, after partial consumption, after completion, and for empty input; object identity and exactly-once destruction during odd-length suffix reversal; and that an escaped invalid View does not keep element storage alive.
+ - GateKeeper lifetime is not directly instrumented in production; only the storage behavior required by the contract is observed. Avoiding access to the invalidated View also keeps this distinct from G2.
+ - Codex independently reran the accepted G1, G2, G3, and new G4 tests (40 total) in the current Xcode scheme/test plan. All 40 passed, with zero failures, skips, or not-run tests.
+ - Pre-existing changes to `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` were not part of this task and were excluded from acceptance.
 
-これにより`PERM-055`は完了とする。G0／G5は独立した最後の後続taskとして残る。
+This completes `PERM-055`. G0/G5 remain as the final independent follow-up task.
 
 ## PERM-056 return（2026-10-13 Claude）
 
@@ -416,15 +411,11 @@ compile fixture scriptはCIへ登録していない。
 
 ## PERM-056 acceptance（2026-10-13 Codex）
 
-- G0のruntime 2件、G5のPermutationModule共存2件、AcCollections再公開1件、およびG0のcompiler fixture
-  4経路を、確定した公開表面とexposure境界へ照合して受け入れた。
-- Xcodeの現行scheme／test planでG0〜G5のPermutationTests 44件をCodexが独立再実行し、44件成功、
-  失敗・skip・not run各0件を確認した。
-- `swift test --disable-sandbox --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests`を
-  Codexが再実行し、`import AcCollections`だけを使う再公開test 1件の成功を確認した。
-- `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`をCodexが再実行し、公開入口のcompile-pass
-  1件と、直接初期化、owner copy、`Sequence`利用のcompile-fail各1件が期待diagnosticで失敗することを確認した。
-- compiler fixtureはrepository内で再実行可能だが、CIへの登録は本taskの範囲外として残っている。
-- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+ - The two G0 runtime tests, two G5 PermutationModule coexistence tests, one AcCollections reexport test, and four G0 compiler-fixture paths were accepted against the established public surface and exposure boundary.
+ - Codex independently reran all 44 G0–G5 PermutationTests in the current Xcode scheme/test plan. All 44 passed, with zero failures, skips, or not-run tests.
+ - Codex reran `swift test --disable-sandbox --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests` and confirmed that the one reexport test using only `import AcCollections` passed.
+ - Codex reran `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh` and confirmed that the public-entry compile-pass succeeds, while direct initialization, owner copy, and `Sequence` use each fail with the expected compile-fail diagnostic.
+ - The compiler fixture can be rerun inside the repository, but adding it to CI remained outside this task's scope.
+ - Pre-existing changes to `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` were not part of this task and were excluded from acceptance.
 
-これにより`PERM-056`は完了し、runtime-check版PermutationのG0〜G5 Test as Specification再構成は一巡した。
+This completes `PERM-056` and finishes one pass of the G0–G5 Test as Specification reconstruction for runtime-checked Permutation.

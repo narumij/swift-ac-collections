@@ -1,5 +1,14 @@
 # Permutation general Swift usage Validation scenario
 
+## TL;DR（人間向け）
+
+通常版NextPermutationsについて、外部consumerでの導入・逐次消費・保存を固定環境で確かめた記録です。人間が説明なしで理解できるかは別です。
+
+Paths 2・3は未実施。互換版・借用版・性能・競技利用への合格には広げず、参加者の選定はユーザーが行います。
+
+<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+
+
 ## Position
 
 - Task: `PERM-041`

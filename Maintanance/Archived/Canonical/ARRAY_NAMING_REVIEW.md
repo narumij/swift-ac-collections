@@ -2,57 +2,54 @@
 
 最終更新: 2026-10-09 / Codex
 
+## TL;DR（人間向け）
+この記録はBareArrayとOptionalArrayの公開名・次元名を検討し、公開前にユーザー判断へ渡すための調査と評価を保存する。初期のClaude調査、追加調査要求、第三者AIの補足、およびCodexの統合評価を含む。
+
+ここにある候補、調査依頼、停止条件は当時の記録であり、現行の指示や未完了の依頼ではない。名称判断と実装を再開する根拠として使わず、現在の状態はTask Registryと現在の公開API資料で確認する。
+
 ## 目的
 
-BareArrayとOptionalArrayの正式公開前に、公開型名と次元名体系がSwift標準ライブラリおよび
-`swift-collections`と衝突せず、公開後も長く維持できるかをAI間で検討し、ユーザー判断へ渡す。
+Before BareArray and OptionalArray were formally released, this review examined whether their public type names and dimension naming systems conflicted with the Swift standard library or `swift-collections` and could be maintained over the long term. The review was intended to provide material for the user's decisions.
 
-AIは名称を決定しない。Claudeが候補と反証を調査し、Codexが同じ証拠を独立評価して統合する。最終的な
-公開名は、整理済みの選択肢からユーザーが一件ずつ判断する。
+AI does not decide names. Claude investigates candidates and counterarguments; Codex independently evaluates and integrates the same evidence. The user decides each final public name from the organized options.
 
 ## 判断へ渡す単位
 
-1. BareArrayの所有型、View型、次元名を含む一つの命名体系。
-2. OptionalArrayの1D所有型名。
-3. OptionalArrayの2D〜4D次元名体系。
+1. One naming system for BareArray, including its owning types, View types, and dimension names.
+2. The name of the one-dimensional owning type in OptionalArray.
+3. The two- through four-dimensional naming system in OptionalArray.
 
-上の三判断を一度に要求しない。共有できる衝突調査と対応表は一つにまとめ、推奨と影響は判断単位ごとに
-分ける。
+Do not ask for all three decisions at once. Consolidate shared collision research and mapping tables, while keeping recommendations and impacts separate for each decision.
 
 ## 必須条件
 
-- Swift標準ライブラリの公開型名、主要用語、命名規則と衝突しない。
-- `swift-collections`の公開型名、主要用語、命名規則と衝突しない。
-- 標準または`swift-collections`由来の型だと利用者が誤認しにくい。
-- BareArrayとOptionalArrayの対応関係を説明でき、差異には用途上の理由がある。
-- 正式公開前なので、既存名とのsource compatibilityより、公開後の持続性、可読性、検索性、推測可能性を
-  優先する。ただし既存利用例とGit利用者への移行影響は記録する。
+- Avoid conflict with public type names, key terminology, and naming conventions in the Swift standard library.
+- Avoid conflict with public type names, key terminology, and naming conventions in `swift-collections`.
+- Make it unlikely that users will mistake a type for one provided by the standard library or `swift-collections`.
+- Make the relationship between BareArray and OptionalArray explainable, with a usage-based reason for any difference.
+- Because this was before formal release, prioritize long-term maintainability, readability, searchability, and predictability over source compatibility with existing names. Still record the migration impact on existing examples and Git users.
 
 ## Claude調査
 
-次を事実、評価、推奨、反証に分けて提出する。
+Submit the following, distinguishing facts, assessments, recommendations, and counterarguments.
 
-1. 両moduleの現行公開型、initializer label、subscript軸、`indices`軸の対応表。
-2. 使用中のSwift toolchainとpackageが解決している`swift-collections`版を特定した衝突確認。
-3. 必要なら、公式のSwift標準ライブラリinterfaceと`swift-collections`一次資料を使った現行公開名の確認。
-   調査日、versionまたはcommit、確認範囲を記録する。
-4. 現行維持、部分整合、正式公開前の破壊的整合を含む候補。各候補について、利点、欠点、誤認可能性、
-   影響する宣言、test・文書・利用例の移行範囲を示す。
-5. 三つの判断単位ごとに推奨を一つ示し、その最も強い反証も併記する。
+1. A mapping of the current public types, initializer labels, subscript axes, and `indices` axes in both modules.
+2. Collision checks that identify the Swift toolchain in use and the `swift-collections` version resolved by the package.
+3. If needed, confirmation of current public names using the official Swift standard-library interface and primary `swift-collections` sources. Record the investigation date, version or commit, and scope checked.
+4. Candidates including retaining current names, partially aligning them, and making a source-breaking alignment before formal release. For each, show advantages, disadvantages, possible user confusion, affected declarations, and migration scope across tests, documents, and examples.
+5. One recommendation for each decision unit, with its strongest counterargument.
 
-名称候補を考案しただけで衝突なしとみなさない。文字列の完全一致だけでなく、既存collection概念との
-意味上の近さ、Swift API Design Guidelinesとの整合も確認する。
+Do not conclude that a name is conflict-free merely because it was newly proposed. Check semantic similarity to existing collection concepts and consistency with the Swift API Design Guidelines, as well as exact string matches.
 
 ## 境界と停止条件
 
-- source、test、利用例、コメントドック、Registryを変更しない。
-- rename、typealias、deprecated alias、移行期間を実装しない。
-- 公開名を決定しない。
-- 性能、View寿命、storage設計、strict memory safetyへ議論を広げない。
-- 衝突確認に必要な一次資料へ到達できない場合は、推測で安全とせず未確認範囲として返す。
+- Do not change source, tests, examples, documentation comments, or the Registry.
+- Do not implement renames, type aliases, deprecated aliases, or a migration period.
+- Do not decide public names.
+- Do not broaden the discussion to performance, View lifetime, storage design, or strict memory safety.
+- If primary sources needed for collision checking are unavailable, report the unverified scope instead of assuming safety.
 
-Claudeはこの文書へ`Claude調査結果`を追記し、`Maintanance/CLAUDE_TASK.md`の状態を返却待ちへ更新して
-git addまで行う。Codexはその後に独立評価を追記し、三つのユーザー判断を順次起動できるか判定する。
+The historical assignment asked Claude to append `Claude調査結果` to this document, set the state in `Maintanance/CLAUDE_TASK.md` to awaiting return, and stage the result. Codex was then to append an independent assessment and decide whether the three user decisions could be initiated in sequence. This describes the former workflow and grants no current authority to update the Registry or Git state.
 
 ## Claude調査結果
 
@@ -163,61 +160,36 @@ git addまで行う。Codexはその後に独立評価を追記し、三つの�
 
 ## Codex予備評価 — 追加調査要求（2026-10-09）
 
-現行surface、local toolchain、`swift-collections` 1.7.0、移行範囲、現行維持案の反証は判断材料として
-有効である。ただし次の不足があるため、AI間検討としてはまだ受け入れない。
+The current surface, local toolchain, `swift-collections` 1.7.0, migration scope, and counterarguments to retaining current names were useful decision inputs. However, the review was not yet accepted as a complete inter-AI evaluation because of these gaps:
 
-1. 完全一致がないことは必須条件を満たすための必要条件であって、現行名が適切という十分条件ではない。
-   `Bare`と`Optional`の意味が実際の所有、固定容量、未初期化slot、非所有Viewの契約をどう表すかを評価する。
-2. 接頭語の候補が`Raw`と`Heap`にほぼ限られ、意味上の代替案を探索し切っていない。現行名を上回る候補が
-   無いとの結論にする場合も、複数の実質的な候補と棄却理由を示す。
-3. `View`の意味ずれを指摘した一方、維持案と代替suffixの比較がない。標準の`Slice`、`Span`、`View`が
-   与える寿命・Collection・範囲の期待を比較し、誤認を最小化する案を示す。
-4. 判断3-Cは4Dの名前変更と軸契約の反転を混ぜている。storage順と連鎖subscriptの意味を維持した名称変更、
-   軸契約自体を変える変更を分離し、後者が別判断なら命名候補へ混ぜない。
-5. 公式`swift-collections`の現行`main`は1.7系の安定APIとして`RigidArray`と`UniqueArray`を掲げ、これらを
-   Swift標準ライブラリへ加えるSwift Evolution提案SE-0527も公開されている。現在の完全一致だけでなく、
-   ownership-aware arrayの命名領域が標準へ移る方向を反証へ含める。
+1. Lack of an exact match is necessary to meet the requirements but is not sufficient to show that current names are suitable. Assess how `Bare` and `Optional` communicate actual ownership, fixed capacity, uninitialized slots, and non-owning View contracts.
+2. Prefix alternatives were nearly limited to `Raw` and `Heap`, leaving semantic alternatives unexplored. Even if no candidate is better than the current name, provide several substantive options and explain why each is rejected.
+3. The review noted a semantic mismatch in `View` but did not compare retaining it with alternative suffixes. Compare the lifetime, Collection, and range expectations conveyed by standard `Slice`, `Span`, and `View`, and identify the choice least likely to mislead users.
+4. Option 3-C combines a four-dimensional naming change with reversal of the axis contract. Separate a naming change that preserves storage order and chained-subscript semantics from a change to the axis contract itself. Do not mix the latter into naming candidates if it requires a separate decision.
+5. The official `swift-collections` `main` advertises `RigidArray` and `UniqueArray` as stable APIs in the 1.7 series, and Swift Evolution proposal SE-0527 proposes adding them to the standard library. Include this movement of ownership-aware array terminology toward the standard library as a counterargument, beyond checking current exact matches.
 
 一次資料:
 
 - [`apple/swift-collections` README](https://github.com/apple/swift-collections)
 - [SE-0527: RigidArray and UniqueArray](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0527-rigidarray-uniquearray.md)
 
-第三者AIは上の不足だけを補い、既存の事実表と移行件数を作り直さない。追加結果では、各判断単位について
-「衝突しない候補」ではなく「契約を最も誤認させにくい候補」を比較し、最強の反証を添える。名称決定、
-source変更、軸契約変更は行わない。
+The third-party AI was to address only the gaps above without recreating existing fact tables or migration counts. For each decision unit, compare names least likely to misrepresent the contract rather than merely names without collisions, and include the strongest counterargument. Do not decide names or change source or axis contracts.
 
-Claudeへの補完依頼は開始前に取り止めた。2026-10-09のユーザー指示により、追加調査は
-[`CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md`](CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md)を使って第三者AIへ
-依頼する。Codexはその回答を受け入れた後に独立評価を完成し、ユーザー判断へ渡す。
+The planned supplemental assignment to Claude was cancelled before it began. Under the user's 2026-10-09 instruction, supplemental research was instead requested from a third-party AI using [`CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md`](CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md). Codex would complete its independent assessment after accepting that response and then return the material for the user's decisions.
 
 ## Codex独立評価 — 第三者AI補完調査の受入（2026-10-09）
 
-第三者AIの回答は[`CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md`](CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md)として受領した。Codexは回答全体と一次資料を照合し、Claude初稿に
-不足していた次の材料が補われたため、`BARE-012`と`OPT-043`の調査結果として受け入れる。
+The third-party response was received as [`CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md`](CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md). Codex compared the full response with primary sources and accepted it as supplemental evidence for `BARE-012` and `OPT-043` because it filled these gaps in Claude's initial review:
 
-- `Bare`の代替として`Fixed`、`Rigid`、`Contiguous`、`Raw`、`Unsafe`、`Dense`、`Static`、`Flat`、
-  `Buffer`を比較し、現行契約を過剰に約束する案または既存概念との誤認が強い案を棄却した。
-- `View`を`Slice`、`Span`、`UnsafeView`と比較し、範囲保持、寿命保証、pointer APIについて各語が与える
-  期待を分離した。
-- 4Dのstorage軸を変更せずに名称だけを変える案と、軸契約そのものを反転する案を分離した。
-- 公式`swift-collections`の現行系列とSE-0527を踏まえ、完全一致だけでなくownership-aware arrayとしての
-  意味上の近さを評価した。SE-0527がSwift 6.4でImplementedであることもCodexが一次資料で再確認した。
+ - It compared `Fixed`, `Rigid`, `Contiguous`, `Raw`, `Unsafe`, `Dense`, `Static`, `Flat`, and `Buffer` as alternatives to `Bare`, rejecting names that overpromise the current contract or strongly invite confusion with existing concepts.
+ - It compared `View` with `Slice`, `Span`, and `UnsafeView`, distinguishing the expectations each term creates about range retention, lifetime guarantees, and pointer APIs.
+ - It separated changing names without changing four-dimensional storage axes from reversing the axis contract itself.
+ - It considered the current official `swift-collections` series and SE-0527 to assess semantic proximity as an ownership-aware array, not only exact matches. Codex independently reconfirmed from primary sources that SE-0527 was implemented in Swift 6.4.
 
-Codexの統合結論は次のとおり。
+Codex's integrated conclusions were:
 
-1. BareArrayは、所有型の`BareArray` / `BareArray2D`〜`4D`と、非所有型の
-   `BareArray1DView`〜`3DView`を維持する案を推奨する。`Bare`は固定容量を直接表さない弱点があるが、
-   `RigidArray`と同じ可変countのcontainer、標準`Span`と同じ寿命保証、`Raw`の型なしbyteなどを誤って
-   約束しない。`UnsafeView`は有力な反証だが、役割より危険性だけを前面へ出し、pointer APIの存在まで
-   期待させるため現行`View`を上回らない。寿命責務は名称ではなく公開契約で明記する。
-2. OptionalArray 1D所有型は、`OptionalArray1D`維持と`OptionalArray`への改名の根拠が拮抗する。
-   BareArrayの見た目へ揃えることだけでは決めず、slot配列を独立した型系列と見るかをユーザー判断へ残す。
-3. 多次元labelは、2D・3Dの`width` / `height` / `depth`と4Dの`size0`〜`size3`を維持する案を
-   推奨する。全次元の機械的統一より2D・3Dの利用箇所での明瞭さを優先し、4Dの番号と連鎖subscript順が
-   逆である点は文書で明示する。軸契約自体の反転は命名判断へ含めない。
+1. Retain the BareArray owning types `BareArray` / `BareArray2D` through `4D` and the non-owning types `BareArray1DView` through `3DView`. `Bare` does not directly express fixed capacity, but it avoids incorrectly promising a variable-count container like `RigidArray`, lifetime guarantees like standard `Span`, or untyped bytes like `Raw`. `UnsafeView` is a strong counterargument, but it foregrounds risk rather than role and can imply a pointer API, so it is not better than the existing `View`. State lifetime obligations in the public contract rather than the name.
+2. The arguments for retaining `OptionalArray1D` and renaming it to `OptionalArray` are balanced. Do not decide solely to match BareArray's appearance; leave to the user whether slot arrays should be treated as an independent type family.
+3. Retain `width` / `height` / `depth` for dimensions two and three and `size0` through `size3` for dimension four. Prefer clarity in common two- and three-dimensional uses over mechanical uniformity, and document that four-dimensional numbering is opposite to chained-subscript order. Do not include reversing the axis contract in the naming decision.
 
-回答中の`:chatgpt-content-reference`は生成元固有の参照記号であり、repository内では解決不能である。
-回答原本は入力証拠として保持し、上の統合結論では解決可能な一次資料だけを根拠として扱う。また、候補名
-すべての網羅的な衝突検査は未実施だが、推奨はいずれも現行名維持であり、Claudeが行った現行名の完全一致
-検査と第三者AIの意味比較を合わせれば、三つのユーザー判断を順次行う材料として十分である。
+The response's `:chatgpt-content-reference` markers are source-specific and cannot be resolved in the repository. Preserve the source response as input evidence; the integrated conclusions above rely only on primary sources that can be resolved. Not every candidate name received an exhaustive collision check. However, all recommendations retain current names, and the combination of Claude's exact-match checks for current names and the third party's semantic comparisons was considered sufficient material for the user's three sequential decisions.

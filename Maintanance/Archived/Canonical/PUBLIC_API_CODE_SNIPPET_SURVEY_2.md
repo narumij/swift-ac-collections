@@ -1,60 +1,52 @@
 # リポジトリ公開APIコードスニペット候補アンケート第2弾
 
+## TL;DR（人間向け）
+公開API全体のコメントドックに加える短い利用例の候補をCodexとClaudeの回答から統合した記録です。スニペット実装や掲載場所の決定は対象外です。これは当時の調査・受入記録であり、現在の作業指示ではありません。
+
 ## 対象task
 
-`DOC-020` — リポジトリ公開APIコードスニペット候補メソッドTOP10アンケート第2弾
+`DOC-020` — Round 2 survey of the Top 10 candidate methods for public API code snippets
 
 ## 目的と対象
 
-このリポジトリの公開API全体から、各公開APIのコメントドックへ短い利用コードを載せる効果が高い箇所を
-選ぶ。特定moduleを除外しない。内部APIとtest専用APIは公開APIではないため対象外とする。
+Select, from the repository's public API, the places where adding a short usage example to the API's comment documentation would be most valuable. Do not exclude any particular module. Internal and test-only APIs are out of scope because they are not public APIs.
 
 ## 実施方法
 
-- Codexは`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`へ回答する。
-- Claudeは`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`へ回答する。
-- 回答fileを分ける目的は同時編集の競合回避である。
-- 公開宣言と現在のコメントドックを中心に判断し、不明な挙動だけtestで確認する。
-- 各候補にsymbol、順位、利用者の疑問、示すべき最小の振る舞い、既存説明だけでは不足する理由を書く。
+- Codex responds in `PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`.
+- Claude responds in `PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`.
+- Separate response files avoid concurrent editing conflicts.
+- Base judgments primarily on public declarations and their current comment documentation; use tests to confirm only unclear behavior.
+- For each candidate, state the symbol, rank, likely user question, minimum behavior to demonstrate, and why the current explanation is insufficient.
 
-両回答の確定後、Codexが一致・相違を整理して本書へ記録する。
+After both responses are finalized, Codex summarizes their agreements and differences here.
 
 ## 回答状態
 
-- Codex回答: 完了
-- Claude回答: 完了、Codex受入済み
-- まとめ: 完了
+- Codex response: complete
+- Claude response: complete and accepted by Codex
+- Summary: complete
 
 ## 両回答のまとめ
 
-両者とも、公開APIの説明文を増やすより、呼び出し方と結果を短く並べることで独自契約が早く伝わる
-箇所を優先した。特に次の5観点は共通して上位となった。
+Both responses prioritized cases where a short example of calling the API and its result communicates a distinctive contract more quickly than adding more prose. Five shared high-priority areas were:
 
-1. RedBlackTreeの境界式による単一点・範囲アクセス
-2. `RedBlackTreeMultiMap.subscript(key:)`が返す可変Values View
-3. `Collection.nextPermutations()`の開始位置と列挙範囲
-4. `OptionalArray1D.subscript(_:)`の未設定・設定・`nil`解除
-5. BareArrayの非対称shapeを使った軸順と連鎖subscript
+1. Point and range access on RedBlackTree using boundary expressions
+2. The mutable Values View returned by `RedBlackTreeMultiMap.subscript(key:)`
+3. The starting position and enumeration range of `Collection.nextPermutations()`
+4. Unset, set, and `nil`-clearing behavior of `OptionalArray1D.subscript(_:)`
+5. Axis order and chained subscripting with a non-symmetric BareArray shape
 
-RedBlackTreeでは、CodexはDictionaryのdefault subscript、insert-only契約、MultiSetの値View、meldingを
-挙げた。Claudeは近傍探索、`eraseUnique`／`eraseMulti`、境界式の相対移動、保持Indexによる削除を
-挙げた。いずれも候補として保持し、実際の掲載順位やスニペット作成は後続taskで決める。
+For RedBlackTree, Codex also proposed Dictionary's default subscript, the insert-only contract, the MultiSet values View, and melding. Claude proposed neighbor search, `eraseUnique`/`eraseMulti`, relative movement of boundary expressions, and removal using a retained Index. Keep all as candidates; decide actual publication ranking and create snippets in a follow-up task.
 
-Claudeの確認では、RedBlackTree各型の既存スニペットに現在の公開名と一致しない
-`.advance(by:)`／`.endIndex`が残っており、現在の`.advanced(by:)`／`.end`へ直す必要がある。また、
-`RedBlackTreeSet.upperBound(_:)`の例がSetに重複値を含めている。これらは新規スニペット候補とは別の
-既存コメント修正候補として記録する。
+Claude found that existing snippets for the RedBlackTree types still used `.advance(by:)` and `.endIndex`, which do not match current public names `.advanced(by:)` and `.end`. It also found an example of `RedBlackTreeSet.upperBound(_:)` that included duplicate values in a Set. Record these as existing-comment correction candidates, separate from new snippet candidates.
 
-このうちAPI名の不一致は、`DOC-021`として型コメント3 fileとHead文書6 fileを修正した。2026-10-11、
-Claudeの一時clientによる9例のcompile・実行成功、対象範囲に旧表記が残っていないこと、現在のHEADの
-Xcode build成功をCodexが確認して受け入れた。出力コメントの表現と`upperBound(_:)`例は対象外のままとする。
+The API-name mismatch was corrected under `DOC-021` in three type-comment files and six Head documents. On 2026-10-11, Codex accepted Claude's successful compile and execution of nine examples using a temporary client, the absence of old spellings in the target scope, and a successful Xcode build of current HEAD. Output-comment wording and the `upperBound(_:)` example remained out of scope.
 
 ## 受入
 
-2026-10-10、両回答がリポジトリ全体の公開APIを対象とし、各候補にsymbol、利用者の疑問、最小の
-振る舞い、既存説明との差が記載されていることを確認した。回答fileの分離は同時編集の衝突回避として
-扱い、相互未読や独立性を受入条件にはしていない。アンケート第2弾を完了とする。
+On 2026-10-10, Codex confirmed that both responses covered the repository's public API and recorded each candidate's symbol, user question, minimum behavior, and gap in the existing explanation. Separate response files were treated as a way to avoid concurrent editing conflicts; unread responses or independence were not acceptance criteria. The second survey was marked complete.
 
 ## 対象外
 
-スニペットの実装、掲載場所の決定、公開コメントや利用者向け文書の変更は別taskとする。
+Implementing snippets, deciding where to publish them, and changing public comments or user-facing documentation are separate tasks.

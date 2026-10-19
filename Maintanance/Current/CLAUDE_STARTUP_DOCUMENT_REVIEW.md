@@ -1,59 +1,72 @@
 # Claude起動系文書の見直し検討
 
-2026-10-16、Astra。OPS-054。ユーザー依頼による検討taskの登録。担当Astra。2026-10-16着手。
+## TL;DR（人間向け）
 
-## 目的・範囲
+Claudeの起動系文書（ルートCLAUDE.md・Tests/CLAUDE.mdなど）のリンク切れ・矛盾・古い案内を整理した検討と改訂の記録。テスト入口の簡素化、作業領域規則の見直し、ルート文書の英訳反映を経て、ユーザーの受入で完了した。起動先の切替や文書移動、AGENTS.md全般の編集解禁は含まない。
 
-OPS-053の検討結果を受け取った後、Claudeの現行起動経路と参照文書を確認し、重複・古い案内・権限や受渡しの誤読箇所を整理する。現状と改善案、変更対象と承認が必要な範囲を提示する。
+2026-10-16, Astra. OPS-054. Registration of a review task at the user's request. Owner: Astra. Started 2026-10-16.
 
-## 入力
+<a id="目的範囲"></a>
+## Purpose and scope
 
-CLAUDE.mdを起点に明示された現行参照先のみをたどる。旧版・履歴は必要な照合に限る。
+After receiving the OPS-053 review result, check Claude's current startup route and referenced documents, and organize duplicates, outdated guidance, and places where authority or handover can be misread. Present the current state and improvement proposals, the targets of change, and the scope needing approval.
 
-## 順序と完了条件
+<a id="入力"></a>
+## Input
 
-配置維持例外表の検討（OPS-053）→Claude起動系文書の検討（OPS-054）の順に進める。OPS-054はOPS-053の検討結果の受入後に開始する。前段で提案した変更の実施完了までは要求しない。
+Follow only the current references explicitly named from CLAUDE.md. Old versions and history are limited to the necessary checks.
 
-現行根拠、問題の有無、維持すべき境界、選択肢・推奨案、必要なユーザー判断を記録し、検討結果を受け入れるまで。変更不要という結論も可能。登録時は調査・改訂未実施。下記の追加委任によりリンク・矛盾修正まで実施する。
+<a id="順序と完了条件"></a>
+## Order and completion condition
 
-## 境界
+Proceed in the order: review of the placement-exception table (OPS-053) → review of Claude's startup documents (OPS-054). OPS-054 starts after the OPS-053 review result is accepted. Completing the changes proposed in the earlier stage is not required.
 
-検討結果だけで配置維持の解除、文書移動・失効、起動先切替、恒久task削除を実施しない。改訂・実施は別途委任を確認する。AGENTS.mdは編集しない。Claudeへの依頼は今回発行しない。
+Until the current grounds, whether there are problems, the boundaries to keep, the options and recommendation, and the needed user decisions are recorded and the review result is accepted. A "no change needed" conclusion is possible. At registration, no investigation or revision had been done. By the additional delegation below, it goes as far as fixing links and contradictions.
 
-## 調査・返却（2026-10-16、Astra）
+<a id="境界"></a>
+## Boundaries
 
-ユーザーの「OPS-054に着手」「まずリンク切れ修正と矛盾点の解消」により、この範囲の改訂を明示委任された。OPS-053はDONEで前提充足。起動先の切替や文書移動は行わない。
+The review result alone does not lift placement protection, move or expire documents, switch the startup target, or delete permanent tasks. Revision and execution require a separately confirmed delegation. AGENTS.md is not edited. No request to Claude is issued this time.
 
-確認範囲はルートCLAUDE.md、Tests/CLAUDE.md、CLAUDE_TASK.mdの現行規則、CLAUDE_PENDING_TASKS.mdの規則、TESTING.md、Progress V2の入口・Registry・Rules。直接のMarkdownリンクと明示されたリポジトリ相対パスに欠落はなかった。次の意味上の参照不備と矛盾を修正した。
+<a id="調査返却2026-10-16astra"></a>
+## Investigation and return (2026-10-16, Astra)
 
-- Tests側だけの英語必須指定を削除し、ユーザー補足に基づいて使用量軽減のため内部依頼は英語を基本とする方針をルートCLAUDE.mdへ集約。ユーザー向け日本語と正確な引用は維持。
-- 依頼票のactive記載だけで現在taskにする案内を、明示選択・固定ID・現在状態と条件の確認へ変更。依頼経路と占有・受渡しの正本をルートから接続。
-- 独自の優先順位と無委任の任意保守を、AGENTSの最新指示→Registry→詳細正本と着手権限へ合わせた。
-- API Matrixの省略パスを実在する完全なリポジトリ相対パスへ変更。
-- 存在しない「保留中の判断・懸念」への報告案内を、依頼のReturnまたは直接依頼のqueueへ修正。ダッシュボードの現行節名は「判断待ち」。
-- ダッシュボードに存在しない全体完了ゲートへの参照を削除し、選択taskの記録された受入条件へ合わせた。恒久保守全体の完了とは区別。
-- TESTING.mdにある赤黒木の返却案内を、現在の依頼票から実際の保存履歴へ修正。試験結果やユーザー方針は変更しない。
+By the user's 「OPS-054に着手」 and 「まずリンク切れ修正と矛盾点の解消」, revision within this scope was explicitly delegated. OPS-053 is DONE, so the prerequisite is satisfied. The startup target is not switched and documents are not moved.
 
-既存の外部アクセス制限、scratchの扱い、テスト実行条件は今回は変更しない。採番待ちの成果の受入も対象外。リンク・参照の実在と差分検査を実施。文書変更のみでSwiftテストは実行しない。今回分は確認待ち。起動文書全体の再設計やOPS-054全体の完了を認定しない。
+The checked scope: the root CLAUDE.md, Tests/CLAUDE.md, the current rules of CLAUDE_TASK.md, the rules of CLAUDE_PENDING_TASKS.md, TESTING.md, and Progress V2's entry, Registry and Rules. No direct Markdown links or explicit repository-relative paths were missing. The following semantic reference defects and contradictions were fixed.
 
-## テスト入口の簡素化（2026-10-16、Astra）
+- Removed the English-required instruction that existed only on the Tests side, and consolidated in the root CLAUDE.md, based on the user's supplement, the policy that internal requests are in English by default to reduce usage. Japanese for the user and exact quotations are kept.
+- Changed the guidance that made a task current just because a request file marked it active, to explicit selection, a fixed ID, and checking the current state and conditions. Connected the canonicals of request routes, occupancy and handover from the root.
+- Aligned the custom priority order and undelegated optional maintenance with AGENTS' latest instruction → Registry → detailed canonical and the permission to start.
+- Changed abbreviated API Matrix paths to existing full repository-relative paths.
+- Fixed guidance to report to a nonexistent 「保留中の判断・懸念」 so that it goes to the request's Return or the direct-request queue. The current section name on the dashboard is 「判断待ち」.
+- Removed a reference to an overall completion gate that does not exist on the dashboard, aligning with the recorded acceptance conditions of the selected task. Distinguished from completion of the whole permanent maintenance.
+- Fixed the red-black tree return guidance in TESTING.md from the current request file to the actual saved history. Test results and user policies are unchanged.
 
-ユーザーが提示案と直接依頼の分岐を確認し、「テスト直下はそのように修正して」と指示した。Tests/CLAUDE.mdを薄い入口に変更。調整役依頼は依頼票、ユーザー直接依頼は会話の明示範囲に従い、未登録の具体的実行依頼はルートのqueue規則に従うと明記した。
+The existing external-access restriction, the handling of scratch, and test-run conditions are not changed this time. Accepting outputs in the numbering queue is out of scope. Checked the existence of links and references and did a diff check. Document changes only; no Swift tests run. This part waits for confirmation. It does not certify a redesign of all startup documents or completion of OPS-054 as a whole.
 
-既存のWorking Rules・Validation・Finish and HandoffはMaintanance/Testing/TEST_WORKFLOW.mdへ移し、TEST-005へ紐付けた。報告先の記述だけ直接依頼と調整役依頼を分け、全直接依頼へ「完了」一語制限を適用しないようルートの通信規則を参照する。テスト固有の技術的規則は保持。TESTING.mdからも手順正本へ接続した。起動ファイルの配置維持指定は変更しない。
+<a id="テスト入口の簡素化2026-10-16astra"></a>
+## Simplifying the test entry point (2026-10-16, Astra)
 
-## 作業領域の規則見直し（2026-10-16、ユーザー決定／Astra反映）
+The user checked the proposed branching between coordinator requests and direct requests and instructed 「テスト直下はそのように修正して」. Changed Tests/CLAUDE.md into a thin entry point. It states that coordinator requests follow the request file, direct user requests follow the explicit scope of the conversation, and unregistered concrete execution requests follow the root queue rules.
 
-ユーザーが一時領域利用の提案を承認。ルートCLAUDE.mdの一律の外部アクセス禁止と、毎回の専用ディレクトリ作成・終了前削除の義務を見直した。/tmp等は必要に応じて利用でき、作業物を識別して衝突を避け、他のtask・processのファイルに触れず、自分が作成した範囲だけ片付ける。必要な成果・検証証拠は一時領域だけに残さず、正本または指定の証拠保存先へ記録する。
+The existing Working Rules, Validation and Finish and Handoff were moved to Maintanance/Testing/TEST_WORKFLOW.md and linked to TEST-005. Only the reporting destination was split into direct and coordinator requests, referring to the root communication rules so that the one-word 「完了」 restriction is not applied to every direct request. Test-specific technical rules are kept. TESTING.md is also connected to the procedure canonical. The placement-protection designation of the startup files is unchanged.
 
-作業に必要な外部ツール・SDK・依存・ビルド結果の限定参照と、通常のビルド・テストによる.build・DerivedData・標準キャッシュへの出力を許容する。無関係な探索、共有キャッシュ等の手動変更・掃除は認めない。外部の意図的編集はユーザー指定対象と自分の一時作業物に限定し、環境のアクセス許可は引き続き守る。先の「外部アクセス・scratchは今回は変更しない」は、この追加委任の範囲について更新された。
+<a id="作業領域の規則見直し2026-10-16ユーザー決定astra反映"></a>
+## Revising work-area rules (2026-10-16, user decision / applied by Astra)
 
-共通の一時作業物管理は、ユーザー指示で別task OPS-055としてProgressV2/COMMONS.mdへ切り出した。ルートCLAUDE.mdの重複手順を必要時参照へ置換。OPS-054全体の完了とはしない。
+The user approved the proposal on using temporary areas. Revised the root CLAUDE.md's blanket ban on external access and its obligation to create a dedicated directory every time and delete it before finishing. /tmp and the like may be used as needed: identify work items to avoid collisions, do not touch files of other tasks or processes, and clean up only what one created. Do not leave necessary outputs and verification evidence only in temporary areas; record them in the canonical or the designated evidence location.
 
-## ルート起動文書の原稿承認（2026-10-16）
+Allowed: limited reading of external tools, SDKs, dependencies and build results needed for the work, and output to .build, DerivedData and standard caches by ordinary builds and tests. Unrelated exploration and manual changes or cleanup of shared caches and the like are not allowed. Intentional external edits are limited to targets the user designates and one's own temporary work items, and the environment's access permissions continue to be respected. The earlier 「外部アクセス・scratchは今回は変更しない」 was updated for the scope of this additional delegation.
 
-ユーザーが日本語原稿を確認し「それ英語で反映して」と承認。AstraがCLAUDE.mdへ英訳を反映した。調整役依頼とユーザー直接依頼を分け、採番待ちを調整役不在時に限定せず、調整役をCodexへ固定する表現を整理した。Registry更新担当は現行規則へ委ね、直接依頼には「完了」一語制限を適用しない。作業領域とCOMMONS.mdへの必要時参照も承認原稿に沿って保持。リンク実在と差分検査を実施。未commit。
+Common management of temporary work items was split out, by user instruction, as a separate task OPS-055 into ProgressV2/COMMONS.md. The duplicated procedure in the root CLAUDE.md was replaced with an as-needed reference. This is not completion of OPS-054 as a whole.
 
-## ユーザー受入・完了（2026-10-16）
+<a id="ルート起動文書の原稿承認2026-10-16"></a>
+## Approval of the root startup document draft (2026-10-16)
 
-ユーザーが「ユーザーが受け入れしたってことで、閉じよう」と明示し、OPS-054をDONEへ更新した。続く明示依頼によりAGENTS.mdへCOMMONS.mdの必要時参照を追加。今回の編集委任はこの掃除項目の追加に限定し、AGENTS.md全般の編集禁止を解除するものではない。実際の掃除は行っていない。
+The user checked the Japanese draft and approved: 「それ英語で反映して」. Astra applied the English translation to CLAUDE.md. Separated coordinator requests from direct user requests, did not limit the numbering queue to times when the coordinator is absent, and tidied wording that fixed the coordinator to Codex. Registry updates are left to the current rules, and the one-word 「完了」 restriction is not applied to direct requests. The as-needed references to the work area and COMMONS.md are kept as in the approved draft. Checked link existence and did a diff check. Not committed.
+
+<a id="ユーザー受入完了2026-10-16"></a>
+## User acceptance and completion (2026-10-16)
+
+The user stated 「ユーザーが受け入れしたってことで、閉じよう」 and OPS-054 was updated to DONE. By the following explicit request, an as-needed reference to COMMONS.md was added to AGENTS.md. This editing delegation is limited to adding this cleanup item and does not lift the general ban on editing AGENTS.md. No actual cleanup was done.

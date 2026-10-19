@@ -1,59 +1,47 @@
 # Permutation公開API名称 — Astra最終提案・三者合意確認
 
+## TL;DR（人間向け）
+Module名`NextPermutationModule`と通常版一時View名`NextPermutations.Permutation`について、三者の同意確認をまとめた当時の提案記録です。正式名称の採用とrename実行は別の判断として残しています。
+
 作成者：Astra。作成日：2026-10-15。確認task：`PERM-072`。
 
 ## 位置づけ
 
-本書は、ユーザーから依頼された最終提案と、ユーザー・Claude姫・V3の三者による合意確認の正本である。
-Astraは提案作成者であり、三者の回答者には含めない。Module名・通常版一時View名とも三者同意。回答の集約は完了。2026-10-15、ユーザーのコミット指示により完了記録を保存する。
-本書の作成を依頼したこと、過去の点数、AI同士の一致を、提案への同意として記録しない。
-公開名の最終決定は既存の`PERM-070`と`PUBLIC_API_NAMING_DECISIONS.md`で扱う。
+This is the canonical record of the final proposal requested by the user and the agreement check among the user, Claude (Hime), and V3. Astra authored the proposal and is not one of the three respondents. All three agreed on both the module name and the regular-mode temporary View name; responses have been consolidated. On 2026-10-15, the user instructed that the completion record be saved. The request to prepare this document, earlier scores, and agreement between AIs are not recorded as agreement with the proposal. The final public-name decision remains under existing task `PERM-070` and `PUBLIC_API_NAMING_DECISIONS.md`.
 
 ## 最終提案
 
-| 判断対象 | Astraの提案 | 変更 |
+| Decision | Astra proposal | Change |
 | --- | --- | --- |
-| Module名 | `NextPermutationModule` | 現行`PermutationModule`から変更を提案 |
-| 通常版一時view | `NextPermutations.Permutation` | leaf名`Permutation`を維持 |
+| Module name | `NextPermutationModule` | Proposed change from current `PermutationModule` |
+| Regular-mode temporary View | `NextPermutations.Permutation` | Keep leaf name `Permutation` |
 
-通常入口`nextPermutations()`、通常owner`NextPermutations`、borrowed入口`borrowedNextPermutations()`、
-borrowed owner`BorrowedNextPermutations`、generic parameter`Element`は、既存の暫定確定を前提とし再採点しない。
-`Element`の実sourceでのcompile・DocC確認という条件は維持する。
+The regular entry point `nextPermutations()`, regular owner `NextPermutations`, borrowed entry point `borrowedNextPermutations()`, borrowed owner `BorrowedNextPermutations`, and generic parameter `Element` rely on existing provisional confirmations and are not rescored. Retain the condition that `Element` be checked by compiling the actual source and building DocC.
 
 ### Module名の理由
 
-現在の中心入口とownerが`nextPermutations()`／`NextPermutations`にまとまっているため、moduleも同じ機能の語幹に揃える。
-具体化していない将来のPermutation APIを収容する広さより、現在の機能との対応を優先する。
-互換modeに全順列APIがあることは留意するが、中心機能を表す名称を妨げる決定的な理由とはしない。
+The current central entry point and owner are `nextPermutations()` and `NextPermutations`, so align the module with the same functional stem. Prioritize correspondence with the existing feature over breadth for unspecified future Permutation APIs. Note that compatibility mode has an all-permutations API, but this is not a decisive reason against a name for the central feature.
 
-`Next`だけで「初回に現在の並びを含み、その後は辞書順後続だけ」という契約が伝わるとは主張しない。
-この契約は文書と使用例で説明する。module改名の移行費用は存在し、無料の変更とは扱わない。
+The name `Next` alone does not communicate the contract that the first result is the current ordering and subsequent results are only its lexicographic successors. Explain this in documentation and examples. Renaming the module has migration cost and is not a free change.
 
 ### 一時view名の理由
 
-`NextPermutations.Permutation`で、列挙するものと一件の結果という関係が読める。
-`CurrentPermutation`の`Current`は「常に現在の状態を映すもの」とも読める。一方、現行viewは次の状態へ追従せず、
-次の`next()`で失効する。その違いを`Current`の追加だけで明確にできるとは考えない。
-これはAstraの意味上の評価であり、利用者実験で誤読率を測定した結果ではない。
+`NextPermutations.Permutation` communicates the relationship between the sequence being enumerated and one result. `Current` in `CurrentPermutation` could imply a value that continuously reflects the current state. The actual View does not follow the next state; it becomes invalid at the next `next()`. Astra does not consider adding `Current` alone sufficient to clarify that difference. This is a semantic assessment, not a user study measuring misunderstanding.
 
-一時viewであること、次の`next()`で失効すること、保存には`Array`等へのcopyが必要なことは、
-型の冒頭説明・使用例・診断で伝える。名前に寿命契約を詰め込みすぎず、`Permutation`を維持する。
+Explain in the type overview, examples, and diagnostics that this is a temporary View, that it becomes invalid at the next `next()`, and that preserving it requires a copy into an `Array` or similar value. Keep `Permutation` rather than overloading the name with lifetime details.
 
 ## 固定する契約と対象外
 
-- 初回は入力の現在の並び、その後は辞書順後続だけを返す。
-- 通常版は所有bufferの一時viewを返し、失効をruntimeで検査する。
-- borrowed版は所有bufferからSpanを貸し、compilerで寿命を検査する。
-- ownerは非コピー型、非Sequenceである。
-- 今回は二つの名称への合意確認。rename実行、公開契約変更、既定経路変更、凍結taskの再開は行わない。
-- module改名時に旧名の互換targetを残すかは本提案では決めない。名称に同意しても移行方式への同意とはしない。既存の最終決定taskでユーザーが明示し、実装前に確定する。
+- The first result is the input’s current ordering; subsequent results are only its lexicographic successors.
+- Regular mode returns a temporary View of an owned buffer and checks invalidation at runtime.
+- Borrowed mode lends a `Span` from an owned buffer and relies on the compiler to check lifetime.
+- The owner is noncopyable and does not conform to `Sequence`.
+- This task checks agreement on two names only. It does not implement renames, change public contracts or default paths, or reopen frozen tasks.
+- This proposal does not decide whether to retain a compatibility target under the old module name. Agreement on a name is not agreement on a migration method. The user must explicitly decide this in the existing final-decision task before implementation.
 
 ## 三者への確認方法
 
-再採点ではなく、上記提案を採用することに同意できるかを、対象ごとに回答する。
-回答は「同意」「条件付き同意」「不同意」「判断保留」のいずれかと、必要な理由・条件を記入する。
-同意を求めるために既存の反対意見を削らない。異論が残った場合は何が未解決かを明記し、
-多数決や追加ラウンドの自動開催で解消したことにしない。
+Respond separately for each subject on whether you agree to adopt the proposal; this is not a rescoring round. Choose “agree,” “agree with conditions,” “disagree,” or “hold,” and state any reasons or conditions. Do not remove prior objections to solicit agreement. If disagreement remains, state what is unresolved; do not treat majority voting or an automatically scheduled additional round as resolution.
 
 ### ユーザー回答欄
 
@@ -78,14 +66,11 @@ borrowed owner`BorrowedNextPermutations`、generic parameter`Element`は、既�
 
 ## 一時View名の訂正・追加回答
 
-2026-10-15、回答欄で対象を`Permutation`維持とだけ表記したため、何への回答か分かりにくかったことをAstraが確認した。既存回答は履歴として残し、対象を明記した以下の欄で訂正・追加回答を受ける。提案内容は変更しない。
+On 2026-10-15, Astra found that the response columns only said “keep `Permutation`,” making it unclear what they referred to. Keep the existing responses as history and collect corrections or additional responses in the following section, which states the subject explicitly. The proposal itself does not change.
 
 **対象：通常版が返す一時Viewの型名 `NextPermutations.Permutation` を維持する提案。**
 
-Module名やowner名への回答ではなく、`NextPermutations`に属する一時Viewの型名について回答する。
-回答は「同意」「条件付き同意」「不同意」「判断保留」とし、必要な理由・条件を記入する。
-各人の追加回答が記入されたら、一時View名の集約にはその回答を優先する。未回答を同意や旧回答の撤回とは扱わない。
-Module名`NextPermutationModule`への既存の三者同意は、この追加回答の対象外とする。
+This asks about the name of the temporary View type nested under `NextPermutations`, not the module or owner name. Respond “agree,” “agree with conditions,” “disagree,” or “hold,” with reasons or conditions as needed. Once additional responses are entered, use them when consolidating the temporary View name. Do not treat a missing response as agreement or withdrawal of an earlier response. Existing three-party agreement on module name `NextPermutationModule` is outside this additional response.
 
 ### ユーザー：一時View名の訂正・追加回答
 
@@ -107,21 +92,19 @@ Module名`NextPermutationModule`への既存の三者同意は、この追加回
 
 ## 受渡しと完了条件
 
-三者へ渡す際は本書の提案本文を固定し、各回答者の変更範囲を本人の回答欄に限定する。
-ユーザー回答は明示された発言を担当Codexが転記してよい。他者の回答・提案本文は書き換えない。
-2026-10-15、三者の既存回答と一時View名の追加回答を確認した。追加回答は三者とも同意であり、下記に集約した。
+When sending this to the three respondents, keep the proposal text fixed and limit each respondent’s edits to their own response section. The responsible Codex may transcribe explicit user statements. Do not rewrite another person’s response or the proposal. On 2026-10-15, all existing responses and the additional responses about the temporary View name were reviewed. All three additional responses agreed and are consolidated below.
 
-1. 三者の各対象への回答と条件が揃う。未回答や条件付き回答を合意済みと数えない。
-2. 対象ごとに合意の成立・不成立、未解決条件を記録し、既存の最終決定taskへ渡す。全員一致は回答収集taskの完了条件ではなく、結果として区別する。
-3. 記録確認後は`WAITING_USER`でコミット許可を尋ねる。コミットを確認するか、ユーザーがコミット不要と判断したら`DONE`にする。
-4. 本taskの完了は名称の正式決定やrename完了を意味しない。
+1. Collect the three responses and conditions for each subject. Do not count missing or conditional responses as agreement.
+2. Record for each subject whether agreement was reached and any unresolved conditions, then hand it to the existing final-decision task. Unanimity is not a completion condition for response collection; record it as an outcome.
+3. After reviewing the record, ask for commit approval in `WAITING_USER`. Mark `DONE` once the commit is confirmed or the user decides a commit is unnecessary.
+4. Completing this task does not mean that the names have been formally decided or renamed.
 
 ## 集約欄（担当Codex）
 
-- Module名 `NextPermutationModule`：既存回答で三者同意。移行方式やrename実行の決定とは区別する。
-- 通常版一時View名 `NextPermutations.Permutation`：追加回答で三者同意。対象を明記した各人の追加回答を優先し、既存の不同意・保留回答は履歴として保存する。
-- 集約者：Astra。2026-10-15、両対象への三者同意を確認。名称案への未解決条件はない。module改名時の旧名互換方針は合意の対象外であり、`PERM-070`で扱う。
-- 三者回答と集約結果を`PERM-070`への判断材料として揃えた。確認taskは`DONE`。2026-10-15、ユーザーがコミットを許可し、回答・集約結果と完了記録を同じコミットに保存する。名称の正式決定やrename実行とは区別する。
+- Module name `NextPermutationModule`: all three agreed in their existing responses. This is separate from deciding a migration method or implementing the rename.
+- Regular-mode temporary View name `NextPermutations.Permutation`: all three agreed in the additional responses. Prioritize each person’s additional response, which names the subject explicitly, and retain earlier disagreement or hold responses as history.
+- Consolidator: Astra. On 2026-10-15, confirmed three-party agreement on both subjects. No unresolved conditions remain for these name proposals. Compatibility under the old name after a module rename was outside this agreement and remains with `PERM-070`.
+- The three responses and consolidated result were prepared as input to `PERM-070`. The confirmation task is `DONE`. On 2026-10-15, the user authorized a commit to save the responses, consolidation, and completion record together. This remains separate from the formal naming decision and implementation of the rename.
 
 ## 参照資料
 

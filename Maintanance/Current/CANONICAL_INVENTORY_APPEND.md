@@ -1,47 +1,56 @@
 # 正本への棚卸し追記
 
-2026-10-17 / OPS-074 / Astra登録。親OPS-070。CP-20261017-013のユーザー直接依頼を正式記録へ合流。
+## TL;DR（人間向け）
 
-## 範囲
+正本の本文を保ちながら浅い棚卸しを追記する方式を、固定版・出現行・確認方法・更新条件まで補完した記録。2固定版で保存結果の全項目一致を独立再実行して受け入れ、この限定作業は完了した。存在確認と意味上の正しさは別で、深い挙動・CI実走・全体適用は含まない。
 
-Current正本を事実と照合し、末尾へ点検事実・見張る仮判断・修正/失効案・履歴の糸口を追記する。既存本文の変更・削除、Registry変更、ユーザー確定文書、担当のいる作業中文書は対象外。浅い点検のみという現在の指示を維持し、深い点検は後回し。全件完遂を義務にせず区切りで対象・結果・残りを返す。
+2026-10-17 / OPS-074 / registered by Astra. Parent OPS-070. Merged the user's direct request CP-20261017-013 into the formal record.
 
-## 第1区切り
+<a id="範囲"></a>
+## Scope
 
-[返却](Evidence/CP-20261017-013/SHALLOW_CHECK.md)と2文書の追記を[補正付き受入](OPS_072_ACCEPTANCE.md)。移動の事実は確認、歴史的パスの一括置換はしない。
+Check Current canonicals against the facts and append, at the end, inspection facts, provisional judgments to watch, correction/expiry proposals, and threads into the history. Changing or deleting existing bodies, Registry changes, user-confirmed documents, and documents under work by an owner are out of scope. Keep the current instruction of shallow checks only; deep checks are postponed. Completing every item is not an obligation: return the targets, results and remainder at each break.
 
-## 残り
+<a id="第1区切り"></a>
+## First break
 
-集計の合計不一致、存在しなかったという誤記を補正し、抽出条件・対象一覧・分類明細を再現可能に保存する。機械的存在確認と意味上のリンク健全性を分ける。全件保証にはこの明細照合が必要。深い調査を自動開始せず、浅い点検の次の区切りを返して受入を受ける。登録時点では未発注。2026-10-17のユーザー指示により、下記の第2区切りを姫へ正式依頼した。
+The [return](Evidence/CP-20261017-013/SHALLOW_CHECK.md) and the additions to two documents were [accepted with corrections](OPS_072_ACCEPTANCE.md). The fact of the moves was confirmed; historical paths are not bulk-replaced.
 
-## 記録の更新条件（2026-10-17 / ユーザー依頼・Astra記録）
+<a id="残り"></a>
+## Remainder
 
-棚卸しの追記では、分かる範囲で「何が変わったら、どの記録を見直すか」を短く残す。毎回全体を疑って調べ直す負担を減らすためのもので、全記述への分類や常時監視を義務にしない。
+Correct the mismatched totals and the erroneous statement that something did not exist, and save the extraction conditions, target list and classification details reproducibly. Separate mechanical existence checks from semantic link soundness. Guaranteeing all items needs this detailed reconciliation. Do not start deep investigation automatically; return the next shallow break and get it accepted. Not yet requested at registration. On 2026-10-17, by user instruction, the second break below was formally requested of Hime.
 
-- **更新のきっかけ**：対象コード・参照パス・CI設定・Swift/toolchain版など、その結論の根拠や成立条件が変わったとき。該当するものだけ具体的に書く。
-- **見直す範囲**：変わった点検事実と、それに依存する結論。無関係な経緯や他の結論まで再調査しない。
-- **変更がない間**：記録された版・環境・確認範囲についての確認済み結果として扱う。現行版でも無条件に成立するという保証へ広げない。
-- **変更の有無が不明なとき**：その記録を再利用するときに、関連する更新条件だけ先に照合する。条件を確かめられなければ未確認と残し、全履歴探索へ広げない。
+<a id="記録の更新条件2026-10-17--ユーザー依頼astra記録"></a>
+## Update conditions for records (2026-10-17 / user request, recorded by Astra)
 
-例：参照パスの移動・改名時はパスの実在と参照先を見直す。ASanの結果は対象版・OS・toolchain・実行設定が変わった場合に、その結果を再利用できるか確認する。今回の浅い点検から試験の再実行まで自動的に広げない。
+When appending inventory notes, leave briefly, as far as known, "what change should trigger reviewing which record". This is to reduce the burden of doubting and re-investigating everything each time; classifying every statement or constant monitoring is not required.
 
-更新条件は記録を開き直すきっかけであり、本文の変更・試験実行・委任や判断の失効の許可ではない。経緯を履歴へ移す場合も、結論の成立条件と未確認範囲は表面に残す。本項の追記をもって全体制度の採用や既存文書への一括適用とはしない。
+- **Trigger for update**: when the grounds or validity conditions of the conclusion change, such as target code, referenced paths, CI settings, or Swift/toolchain versions. Write concretely only the ones that apply.
+- **Scope of review**: the inspection facts that changed and the conclusions depending on them. Do not re-investigate unrelated history or other conclusions.
+- **While nothing changes**: treat it as a confirmed result for the recorded version, environment and check scope. Do not extend it into a guarantee that it holds unconditionally on the current version.
+- **When it is unknown whether anything changed**: when reusing the record, check only the relevant update conditions first. If they cannot be confirmed, leave it unconfirmed and do not expand into a whole-history search.
 
-## 姫への依頼：第2区切り（2026-10-17 / 作成・受入：Astra）
+Example: when a referenced path is moved or renamed, review the path's existence and the reference target. An ASan result is checked for reusability when the target version, OS, toolchain or run settings change. Do not automatically extend from this shallow check to re-running tests.
 
-ユーザー「ひめにアサインして、こみっとしてほいて」に基づく。OPS-074はACTIVE。今回は次の範囲で着手してください。
+Update conditions are triggers for reopening a record, not permission to change the body, run tests, or expire delegations or judgments. Even when history is moved to the archive, keep the conclusion's validity conditions and the unconfirmed scope on the surface. This addition does not adopt a system-wide scheme or apply it in bulk to existing documents.
 
-1. 第1区切りの集計不一致と過去ファイルの存在に関する誤記を、原返却を残した訂正記録で補う。[受入補正](OPS_072_ACCEPTANCE.md)を入力とする。
-2. 浅い点検の対象版・抽出条件・対象一覧・分類明細を再現可能に保存する。元の72文書の報告値と今回の対象数を混同せず、差があれば区別する。参照パスとcommitの存在確認に限定し、解釈が必要なら未確認として返す。
-3. 確認できた記録について、分かるものだけ更新条件と見直す範囲を添える。全記述への分類は不要。既存の2文書への追記を補う場合も、新しい追記節で行う。
+<a id="姫への依頼第2区切り2026-10-17--作成受入astra"></a>
+## Request to Hime: second break (2026-10-17 / written and accepted by Astra)
 
-**編集範囲**：`Evidence/OPS-074/`へ明細・再実行手順またはスクリプト・訂正記録を作成。本書末尾のReturn欄へ報告。`AtCoder2025CompatibilityPlan.md`と`EXTERNAL_TYPE_EXTENSION_AUDIT.md`には着手時の占有を確認したうえで棚卸し追記のみ可。元本文・過去返却・受入記録は変更しない。
+Based on the user's 「ひめにアサインして、こみっとしてほいて」. OPS-074 is ACTIVE. Start within the following scope.
 
-**対象外・停止条件**：深い主張の検証、製品・Tests・CI・Studioの変更、試験実行、正本本文の短縮、制度採用、Registry更新、他担当の作業中範囲は対象外。対象外の判断や変更が必要なら、その箇所を止め、確認範囲と必要入力を返す。全件を埋めるための探索はしない。
+1. Supplement the mismatched totals of the first break and the erroneous statement about the existence of past files with a correction record that keeps the original return. Use the [acceptance corrections](OPS_072_ACCEPTANCE.md) as input.
+2. Save the target version, extraction conditions, target list and classification details of the shallow check reproducibly. Do not confuse the original reported values for 72 documents with the current number of targets; if they differ, distinguish them. Limit this to existence checks of referenced paths and commits; if interpretation is needed, return it as unconfirmed.
+3. For records that could be confirmed, add update conditions and review scopes only where known. Classifying every statement is not needed. When supplementing the existing additions to the two documents, do so in a new appended section.
 
-**完了条件**：件数が明細と一致し、元の誤記が訂正記録で識別でき、再実行方法と限界、更新条件の記入例、残りが確認できること。未確認を正常と数えない。受入はAstraが行う。
+**Editing scope**: create details, re-run steps or a script, and a correction record in `Evidence/OPS-074/`. Report in the Return field at the end of this document. In `AtCoder2025CompatibilityPlan.md` and `EXTERNAL_TYPE_EXTENSION_AUDIT.md`, only inventory additions are allowed, after confirming occupancy at the start. Do not change the original bodies, past returns or acceptance records.
 
-依頼完成をもって上記の成果記入範囲を姫へ受け渡す。Astraは返却まで同範囲を編集しない。今回のコミット許可は依頼準備・調整記録のコミットに適用する。姫の成果のcommit・外部操作は本依頼に含めない。
+**Out of scope / stop conditions**: verifying deep claims, changes to product, Tests, CI or Studio, running tests, shortening canonical bodies, adopting systems, updating the Registry, and other owners' in-progress areas are out of scope. If an out-of-scope judgment or change is needed, stop at that point and return the checked scope and the needed input. Do not search to fill every item.
+
+**Completion condition**: the counts match the details, the original errors are identifiable via the correction record, and the re-run method and limits, examples of update conditions, and the remainder can be checked. Do not count unconfirmed items as normal. Astra accepts.
+
+With the request complete, the output scope above is handed to Hime. Astra does not edit that scope until the return. This commit permission applies to committing the request preparation and coordination records. Committing Hime's output or external operations is not included in this request.
 
 ### Return（姫記入）
 
@@ -59,29 +68,32 @@ Current正本を事実と照合し、末尾へ点検事実・見張る仮判断�
 
 **残り**：深い点検（後回しのまま）。#13・#19の担当への受渡し。#1・2・12の基準の確認。次の浅い区切りを行う場合は、本スクリプトを再実行して差分だけ見ればよい。
 
-## 第2区切り受領・追加対応依頼（2026-10-17 / Astra）
+<a id="第2区切り受領追加対応依頼2026-10-17--astra"></a>
+## Receipt of the second break and request for additional work (2026-10-17 / Astra)
 
-ユーザー「OPS-074おわったらしいので、受け取って差し戻しと、どこかに記載」に基づく。原Returnと成果は保持。保存JSONの集計（参照272＝249+2+15+6、hash100＝83+3+14）とREADMEの一致、再実行スクリプト、訂正記録、2文書への追記を確認した。再実行による固定版再現はまだ確認していない。OPS-074はACTIVEを維持し、完了受入は追加返却後とする。
+Based on the user's 「OPS-074おわったらしいので、受け取って差し戻しと、どこかに記載」. The original Return and outputs are kept. Confirmed that the totals of the saved JSON (references 272 = 249+2+15+6, hashes 100 = 83+3+14) match the README, along with the re-run script, the correction record and the additions to the two documents. Reproduction of a fixed version by re-running has not yet been confirmed. OPS-074 stays ACTIVE; completion acceptance comes after the additional return.
 
-### 会話で具体化した記録方式
+<a id="会話で具体化した記録方式"></a>
+### Record format made concrete in conversation
 
-判断が依存する事実を切り出し、必要なら事実確認を別の低コストAIへ委任できる形にする。今回、新たなAIの起動や委任は行わない。
+Cut out the facts a judgment depends on, in a form where fact checking can be delegated to another low-cost AI if needed. This time, no new AI is started or delegated to.
 
-根拠は **完全なコミットSHA・repository内ファイルパス・その版の行番号範囲・確認した主張** を基本とする。判断全体の依存を網羅しようとせず、判断を変えうる事実から扱う。確認の問い・探索先・打ち切り条件を渡し、確認できた／食い違う／未確認と証拠を返す。不在と未発見を区別する。
+The basic grounds are **the full commit SHA, the file path in the repository, the line-number range in that version, and the claim checked**. Do not try to cover every dependency of a judgment; start with the facts that could change the judgment. Hand over the question to check, where to search and when to stop, and get back confirmed / conflicting / unconfirmed with evidence. Distinguish absence from not-found.
 
-更新時は同じ行番号を現行版に当てず、版間差分から対応箇所を追い、関係する主張だけ再確認する。差分の範囲外の依存（設定・呼出元・環境等）があるなら明示し、対象行に変更がないだけで結論不変と断定しない。ファイルの存在のように行を持たない事実はパス・確認方法で十分。無理に行範囲を作らない。
+On update, do not apply the same line numbers to the current version; follow the corresponding place through the diff between versions and re-check only the relevant claims. If there are dependencies outside the diff (settings, callers, environment, etc.), state them, and do not conclude the result is unchanged just because the target lines did not change. For facts without lines, such as a file's existence, the path and check method are enough. Do not force a line range.
 
-未コミット内容はHEADの事実と呼ばず、対象内容の保存・hash等を併記する。OS/toolchain・外部CI結果もコミットだけでは固定できないため、必要な環境・run・証拠を別に残す。この形式は今回の限定試行であり、全記録への一括適用はしない。
+Do not call uncommitted content a fact of HEAD; record saving the target content, a hash, etc. alongside. OS/toolchain and external CI results cannot be fixed by a commit alone, so keep the necessary environment, run and evidence separately. This format is a limited trial this time and is not applied in bulk to all records.
 
-### 姫への差し戻し範囲
+<a id="姫への差し戻し範囲"></a>
+### Scope sent back to Hime
 
-1. **入力版の区別**：現スクリプトは作業ツリーを読み、`input_commit`にHEADを置く。完全SHAの固定版を読む方式、または作業ツリーの変更有無と対象内容を復元できる保存方式に改める。今回の浅い点検は可能なら固定版を用い、存在判定も同じ版へ揃える。履歴探索のref範囲とスクリプト自体の版/hashも示す。旧結果を黙って置き換えず、新しい結果として保存する。
-2. **根拠の所在**：新結果に元文書の該当行範囲と確認した主張・確認方法を付ける。重複参照の集約時は出現箇所を失わない。既存2文書への追記のうち少数を例に、上記方式と更新条件を対応させる。製品の深い挙動は調べない。
-3. **集計訂正の境界**：新しい76文書の結果だけから過去72文書の数を確定しない。旧版との比較を安く再現できれば根拠を保存し、できなければ旧集計の復元は未確認へ補正する。READMEの追加4文書は「ほか」で省略せず列挙する。
+1. **Distinguish the input version**: the current script reads the working tree and puts HEAD in `input_commit`. Change it to read a fixed version by full SHA, or to a saving method that can restore whether the working tree changed and the target content. Use a fixed version for this shallow check if possible, and align existence checks to the same version. Also show the ref range of the history search and the version/hash of the script itself. Do not silently replace the old result; save it as a new result.
+2. **Location of the grounds**: attach to the new result the line ranges in the source documents, the claims checked and the check method. When aggregating duplicate references, do not lose the occurrences. Using a few of the additions to the two existing documents as examples, map the format above to update conditions. Do not investigate deep product behaviour.
+3. **Boundary of the total correction**: do not settle the past 72-document count from the new 76-document result alone. If the comparison with the old version can be reproduced cheaply, save the grounds; if not, correct the restoration of the old totals to unconfirmed. List the 4 additional documents in the README instead of abbreviating them as "others".
 
-編集は`Evidence/OPS-074/`のスクリプトと新規結果・補足記録、本書末尾の追加Return、既存2文書への新規追記に限定。原返却・旧証拠・受入節・依頼本文は保持する。深い調査・制度変更・製品/CI/Registry変更は対象外。探索が高くつく部分は未確認と必要入力を返して止める。
+Edits are limited to the script and new results/supplementary records in `Evidence/OPS-074/`, an additional Return at the end of this document, and new additions to the two existing documents. Keep the original return, old evidence, acceptance sections and request text. Deep investigation, system changes and product/CI/Registry changes are out of scope. Where searching becomes expensive, return unconfirmed with the needed input and stop.
 
-完了条件：入力を識別・復元でき、根拠の場所から主張を照会できること。明細と集計が一致し、再確認の範囲と未確認が分かること。Astraが独立に少数を照合して受入する。依頼完成をもって上記範囲を姫へ再委任し、返却までAstraは同範囲を編集しない。commit・外部操作は含めない。
+Completion condition: the input can be identified and restored, and claims can be looked up from the location of their grounds. Details and totals match, and the scope of re-checks and what is unconfirmed are clear. Astra independently checks a few and accepts. With the request complete, the scope above is re-delegated to Hime, and Astra does not edit it until the return. Commit and external operations are not included.
 
 ### 追加Return（姫記入）
 
@@ -101,8 +113,9 @@ Current正本を事実と照合し、末尾へ点検事実・見張る仮判断�
 
 **残り**：深い点検（後回し）。作業中2文書（RBT-026・RBT-007）の古い参照は担当へ。
 
-## 追加返却のAstra受入（2026-10-17）
+<a id="追加返却のastra受入2026-10-17"></a>
+## Astra acceptance of the additional return (2026-10-17)
 
-保存v2スクリプトをd6e6fab6・10d4951fの2固定版で独立に再実行し、両保存JSONと全項目一致を確認。固定版のResult._NodePtrの322〜325行を直接照合した。入力版・出現行・確認方法・更新条件、旧作業ツリー結果との区別を受入。OPS-074は限定方式の補完まででDONE、全体適用はOPS-076へ渡す。
+Independently re-ran the saved v2 script on the two fixed versions d6e6fab6 and 10d4951f and confirmed all items match both saved JSON files. Directly checked lines 322–325 of Result._NodePtr in the fixed version. Accepted the input version, occurrence lines, check method, update conditions and the distinction from the old working-tree result. OPS-074 is DONE up to completing the limited format; whole-repository application is handed to OPS-076.
 
-限界：hashのobject種別照会はローカルobject databaseに依存する。文書・参照先は固定treeだが、外部repoのhashや短縮hashの曖昧化まで再現保証しない。意味上の正しさ・深い挙動・CI実走は未検証。全体試行で必要な場合だけ補足する。
+Limits: object-type lookup of hashes depends on the local object database. Documents and references come from a fixed tree, but reproduction is not guaranteed for hashes of external repositories or ambiguity of short hashes. Semantic correctness, deep behaviour and real CI runs are unverified. Supplement only when needed in the whole-repository trial.

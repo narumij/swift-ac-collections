@@ -3,6 +3,12 @@
 
 # Borrowed Permutation Test as Specification Plan
 
+## TL;DR（人間向け）
+
+借用Span版Permutationの仕様test構成と、Claudeによるruntime test25件・一時clientのcompiler診断を保存した記録です。独立作業は整理され、残課題は品質側へ引き継がれています。
+
+runtime testの受入は全検証完了を意味せず、一時clientの拒否結果も恒久fixtureとは区別します。冒頭に整理済みと明示されており、旧棚卸し依頼や凍結中だった作業を現在の再開指示として使いません。
+
 ## Task
 
 - ID: `PERM-047`

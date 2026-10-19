@@ -1,0 +1,30 @@
+PASS all: layout sound, backbone order kept
+PASS all: single PERM-079 stays in the upper lane of GATE-0.6.0 (offset 295)
+PASS all: QUALITY-005,DOC-026,DOC-027 stacked under MS-SPI at offset 295/295/295 (= upper lane 295) — DOC-027 2033,553
+PASS all: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS all: 9 cards up to MS-SPI unmoved
+PASS all: 32 later cards shifted together, horizontally only (dx 104.016994)
+PASS all: 6 unconnected-chain cards keep x, row moved together (raised by 136)
+PASS @head: layout sound, backbone order kept
+PASS @head: single PERM-079 stays in the upper lane of GATE-0.6.0 (offset 295)
+PASS @head: QUALITY-005,DOC-026,DOC-027 stacked under MS-SPI at offset 295/295/295 (= upper lane 295) — DOC-027 705,553
+PASS @head: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS @head: 3 cards up to MS-SPI unmoved
+PASS @head: 32 later cards shifted together, horizontally only (dx 104.016994)
+PASS @head: 0 unconnected-chain cards keep x, row moved together (raised by none)
+PASS 0.6.0: layout sound, backbone order kept
+PASS 0.6.0: single PERM-079 stays in the upper lane of GATE-0.6.0 (offset 295)
+PASS 0.6.0: QUALITY-005,DOC-026,DOC-027 stacked under MS-SPI at offset 295/295/295 (= upper lane 295) — DOC-027 705,553
+PASS 0.6.0: lines kept between their real ends (MS-SPI→DOC-027, DOC-026→DOC-027, QUALITY-005→DOC-026)
+PASS 0.6.0: 3 cards up to MS-SPI unmoved
+PASS 0.6.0: 15 later cards shifted together, horizontally only (dx 104.016994)
+PASS 0.6.0: 0 unconnected-chain cards keep x, row moved together (raised by none)
+PASS fixture single successor: X1 in the upper lane of A1 (offset 295)
+PASS fixture successor chain: Y1,Y2,Y3 below A1, offset 295
+PASS fixture outside prerequisite: P1,P2,Z1 below A1, offset 295
+PASS fixture long outside prerequisite: Q1,Q2,Q3,Q4,Z2 below A1, offset 295
+PASS fixture single and chain on the same milestone: Y1,Y2 below A1, X1 above, offset 295
+PASS fixture width: A1→A2 gap 442→494, A0/A1 unmoved, A2→A3 gap 443→443, stack right 1008 < F1 1053
+PASS fixture stack before a bare milestone: sound, A1→A2 gap 443 not widened (usual 443)
+PASS fixture multiple origins (A1, A2): sound, placement not decided here — M1 in A1 column, M2 in A2 column
+ALL PASS

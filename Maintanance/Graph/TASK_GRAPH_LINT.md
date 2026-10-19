@@ -1,43 +1,51 @@
 # Task graph lint
 
-最終更新: 2026-10-09 / Codex
+## TL;DR（人間向け）
 
-## 目的
+Task RegistryとTask precedenceの構造上の疑義（存在しないtaskへの参照・自己依存・重複・不正なFlow・循環など）を、自動修正しない読み取り専用のlintとして検出する仕組みの説明。taskの意味や採否はCodexとユーザーが判断し、0件でも意味上の健全性は証明しない。
 
-Task RegistryとTask precedenceの構造上の疑義を、task判断の代行ではなくread-only lintとして検出する。
-Registryの意味、goalへの必要性、taskの採否はCodexとユーザーが判断し、このlintは自動修正しない。
+Last updated: 2026-10-09 / Codex
 
-## 実行
+<a id="目的"></a>
+## Purpose
 
-repository rootから次を実行する。
+Detect structural doubts in the Task Registry and Task precedence as a read-only lint, not as a substitute for task judgments.
+Codex and the user judge the meaning of the Registry, the necessity for goals, and whether to adopt tasks; this lint does not fix anything automatically.
+
+<a id="実行"></a>
+## Running
+
+Run the following from the repository root.
 
 ```sh
 sh Maintanance/Graph/TaskGraphLint/run.sh
 sh Maintanance/Graph/TaskGraphLint/run_fixtures.sh
 ```
 
-空のSQLiteインメモリDBへ現行Registryを読み込み、結果を標準出力へ表示する。`ERROR`が一件でもあれば
-終了status 1、なければ0とする。`WARNING`は段階移行または意味確認を要する観測であり、失敗扱いしない。
+It loads the current Registry into an empty in-memory SQLite DB and prints the result to standard output. If there is even one `ERROR`
+the exit status is 1, otherwise 0. A `WARNING` is an observation needing staged migration or a meaning check, and is not a failure.
 
-## 初版の規則
+<a id="初版の規則"></a>
+## Rules of the first version
 
-| severity | rule | 意味 |
+| severity | rule | meaning |
 | --- | --- | --- |
-| `ERROR` | `dangling_successor` / `dangling_prerequisite` | precedenceがRegistryにないtaskを参照している |
-| `ERROR` | `self_dependency` | taskが自身を前提にしている |
-| `ERROR` | `duplicate_edge` | 同じtask組のprecedenceが重複している |
-| `ERROR` | `invalid_flow` | Flowが`SEQUENCE`、`PARALLEL_JOIN`以外である |
-| `ERROR` | `dependency_cycle` | 必須依存にcycleがある |
-| `WARNING` | `conditional_prerequisite` | 「場合だけ／場合に限り」で再開するtaskが必須前提として使われている |
+| `ERROR` | `dangling_successor` / `dangling_prerequisite` | precedence refers to a task that is not in the Registry |
+| `ERROR` | `self_dependency` | a task has itself as a prerequisite |
+| `ERROR` | `duplicate_edge` | precedence for the same pair of tasks is duplicated |
+| `ERROR` | `invalid_flow` | Flow is other than `SEQUENCE` or `PARALLEL_JOIN` |
+| `ERROR` | `dependency_cycle` | the required dependencies contain a cycle |
+| `WARNING` | `conditional_prerequisite` | a task that resumes 「場合だけ／場合に限り」 (only if / only when) is used as a required prerequisite |
 
-条件付き判定は自然言語による保守的なheuristicであり、0件でも意味上の健全性を証明しない。将来の規則は
-既知の違反と反証を含むfixtureを先に作り、誤検出を確認してから追加する。
+The conditional check is a conservative natural-language heuristic; zero hits do not prove semantic soundness. Future rules
+first get fixtures containing known violations and counterexamples, and are added after false positives are checked.
 
-## GRAPH-019 完了記録
+<a id="graph-019-完了記録"></a>
+## GRAPH-019 completion record
 
-- 現行Markdownを直接入力にするため、local DBや手入力snapshotへ依存しない。
-- SQLiteは`:memory:`だけを使い、repositoryへDB fileを作らない。
-- lintはRegistryやprecedenceを書き換えない。
-- 正常・異常fixtureでPASS/FAILと主要ERROR規則の検出を確認する。
-- 初回は構造ERROR 0件、既存`UNCLASSIFIED`のWARNING 8件を確認した。その後、全辺を個別分類して
-  `UNCLASSIFIED`を現行Flowから廃止した。
+- Uses the current Markdown directly as input, so it does not depend on a local DB or hand-made snapshots.
+- SQLite uses only `:memory:` and creates no DB file in the repository.
+- The lint does not rewrite the Registry or precedence.
+- Normal and abnormal fixtures confirm PASS/FAIL and detection of the main ERROR rules.
+- The first run confirmed 0 structural ERRORs and 8 WARNINGs for the existing `UNCLASSIFIED`. After that, every edge was classified individually and
+  `UNCLASSIFIED` was removed from the current Flow.

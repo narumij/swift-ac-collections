@@ -1,66 +1,43 @@
 # RedBlackTree以外のコメントドック・セルフレビュー
 
-2026-10-10、`AcCollections`、`PermutationModule`通常版、
-`OptionalArrayModule`、`BareArrayModule`の公開宣言を実装と対応testへ照合した。
-互換mode、RedBlackTree系、test・fixture・C helperは対象外。
+## TL;DR（人間向け）
+2026-10-10にRedBlackTree以外の公開コメントを実装・テストと照合した記録です。未解決のiterator copy事象は未確認のまま保持し、OptionalArrayのsetterは既確認の実装境界として扱っています。これは当時のレビュー記録で、現在の指示や未解決状態を更新するものではありません。
+
+On 2026-10-10, public declarations in `AcCollections`, the regular `PermutationModule`, `OptionalArrayModule`, and `BareArrayModule` were checked against their implementations and corresponding tests. Compatibility mode, RedBlackTree, tests, fixtures, and C helpers were out of scope.
 
 ## 結果
 
-- `AcCollections`: facadeの再公開は専用testで到達確認されており、独自の公開宣言はない。
-- `BareArrayModule`: ownership、View寿命、軸順、writeback専用setter、境界、計算量は
-  実装と通常test・death testに一致した。
-- 判断不要で直せるコメント不一致は見つからなかった。
+- `AcCollections`: re-exports are verified as reachable by dedicated tests; it has no independent public declarations.
+- `BareArrayModule`: ownership, View lifetime, axis order, the writeback-only setter, bounds, and complexity matched the implementation and ordinary tests and death tests.
+- No comment discrepancy was found that could be corrected without a product decision.
 
 ## 製品判断または追加検証が必要な候補
 
-1. `PermutationModule`はiterator copyの独立性を公開契約として記載し、対応testもある。
-   一方、source内TODOにはSwift 6.4 Release構成で元iteratorの進行がcopy側へ波及した
-   未解決事象が記録されている。実装由来かcompiler由来か確定していないため、コメントを
-   修正すべきとは推定しない。1.0前の再現確認までは未確認事項として残す。
-2. `OptionalArrayModule`の多次元subscriptとView subscriptのsetterは任意の`newValue`を
-   黙って無視するが、`OptionalElementBufferAudit.md`を再確認すると、2026-10-08に「連鎖subscriptの
-   writeback用の実装手段で、View全体代入を提供する公開契約ではない」とユーザー確認済みだった。
-   したがって新しい製品判断候補ではなく、公開コメントへsetterの実装詳細を追加しない現状を維持する。
+1. `PermutationModule` documents iterator-copy independence as a public contract, and corresponding tests exist. However, a TODO in the source records an unresolved case where, in a Swift 6.4 Release configuration, advancing the original iterator affected its copy. It has not been established whether this comes from the implementation or the compiler, so no comment change is inferred. Keep it unverified until reproduction is checked before 1.0.
+2. The setters on multidimensional subscripts and View subscripts in `OptionalArrayModule` silently ignore arbitrary `newValue`. A recheck of `OptionalElementBufferAudit.md` found that the user had confirmed on 2026-10-08 that this is an implementation mechanism for chained-subscript writeback, not a public contract to assign an entire View. Therefore, this is not a new product-decision candidate; retain the current approach of omitting setter implementation details from public comments.
 
 ## Claude独立照合の受入
 
-2026-10-10、Claudeのread-only照合は完成判定ではなく証拠packageとしてCodexが検収した。
-先行観測2件に加え、次の判断不要な修正候補を受け入れた。
+On 2026-10-10, Codex accepted Claude's read-only cross-check as an evidence package, not as a completion verdict. In addition to the two observations above, Codex accepted the following candidate fixes that need no decision:
 
-- `NextPermutationsSequence.makeIterator()`はsource collectionをbufferへcopyするためO(n)だが、
-  公開コメントに計算量がない。
-- `OptionalArray1D`と`OptionalArray1DView`の要素subscriptは、設定済みslotへ非`nil`を
-  上書きしたとき以前の要素を破棄することがtestで固定されているが、コメントに明記されていない。
-- `OptionalArray4D`の軸説明が`array[size3][size2][size1][size0]`となっており、寸法名を
-  添字値のように見せるため、添字記号へ直す余地がある。
-- 1D `BareArray`の本文に「多次元配列」が残っている。
+- `NextPermutationsSequence.makeIterator()` copies the source collection into a buffer and is therefore O(n), but the public comment did not state its complexity.
+- The element subscripts of `OptionalArray1D` and `OptionalArray1DView` destroy the old element when a non-`nil` value overwrites an initialized slot, as fixed by tests, but the comments did not say so.
+- The axis description for `OptionalArray4D` was written as `array[size3][size2][size1][size0]`, making dimension names look like index values; it could use index symbols instead.
+- The 1D `BareArray` description still referred to a “multidimensional array.”
 
-一方、公開仕様testがないことだけを理由にした`next()`終端とOptionalArray境界条件の
-`UNVERIFIED`分類は採用しない。実装と既存testからコメントとの一致を確認できる。
-`removeAll()`を`let`所有値から呼べる点も、利用者が必要とするコメント制約とは判定しない。
-3 moduleを公開初版へ進める完成判定はClaudeの結論から切り離し、Codexに残す。
+Codex did not accept classifying `next()` termination or OptionalArray bounds as `UNVERIFIED` solely because there were no public specification tests. The implementation and existing tests were enough to confirm consistency with the comments. The fact that `removeAll()` can be called on a `let` owner was also not considered a comment restriction users need. Whether the three modules are ready for an initial public release remains a separate Codex assessment and is not derived from Claude's conclusion.
 
 ## 後続対応
 
-2026-10-10、ユーザー指示によりA系統を実行した。
+On 2026-10-10, the user instructed that track A be carried out.
 
-- Permutationは`makeIterator()`だけでなく、公開入口、index、等値比較、hash、descriptionまで
-  計算量を横断確認し、実装に基づく記載を補った。OptionalArrayとBareArrayは、計算量を記載すべき
-  公開operationに既に記載があり、実装との新たな不一致は見つからなかった。
-- OptionalArrayの上書き破棄は、所有1Dと1DViewの別々の`_modify`実装、および両経路の参照寿命testで
-  契約が固定されていた。記載不能な契約ではなく、ドラフト時にnil代入だけを説明して非nil上書きを
-  落とした重要なcoverage不足と判定し、両subscriptへ以前の要素を破棄して置き換える旨を追記した。
-- OptionalArray4Dの軸表現とBareArray 1Dの「多次元配列」を最小補正した。
-- Xcode build成功。OptionalArrayとBareArrayのfile診断は0件。Permutationのfile診断2件は既存の
-  unsafe／未使用結果warningで、今回のコメント差分とは無関係。3 targetのdocumentation buildを
-  `--warnings-as-errors`付きで実行し、すべて成功した。
+- For Permutation, complexity was checked across the public entry point, Index, equality comparison, hashing, and description, not only `makeIterator()`, and implementation-based statements were added. OptionalArray and BareArray already documented the public operations for which complexity should be stated; no new discrepancy with the implementation was found.
+- For OptionalArray overwrite destruction, separate `_modify` implementations for the owning 1D type and 1DView, together with lifetime tests for both paths, fixed the contract. It was not an unstateable contract; the draft had described only assignment of `nil` and omitted non-`nil` overwrite, a significant coverage gap. Comments were updated on both subscripts to say that the previous element is destroyed and replaced.
+- The OptionalArray4D axis wording and the 1D BareArray “multidimensional array” wording received minimal corrections.
+- Xcode build succeeded. File diagnostics for OptionalArray and BareArray were zero. The two Permutation file diagnostics were existing unsafe/unused-result warnings unrelated to this comment diff. Documentation builds for all three targets succeeded with `--warnings-as-errors`.
+
 ## DOC-018: 公開コメントのparameter欄補完
 
-BareArray、OptionalArray、Permutationの公開APIコメントについて、引数を持つ宣言にDocCの
-`Parameter`／`Parameters`欄を補う。既存の公開契約は変更せず、各引数の意味は実装とtestで確認する。
-完了条件は対象宣言のparameter coverage確認と、3 targetのdocumentation build成功。
+Add DocC `Parameter`/`Parameters` sections to public API comments for declarations with arguments in BareArray, OptionalArray, and Permutation. Do not change existing public contracts. Confirm the meaning of each argument against the implementation and tests. Acceptance requires checking parameter coverage for the target declarations and successful documentation builds for all three targets.
 
-2026-10-10完了。parameterを持つ公開宣言29件（BareArray 15件、OptionalArray 11件、
-Permutation 3件）を照合し、`Parameter`／`Parameters`欄を補完した。軸・位置・closureの意味は
-既存実装とtestで確定している表現に限定した。3 targetとも`--warnings-as-errors`付きの
-documentation buildに成功した。
+Completed 2026-10-10. The 29 public declarations with parameters (15 BareArray, 11 OptionalArray, and 3 Permutation) were checked, and their `Parameter`/`Parameters` sections were completed. Axis, position, and closure descriptions were limited to wording established by the existing implementation and tests. All three targets passed documentation builds with `--warnings-as-errors`.

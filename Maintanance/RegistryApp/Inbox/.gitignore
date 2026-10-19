@@ -1,0 +1,3 @@
+# Studio save results and import records are user data handed to the AI; never commit them (OPS-082).
+*.json
+*.jsonl

@@ -1,5 +1,9 @@
 # Public API naming deliberative score report — round 3
 
+## TL;DR（人間向け）
+Round 3の評価と、標準ライブラリAPIとの関係を受けた対象範囲の訂正を記録します。未解決名の決定はユーザーに残しています。これは当時の協議記録です。
+
+
 Status: completed on 2026-10-13. This report records the deliberative result and the subsequent
 scope correction. The user still adopts each in-scope public name in
 `PUBLIC_API_NAMING_DECISIONS.md`.

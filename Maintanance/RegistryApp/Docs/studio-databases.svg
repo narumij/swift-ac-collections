@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1080" viewBox="0 0 1900 1080" font-family="-apple-system, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif">
+  <!-- Registry Studio: every SQLite file and its tables, simplified (2026-10-19). Edit this SVG; the PNG is rendered from it.
+       Table lists come from the schemas in code: v3/registry_v3_read.SCHEMA + registry_v3_write.WRITE_SCHEMA, approvals.py
+       (requests, history, STUDIO_SCHEMA), probe.py (approvals.Store on probe.sqlite3), decisions/decision_store.SCHEMA.
+       Green = authority, blue = records of communication and approval, gray = test lane, purple = supplementary record. -->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4c5b5e"/></marker>
+    <style>
+      .t{font-size:30px;font-weight:700;fill:#1f2d2f}
+      .h{font-size:22px;font-weight:700;fill:#1f2d2f}
+      .g{font-size:17px;font-weight:700;fill:#1f2d2f}
+      .b{font-size:16px;fill:#243234}
+      .s{font-size:15px;fill:#4c5b5e}
+      .m{font-size:15px;fill:#243234;font-family:Menlo, monospace}
+      .reg{fill:#e7f4ec;stroke:#2f7d55;stroke-width:3}
+      .com{fill:#eaf1fb;stroke:#3a6ea5;stroke-width:3}
+      .prb{fill:#f4f5f5;stroke:#8a9693;stroke-width:2.5}
+      .dec{fill:#f1ecfa;stroke:#6b4fa3;stroke-width:3}
+      .grp{fill:#ffffff;stroke:#c9d3d0;stroke-width:1.5}
+      .der{fill:#ffffff;stroke:#6b4fa3;stroke-width:1.8;stroke-dasharray:6 4}
+      .file{fill:#fbfbfb;stroke:#c9d3d0;stroke-width:2}
+      .who{font-size:15px;font-weight:700;fill:#7a3e00}
+      .ln{stroke:#4c5b5e;stroke-width:2.2;fill:none;marker-end:url(#a)}
+      .lab{font-size:14px;fill:#4c5b5e}
+    </style>
+  </defs>
+  <rect width="1900" height="1080" fill="#ffffff"/>
+  <text x="40" y="54" class="t">Registry Studio のデータベース（簡略、2026-10-19）</text>
+  <text x="40" y="86" class="s">SQLiteのファイルは4つ。ファイルどうしは参照し合わない（それぞれ独立）。開くものは、ファイルごとに決まっている。</text>
+
+  <!-- Registry V3 DB -->
+  <rect x="30" y="110" width="880" height="560" rx="16" class="reg"/>
+  <text x="54" y="146" class="h">Registry V3 DB　Data/registry.sqlite3</text>
+  <text x="54" y="174" class="b">task・依存・版・カード・現在位置・採番の正本（Git対象外）</text>
+  <text x="54" y="202" class="who">開く：サーバー（読取専用）／ registry_v3_cli.py（書込）／ viewの生成・backupの手順</text>
+  <rect x="54" y="222" width="400" height="300" rx="10" class="grp"/>
+  <text x="70" y="252" class="g">構造（task とマイルストーン）</text>
+  <text x="70" y="282" class="m">nodes</text><text x="250" y="282" class="s">すべての節点</text>
+  <text x="70" y="308" class="m">tasks</text><text x="250" y="308" class="s">状態・担当・条件…</text>
+  <text x="70" y="334" class="m">graph_edges</text><text x="250" y="334" class="s">管理・進捗・到達点の線</text>
+  <text x="70" y="360" class="m">versions</text><text x="250" y="360" class="s">版と、その順</text>
+  <text x="70" y="386" class="m">version_members</text><text x="250" y="386" class="s">版の中のカードの順</text>
+  <text x="70" y="412" class="m">version_gates</text><text x="250" y="412" class="s">版のゲート</text>
+  <text x="70" y="438" class="m">milestone_details</text><text x="250" y="438" class="s">文書・DONEの箱</text>
+  <text x="70" y="464" class="m">focus</text><text x="250" y="464" class="s">現在位置（読取の境界）</text>
+  <text x="70" y="498" class="s">ここから Markdown の表を生成する</text>
+  <rect x="478" y="222" width="408" height="152" rx="10" class="grp"/>
+  <text x="494" y="252" class="g">採番</text>
+  <text x="494" y="282" class="m">id_allocations</text><text x="676" y="282" class="s">prefixごとの最大番号</text>
+  <text x="494" y="308" class="m">issued_ids</text><text x="676" y="308" class="s">発行した番号の記録</text>
+  <text x="494" y="334" class="m">retirements</text><text x="676" y="334" class="s">退役したID</text>
+  <text x="494" y="360" class="m">proposal_map</text><text x="676" y="360" class="s">仮ID→正式ID</text>
+  <rect x="478" y="388" width="408" height="262" rx="10" class="grp"/>
+  <text x="494" y="418" class="g">操作・世代の記録</text>
+  <text x="494" y="448" class="m">operations</text><text x="676" y="448" class="s">操作IDごとの要求と結果</text>
+  <text x="494" y="474" class="m">revisions</text><text x="676" y="474" class="s">世代の中の改訂番号</text>
+  <text x="494" y="500" class="m">db_meta</text><text x="676" y="500" class="s">世代・書込の可否</text>
+  <text x="494" y="526" class="m">lineage</text><text x="676" y="526" class="s">復元などの経緯</text>
+  <text x="494" y="552" class="m">consumption_claims</text><text x="676" y="552" class="s">保存の部品の消費</text>
+  <text x="494" y="578" class="m">provenance</text><text x="676" y="578" class="s">各行の出どころ</text>
+  <text x="494" y="612" class="s">同じ操作IDは再送になる。</text>
+  <text x="494" y="634" class="s">復元した世代は書込を閉じたまま</text>
+  <rect x="54" y="536" width="400" height="114" rx="10" class="grp"/>
+  <text x="70" y="566" class="g">書き方</text>
+  <text x="70" y="594" class="s">CLIの操作だけ（基準の値・操作IDつき）</text>
+  <text x="70" y="618" class="s">1回の読取は1つのsnapshot</text>
+  <text x="70" y="640" class="s">表：18個</text>
+
+  <!-- approvals / letters DB -->
+  <rect x="940" y="110" width="930" height="370" rx="16" class="com"/>
+  <text x="964" y="146" class="h">承認・連絡 DB　Approvals/approvals.sqlite3</text>
+  <text x="964" y="174" class="b">承認、操作の記録、PING、AI間の連絡（letters）</text>
+  <text x="964" y="202" class="who">開く：サーバーだけ（comm.py・画面はHTTPのAPIを通る）</text>
+  <rect x="964" y="222" width="270" height="124" rx="10" class="grp"/>
+  <text x="980" y="252" class="g">承認</text>
+  <text x="980" y="282" class="m">requests</text><text x="1076" y="282" class="s">承認の依頼</text>
+  <text x="980" y="308" class="m">history</text><text x="1076" y="308" class="s">その出来事</text>
+  <text x="980" y="334" class="s">全部か無しかで承認</text>
+  <rect x="1250" y="222" width="290" height="236" rx="10" class="grp"/>
+  <text x="1266" y="252" class="g">記録・PING</text>
+  <text x="1266" y="282" class="m">operations</text><text x="1380" y="282" class="s">操作IDの記録</text>
+  <text x="1266" y="308" class="m">messages</text><text x="1380" y="308" class="s">PINGなど</text>
+  <text x="1266" y="334" class="m">acks</text><text x="1380" y="334" class="s">その応答</text>
+  <text x="1266" y="360" class="m">meta</text><text x="1380" y="360" class="s">送信者の名簿など</text>
+  <text x="1266" y="392" class="s">同じ内容の操作は再送、</text>
+  <text x="1266" y="414" class="s">違えば拒否</text>
+  <rect x="1556" y="222" width="290" height="236" rx="10" class="grp"/>
+  <text x="1572" y="252" class="g">連絡</text>
+  <text x="1572" y="282" class="m">letters</text><text x="1680" y="282" class="s">1通の連絡</text>
+  <text x="1572" y="308" class="m">letter_texts</text><text x="1700" y="308" class="s">依頼と返答の版</text>
+  <text x="1572" y="334" class="m">letter_events</text><text x="1700" y="334" class="s">受領・着手…</text>
+  <text x="1572" y="368" class="s">本文は書き換えず、改訂は</text>
+  <text x="1572" y="390" class="s">新しい版として足す</text>
+  <text x="1572" y="420" class="s">名前は本人申告（認証ではない）</text>
+  <rect x="964" y="362" width="270" height="96" rx="10" class="grp"/>
+  <text x="980" y="392" class="s">環境変数</text>
+  <text x="980" y="414" class="m" style="font-size:13px">REGISTRY_STUDIO_APPROVALS_DB</text>
+  <text x="980" y="438" class="s">で置き場を変えられる（試験用）</text>
+
+  <!-- probe DB -->
+  <rect x="940" y="500" width="440" height="170" rx="16" class="prb"/>
+  <text x="964" y="536" class="h">疎通の試験用 DB</text>
+  <text x="964" y="562" class="m">Approvals/probe.sqlite3</text>
+  <text x="964" y="592" class="b">承認DBと同じ形の表（承認の疎通を試すだけ）</text>
+  <text x="964" y="620" class="who">開く：サーバー（/approval-probe）</text>
+  <text x="964" y="648" class="s">commitの権限は与えない</text>
+
+  <!-- decision DB -->
+  <rect x="1400" y="500" width="470" height="350" rx="16" class="dec"/>
+  <text x="1424" y="536" class="h">判断の補助 DB</text>
+  <text x="1424" y="562" class="m">Data/decision-assist.sqlite3</text>
+  <text x="1424" y="590" class="b">判断の写しと出典（正本はMarkdown）</text>
+  <text x="1424" y="618" class="who">開く：decision_cli.py だけ（サーバーにつながない）</text>
+  <rect x="1424" y="636" width="200" height="110" rx="10" class="grp"/>
+  <text x="1440" y="664" class="g">保存する表</text>
+  <text x="1440" y="694" class="m">meta</text>
+  <text x="1440" y="720" class="m">events</text><text x="1508" y="720" class="s">（追記だけ）</text>
+  <rect x="1640" y="636" width="206" height="110" rx="10" class="der"/>
+  <text x="1656" y="664" class="g">表ではない</text>
+  <text x="1656" y="690" class="s">判断・改訂・参照は</text>
+  <text x="1656" y="712" class="s">eventsを畳み込んで</text>
+  <text x="1656" y="734" class="s">そのつど作る</text>
+  <text x="1424" y="776" class="s">採用・撤回は「外で決まったことの記録」で、</text>
+  <text x="1424" y="800" class="s">承認ではない。詳しくは decision-db.png</text>
+  <text x="1424" y="832" class="s">backup：新しいファイルへ（上書きしない）</text>
+
+  <!-- non-DB stores -->
+  <rect x="30" y="700" width="1350" height="350" rx="16" class="file"/>
+  <text x="54" y="736" class="h">DBではない置き場（参考）</text>
+  <rect x="54" y="756" width="300" height="140" rx="10" class="grp"/>
+  <text x="70" y="786" class="g">活動の記録</text>
+  <text x="70" y="812" class="m">Activity/events.jsonl</text>
+  <text x="70" y="840" class="s">依頼・着手・返却・WAKE・PING</text>
+  <text x="70" y="864" class="s">連絡はDBへ移った。全部ではない</text>
+  <rect x="370" y="756" width="300" height="140" rx="10" class="grp"/>
+  <text x="386" y="786" class="g">編集版</text>
+  <text x="386" y="812" class="m">Inbox/*.json</text>
+  <text x="386" y="840" class="s">V3と旧形式の編集版が並ぶ</text>
+  <text x="386" y="864" class="s">DBへは、CLIで正式反映して入る</text>
+  <rect x="686" y="756" width="330" height="140" rx="10" class="grp"/>
+  <text x="702" y="786" class="g">Markdown</text>
+  <text x="702" y="812" class="s">判断・仕様・成果：正本</text>
+  <text x="702" y="838" class="s">Registry・Rulesの表、STRUCTURE：</text>
+  <text x="702" y="862" class="s">Registry DBから生成（手で直さない）</text>
+  <rect x="1032" y="756" width="330" height="140" rx="10" class="grp"/>
+  <text x="1048" y="786" class="g">そのほか</text>
+  <text x="1048" y="812" class="s">Cache：生成したページ</text>
+  <text x="1048" y="838" class="s">backup：リポジトリの外</text>
+  <text x="1048" y="862" class="s">（Registry DB・判断DBのsnapshot）</text>
+  <text x="54" y="932" class="s">Registry DB → Markdown の表：生成（view）。判断DB → Markdown：出典を指す（写しを持つが、正本はMarkdown）。</text>
+  <text x="54" y="960" class="s">Inbox → Registry DB：調整担当がCLIで正式反映したときだけ。サーバーは保存だけで、DBへは書かない。</text>
+  <text x="54" y="988" class="s">承認・連絡DBと Registry DB は、別のファイル。連絡の本文に task ID があっても、DBどうしの参照にはしていない。</text>
+  <text x="54" y="1016" class="s">表の一覧はコードのschemaから取った（実物のDBは開いていない）。</text>
+
+  <!-- arrows -->
+  <path d="M800 670 L850 756" class="ln"/><text x="836" y="702" class="lab">生成</text>
+  <path d="M480 756 L430 670" class="ln"/><text x="462" y="702" class="lab">CLIで正式反映</text>
+</svg>

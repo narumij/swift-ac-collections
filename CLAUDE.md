@@ -24,6 +24,13 @@ the user's latest instructions or authorize resuming frozen work.
 
 ## Request routing for Claude and Fable
 
+For a direct user request to import a Studio Inbox save or refresh judgment caches,
+use the bounded [maintenance role](Maintanance/Current/MAINTENANCE_ROLE.md).
+It authorizes the requested canonical/Registry reconciliation without appointing
+a general coordinator or requiring a second coordinator to repeat the import.
+This user-authorized exception applies to the ordinary return/reconciliation rules
+below; ownership, protected documents, judgment boundaries and commit approval remain.
+
 For the user-authorized temporary Fable coordinator role, consult
 [the deputy delegation](Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md). It explicitly
 includes Registry updates and cleanup, and defines runtime-model identification.
@@ -40,8 +47,11 @@ ownership or final acceptance authority.
 
 ## Coordinator Assignments
 
-Follow the selected request and the occupancy and handoff rules in
-[CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md).
+Follow the current request route in the [shared entry point](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md#現在の依頼を受け取る).
+For DB assignments, read the addressed inbox and selected letter, then its task and
+canonical document. Use a request-file assignment only when explicitly designated.
+The occupancy and handoff rules in [CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md)
+still apply; its historical requests do not restart work or continuous waiting.
 
 The coordinator must register the task in the Task Registry before issuing the request
 and include its stable ID in the request. Check the scope, editable files, return
@@ -94,6 +104,41 @@ updates, and final reports.
 To reduce usage, use English by default for internal instructions and coordinator-to-Claude
 requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
 
+Interpret each user message in the context of the ongoing exchange. Before responding,
+check it against at least the previous two conversational exchanges, including your
+own replies. Resolve omitted subjects, references, and corrections from that context
+rather than treating the message as a standalone request. Look further back only when
+needed; ask briefly if materially different interpretations remain.
+
+Distinguish requests to act from corrections, recollections, and requests to restate. Do not resolve ambiguity in favor of starting work.
+
+Do not disguise failures, omissions, or unmet requirements in reports.
+Do not redefine the requested outcome after the fact to claim success.
+Report the actual result against the user's request, plainly and without spin.
+
+## First response to a new request
+
+Start with the smallest useful response, about ten lines:
+the purpose in the user's words, the simplest working form, and what you actually checked.
+Make assumptions that materially affect the result explicit, especially dependencies
+on existing systems. Distinguish checked facts from assumptions.
+Do not add detailed design, option lists, or unnecessary decision requests.
+
+Before sending, review it as the receiver: do names match their meaning, does the
+proposal meet the stated purpose, and can it be assessed without further investigation?
+Resolve checkable uncertainties yourself. Do not leave the receiver to reconstruct
+or repair the proposal, or label settled matters and implementation choices as user decisions.
+
+Expand after the premise is established. If the conversation already establishes it,
+proceed within the authorized scope without asking for confirmation again.
+
+## Work Managed Through the Communication DB
+
+Use the selected letter for receipt and return, following the
+[communication procedure](Maintanance/RegistryApp/README.md#communication-db).
+Keep results, evidence, specifications and decisions in the referenced canonical document.
+Do not duplicate a DB assignment into a request file or the old notification route.
+
 ## Work Managed Through a Request File
 
 For assignments through `Maintanance/CLAUDE_TASK.md`, record progress, startup summaries,
@@ -135,3 +180,7 @@ by all agents and are not mandatory startup reading.
 Put intentionally retained fixtures, benchmark sources, and raw validation evidence
 in their designated locations and identify them in the report. Do not scatter
 disposable experiments through source, test, or maintenance directories.
+
+# ユーザーによる追記
+
+調整役を担当するClaude系エージェントAIは、AGENTS.mdを参照し、これに従うものとする。

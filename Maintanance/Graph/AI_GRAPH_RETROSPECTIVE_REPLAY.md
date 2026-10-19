@@ -1,87 +1,99 @@
 # 過去graph知見のインメモリ追試
 
-最終更新: 2026-10-08 / Claude（GRAPH-008台帳）。task定義はCodex
+## TL;DR（人間向け）
 
-## 位置づけ
+過去のgraph系文書の観測・仮説・反証を、SQLite `:memory:`方式で追試できるかA〜Dに分類し（GRAPH-008）、受け入れた5件を回帰fixtureにした（GRAPH-009〜014）記録。分類はClaude、受入はCodexで、一括実行で6件すべてのPASSを確かめてDONEとした。RP-19の「着手前提／完了前提」は後に採用されFlow列（SEQUENCE／PARALLEL_JOIN）へ改名されたが、Codex用DBと共有スキームの継続は終了した。
 
-この文書は、過去のgraph系文書に記録された観測・仮説・反証のうち、`GRAPH-007`で確立した
-SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行可能な回帰fixtureへ変換する作業の正本である。
+Last updated: 2026-10-08 / Claude (GRAPH-008 ledger). Task definition by Codex
 
-作業は、可能性を分類する`GRAPH-008`と、受入済みの対象だけを実装する候補`GRAPH-009`へ分ける。
-分類と実装を同時に行わず、過去記録の印象だけでfixtureを増やさない。
+<a id="位置づけ"></a>
+## Position
 
-## 対象文書
+This document is the canonical of the work that classifies, among the observations, hypotheses and counterexamples recorded in past graph documents, the scope that can be re-tested with the SQLite `:memory:` fixture method established in `GRAPH-007`, and converts it into re-runnable regression fixtures.
+
+The work is split into `GRAPH-008`, which classifies feasibility, and the candidate `GRAPH-009`, which implements only accepted targets.
+Classification and implementation are not done at the same time, and fixtures are not added on the impression of past records alone.
+
+<a id="対象文書"></a>
+## Target documents
 
 - `Archived/AI_GRAPH_SMELL_NOTES.md`
 - `Graph/GRAPH_DB_EXCHANGE.md`
 - `Graph/TASK_GRAPH_DB_EXPERIMENT.md`
 
-`Graph/AI_GRAPH_SHARED_SCHEMA.md`と`Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
-棚卸し対象には数えない。Archived文書は、上の3文書から具体的根拠として参照される場合だけ読む。
+`Graph/AI_GRAPH_SHARED_SCHEMA.md` and `Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md` are inputs of the re-test method and are not counted in the inventory
+of past findings. Archived documents are read only when the 3 documents above refer to them as concrete grounds.
 
-## GRAPH-008: 追試可能性台帳
+<a id="graph-008-追試可能性台帳"></a>
+## GRAPH-008: re-test feasibility ledger
 
-### 担当と受入
+<a id="担当と受入"></a>
+### Owners and acceptance
 
-- 作成担当: Claude
-- 受入担当: Codex
-- 種別: `DISCOVERY`
-- ユーザー判断: なし
+- Author: Claude
+- Acceptance: Codex
+- Kind: `DISCOVERY`
+- User decision: none
 
-### 目的
+<a id="目的"></a>
+### Purpose
 
-対象文書のgraphに関する試験記録・知見・候補を項目単位で列挙し、現行のSQLiteインメモリ方式で
-どこまで追試可能かを分類する。SQLやfixtureの実装は行わない。
+List, item by item, the test records, findings and candidates about graphs in the target documents, and classify how far they can be re-tested with the current SQLite in-memory method. No SQL or fixture implementation.
 
-### 分類
+<a id="分類"></a>
+### Classification
 
-各項目を必ず次のいずれかへ分類する。
+Classify every item into one of the following.
 
-- `A`: 現行schemaと手書きfixtureだけで追試可能
-- `B`: SQLite `:memory:`内の小さなschemaまたはquery追加で追試可能
-- `C`: source、compiler index、runtime、機械語、性能測定などの自動抽出・外部検証が必要
-- `D`: 歴史的説明、主観的評価、期待値を安定定義できないため回帰fixtureにしない
+- `A`: re-testable with the current schema and hand-written fixtures alone
+- `B`: re-testable with a small schema or query addition inside SQLite `:memory:`
+- `C`: needs automatic extraction or external verification such as source, compiler index, runtime, machine code or performance measurement
+- `D`: not made into a regression fixture because it is a historical explanation, a subjective evaluation, or its expected value cannot be defined stably
 
-`B`は永続DBやproduction変更を必要としないものに限る。task→symbolのようにrepositoryに入力がない
-関係を、AI推定だけで`A`または`B`へ分類しない。
+`B` is limited to things that need no persistent DB or production change. Relations without input in the repository, such as task → symbol,
+are not classified as `A` or `B` by AI guessing alone.
 
-### 台帳の必須列
+<a id="台帳の必須列"></a>
+### Required ledger columns
 
-| 列 | 内容 |
+| Column | Content |
 | --- | --- |
-| replay ID | この文書内だけで使う安定した識別子 |
-| source | 文書名と見出し |
-| original claim | 過去記録が述べる観測・仮説・反証 |
-| expected result | PASS条件または期待される行・件数 |
-| required input | 必要なnode・edge・外部観測 |
-| query shape | 追試に必要なqueryの概要 |
+| replay ID | a stable identifier used only in this document |
+| source | document name and heading |
+| original claim | the observation, hypothesis or counterexample the past record states |
+| expected result | the PASS condition or expected rows/counts |
+| required input | the needed nodes, edges and external observations |
+| query shape | outline of the query needed for the re-test |
 | class | `A / B / C / D` |
-| reason | その分類にした根拠 |
-| overlap | GRAPH-007で既に覆われる部分 |
+| reason | the grounds for the classification |
+| overlap | the part already covered by GRAPH-007 |
 
-同じ事実を複数文書が述べる場合は別fixture候補へ重複させず、代表項目と参照元をまとめる。
+If several documents state the same fact, do not duplicate it into separate fixture candidates; combine it into a representative item with its references.
 
-### 対象外
+<a id="対象外"></a>
+### Out of scope
 
-- SQL、DDL、fixture、抽出器の作成・変更
-- 過去のsmell判定の正誤を新しく決定すること
-- Claude専用graph DBの参照・更新
-- production source、test、build設定の変更
-- task→symbol辺をAI推定で補うこと
-- 新しいsmell探索
+- Creating or changing SQL, DDL, fixtures or extractors
+- Newly deciding whether past smell judgments were right
+- Referring to or updating Claude's private graph DB
+- Changes to production source, tests or build settings
+- Filling task → symbol edges by AI guessing
+- New smell searches
 
-### 停止条件
+<a id="停止条件"></a>
+### Stop conditions
 
-- 分類に新しい公開契約または保存方式の判断が必要になった場合、選択肢を記録して停止する。
-- 過去記録だけでは期待結果を特定できない場合、推測せず`D`または不足として記録する。
-- 対象が広すぎて項目単位の完了判定ができない場合、文書・節単位の子task候補を提示して停止する。
+- If classification needs a decision on a new public contract or storage method, record the options and stop.
+- If the expected result cannot be identified from past records alone, record it as `D` or a gap without guessing.
+- If the target is too broad to judge completion item by item, present child-task candidates per document or section and stop.
 
-### 完了条件
+<a id="完了条件"></a>
+### Completion conditions
 
-- 対象3文書のgraph試験・知見が台帳へ一度ずつ対応している。
-- 全項目に`A / B / C / D`と根拠がある。
-- `A / B`について、実装前に必要な入力、query、期待結果が明記されている。
-- GRAPH-007との重複を除き、GRAPH-009へ渡す候補集合をCodexが選べる。
+- Each graph test and finding of the 3 target documents corresponds to the ledger exactly once.
+- Every item has `A / B / C / D` and grounds.
+- For `A / B`, the input, query and expected result needed before implementation are stated.
+- Excluding overlaps with GRAPH-007, Codex can select the set of candidates to pass to GRAPH-009.
 
 ### 台帳（2026-10-08 / Claude）
 
@@ -132,71 +144,79 @@ RP-11はAだが、G7と同じ規則の別事例なので、追加するかはCod
 1. RP-19: Task precedenceの各行が「着手の前提」か「完了の前提」かは、文言（「着手できる」「完了できる」「判断できる」など）からの解釈で、fieldが無い。fixtureで種別を固定するには、誰がどう決めるかが要る。参考の観測: HEADで`GRAPH-004`（`ACTIVE`）←`GRAPH-008`は「確認後、…次段階を判断できる」で、着手前提と読むと`GRAPH-004`は着手可能から外れ、Registryの表示と食い違う。
 2. RP-15: 記録には「`f6f84d6c`で確認」とあるが、36件は`bb77fafc`時点の数。`f6f84d6c`は試験記録そのものを追加したcommitで、その2文書が`subscript`を含むため38件になる。GRAPH-007と同じ自己参照で、期待値にどちらのcommitを使うかを決める必要がある（上表は両方を書いた）。
 
-## GRAPH-009: 受入済み項目のSQLite追試fixture化
+<a id="graph-009-受入済み項目のsqlite追試fixture化"></a>
+## GRAPH-009: turning accepted items into SQLite re-test fixtures
 
-GRAPH-008のCodex受入により、RP-01・RP-05・RP-08・RP-15・RP-17を実装対象とする。
-GRAPH-009は5件の子taskを統合して完成判定するtaskとし、各fixtureの実装はGRAPH-010〜014へ分ける。
+By Codex's acceptance of GRAPH-008, RP-01, RP-05, RP-08, RP-15 and RP-17 are the implementation targets.
+GRAPH-009 is the task that integrates 5 child tasks and judges completion; implementation of each fixture is split into GRAPH-010 to 014.
 
-現時点の共通境界は次のとおり。
+The current common boundaries are as follows.
 
-- SQLite `:memory:`とtracked SQLだけを使う。
-- 一つのcommandで空DBから全fixtureを実行する。
-- 過去結果と現在結果の一致・不一致を項目ごとに表示する。
-- Claude専用DB、永続DB、production変更に依存しない。
-- 自動抽出が必要な`C`と回帰fixtureにしない`D`は実装しない。
+- Use only SQLite `:memory:` and tracked SQL.
+- Run all fixtures from an empty DB with one command.
+- Show, per item, whether the past result and the current result match.
+- Do not depend on Claude's private DB, a persistent DB or production changes.
+- Do not implement `C`, which needs automatic extraction, or `D`, which is not made into regression fixtures.
 
-### 今回実装しない項目
+<a id="今回実装しない項目"></a>
+### Items not implemented this time
 
-- RP-11: `task_scopes` 0件の規則はGRAPH-007と同じで、別事例を足す情報利得が小さい。
-- RP-14: GRAPH-007が全体を実装済み。
-- RP-19: precedence辺が着手前提か完了前提かを示すfieldがRegistryになく、意味判断が未確定。
+- RP-11: the rule of 0 `task_scopes` is the same as GRAPH-007, and adding another case gives little information.
+- RP-14: GRAPH-007 already implements all of it.
+- RP-19: the Registry has no field showing whether a precedence edge is a start prerequisite or a completion prerequisite, and the semantic judgment is unsettled.
 
-### GRAPH-010: precedence missing-pair fixture（RP-01）
+<a id="graph-010-precedence-missing-pair-fixturerp-01"></a>
+### GRAPH-010: precedence missing-pair fixture (RP-01)
 
-- 担当: Claude
-- `task_precedence` relationをSQLite schemaへ追加する。
-- RBT-001・004・010・011と、記録された2辺をfixtureへ入れる。
-- 4 taskの全pairから、どちら向きにも辺のない4組を返すqueryと期待値を作る。
-- symbol共有、task→symbol、scopeは扱わない。
+- Owner: Claude
+- Add a `task_precedence` relation to the SQLite schema.
+- Put RBT-001, 004, 010 and 011 and the 2 recorded edges into the fixture.
+- Create a query and expected value returning, from all pairs of the 4 tasks, the 4 pairs with no edge in either direction.
+- Symbol sharing, task → symbol and scope are not handled.
 
-### GRAPH-011: specification file role fixture（RP-05）
+<a id="graph-011-specification-file-role-fixturerp-05"></a>
+### GRAPH-011: specification file role fixture (RP-05)
 
-- 担当: Claude
-- test pathと観測commitを入力し、旧規則と現行規則で`spec / non-spec`を計算する。
-- `d784b91e`とHEAD相当のsnapshotをfixtureへ入れる。
-- 現行規則で番号0〜4がspec、98・99がnon-specとなる期待値を固定する。
-- Gitやfilesystemからの自動抽出は行わない。
+- Owner: Claude
+- Take test paths and the observation commit as input and compute `spec / non-spec` under the old and current rules.
+- Put snapshots equivalent to `d784b91e` and HEAD into the fixture.
+- Fix the expected value that under the current rule numbers 0–4 are spec and 98 and 99 are non-spec.
+- No automatic extraction from Git or the filesystem.
 
-### GRAPH-012: configuration-aware spec-gap fixture（RP-08）
+<a id="graph-012-configuration-aware-spec-gap-fixturerp-08"></a>
+### GRAPH-012: configuration-aware spec-gap fixture (RP-08)
 
-- 担当: Claude
-- symbolへaccessと構成条件を表す最小fieldまたはtableを追加する。
-- `RedBlackTreeBoundExpression.find(_:)`と`RedBlackTreeSet.freeCapacity`、`58aab943`前後のtest edgeをfixture化する。
-- DEBUG限定symbolをRelease公開gapから除き、test追加前は`find(_:)`だけ1件、追加後は0件となるqueryと期待値を作る。
-- compilerやbuildからの自動抽出は行わない。
+- Owner: Claude
+- Add to symbols a minimal field or table representing access and configuration conditions.
+- Make a fixture of `RedBlackTreeBoundExpression.find(_:)` and `RedBlackTreeSet.freeCapacity`, with the test edges before and after `58aab943`.
+- Exclude DEBUG-only symbols from Release public gaps, and create a query and expected values in which only `find(_:)` is 1 gap before the test addition and 0 after.
+- No automatic extraction from the compiler or build.
 
-### GRAPH-013: document match precision fixture（RP-15）
+<a id="graph-013-document-match-precision-fixturerp-15"></a>
+### GRAPH-013: document match precision fixture (RP-15)
 
-- 担当: Claude
-- 文書照合方法を表すfieldまたはrelationを追加する。
-- `bb77fafc`時点を基準snapshotとし、`subscript`単語だけ36件、所属型との組で9件を期待値にする。
-- `f6f84d6c`で38件になる自己参照増加は別snapshotとして記録し、基準件数へ混ぜない。
-- 文書filesystemからの自動抽出は行わない。
+- Owner: Claude
+- Add a field or relation representing the document matching method.
+- Use the `bb77fafc` state as the base snapshot, with expected values of 36 for the word `subscript` alone and 9 when paired with the owning type.
+- Record the self-reference increase to 38 at `f6f84d6c` as a separate snapshot, not mixed into the base count.
+- No automatic extraction from the document filesystem.
 
-### GRAPH-014: observation staleness fixture（RP-17）
+<a id="graph-014-observation-staleness-fixturerp-17"></a>
+### GRAPH-014: observation staleness fixture (RP-17)
 
-- 担当: Claude
-- nodeの`observed_at`と、commit間で変更されたfileのsnapshotを使う。
-- `b87c8428`観測nodeは`bb77fafc`時点でstale、`bb77fafc`観測nodeはnot staleとなるqueryと期待値を作る。
-- Gitから変更fileを自動抽出せず、追試に必要な入力をfixtureへ明示する。
+- Owner: Claude
+- Use nodes' `observed_at` and snapshots of files changed between commits.
+- Create a query and expected values in which a node observed at `b87c8428` is stale as of `bb77fafc`, and a node observed at `bb77fafc` is not stale.
+- Do not automatically extract changed files from Git; state the inputs needed for the re-test explicitly in the fixture.
 
-### GRAPH-009の完了条件
+<a id="graph-009の完了条件"></a>
+### Completion conditions of GRAPH-009
 
-- GRAPH-010〜014をCodexが個別に受入済み。
-- repository rootから一つのcommandでGRAPH-007と追加5 fixtureを空のSQLite `:memory:`へ読み込める。
-- 各replay IDについて独立したPASS / FAILが表示される。
-- 既存GRAPH-007の8区分が引き続きPASSする。
-- Claude専用DB、永続DB、production変更、自動抽出へ依存しない。
+- Codex has individually accepted GRAPH-010 to 014.
+- From the repository root, one command loads GRAPH-007 and the 5 added fixtures into empty SQLite `:memory:`.
+- An independent PASS / FAIL is shown for each replay ID.
+- The existing 8 sections of GRAPH-007 still PASS.
+- No dependence on Claude's private DB, a persistent DB, production changes or automatic extraction.
 
 ### GRAPH-010〜014 Claude実装結果（2026-10-08）
 
@@ -241,84 +261,89 @@ sh Maintanance/Graph/InMemoryFixture/run_all.sh
 - 終了コードは全件PASSのときだけ0、それ以外は1。fixtureのFAIL行、SQL error（`sqlite3`の終了コードが0以外）、PASS行が出ない場合はすべてFAILとして数える。
 - 確認: 全件で`ALL PASS: 6 of 6 fixtures`、終了コード0。一時directoryへの複製で、RP-15の期待値を1か所ずらすと`FAILED: 1 of 6 fixtures`・終了コード1。RP-01の先頭に存在しないtableへのSELECTを入れると、RP-01が`sqlite3 exit 1`のFAILになり、同じく全体失敗になった。repository内のfixtureは変更していない。
 
-## Codex受入欄
+<a id="codex受入欄"></a>
+## Codex acceptance field
 
 ### GRAPH-008
 
-- coverage: 受入。対象3文書の見出しと試験記録を23項目へ対応し、重複記録は代表項目へ統合した。
-- 分類根拠: 受入。repositoryに入力のないtask→symbol・親子関係をD、自動抽出・runtime・機械語を
-  必要とするものをCへ置き、AI推定でA/Bへ昇格していない。
-- GRAPH-009候補集合: RP-01、RP-05、RP-08、RP-15、RP-17。RP-11・14は重複、RP-19は意味判断不足で除外。
-- 判定: `DONE`
+- coverage: accepted. The headings and test records of the 3 target documents were mapped to 23 items, and duplicate records were merged into representative items.
+- Classification grounds: accepted. task → symbol and parent/child relations, which have no input in the repository, are D; those needing automatic extraction, runtime or machine code
+  are C; nothing was promoted to A/B by AI guessing.
+- GRAPH-009 candidate set: RP-01, RP-05, RP-08, RP-15, RP-17. RP-11 and 14 excluded as overlaps, RP-19 for lack of semantic judgment.
+- Judgment: `DONE`
 
 ### GRAPH-009
 
-- scope: GRAPH-010〜014の5 fixtureと一括再現・回帰確認。
-- 個別fixture: 受入。RP-01・05・08・15・17がそれぞれ独立してPASSすることをCodexが確認した。
-- 一括実行: 受入。`sh Maintanance/Graph/InMemoryFixture/run_all.sh`をrepository rootから実行し、
-  GRAPH-007を含む6件すべてのPASSと`ALL PASS: 6 of 6 fixtures`を確認した。
-- 終了状態: 受入。全件成功時のexit status 0を確認し、runnerがSQL error、PASS行欠落、FAILを
-  全体失敗として集約することを実装で照合した。
-- 依存境界: 受入。各fixtureは別の空SQLite `:memory:`を使い、Claude専用DB、永続DB、production変更、
-  runtime自動抽出に依存しない。
-- 状態: `DONE`
+- scope: the 5 fixtures of GRAPH-010 to 014 and batch reproduction / regression checks.
+- Individual fixtures: accepted. Codex confirmed RP-01, 05, 08, 15 and 17 each PASS independently.
+- Batch run: accepted. Ran `sh Maintanance/Graph/InMemoryFixture/run_all.sh` from the repository root and
+  confirmed all 6 including GRAPH-007 PASS and `ALL PASS: 6 of 6 fixtures`.
+- End state: accepted. Confirmed exit status 0 when all succeed, and checked in the implementation that the runner aggregates SQL errors, missing PASS lines and FAILs
+  as overall failure.
+- Dependency boundaries: accepted. Each fixture uses a separate empty SQLite `:memory:` and does not depend on Claude's private DB, a persistent DB, production changes
+  or runtime automatic extraction.
+- State: `DONE`
 
-## RP-19の採用判断と段階移行（2026-10-08）
+<a id="rp-19の採用判断と段階移行2026-10-08"></a>
+## RP-19 adoption decision and staged migration (2026-10-08)
 
-Claudeのユーザーインタビューで、Task precedenceの各辺へ「着手の前提」か「完了の前提」かを示す
-fieldを追加する提案があった。`GRAPH-004` ← `GRAPH-009`を着手前提と読むと、Registryで`ACTIVE`の
-`GRAPH-004`がDBでは着手不可となる食い違いを再確認した。この辺は、共有スキーム試験を並行して進める
-ことを妨げず、追試受入前の完成判定だけを止める完了前提である。
+In Claude's user interview, there was a proposal to add to each edge of Task precedence a field showing whether it is a "start prerequisite" or a "completion prerequisite".
+Re-confirmed the mismatch that, reading `GRAPH-004` ← `GRAPH-009` as a start prerequisite, `GRAPH-004`, `ACTIVE` in the Registry, becomes not startable in the DB.
+This edge does not prevent proceeding with the shared schema test in parallel; it is a completion prerequisite that only stops
+the completion judgment before the re-test is accepted.
 
-ユーザーとCodexは、この提案を採用し、次の意味を確定した。
+The user and Codex adopted this proposal and settled the following meanings.
 
-| Gate | 意味 | readinessへの作用 | completionへの作用 |
+| Gate | Meaning | Effect on readiness | Effect on completion |
 | --- | --- | --- | --- |
-| `START` | 前提taskの完了まで後続taskを開始・assignできない | 未完了ならreadyではない | 着手済みならRegistry不整合として扱う |
-| `COMPLETE` | 後続taskは並行着手できるが、前提taskの完了まで完成判定できない | 阻止しない | 未完了なら`DONE`にできない |
-| `UNCLASSIFIED` | 移行中で意味をまだCodexが確定していない | ready／not readyを自動確定しない | complete／incompleteを自動確定しない |
+| `START` | the successor cannot start or be assigned until the prerequisite task completes | not ready if incomplete | if already started, treated as a Registry inconsistency |
+| `COMPLETE` | the successor may start in parallel, but cannot be judged complete until the prerequisite completes | does not block | cannot be `DONE` if incomplete |
+| `UNCLASSIFIED` | in migration; Codex has not yet settled the meaning | does not automatically settle ready / not ready | does not automatically settle complete / incomplete |
 
-Gateは条件付き依存を表す`制約`欄を置き換えない。前提taskが`EXCLUDED`の場合も自動的に充足とはせず、
-後続taskを`EXCLUDED`にするか、辺または制約を更新してから再判定する。DBとfixtureはRegistryへ状態を
-書き戻さず、`UNCLASSIFIED`を文言から推定して補完しない。
+Gate does not replace the `制約` column, which expresses conditional dependencies. Even when the prerequisite task is `EXCLUDED`, it is not automatically satisfied;
+make the successor `EXCLUDED`, or update the edge or constraint, before judging again. The DB and fixtures do not write states back to the Registry,
+and `UNCLASSIFIED` is not filled in by guessing from the wording.
 
-全行を一度に変換すると、`START`を`COMPLETE`と誤って前提未完了の作業を開始する危険と、逆方向に
-誤って作業を不必要に止める危険がある。このため、次の順で段階移行する。
+Converting all rows at once risks mistaking `START` for `COMPLETE` and starting work whose prerequisites are incomplete, and conversely
+mistakenly stopping work unnecessarily. So migrate in stages in the following order.
 
-1. Task precedence表へGate列を追加し、現行`ACTIVE` taskに関係する辺だけをCodexが分類する。
-   他の既存辺は`UNCLASSIFIED`とする。新規または意味を更新する辺には`START`か`COMPLETE`を必須とする。
-2. Claudeが確定済みpilotだけを入力にRP-19 fixtureを作り、`START`だけがready判定を阻止すること、
-   `COMPLETE`と`UNCLASSIFIED`を混同しないことを再現する。
-3. Codexが残る`UNCLASSIFIED`を小さいbatchで分類し、各batchでRegistry表示とready集合の差分を検収する。
-4. 全辺の意味とfixtureが安定した後にだけ、Gateを必須欄として完成判定する。
+1. Add a Gate column to the Task precedence table, and Codex classifies only the edges related to current `ACTIVE` tasks.
+   Other existing edges are `UNCLASSIFIED`. New edges or edges whose meaning is updated must have `START` or `COMPLETE`.
+2. Claude makes the RP-19 fixture with only the settled pilot as input, reproducing that only `START` blocks the ready judgment and that
+   `COMPLETE` and `UNCLASSIFIED` are not confused.
+3. Codex classifies the remaining `UNCLASSIFIED` in small batches and inspects the difference between the Registry display and the ready set for each batch.
+4. Only after the meaning of every edge and the fixture are stable, judge completion with Gate as a required column.
 
-意味分類、Registry更新、移行の完成判定はCodexが担い、Claudeは確定済み分類に対するDB・fixture実装を
-担う。この採用判断によりRP-19は「意味判断不足で実装しない」状態から、pilot後に実装可能な状態へ移った。
+Codex handles semantic classification, Registry updates and the migration's completion judgment; Claude handles the DB and fixture implementation for settled classifications.
+With this adoption decision, RP-19 moved from "not implemented for lack of semantic judgment" to implementable after the pilot.
 
-### Gate列pilot結果（2026-10-08 / Codex）
+<a id="gate列pilot結果2026-10-08--codex"></a>
+### Gate column pilot result (2026-10-08 / Codex)
 
-Task precedenceへGate列を追加し、現行`ACTIVE` taskを始点または終点に持つ6辺だけを分類した。
+Added a Gate column to Task precedence and classified only the 6 edges that have a current `ACTIVE` task as start or end point.
 
-| 後続task | 前提task | Gate | 根拠 |
+| Successor task | Prerequisite task | Gate | Grounds |
 | --- | --- | --- | --- |
-| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | 共有スキーム試験は並行着手でき、追試fixture群の受入が次段階の判断だけを止める |
-| `GRAPH-016` | `GRAPH-015` | `START` | Gateの意味と移行方針の決定前にはpilotを開始しない |
-| `GRAPH-017` | `GRAPH-016` | `START` | 確定したpilot分類をfixture入力にする |
-| `GRAPH-004` | `GRAPH-018` | `COMPLETE` | 共有スキーム試験は継続できるが、Gate移行前には試験全体を完了できない |
-| `PERM-014` | `PERM-003` | `START` | 現行契約の基準固定後にだけ実施手順を決定する |
-| `PERM-015` | `PERM-014` | `START` | 実施手順の決定結果を入力にtask依存を再評価する |
+| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | the shared schema test can start in parallel; acceptance of the re-test fixtures only stops the judgment of the next stage |
+| `GRAPH-016` | `GRAPH-015` | `START` | do not start the pilot before the Gate meaning and migration policy are decided |
+| `GRAPH-017` | `GRAPH-016` | `START` | use the settled pilot classification as fixture input |
+| `GRAPH-004` | `GRAPH-018` | `COMPLETE` | the shared schema test can continue, but the whole test cannot complete before the Gate migration |
+| `PERM-014` | `PERM-003` | `START` | decide the execution procedure only after the current contract's baseline is fixed |
+| `PERM-015` | `PERM-014` | `START` | re-evaluate task dependencies with the decided execution procedure as input |
 
-その他の既存辺は意味を自動推定せず`UNCLASSIFIED`とした。これによりRP-19 fixtureへ渡すpilot入力が
-確定したが、後続taskは明示的な再開指示があるまで`FROZEN`を維持する。
+Other existing edges were set to `UNCLASSIFIED` without automatically guessing their meaning. This settled the pilot input passed to the RP-19 fixture,
+but the successor tasks stay `FROZEN` until an explicit resumption instruction.
 
-### 後続fixtureの終了（2026-10-09）
+<a id="後続fixtureの終了2026-10-09"></a>
+### End of the follow-up fixture (2026-10-09)
 
-Codex用graph DBと共有smell判定スキームを継続しないとのユーザー判断により、RP-19 readiness fixtureと
-Gate段階移行の完成判定は不要になった。pilotで確定した`START` / `COMPLETE`の意味と既存fixtureは保持するが、
-未分類辺をDBのために全件移行する作業は行わない。Registryで新規・更新する辺には、引き続き確定したGateを付ける。
+By the user's decision not to continue Codex's graph DB and the shared smell-judgment scheme, the RP-19 readiness fixture and
+the completion judgment of the staged Gate migration became unnecessary. The meanings of `START` / `COMPLETE` settled in the pilot and the existing fixtures are kept,
+but migrating every unclassified edge for the DB is not done. New or updated edges in the Registry continue to get a settled Gate.
 
-### 同期位置としての名称変更（2026-10-09）
+<a id="同期位置としての名称変更2026-10-09"></a>
+### Renaming as synchronization points (2026-10-09)
 
-ユーザーとCodexは、task依存が同期処理であることを確認し、現行名称を`Flow`列の`SEQUENCE` /
-`PARALLEL_JOIN`へ変更した。`SEQUENCE`は旧`START`（一時案`HEAD`）、`PARALLEL_JOIN`は旧`COMPLETE`
-（一時案`LAST`）と同じ意味を持つ。この節より前の旧表記は、採用時点の履歴として保持する。
+The user and Codex confirmed that task dependencies are synchronization, and renamed the current names to `SEQUENCE` /
+`PARALLEL_JOIN` in the `Flow` column. `SEQUENCE` has the same meaning as the old `START` (interim proposal `HEAD`), and `PARALLEL_JOIN` as the old `COMPLETE`
+(interim proposal `LAST`). Old notation before this section is kept as history of the time of adoption.

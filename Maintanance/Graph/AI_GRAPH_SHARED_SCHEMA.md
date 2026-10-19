@@ -1,114 +1,96 @@
 # AI smell判定の共有スキーム最小fixture
 
-最終更新: 2026-10-08 / Claude（GRAPH-006作成結果）。task定義はCodex
+## TL;DR（人間向け）
 
-## 位置づけ
+共有スキーム候補から関係と期待結果を再構築できるかを、最小fixtureで確認した記録。Codexは文書検索とO(1)契約への経路を照合して受入したが、正式採用・保存方式は未決で、機械的再現はGRAPH-007へ分離した。
 
-この文書は、Claude専用graph DBに依存せず、CodexとClaudeが同じ意味でrepositoryの関係を
-再構築・照会するための共有スキーム候補を作る`GRAPH-006`の正本である。
+Last update: 2026-10-08 / Claude (GRAPH-006 output). Task definition: Codex.
 
-`Archived/AI_GRAPH_SMELL_NOTES.md`と`Graph/GRAPH_DB_EXCHANGE.md`の既存記録は、過去の観測と入力資料であって、
-そこに書かれた未完了項目や「次に試すこと」はこのtaskの指示ではない。
+<a id="位置づけ"></a>
+## Position
 
-## 目的
+Canonical for `GRAPH-006`, preparing a shared schema candidate to reconstruct/query repository relations with shared meaning independently of Claude's local graph DB.
 
-commit `f6f84d6c`で記録した「隣を引く」試験を、特定agentのlocal DBや実装へ依存しない
-node、edge、provenance、confidence、query、fixtureへ変換する。
+Existing `Archived/AI_GRAPH_SMELL_NOTES.md` and `Graph/GRAPH_DB_EXCHANGE.md` are past observations/inputs; their unfinished items and 「次に試すこと」 are not assignments here.
 
-今回確認するのは、共有スキーム候補だけから別のagentが同じ関係と期待結果を理解・再構築できるかである。
-スキームの正式採用や保存方式は決定しない。
+<a id="目的"></a>
+## Purpose
 
-## 担当と受入
+Convert the 「隣を引く」 experiment recorded at commit `f6f84d6c` into agent-independent node/edge/provenance/confidence/query/fixture definitions.
 
-- 作成担当: Claude
-- 受入担当: Codex
-- ユーザー判断: なし
+Check whether another agent can understand/reconstruct the same relations/expected results from the candidate alone. Do not decide formal adoption/storage.
 
-Claudeは候補スキームと不足を提示する。CodexはClaudeのlocal DBを読まず、この文書だけからfixtureを
-再構築できるか確認する。
+<a id="担当と受入"></a>
+## Roles and acceptance
 
-## 成果物
+- Drafting: Claude
+- Acceptance: Codex
+- User decision: none
 
-この文書へ次を記録する。
+Claude presents candidate/gaps. Codex checks reconstructability from this document without reading Claude's local DB.
 
+<a id="成果物"></a>
+## Deliverables
+
+Record the following here.
+
+<a id="1-node-schema"></a>
 ### 1. Node schema
 
-最低限、次を候補に含める。
+At minimum: symbol, test, document, commit, task. Specify fields for stable identifier, display name, source location, provenance, confidence and observation time.
 
-- symbol
-- test
-- document
-- commit
-- task
-
-各nodeについて、stable identifier、display name、source location、provenance、confidence、観測時点を
-表現するfieldを示す。
-
+<a id="2-edge-schema"></a>
 ### 2. Edge schema
 
-最低限、次を候補に含める。
+At minimum: test references symbol, document mentions symbol, commit changes symbol, task scopes symbol. Specify endpoints, relation, provenance, confidence and evidence location.
 
-- test references symbol
-- document mentions symbol
-- commit changes symbol
-- task scopes symbol
+<a id="3-provenanceとconfidence"></a>
+### 3. Provenance and confidence
 
-各edgeについて、始点、終点、関係種別、provenance、confidence、根拠位置を表現するfieldを示す。
+Distinguish syntax, compiler index, repository records, runtime observations and AI inference; do not collapse confirmed facts, evidence-supported candidates, hypotheses and refutations.
 
-### 3. Provenanceとconfidence
-
-構文、compiler index、repository記録、runtime観測、AI推定を区別できること。確認済み事実、根拠付き候補、
-仮説、反証済みを同じ値へ潰さないこと。
-
+<a id="4-query-schema"></a>
 ### 4. Query schema
 
-「隣を引く」queryについて次を定義する。
+Define neighbor queries: symbol identifier input; output referencing specification tests, naming documents, recent declaration-body commits and tasks scoping the symbol. Disambiguate generic members using owner type. Return evidence/confidence per result.
 
-- 入力: symbol identifier
-- 出力: 参照する仕様test、名指しする文書、宣言本体の直近commit、同じsymbolをscopeに持つtask
-- 一般名の絞り込み: member名だけでなく所属型を使う
-- 結果ごとに返す根拠と確度
+<a id="5-rbt-017最小fixture"></a>
+### 5. Minimal RBT-017 fixture
 
-### 5. RBT-017最小fixture
+For Mapped Values View symbols, record nodes, required edges, query input, expected output, paths to the 2026-10-05 O(1) contract and information not reproducible from fixture alone, within `f6f84d6c` observations.
 
-Mapped Values Viewの対象symbolを入力とし、commit `f6f84d6c`で確認した範囲から次を記録する。
+<a id="6-再構築可能性"></a>
+### 6. Reconstructability
 
-- fixtureを構成するnode
-- 必要なedge
-- query入力
-- 期待する出力
-- どの結果から2026-10-05のO(1)契約へ到達するか
-- fixtureだけでは再現できない情報
+Self-check fields/evidence for Codex reconstruction without Claude's DB. Record missing fields/inputs rather than inventing them.
 
-### 6. 再構築可能性
+<a id="対象外"></a>
+## Excluded
 
-CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために、fieldと根拠が十分かを自己点検する。
-不足があれば推測で埋めず、必要な追加fieldまたは入力として記録する。
+- Claude-specific graph DB features/schema changes
+- New smell-candidate exploration
+- Production source/tests/build changes
+- Storage/implementation choices such as persistent DB, SQLite or Swift types
+- Integrating `GRAPH-001`, `GRAPH-004`, `GRAPH-005`
+- Substituting observations in `Graph/GRAPH_DB_EXCHANGE.md` for deliverables
+- Formal shared-schema adoption
 
-## 対象外
+<a id="停止条件"></a>
+## Stopping conditions
 
-- Claude専用graph DBの機能追加・schema変更
-- 新しいsmell候補の探索
-- production source、test、build設定の変更
-- 永続DB、SQLite、Swift型など保存・実装方式の選定
-- `GRAPH-001`、`GRAPH-004`、`GRAPH-005`の統合
-- `Graph/GRAPH_DB_EXCHANGE.md`へ観測だけを追記して成果物の代わりにすること
-- 共有スキームの正式採用
+- If storage/implementation/formal-schema choices arise, record options/differences and stop.
+- If required evidence is unavailable from `f6f84d6c` and current repository, record gaps/checked scope and stop.
+- If new public contracts/task policy/source changes are required, stop rather than decide.
+- Separate out-of-scope improvement candidates at the end without implementing.
 
-## 停止条件
+<a id="完了条件"></a>
+## Completion criteria
 
-- 保存・実装方式または正式schemaの選定が必要になった場合、選択肢と差を記録して停止する。
-- fixtureに必要な根拠が`f6f84d6c`と現行repositoryから得られない場合、不足と確認した範囲を記録して停止する。
-- 新しい公開契約、task方針、source変更が必要になった場合、自分で決めずに停止する。
-- task境界を越える改善案を見つけても実装せず、候補として末尾へ分離する。
-
-## 完了条件
-
-- node、edge、provenance、confidence、queryの候補schemaが明示されている。
-- RBT-017の最小fixtureと期待結果が記録されている。
-- 事実、AI推定、不足、反証を区別できる。
-- Claudeのlocal DBを参照しなくてもCodexが受入確認できる。
-- 対象外の実装や追加探索を行っていない。
+- Candidate node/edge/provenance/confidence/query schemas explicit.
+- Minimal RBT-017 fixture/expected results recorded.
+- Facts/inference/gaps/refutations distinct.
+- Codex can accept without Claude's DB.
+- No excluded implementation/exploration.
 
 ## Claude作成結果（2026-10-08）
 
@@ -148,6 +130,7 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 | `commit_changes` | commit → symbol | `git log -L<span>:<file> --no-patch`が返すcommit | commit hash |
 | `task_scopes` | task → symbol | repositoryに記録された対応表は無い。6節の不足を参照 | — |
 
+<a id="3-provenanceとconfidence-1"></a>
 ### 3. Provenanceとconfidence
 
 `provenance`（どこから来たか）:
@@ -185,6 +168,7 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 - 各結果へedgeの`provenance`・`confidence`・`evidence`をそのまま付けて返す。区分の件数が0のときも「0件」を返し、「未作成」（導出元が無い）と区別する。
 - 対象から外すもの: `Maintanance/Archived/`、`.build/`、この文書自身（fixtureの期待値を書いた時点で自分が一致してしまうため）。対象文書は`Sources/`・`Documentation/`・`Maintanance/`配下の`*.md`と`README.md`。
 
+<a id="5-rbt-017最小fixture-1"></a>
 ### 5. RBT-017最小fixture
 
 **query入力**
@@ -252,19 +236,14 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 
 - Registryの項目名の表記（「Mapped Values」）と型名をつなぐ別名表があれば、task区分の0件を減らせる可能性がある。
 
-## Codex受入欄
+<a id="codex受入欄"></a>
+## Codex acceptance
 
-2026-10-08 / Codex。
+2026-10-08 / Codex.
 
-- fixture再構築: schema-levelで受入。Claudeのlocal DBを参照せず、repositoryから文書検索を再実行し、
-  `subscript` 9件、`swapAt` 8件が期待値と一致することを確認した。source、API Matrix、仕様test、
-  commit `211ca2fc`の3経路もO(1)契約へ到達することを照合した。ただし、DDL、fixture投入、queryを
-  一つのcommandで実行する機械的再現性は本taskの成果に含まれず、`GRAPH-007`へ分離した。
-- schemaの不足: 受入。`task_scopes`の導出元がrepositoryに存在しないため0件となることを確認した。
-  task→symbol辺の保存方法は本taskで決めず、後続実装前の既知制約とする。index store readerへの依存と
-  `document_mentions`のcandidate判定も明示されている。
-- 事実と推定の分離: 受入。再実行可能な関係、文字列一致候補、AIによる過去判断の推定が
-  provenanceとconfidenceで区別されている。
-- 自己参照汚染: 受入。このfixture文書を文書検索から除外する規則とcommandを確認し、期待件数へ戻る。
-- 後続のインメモリ実装task: `GRAPH-007`として登録。SQLite `:memory:`の最小fixtureに限定する。
-- GRAPH-006判定: `DONE`
+- Fixture reconstruction: accepted at schema level. Without Claude DB, reran repository document search: `subscript` 9 / `swapAt` 8, matching expected. Compared source/API Matrix/specification test/commit `211ca2fc` routes to O(1). One-command DDL/fixture/query mechanical reproduction is outside this output, separated into `GRAPH-007`.
+- Schema gaps: accepted. Confirmed absent `task_scopes` derivation input yields zero. Task→symbol storage remains undecided, a pre-implementation limit. Index-store-reader dependency and candidate `document_mentions` explicit.
+- Fact/inference separation: accepted. Reproducible relations, string-match candidates and AI speculation about past decisions distinguished by provenance/confidence.
+- Self-contamination: accepted. Confirmed rule/command excluding this fixture from document searches restores expected counts.
+- Follow-up in-memory implementation registered `GRAPH-007`, limited to SQLite `:memory:` minimal fixture.
+- GRAPH-006: `DONE`.

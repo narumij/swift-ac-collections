@@ -1,74 +1,88 @@
 # Permutation Test as Spec 仕様レビュー
 
-作成者：Astra。2026-10-15。基準：`4f8c9aef`。レビュー・依頼準備：`PERM-077`。
+## TL;DR（人間向け）
 
-## 結論と範囲
+NextPermutationModuleの通常版と借用版について、公開コメントと現行のTest as Specを静的に照合したAstraのレビュー（PERM-077）。全面的な書き直しは不要とし、検証の不足B〜Dを依頼（PERM-078）にして、Claudeの反映をAstraが独立実行で受け入れた。Aの借用寿命のcompiler検査はPERM-051の範囲で、後に品質側へ移ったため独立taskとしては除外された。製品の不具合を確認した報告ではない。
 
-新主入口NextPermutationModuleの通常runtime-check版とSwift 6.4借用版について、公開コメントと現行Test as Specを静的照合した。列挙順、開始順、重複、空・単要素・降順、非Int Index、通常Viewの失効、通常ownerの破棄には既存検査がある。全面的な書き直しは不要。以下は検証の不足であり、製品実装の不具合を確認したという報告ではない。
+Written by Astra. 2026-10-15. Base: `4f8c9aef`. Review and request preparation: `PERM-077`.
 
-今回テスト・compiler fixtureは追加／実行していない。移行時の成功記録は再実行結果として流用しない。AtCoder 2025互換modeの既存仕様5件は読んだが、旧API全体の網羅レビューは今回の結論に含めない。無効化された旧COWテストは現行仕様として数えない。
+<a id="結論と範囲"></a>
+## Conclusion and scope
 
-## A：借用寿命の再実行可能なcompiler検査（既知の残件）
+For the new main entry NextPermutationModule's normal runtime-check version and the Swift 6.4 borrowed version, the public comments and the current Test as Spec were checked statically. Existing checks cover enumeration order, initial order, duplicates, empty / single element / descending, non-Int Index, invalidation of normal Views, and destruction of normal owners. A full rewrite is not needed. The following are gaps in verification, not a report confirming defects in the product implementation.
 
-**2026-10-16更新（Astra）**：ユーザーが「品質側に移行してるからいらない」と判断し、PERM-051を独立taskとして除外した。以下の再開要求・対象外記述は当時の境界であり、今後の品質側の扱いに旧taskの再開を要求しない。本項の品質上の論点は維持するが、fixture実装済みとは扱わない。[除外記録](../../Archived/PERM-051_EXCLUDED_2026-10-16.md)。
+No tests or compiler fixtures were added or run this time. The success records at migration are not reused as re-run results. The 5 existing specifications of AtCoder 2025 compatibility mode were read, but an exhaustive review of the whole old API is not part of this conclusion. Disabled old COW tests are not counted as current specifications.
 
-根拠：`Sources/NextPermutationModule/BorrowedNextPermutations.swift`のnext()は、Spanがowner寿命を越えず、次のmutating accessと重ならないと約束する。`Tests/PermutationTests/BorrowedNextPermutations/`は適法な使用のruntime検査を持つが、`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`と`VerifyPermutationCompilerDiagnostics.sh`の否定的検査は通常ownerの直接初期化・copy・Sequenceだけである。
+<a id="a借用寿命の再実行可能なcompiler検査既知の残件"></a>
+## A: re-runnable compiler checks of borrowed lifetimes (a known remaining item)
 
-`Maintanance/Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md`のPERM-051返却に、一時clientによる拒否結果が既にある。したがって「これまで未検証」ではなく「現行名・現行toolchainで再実行できるfixtureがない」が不足。RegistryのPERM-051はFROZENであり、今回のレビューから解除しない。新規反映taskへ同じ仕事を移して凍結を迂回しない。
+**Update 2026-10-16 (Astra)**: the user judged 「品質側に移行してるからいらない」 (not needed because it has moved to the quality side) and excluded PERM-051 as an independent task. The resumption requests and out-of-scope statements below are the boundaries of their time, and do not require resuming the old task in future quality-side handling. The quality point of this item is kept, but it is not treated as having fixtures implemented. [Exclusion record](../../Archived/PERM-051_EXCLUDED_2026-10-16.md).
 
-再開時の確認案：適法な逐次利用をpositive controlとし、next後の旧Span使用、owner寿命外への持出し、Spanを後で使う間のowner消費、owner copy、非Sequenceを独立fixtureにする。単なる構文エラーや一般的なSpanの制約で落ちただけではownerへの寿命依存の証拠にならない。期待する原因の診断まで確認する。この案は未発注。
+Grounds: next() in `Sources/NextPermutationModule/BorrowedNextPermutations.swift` promises that the Span does not outlive the owner and does not overlap with the next mutating access. `Tests/PermutationTests/BorrowedNextPermutations/` has runtime checks of legal use, but the negative checks in `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/` and `VerifyPermutationCompilerDiagnostics.sh` cover only direct initialization, copy and Sequence of normal owners.
 
-## B：終端失効Death Testの偽陽性を防ぐ（反映対象）
+The PERM-051 return in `Maintanance/Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md` already has rejection results from a temporary client. So the gap is not "unverified so far" but "no fixture that can be re-run with the current names and the current toolchain". PERM-051 in the Registry is FROZEN and this review does not lift it. Do not bypass the freeze by moving the same work into a new application task.
 
-根拠：`Tests/PermutationTests/NextPermutations/NextPermutations_99_ViewInvalidationDeathTests.swift`の`subscriptTrapsAfterTerminalNextReturnsNil`と`startIndexTrapsAfterTerminalNextReturnsNil`は、期待signalを確認する子process内で、終端がnilであることをpreconditionで確認している。終端処理が壊れてnilでなくても、そのpreconditionが同じsignalで停止し、失効検査が成功したように見える。
+Check proposal at resumption: take legal sequential use as the positive control, and make independent fixtures for using an old Span after next, carrying it outside the owner's lifetime, consuming the owner while the Span is used later, owner copy, and non-Sequence. Merely failing with a syntax error or a general Span constraint is not evidence of a lifetime dependence on the owner. Confirm the diagnostic of the expected cause. This proposal is not ordered.
 
-必要な変更：setupの不成立は期待trap以外の終了として区別する。nilの成立自体は通常assertionでも確認し、失効したViewへのaccessだけが期待signalの原因となる構成にする。全組合せのDeath Test増設ではなく、既存2件の検証能力を直す。可能なら一時的なtest側の条件差し替えで、setup失敗が成功扱いにならないことも確認し、差し替えは戻す。
+<a id="b終端失効death-testの偽陽性を防ぐ反映対象"></a>
+## B: preventing false positives in the terminal invalidation Death Tests (to apply)
 
-## C：借用版の未開始ownerの非空要素解放（反映対象）
+Grounds: `subscriptTrapsAfterTerminalNextReturnsNil` and `startIndexTrapsAfterTerminalNextReturnsNil` in `Tests/PermutationTests/NextPermutations/NextPermutations_99_ViewInvalidationDeathTests.swift` check, with a precondition inside the child process that checks the expected signal, that the terminal result is nil. Even if terminal handling breaks and it is not nil, that precondition stops with the same signal, and the invalidation check looks successful.
 
-根拠：`BorrowedNextPermutations_98_InternalTests.swift`は途中・完走後・空ownerの破棄を検証するが、一度もnext()を呼ばない非空ownerの解放を直接検証していない。通常版には`testNeverStartedOwnerReleasesEachElementOnce`がある。所有bufferは生成時から要素を保持するため、列挙開始の有無に関係なく解放が必要。
+Needed change: distinguish setup failure as an exit other than the expected trap. Also check that nil holds with an ordinary assertion, and structure it so that only access to the invalidated View can cause the expected signal. Not adding Death Tests for every combination, but fixing the verification power of the existing 2. If possible, also confirm with a temporary test-side condition replacement that a setup failure is not treated as success, and revert the replacement.
 
-追加：参照型要素と局所counterを使い、非空ownerを未開始のまま破棄して全要素の解放を確認する。元配列の参照が残って解放を妨げないscopeにする。通常版の同じ検査を重複追加しない。
+<a id="c借用版の未開始ownerの非空要素解放反映対象"></a>
+## C: releasing nonempty elements of a never-started borrowed owner (to apply)
 
-## D：借用版の生成時copyと元Collectionの独立（反映対象）
+Grounds: `BorrowedNextPermutations_98_InternalTests.swift` verifies destruction midway, after completion and of an empty owner, but does not directly verify releasing a nonempty owner on which next() was never called. The normal version has `testNeverStartedOwnerReleasesEachElementOnce`. The owned buffer holds elements from creation, so they must be released whether or not enumeration started.
 
-根拠：`BorrowedNextPermutations_1_EnumerationTests.testSourceIsNotModified`は列挙が元を変えないことを確認する。一方、owner生成後に元配列を変更しても生成時の並びを保持するという逆方向は直接assertしていない。公開コメントは生成時に一度owned bufferへcopyすると説明する。通常版には`NextPermutations_98_OwnershipTests.testLaterSourceChangesDoNotAlterTheCurrentPermutation`がある。
+Addition: using reference-type elements and a local counter, destroy a nonempty owner without starting it and confirm all elements are released. Use a scope in which references from the source array do not remain and prevent release. Do not duplicate the same check of the normal version.
 
-追加：借用版owner生成後、元のInt配列の要素置換と要素追加を行い、最初と次のSpanが生成時入力の後続順であることを確認する。これは配列storage／並びの独立であり、参照型要素のdeep copyを要求しない。
+<a id="d借用版の生成時copyと元collectionの独立反映対象"></a>
+## D: copy at creation and independence from the source Collection in the borrowed version (to apply)
 
-## 今回追加を求めないもの
+Grounds: `BorrowedNextPermutations_1_EnumerationTests.testSourceIsNotModified` confirms that enumeration does not change the source. On the other hand, the reverse direction — keeping the order at creation even if the source array is changed after creating the owner — is not asserted directly. The public comment explains that it copies into an owned buffer once at creation. The normal version has `NextPermutations_98_OwnershipTests.testLaterSourceChangesDoNotAlterTheCurrentPermutation`.
 
-- 通常版・借用版には短い列挙の期待値、重複要素、終了後nil、入力種別の検査がある。組合せ全展開や乱数試験を今回の完了条件にしない。
-- 通常版のArrayへの保存は列挙helperが各Viewを有効期間中にcopyし、後から全結果を比較している。保存の検査が皆無とはしない。
-- 通常版のsourceからの独立、未開始・途中・完走後の解放、失効Viewがstorageを保持しないことは既存テストが担当する。
-- 性能の再測定、Sequence採用、benchmark名整理、旧COW契約の復活、互換入口の削除は含めない。
+Addition: after creating a borrowed owner, replace an element of the source Int array and append an element, and confirm that the first and next Spans follow the successor order of the input at creation. This is independence of array storage / order, and does not demand a deep copy of reference-type elements.
 
-## 引渡し
+<a id="今回追加を求めないもの"></a>
+## Not required to add this time
 
-B〜Dを`PERM-078`の未発注候補として[依頼案](PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md)に整理した。ClaudeのOPT-074終了・占有返却とAstra受入を確認してから、現行状態を再照合し、CLAUDE_TASKへ固定ID付きで依頼を用意して渡す。現行のClaude依頼は変更しない。AはPERM-051の再開判断を別途必要とする。
+- The normal and borrowed versions have checks of expected values for short enumerations, duplicate elements, nil after the end, and input kinds. Full expansion of combinations or random testing is not a completion condition this time.
+- For saving the normal version into an Array, the enumeration helper copies each View during its validity and compares all results afterwards. It is not treated as having no checks of saving.
+- Existing tests cover the normal version's independence from the source, release when never started / midway / after completion, and that invalidated Views do not keep the storage.
+- Performance re-measurement, adopting Sequence, the benchmark-name tidy-up, reviving the old COW contract and deleting the compatibility entry are not included.
 
-## 検証と状態
+<a id="引渡し"></a>
+## Handover
 
-静的レビューと依頼準備は完了。コード変更なし、テスト実行なし。2026-10-15、ユーザーがコミットを許可。レビュー・依頼準備をDONEとして対応記録と同じコミットへ保存する。後続候補の作成はClaudeへの実行委任ではない。
+B–D were organized into [the request draft](PERMUTATION_TEST_AS_SPEC_CLAUDE_DRAFT.md) as unordered candidates for `PERM-078`. After confirming Claude's end of OPT-074, the return of occupancy and Astra's acceptance, re-check the current state, and prepare and hand over the request in CLAUDE_TASK with a fixed ID. The current Claude request is not changed. A needs a separate decision to resume PERM-051.
 
-## 発注記録（2026-10-15、Astra）
+<a id="検証と状態"></a>
+## Verification and state
 
-ユーザーから「先に渡して、次に閉じる」と指示を受け、OPT-074の正式返却・残作業なし・占有返却を確認してPERM-078を有効化し、CLAUDE_TASK.mdへ固定ID付きで依頼を掲載した。上の未発注記録は準備時点の経緯であり、現在は発注済み（着手報告は未確認）。B〜Dの範囲は変更していない。A／PERM-051は引き続き対象外。
+The static review and request preparation are complete. No code changes, no test runs. On 2026-10-15 the user permitted the commit. The review and request preparation are saved as DONE in the same commit as the response record. Creating follow-up candidates is not delegating execution to Claude.
 
-## PERM-078返却のAstra受入（2026-10-15）
+<a id="発注記録2026-10-15astra"></a>
+## Order record (2026-10-15, Astra)
 
-基準HEAD `904baa02`、Claude返却の未コミット差分を独立確認。変更は指定したtest 3ファイル・Tests/TESTING.mdのhandoff・本人の返却欄に限定され、production・manifest・凍結PERM-051に変更なし。正式返却に残件なし・占有返却がある。
+Instructed by the user with 「先に渡して、次に閉じる」 (hand it over first, then close), confirmed OPT-074's formal return, no remaining work and the return of occupancy, activated PERM-078, and posted the request in CLAUDE_TASK.md with a fixed ID. The "not ordered" record above is the history at preparation time; it is now ordered (start report not yet confirmed). The scope of B–D is unchanged. A / PERM-051 remains out of scope.
 
-B：終端setupの失敗はexitCode 86へ分岐し、期待するSwift trap signalとは一致しない。通常の終端nil確認も追加されている。C：一時sourceのみから作った未開始ownerの保持とconsume後の解放数を検査する。D：生成後のsource変更と初期順序・後続列挙の独立をIntで確認する。既存契約の範囲内として受け入れる。
+<a id="perm-078返却のastra受入2026-10-15"></a>
+## Astra acceptance of the PERM-078 return (2026-10-15)
 
-Astra独立実行（macOS arm64 / Apple Swift 6.4）：
-- `swift test --filter PermutationTests`：環境のsandbox権限制限でbuild失敗。成功の証拠に含めない。
-- `swift test --disable-sandbox --filter PermutationTests`：終了0。XCTest 63 + 7件、Swift Testing 18件・3 suites成功。新規の借用2ケースと終端失効ケースが実際に実行されたことを確認。
-- `swift test --disable-sandbox -c release --filter PermutationTests`：関連外RedBlackTreeTreeTestsのdSYM生成でOperation not permitted、build失敗。
-- `swift test --disable-sandbox -c release -debug-info-format none --filter PermutationTests`：終了0。同じ件数で成功。Release最適化は維持、debug情報生成だけ省略。
-- `git diff --check`：問題なし。
+Independently checked Claude's returned uncommitted diff against base HEAD `904baa02`. The changes are limited to the 3 specified test files, the Tests/TESTING.md handoff and the return field itself; no changes to production, the manifest or the frozen PERM-051. The formal return has no remaining items and a return of occupancy.
 
-互換構成とBの旧版／新版negative controlはClaudeの返却証拠と差分を照合した。Astraはそれらを再実行していない。Linux、Swift 6.2、ASan、互換Release、全targetの実行保証へ広げない。
-受け入れ完了。今回のコミット許可は先行する赤黒木レビュー記録に適用済みのため、Permutation反映と受入記録はWAITING_USER（コミット許可待ち）とする。
+B: a failed terminal setup branches to exitCode 86, which does not match the expected Swift trap signal. An ordinary terminal-nil check was also added. C: checks holding a never-started owner made only from a temporary source, and the release count after consume. D: confirms with Int the independence of source changes after creation from the initial order and the successor enumeration. Accepted as within the existing contract.
 
-2026-10-15、ユーザーがPermutation反映と受入記録のコミットを許可。PERM-078をDONEとし、変更と本記録を同じコミットへ保存する。
+Astra's independent runs (macOS arm64 / Apple Swift 6.4):
+- `swift test --filter PermutationTests`: build failure from the environment's sandbox permission restriction. Not included as evidence of success.
+- `swift test --disable-sandbox --filter PermutationTests`: exit 0. XCTest 63 + 7, Swift Testing 18 in 3 suites succeeded. Confirmed that the 2 new borrowed cases and the terminal invalidation cases actually ran.
+- `swift test --disable-sandbox -c release --filter PermutationTests`: build failure with Operation not permitted in dSYM generation of the unrelated RedBlackTreeTreeTests.
+- `swift test --disable-sandbox -c release -debug-info-format none --filter PermutationTests`: exit 0. Succeeded with the same counts. Release optimization is kept; only debug information generation is omitted.
+- `git diff --check`: no problems.
+
+The compatibility configuration and B's old/new negative controls were checked by comparing Claude's returned evidence with the diff. Astra did not re-run them. Not extended to guarantees for Linux, Swift 6.2, ASan, compatibility Release, or running all targets.
+Acceptance complete. This commit permission had already been applied to the preceding red-black tree review record, so the Permutation application and acceptance record are WAITING_USER (waiting for commit permission).
+
+On 2026-10-15 the user permitted committing the Permutation application and acceptance record. PERM-078 is DONE, and the changes and this record are saved in the same commit.

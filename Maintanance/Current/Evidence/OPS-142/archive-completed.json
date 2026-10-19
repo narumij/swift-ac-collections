@@ -1,0 +1,21 @@
+[
+  "Maintanance/Archived/Canonical/ARRAY_NAMING_REVIEW.md",
+  "Maintanance/Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md",
+  "Maintanance/Archived/Canonical/CODE_SNIPPET_SURVEY.md",
+  "Maintanance/Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md",
+  "Maintanance/Archived/Canonical/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md",
+  "Maintanance/Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2.md",
+  "Maintanance/Archived/Canonical/RELEASE_0_5_0.md",
+  "Maintanance/Archived/Canonical/RELEASE_0_5_1.md",
+  "Maintanance/Archived/Canonical/RELEASE_0_5_3.md",
+  "Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_REPORT.md",
+  "Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND3_REPORT.md",
+  "Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md",
+  "Maintanance/Archived/QUALITY-004_EXCLUDED_2026-10-16.md",
+  "Maintanance/Archived/Reviews/ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md",
+  "Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md",
+  "Maintanance/Quality/0.6.0-1/ElementBufferModule/GeneralSwiftValidationScenario.md",
+  "Maintanance/Quality/0.6.0-1/PermutationModule/DocumentationHandoffAudit.md",
+  "Maintanance/Quality/0.6.0-1/PermutationModule/RuntimeCheckedPermutationTestPlan.md",
+  "Maintanance/Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md"
+]

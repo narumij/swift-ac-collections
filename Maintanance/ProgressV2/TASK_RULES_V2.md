@@ -1,5 +1,7 @@
 # Task制度の参照 V2
 
+> **2026-10-19 V3切替：** task・依存・採番・版順・現在位置・card完了記録の正本は `Maintanance/RegistryApp/Data/registry.sqlite3`。本書のDB管理表は生成viewであり手編集しない。正式反映は[運用手順](../Current/REGISTRY_V3_OPERATIONS.md)へ。DB不在時は古い表から再作成せず停止して確認する。
+
 > 2026-10-14、ユーザーの接続指示により、制度・採番・文書権限の参照先を本書へ切り替えた。[入口](PROGRESS_OVERVIEW_V2.md)から、その操作に必要な節を参照する。状態名やIDを暗記する必要はない。制度の参照は、個別taskの開始・再開や操作の許可を意味しない。
 
 コード表記のファイルパスはリポジトリ直下を基準とする。
@@ -46,7 +48,7 @@ taskは判断一つかゼロになるまで分解する。新規登録・内容�
 | `EXCLUDED` | 必要性の消失や対象外などの理由で残作業から外した記録。実施成功や前提充足とはみなさない |
 | `ARCHIVED` | 履歴へ移した記録。読むことによって現在の仕事へ復活させない |
 
-`GRAPH-001`・`HIST-001`・`HIST-003`・`DOC-030`・`OPS-043`・`TEST-005`・`OPS-044`・`OPS-046`・`OPS-047`・`OPS-048`・`OPS-077`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
+`GRAPH-001`・`HIST-001`・`HIST-003`・`DOC-030`・`OPS-043`・`TEST-005`・`OPS-044`・`OPS-046`・`OPS-047`・`OPS-048`・`OPS-077`・`OPS-103`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
 
 外部待ちの仕事を開始できないことと、待っている条件が解消したかを任された範囲で確認することは分ける。凍結解除やユーザー専任の制限を、この確認から導かない。
 
@@ -69,18 +71,16 @@ Task precedenceには、内部task間の必須AND前提だけを記録する。F
 
 採番時に参照する。普段の仕事選択のために、番号表を読み直す必要はない。
 
-次の表を、Task Registry IDのprefixごとの**最後に使用した番号**を保持する正本とする。現行Registryから
-Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。
-行の削除、移動、状態変更、改名、またはtaskの統合を理由に番号を戻さず、欠番を再利用しない。
+prefixごとの使用済み番号の境界（highwater）と発行記録の正本はRegistry V3 DBである。次の表はDBから生成する読取用のviewであり、手編集しない。Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。削除・移動・状態変更・改名・統合を理由に番号を戻さず、欠番を再利用しない。
 
-既存prefixでtaskを新規登録するときは、この表の最後の番号へ1を加えたIDを使い、**新しいtask行の追加と同じ編集で**
-表の番号も更新する。採番したtaskを同じ編集で取りやめた場合も、その番号は使用済みとして表に残す。新しいprefixを
-導入するときは、既存のRegistryとArchivedに同じprefixがないことを確認し、最初のtask行と同じ編集でそのprefixを
-表へ追加する。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。
+新規登録は[V3運用手順](../Current/REGISTRY_V3_OPERATIONS.md#正式反映の一巡)に従い、CLIの登録操作で行う。DBがhighwaterと発行記録を確認し、task登録と採番を同じトランザクションで確定する。成功応答の正式IDを使い、表から次番号を推測して発行しない。確定済みの登録を後から取りやめても番号を解放しない。確定前に失敗した操作は発行済みとは扱わず、応答不明なら同じ操作ID・本文で結果を確認する。
+
+新prefixの導入時は既存記録との衝突を確認し、DBの対応する登録経路を使う。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。DB不在・破損時は表から採番を再開せず、V3運用手順の復旧条件に従う。
 
 初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
 
+<!-- V3-GENERATED rows: table=Task ID採番状態; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=20; rows=18; sha256=4dcc476278ca7daf973ace6fa5d90e18ed568bac782c63b9d8ddf93861f7baa2 -->
 | Prefix | 最後に使用した番号 |
 | --- | ---: |
 | `API` | `010` |
@@ -93,11 +93,11 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `003` |
-| `OPS` | `077` |
+| `OPS` | `185` |
 | `OPT` | `074` |
 | `PERF` | `005` |
-| `PERM` | `080` |
-| `QUALITY` | `005` |
+| `PERM` | `081` |
+| `QUALITY` | `006` |
 | `RBT` | `049` |
 | `RELEASE` | `087` |
 | `TEST` | `008` |
@@ -106,6 +106,12 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 
 文書を読めること、編集へ参加できること、正本として採用できること、および配置を変更できることを
 同じ権限として扱わない。上位文書の変更統制は、下位taskの実行権限から自動的には導かれない。
+
+### Canonical document language — provisional trial
+
+User decision, 2026-10-19 (updated): keep task/milestone cards and human-facing `TL;DR` in Japanese. Canonicals for unfinished tasks remain Japanese. Completed or excluded task canonicals may use English details; OPS-142 explicitly authorizes migrating existing completed canonicals, including archived ones. Archive placement alone does not establish completion. Keep uncertain cases Japanese pending clarification. History is user-owned and excluded. Mixed-language documents are acceptable where original evidence is preserved.
+
+The Japanese summary must retain the decision, material rationale, open questions, and any action expected from the user. It is a reading aid, not a separate decision authority. Preserve original quotations, historical returns, identifiers, and existing references. This trial does not override document ownership or the language rules of product-facing documentation. Explicit user requests for Japanese take precedence. Review the trial through ordinary feedback; no separate translation or periodic review task is required.
 
 ### 新規正本の配置
 
@@ -155,6 +161,15 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 ## ゲートの人間用資料とAI用キャッシュ
 
+### 判断キャッシュ更新前の根拠固定
+
+2026-10-18ユーザー指定。判断キャッシュの更新作業に着手する前に、更新対象の根拠となる正本・ユーザー判断・受入記録を必ずcommitして固定する。依頼する側は固定版のcommit SHAと対象資料を示し、更新する側はその版に基づくことを確認して、キャッシュまたは返却記録に参照SHAを残す。
+
+無関係な未commit変更まで含める必要はない。固定版以後に対象の根拠が変わった場合は、その変更を黙って取り込まず、追加の根拠をcommitしてから更新する。commit操作には従来どおりユーザーの明示許可が必要で、本規則を自動commitの許可にしない。キャッシュ自体はGit管理外のままとする。
+
+本規則は確定した判断を整理する更新作業に適用する。探索中の一時メモや循環を止める補助キャッシュの作成までcommit待ちにしない。それらを確定判断の更新として扱う際に、根拠を固定する。
+
+
 2026-10-16ユーザー指定（CP-20261016-011、OPS-044で受入）：`Maintanance/Cache/`内は各担当直下の`README.md`を除きGit管理外とする。既存キャッシュも手元の内容を残して追跡から外す。通常のclone・pullでは他環境へ引き継がれないため、キャッシュ不在時は担当READMEと人間用ゲート・Registryから必要範囲だけ復元する。判断・契約・証拠・引継ぎに必須の情報をキャッシュだけに保存しない。キャッシュの強制追加や自動commitは行わない。
 
 2026-10-16ユーザー決定。ゲートには人間用資料とAI用キャッシュ資料を対で置く。AI用ゲート・補助キャッシュの保存先は `Maintanance/Cache/<担当名>/` とする。現在のAstra用は `Maintanance/Cache/Astra/`。2026-10-16、CP-20261016-009の申請をOPS-044で照合し、Claude（姫）用を `Maintanance/Cache/Hime/` とする。担当別に分け、他担当のキャッシュを自分のものとして上書きしない。人間用資料は目的・到達点・判断事項・後続の概要を示す。AI用キャッシュは、その地点から仕事を続けるために必要な、現在有効なユーザー判断（行うこと・行わないこと）、制約・保留・作業状況を要約する。通常はキャッシュを起点とし、ゲート以前を遡って現在を再構築しない。
@@ -201,6 +216,24 @@ Gitはcommitの履歴、MarkdownのRegistryと決定記録は現在の仕事・�
 
 番号の出現だけでtaskの実施・完了・担当・採用を確定しない。削除行の番号も過去の使用の手掛かりであり、番号解放ではない。出現しないことも未使用の証拠にはならない。未commitの採番や、取り消した採番があり得るため、索引から採番表の番号を引き下げない。
 
-日常の採番は採番表で行う。索引は使用履歴の点検・復元やtaskと変更の照合に使い、現在の状態表をSQLiteにも複製しない。索引がない・古い・壊れた場合は、対象を絞ってGitと記録を直接照合する。全履歴の再調査を毎回の前提にしない。
+日常の採番はRegistry V3 DBの登録操作で行う。ここでいう履歴索引はRegistry V3 DBとは別物で、使用履歴の点検・復元やtaskと変更の照合に使う。履歴索引を現在の状態や採番の正本にしない。索引がない・古い・壊れた場合は、対象を絞ってGitと記録を直接照合する。全履歴の再調査を毎回の前提にしない。
 
 索引の作成・差分更新・照合・再作成は、[メンテナンス手順](TASK_HISTORY_INDEX_MAINTENANCE.md)を必要時に参照する。通常起動時の通読対象には加えない。
+
+## メンテナンス役への限定委任
+
+2026-10-18ユーザー決定。担当名に依存しない[メンテナンス役](../Current/MAINTENANCE_ROLE.md)を設ける。ユーザーから具体的に依頼されたInbox反映・判断キャッシュ更新などを、同書の範囲で担当できる。Registry更新も指定保存版の反映に必要な範囲を含む。調整全般への任命や、判断・着手・commitの包括許可にはしない。
+
+## 停止・再開・担当交代時の占有
+
+2026-10-19ユーザー整備依頼（OPS-145）。CLAUDE_TASK.md・WORKER_TASK.mdの「占有権と受渡し」を次で補う。実行状態と編集権限を分ける。専任役や第二の台帳は増やさず、明示委任された調整担当が受渡しの確定窓口を兼ねる。
+
+- 依頼正本に依頼ID、担当を一意に区別できる名前または会話/agent識別子、編集対象ファイル・節、割当識別子、占有状態を残す。同名を区別できなければ同名の同時割当をしない。同一ファイルの編集は原則一人。節分担は範囲が重ならず他者の変更を失わない書込み方法を確認した場合だけとする。
+- 停止要求中は解放しない。停止確認後も未返却範囲は「停止中・占有保持」。本人も他担当も停止を理由に編集を始めない。返却済み成果は固定されたままで、停止によって元担当へ占有が戻ることはない。
+- 「速やかに停止」は新規作業に入らず、安全な最小区切りで止める。整合を保つため実行中操作を区切ることと、最低限の停止記録を許すが、仕上げ・検証・整理まで続けない。「即時停止」は中断可能な処理を中断し、保存・復元・検証・整理を追加しない。通知経路では次に受信して初めて停止できるため即時性を保証しない。停止ACKは可能な範囲で行う。指示が単に「停止」の場合は新規作業を止め、停止に必要な最小操作以外を増やさない。
+- 停止範囲に含まれる常設作業も止める。全作業停止なら感想や圧縮も例外にしない。再開まで許すのは停止確認と状態通知に必要な最小記録。停止中・交代確定前は原文控えと再開に必要な一時作業物を消さない。交代後も通常の証拠保全・掃除条件に従い、自動削除しない。
+- 交代時は停止確認の根拠、途中差分、未完操作、控えを確認し、必要なhash等で受渡し時点を固定する。旧割当の失効と新割当を一つの受渡し記録で確定する。未確認のまま同一対象へ新規編集を割り当てない。停止確認を得られない場合はユーザーへ返し、ユーザーの明示判断なしに交代しない。未確認のまま進める指示があっても停止確認済みとは記録しない。
+- 再開時は最新の割当と停止後の差分を確認する。古い依頼だけで編集せず、他者変更や不一致があれば上書き・復元を止めて窓口へ返す。明示された復元依頼でも、対象が自分の最終書込と一致することをhash等で確認し、他者の変更を巻き戻さない。
+- 強制停止した担当は、自分が確認できた停止操作の結果を代理記録できる。対象作業・担当識別子・停止要求ID・確認者・手段・時刻・成功/失敗/不明を区別し、本人の最終申告を改変しない。本人ACK、実行基盤での確認、要求だけの未確認を混同しない。送信後から受信までに進んだ操作は分かる範囲で残す。古い停止確認は別作業や正当に再開した作業へ適用しない。新しい作業中申告だけでは再開許可にならない。
+
+これは文書運用の規則であり、自動ロック・強制停止・Studioの停止表示が実装済みという意味ではない。

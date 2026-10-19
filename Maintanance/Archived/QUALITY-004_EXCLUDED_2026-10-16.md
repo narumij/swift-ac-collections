@@ -1,8 +1,11 @@
 # QUALITY-004 棚卸しタスク整理
 
-2026-10-16、ユーザーは今回の棚卸しを更新し続けず、次の品質試験で改めて棚卸しする方針を決定した。継続整理の候補をEXCLUDEDとして残作業から外す。全完了条件を検証してDONEとしたものではない。
+## TL;DR（人間向け）
+2026-10-16に品質棚卸しの継続更新を除外し、次の品質試験で改めて行うと決めた記録です。課題の状態や委任は変更しておらず、全完了条件の達成を意味しません。これは当時の管理判断であり、現在の指示ではありません。
 
-初期結果は[今回の品質確認資料](../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md)に保持する。個別課題の状態・委任は変更しない。RELEASE-078の旧棚卸し完了待ちは外すが、同task自身の現行提供区分・証拠の照合を省略しない。次回の棚卸しはその回の対象版・実装・方針から行い、今回の判定を転用しない。
+On 2026-10-16, the user decided not to keep updating this assessment inventory and to conduct a new inventory during the next quality trial. Candidate follow-up work is marked `EXCLUDED` and removed from remaining work. This does not mean all completion conditions were verified and the task marked `DONE`.
+
+Initial results remain in the [quality assessment materials for this review](../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md). The status and delegation of individual issues are unchanged. Remove the old inventory-completion wait from `RELEASE-078`, but do not skip that task's own review of current delivery scope and evidence. Base the next inventory on that review's target version, implementation, and policy; do not reuse the conclusions from this one.
 
 ## 整理前の行と依存辺
 

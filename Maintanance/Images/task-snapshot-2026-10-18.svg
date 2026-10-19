@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="210" viewBox="0 0 1200 210" role="img" aria-label="未完了個別タスク 前日末37件から本日37件。常設込み48件から48件。常設11件。純増減は0件。">
+<rect width="1200" height="210" rx="18" fill="#142d32"/>
+<path d="M0 188H1200" stroke="#8fd6b2" stroke-width="3"/>
+<g font-family="-apple-system,BlinkMacSystemFont, sans-serif">
+<text x="34" y="37" fill="#91c8b5" font-size="14" letter-spacing="2">REGISTRY · 2026.10.18</text>
+<text x="34" y="76" fill="white" font-size="23">未完了の個別タスク</text>
+<text x="34" y="108" fill="#b9cacc" font-size="14">常設ノードを除く / 集計時点</text>
+<text x="390" y="57" fill="#b9cacc" font-size="15">前日末</text>
+<text x="390" y="128" fill="white" font-size="64">37</text>
+<text x="510" y="115" fill="#91c8b5" font-size="35">→</text>
+<text x="595" y="57" fill="#b9cacc" font-size="15">本日</text>
+<text x="595" y="128" fill="#9ce9bc" font-size="64">37</text>
+<rect x="790" y="36" width="370" height="109" rx="12" fill="#24434a"/>
+<text x="813" y="69" fill="white" font-size="19">常設込み　48 → 48</text>
+<text x="813" y="101" fill="#b9cacc" font-size="16">常設 11件 ／ 純増減 ±0件</text>
+<text x="813" y="127" fill="#b9cacc" font-size="13">完了数・生産性を示す数字ではありません</text>
+<text x="34" y="167" fill="#b9cacc" font-size="13">候補・判断待ち・凍結を含む。DONE / EXCLUDED / ARCHIVED を除外。</text>
+</g></svg>

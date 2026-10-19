@@ -1,0 +1,1796 @@
+{
+  "task": "OPS-142",
+  "owner": "Sol A",
+  "source_backup_dir": "/private/tmp/OPS-142-A-20261019/original",
+  "source_manifest": "/private/tmp/OPS-142-A-20261019/manifest.json",
+  "completed_manifest": "Maintanance/Current/Evidence/OPS-142/current-a-completed.json",
+  "translated_count": 26,
+  "no_translation_needed_count": 0,
+  "held_count": 13,
+  "new_japanese_tldr_count": 7,
+  "old_anchor_count": 144,
+  "protected_block_count": 81,
+  "files": [
+    {
+      "index": 0,
+      "path": "Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md",
+      "status": "translated",
+      "before_sha256": "6e8085f506b090d4a92e6f24d3071dfc3f6ddae090ef99260adac2bc96b6267e",
+      "after_sha256": "3809744f2b2b558e82c17637771662964a391c08667960f7a9b8b27aa5374c52",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 初回基礎研究の実施",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "525f06fc307a2cb938c1ad19020a41cd95c3bb843d2edee16ddc55ce19bfc0d7",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "107c8d9deb1571d45b49afda580581869a2d075c4f02b10bd426fe6179aaf815",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/AI_RESEARCH_FIRST_EXPERIMENT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "実施記録",
+        "評価astra非盲検",
+        "結果と停止"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 1,
+      "path": "Maintanance/Current/APPROVAL_PROBE.md",
+      "status": "translated",
+      "before_sha256": "a4058dbbebc566f4662533843d4d209279882f5c182a4d78664425360e0bc4f0",
+      "after_sha256": "829a5e42783cd1a0f8aee4fe4d9734f8b9f0763961be37be16e3fc6f4e564cd3",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/APPROVAL_PROBE.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# OPS-115 承認経路の疎通確認",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "8080a90c8263b9b271563247dd1f269aa5107ecd0c871a2d647a2902aae9422c",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/APPROVAL_PROBE.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "621bc295cb4cb20feecb93ff547248d0cfba84dbf8fad45b29693b72a92bf8cd",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/APPROVAL_PROBE.md"
+        }
+      ],
+      "added_old_anchors": [
+        "操作",
+        "状態"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 2,
+      "path": "Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md",
+      "status": "translated",
+      "before_sha256": "3cf95b31adad560b49760b57e20d23ed35ac6c020f0fad7b589936342af13f7f",
+      "after_sha256": "d11d95d0206188eda703030e4cd1b14045c74587b259f181f82b2d4980bc283f",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Astraの判断追跡負荷を軽くする — 限定試作",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "5a597f13875b652b7250ae436ffcc967fe3b572dcd723506010c9269a63c3a33",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/ASTRA_DECISION_TRACE_SUPPORT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的",
+        "astraの要望修正点",
+        "試作範囲と受入条件",
+        "受渡し",
+        "astra確認記録"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 5,
+      "path": "Maintanance/Current/HEADLESS_BROWSER_AVAILABILITY.md",
+      "status": "translated",
+      "before_sha256": "34e598d53dab47ebcd1578ae12a2318601ee5a9a0bdd46ea6380bb58f72d1fbb",
+      "after_sha256": "9b16737cdd3c028043b8a3ca77a7fd6d8fa100b2647e8f0f9550f003dd90fe6b",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HEADLESS_BROWSER_AVAILABILITY.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 試験専用ブラウザの利用確認（OPS-120）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "b34dec14a4dc3e027c2c5ac22271674df19308561e2c754a69ac1db0360fbc27",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HEADLESS_BROWSER_AVAILABILITY.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "f81fee3d8e1b581a7ea4bb66fafe687972e19ceb20b0168bdd10c3953de4c7cf",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HEADLESS_BROWSER_AVAILABILITY.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 姫Return",
+          "reasons": [
+            "attributed original section: 姫Return"
+          ],
+          "sha256": "981db8a03f22b7ea0463e8e36f83e3a3ef69cdba3473066cb36adb1d014c47ac",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HEADLESS_BROWSER_AVAILABILITY.md"
+        }
+      ],
+      "added_old_anchors": [
+        "astra確認結果",
+        "姫への正式依頼",
+        "astra受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 6,
+      "path": "Maintanance/Current/HIST_002_EXPLORATION.md",
+      "status": "translated",
+      "before_sha256": "2eb2e7a495424320388f512495320c268c09b05e125f91214e0fe905dc4649fe",
+      "after_sha256": "48865fda774dcb13ef45d7556a4c6258c9fccc412fe56599f3b53a38f841d718",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HIST_002_EXPLORATION.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 移行史の追加探索 — 残したもの・撤去したもの",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "f740be3d1b6814cdce8a53b8f2a1767e4ff66830a6ca2a7fde32ecd27787e6fb",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HIST_002_EXPLORATION.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## 返却欄（V3記入）",
+          "reasons": [
+            "attributed original section: 返却欄（V3記入）"
+          ],
+          "sha256": "f0decaf84386e88e44e4be21c51e418d6fa8f5a313a0f05189e8a878b6145b67",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HIST_002_EXPLORATION.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的",
+        "任せる探索",
+        "証拠と返却",
+        "受入条件",
+        "独立受入2026-10-16--astra"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 7,
+      "path": "Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md",
+      "status": "translated",
+      "before_sha256": "246abd2691c9743f944bb00fb79e011df5d329dd93e855f1c03df05ccbc5be68",
+      "after_sha256": "ee88af21706201e06c0c7e7001f639b511d2e55f56ae47d05917347ce6ebfb66",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 見取り図から読む正本の人間向け要約",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "bcac2f79f660555b7e7b5bfbe270ae0c11b62693c5eae9df7bbff43a81fcc9a6",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "37e550dc9a9c00dc7965a3751f2277f6667309a35fa08e9368ba6cffae1db48b",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/HUMAN_CANONICAL_SUMMARIES.md"
+        }
+      ],
+      "added_old_anchors": [
+        "依頼と範囲",
+        "書き方と更新",
+        "今回は解消しない不整合",
+        "対象",
+        "検証受入",
+        "追加範囲独立タスク",
+        "astra受入2026-10-19"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 8,
+      "path": "Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md",
+      "status": "translated",
+      "before_sha256": "03d5fc46afd8a173f1fcbf32842a03ef44fe71462d879b5ad7ed135a3ac94a35",
+      "after_sha256": "a602a6f42bdca9c6c62bc3c2ac088057a5a6b13ae91a831f92b3a98667b46511",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 判断キャッシュの保持制限案への助言依頼",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "bf4eac4517ed45c08bffa5afcb51260c2468f864ff2cf1fd8e27312e4bd11db9",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "fcf763cbbf3492f3f40d5af9500b868552a965d3024a459f64b25f8f044b3174",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": null,
+          "reasons": [
+            "original comment"
+          ],
+          "sha256": "5ab00f1dffaafb23fd35244f846d6d578c8dc33af21fba0d86ca0889e4e6d246",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## Return（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）"
+          ],
+          "sha256": "854afbce221c1bc89614aba6d8682643d155688dcc51536d18967bbb08970583",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_ADVICE.md"
+        }
+      ],
+      "added_old_anchors": [
+        "依頼",
+        "入力境界",
+        "astra受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 10,
+      "path": "Maintanance/Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+      "status": "translated",
+      "before_sha256": "00bec48c0c197f2f62f41fc66742c6e8299e9c2235718e2e5ea173814e031bd7",
+      "after_sha256": "64d6b6ae341216eaa4a623ba339eb77073533cbdce777c3f3ad60158cde93267",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 判断座標改訂草案の受渡し確認",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "ea71785057e4005e280ea73b77d7f08174e51aed2c229fc6be2925d9d6960c05",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_COORDINATES_REVISION_RECEIPT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "確認と結果",
+        "保持する限界",
+        "2026-10-18改訂の受領cp-20261018-004--astra"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 11,
+      "path": "Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md",
+      "status": "translated",
+      "before_sha256": "ddb39111a6b5c8d43b91b000ae0854ac46d82d51b08112fb3ebf5bc52dfba7f6",
+      "after_sha256": "f235dc9f430373bca7cfb43d56d62fdebb9807a6cc03f19206ce5d10652d300a",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# コピー判断とオリジナル判断を区別する運用の限定試行",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "45067286a3fe9884a41183dffb042d322749fc9b9e2fc37c869cc76dd7fe5097",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "b6e4098cbab34707b8c5c0932b3be44144c435d36334d37fcbcc633e1fd71de9",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": null,
+          "reasons": [
+            "original comment"
+          ],
+          "sha256": "5ab00f1dffaafb23fd35244f846d6d578c8dc33af21fba0d86ca0889e4e6d246",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## 第1回 Return（姫記入）",
+          "reasons": [
+            "attributed original section: 第1回 Return（姫記入）"
+          ],
+          "sha256": "5b6c5e52518b454cfbc75f1a2450e024b35fb8ef416df069eca82493af25a0ac",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## 第2回 Return（姫記入）",
+          "reasons": [
+            "attributed original section: 第2回 Return（姫記入）"
+          ],
+          "sha256": "29f52b28d390687160468682286a85b02f83a258dacad39371f44c7cf1b0e880",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        },
+        {
+          "identifier": "@@KEEP_5@@",
+          "heading": "## 第3回 Return（姫記入）",
+          "reasons": [
+            "attributed original section: 第3回 Return（姫記入）"
+          ],
+          "sha256": "e4372315236ee6795f5e6f605c52e5cb24fbac8d81748ed00d15fbc46514a4e4",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_ORIGIN_CLASSIFICATION_PILOT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的",
+        "試す区分",
+        "実施前の範囲固定",
+        "最小の試行と返却",
+        "完了条件と次への接続",
+        "結果",
+        "複数回の依頼計画2026-10-18ユーザー指定",
+        "第1回の正式依頼姫",
+        "第1回-astra受入2026-10-18",
+        "第2回の正式依頼別の3項目で境界を確認",
+        "第2回-astra受入補正2026-10-18",
+        "第3回の正式依頼結果整理のみ",
+        "第3回-astra受入試行の総括2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 16,
+      "path": "Maintanance/Current/RECORD_LIFETIME_STUDY.md",
+      "status": "translated",
+      "before_sha256": "833660e020836b91b332b950b9a9f427707241636874fe2e341282946ee5fe35",
+      "after_sha256": "54436e509019cba0ad3e3b36a2033e19586ca148b287d20f8858409a3847a404",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RECORD_LIFETIME_STUDY.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 情報・知識・判断・契約の寿命の検討",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "8075d326217c2cbd46dcd7438ba5887153f57794bbdfddd538fac88cc67253e7",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RECORD_LIFETIME_STUDY.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "2c1f37bd582010a5a4e7b14250befa7ef9a6c1f0c486b81102f5ac2cc3eab952",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RECORD_LIFETIME_STUDY.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 返却（2026-10-17 / 姫・Opus 5.5）",
+          "reasons": [
+            "attributed original section: 返却（2026-10-17 / 姫・Opus 5.5）"
+          ],
+          "sha256": "344cb9a2cc4fc30736a056238bb12a3c95f5a8d53f39be8be0ea8882e2391bda",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RECORD_LIFETIME_STUDY.md"
+        }
+      ],
+      "added_old_anchors": [
+        "astra受入2026-10-17"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 17,
+      "path": "Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+      "status": "translated",
+      "before_sha256": "46b8f89c9cfd89a42929c1a61d024294940014cc3ece23c579b62da50fbcfe3e",
+      "after_sha256": "92a05bcaf0d7dbf20af668cb8532df3f47d17f8e28eb0d2f3490e657e1e34533",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 赤黒木DocCプレビューセルフレビュー",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "ec272ee4cf352e8fd4d3ec17b675ed147079a8d928fac9c35e586c3ac79c4a68",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": null,
+          "reasons": [
+            "quoted source"
+          ],
+          "sha256": "db500e15e029ed88ad07b228a6f3c221a282dcb44f43801a01d07a80bcae613b",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "8ee336b234c0deb4f7cebe1c2d4324e31fca61b57870265e746891546b0a8699",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": null,
+          "reasons": [
+            "code block"
+          ],
+          "sha256": "bbf83939e4920b39fb701980ee7ad071aaf5b465db490dc0daa08124c1963e3b",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）",
+          "reasons": [
+            "attributed original section: 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）"
+          ],
+          "sha256": "2d7f54cb8f996bc63e1b694978d7af16da1cc4b8c83f0b513b441aa254078aab",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md"
+        }
+      ],
+      "added_old_anchors": [
+        "範囲完了条件",
+        "入力環境",
+        "レビュー結果",
+        "生成終了保証範囲"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 18,
+      "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+      "status": "translated",
+      "before_sha256": "4ef6abaa675cc01df1c488cf4ec1dec28725498a0eb845713dcbbe6cc7b0a098",
+      "after_sha256": "d447ed62f2c76f6f9e4b3cac4a401d7239c562489aa4814d0e612223f475a0f3",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 赤黒木4型の本文完成",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "0e9f007a9cb4340e485c4cace5f692b7ed0e424ea039cfa5d384fb38c68b3f71",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCUMENT_COMPLETION.md"
+        }
+      ],
+      "added_old_anchors": [
+        "入力と成果",
+        "完了条件",
+        "080への拡充移管と今回の固定範囲2026-10-16ユーザー決定",
+        "2026-10-16-作業記録astra",
+        "固定稿の準備完了独立レビューへ2026-10-16",
+        "作業物",
+        "独立レビュー指摘対応完了2026-10-16--astra",
+        "検証証拠",
+        "ユーザー受入2026-10-16--doc-037",
+        "後日のプレビュー確認2026-10-17"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ],
+      "pre_precision_correction_sha256": "45a3983348e529a5b8ed7deff94ec45b2f61a14000d936b0c83683ad6fc8ae15",
+      "acceptance_precision_correction": "eight declaration and other fragments were outside the execution scope."
+    },
+    {
+      "index": 19,
+      "path": "Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+      "status": "translated",
+      "before_sha256": "07989d1a01577ec4dfe307d595454f64f3567cdbcc317f8d90c7a1429cd99124",
+      "after_sha256": "6e2b1695e5995e71105b49e8be8c5b1625774d545512e21908a644842136fc7e",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 赤黒木4型ドキュメント独立レビュー依頼",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "26ac007ef50adae13c10c0895397ab5db202d08ee061ab5619f86b6ff83d1f59",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md"
+        }
+      ],
+      "added_old_anchors": [
+        "仕事と順序",
+        "固定入力と入口",
+        "確認内容",
+        "編集範囲と停止点",
+        "完了条件"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 20,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md",
+      "status": "translated",
+      "before_sha256": "789eb2005100f56c04ea656d97b53a1f0d819512fe866ea28ad8f9f49e9d4fda",
+      "after_sha256": "78e2f6938679fe97d530d812e39af0bbc82661d00086075376c04e0b8ce93e0c",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 途中マイルストーン配下のタスク群配置",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "b24f05e1a72a4a37aefbb0bb0b48d543dafa3c3e4eb00a14b5fbf3f149babf1a",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "d589f3bcd58321d90fd106fa85e02cd181f587fd0c02784e54b5487237327b81",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": null,
+          "reasons": [
+            "quoted source"
+          ],
+          "sha256": "d4135a2c71bcd2c390a135d2ccbe8d30999994b45be43de043adc127ec5e6e7d",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## Return（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）"
+          ],
+          "sha256": "c9ecbd4dd77b2c8b7c9baa43335302aba142d5123001cf2d6dfee85723f8b432",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## 追加Return（姫記入）",
+          "reasons": [
+            "attributed original section: 追加Return（姫記入）"
+          ],
+          "sha256": "096569d0798467ef1c6199d03fa2be4289cca277207a2ed4929c91fc3de80d3e",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_BRANCH_LAYOUT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的と要求",
+        "実施受入条件",
+        "範囲受渡し",
+        "astra検収2026-10-18",
+        "ユーザー判断と追加依頼2026-10-18--astra",
+        "姫への追加作業",
+        "astra追加分受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 21,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md",
+      "status": "translated",
+      "before_sha256": "fe213665ebc13df97359482270693f7742ff01e75736fbebf05f67bc0d280511",
+      "after_sha256": "5bd93efe8938460cf8a714c2330f85750e60c03c359de9d896d5e13d1e38e435",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 前提・後続にマイルストーンを選ぶ接続操作",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "21bf1a03143a96b539f1cf312a7ef94c366305bf53c4f54802d6c85817ef4f1f",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "23716274938e837fc04fa6372b4240868a24c5bd766ff0d24105e6bce8d2bc2d",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 作業内訳（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）",
+            "attributed original section: 作業内訳（姫記入）"
+          ],
+          "sha256": "aa5f146b1cd938a970799949d3da95501ba22838a91a64a0be072b31fa0c488f",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_DIRECTION_UI.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的ユーザー指示",
+        "確定範囲",
+        "編集範囲と手順",
+        "完了条件",
+        "astra受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 22,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md",
+      "status": "translated",
+      "before_sha256": "32582493251f6ac3b2307bc699afa86049cb542a177b5439a1d4056ccd1471fe",
+      "after_sha256": "8cb2ca0904c0e974b81bbdc88e114a75fdd4c24b78e3b84a371b394f791ac8ee",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Studioのマイルストーン計画編集・限定試行",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "6c8ab016811eb4eb851d7b984bb91cd86ce2a66dc661b983962f959292dd40ed",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "7fb8af4c2eef903f61821fc77955e6c42971fe4f64239fb0f4a663b65a0efdb2",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 作業内訳（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）",
+            "attributed original section: 作業内訳（姫記入）"
+          ],
+          "sha256": "f8285dedc5b38ee4f86713e7a5a5e4e2b5566a52f9390f97f438cd6e1b3cc6da",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## 補修Return（姫記入）",
+          "reasons": [
+            "attributed original section: 補修Return（姫記入）"
+          ],
+          "sha256": "8491317767d02e1d351f7d052be21b1f96a75866016f3bee690aada98e6ea330",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_MILESTONE_EDITOR.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的と委任",
+        "方針と境界",
+        "原型仕様と未決事項",
+        "作業の区切り",
+        "編集範囲と占有",
+        "受入条件と検証",
+        "astra検収2026-10-18",
+        "限定補修の再依頼2026-10-18--astra",
+        "astra補修受入完了2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 23,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md",
+      "status": "translated",
+      "before_sha256": "9086670ed519988121ee9bc34b3dc9abcc8ddc8dfd1af80a57651c84c6b6d71d",
+      "after_sha256": "77ba62b961c3f986859fb689460c81d79cadf9128d18931192e20f5643fa7b5b",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 「接続を見る」へのカード表示追加",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "1938bcbcd65ec4dfa45d1f9c8d62e386b28a3ff3eeb3a008640e5ec190cafcd3",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "42e43f32383037e7d4cfae9667df3cdd3c8329ed5cdfb3257fdfb1fbd699be2d",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": null,
+          "reasons": [
+            "quoted source"
+          ],
+          "sha256": "7d2c569f8575ed06a6b5d48e78c62a17b78849063bbd41708b4fc5142e8a2faf",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## Return（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）"
+          ],
+          "sha256": "9713daa58162e6cc6a33b7af8457ac72950f5c89ed732dff454d6e1c9e01e561",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## 補修Return（姫記入）",
+          "reasons": [
+            "attributed original section: 補修Return（姫記入）"
+          ],
+          "sha256": "ef794c3d6a42c3eac516b68802c97fb383cd5e1dc648f23b4a8afa9589ea647d",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        },
+        {
+          "identifier": "@@KEEP_5@@",
+          "heading": "## 局所見取り図Return（姫記入）",
+          "reasons": [
+            "attributed original section: 局所見取り図Return（姫記入）"
+          ],
+          "sha256": "f9cac6c6f6c65832df65ef15df8a35051bcd83e7ae60633266ca19e1bc281b82",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEIGHBOR_CARDS.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的受入条件",
+        "範囲と受渡し",
+        "astra検収2026-10-18-受入保留",
+        "限定補修の再依頼2026-10-18--astra",
+        "受入条件",
+        "ユーザー期待に合わせた再依頼2026-10-18--astra",
+        "作るもの受入条件",
+        "受渡し",
+        "astra局所見取り図受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 24,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md",
+      "status": "translated",
+      "before_sha256": "6123bd817c5682ad6fa746f9c1b47ee739c16e64f1e2cd0c5cf050ceeb1ef5b0",
+      "after_sha256": "4cd043ee15da2f9a4312bd0d871ce5202629853b658effd997cc2e73195ed142",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Studioから新規タスク案を追加する",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "6311aa0f2a1badb3cee54cdb68ec5e2c273a6635dad94742ce7bbde6bd4fc819",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "829f1fa757e2e96895590d09f81381a71604f82fe8c823651ee98d2c4b0632f8",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 作業内訳（姫記入）",
+          "reasons": [
+            "attributed original section: Return（姫記入）",
+            "attributed original section: 作業内訳（姫記入）"
+          ],
+          "sha256": "9501cbef251c26b2f855facc1e91114ebaed075ea7660d72438a1ace9be6502a",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_NEW_TASK_PROPOSALS.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的確定範囲",
+        "作業内訳と編集範囲",
+        "取込手順に追加する内容",
+        "検証完了条件",
+        "astra受入2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 25,
+      "path": "Maintanance/Current/REGISTRY_STUDIO_SYNC.md",
+      "status": "translated",
+      "before_sha256": "b5c046ed37bb2cfe4a782608060ec0ceccd7dcaf7665aabf5de75975accbc6fd",
+      "after_sha256": "aff0be273e48e9bc502f346ac7f2851953ab6f86b030a5f592decd8c07e096f7",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_SYNC.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Registry Studio同期の一コマンド化",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "26bf2cfbd45da429ea7f29cc724cd58b782eebcfab588058e10828d071182ebd",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_SYNC.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）",
+          "reasons": [
+            "attributed original section: 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）"
+          ],
+          "sha256": "2eccc4ce2cd4df77f18c326beb8c03d88c79b4e97361404b14d8cfb4f9f37de3",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_SYNC.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的範囲",
+        "仕上げと確認",
+        "受渡し受入",
+        "astra受入記録2026-10-16"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 28,
+      "path": "Maintanance/Current/STUDIO_ACTIVITY_OWNER.md",
+      "status": "translated",
+      "before_sha256": "82a4bb81765ac60604471614ce655653def8ad860ea57131132d0481deaa1f9b",
+      "after_sha256": "17deb0911d3f130a485f552b8d8ec830537e1be145912eb8d05b3cd49d8a5584",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_ACTIVITY_OWNER.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 作業イベントカードの担当表示（OPS-124）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "9ebc652eb7e0daae6cce89efb04d344a810ad5058aa60a511551d334d3ff11fb",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_ACTIVITY_OWNER.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "ab8c555b1184f7d53174250ff2247432d658e6eea607a51a50ed1e083cbdc007",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_ACTIVITY_OWNER.md"
+        }
+      ],
+      "added_old_anchors": [
+        "技術受入"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 29,
+      "path": "Maintanance/Current/STUDIO_CONSIDERATION_EVENT.md",
+      "status": "translated",
+      "before_sha256": "a4434834e7b6d7106c9055e0f7d5bebd5e940fb03b323964e5bd5decc3166436",
+      "after_sha256": "ffc595640e1adc8f941ade936bf2efda1ad4933e628349e4cabed457167c9bbc",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONSIDERATION_EVENT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 検討中イベント表示（OPS-122）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "e0ca5569d025c90591c415e9684c993a5493f0ad16fdd968344c7f35df84a0c2",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONSIDERATION_EVENT.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "830eb5649d19a72771e9533013cb0262c40f530803d567b8c87bffcd5cf070bb",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONSIDERATION_EVENT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "技術受入"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 30,
+      "path": "Maintanance/Current/STUDIO_CONTINUITY_STATUS.md",
+      "status": "translated",
+      "before_sha256": "443bf92da69ef15d45b606a933202fb681909a8b0ebfebb09ec85faf5167dfd3",
+      "after_sha256": "ed6714f9d8b9475608833240b6a225d5e34aa0c0de487984a6411d942f4d2071",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONTINUITY_STATUS.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Astraの継続確認表示",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "6c6bfc9120e8a39782600425add8dee67eb9d0671044f0788144ddd66b8d7819",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONTINUITY_STATUS.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "e27402d1574343f6279ce3dc2fd14a1c3c4aa5ce7fa1425d2bcefba9b78c0129",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONTINUITY_STATUS.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 姫Return",
+          "reasons": [
+            "attributed original section: 姫Return"
+          ],
+          "sha256": "83efe78b871cbc1aea81fdb6472114b81e070b492b90d5f65f8a6ab828b25760",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_CONTINUITY_STATUS.md"
+        }
+      ],
+      "added_old_anchors": [
+        "正式依頼",
+        "astra受入2026-10-19"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 31,
+      "path": "Maintanance/Current/STUDIO_OPERATION_REVIEW.md",
+      "status": "translated",
+      "before_sha256": "157b7b8f2f99ef2edd3ced35450563e22c771f6151ef6ea486b0e9d950e98005",
+      "after_sha256": "1fcefcc1a797259dc853fdfc70b01a8409d0f3cfc1980032748379128d061c2e",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Studio連携オペレーションの見直し（OPS-128）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "79ee3e6ecbf9f479b279b5b3020c645b736d0609f0e9933cf3291a34b0185d35",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "203df7cd1191e5bcdfaa31848de1c2559e9362f42815b9c82058a0fccdbd5f42",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 姫Return",
+          "reasons": [
+            "attributed original section: 姫Return"
+          ],
+          "sha256": "db3d899b6387e93c6fb9a569d407ff7850220737d04b2fba8c11cbdaae1cc95b",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## 姫第2Return",
+          "reasons": [
+            "attributed original section: 姫第2Return"
+          ],
+          "sha256": "273f34dd56e00e8a1bfe0f2863a809c840a2e4d4f73d90aaacb15a7d9ca363e4",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## OPS-129 姫Return",
+          "reasons": [
+            "attributed original section: OPS-129 姫Return"
+          ],
+          "sha256": "36d9cfc11bf9380e26baeb73755b8bb1bb5b138fd69c46d27831ffb84cbd168e",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        },
+        {
+          "identifier": "@@KEEP_5@@",
+          "heading": "## OPS-129 姫補修Return",
+          "reasons": [
+            "attributed original section: OPS-129 姫補修Return"
+          ],
+          "sha256": "8174dd01d3d98802f837201a75c96f1b15aea42848addcebbb69da5a01c5cda4",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_OPERATION_REVIEW.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的と入力",
+        "astraの協議案",
+        "姫への第1依頼",
+        "完了条件",
+        "astra第1応答第2協議",
+        "協議結果astraまとめ2026-10-19",
+        "最小試行案",
+        "初回に採らない案",
+        "実装する場合の内訳",
+        "ユーザー承認とops-129実装依頼2026-10-19",
+        "ops-129-astra確認限定補修",
+        "ops-129-astra実装受入観察継続2026-10-19",
+        "ops-129-観察3回終了2026-10-19"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ],
+      "pre_precision_correction_sha256": "48ab1aea4ed8d170fb44161042e7807c0056c48fe8511c0399e9887921174f16",
+      "acceptance_precision_correction": "Tabulate who writes what, where, and to how many locations at each stage."
+    },
+    {
+      "index": 32,
+      "path": "Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md",
+      "status": "translated",
+      "before_sha256": "13afd5d264ede6e47bc76c96e5b89492c1a76028138f2dc689dd9f68137116ef",
+      "after_sha256": "1326233dd2937b960ff40e3d01ae443f3a574ae0ff01f4d938884bf2bf0c91f3",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Studioユーザビリティ改善の段階実施（OPS-126）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "f2acaac547ba0f13bbe1e4d866251149e9893b659e363891ad5744a6fc1026c0",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "d381c013b60a672d1eeae9ce0d6eceb64e4693694a859ff2f94f6379af543b85",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## 姫第1回答",
+          "reasons": [
+            "attributed original section: 姫第1回答"
+          ],
+          "sha256": "99a5e4e3c6153ef24cf28fe2a8bf9f4fc927ea6181bff1457659ad60b1acaebc",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## 姫第2Return",
+          "reasons": [
+            "attributed original section: 姫第2Return"
+          ],
+          "sha256": "ee43ab58b05164cb0d9f559879fc38f34f23fd4a8505d0ec5b833b101b7543eb",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_4@@",
+          "heading": "## 姫第3Return",
+          "reasons": [
+            "attributed original section: 姫第3Return"
+          ],
+          "sha256": "a7b762c95cdf0b8e5de7156a357939e8d6ee99d44ac0e583641556109a070af4",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_5@@",
+          "heading": "## 姫第4Return",
+          "reasons": [
+            "attributed original section: 姫第4Return"
+          ],
+          "sha256": "984f878593c9a6fb8f52a1ad00359a6fe4b5eb2d16e5dae7fed3599e833ac82f",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        },
+        {
+          "identifier": "@@KEEP_6@@",
+          "heading": "## 姫第5Return",
+          "reasons": [
+            "attributed original section: 姫第5Return"
+          ],
+          "sha256": "f36d01807a3d69cae66d3eca651c1b5416323c08b6123711669a30b3deac5f15",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_USABILITY_ROLLOUT.md"
+        }
+      ],
+      "added_old_anchors": [
+        "astraの暫定仕分け",
+        "姫への第1依頼短い相談",
+        "astra応答と第2依頼案35の限定実装",
+        "astra第2受入とユーザー回答2026-10-19",
+        "第3依頼案12の限定実装",
+        "astra第3受入2026-10-19",
+        "第4依頼案46の限定実装と案78の短い相談",
+        "astra第4受入残案の決定2026-10-19",
+        "第5依頼案78の限定実装最終区切り",
+        "astra最終受入2026-10-19",
+        "完了記録2026-10-19"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 33,
+      "path": "Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md",
+      "status": "translated",
+      "before_sha256": "dabda6f1ab0c604a583b12aef09ce4454f0f65cd8981a2264c1477e1ab91d4e1",
+      "after_sha256": "8b0ae4aaf364a9553aa9d4f0200236de5ada1403777abd75056d7a9744aa7985",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# 作業レーンへの拡張案（OPS-118）",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "f42f5ee286966bffe296ddf3e9512ed09a511c79eb1d5cf64b584a1a99528b43",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md"
+        },
+        {
+          "identifier": "@@KEEP_1@@",
+          "heading": "## TL;DR（人間向け）",
+          "reasons": [
+            "Japanese human TLDR"
+          ],
+          "sha256": "b2589dd811038f42415e8fcb86d78919e720cbb32fb1e78b7ad27c7c6bd8ffc4",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md"
+        },
+        {
+          "identifier": "@@KEEP_2@@",
+          "heading": "## Proposal（姫記入）",
+          "reasons": [
+            "attributed original section: Proposal（姫記入）",
+            "attributed original section: Return（姫記入）"
+          ],
+          "sha256": "11e322fc5bca0d6b5897cdc7ca75b87f113073510ee1ea0e9aaff5ef59ca00c1",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md"
+        },
+        {
+          "identifier": "@@KEEP_3@@",
+          "heading": "## 第2回Return（姫記入）",
+          "reasons": [
+            "attributed original section: 第2回Return（姫記入）"
+          ],
+          "sha256": "65e95f0c8c64f7ea36814596915e218e12a6ffaec421a08a74a567104b10caea",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/STUDIO_WORK_LANE_PROPOSAL.md"
+        }
+      ],
+      "added_old_anchors": [
+        "姫への正式依頼",
+        "astra確認案の補修依頼2026-10-18",
+        "astra受入ユーザー提示案2026-10-18",
+        "ユーザー判断2026-10-18"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "retained_exact",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    },
+    {
+      "index": 34,
+      "path": "Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md",
+      "status": "translated",
+      "before_sha256": "68bcb99a6e5b11ccf84959ccba985214d637ea562cfb02c3ce90710557b66655",
+      "after_sha256": "302ba6f77078b5fe9778a64568c40cec97a746db6dd945c89058d2bbb8857b7a",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md",
+      "preserved_original_sections": [
+        {
+          "identifier": "@@KEEP_0@@",
+          "heading": "# Registryアプリ：既存graph試験の知見と再利用範囲の調査",
+          "reasons": [
+            "Japanese title"
+          ],
+          "sha256": "7d26945b0454547eb51993da4984b9b4ec70399a8b61b615ebadb3b7c22092e3",
+          "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/TASK_REGISTRY_APP_DISCOVERY.md"
+        }
+      ],
+      "added_old_anchors": [
+        "目的範囲",
+        "返却受入条件",
+        "境界",
+        "調査結果2026-10-16--astra",
+        "結論と再利用範囲",
+        "今回の検証",
+        "表現上の不足と提案",
+        "次に実装できる限定範囲提案未着手",
+        "残る判断と受入"
+      ],
+      "checks": [
+        "source snapshot hash/current-before hash equality",
+        "protected blocks exact",
+        "original code spans retained",
+        "link destinations retained",
+        "Japanese source quotations retained",
+        "legacy explanatory-heading anchors added"
+      ],
+      "coverage": "English explanatory prose; Japanese title/TLDR and original attributed sections retained",
+      "japanese_tldr": "added",
+      "semantic_check": "Compared explanatory translation against the complete source, preserving the sequence of requests, corrections and acceptance and all stated uncertainty/authority boundaries. Attributed originals are not translated.",
+      "residual_japanese_exclusions": [
+        "Japanese document title and human TLDR",
+        "verbatim source quotations/UI labels/code tokens",
+        "original HTML metadata comments",
+        "separately attributed original sections, when listed"
+      ]
+    }
+  ],
+  "held_files": [
+    {
+      "path": "Maintanance/Current/DECISION_ARCHIVE_PILOT.md",
+      "states": [
+        "PROPOSED"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/DECISION_ARCHIVE_PILOT.md",
+      "sha256": "f1b024c2e5bb155535bd2beacb865177b58a8d0d350f893935480014a17a5abd"
+    },
+    {
+      "path": "Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md",
+      "states": [
+        "FROZEN"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md",
+      "sha256": "f20ce09c6b2bf457847e8057ece5aba1b57910a5bee225daa00b8c14098f058e"
+    },
+    {
+      "path": "Maintanance/Current/JUDGMENT_CACHE_LRU_PROPOSAL.md",
+      "states": [
+        "PROPOSED"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/JUDGMENT_CACHE_LRU_PROPOSAL.md",
+      "sha256": "d74157a0251b164b5d72c4e38327530504de0b47c53c67afdff47c73bcbd311d"
+    },
+    {
+      "path": "Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+      "states": [
+        "WAITING_USER"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md",
+      "sha256": "f8bdbd0c740514e9a0fd655ada22ab8b4c9cdb108a997ae476a8bbef59d4553d"
+    },
+    {
+      "path": "Maintanance/Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md",
+      "states": [
+        "ACTIVE",
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/MILESTONE_HEALTH_AUDIT_2026-10-17.md",
+      "sha256": "3571ef8ceaa29d3414846be847ca0d41b83163acfc7b8d436a8cde929a161337"
+    },
+    {
+      "path": "Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+      "states": [
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md",
+      "sha256": "251f6ccb461c4098515d0a27105d4dcd1b844f86ba18e8f8bf8bb201d8682237"
+    },
+    {
+      "path": "Maintanance/Current/PERMUTATION_SEQUENCE_ADAPTER_DECISION.md",
+      "states": [
+        "PROPOSED"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/PERMUTATION_SEQUENCE_ADAPTER_DECISION.md",
+      "sha256": "5a9032bfdc5a3451e93e41b6756dfc5bf771f6e28e93e4e38df391153688ac58"
+    },
+    {
+      "path": "Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md",
+      "states": [
+        "FROZEN"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md",
+      "sha256": "56a625e9c2ea386d21d77591ef670b131b666914cfb7a7dfb7fcfdd50b7032a8"
+    },
+    {
+      "path": "Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md",
+      "states": [],
+      "reason": "completion needs confirmation",
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Current/RELEASE_CANDIDATE_COMMENT_CI.md",
+      "sha256": "9a0eef6e1d07de7c88e9052d6f0f9ae2cf3ca998cdfc3b9db4c62274481288ac"
+    },
+    {
+      "path": "Maintanance/MILESTONES.md",
+      "states": [
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/MILESTONES.md",
+      "sha256": "17d393e1d6eb808472cb8d1ba6a5f69e90761ff566dd5b2d71f738a8dad4061e"
+    },
+    {
+      "path": "Maintanance/Milestones/0.6.1/10_SPI.md",
+      "states": [
+        "ACTIVE",
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Milestones/0.6.1/10_SPI.md",
+      "sha256": "81276c457d4b3a4c0dbb8af4e366876e4276eccbda3d314c82c7dde2f124a60b"
+    },
+    {
+      "path": "Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "states": [
+        "WAITING_EXTERNAL",
+        "WAITING_EXTERNAL",
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Quality/Profiles/RedBlackTreeCollections.md",
+      "sha256": "eebf57a7ff94553cfe54c3ceba63473e19425181e96b3a26eac82cd281cec3b4"
+    },
+    {
+      "path": "Maintanance/Testing/Fixtures.md",
+      "states": [
+        "ACTIVE"
+      ],
+      "status": "held_unfinished_japanese_unchanged",
+      "source_snapshot": "/private/tmp/OPS-142-A-20261019/original/Maintanance/Testing/Fixtures.md",
+      "sha256": "77061a07c61cc0f1429d7c260c40519778d2491a9121f24d3641a392fe649d76"
+    }
+  ],
+  "verification": {
+    "before_after_sha256": "all match",
+    "protected_original_blocks": "all exact",
+    "original_code_links_source_quotations_IDs": "all retained",
+    "Japanese_existing_title_TLDR": "exact",
+    "old_explanatory_heading_anchors": "all present",
+    "scoped_git_diff_check": "PASS",
+    "held_files": "13/13 byte identical to saved originals"
+  },
+  "limits": [
+    "No product tests or browser verification: documentation-only change.",
+    "No task status, delegation or canonical adoption changed.",
+    "Original attributed Return/Proposal/answer and quoted-source blocks remain untranslated.",
+    "This is Sol A self-verification; Astra performs final independent acceptance.",
+    "No stage, commit, restart or live user UI operations."
+  ],
+  "resume_checks": [
+    {
+      "assignment": "R-20261019-01",
+      "date": "2026-10-19",
+      "owner": "Sol A",
+      "result": "Both precision corrections already applied before stop; own after hashes and RESUME hashes match current; no canonical reedit needed."
+    }
+  ]
+}

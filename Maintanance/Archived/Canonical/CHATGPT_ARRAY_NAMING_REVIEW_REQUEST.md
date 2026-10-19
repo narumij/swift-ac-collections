@@ -1,56 +1,48 @@
 # ChatGPTへの依頼 — Array module命名レビュー補完
 
+## TL;DR（人間向け）
+BareArrayとOptionalArrayの命名について、先行調査で残った代替語、Viewの意味、4D軸名、標準ライブラリの新しい型との関係を比較するよう依頼した記録です。名称決定やsource変更は依頼していません。これは当時の調査依頼であり、現在の指示ではありません。
+
 ## 依頼の目的
 
-Swift package `swift-ac-collections`で正式公開前のBareArrayとOptionalArrayについて、公開後も長く維持できる
-命名体系を選ぶための不足調査をしてください。名称の決定やsource修正は行わず、ユーザーが判断できる比較を
-返してください。
+For the pre-release BareArray and OptionalArray APIs in the Swift package `swift-ac-collections`, investigate gaps relevant to selecting naming systems that can be maintained long term after publication. Do not select names or modify source; return a comparison that lets the user decide.
 
-先行調査とCodexの予備評価は、添付または提示する`Maintanance/Archived/Canonical/ARRAY_NAMING_REVIEW.md`にあります。
-既存のsurface表、local toolchainでの完全一致確認、repository内の移行件数は再調査せず、その内容を入力と
-してください。
+The prior investigation and Codex's preliminary assessment are in the attached or supplied `Maintanance/Archived/Canonical/ARRAY_NAMING_REVIEW.md`. Treat its existing surface table, exact-name checks using the local toolchain, and repository migration counts as inputs; do not repeat that work.
 
 ## 製品上の前提
 
-- BareArrayは、競技プログラミング向けの固定容量・連続storageを持つ低レベル配列です。
-- OptionalArrayは、各slotの未設定状態を持てる固定容量の多次元配列です。
-- 両moduleは所有1D〜4Dと、非所有の1D〜3D Viewを持ちます。
-- Viewは所有者のpointerを共有し、所有者より長く生きることを型では禁止していません。
-- 正式公開前なので、現行名とのsource compatibilityより、公開後の持続性、可読性、検索性、推測可能性を
-  優先できます。
-- 必須条件は、Swift標準ライブラリおよび`swift-collections`の公開型名・主要用語・命名規則と衝突せず、
-  それらの型だと誤認されにくいことです。
+- BareArray is a low-level array for competitive programming, with fixed capacity and contiguous storage.
+- OptionalArray is a fixed-capacity multidimensional array whose slots can be unset.
+- Both modules have owning 1D–4D types and non-owning 1D–3D Views.
+- A View shares a pointer to its owner; the type system does not prevent the View from outliving that owner.
+- The APIs are not yet formally published, so long-term durability, readability, searchability, and predictability take priority over source compatibility with current names. Existing usage examples and migration impact for Git users must still be recorded.
+- Names, key terms, and naming conventions must not conflict with or mislead users into believing these are Swift standard-library or `swift-collections` APIs.
 
 ## 補完してほしい論点
 
-1. `Bare`と`Optional`について、実質的な代替接頭語を複数比較してください。各候補が所有、固定容量、
-   未設定slot、非所有Viewの契約をどう表し、何を誤認させるか、棄却理由も示してください。
-2. `View`維持案と代替suffixを比較してください。標準の`Slice`、`Span`、`View`が与えるCollection、範囲、
-   寿命保証の期待と、このpackageの非所有pointer型との差を重視してください。
-3. 4Dの名称変更と軸契約の変更を分離してください。storage順と連鎖subscriptの意味を維持したまま可能な
-   名称案を先に比較し、軸順反転が必要なら別の製品判断だと明記してください。
-4. 公式`swift-collections`の現行`main`と、Swift Evolution SE-0527の`RigidArray` / `UniqueArray`を確認し、
-   ownership-aware arrayの命名領域が標準ライブラリへ移る方向を反証へ含めてください。
+1. Compare several meaningful alternatives to `Bare` and `Optional`. Explain how each candidate communicates ownership, fixed capacity, unset slots, and non-owning Views; describe likely misinterpretations and why candidates are rejected.
+2. Compare keeping `View` with alternative suffixes. Focus on differences between this non-owning pointer type and the Collection, range, and lifetime guarantees users may expect from standard-library `Slice`, `Span`, and `View` terminology.
+3. Separate renaming 4D dimensions from changing the axis contract. First compare names that preserve storage order and chained-subscript behavior. If reversing axis order is considered necessary, identify it as a separate product decision.
+4. Check official `swift-collections` `main` and Swift Evolution proposal SE-0527 for `RigidArray` / `UniqueArray`; include the movement of ownership-aware array naming into the standard library as counterevidence.
 
-一次資料:
+Primary sources:
 
 - https://github.com/apple/swift-collections
 - https://github.com/swiftlang/swift-evolution/blob/main/proposals/0527-rigidarray-uniquearray.md
 
 ## 判断単位と出力形式
 
-次の三単位を混ぜず、それぞれについて候補比較表、推奨一つ、最も強い反証、未確認範囲を示してください。
+Do not combine the following three decisions. For each, provide a candidate comparison table, one recommendation, the strongest counterargument, and unverified scope.
 
-1. BareArrayの所有型、View型、次元名を含む命名体系。
-2. OptionalArrayの1D所有型名。
-3. OptionalArrayの2D〜4D次元名体系。
+1. The BareArray naming system, including owning types, Views, and dimension labels.
+2. The OptionalArray 1D owning-type name.
+3. The OptionalArray 2D–4D dimension-label system.
 
-「既存名と完全一致しない」だけで推奨せず、契約を最も誤認させにくいかを評価してください。BareArrayと
-OptionalArrayの見た目の統一だけを理由にせず、差を残す場合は用途上の理由を説明してください。
+Do not recommend a name solely because it is not an exact match to an existing name. Evaluate how accurately it represents the contract. Do not harmonize BareArray and OptionalArray merely for visual consistency; explain the product reason if they differ.
 
 ## 禁止事項
 
-- 名称を最終決定しない。
-- source、test、文書を変更しない。
-- rename、typealias、deprecated alias、移行期間を実装しない。
-- 性能、View寿命の解決、storage再設計、strict memory safetyへ範囲を広げない。
+- Do not make the final naming decision.
+- Do not modify source, tests, or documentation.
+- Do not implement renames, typealiases, deprecated aliases, or a migration period.
+- Do not expand into performance, View lifetime remediation, storage redesign, or strict memory safety.

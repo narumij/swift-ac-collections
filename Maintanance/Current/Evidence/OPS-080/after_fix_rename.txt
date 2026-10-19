@@ -1,0 +1,2 @@
+b) 10_SPI.md -> Z_SPI.md: exit=0
+[('START-0.6.0', 'X-EXTRA'), ('X-EXTRA', 'MS-SPI'), ('MS-SPI', 'END-0.6.0')]

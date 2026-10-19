@@ -1,68 +1,62 @@
 # コードスニペット候補アンケート
 
+## TL;DR（人間向け）
+BareArray、OptionalArray、Permutationの公開APIから、利用者向けスニペットの効果が高いメソッドを選んだ調査記録です。統合TOP10と選定理由を残しています。これは当時の調査結果であり、現在の作業指示ではありません。
+
 ## 対象task
 
-`DOC-019` — コードスニペット候補メソッドTOP10アンケート
+`DOC-019` — Survey of the Top 10 candidate methods for code snippets
 
 ## 目的
 
-BareArray、OptionalArray、Permutationの公開APIについて、利用者向けコードスニペットを追加する効果が
-高いsymbolを、二つのAIの回答から選ぶ。既存コメントの正誤監査ではなく、例示による理解支援の
-優先順位を決めるための調査である。
+Select, from two AI responses, the symbols for which adding user-facing code snippets would have the greatest benefit across the public APIs of BareArray, OptionalArray, and Permutation. This is a prioritization exercise to help users understand and avoid misuse through examples; it is not an audit of whether existing comments are correct.
 
 ## 実施方法
 
-CodexとClaudeが「コードスニペットがあると理解・誤用防止・採用判断に特に効くメソッド」を各10件まで
-順位付けする。回答fileは同時編集の競合を避けるために分ける。
+Codex and Claude each rank up to ten methods for which a code snippet would especially help users understand behavior, avoid misuse, or decide whether to adopt the API. Responses are kept in separate files to avoid concurrent editing conflicts.
 
-- Codexは`CODE_SNIPPET_SURVEY_CODEX.md`だけへ回答する。
-- Claudeは`CODE_SNIPPET_SURVEY_CLAUDE.md`だけへ回答する。
-- 共通の本書、source、testは両者ともread-onlyとし、同時作業時のwrite競合を避ける。
+- Codex writes only to `CODE_SNIPPET_SURVEY_CODEX.md`.
+- Claude writes only to `CODE_SNIPPET_SURVEY_CLAUDE.md`.
+- Both keep this shared document, source, and tests read-only to avoid write conflicts during concurrent work.
 
-各回答はsymbol、順位、想定する利用者の疑問、スニペットで示すべき最小の振る舞い、既存説明だけでは
-不足する理由を記載する。単に代表的なAPIであることや、全面的なtutorialが欲しいことは選定理由にしない。
-initializer、subscript、operatorも候補に含めてよいが、同一パターンの次元違いを重複させる場合は理由を示す。
+Each response must state the symbol, rank, the user's likely question, the minimum behavior the snippet should demonstrate, and why the existing explanation alone is insufficient. Do not select an item solely because it is a representative API or because a comprehensive tutorial would be useful. Initializers, subscripts, and operators may be candidates; explain when multiple dimensions of the same pattern are listed separately.
 
-両回答の確定後、Codexが2回答の一致・相違を本書へ整理し、統合TOP10と圏外だが意見が割れた候補を返す。
+After both responses are finalized, Codex will summarize their agreements and differences here, and return an integrated Top 10 plus candidates that fell outside the list but received split opinions.
 
 ## 回答状態
 
-- Codex回答: 2026-10-10確定
-- Claude回答: 2026-10-10確定
-- 統合: 2026-10-10完了
+- Codex response: finalized 2026-10-10
+- Claude response: finalized 2026-10-10
+- Integration: completed 2026-10-10
 
 ## 統合TOP10
 
-両回答で同じ利用場面を挙げた候補を優先し、次元違いは例の必要性が別に説明できる場合だけ残した。
+Candidates raised by both responses for the same use case were prioritized. Dimension variants were retained only when a separate example need was explained.
 
-1. `Collection.nextPermutations()` — 現在順以後だけを返すことと、全順列には事前sortが必要なこと。
-2. `OptionalArray1D.subscript(_:)` — 初期未設定、値の設定、`nil`による未設定化。
-3. `BareArray2D.subscript(_:)` — `array[y][x]`の軸順と通常の連鎖書き込み。
-4. `OptionalArray2D.subscript(_:)` — View越しでもOptional slotの読み書きと解除が働くこと。
-5. `BareArray.init(count:_:)` — closureによる逐次生成と0要素時の非呼出し。
-6. `BareArray4D.init(repeating:size0:size1:size2:size3:)` — 数字名の軸と`array[w][z][y][x]`の対応。
-7. `OptionalArray1D.removeAll()` — storageを保持したまま全slotを未設定へ戻して再利用できること。
-8. `NextPermutationsSequence.Permutation.subscript(_:)` — sourceと独立した0始まりのIndex。
-9. `NextPermutationsSequence.Iterator.next()` — 手動列挙、途中終了、取得済み結果の安定性。
-10. `OptionalArray4D.init(size0:size1:size2:size3:)` — 4Dの軸順と全slotが未設定で始まること。
+1. `Collection.nextPermutations()` — It returns only permutations at or after the current ordering; sorting first is required to enumerate all permutations.
+2. `OptionalArray1D.subscript(_:)` — Initially unset slots, setting a value, and unsetting it with `nil`.
+3. `BareArray2D.subscript(_:)` — The axis order in `array[y][x]` and ordinary chained writes.
+4. `OptionalArray2D.subscript(_:)` — Reading, writing, and clearing Optional slots through a View.
+5. `BareArray.init(count:_:)` — Sequential creation through a closure and the fact that the closure is not called for zero elements.
+6. `BareArray4D.init(repeating:size0:size1:size2:size3:)` — How numbered axes correspond to `array[w][z][y][x]`.
+7. `OptionalArray1D.removeAll()` — Reusing storage after resetting every slot to unset.
+8. `NextPermutationsSequence.Permutation.subscript(_:)` — A zero-based Index independent of the source.
+9. `NextPermutationsSequence.Iterator.next()` — Manual iteration, early termination, and stability of already-produced results.
+10. `OptionalArray4D.init(size0:size1:size2:size3:)` — The 4D axis order and that every slot starts unset.
 
 ## 一致と相違
 
-- 強い一致: `nextPermutations()`、OptionalArray1D subscript、BareArray2D連鎖subscript、
-  OptionalArray2D連鎖subscript、closure initializer、BareArray4D、`removeAll()`、Permutationの0始まりIndex。
-- IteratorはCodexがcopy独立性を`makeIterator()`で、Claudeが手動列挙と値安定性を`next()`で選んだ。
-  スニペットの入口として直接操作する`next()`へ統合した。
-- Claudeの`BareArray`型と`~Copyable`は重要だが、ユーザー指定がメソッドTOP10なので統合順位から外した。
-  型ページ用スニペット候補として保持する。
-- CodexだけがOptionalArray4Dを選び、4Dでは初期未設定と軸順を同時に示す価値があるため10位に残した。
+- Strong agreement: `nextPermutations()`, the OptionalArray1D subscript, chained subscripting for BareArray2D and OptionalArray2D, the closure initializer, BareArray4D, `removeAll()`, and Permutation's zero-based Index.
+- For Iterator, Codex chose copy independence at `makeIterator()`, while Claude chose manual iteration and value stability at `next()`. The integration uses `next()` as the direct entry point for a snippet.
+- Claude selected the `BareArray` type and `~Copyable` as important, but the user requested a Top 10 of methods, so these were excluded from the integrated ranking. Keep them as candidates for type-page snippets.
+- Only Codex selected OptionalArray4D. It remains at rank 10 because one example can demonstrate both initially unset slots and axis order for 4D.
 
-本アンケートは公開宣言とコメントを中心に判断した。testは、スニペットへ書く挙動が公開契約として
-確定できない場合の事実確認にだけ使うものとし、候補選定の必須入力にはしない。
+The survey primarily considered public declarations and comments. Use tests only to verify facts when behavior to be shown in a snippet cannot be established as part of the public contract; tests are not a required input to candidate selection.
 
 ## 対象外
 
-- source、公開コメント、利用者向け文書へのスニペット追加
-- 掲載場所や文面の最終決定
-- RedBlackTree系、互換mode、内部API、test専用API
+- Adding snippets to source, public comments, or user-facing documentation
+- Final decisions on publication location or wording
+- RedBlackTree APIs, compatibility mode, internal APIs, and test-only APIs
 
-採用するスニペットと掲載場所は、アンケート受入後に別taskとして扱う。
+Treat snippet selection and placement as a separate task after this survey is accepted.

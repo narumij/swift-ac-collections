@@ -1,0 +1,153 @@
+diff --git a/Maintanance/RegistryApp/index.template.html b/Maintanance/RegistryApp/index.template.html
+index 91bea462f..5ec88ebc9 100644
+--- a/Maintanance/RegistryApp/index.template.html
++++ b/Maintanance/RegistryApp/index.template.html
+@@ -1564,6 +1564,9 @@ function letterReceipt(l){
+ // key (cursor and filters) is a UI input; polling re-reads the page shown, it never jumps back to the newest by itself.
+ function letterListKey(ui){return JSON.stringify([ui.letterCursor,ui.letterMember,ui.letterState]);}
+ function letterListQuery(ui){const q=[['brief','1'],['limit','50'],['cursor',ui.letterCursor],['member',ui.letterMember],['state',ui.letterState]].filter(([,v])=>v);return '/letters?'+q.map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');}
++// CP-20261020-002: every event time is the server time of that event; only the send and the recipient's own receipt have
++// their own names, the others are "記録日時" (a proxy record is not a receipt)
++function letterTimeLabel(event,effective){return event==='sent'?'送信日時':event==='received'&&effective?'受領日時':'記録日時';}
+ function lettersViewModel(s){
+  const src=s.sources.letters,det=s.sources.letterDetail,ui=s.ui,last=src.value&&!Array.isArray(src.value)?src.value:{letters:src.value||[],hasMore:false,nextCursor:null};
+  // H-20261019-35: the last good page belongs to the key it was read for. While the page or filters shown differ from it, it
+@@ -1575,7 +1578,9 @@ function lettersViewModel(s){
+   if(l.revisedAfterReceipt)flags.push(letterReceipt(l));
+   if(l.stopRequested)flags.push('停止要請：'+(l.stopReason||'理由の記録なし'));
+   if(l.proxyRecords)flags.push('代理の記録 '+l.proxyRecords+'件（状態は変えていない）');
+-  return {id:l.id,state:l.state,selected:l.id===ui.letterSelected,text:l.taskId+' · '+l.sender+' → '+l.recipient+' · '+l.stateLabel+'\n'+l.id.slice(0,21)+'…'+(flags.length?'\n'+flags.join('\n'):''),title:l.id};});
++  return {id:l.id,state:l.state,selected:l.id===ui.letterSelected,text:l.taskId+' · '+l.sender+' → '+l.recipient+' · '+l.stateLabel+'\n'+l.id.slice(0,21)+'…'+
++   // CP-20261020-002: the server times of the send and of the recipient's own receipt
++   '\n送信日時 '+letterTime(l.sentAt)+' · 受領日時 '+(l.receivedAt?letterTime(l.receivedAt):'未受領')+(flags.length?'\n'+flags.join('\n'):''),title:l.id};});
+  const filtered=!!(ui.letterMember||ui.letterState);
+  // never presented as the whole history: which page, its count, and whether older letters exist
+  const failedNow=src.ok===false&&(src.failureKey===undefined||src.failureKey===letterListKey(ui));
+@@ -1588,9 +1593,9 @@ function lettersViewModel(s){
+   if(d)detail.body={heading:d.taskId+' · '+d.sender+' → '+d.recipient+' · '+d.stateLabel,state:d.state,receipt:letterReceipt(d),
+    stop:d.state==='withdrawn'?'停止要請中（宛先の本人の応答を待っています。停止の確認でも、占有の解除でもありません）':d.state==='stopped'?'停止済み（宛先の本人の応答）':'',
+    texts:(d.texts||[]).map(x=>({heading:(x.part==='request'?'依頼':'返答')+' v'+x.revision+(x.reason?'（改訂の理由：'+x.reason+'）':''),body:x.body,
+-    meta:'記録 '+x.recorded_by+' · サーバー受領 '+letterTime(x.received_at)+(x.ref_doc?' · 参照 '+x.ref_doc+' § '+x.ref_section:'')})),
++    meta:'記録 '+x.recorded_by+' · 記録日時 '+letterTime(x.received_at)+(x.ref_doc?' · 参照 '+x.ref_doc+' § '+x.ref_section:'')})),
+    events:(d.events||[]).map(e=>({proxy:!e.effective,text:(LETTER_EVENT_LABELS[e.event]||e.event)+' — '+e.actor+(e.effective?'':'（代理の記録：記録者 '+e.recorded_by+'。状態は変わらない）')+(e.note?'：'+e.note:''),
+-    meta:'サーバー受領 '+letterTime(e.received_at)+(e.claimed_at?' · 本人の申告 '+e.claimed_at:'')}))};
++    meta:letterTimeLabel(e.event,e.effective)+' '+letterTime(e.received_at)+(e.claimed_at?' · 本人の申告 '+e.claimed_at:'')}))};
+  }
+  return {members:[['','すべて'],...members.map(m=>[m,m])],states:LETTER_STATE_CHOICES,member:ui.letterMember,state:ui.letterState,status,rows,
+   paging:{canOlder:!!page.hasMore&&!!page.nextCursor,olderCursor:page.nextCursor||null,canLatest:!!ui.letterCursor},
+diff --git a/Maintanance/RegistryApp/studio_store.py b/Maintanance/RegistryApp/studio_store.py
+index 72299acb9..d4024b297 100644
+--- a/Maintanance/RegistryApp/studio_store.py
++++ b/Maintanance/RegistryApp/studio_store.py
+@@ -149,6 +149,15 @@ def _body(value):
+     return value
+ 
+ 
++def _event_times(events, letter_time):
++    """CP-20261020-002: the send time is the server time of the `sent` event; the receipt time that of the recipient's own
++    first `received` (None until then; a proxy record is not a receipt). Both are the times the server made those events,
++    never a time read from a list. A letter written before the send used one clock reading falls back to its own row."""
++    sent = next((e for e in events if e['event'] == 'sent'), None)
++    received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
++    return {'sentAt': sent['received_at'] if sent else letter_time, 'receivedAt': received['received_at'] if received else None}
++
++
+ def _ref(doc, section):
+     if doc is None and section is None:
+         return None, None
+@@ -196,9 +205,10 @@ class LetterMixin:
+                              (letter_id, part, revision, body, reason, ref[0], ref[1], recorded_by, approvals.now(), operation_id))
+         return cursor.lastrowid
+ 
+-    def _insert_event(self, con, letter_id, event, actor, recorded_by, claimed_at, text_sequence, note, effective, operation_id):
++    def _insert_event(self, con, letter_id, event, actor, recorded_by, claimed_at, text_sequence, note, effective, operation_id, at=None):
++        # `at`: the server time of the operation that makes this event, when the caller already read the clock for it
+         con.execute('INSERT INTO letter_events(letter_id,event,actor,recorded_by,claimed_at,received_at,text_sequence,note,effective,operation_id) VALUES (?,?,?,?,?,?,?,?,?,?)',
+-                    (letter_id, event, actor, recorded_by, claimed_at, approvals.now(), text_sequence, note, 1 if effective else 0, operation_id))
++                    (letter_id, event, actor, recorded_by, claimed_at, at or approvals.now(), text_sequence, note, 1 if effective else 0, operation_id))
+ 
+     def send(self, operation_id, sender, recipient, task_id, body, recorded_by=None, ref_doc=None, ref_section=None):
+         if not isinstance(operation_id, str) or not approvals.OPERATION_ID.fullmatch(operation_id):
+@@ -224,9 +234,11 @@ class LetterMixin:
+                 raise approvals.Conflict('A letter is sent by the sender itself; a proxy send is not accepted')
+             letter_id = f'LTR-{_local_date()}-{uuid.uuid4().hex.upper()}'
+             self._record_operation(con, operation_id, 'letter-send', payload, recorded_by, 'applied', {'letterId': letter_id})
+-            con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, approvals.now()))
++            # CP-20261020-002: one clock reading for the send; the letter row and its `sent` event carry the same time
++            at = approvals.now()
++            con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, at))
+             text_id = self._insert_text(con, letter_id, 'request', body, '', ref, recorded_by, operation_id)
+-            self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id)
++            self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id, at)
+             return self._letter(con, letter_id) | {'replayed': False}
+ 
+     def event(self, operation_id, letter_id, event, actor, recorded_by=None, claimed_at=None, note='', body=None, ref_doc=None, ref_section=None, revision=None):
+@@ -337,7 +349,7 @@ class LetterMixin:
+         received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
+         seen = next((t['revision'] for t in texts if received and t['sequence'] == received['text_sequence']), None)
+         value = {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+-                 'sentAt': row['received_at'], 'state': state, 'stateLabel': STATES.get(state, state),
++                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
+                  'request': latest['request'], 'reply': latest['reply'],
+                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
+                  'events': events}
+@@ -418,7 +430,7 @@ class LetterMixin:
+                 stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
+                 meta = [{'event': e['event'], 'actor': e['actor'], 'recordedBy': e['recorded_by'], 'effective': bool(e['effective']), 'at': e['received_at']} for e in events]
+                 out.append({'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+-                            'sentAt': row['received_at'], 'state': current, 'stateLabel': STATES.get(current, current),
++                            **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
+                             'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
+                             'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
+                             'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
+diff --git a/Maintanance/RegistryApp/test-studio-letters.py b/Maintanance/RegistryApp/test-studio-letters.py
+index b51638540..a5d6c6872 100644
+--- a/Maintanance/RegistryApp/test-studio-letters.py
++++ b/Maintanance/RegistryApp/test-studio-letters.py
+@@ -266,6 +266,26 @@ class StoreTests(Base):
+             self.assertEqual(l['lastEvent'], meta[-1])
+         self.assertEqual([(e['event'], e['actor'], e['recordedBy'], e['effective']) for e in x['events']][-1], ('stopped', '姫', 'Astra', False), 'a proxy stop is told apart')
+ 
++    def test_send_and_receipt_times_are_the_server_times_of_those_events(self):
++        """CP-20261020-002: the send time is the time of the `sent` event (one clock reading, also in letters), the receipt
++        time that of the recipient's own first `received`. Reading records nothing; a replay keeps the first times."""
++        same = op()
++        sent = self.send(operation_id=same)
++        self.assertEqual(self.raw("SELECT l.received_at = e.received_at FROM letters l JOIN letter_events e ON e.letter_id = l.id AND e.event = 'sent'"), [(1,)], 'one clock reading for the send')
++        first = lambda: next(l for l in self.s.letters_brief()['letters'] if l['id'] == sent['id'])
++        self.assertEqual((first()['sentAt'], first()['receivedAt']), (first()['events'][0]['at'], None), 'not received yet: no receipt time')
++        self.s.inbox('姫'); self.s.letters(); self.s.letter(sent['id'])
++        self.assertIsNone(first()['receivedAt'], 'reading is not a receipt')
++        self.ev(sent, 'received', recorded_by='Astra')  # a proxy record is not her receipt
++        self.assertIsNone(first()['receivedAt'])
++        self.ev(sent, 'received')
++        got = first()
++        self.assertEqual(got['receivedAt'], next(e['at'] for e in got['events'] if e['event'] == 'received' and e['effective']))
++        full = self.s.letter(sent['id'])
++        self.assertEqual((full['sentAt'], full['receivedAt']), (got['sentAt'], got['receivedAt']), 'the full letter says the same')
++        again = self.send(operation_id=same)
++        self.assertEqual((again['replayed'], again['sentAt']), (True, got['sentAt']), 'a replay keeps the first time')
++
+     def test_brief_pages_are_stable_complete_and_filtered_on_the_server(self):
+         self.s.set_senders(['Astra', 'ユーザー', '姫'], 'ユーザー')
+         made, who = [], {}
+diff --git a/Maintanance/RegistryApp/test-view-model-letters.cjs b/Maintanance/RegistryApp/test-view-model-letters.cjs
+index 960383c0d..efe947992 100644
+--- a/Maintanance/RegistryApp/test-view-model-letters.cjs
++++ b/Maintanance/RegistryApp/test-view-model-letters.cjs
+@@ -56,6 +56,15 @@ const parts=['letters'];
+  assert(v.detail.body.stop.startsWith('停止要請中')&&v.detail.body.stop.includes('占有の解除でもありません'));
+  const ev=v.detail.body.events;assert.equal(ev[2].proxy,true);assert(ev[2].text.startsWith('停止の応答 — Fable（代理の記録：記録者 Astra調整。状態は変わらない）'));assert(ev[2].meta.includes('本人の申告 2026-10-19T14:00:00+09:00'));
+  s=apply(s,{source:'letterDetail',ok:true,value:{...det,state:'stopped',stateLabel:'停止済み（本人の応答）'},forId:b.id});assert.equal(c.lettersViewModel(s).detail.body.stop,'停止済み（宛先の本人の応答）');
++ // CP-20261020-002: the send and receipt times are labelled as such; other events are "記録日時", never "受領"
++ assert(ev[0].meta.startsWith('送信日時 '),ev[0].meta);assert(ev[1].meta.startsWith('記録日時 '),ev[1].meta);assert(!ev.some(e=>e.meta.includes('サーバー受領')));
++ {const rec=D(b,{events:[{event:'received',actor:'姫',recorded_by:'姫',effective:true,note:'',claimed_at:null,received_at:'2026-10-19T05:03:00Z'}]});
++  const t2=apply(s,{source:'letterDetail',ok:true,value:rec,forId:b.id});assert(c.lettersViewModel(t2).detail.body.events[0].meta.startsWith('受領日時 '));
++  assert(!c.lettersViewModel(t2).detail.body.texts.some(x=>x.meta.includes('サーバー受領')),'a text revision says 記録日時');}
++ {const one=(o)=>apply(s,{source:'letters',ok:true,value:{letters:[{...b,...o}],hasMore:false,nextCursor:null},forKey:c.letterListKey(s.ui)});
++  const row=o=>c.lettersViewModel(one(o)).rows[0].text;
++  assert.match(row({sentAt:'2026-10-19T05:00:00Z',receivedAt:null}),/送信日時 .+ · 受領日時 未受領/,'not received yet');
++  assert.match(row({sentAt:'2026-10-19T05:00:00Z',receivedAt:'2026-10-19T05:03:00Z'}),/送信日時 .+ · 受領日時 \S/);}
+  // the list failing keeps the last rows and says so
+  s=apply(s,{source:'letters',ok:false,forKey:c.letterListKey(s.ui)});v=c.lettersViewModel(s);assert.equal(v.status,'一覧の取得不調 · 最後に読めた内容');assert.equal(v.rows.length,3);
+  // choice and filters survive polling

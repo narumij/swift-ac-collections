@@ -1,0 +1,1203 @@
+{
+ "about": "OPS-153 区切り2 compatibility baseline of the work-card DOM. Captured from 73b623ea (before the card view-model extraction) with TZ=UTC, ja-JP and fixed times. It shows the output stayed the same; it is not a proof of correctness.",
+ "knownLimits": [
+  "derived from the latest 200 activity records only",
+  "a start is shown only when the request and the start carry the same leading ID, task and recipient",
+  "approvals and activity arrive separately; the cards combine their latest values"
+ ],
+ "steps": [
+  {
+   "name": "first load: request, 相談待ち, ended",
+   "status": "3件",
+   "stale": "false",
+   "scroll": 0,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 相談待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:02 · 相談待ち：方針"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 相談待ち\n次：不明\nメンバーB · 10/19 04:00:02 · 相談待ち：方針\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "相談待ち",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 依頼済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：メンバーA"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:01 · R-20261019-01：依頼"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 依頼済み\n次：メンバーA\n調整 · 10/19 04:00:01 · R-20261019-01：依頼\nRegistry：ACTIVE · 承認なし\n依頼 10/19 04:00:01",
+     "stage": "依頼済み",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "confirmed start, probe ignored, 検討中, state notice only",
+   "status": "4件",
+   "stale": "false",
+   "scroll": 0,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-4 · メンバーC検討中"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーC · 10/19 04:00:06 · 検討中：案"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-4 · メンバーC検討中\n次：不明\nメンバーC · 10/19 04:00:06 · 検討中：案\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "メンバーC検討中",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 着手"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーA · 10/19 04:00:04 · R-20261019-01：着手"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 着手\n次：不明\nメンバーA · 10/19 04:00:04 · R-20261019-01：着手\nRegistry：ACTIVE · 承認なし\n依頼 10/19 04:00:01",
+     "stage": "着手",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 相談待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:02 · 相談待ち：方針"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 相談待ち\n次：不明\nメンバーB · 10/19 04:00:02 · 相談待ち：方針\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "相談待ち",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "focused card stays, scroll kept, return with presence stays, next user",
+   "status": "5件",
+   "stale": "false",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-4 · メンバーC検討中"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーC · 10/19 04:00:06 · 検討中：案"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-4 · メンバーC検討中\n次：不明\nメンバーC · 10/19 04:00:06 · 検討中：案\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "メンバーC検討中",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 着手"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーA · 10/19 04:00:04 · R-20261019-01：着手"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 着手\n次：不明\nメンバーA · 10/19 04:00:04 · R-20261019-01：着手\nRegistry：ACTIVE · 承認なし\n依頼 10/19 04:00:01",
+     "stage": "着手",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "approvals: pending first, badge counts, approval-only task",
+   "status": "6件",
+   "stale": "false",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-4 · メンバーC検討中"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーC · 10/19 04:00:06 · 検討中：案"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-4 · メンバーC検討中\n次：不明\nメンバーC · 10/19 04:00:06 · 検討中：案\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "メンバーC検討中",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 着手"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーA · 10/19 04:00:04 · R-20261019-01：着手"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認 待ち0 · 済み1 · 確保1"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 着手\n次：不明\nメンバーA · 10/19 04:00:04 · R-20261019-01：着手\nRegistry：ACTIVE · 承認 待ち0 · 済み1 · 確保1\n依頼 10/19 04:00:01",
+     "stage": "着手",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "activity failure keeps the cards",
+   "status": "6件 · 活動の取得不調 · 最終情報を保持",
+   "stale": "true",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-6 · コミット待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:09 · 承認待ち"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-6 · コミット待ち\n次：ユーザー（承認待ち）\n調整 · 10/19 04:00:09 · 承認待ち\nRegistry：不明 · 承認 待ち1 · 済み0\n開始：不明（記録範囲外または未記録）",
+     "stage": "コミット待ち",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-4 · メンバーC検討中"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーC · 10/19 04:00:06 · 検討中：案"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-4 · メンバーC検討中\n次：不明\nメンバーC · 10/19 04:00:06 · 検討中：案\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "メンバーC検討中",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 着手"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーA · 10/19 04:00:04 · R-20261019-01：着手"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認 待ち0 · 済み1 · 確保1"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 着手\n次：不明\nメンバーA · 10/19 04:00:04 · R-20261019-01：着手\nRegistry：ACTIVE · 承認 待ち0 · 済み1 · 確保1\n依頼 10/19 04:00:01",
+     "stage": "着手",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-7 · 活動情報なし"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ]
+     ],
+     "title": "T-7 · 活動情報なし\n次：ユーザー（承認待ち）\nRegistry：不明 · 承認 待ち1 · 済み0",
+     "stage": "活動情報なし",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "both failures",
+   "status": "6件 · 活動の取得不調 · 承認の取得不調 · 最終情報を保持",
+   "stale": "true",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-6 · コミット待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:09 · 承認待ち"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-6 · コミット待ち\n次：ユーザー（承認待ち）\n調整 · 10/19 04:00:09 · 承認待ち\nRegistry：不明 · 承認 待ち1 · 済み0\n開始：不明（記録範囲外または未記録）",
+     "stage": "コミット待ち",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-4 · メンバーC検討中"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーC · 10/19 04:00:06 · 検討中：案"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-4 · メンバーC検討中\n次：不明\nメンバーC · 10/19 04:00:06 · 検討中：案\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "メンバーC検討中",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 着手"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       "メンバーA · 10/19 04:00:04 · R-20261019-01：着手"
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認 待ち0 · 済み1 · 確保1"
+      ],
+      [
+       "span",
+       "",
+       "依頼 10/19 04:00:01"
+      ]
+     ],
+     "title": "T-1 · 着手\n次：不明\nメンバーA · 10/19 04:00:04 · R-20261019-01：着手\nRegistry：ACTIVE · 承認 待ち0 · 済み1 · 確保1\n依頼 10/19 04:00:01",
+     "stage": "着手",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-3 · 受入済み"
+      ],
+      [
+       "span",
+       "work-next",
+       "この仕事は終了"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:03 · 受入"
+      ],
+      [
+       "span",
+       "",
+       "Registry：DONE · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-3 · 受入済み\nこの仕事は終了\n調整 · 10/19 04:00:03 · 受入\nRegistry：DONE · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "受入済み",
+     "next": "ended",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-7 · 活動情報なし"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ]
+     ],
+     "title": "T-7 · 活動情報なし\n次：ユーザー（承認待ち）\nRegistry：不明 · 承認 待ち1 · 済み0",
+     "stage": "活動情報なし",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "recovery with a shorter window: start unknown",
+   "status": "4件 · 承認の取得不調 · 最終情報を保持",
+   "stale": "true",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-6 · コミット待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:09 · 承認待ち"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-6 · コミット待ち\n次：ユーザー（承認待ち）\n調整 · 10/19 04:00:09 · 承認待ち\nRegistry：不明 · 承認 待ち1 · 済み0\n開始：不明（記録範囲外または未記録）",
+     "stage": "コミット待ち",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-1 · 活動情報なし"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：不明"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ],
+      [
+       "span",
+       "",
+       "Registry：ACTIVE · 承認 待ち0 · 済み1 · 確保1"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ]
+     ],
+     "title": "T-1 · 活動情報なし\n次：不明\nRegistry：ACTIVE · 承認 待ち0 · 済み1 · 確保1",
+     "stage": "活動情報なし",
+     "next": "unknown",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-7 · 活動情報なし"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー（承認待ち）"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認 待ち1 · 済み0"
+      ],
+      [
+       "span",
+       "",
+       ""
+      ]
+     ],
+     "title": "T-7 · 活動情報なし\n次：ユーザー（承認待ち）\nRegistry：不明 · 承認 待ち1 · 済み0",
+     "stage": "活動情報なし",
+     "next": "approval",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "approvals recovered and empty",
+   "status": "2件",
+   "stale": "false",
+   "scroll": 55,
+   "cards": [
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-6 · コミット待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：ユーザー"
+      ],
+      [
+       "span",
+       "",
+       "調整 · 10/19 04:00:09 · 承認待ち"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-6 · コミット待ち\n次：ユーザー\n調整 · 10/19 04:00:09 · 承認待ち\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "コミット待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    },
+    {
+     "lines": [
+      [
+       "strong",
+       "",
+       "T-2 · 返却・受入待ち"
+      ],
+      [
+       "span",
+       "work-next",
+       "次：調整"
+      ],
+      [
+       "span",
+       "",
+       "メンバーB · 10/19 04:00:08 · 返却"
+      ],
+      [
+       "span",
+       "",
+       "Registry：不明 · 承認なし"
+      ],
+      [
+       "span",
+       "",
+       "開始：不明"
+      ]
+     ],
+     "title": "T-2 · 返却・受入待ち\n次：調整\nメンバーB · 10/19 04:00:08 · 返却\nRegistry：不明 · 承認なし\n開始：不明（記録範囲外または未記録）",
+     "stage": "返却・受入待ち",
+     "next": "known",
+     "cls": "approval-card work-card",
+     "tab": 0
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "status": "記録なし",
+   "stale": "false",
+   "scroll": 55,
+   "cards": []
+  }
+ ]
+}

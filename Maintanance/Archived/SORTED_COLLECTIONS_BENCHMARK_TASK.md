@@ -1,5 +1,11 @@
 # RedBlackTreeCollections and Swift Collections SortedCollections
 
+## TL;DR（人間向け）
+
+RedBlackTreeとSwift CollectionsのSortedCollectionsを、同じ操作・入力・測定境界で比較するための設計と小規模pilotの記録です。測定表、成果物生成、完全性検査は受入済みですが、公開可能な性能比較は延期されました。
+
+232セル中62セルが事前のばらつき基準を超え、pilotを性能順位や採用判定の証拠にはしていません。再開には具体的な比較需要と固定したAPI・toolchainが必要で、過去の実行指示を自動的に再開しません。
+
 Status: Archived after Phase 3 pilot acceptance (2026-10-06) — publishable run intentionally
 deferred. Reopen only when a concrete adoption or release decision needs an equal-condition public
 comparison and the upstream API/toolchain can be fixed for a reproducible run.

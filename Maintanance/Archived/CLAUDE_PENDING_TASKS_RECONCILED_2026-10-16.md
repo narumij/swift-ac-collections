@@ -6,7 +6,7 @@
 
 ### `CP-20261015-007` — `PERM-072` Astra最終提案への姫回答
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `AWAITING_COORDINATOR`
 - 発見元・ユーザー指示: 2026-10-15 18:30頃の会話。ユーザーが`Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`を示し、
   CLAUDE_TASK.mdでの依頼を経ずに「未採番タスクで処理して」と指示した。
 - 種別候補: `EXECUTION`
@@ -23,3 +23,5 @@
   `NextPermutations.Permutation`維持に同意。根拠は現行の型説明（一時view・失効・`Array`へのcopy）とprecondition messageの確認。
   回答前にユーザーの追加回答（同意）とV3の既存回答（判断保留）を読んでいる。
 - Codex reconciliation: 未処理
+
+<!-- 2026-10-18ユーザー指示による状態名の一括統一。過去の引用中も現在の表記に正規化した。内容・当時の担当・処理結果は変更していない。変更前の表記はGit履歴で参照できる。 -->

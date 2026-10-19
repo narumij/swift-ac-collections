@@ -1,114 +1,76 @@
 # 0.5.0 release task
 
+## TL;DR（人間向け）
+0.5.0の到達範囲、release gate、tag、互換準備branchへの統合を記録します。互換modeを製品上の到達点とし、CI上の問題を解消してtagとbranch統合を完了しました。これは当時のrelease記録で、現在の操作許可ではありません。
+
 最終更新: 2026-10-09 / Codex
 
 ## 目的
 
-`0.5.0`固有の到達範囲を決め、その再現可能な節目をtag付けする。
-tag地点、release gate、tag作成を分離し、未完了taskを暗黙に完了扱いしない。
+Define the scope specific to `0.5.0` and tag a reproducible milestone. Keep the tag point, release gate, and tag creation separate; do not implicitly treat unfinished tasks as complete.
 
-本releaseから得た汎用手順と、Codex・Claudeによる最終ダブルチェックは
-`RELEASE_CHECKLIST.md`を正本とする。以下は`0.5.0`固有の判断と証拠を記録する。
+The reusable procedure learned from this release, including the final double-check by Codex and Claude, is governed by `RELEASE_CHECKLIST.md`. This document records decisions and evidence specific to `0.5.0`.
 
 ## tag地点の判断
 
-2026-10-08、ユーザー判断により、OptionalArrayの監査・ユーザードキュメント作業への引き渡しは
-`0.5.0`と関係しないことを確定した。この地点と、そのために行ったPermutation、OptionalArray、
-task管理方式の整理を、tag地点の根拠や到達範囲へ自動的に含めない。
+On 2026-10-08, by user decision, handoff of the OptionalArray audit and user-documentation work was determined to be unrelated to `0.5.0`. Do not automatically include that milestone or the related reorganization of Permutation, OptionalArray, and task-management workflow in the basis or scope of the tag point.
 
-2026-10-08、ユーザー判断により、PermutationのAtCoder 2025互換modeを完成させた状態を
-`0.5.0`の製品上の到達点とする。確定済みの互換mode実施列を完了するまでrelease gateへ進まない。
+On 2026-10-08, by user decision, the product milestone for `0.5.0` was set to completion of Permutation's AtCoder 2025 compatibility mode. Do not proceed to the release gate until the established compatibility-mode sequence is complete.
 
 ## release gate
 
-tag地点の到達後、Codexが対象commitを固定して次を確認する。
+After reaching the tag point, Codex fixes the target commit and checks:
 
-- package全体のDebug test。
-- package全体のRelease test。
-- 通常CIで走らないが、0.5.0の変更契約に必要なDeath Test。
-- 公開API・再公開面・Package設定の意図しない差分。
-- tag区間の変更概要と、外部待ち・凍結・1.0へ残す既知事項。
-- tracked fileがcommit済みで、対象commitを一意に示せること。
+- Full-package Debug tests.
+- Full-package Release tests.
+- Death Tests needed for the `0.5.0` change contract that do not run in ordinary CI.
+- Unintended changes to public API, re-export surface, or Package configuration.
+- A summary of changes in the tag range and known items deferred to external dependencies, frozen, or left for 1.0.
+- That all tracked files are committed and the target commit is uniquely identified.
 
-性能比較は、0.5.0の到達範囲に性能変更の判定を含めると決めた場合だけ必須にする。未計測事項を
-release gate成功によって解消済みとは扱わない。
+Performance comparison is mandatory only if the `0.5.0` scope is explicitly defined to include a performance-change assessment. A successful release gate does not resolve unmeasured questions.
 
 ### 2026-10-09 初回実施結果と再検証
 
-製品・Package・testの検証対象を`faad4760`（`Document permutation compatibility mode`）に固定し、
-次を確認した。gate結果、Registry・handoff状態、CHANGELOGだけを加える記録commitを最終tag候補とし、
-製品差分は`faad4760`から変えない。
+The product, Package, and test verification target was fixed at `faad4760` (`Document permutation compatibility mode`). The following was confirmed. A final tag candidate would add only gate results, Registry/handoff state, and CHANGELOG; the product diff would remain unchanged from `faad4760`.
 
-- `swift test --disable-sandbox -c debug`: exit 0。
-- `swift test --disable-sandbox -c release`: exit 0。Permutation 5件、OptionalArray 21件、
-  BareArray 11件のDeath Testを含めて成功。
-- 当初はPackage traitで互換構成も検証したが、0.5.0の公開構成には不要とのユーザー判断により
-  traitを撤回した。互換sourceと仕様testは後続の`prepare/compatible/2`でbranch defineから使用する。
-- `origin/main`との製品差分を確認。0.5.0の既定公開面は通常Permutationだけとし、Package traitを
-  追加しない。
-- 前回tag `0.4.4`からの区間は950 commits。製品上の追加・変更・修正・削除は
-  `CHANGELOG.md`の`Unreleased`節を要約正本とし、今回の互換modeを追記した。
-- worktreeは検証開始時にcleanで、検証対象commitを一意に確認した。
+- `swift test --disable-sandbox -c debug`: exit 0.
+- `swift test --disable-sandbox -c release`: exit 0, including 5 Permutation, 21 OptionalArray, and 11 BareArray Death Tests.
+- Compatibility configuration was initially tested using a Package trait, but the user decided it was unnecessary for the public `0.5.0` configuration, so the trait was removed. Compatibility source and specification tests would instead use a branch define in the later `prepare/compatible/2` branch.
+- Product differences from `origin/main` were reviewed. The default public surface for `0.5.0` would be regular Permutation only; no Package trait would be added.
+- The range since prior tag `0.4.4` contained 950 commits. `CHANGELOG.md` `Unreleased` is the summary record for product additions, changes, fixes, and removals; the compatibility mode was added there.
+- The worktree was clean when verification began, and the target commit was uniquely confirmed.
 
-既知事項はrelease gateを妨げないものとして残す。
+Known items were retained as non-blocking for the release gate:
 
-- `Container.Index`要件は外部の`swift-collections`安定待ち。
-- Permutationのstrict memory safety再検討は後続へ凍結し、現行警告を解消済みとは扱わない。
-- 通常版・互換版のCI job分離は、tag後に`prepare/compatible/2`へ統合してから行う。
-  互換性能計測は行わない。
-- ABC328Eの実提出確認はユーザー専用作業として残る。ローカルでは公式sample `33`を確認済み。
-- 1.0品質判断、BareArray再開、OptionalArray品質再評価など、Registryで凍結または後続goalに
-  置かれた事項は0.5.0で完了扱いにしない。
+- The `Container.Index` requirement awaited stability in external `swift-collections`.
+- Further strict memory safety review for Permutation was frozen for later work; current warnings were not treated as resolved.
+- CI job separation for regular and compatibility modes would happen after tagging, once integrated into `prepare/compatible/2`. No compatibility performance measurement was planned.
+- An actual ABC328E submission check remained user-only work. The official sample `33` was verified locally.
+- Registry items frozen or reserved for later goals—including 1.0 quality decisions, BareArray restart, and OptionalArray quality reassessment—were not marked complete by `0.5.0`.
 
-初回判定後、Package traitを追加するとDocC pluginのsymbol抽出が全traitを有効化し、通常版DocCが
-互換RedBlackTreeのsymbol graphへ接続されて失敗することがCIで判明した。trait撤回後の通常Debug、
-Release、documentation CIと最終差分を再確認するまで、tag可能の最終判定を保留する。
+After the initial gate, CI showed that adding a Package trait caused the DocC plugin's symbol extraction to enable all traits, making regular DocC fail when connected to the compatibility RedBlackTree symbol graph. Keep the final tag-eligibility decision on hold until regular Debug, Release, and documentation CI, and the final diff, are rechecked after removing the trait.
 
-trait撤回後、cleanなscratch directoryでCIと同じ`generate-documentation --warnings-as-errors`を実行し、
-exit 0を確認した。`AcCollections`から通常版Permutation APIへ到達するtestも成功した。remote CIの
-再実行で通常Debug・Release・documentationを最終確認する。
+After removing the trait, the CI-matching `generate-documentation --warnings-as-errors` succeeded in a clean scratch directory. A test reaching the regular Permutation API through `AcCollections` also succeeded. Re-run remote CI to make the final check of regular Debug, Release, and documentation.
 
-remote CIでは通常Debug・Release・documentation・Address Sanitizerが成功した一方、performanceで
-Permutation sequential subscriptがbaseline比`0.7247`となり30%閾値を超えた。通常sourceの製品差分は
-公開入口を囲む`#if !COMPATIBLE_ATCODER_2025`だけだったため、0.5.0からこの条件も撤回し、
-`origin/main`と同じ無条件compileへ戻した。再push後のperformanceを含むCI全体を最終確認する。
+Remote CI passed regular Debug, Release, documentation, and Address Sanitizer, but performance showed Permutation sequential subscript at `0.7247` versus baseline, exceeding the 30% threshold. The only regular-source product diff was `#if !COMPATIBLE_ATCODER_2025` around the public entry point, so that condition was also removed from `0.5.0`, restoring unconditional compilation matching `origin/main`. Recheck the full CI, including performance, after repushing.
 
-Claudeの独立生成コード比較では、macOS arm64・Swift 6.4の同一Release条件でbaseline、条件付き版、
-撤回後版のhot path命令列が一致し、protocol / value witness table参照と特殊化失敗はなかった。
-Linuxの実benchmarkではないため回帰原因の断定には使わず、少なくとも条件コンパイルがwitness経由へ
-落としたという仮説を支持しない証拠として扱う。
+Claude's independent generated-code comparison under identical macOS arm64 / Swift 6.4 Release conditions found identical hot-path instruction sequences in the baseline, conditional, and post-revert versions, with no protocol/value-witness-table references or failed specialization. This was not a Linux benchmark, so it does not establish the regression's cause; treat it only as evidence against the hypothesis that conditional compilation caused a witness-table path.
 
-続く実benchmarkの反復では、macOS arm64上で既知green / redを交互に各3回測定し、当該taskの
-green / red中央値は`1.0053`、比較toolは三組とも差なしだった。size単位では`0.5〜2.024`まで揺れ、
-回帰を再現しなかったためcommit二分探索は停止した。通常source撤回後のremote CIを先に確認し、
-再び赤の場合だけ記録済みのLinux候補列で調査する。
+In subsequent benchmark repetitions, known green and red revisions were alternated three times each on macOS arm64. The task's median green/red score was `1.0053`, and the comparison tool found no difference in all three pairs. Per-size results varied from `0.5` to `2.024`; because the regression did not reproduce, commit bisection stopped. Check remote CI after removing the regular-source condition first; if it is red again, investigate only the recorded Linux candidate sequence.
 
-最終的にbuffer header initializerとdebug probe initializerを`@inlinable`、buffer subscript getterを
-`@inline(__always)`として最適化判断を明示した。PR #175のhead `f01c66a6`でDebug、Release、
-documentation、Address Sanitizer、performanceの全jobが成功し、同じtreeを持つ`main`のmerge commit
-`0dc1bd26`を最終tag対象としてrelease gateを完了した。
+Finally, optimizer intent was made explicit by marking the buffer-header and debug-probe initializers `@inlinable` and the buffer subscript getter `@inline(__always)`. All Debug, Release, documentation, Address Sanitizer, and performance jobs passed on PR #175 head `f01c66a6`. The release gate was completed on the `main` merge commit `0dc1bd26`, which has the same tree.
 
 ## tag作成
 
-release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。
-確認後に`0.5.0` tagを作成する。remoteへのpush、release page作成、配布はこのtaskへ自動的に含めず、
-必要なら別途ユーザー承認を得る。
+After the release gate succeeds, Codex presents the target commit, verification results, and known items concisely for user review. Create tag `0.5.0` after confirmation. Remote push, release-page creation, and distribution are not included automatically; obtain separate approval if needed.
 
-2026-10-09、ユーザー確認後、`0dc1bd26`へannotated tag `0.5.0`（message `Release 0.5.0`）を
-作成した。tagのremote pushはこの時点では行っていない。
+On 2026-10-09, after user confirmation, annotated tag `0.5.0` with message `Release 0.5.0` was created at `0dc1bd26`. The tag was not pushed to the remote at that point.
 
 ## 互換準備branchへの統合
 
-`0.5.0` tag作成後、対象commitを既存branch `prepare/compatible/2`へmergeする。branchの切替、merge、
-競合解消、pushは不可逆な外部影響を分離して扱い、実行直前に対象commitとbranchをユーザーへ確認する。
-remoteへのpushはmergeの承認へ自動的に含めない。
+After creating tag `0.5.0`, merge the target commit into the existing `prepare/compatible/2` branch. Treat branch switching, merge, conflict resolution, and push as distinct externally consequential operations; immediately before execution, confirm the target commit and branch with the user. Approval to merge does not include remote push.
 
-2026-10-09、ユーザー確認後に`main`の`dc32159d`を`prepare/compatible/2`へ統合し、merge commit
-`0b9de44e`を作成した。READMEは互換branch側の旧版を維持し、監査済みの空の`EtcTests.swift`を採用、
-`COMPATIBLE_ATCODER_2025`をpackage共通defineとして有効化した。統合後のpackage全体についてDebug・
-Release testを実行し、いずれもexit 0、OptionalArray 21件とBareArray 11件のDeath Testを含めて成功した。
+On 2026-10-09, after user confirmation, `main` commit `dc32159d` was integrated into `prepare/compatible/2` and merge commit `0b9de44e` was created. The older README on the compatibility branch was retained, the audited empty `EtcTests.swift` was adopted, and `COMPATIBLE_ATCODER_2025` was enabled as a package-wide define. Debug and Release tests for the full package then passed, including 21 OptionalArray and 11 BareArray Death Tests.
 
-main向けのDocC catalogとbenchmark sourceは互換APIでは成立しないため、互換branchではdocumentation・
-performance jobを実行せず、機能testだけをrelease構成で継続する。内部管理・設計・DocC資料は互換branchから
-除き、`COMPATIBILITY_CHECKLIST.md`へbranch固有の検収条件だけを集約した。最終commit `24dfb40f`までを
-remoteへpush済みとして、0.5.0の互換準備branch統合を完了する。
+The DocC catalog and benchmark source for `main` do not work with the compatibility API, so the compatibility branch skips documentation and performance jobs and continues to run functional tests in Release. Internal management, design, and DocC documents were removed from the compatibility branch; branch-specific acceptance conditions were consolidated into `COMPATIBILITY_CHECKLIST.md`. The final commit through `24dfb40f` was pushed to the remote, completing the `0.5.0` compatibility-preparation branch integration.

@@ -1,96 +1,108 @@
 # NextPermutations実装探索レポート
 
-## 目的
+## TL;DR（人間向け）
 
-この文書は、`NextPermutations`の通常実装を選ぶまでに調べた候補、反証、および暫定性能値を記録する。
-正式な品質適合判定やTest as Specificationの代わりではない。同じ候補を根拠なく再提案したり、採用理由を
-会話から復元したりしなくて済むよう、探索結果を保存する。
+`NextPermutations`の通常実装を選ぶまでに調べた候補・反証・暫定性能値の記録。`~Copyable struct`とiteratorごとの共有門番（世代番号でViewを失効させる）を通常経路に選び、Swift 6.4の借用`Span`版は特殊経路として分けた。性能値は探索用の暫定値で、正式な性能評価や品質の受入判定ではない。末尾の残作業は探索時点の記録で、現在の状態はRegistryと現行品質評価で確かめる。
 
-## 結論
+<a id="目的"></a>
+## Purpose
 
-現時点で探索した候補の中では、次の構成を通常経路とする。
+This document records the candidates, counterexamples and provisional performance values examined before choosing the normal implementation of `NextPermutations`.
+It does not replace a formal quality conformance judgment or Test as Specification. The search results are saved so that the same candidates are not re-proposed without grounds and the reasons for adoption
+do not have to be reconstructed from conversations.
 
-- `NextPermutations`は、要素bufferを所有する`~Copyable struct`とする。
-- `next()`は、現在のbufferを読む`Permutation` Viewを返す。
-- iteratorごとに一つの`GateKeeper`を持ち、すべてのViewが共有する。
-- `next()`とiteratorの破棄時に門番の世代を進め、古いViewをpreconditionで失効させる。
-- Swift 6.2の`IteratorProtocol`適合は行わず、外側は`while let`で反復する。
+<a id="結論"></a>
+## Conclusion
 
-Swift 6.4のLifetimesと`Span`を用いる実装は、Viewを省略できるかと到達可能な性能を調べた特殊経路として
-`Sources/PermutationModule/BorrowedNextPermutations.swift`の`borrowedNextPermutations()`として、
-runtime-check付き通常経路と分離して提供する。
+Among the candidates explored so far, the following structure is the normal path.
 
-これは絶対的な最適性の証明ではない。下記候補の中で、所有権、Swift 6.2互換性、失効検査、および性能を
-最もよく両立したという結論である。
+- `NextPermutations` is a `~Copyable struct` that owns the element buffer.
+- `next()` returns a `Permutation` View that reads the current buffer.
+- Each iterator has one `GateKeeper`, shared by all Views.
+- `next()` and destruction of the iterator advance the gatekeeper's generation, and old Views are invalidated by precondition.
+- No conformance to Swift 6.2's `IteratorProtocol`; the outside iterates with `while let`.
 
-## 探索した候補
+The implementation using Swift 6.4's Lifetimes and `Span`, a special path that examined whether the View can be omitted and what performance is reachable,
+is provided as `borrowedNextPermutations()` in `Sources/PermutationModule/BorrowedNextPermutations.swift`,
+separated from the normal path with runtime checks.
 
-### 借用`Span`
+This is not a proof of absolute optimality. It is the conclusion that, among the candidates below, this best balanced ownership, Swift 6.2 compatibility, invalidation checks and
+performance.
 
-Swift 6.4では、`next()`から借用`Span`を返す実装が成立し、今回の候補中で最速だった。`Span`自体が
-`Iterable`であるため、返却後の要素走査には`for-in`を使える。
+<a id="探索した候補"></a>
+## Candidates explored
 
-一方、Swift 6.2では、`mutating` methodから`~Escapable`な結果を返す宣言にLifetimesのexperimental
-featureが必要になる。`Span`の検討目的は独自Viewの省略であり、通常経路にViewが必要と判明した後で
-Spanを追加併存させる利益は小さい。このため、通常経路ではなく特殊経路として保持する。
+<a id="借用span"></a>
+### Borrowed `Span`
 
-### Viewごとに門番を生成
+In Swift 6.4, an implementation returning a borrowed `Span` from `next()` works and was the fastest among this time's candidates. `Span` itself is
+`Iterable`, so `for-in` can be used to traverse the elements after it is returned.
 
-Swift 6.2互換の`Permutation` Viewを返し、次の`next()`で前の門番を閉じる実装は、型検査、列挙、および
-失効検査に成功した。ただし、順列を一件返すたびに`ManagedBuffer`製の門番を生成するため、28要素中7要素を
-選ぶ条件では約118万回のallocationが発生した。
+On the other hand, in Swift 6.2, declaring a `~Escapable` result returned from a `mutating` method needs the experimental Lifetimes
+feature. The purpose of examining `Span` was to omit a custom View; after it turned out that the normal path needs a View, the benefit of adding
+Span alongside is small. So it is kept as a special path, not the normal path.
 
-3 cyclesの暫定平均は、28要素で49.26ms、32要素で144.80msだった。同じ測定のC++は19.22ms、
-61.33msであり、通常経路としては遅い。
+<a id="viewごとに門番を生成"></a>
+### Creating a gatekeeper per View
 
-### 共有門番と世代番号
+An implementation that returns a Swift 6.2-compatible `Permutation` View and closes the previous gatekeeper at the next `next()` succeeded in type checking, enumeration and
+invalidation checks. However, it creates a `ManagedBuffer`-made gatekeeper for every permutation returned, so in the condition of choosing 7 out of 28 elements
+about 1.18 million allocations occurred.
 
-門番をiteratorごとに一つだけ生成し、Viewが発行時の世代番号を保持する構成へ変更した。`next()`または
-iterator破棄時に門番の世代を進め、Viewの世代と一致しなければ、bufferへ触れる前にpreconditionで停止する。
+The provisional averages over 3 cycles were 49.26ms for 28 elements and 144.80ms for 32 elements. C++ in the same measurement was 19.22ms and
+61.33ms, so it is slow as a normal path.
 
-これにより、順列ごとのallocationを除去しながら、次の二つを維持できた。
+<a id="共有門番と世代番号"></a>
+### Shared gatekeeper and generation number
 
-- 次の`next()`へ進んだ後の旧Viewは停止する。
-- iteratorが破棄された後に残ったViewも停止する。
+Changed to a structure that creates only one gatekeeper per iterator, with each View holding the generation number at issue. `next()` or
+iterator destruction advances the gatekeeper's generation, and if it does not match the View's generation, it stops by precondition before touching the buffer.
 
-当初、世代更新methodを`@inlinable`にすると、Swift 6.4 Releaseコンパイラの`CopyPropagation`がownership
-errorでクラッシュした。世代更新を`@usableFromInline @inline(never)`へ分離し、header pointerを直接更新する
-形ではDebug／Releaseともbuildできた。この回避は、製品挙動ではなくコンパイラ最適化上の制約による。
+This removed the per-permutation allocation while keeping the following two.
 
-### クラスによる`IteratorProtocol`／`Sequence`適合
+- An old View stops after advancing to the next `next()`.
+- A View remaining after the iterator is destroyed also stops.
 
-Swift 6.2の`IteratorProtocol`は`Copyable`を継承するため、`~Copyable NextPermutations`はそのままでは
-適合できない。実際のSwift 6.2 compilerは、次の診断で拒否した。
+Initially, making the generation-update method `@inlinable` crashed Swift 6.4 Release compiler's `CopyPropagation` with an ownership
+error. Separating the generation update into `@usableFromInline @inline(never)` and updating the header pointer directly
+built in both Debug and Release. This workaround is due to a compiler optimization constraint, not product behaviour.
+
+<a id="クラスによるiteratorprotocolsequence適合"></a>
+### `IteratorProtocol` / `Sequence` conformance with a class
+
+Swift 6.2's `IteratorProtocol` inherits `Copyable`, so a `~Copyable NextPermutations` cannot conform as is.
+The actual Swift 6.2 compiler rejected it with the following diagnostic.
 
 ```text
 type 'NextPermutations<Value>' does not conform to protocol 'Copyable'
 ```
 
-`NextPermutations`を`final class`にすると、同じ型を`IteratorProtocol`と`Sequence`へ適合させ、`for-in`で
-利用できた。Swift 6.2 typecheck、Release build、列挙、およびView失効testも成立した。
+Making `NextPermutations` a `final class` let the same type conform to `IteratorProtocol` and `Sequence` and be used with `for-in`.
+Swift 6.2 typecheck, Release build, enumeration and the View invalidation test also held.
 
-ただし、5 cyclesの暫定平均は28要素で30.50ms、32要素で90.56msとなり、`~Copyable struct`版より
-約1.41倍・約1.36倍遅かった。また、代入した参照が同じ反復状態を共有する契約になる。`for-in`だけのために
-所有契約と性能を変える利益は小さいため、不採用とした。
+However, the provisional averages over 5 cycles were 30.50ms for 28 elements and 90.56ms for 32 elements, about 1.41× and about 1.36× slower
+than the `~Copyable struct` version. Also, it becomes a contract in which assigned references share the same iteration state. The benefit of changing
+the ownership contract and performance just for `for-in` is small, so it was not adopted.
 
-## 暫定性能比較
+<a id="暫定性能比較"></a>
+## Provisional performance comparison
 
-環境はmacOS、Swift 6.4、Release。入力は`0`を`size - 7`個、`1`を7個並べた昇順二値列で、重複しない
-lexicographic successorを最後まで列挙し、位置加重checksumを計算する。入力準備は測定外、入力copy、列挙、
-checksumは測定内である。
+Environment: macOS, Swift 6.4, Release. The input is an ascending binary sequence of `size - 7` `0`s followed by 7 `1`s; enumerate the non-duplicate
+lexicographic successors to the end and compute a position-weighted checksum. Input preparation is outside the measurement; the input copy, enumeration and
+checksum are inside.
 
-| 実装 | 28要素 | 32要素 | 備考 |
+| Implementation | 28 elements | 32 elements | Note |
 | --- | ---: | ---: | --- |
-| 借用Span特殊経路 | 16.01ms | 51.37ms | 5 cycles |
+| Borrowed Span special path | 16.01ms | 51.37ms | 5 cycles |
 | `std::next_permutation` | 19.24ms | 61.24ms | 5 cycles |
-| `~Copyable struct`＋共有門番 | 21.61ms | 66.39ms | 5 cycles |
-| `final class`＋共有門番 | 30.50ms | 90.56ms | 5 cycles、別run |
-| `~Copyable struct`＋Viewごとの門番 | 49.26ms | 144.80ms | 3 cycles、別run |
+| `~Copyable struct` + shared gatekeeper | 21.61ms | 66.39ms | 5 cycles |
+| `final class` + shared gatekeeper | 30.50ms | 90.56ms | 5 cycles, separate run |
+| `~Copyable struct` + gatekeeper per View | 49.26ms | 144.80ms | 3 cycles, separate run |
 
-通常版`~Copyable struct`は、同じ5-cycle runのC++に対して28要素で約1.12倍、32要素で約1.08倍だった。
-測定値は実装探索用であり、正式な外部性能assessmentや品質上の受入判定ではない。
+The normal `~Copyable struct` version was about 1.12× for 28 elements and about 1.08× for 32 elements relative to C++ in the same 5-cycle run.
+The measured values are for implementation exploration, not a formal external performance assessment or a quality acceptance judgment.
 
-測定例:
+Measurement example:
 
 ```console
 cd Benchmarks
@@ -102,20 +114,22 @@ swift run --disable-sandbox -c release benchmark run \
   /tmp/permutation-runtime-view-5cycles.json
 ```
 
-## 成立確認
+<a id="成立確認"></a>
+## Confirmations
 
-- Swift 6.2 toolchain、Swift 6 language mode、strict memory safetyで通常sourceをtypecheckした。
-- 重複要素を含む`[0, 0, 1]`が3順列を返すことをSwift 6.2実行で確認した。
-- Swift 6.4のDebug／Releaseで`PermutationModule`をbuildした。
-- 次の`next()`後の旧Viewと、所有者破棄後のViewがpreconditionで停止することを確認した。
-- 通常列挙と上記失効条件の暫定testを`PermutationTests/EtcTests.swift`へ置いた。
+- Typechecked the normal source with the Swift 6.2 toolchain, Swift 6 language mode and strict memory safety.
+- Confirmed by a Swift 6.2 run that `[0, 0, 1]`, which contains duplicate elements, returns 3 permutations.
+- Built `PermutationModule` in Swift 6.4 Debug / Release.
+- Confirmed that an old View after the next `next()` and a View after the owner is destroyed stop by precondition.
+- Placed provisional tests of normal enumeration and the invalidation conditions above in `PermutationTests/EtcTests.swift`.
 
-## 探索時点で残っていた作業
+<a id="探索時点で残っていた作業"></a>
+## Work remaining at the time of the exploration
 
-以下は探索時点の記録であり、現在の未完了一覧・凍結解除条件として使用しない。現在の状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、検証結果は[現行品質評価](../Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md)を参照する。技術候補と探索結果は本書に保持する。
+The following is the record at the time of the exploration and is not used as a current list of unfinished items or unfreezing conditions. For the current state see the [Task Registry](../ProgressV2/TASK_REGISTRY_V2.md), and for verification results the [current quality assessment](../Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md). The technical candidates and search results are kept in this document.
 
-- 旧Test as Specificationを新しい一時View契約に対して棚卸しする。
-- 暫定testを通常test、Death Test、所有・破棄testへ分類する。
-- 公開型名、コメントドック、および一時Viewの利用契約をレビューする。
-- Swift 6.2向けversion-specific manifestが必要かを、package全体の成立条件から再評価する。
-- 正式な外部性能assessmentと受入判断は、凍結中の性能taskを再開した場合に別途行う。
+- Take inventory of the old Test as Specification against the new temporary-View contract.
+- Classify the provisional tests into normal tests, Death Tests and ownership/destruction tests.
+- Review public type names, doc comments and the usage contract of temporary Views.
+- Re-evaluate, from the package's overall conditions, whether a version-specific manifest for Swift 6.2 is needed.
+- A formal external performance assessment and acceptance judgment are done separately if the frozen performance task is resumed.

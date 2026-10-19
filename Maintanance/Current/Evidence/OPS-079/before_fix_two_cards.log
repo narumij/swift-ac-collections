@@ -1,0 +1,187 @@
+Pending entries: Claude（姫） 0, Fable 0 · open requests: OPS-079
+Bundled 92 documents; missing: Maintanance/Cache/Astra/AI_GATE.md
+PASS: JS syntax; 63 tasks / 10 edges (= Registry rows); edit deltas; unchanged baseline; JSON roundtrip; duplicate/self/dangling/invalid-flow/cycle checks; duplicate/deleted task rejection; version rejection; unknown state and extra-field retention.
+Not tested: DOM rendering, actual file download, Safari UI.
+PASS: independent nodes excluded from graph; all connected nodes retained; all edges left-to-right; no overlap; empty-edge graph.
+node:internal/assert/utils:77
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: MS-SPI ends at END-0.6.0
+    at Object.<anonymous> (/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.13peK1M2WK/wt/Maintanance/RegistryApp/verify.cjs:15:1142)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+tasks 63, edges 9, milestones 26 (from gate files)
++ registry.json (generated from nothing)
++ task DOC-026
++ task DOC-027
++ task DOC-030
++ task DOC-036
++ task DOC-038
++ task DOC-039
++ task DOC-045
++ task GRAPH-001
++ task HIST-001
++ task HIST-003
++ task OPS-043
++ task OPS-044
++ task OPS-046
++ task OPS-047
++ task OPS-048
++ task OPS-058
++ task OPS-059
++ task OPS-060
++ task OPS-061
++ task OPS-062
++ task OPS-063
++ task OPS-064
++ task OPS-065
++ task OPS-066
++ task OPS-067
++ task OPS-068
++ task OPS-069
++ task OPS-070
++ task OPS-071
++ task OPS-072
++ task OPS-073
++ task OPS-074
++ task OPS-075
++ task OPS-076
++ task OPS-077
++ task OPS-078
++ task OPS-079
++ task OPT-065
++ task PERM-060
++ task PERM-062
++ task PERM-064
++ task PERM-079
++ task PERM-080
++ task QUALITY-002
++ task QUALITY-003
++ task QUALITY-005
++ task RBT-001
++ task RBT-007
++ task RBT-008
++ task RBT-009
++ task RBT-011
++ task RBT-026
++ task RBT-034
++ task RBT-048
++ task RBT-049
++ task RELEASE-072
++ task RELEASE-075
++ task RELEASE-076
++ task RELEASE-084
++ task RELEASE-085
++ task RELEASE-086
++ task RELEASE-087
++ task TEST-005
++ edge DOC-026 <- QUALITY-005
++ edge DOC-027 <- DOC-026
++ edge OPS-068 <- OPS-058
++ edge OPS-076 <- OPS-074
++ edge RBT-001 <- RBT-011
++ edge RELEASE-076 <- RELEASE-075
++ edge RELEASE-084 <- RELEASE-086
++ edge RELEASE-086 <- RELEASE-085
++ edge RELEASE-087 <- RELEASE-086
++ milestone END-0.5.3
++ milestone END-0.5.4
++ milestone END-0.6.0
++ milestone END-0.7.0
++ milestone END-0.8.0
++ milestone END-0.9.0
++ milestone END-1.0.0
++ milestone GATE-0.5.4
++ milestone GATE-0.6.0
++ milestone GATE-0.7.0
++ milestone GATE-0.8.0
++ milestone GATE-0.9.0
++ milestone GATE-1.0.0
++ milestone MS-DOC
++ milestone MS-EXTRA
++ milestone MS-HUMAN
++ milestone MS-QUALITY
++ milestone MS-SPI
++ milestone MS-VALIDATION
++ milestone START-0.5.3
++ milestone START-0.5.4
++ milestone START-0.6.0
++ milestone START-0.7.0
++ milestone START-0.8.0
++ milestone START-0.9.0
++ milestone START-1.0.0
++ relation DOC-027 -> MS-SPI
++ relation DOC-036 -> MS-VALIDATION
++ relation DOC-038 -> END-0.7.0
++ relation DOC-039 -> END-0.7.0
++ relation DOC-045 -> END-0.5.4
++ relation END-0.5.3 -> GATE-0.5.4
++ relation END-0.5.4 -> GATE-0.6.0
++ relation END-0.6.0 -> GATE-0.7.0
++ relation END-0.7.0 -> GATE-0.8.0
++ relation END-0.8.0 -> GATE-0.9.0
++ relation END-0.9.0 -> GATE-1.0.0
++ relation GATE-0.5.4 -> START-0.5.4
++ relation GATE-0.6.0 -> START-0.6.0
++ relation GATE-0.7.0 -> START-0.7.0
++ relation GATE-0.8.0 -> START-0.8.0
++ relation GATE-0.9.0 -> START-0.9.0
++ relation GATE-1.0.0 -> START-1.0.0
++ relation MS-DOC -> END-0.5.3
++ relation MS-EXTRA -> END-0.6.0
++ relation MS-HUMAN -> END-0.8.0
++ relation MS-QUALITY -> END-0.9.0
++ relation MS-SPI -> MS-EXTRA
++ relation MS-VALIDATION -> END-0.7.0
++ relation OPS-060 -> END-0.7.0
++ relation OPS-068 -> END-0.6.0
++ relation OPT-065 -> END-0.6.0
++ relation PERM-060 -> END-0.6.0
++ relation PERM-062 -> END-0.6.0
++ relation PERM-064 -> END-0.6.0
++ relation PERM-080 -> END-0.6.0
++ relation QUALITY-002 -> MS-QUALITY
++ relation QUALITY-003 -> MS-QUALITY
++ relation RBT-001 -> MS-QUALITY
++ relation RBT-007 -> END-0.6.0
++ relation RBT-008 -> END-0.9.0
++ relation RBT-009 -> MS-QUALITY
++ relation RBT-026 -> END-0.6.0
++ relation RBT-034 -> MS-QUALITY
++ relation RBT-048 -> END-0.6.0
++ relation RBT-049 -> END-0.5.4
++ relation RELEASE-072 -> END-0.6.0
++ relation RELEASE-075 -> END-0.6.0
++ relation RELEASE-076 -> END-0.6.0
++ relation RELEASE-084 -> END-0.5.4
++ relation RELEASE-087 -> END-0.5.4
++ relation START-0.5.3 -> MS-DOC
++ relation START-0.5.4 -> END-0.5.4
++ relation START-0.6.0 -> MS-SPI
++ relation START-0.6.0 -> PERM-079
++ relation START-0.7.0 -> MS-VALIDATION
++ relation START-0.8.0 -> MS-HUMAN
++ relation START-0.9.0 -> MS-QUALITY
++ relation START-1.0.0 -> END-1.0.0
+~ source sha256  -> 0a0b2a5c8f03
+~ source rulesSha256
+~ source head
+~ source dirty
+node: /Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node (saved record, v24.19.0)
+marked: /Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/marked/lib/marked.esm.js (saved record)
+FAILED (Command '['/Users/narumij/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node', '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.13peK1M2WK/wt/Maintanance/RegistryApp/verify.cjs']' returned non-zero exit status 1.); restored registry.json and index.html to their state before this run

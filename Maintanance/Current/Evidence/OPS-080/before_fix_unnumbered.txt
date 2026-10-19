@@ -1,0 +1,3 @@
+before fix, EXTRA.md (ID X-EXTRA): sync exit=0
+X-EXTRA generated: False
+[('START-0.6.0', 'PERM-079'), ('START-0.6.0', 'MS-SPI'), ('MS-SPI', 'END-0.6.0')]

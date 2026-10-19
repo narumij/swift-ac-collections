@@ -1,0 +1,138 @@
+{
+ "about": "OPS-160 explicit-order fixture. Versions A, B, C are listed in their order here; their names only need to sort the same way for the current reader comparison. Gates name the next version in this base case (the case the current reader and the structural DESIGN agree on). OPS-161: every attribute is nonempty Japanese; milestone constraints may contain a pipe (the current reader unescapes \\| there).",
+ "versions": [
+  {
+   "name": "0.1.0",
+   "cards": [
+    {
+     "id": "MS-A1",
+     "name": "A の最初",
+     "recordedDone": true,
+     "detail": "Maintanance/Current/A1正本.md"
+    },
+    {
+     "id": "MS-A2",
+     "name": "A の次",
+     "recordedDone": false,
+     "detail": "Maintanance/Current/A2正本.md"
+    }
+   ],
+   "gate": {
+    "id": "GATE-0.2.0",
+    "name": "0.2.0 リリース",
+    "detail": "Maintanance/Current/GATE-0.2.0の判断.md"
+   }
+  },
+  {
+   "name": "0.2.0",
+   "cards": [
+    {
+     "id": "MS-B1",
+     "name": "B の中間",
+     "recordedDone": false,
+     "detail": "Maintanance/Current/B1正本.md"
+    }
+   ],
+   "gate": {
+    "id": "GATE-0.3.0",
+    "name": "0.3.0 リリース",
+    "detail": "Maintanance/Current/GATE-0.3.0の判断.md"
+   }
+  },
+  {
+   "name": "0.3.0",
+   "cards": [],
+   "gate": null
+  }
+ ],
+ "focus": "0.2.0",
+ "tasks": [
+  {
+   "id": "TASK-001",
+   "state": "ACTIVE",
+   "owner": "担当A",
+   "item": "親の常設タスク",
+   "condition": "常設の判断を保つこと",
+   "detail": "Maintanance/Current/常設.md",
+   "permanent": true,
+   "group": "常設"
+  },
+  {
+   "id": "TASK-002",
+   "state": "DONE",
+   "owner": "担当B",
+   "item": "Aでの仕事",
+   "condition": "Aの成果物がそろったら完了",
+   "detail": "Maintanance/Current/A作業.md",
+   "permanent": false,
+   "group": "現行"
+  },
+  {
+   "id": "TASK-003",
+   "state": "ACTIVE",
+   "owner": "担当C",
+   "item": "Bで始まる仕事",
+   "condition": "Bの開始後に着手し、Bの終わりまでに終える",
+   "detail": "Maintanance/Current/B作業.md",
+   "permanent": false,
+   "group": "現行"
+  },
+  {
+   "id": "TASK-004",
+   "state": "WAITING_USER",
+   "owner": "担当D",
+   "item": "Bのカードの後",
+   "condition": "B1の確認を待つ",
+   "detail": "Maintanance/Current/B待ち.md",
+   "permanent": false,
+   "group": "現行"
+  },
+  {
+   "id": "TASK-005",
+   "state": "PROPOSED",
+   "owner": "担当E",
+   "item": "どこにもつながらない",
+   "condition": "まだ置き場所を決めていない",
+   "detail": "Maintanance/Current/未配置.md",
+   "permanent": false,
+   "group": null
+  }
+ ],
+ "management": [
+  {
+   "prerequisite": "TASK-001",
+   "successor": "TASK-002",
+   "constraint": ""
+  }
+ ],
+ "progress": [
+  {
+   "prerequisite": "TASK-002",
+   "successor": "TASK-003",
+   "flow": "SEQUENCE",
+   "constraint": "Aの結果を使う（同じ版の中）"
+  }
+ ],
+ "milestone": [
+  {
+   "prerequisite": "TASK-002",
+   "successor": "MS-A2",
+   "constraint": "A2の材料"
+  },
+  {
+   "prerequisite": "START-0.2.0",
+   "successor": "TASK-003",
+   "constraint": "開始側。Bで始める | 版の区間の最初"
+  },
+  {
+   "prerequisite": "TASK-003",
+   "successor": "END-0.2.0",
+   "constraint": "Bの完了条件"
+  },
+  {
+   "prerequisite": "MS-B1",
+   "successor": "TASK-004",
+   "constraint": "B1の後"
+  }
+ ]
+}

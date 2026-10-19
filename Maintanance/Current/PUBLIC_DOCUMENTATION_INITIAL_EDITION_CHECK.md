@@ -1,54 +1,65 @@
 # 0.6.0公開ドキュメント初版確認
 
-2026-10-16、Astra。task DOC-035。初版確認を実施し、2026-10-16ユーザーのcommit承認により完了。基点e76964c2に今回の文書訂正を加えた作業ツリー。
+## TL;DR（人間向け）
 
-## 入力
+0.6.0の公開ドキュメント初版（赤黒木・NextPermutation・OptionalElementBuffer・ElementBufferの4モジュールとREADME）を、意味・制約の照合とRelease DocC生成・既存例の実行で確認した記録。見つけた文書上の不整合は訂正し、ユーザーのcommit承認で完了した。リリース開始や1.0品質合格ではなく、ブラウザ目視・Linux・全製品テストは未実施。
 
-RELEASE-078の提供区分・対象・必要文書入力の整理と、DOC-034の赤黒木本文完成。既存3モジュールのドラフト受入は再利用するが、現行の公開初版確認済みとは扱わない。
+2026-10-16, Astra. Task DOC-035. The initial-edition check was done and completed by the user's commit approval on 2026-10-16. The working tree is base e76964c2 plus this document correction.
 
-## 実施と完了条件
+<a id="入力"></a>
+## Input
 
-対象版を固定し、RedBlackTreeCollections・NextPermutationModule・OptionalElementBufferModule・ElementBufferModuleの公開文書、READMEからの導線、公開APIコメント、掲載例、DocC生成診断を確認する。生成成功と意味の整合は別に検証する。提供区分、言語版・platform・trait条件、重要な利用制約、未検証の主張を照合し、不足する文書修正と影響範囲の再確認を行う。
+RELEASE-078's organization of provision categories, targets and needed document inputs, and DOC-034's completed red-black tree body. The draft acceptance of the existing 3 modules is reused, but is not treated as the current public initial edition having been checked.
 
-各対象の成果・検証証拠・未解決事項を一覧化し、公開初版条件を満たすかを根拠付きで返す。公開を阻む未解決があるまま完了としない。公開契約変更・製品実装修正・release開始はこのtaskに含めず、必要な判断を分離する。
+<a id="実施と完了条件"></a>
+## Execution and completion condition
 
-成果はRELEASE_0_6_0.mdの文書初版条件へ接続する。1.0の品質評価やSPI後の人間レビューを前倒ししない。各0.x.0の必要な品質確認とユーザーのrelease判断は維持する。
+Fix the target version, and check the public documents of RedBlackTreeCollections, NextPermutationModule, OptionalElementBufferModule and ElementBufferModule, the routes from the README, the public API comments, the published examples and the DocC build diagnostics. Verify a successful build and semantic consistency separately. Check provision categories, language version / platform / trait conditions, important usage constraints and unverified claims, and make the missing document fixes and re-check their impact.
 
-2026-10-16追加のユーザー指示：DOC-034 → DOC-037（赤黒木本文のユーザー受入判断）→ DOC-035とする。DOC-037で受入可を明示した後だけDOC-035へ進む。差戻し・保留では進めず、判断taskの完了だけを許可とみなさない。DOC-035のRELEASE-078前提も維持する。
+List each target's outputs, verification evidence and unresolved items, and return with grounds whether the public initial-edition conditions are met. Do not complete while there are unresolved items blocking publication. Public contract changes, product implementation fixes and starting a release are not in this task; the needed decisions are separated.
 
-## 0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）
+The outputs connect to the documentation initial-edition condition in RELEASE_0_6_0.md. Do not bring forward the 1.0 quality assessment or the human review after SPI. The quality checks needed for each 0.x.0 and the user's release decision are kept.
 
-今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。既存例の照合・検証と誤りの訂正は扱うが、増減が必要なら無断で変更せず記録する。コードスニペット追加と文書全体の再検討は0.8.0へ配置した。既存の「必須コード例」「不足補完」はこの固定範囲で扱い、新しい例を作る要件にはしない。
+Additional user instruction on 2026-10-16: DOC-034 → DOC-037 (the user's acceptance decision on the red-black tree body) → DOC-035. Proceed to DOC-035 only after DOC-037 explicitly states acceptance. Do not proceed on a send-back or hold, and do not treat merely completing the decision task as permission. DOC-035's RELEASE-078 prerequisite is also kept.
 
-## 実施入力（2026-10-16）
+<a id="080への拡充移管と今回の固定範囲2026-10-16ユーザー決定"></a>
+## Moving the expansion to 0.8.0 and this fixed scope (user decision, 2026-10-16)
 
-[RELEASE-078照合結果](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0-scope-reconciliation)を受領し開始。証拠はEvidence/DOC-035-2026-10-16/へ保存する。
+In this 0.6.0 documentation work, the composition and number of existing snippets are fixed: none are added or removed. Checking and verifying existing examples and correcting errors are handled, but if an increase or decrease is needed, record it rather than changing it without permission. Adding code snippets and reviewing the documents as a whole were placed in 0.8.0. The existing 「必須コード例」 and 「不足補完」 are handled within this fixed scope and are not requirements to create new examples.
 
-## 確認結果（2026-10-16 / Astra）
+<a id="実施入力2026-10-16"></a>
+## Execution input (2026-10-16)
 
-今回確認した範囲では、初版を阻む文書上の不整合は訂正済み。4対象の主要用途・基本操作・重要制約を現行契約へ照合し、Release DocC生成と既存例を確認した。生成成功のみを根拠にしていない。2026-10-16ユーザーのcommit承認により完了であり、リリース開始や1.0品質合格ではない。
+Started on receiving [the RELEASE-078 reconciliation result](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0-scope-reconciliation). Evidence is saved in Evidence/DOC-035-2026-10-16/.
 
-| 対象 | 意味・制約の確認 | 検証 |
+<a id="確認結果2026-10-16--astra"></a>
+## Check result (2026-10-16 / Astra)
+
+Within the scope checked this time, the documentation inconsistencies blocking the initial edition have been corrected. The main uses, basic operations and important constraints of the 4 targets were checked against the current contracts, and the Release DocC builds and existing examples were checked. A successful build alone was not the ground. Completed by the user's commit approval on 2026-10-16; this is neither the start of a release nor passing 1.0 quality.
+
+| Target | Meaning and constraint check | Verification |
 | --- | --- | --- |
-| RedBlackTreeCollections | DOC-034の4型本文と公開コメント・DOC-037受入を再利用。f6e181b2から入力不変を確認 | 今回Release DocC成功。78既存例compile/run証拠を再利用 |
-| NextPermutationModule | 初期順序・辞書順後続、一時View失効、借用、非Sequence、所有バッファ | Release DocC成功。掲載例の4出力一致 |
-| OptionalElementBufferModule | trait条件・実験提供・unsetと破棄・軸順序・範囲条件、非mutating更新 | Release DocC成功。trait有効のAcCollectionsビルドと掲載例実行、値42確認 |
-| ElementBufferModule | Swift 6.2供用区分と現package6.4、Apple OS27のMutableRef、借用・非mutatingアクセス制約 | Release DocC成功。値アクセス42・借用更新3を実行確認。型コメント例も確認 |
-| 共通入口とREADME日英 | 4モジュールのソース版ガイド導線、Swift6.4条件、Optionalの実験区分 | AcCollections DocC成功。READMEの追加ローカルリンク実在確認 |
+| RedBlackTreeCollections | Reused DOC-034's 4-type body, the public comments and DOC-037's acceptance. Confirmed the input is unchanged since f6e181b2 | Release DocC succeeded this time. Reused the compile/run evidence for the 78 existing examples |
+| NextPermutationModule | Initial order and lexicographic successor, invalidation of temporary Views, borrowing, non-Sequence, owned buffer | Release DocC succeeded. The 4 outputs of the published examples match |
+| OptionalElementBufferModule | Trait condition, experimental offering, unset and disposal, axis order, range conditions, non-mutating updates | Release DocC succeeded. AcCollections build with the trait enabled and the published example run; value 42 confirmed |
+| ElementBufferModule | Swift 6.2 provision category versus the current package 6.4, MutableRef on Apple OS 27, borrowing and non-mutating access constraints | Release DocC succeeded. Value access 42 and borrowed update 3 confirmed by running. Type comment example also checked |
+| Common entry and README (ja/en) | Routes to the source-version guides of the 4 modules, the Swift 6.4 condition, Optional's experimental category | AcCollections DocC succeeded. The added local links in the README exist |
 
-### 訂正
+<a id="訂正"></a>
+### Corrections
 
-- AcCollections概要の「permutation sequence」をiteratorsへ訂正。
-- OptionalElementBuffer概要に実験提供と同時アクセスの制約を明記。4型のSendable説明も、同期を提供しない点を補った。実装・conformanceは変更していない。
-- README日英に必要Swift版と4モジュールのソース版ガイドを案内。現行Pagesは赤黒木のみなので、他3対象を公開済みURLへ誘導していない。
-- コード例の構成・掲載数は変更なし。
+- Corrected "permutation sequence" in the AcCollections overview to iterators.
+- Stated the experimental offering and the constraint on simultaneous access in the OptionalElementBuffer overview. Also supplemented the Sendable explanations of the 4 types: they do not provide synchronization. Implementation and conformances are unchanged.
+- The README (ja/en) now guides to the required Swift version and the source-version guides of the 4 modules. Current Pages cover only the red-black tree, so the other 3 targets are not pointed at published URLs.
+- The composition and number of code examples are unchanged.
 
-### 証拠と限界
+<a id="証拠と限界"></a>
+### Evidence and limits
 
-[証拠一式](Evidence/DOC-035-2026-10-16/)のverify.py、verification.json、input-sha256.json、各DocCログを参照。macOS27.0.1 / arm64 / Apple Swift6.4で実施。3対象と共通入口の6既存コードブロックをcompile/run（importのみ1件を含む）、値・出力を確認した。赤黒木78例は受入済み証拠を再利用し、再実行していない。
+See verify.py, verification.json, input-sha256.json and each DocC log in [the evidence set](Evidence/DOC-035-2026-10-16/). Done on macOS 27.0.1 / arm64 / Apple Swift 6.4. Compiled and ran the 6 existing code blocks of the 3 targets and the common entry (including 1 import-only block) and checked values and outputs. The 78 red-black tree examples reuse accepted evidence and were not re-run.
 
-既定Xcode build経路の環境問題を避け、SwiftPM native build経路を使用（deprecated警告あり）。DocCはwarnings-as-errorsで成功。最初の例検証は検証スクリプトが存在しないmodule単位objectを指定してリンク失敗したため、source単位objectへ修正して成功。製品バグではない。
+To avoid an environment problem of the default Xcode build route, the SwiftPM native build route was used (with deprecation warnings). DocC succeeded with warnings-as-errors. The first example verification failed to link because the verification script specified a nonexistent per-module object; it was fixed to per-source objects and succeeded. This is not a product bug.
 
-ブラウザ目視・外部リンクの到達性・Linux実行・全製品テスト・性能再測定は今回実施していない。未公開3対象のPages配信方式は既決の0.7.0工程へ残す。これらを今回確認済みと読み替えない。今回の文書訂正を超える公開契約変更・新規スニペットは行っていない。
+Browser viewing, reachability of external links, Linux runs, all product tests and performance re-measurement were not done this time. The Pages delivery method for the 3 unpublished targets stays in the already-decided 0.7.0 steps. Do not read these as checked this time. No public contract changes or new snippets beyond this document correction were made.
 
-本結果を[0.6.0ゲート](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0)へ接続する。ユーザーが成果報告後に「コミットして」と明示し、この文書確認を完了とした。対象版に必要な品質確認と製品範囲・release開始のユーザー判断は別途維持する。
+This result connects to [the 0.6.0 gate](../Milestones/_Archived/RELEASE_0_5_4_HISTORY.md#release-0-6-0). After the result report, the user explicitly said 「コミットして」 and this document check was completed. The quality checks needed for the target version and the user's decisions on product scope and release start are kept separately.

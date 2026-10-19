@@ -1,10 +1,14 @@
 # 情報・知識・判断・契約の寿命の検討
 
-2026-10-17 / OPS-073 / Astra登録。親OPS-071。CP-20261017-012から登録。ユーザー直接依頼による返却を下記で受入。
+## TL;DR（人間向け）
 
-情報の有効期間、理解の適用範囲、判断の見直し時点、委任の期間を区別する定義案・混ぜた失敗例・記録の分け方・見直し契機を返す。事実に裏付けられた判断は点検事実を表面に残し、経緯をGitへ沈めるというユーザーの考えを検討する。仮判断・未確認・理由・権限は機械的に削除しない。
+情報・知識・判断・契約の寿命を、時間だけでなく前提や対象の変化から見直す案を、失敗例とともに整理した記録。Astraは検討材料として受け入れ、過去の観測事実と現在への適用、事実確認と決定、Registryと権限の根拠を区別する補正を付けた。制度採用・判断失効・本文一括短縮は行っていない。
 
-原発言と姫の未確認解釈は[CP-012](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md)。材料は[OPS-072受入](OPS_072_ACCEPTANCE.md)。既存判断・委任の失効、制度採用、本文の一括短縮は対象外。効果と仮説を分けた最小案で完了。探索が見込みを超えたら確認範囲と必要入力を返す。
+2026-10-17 / OPS-073 / registered by Astra from CP-20261017-012, parent OPS-071. The user directly requested the returned work accepted below.
+
+Return proposed distinctions between information's validity period, understanding's applicability, review points for decisions and delegation duration, with examples of mixing them, record organization and review triggers. Consider the user's idea of leaving inspected facts on the surface for evidence-backed decisions while moving their history into Git. Do not mechanically remove provisional judgments, unknowns, reasons or authority.
+
+Original statements and Hime's unverified interpretation are in [CP-012](../Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-17_2.md); input material is [OPS-072 acceptance](OPS_072_ACCEPTANCE.md). Invalidating decisions/delegations, policy adoption and bulk shortening are excluded. A minimal proposal distinguishing effects from hypotheses completes the task. If exploration exceeds expectations, return checked scope and required inputs.
 
 ## 返却（2026-10-17 / 姫・Opus 5.5）
 
@@ -68,8 +72,9 @@ taskがDONEになった時は、その正本の情報・判断（裏付けあり
 
 既存の判断・委任は失効させていない。正本・Registry・Rulesは変更していない（本返却の追記のみ）。失敗例4のリンクは、queue圧縮時に調整担当が直す前提で記録だけした。OPS-074（棚卸し追記）は本案の置き場の分け方を使える見込みで、順番はOPS-073→OPS-074が自然（Registryの依存線の追加は調整担当の判断）。
 
-## Astra受入（2026-10-17）
+<a id="astra受入2026-10-17"></a>
+## Astra acceptance (2026-10-17)
 
-定義・5件の失敗例・記録案・見直し契機・効果と未確認の区別を確認し、検討材料として受入。OPS-072の保存記録と補正に対応する。例4のqueueリンクは既に履歴へ修正済み。制度採用ではない。
+Checked definitions, five failure examples, record proposal, review triggers and separation of effects/unknowns; accepted as material for consideration, corresponding to OPS-072's saved records/corrections. Example 4's queue link has already been redirected to history. No policy adoption.
 
-補正：過去の観測事実そのものが対象変更で失効するのではなく、現在にも適用できるという前提を再確認する。判断の例「Comparable 0件」は事実確認であり決定とは区別する。契約の権限はRegistryだけから発生せず、最新のユーザー委任と各正本を照合する。長命であるだけでRulesへ移す権限は生じない。OPS-074へ追加の必須依存は設けない。
+Corrections: changes to a target do not invalidate the past observation itself; recheck its applicability to the present. 「Comparable 0件」 is a factual check, not a decision. Contract authority does not originate solely in Registry; compare the latest user delegation and each canonical. Longevity alone does not grant permission to move content into Rules. Do not add a mandatory dependency to OPS-074.

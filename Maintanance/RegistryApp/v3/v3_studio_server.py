@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""OPS-166 isolated Studio server for the headless-browser round trip. Experiment only.
+
+Binds 127.0.0.1 on an OS-assigned port, keeps every state in the caller's directory (fixture DB, saves/), and is started
+and stopped by the test. It uses serve.py's V3 page and save functions (never its server or main), inbox.py only on
+saves_dir, never sync.py, and never writes the template. Only the test-only /v3/apply routes are its own.
+
+- GET /            the page, built in memory from a read-only copy of index.template.html: the seed is a fresh
+                   studio_adapter.export_doc (so reopening shows the latest DB), documents and the pending queue are empty. The
+                   template is used as it is: its V3 branches (P1-P6) are part of it since OPS-180, no patch is applied.
+- POST /save       the page's own save call: stores the JSON as a new file under saves/ (parent/series as inbox.py does)
+                   and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
+- GET /workspace   the latest valid V3 save (inbox.latest, OPS-177/179), with unresolvedLegacy (or reconciliation unknown)
+                   and invalid for display, so the page's own resumeWorkspace() runs. Saves live in saves_dir through inbox.py.
+- POST /sync       a no-op answer: GET / already exports the DB, so 更新 reloads onto it (OPS-177; not a production decision).
+- POST /v3/apply   an explicit DB write: studio_adapter.apply_save on a stored save (single task, OPS-166).
+- POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173),
+                   with the document_root given to the constructor (OPS-176; none: new cards and acknowledgements stay pending).
+- GET /v3/latest   a fresh export, for assertions.
+- anything else    404 (logged); /sync, /registry.json, the pollers and approvals are not served.
+"""
+import json
+import re
+import sys
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
+import registry_v3_write as w3
+import studio_adapter as sa
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # RegistryApp: inbox.py (OPS-179)
+import inbox  # noqa: E402
+import serve  # noqa: E402  (the shared V3 page and save functions, OPS-181)
+
+TEMPLATE = Path(__file__).resolve().parent.parent / 'index.template.html'
+
+
+def build_page(conn):
+    """The template as it is (P1-P6 integrated, OPS-180) stands in for the page sync.py builds: this fixture empties
+    its documents and pending blocks (test-only), then serve.v3_page puts the DB export into the seed, as serve.py's
+    V3 mode does on its sync-built page (OPS-181)."""
+    html = TEMPLATE.read_text(encoding='utf-8')
+    empty_queue = {'source': '（隔離V3実験：採番待ちqueueは読まない）', 'sources': [], 'generatedAt': '', 'entries': [], 'requests': []}
+    for name, value in (('documents', {'generatedAt': '', 'files': {}}), ('pendingSeed', empty_queue)):
+        block = f'<script id="{name}" type="application/json">' + json.dumps(value, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
+        html, n = re.subn(rf'<script id="{name}" type="application/json">.*?</script>', lambda m: block, html, count=1, flags=re.S)
+        if n != 1:
+            raise ValueError(f'{name} block not found')
+    return serve.v3_page(html, conn)
+
+
+class Handler(BaseHTTPRequestHandler):
+    def log_message(self, *args):
+        pass  # requests are recorded in server.requests
+
+    def reply(self, status, body, ctype='application/json; charset=utf-8'):
+        data = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(data)))
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        self.wfile.write(data)
+
+    def body(self):
+        return json.loads(self.rfile.read(int(self.headers.get('Content-Length', '0'))).decode('utf-8'))
+
+    def do_GET(self):
+        s = self.server
+        s.requests.append(('GET', self.path))
+        if self.path == '/':
+            conn = w3.open_db(s.db_path)
+            try:
+                page = build_page(conn)
+            finally:
+                conn.close()
+            s.pages.append(page)
+            return self.reply(200, page.encode('utf-8'), 'text/html; charset=utf-8')
+        if self.path == '/workspace':
+            return self.reply(200, s.latest())
+        if self.path == '/v3/latest':
+            conn = w3.open_db(s.db_path)
+            try:
+                return self.reply(200, sa.export_doc(conn))
+            finally:
+                conn.close()
+        return self.reply(404, {'error': 'not served by the isolated V3 server'})
+
+    def do_POST(self):
+        s = self.server
+        s.requests.append(('POST', self.path))
+        if self.path == '/save':
+            data = self.body()
+            try:
+                return self.reply(200, {'ok': True, **s.store(data)})
+            except serve.NotV3Save as error:
+                return self.reply(400, {'ok': False, 'error': str(error)})
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'error': str(error)})
+        if self.path == '/sync':
+            # OPS-177: no Markdown sync here; GET / builds a fresh DB export, so 更新 reloads onto the latest DB.
+            # This is the isolated server's answer only, not a decision on the production sync method.
+            return self.reply(200, {'ok': True, 'output': 'V3: no Markdown sync; the page export is built from the DB on GET /'})
+        if self.path == '/v3/apply':
+            req = self.body()
+            try:
+                save = s.load(req['saveId'])
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'kind': 'SaveRejected', 'error': str(error)})
+            conn = w3.open_db(s.db_path)
+            try:
+                op, result = sa.apply_save(conn, save, req['actor'], req['evidence'])
+                return self.reply(200, {'ok': True, 'operationId': op, 'result': result})
+            except (sa.SaveRejected, w3.Refused, w3.GenerationMismatch, w3.WriteDisabled, w3.OperationMismatch) as error:
+                return self.reply(409, {'ok': False, 'kind': type(error).__name__, 'error': str(error)})
+            finally:
+                conn.close()
+        if self.path == '/v3/apply-groups':
+            req = self.body()
+            try:
+                save = s.load(req['saveId'])
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'kind': 'SaveRejected', 'error': str(error)})
+            conn = w3.open_db(s.db_path)
+            try:
+                out = sa.apply_groups(conn, save, req['selected'], req['actor'], req['evidence'], req.get('resolutions'), req.get('ancestry'),
+                                      document_root=s.document_root)
+                return self.reply(200, {'ok': True, **out})
+            except (sa.SaveRejected, w3.GenerationMismatch, w3.WriteDisabled) as error:
+                return self.reply(409, {'ok': False, 'kind': type(error).__name__, 'error': str(error)})
+            finally:
+                conn.close()
+        return self.reply(404, {'error': 'not served by the isolated V3 server'})
+
+
+class V3StudioServer(ThreadingHTTPServer):
+    daemon_threads = True
+
+    def __init__(self, db_path, saves_dir, document_root=None):
+        super().__init__(('127.0.0.1', 0), Handler)
+        self.db_path, self.saves = str(db_path), Path(saves_dir)
+        # OPS-176: the canonical documents new cards and acknowledgements are checked against; given explicitly by the
+        # caller (a test fixture of prepared temporary documents). None (the default): they stay pending, never the repo.
+        self.document_root = None if document_root is None else Path(document_root)
+        self.saves.mkdir(parents=True, exist_ok=True)
+        self.requests, self.pages, self.lock = [], [], threading.Lock()
+        self.thread = None
+
+    @property
+    def origin(self):
+        return f'http://127.0.0.1:{self.server_address[1]}'
+
+    def saves_list(self):
+        return [x['doc'] for x in inbox.load_saves(self.saves) if 'error' not in x]
+
+    def store(self, data):
+        # serve.v3_store (OPS-181): inbox.py on saves_dir (always explicit, never the default Inbox); a mixed folder keeps both kinds
+        claimed = data.pop('studioSave', None) if isinstance(data, dict) else None
+        parent = claimed.get('parent') if isinstance(claimed, dict) else None
+        meta = serve.v3_store(data, parent, self.saves)  # NotV3Save; ValueError: unknown or other-kind parent
+        return {'file': f"registry-edited-{meta['saveId']}.json", 'folder': str(self.saves), 'save': meta}
+
+    def load(self, save_id):
+        return inbox.find(save_id, inbox.V3, self.saves)  # ValueError for a legacy, invalid or unknown save
+
+    def latest(self):
+        return inbox.latest(self.saves, inbox.V3)  # only valid V3 saves resume; legacy ones are reported
+
+    def start(self):
+        self.thread = threading.Thread(target=self.serve_forever, daemon=True)
+        self.thread.start()
+        return self
+
+    def stop(self):
+        self.shutdown()
+        self.server_close()
+        if self.thread:
+            self.thread.join(5)

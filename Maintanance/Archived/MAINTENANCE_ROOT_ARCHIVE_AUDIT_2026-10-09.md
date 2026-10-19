@@ -1,39 +1,45 @@
 # Maintanance直下文書の待避判断
 
-最終更新: 2026-10-09 / Codex
+## TL;DR（人間向け）
 
-## 目的
+`Maintanance/`直下の27文書を、現在の運用に必要な正本と、完了してArchiveへ移せる証拠に分けた2026-10-09の判断記録（OPS-003〜008）。待避したのはgraph実験の完了済み2文書と旧統合評価1文書だけで、起動・運用正本や継続資料は直下に残した。日付だけでは移動しないという基準と、再確認の条件も残している。
 
-`Maintanance/`直下のMarkdownを、現在の起動・運用・task再開に必要な正本と、完了してArchiveへ
-待避できる証拠へ分ける。古いという理由だけでは移動せず、現行Registry、agent起動規則、相互参照、
-継続更新の有無を根拠に判断する。
+Last updated: 2026-10-09 / Codex
 
-## 判断task
+<a id="目的"></a>
+## Purpose
 
-| ID | 種別 | 対象 | 判断 |
+Split the Markdown directly under `Maintanance/` into canonicals needed for current startup, operation and task resumption, and completed evidence that can be moved to the Archive. Do not move a document just because it is old; decide on the grounds of the current Registry, agent startup rules, cross-references and whether it is still updated.
+
+<a id="判断task"></a>
+## Decision tasks
+
+| ID | Kind | Target | Decision |
 | --- | --- | --- | --- |
-| `OPS-003` | `DISCOVERY` | 直下27文書の用途・状態・参照inventory | 完了。27文書・約618KBを4群へ分類 |
-| `OPS-004` | `DECISION` | 起動・運用正本 | 直下維持。Registry、handoff、playbook、template、会話参照規則、maintenance規則を含む |
-| `OPS-005` | `DECISION` | graph実験文書 | 完了済み最小schemaとインメモリfixtureの2文書だけ待避。現役・凍結taskの正本と交流logは維持 |
-| `OPS-006` | `DECISION` | 評価・observation文書 | 2026-10-05の旧統合評価だけ待避。agent別interview、observation、task適性表は継続資料として維持 |
-| `OPS-007` | `DECISION` | 技術調査・release文書 | すべて直下維持。凍結taskの正本、未確定の独立review、後続branch統合待ちを含む |
-| `OPS-008` | `EXECUTION` | 採用した3文書の待避と参照更新 | 完了 |
+| `OPS-003` | `DISCOVERY` | inventory of the use, state and references of the 27 top-level documents | Done. 27 documents, about 618KB, classified into 4 groups |
+| `OPS-004` | `DECISION` | startup and operation canonicals | Keep at top level. Includes the Registry, handoff, playbook, template, conversation reference rules and maintenance rules |
+| `OPS-005` | `DECISION` | graph experiment documents | Move only the 2 documents of the completed minimal schema and in-memory fixture. Keep the canonicals of active and frozen tasks and the exchange log |
+| `OPS-006` | `DECISION` | evaluation and observation documents | Move only the old integrated evaluation of 2026-10-05. Keep the per-agent interviews, observations and task-fit table as continuing materials |
+| `OPS-007` | `DECISION` | technical investigation and release documents | Keep all at top level. Includes canonicals of frozen tasks, an unsettled independent review, and records waiting for a later branch merge |
+| `OPS-008` | `EXECUTION` | moving the 3 adopted documents and updating references | Done |
 
-## 待避
+<a id="待避"></a>
+## Moved
 
-- `AI_GRAPH_SHARED_SCHEMA.md`: 共有schema最小fixtureの完了証拠。後続の追試正本から入力資料として参照する。
-- `AI_GRAPH_IN_MEMORY_FIXTURE.md`: SQLiteインメモリfixtureの完了証拠。実行物は`AIGraphInMemoryFixture/`に残る。
-- `USER_MANAGEMENT_ASSESSMENT.md`: 2026-10-05時点の統合評価。現在はagent別interviewとobservationが継続資料である。
+- `AI_GRAPH_SHARED_SCHEMA.md`: completion evidence of the shared-schema minimal fixture. Referred to as input material from the later re-test canonical.
+- `AI_GRAPH_IN_MEMORY_FIXTURE.md`: completion evidence of the SQLite in-memory fixture. The executables remain in `AIGraphInMemoryFixture/`.
+- `USER_MANAGEMENT_ASSESSMENT.md`: the integrated evaluation as of 2026-10-05. The per-agent interviews and observations are now the continuing materials.
 
-## 直下維持の基準
+<a id="直下維持の基準"></a>
+## Criteria for keeping at top level
 
-- `PROGRESS_OVERVIEW.md`、Claude handoff、採番待ちqueueなど、sessionやagent間の入口。
-- 現行Registryの`ACTIVE`、`FROZEN`、`WAITING_EXTERNAL`、`USER_ONLY`から参照される詳細正本。
-- release checklist、task運用playbook、conversation ID規則などの恒久運用資料。
-- agent別評価・observation・task適性表のように、明示条件で今後も追記または参照する資料。
-- 原因未確定のperformance独立reviewや、後続branch統合を残すrelease記録。
+- Entry points for sessions and between agents, such as `PROGRESS_OVERVIEW.md`, the Claude handoff and the numbering queue.
+- Detailed canonicals referred to from `ACTIVE`, `FROZEN`, `WAITING_EXTERNAL` and `USER_ONLY` in the current Registry.
+- Permanent operation materials such as the release checklist, the task operation playbook and the conversation ID rules.
+- Materials that will continue to be appended to or referred to under explicit conditions, such as the per-agent evaluations, observations and the task-fit table.
+- An independent performance review whose cause is not determined, and release records that still have a later branch merge pending.
 
-## 再確認条件
+<a id="再確認条件"></a>
+## Conditions for re-checking
 
-graph実験群が完了・終了した時、0.5.0の後続branch統合が完了した時、RedBlackTreeの外部待ちが
-解消した時に、それぞれの詳細正本を再度まとめて待避判断する。個々の文書を日付だけで移動しない。
+When the graph experiments complete or end, when the later branch merge of 0.5.0 completes, and when RedBlackTree's external wait is resolved, make the move decision again for the respective detailed canonicals together. Do not move individual documents by date alone.

@@ -1,57 +1,71 @@
 # 赤黒木4型の本文完成
 
-2026-10-16、Astra。ユーザーのゲート具体化指示。task DOC-034。2026-10-16ユーザーの継続委任により着手。
+## TL;DR（人間向け）
 
-## 入力と成果
+赤黒木4型の既存日英本文と公開コメントを仕上げ、78例の検証と独立レビュー指摘対応を経てユーザーが受け入れた。既存例の構成・掲載数を固定し、追加や文書全体の再検討は0.8.0へ留保した。本文完成と全公開対象の確認・releaseは別で、後日のDocC画面確認にも個別の保証範囲がある。
 
-DOC-033の照合結果と、[文書workflow](DOCUMENTATION_WORKFLOW.md)に従う。既存の[4型本文・英訳](../UserDocuments/RedBlackTreeCollections/Head/)を再利用し、新規作成済み・完成済みと誤認しない。
+2026-10-16 / Astra. User-directed gate specification, DOC-034; started under the user's continuing delegation on 2026-10-16.
 
-Set、Dictionary、MultiSet、MultiMapそれぞれについて、確定アウトラインの全項目、現行公開契約、必須コード例、Index・CoW・View・重複の扱い、計算量の成立条件を確認して本文を仕上げる。日本語本文、英語本文、対応する公開コメントを同期する。例は対象toolchain・提供条件を固定してcompile/runし、最終横断で共通契約と型差の説明を確認する。
+<a id="入力と成果"></a>
+## Inputs and deliverables
 
-## 完了条件
+Follow DOC-033 comparison results and the [documentation workflow](DOCUMENTATION_WORKFLOW.md). Reuse the [existing four-type prose/translations](../UserDocuments/RedBlackTreeCollections/Head/); do not mistake them for newly created or already finished work.
 
-対象commit・差分と更新ファイル、例の検証、同期確認、レビューと指摘対応・残る制約を記録し、本文完成として受け入れられること。契約や構成の未決点はユーザー判断へ返す。RBT-026全体を新しい必須依存にせず、文書に影響する未決箇所だけを扱う。
+Finish Set, Dictionary, MultiSet and MultiMap against every confirmed outline item, current public contracts, required examples, Index/CoW/View/duplicate handling and complexity conditions. Synchronize Japanese, English and corresponding public comments. Fix example toolchain/provisioning conditions for compile/run, then cross-check common contracts and intentional type differences.
 
-成果はMS-DOCへ接続する。MS-DOCは本文作成完了であり、全対象の公開初版確認DOC-035、利用理解Validation、release判断とは別。
+<a id="完了条件"></a>
+## Completion conditions
 
-2026-10-16追加のユーザー指示：DOC-034 → DOC-037（赤黒木本文のユーザー受入判断）→ DOC-035とする。DOC-037で受入可を明示した後だけDOC-035へ進む。差戻し・保留では進めず、判断taskの完了だけを許可とみなさない。DOC-035のRELEASE-078前提も維持する。
+Record target commit/diff, updated files, example verification, synchronization, review responses and remaining limits so body completion can be accepted. Return unsettled contracts/structure to the user. Do not add all of RBT-026 as a mandatory prerequisite; address only unresolved matters affecting documentation.
 
-## 0.8.0への拡充移管と今回の固定範囲（2026-10-16ユーザー決定）
+Connect results to MS-DOC. MS-DOC means body-writing completion, separate from DOC-035's initial public-document check, usage-understanding Validation and release judgment.
 
-今回の0.6.0文書作業では、既存スニペットの構成・掲載数を固定し、追加・削除しない。既存例の照合・検証と誤りの訂正は扱うが、増減が必要なら無断で変更せず記録する。コードスニペット追加と文書全体の再検討は0.8.0へ配置した。既存の「必須コード例」「不足補完」はこの固定範囲で扱い、新しい例を作る要件にはしない。
+Additional user instruction, 2026-10-16: DOC-034 → DOC-037 (user acceptance of red-black tree prose) → DOC-035. Proceed only after DOC-037 explicitly accepts; rejection/on-hold does not permit progress, and completion of a decision task alone is not approval. Retain DOC-035's RELEASE-078 prerequisite.
 
-## 2026-10-16 作業記録（Astra）
+<a id="080への拡充移管と今回の固定範囲2026-10-16ユーザー決定"></a>
+## Expansion moved to 0.8.0; fixed scope for this work (user decision 2026-10-16)
 
-[アウトライン照合結果](RED_BLACK_TREE_OUTLINE_AUDIT.md)を受け、View説明、MultiSet削除例、Bound出力、CoW計算量条件を訂正。日英の既存Swift例78個をcompile/run確認。公開コメントの同じ誤りも訂正。本文全体の完成・同期は継続中。製品実装は変更していない。
+For this 0.6.0 documentation work, freeze existing snippet structure/count: no additions/deletions. Check and correct existing examples; record needed count changes rather than making them unilaterally. Additional snippets and whole-document reconsideration are placed at 0.8.0. Existing 「必須コード例」「不足補完」 wording applies within this fixed scope, not a requirement to invent examples.
 
-## 固定稿の準備完了・独立レビューへ（2026-10-16）
+<a id="2026-10-16-作業記録astra"></a>
+## Work record: 2026-10-16 (Astra)
 
-4型の日英本文を既存アウトラインの見出しへ揃え、公開型コメントへ同じ契約説明を反映した。旧本文と型コメント素材の二重構成を整理し、Dictionaryの日本語稿も作成。既存例の操作・構成と掲載数を維持し、各成果物に元からある例だけを保持したため、日英本文と型コメントの例の数そのものは一致しない。例を増やして揃えることはしていない。
+Following the [outline audit](RED_BLACK_TREE_OUTLINE_AUDIT.md), corrected View explanations, MultiSet deletion examples, Bound output and CoW complexity conditions. Compiled/ran 78 existing Japanese/English Swift examples and corrected corresponding public-comment errors. Whole-body completion/synchronization continued; no product implementation changes.
 
-`verify-final.py` で4型・8本文の見出し、各本文および型コメントのフェンス数、`@frozen`以降の製品実装がHEADと同一であることを確認。78実行可能例は再抽出してcompile/run成功。宣言等8断片は実行対象外。Viewの独立変更・直接変更は別の検証例でも確認。Release DocCを `--warnings-as-errors` で生成成功。SwiftPMキャッシュへの書込み警告とnativeビルド方式の非推奨警告は環境側にあり、DocC警告・エラーはなし。ブラウザ上の画面確認は未実施。
+<a id="固定稿の準備完了独立レビューへ2026-10-16"></a>
+## Fixed draft ready for independent review (2026-10-16)
 
-ユーザー「課金したから、ひめにたくさんふってｗ」に基づき、[型別4件＋横断1件の正式レビュー](RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md)を依頼する。成果物をここで固定し、返却まではAstra側で書き換えない。独立レビューの受入・指摘対応前に本文完成とはせず、DOC-037は判断材料待ち。コミット・公開・releaseは未実施。
+Aligned the four types' Japanese/English prose to existing outline headings and reflected the same contracts in public type comments. Resolved the duplicate structure of old body/type-comment material and created the Japanese Dictionary draft. Retained existing operations, structure and example counts in each artifact; counts therefore differ between body prose and type comments. Did not add examples merely to equalize counts.
 
-### 作業物
+`verify-final.py` checked headings in four types/eight bodies, fence counts per body/type comment and equality of product implementation from `@frozen` onward with HEAD. Re-extracted and successfully compiled/ran 78 executable examples; eight declaration and other fragments were outside the execution scope. Separate examples also checked independent View mutation versus direct mutation. Release DocC generated with `--warnings-as-errors`. Environment warnings concerned SwiftPM cache writes and native-build deprecation; no DocC warnings/errors. Browser visual checking had not occurred.
 
-証拠は `Maintanance/Current/Evidence/DOC-033-2026-10-16/` に保存。生成用の一回限りのスクリプトと試験実行ファイルは除去し、最終確認用スクリプト・入力・ログを保持した。`/tmp/doc034-dictionary.py` は作成後に証拠領域へ移し、使用終了後に削除済み（Astra、2026-10-16）。作成時の一時作業物事前記録を失念したため、事後にこの経緯を記録する。通常の `.build` は保持。
+Following the user's 「課金したから、ひめにたくさんふってｗ」, assigned [four type reviews plus one cross-type review](RED_BLACK_TREE_DOCUMENT_REVIEW_REQUEST.md). Freeze artifacts until return; Astra must not rewrite them. Do not call bodies complete before independent-review acceptance/fixes; DOC-037 awaits material. No commit/publication/release yet.
 
-## 独立レビュー指摘対応完了（2026-10-16 / Astra）
+<a id="作業物"></a>
+### Working artifacts
 
-ユーザーの「つづけて」に基づき、受入済みDOC-040〜044の技術訂正と文章修正を反映した。[対応と検証記録](RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md)を参照。既存78例のcompile/run、見出し・フェンス数、文書コメント以外のソース不変、Release DocC（native方式・warnings-as-errors）を確認した。例の掲載数・構成は固定。Setの例順変更は行わない。
+Evidence is in `Maintanance/Current/Evidence/DOC-033-2026-10-16/`. Removed one-off generation scripts and test executables, retaining final-check scripts, inputs and logs. `/tmp/doc034-dictionary.py` was moved to evidence after creation and deleted after use (Astra, 2026-10-16). The required advance temporary-artifact record was missed; this records the sequence afterward. Retain ordinary `.build`.
 
-outlineに残る必須例とDictionary宣言断片は、既存例を増減しないユーザー決定を優先し、0.8.0で再検討する候補として保持する。outlineの例要件を全充足したという意味ではない。現行方針の範囲で本文完成候補を用意できたため、DOC-034はユーザーのcommit承認によりDONE、DOC-037はユーザー受入判断の材料が揃った状態とする。DOC-035は受入判断まで進めない。
+<a id="独立レビュー指摘対応完了2026-10-16--astra"></a>
+## Independent-review fixes complete (2026-10-16 / Astra)
 
-### 検証証拠
+Under the user's 「つづけて」, applied accepted DOC-040–044 technical/prose corrections; see [responses and verification](RED_BLACK_TREE_DOCUMENT_REVIEW_ACCEPTANCE.md). Checked existing 78 examples by compile/run, headings/fence counts, source invariance outside documentation comments and Release DocC (native, warnings-as-errors). Snippet counts/structure remain fixed; Set example order unchanged.
 
-`Evidence/DOC-034-review-fixes-2026-10-16/`に修正後のhash・掲載数・実行例・ログ・検証スクリプトを保存。実行ファイルは通常の`.build/doc034-existing-examples`を使用し、通常の.buildとして保持。レビュー時の証拠を上書きしていない。既定ビルド方式の権限エラーと、native方式の成功を区別して残す。今回ブラウザ目視は未実施。
+Required examples still in the outline and Dictionary declaration fragments remain candidates for 0.8.0 reconsideration, prioritizing the user's no-add/remove decision. This does not claim every outline example requirement is met. With a completed-body candidate under current policy, user commit approval makes DOC-034 DONE; DOC-037 has material for user acceptance. Do not start DOC-035 before acceptance.
 
-## ユーザー受入（2026-10-16 / DOC-037）
+<a id="検証証拠"></a>
+### Verification evidence
 
-ユーザーの「承認」に対し、Astraが「赤黒木4型の本文を受け入れた、という意味で記録してよい？」と確認し、ユーザーが「いえーす」と明示した。受入可として記録する。対象は修正済みcommit `f6e181b2`の4型本文・対応公開コメント。追加スニペットは0.8.0へ留保し、ブラウザ目視未実施という検証範囲は変わらない。
+`Evidence/DOC-034-review-fixes-2026-10-16/` retains post-fix hashes, counts, executable examples, logs and verification scripts. Executables use ordinary `.build/doc034-existing-examples` and remain as normal .build output. Review-time evidence was not overwritten. Distinguish the default-build permission error from native-build success. No browser visual check in this work.
 
-DOC-037の判断は完了。DOC-035のユーザー受入前提を満たす。全公開対象の文書確認、release、commitの許可まで含めない。
+<a id="ユーザー受入2026-10-16--doc-037"></a>
+## User acceptance (2026-10-16 / DOC-037)
 
-## 後日のプレビュー確認（2026-10-17）
+After the user's 「承認」, Astra asked 「赤黒木4型の本文を受け入れた、という意味で記録してよい？」 and the user explicitly replied 「いえーす」. Record acceptance of the four types' prose/corresponding comments at corrected commit `f6e181b2`. Additional snippets remain reserved for 0.8.0; the unperformed browser visual check remains a limitation.
 
-[DOC-045のセルフレビュー](RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md)で4型ヘッダのブラウザ確認を追加。ユーザーの明示委任によりCodexが自己受入。過去の未実施記録は当時の事実として保持する。今回の確認範囲・未検証事項は同書を参照。
+DOC-037's decision is complete and satisfies DOC-035's user-acceptance prerequisite. It does not approve all-public-target document checks, release or commit.
+
+<a id="後日のプレビュー確認2026-10-17"></a>
+## Later preview verification (2026-10-17)
+
+[DOC-045 self-review](RED_BLACK_TREE_DOCC_PREVIEW_REVIEW.md) adds browser checking of four type headers. Codex self-accepted under explicit user delegation. Preserve earlier non-execution records as facts from their time; see that document for checked scope/unknowns.

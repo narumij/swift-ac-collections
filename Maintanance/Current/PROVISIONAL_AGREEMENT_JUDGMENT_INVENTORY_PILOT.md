@@ -1,20 +1,27 @@
 # 仮契約・仮判断の棚卸し記録の限定試行
 
-2026-10-17 / OPS-072 / Astra記録。親OPS-070。ユーザー指定の先行試行と立案を受入済み。状態・必須依存はTask Registryを正本とする。
+## TL;DR（人間向け）
 
-## 前提
+3文書で判断らしき記述を事実と照合する棚卸しと、現在の表面を短く示す案を作り、全体追記の立案まで受け入れた限定試行。元文書は差し替えず、修正・失効は案にとどめる。止めどころが引継ぎに役立った一例はあるが、継続的な省力効果や制度導入は確定していない。
 
-当初案ではOPS-070（仮契約）とOPS-071（仮判断）の整理を入力に、少数の対象・方法・編集範囲・受入条件をユーザーと確定してから試行する。これは当初の前提。今回の限定試行は後のユーザー指定で先行実施した。制度導入は自動承認されない。
+2026-10-17 / OPS-072 / recorded by Astra. Parent OPS-070. The advance trial and planning the user specified have been accepted. The Task Registry is canonical for state and required dependencies.
 
-## 試行案
+<a id="前提"></a>
+## Premise
 
-対象ごとに、仮契約か仮判断か、照合した事実と出典、残す・修正・捨てるという結果と理由、再確認のきっかけを短く記録する。捨てた案についても確認できた事実と理由を保持する。未決なら未決とし、不在の証明や全履歴の探索を求めない。
+In the original plan, the trial would take the organization of OPS-070 (provisional contracts) and OPS-071 (provisional judgments) as input, and run after settling a few targets, the method, the editing scope and the acceptance conditions with the user. That was the original premise. This limited trial was done first by a later user instruction. Introducing the system is not automatically approved.
 
-棚卸し記録は現在有効な判断・委任・task状態の別正本にしない。正式判断が必要な結果は案としてユーザーへ返す。記録だけで権限・凍結・状態を変更しない。ゲートキャッシュには棚卸し済みの範囲と正本への参照を渡す方法を試す。
+<a id="試行案"></a>
+## Trial proposal
 
-## 評価と返却
+For each target, briefly record whether it is a provisional contract or a provisional judgment, the facts checked and their sources, the result — keep, fix or discard — with the reason, and the trigger for re-checking. Keep the confirmed facts and reasons for discarded proposals too. If undecided, say undecided; do not demand proof of absence or a search of the whole history.
 
-同じ探索や評価を繰り返さず再開できるか、どこまで確認済みか伝わるか、記録の作成・保守が新たな負担にならないかを観察する。観察できた効果と仮説・未確認を分け、成果・問題・継続/修正/終了の提案を返す。試行成果の受入と全体制度への導入は分ける。
+The inventory record is not a separate canonical for currently valid judgments, delegations or task states. Results needing a formal decision go back to the user as proposals. The record alone does not change authority, freezes or states. Try a way of handing the gate cache the inventoried scope and references to the canonicals.
+
+<a id="評価と返却"></a>
+## Evaluation and return
+
+Observe whether work can resume without repeating the same searches or evaluations, whether it is clear how far things are checked, and whether creating and maintaining the record becomes a new burden. Separate observed effects from hypotheses and unconfirmed items, and return outputs, problems and a proposal to continue, change or end. Accepting the trial's outputs is separate from introducing the system as a whole.
 
 ## 試行の返却（2026-10-17 / 姫・Opus 5.5）
 
@@ -63,20 +70,22 @@
 - **その後**：持ち主または調整担当が、追記を材料に表面を作り直す（旧版はgitに残る）。追記は表面を作り直すまでの短命な材料。
 - **順番の目安**：DONEのtaskの文書から（縮む量が大きく、作業中の人とぶつからない）。
 
-## Astra受入（2026-10-17）
+<a id="astra受入2026-10-17"></a>
+## Astra acceptance (2026-10-17)
 
-ユーザーの先行実施・立案までという範囲変更に従い受入。旧両検討完了待ちを今回の試行の依存から除去した。補正・保証範囲は[受入記録](OPS_072_ACCEPTANCE.md)。全体追記は[OPS-074](CANONICAL_INVENTORY_APPEND.md)。短縮案は未採用。
+Accepted according to the user's change of scope to an advance trial up to planning. Removed the wait for both earlier studies to complete from this trial's dependencies. The corrections and guaranteed scope are in [the acceptance record](OPS_072_ACCEPTANCE.md). The whole-repository addition is [OPS-074](CANONICAL_INVENTORY_APPEND.md). The shortening proposal is not adopted.
 
 
-## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第2区切り）
+<a id="根拠と更新条件の追記2026-10-17--姫opus-55--ops-076第2区切り"></a>
+## Grounds and update conditions, appended (2026-10-17 / Hime, Opus 5.5 / OPS-076 break 2)
 
-入力版`56005d06d1ad97ed544cda914e12ee725692dc58`。本文・旧記録は変えていない。各行は「その版で確かめた主張・方法」。確認は`git`の読み取りだけで、ブラウザ・製品テスト・CIは実行していない。
+Input version `56005d06d1ad97ed544cda914e12ee725692dc58`. The body and old records were not changed. Each row is "a claim checked in that version, and the method". Checked only by reading with `git`; no browser, product tests or CI were run.
 
-| 主張 | 確認方法と結果 | 更新のきっかけ |
+| Claim | Check method and result | Trigger for update |
 | --- | --- | --- |
-| 試行1は「対象文書を書き換えていない」 | 入力版`fec74691`→本版の3文書の差分に削除行なし。`EXTERNAL_TYPE_EXTENSION_AUDIT.md`だけ68→94行（OPS-074の末尾追記）、他2件は行数も同じ | 3文書の本文を誰かが直したとき（表面の作り直しなど） |
-| 修正案「`Sources/PermutationModule/`のパスが古い」は今も有効 | `git cat-file -e <版>:Sources/PermutationModule`：なし。監査本文64行目に旧パスが残る | 本文のパス修正、またはmodule構成の変更 |
-| 棚卸し記録・表面案が版にある | `Evidence/OPS-072/INVENTORY.md`・`SURFACES.md`：あり | 証拠の移動・圧縮 |
-| 行数「55行」「68行」 | 入力版`fec74691`でASan 55行・監査68行。本版ではASan 55行、監査94行（追記分） | 表面の作り直しで比較の前提が変わる |
+| Trial 1 「対象文書を書き換えていない」 (did not rewrite the target documents) | The diff of the 3 documents from input version `fec74691` to this version has no deleted lines. Only `EXTERNAL_TYPE_EXTENSION_AUDIT.md` went from 68 to 94 lines (OPS-074's appended section); the other 2 have the same line counts | When someone fixes the bodies of the 3 documents (e.g. rebuilding the surface) |
+| The fix proposal 「`Sources/PermutationModule/`のパスが古い」 (the path is outdated) is still valid | `git cat-file -e <版>:Sources/PermutationModule`: absent. The old path remains at line 64 of the audit body | Fixing the path in the body, or a change of module structure |
+| The inventory record and surface proposal exist in that version | `Evidence/OPS-072/INVENTORY.md` and `SURFACES.md`: present | Moving or compressing the evidence |
+| Line counts 「55行」「68行」 | At input version `fec74691`, ASan 55 lines and audit 68 lines. In this version ASan 55 and audit 94 (the appended part) | Rebuilding the surface changes the premise of the comparison |
 
-感想（§試行の1〜7、試行2の感想）は観察と仮説で、点検事実にはしない。
+The impressions (items 1–7 of the trial section, and trial 2's impressions) are observations and hypotheses, not inspection facts.

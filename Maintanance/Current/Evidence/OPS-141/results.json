@@ -1,0 +1,265 @@
+{
+ "wide": {
+  "initial": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 未確認",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機中 4:40:34\n最後 返却 4:40:34\n継続 4:42:27（8秒前）",
+     "state": "waiting"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 確認が古い（4:41:02、93秒前）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 未確認",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n連続動作の終了 4:42:31",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業"
+   ],
+   "boxTop": 264,
+   "inView": true
+  },
+  "continuityFail": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 不調",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機中 4:40:34\n最後 返却 4:40:34\n継続 不調（最後に読めた確認 4:42:27）",
+     "state": "waiting"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 不調（最後に読めた確認 4:41:02）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 不調",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n継続 不調（最後に読めた確認 4:42:31）",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業"
+   ],
+   "boxTop": 264,
+   "inView": true
+  },
+  "ended": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 未確認",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機終了 4:40:38\n最後 返却 4:40:34\n継続 4:42:42（5秒前）",
+     "state": "ended"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 確認が古い（4:41:17、91秒前）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 未確認",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n連続動作の終了 4:42:46",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業",
+    "OPS-1 · 姫 · 作業"
+   ],
+   "boxTop": 264,
+   "inView": true
+  },
+  "afterSwitch": 5,
+  "errors": []
+ },
+ "narrow": {
+  "initial": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 未確認",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機中 4:40:34\n最後 返却 4:40:34\n継続 4:42:43（8秒前）",
+     "state": "waiting"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 確認が古い（4:41:18、93秒前）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 未確認",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n連続動作の終了 4:42:47",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業"
+   ],
+   "boxTop": 285,
+   "inView": true
+  },
+  "continuityFail": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 不調",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機中 4:40:34\n最後 返却 4:40:34\n継続 不調（最後に読めた確認 4:42:43）",
+     "state": "waiting"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 不調（最後に読めた確認 4:41:18）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 不調",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n継続 不調（最後に読めた確認 4:42:47）",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業"
+   ],
+   "boxTop": 285,
+   "inView": true
+  },
+  "ended": {
+   "lamps": [
+    {
+     "text": "Fable：未申告\n最後 作業 4:40:36\n継続 未確認",
+     "state": "unknown"
+    },
+    {
+     "text": "姫：待機終了 4:40:39\n最後 返却 4:40:34\n継続 4:42:58（5秒前）",
+     "state": "ended"
+    },
+    {
+     "text": "Astra：未申告\n最後 依頼 4:40:33\n継続 確認が古い（4:41:33、91秒前）",
+     "state": "unknown"
+    },
+    {
+     "text": "Luna：待機終了 19:00:00（旧ACKからの読み）\n最後 なし\n継続 未確認",
+     "state": "ended"
+    },
+    {
+     "text": "Sol：未申告\n最後 なし\n連続動作の終了 4:43:02",
+     "state": "unknown"
+    }
+   ],
+   "lane": [
+    "OPS-3 · Fable検討中",
+    "OPS-1 · 返却・受入待ち",
+    "OPS-2 · 依頼済み"
+   ],
+   "topBar": false,
+   "memberSection": true,
+   "fontSize": "13px",
+   "chips": [
+    "OPS-1 · 姫 · 作業",
+    "OPS-2 · Astra → 姫 · 依頼",
+    "OPS-1 · 姫 · 返却",
+    "OPS-1 · 姫 · 作業",
+    "OPS-3 · Fable · 検討中",
+    "OPS-4 · Luna · 作業",
+    "OPS-1 · 姫 · 作業"
+   ],
+   "boxTop": 285,
+   "inView": true
+  },
+  "afterSwitch": 5,
+  "errors": []
+ },
+ "posts": []
+}

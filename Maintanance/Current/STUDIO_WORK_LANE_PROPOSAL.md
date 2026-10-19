@@ -1,0 +1,210 @@
+# 作業レーンへの拡張案（OPS-118）
+
+## TL;DR（人間向け）
+
+既存の活動・承認データから作業レーンを作る設計案と補修・受入の記録。時刻で承認を依頼の回へ結び付ける初案を退け、タスク単位の最近活動と承認を分ける最小案へ整理した。末尾でユーザーが直近200件を対象とする限定実装を承認し、実装は別資料へ分離。全件監視や並行依頼ごとの識別は含まない。
+
+2026-10-18 / Astra, parent OPS-048. The user wants the preapproval lane to become a work lane usable from the consideration stage. Prepare/review a small design with Hime before deciding implementation. Only design/review is approved initially.
+
+<a id="姫への正式依頼"></a>
+## Formal assignment to Hime
+
+Design preparation is user-approved. If notified while waiting, check CLAUDE_TASK OPS-118 and this document, then start this assignment without another confirmation. This does not change general automatic-start rules.
+
+Purpose: let the user see consideration, assigned, working, return/acceptance or commit-wait stage at a glance, including before any approval card. Avoid another large display duplicating the activity strip.
+
+Preserve:
+- Work stage and commit approval remain separate. Approval clicks create neither completion nor start authority.
+- Only Astra commits. Retain fixed scope, one-time use, cancellation/history and bounded batch approval.
+- Distinguish formal Registry state, activity notification and approval-store authority; preserve saves, selection and scrolling.
+- Distinguish repeated assignments/approvals within a task when new work follows completion.
+
+Input: commit `5e6545c1ce0e8d8be7f4e2d5af524e4bb19bd4ee`, `Current/COMMIT_PREAPPROVAL_LANE.md` (current contract/check timing), and work-event/preapproval sections of RegistryApp/README.md. Consult activity.py/approvals.py/index.template.html only as needed; no exhaustive search.
+
+Write only Proposal/Return below. First give a brief breakdown, one recommendation, display sketch (text acceptable), minimum structure/relationship to existing data, updater/timing, planned files and minimum checks. At most two unresolved user decisions. No mandatory new database or large redesign without reasons. A proposal is not settled specification.
+
+No implementation/input edits/Registry updates/server operations/commit. Record actual start/return with `activity.py --task OPS-118 --event work/return --owner 姫 --reason ...`. Stop after return for Astra acceptance. Add one cache-reference line (none allowed).
+
+## Proposal（姫記入）
+
+2026-10-18 姫・Opus 5.5。案であり、既決仕様ではない。
+
+### 作業内訳
+
+1. 入力を読む（契約、README節、activity・承認のUI入口）。
+2. 3つの既存の情報源から、taskごとの「今の段階」を導く規則を決める。
+3. 表示・データ・担当・ファイル・検証を短くまとめる。
+
+### 推奨1案：「作業レーン」は保存しない導出ビュー
+
+新しい保存先は作らない。次の3つを、画面側の純粋関数で**task ID＋依頼の回**ごとに突き合わせ、1行に並べる。
+
+- Registryの行：正式状態。表示の補足だけで、段階の決定には使わない。
+- activity履歴：段階を決める唯一の材料。
+- 承認store：commit承認の状態。段階とは別のバッジにする。
+
+段階は、activityの最新イベントだけで決める。
+
+| 段階 | 決め方（その回の最新イベント） |
+|---|---|
+| 検討中 | その回に`request`がまだなく、ほかのイベントだけある |
+| 依頼済み | `request` |
+| 作業中 | `work`・`verification`（reasonが「相談待ち：」で始まるなら「相談待ち」の印） |
+| 返却・受入中 | `return`・`recheck`・`acceptance` |
+| commit待ち | `awaiting-commit` |
+| 完了（折り畳み） | `commit`・`complete` |
+
+- **回**：`request`（または`recheck`）のイベントIDで、回を区切る。完了の後に同じtaskへ新しい`request`が来たら、新しい行になる。前の回は折り畳みの履歴へ移る。
+- **承認バッジ**：同じtask IDで、その回の開始時刻以後に作られた承認カードの状態を数えて出す（例：「承認 待ち1」「承認済み1」）。承認をクリックしても段階は動かない。commit待ちの段階は、承認ではなくactivityの`awaiting-commit`から来る。
+
+### 表示イメージ（いまの「コミット事前承認」の位置に置き換える。activity帯はそのまま履歴として残す）
+
+```
+作業レーン（activityと承認から自動表示。正式状態はRegistry）            16:20更新
+ 検討中        依頼済み      作業中             返却・受入中        commit待ち
+ OPS-099 Astra              OPS-118 姫 16:15〜   RBT-026 受入済      OPS-114 Astra
+                            （相談待ち なし）    ユーザー判断待ち    承認済み1
+▸ 完了（今日 5件）   ▸ 承認カードの詳細（既存の承認レーンを折り畳みで）
+```
+
+- 1カードに出すもの：task ID、担当、最新イベントの時刻と短いreason、承認バッジ。
+- 承認の個別承認・取消・「表示中を全部承認」は、既存の承認UIを折り畳みの中でそのまま使う。全部承認の対象は、従来どおり承認UIが表示中のpending集合に限る。レーンの表示からは承認しない。
+
+### 最小データ構造（保存しない。描画のたびに導く）
+
+```
+LaneItem = {
+  taskId, cycleId,             // cycleId = その回のrequest/recheckイベントのid（ない回はnull）
+  stage, consult,              // stageは上の6段階、consultは相談待ちの印
+  owner, since, last: {event, owner, timestamp, reason},
+  approvals: {pending, approved, claimed, consumed},   // その回の開始以後のカードの数
+  registryState                // 表示用。段階の決定には使わない
+}
+workLane(events, approvalRows, registryTasks) -> LaneItem[]   // 純粋関数
+```
+
+既存データとの関係：activityの記録形式、承認storeのスキーマ、APIは変えない。承認カードと回の結び付けは「同じtask ID＋作成時刻が回の開始以後」で推定する。必要になったら、承認カードに回のIDを持たせる欄を後で足せるが、今は不要。
+
+### 更新する担当・タイミング
+
+新しい書き手は作らない。
+- activity：各担当が、READMEの作業イベント更新ルールどおりに書く（依頼側は`request`、担当は`work`／`return`、受入側は`acceptance`／`awaiting-commit`／`commit`）。
+- 承認：Astraが登録し、ユーザーが承認する。
+- 画面：既存のactivity取得と承認の3秒取得のどちらかが更新されたら、レーンを導き直す。
+
+### 変更予定ファイル
+
+- `RegistryApp/index.template.html`：`workLane`の純粋関数と描画。承認レーンの位置へ置き、既存の承認UIを折り畳みへ移す。
+- 試験ファイル1つ（既存の流儀なら`test-work-lane.cjs`）。
+- `RegistryApp/README.md`：レーンの読み方を1節。
+
+serve.py・activity.py・approvals.py・Registryは変えない。
+
+### 最小検証項目
+
+1. 純粋関数：request→work→return→acceptance→awaiting-commit→commitで、段階が順に移る。「相談待ち：」で印が付く。
+2. 完了後の新しい`request`で新しい回の行ができる。前の回は完了の履歴へ移る。前の回の承認カードは、新しい回に数えない。
+3. 承認のpending→approvedで、段階が変わらない。
+4. Registryにないtask IDのイベントも落とさず、印付きで出す。
+5. 描画：編集版・未保存変更・選択・スクロールに触れない（既存のsmokeの形）。取得失敗時は最後の表示を残す。
+6. sync・verify。
+
+### 未決のユーザー判断（2点）
+
+1. **「検討中」に何を出すか**
+   - (a) その回の`request`より前のイベントがあるtaskだけ（推奨：少なく、実際に動いているものだけになる）。
+   - (b) Registryで未完なのに依頼票にないtaskも全部出す（網羅的だが多い）。
+2. **疎通確認のACKの扱い**
+   - 今日のACKは`work`で書いたので、このままでは「作業中」に見える（OPS-117の指摘1）。
+   - (a) ACK専用の書き方を決めてから実装する。
+   - (b) 当面は、reasonが`ACK `で始まるイベントを段階の判定から外す。
+
+
+## Return（姫記入）
+
+2026-10-18 姫・Opus 5.5。開始HEAD `5e6545c1ce0e8d8be7f4e2d5af524e4bb19bd4ee`（入力の契約文書は同版と差分なし）。
+
+- 変更範囲：本書のProposal・Returnだけ。実装・入力の編集・Registry・サーバー操作・commitなし。
+- 参照：`Current/COMMIT_PREAPPROVAL_LANE.md`（同版）、`RegistryApp/README.md`「担当者の作業イベント更新ルール」、`activity.py`のevent種類、`index.template.html`のactivity取得（933行付近）と承認レーン（41行・1070行付近）の入口だけ。
+- 未確認：承認カードと回の結び付け（task ID＋時刻）が、同じtaskの並行した作業で誤るかどうか。実データでは試していない。
+- 参照したキャッシュ：なし。
+
+<a id="astra確認案の補修依頼2026-10-18"></a>
+## Astra review and design-repair request (2026-10-18)
+
+Received the initial design; implementation remains unapproved. Deriving a view from existing data is useful, but fails these cases. Return repairs only in second Return; preserve original Proposal/Return.
+
+1. Approvals can precede work start/request. task+after-start-time may omit even this assignment's approval. Consider explicitly task-level approvals rather than inferred round membership; label unsupported concurrent rounds instead of asserting wrong ownership.
+2. Activity API exposes only 200 events. When start/completion falls outside, stages cannot be reconstructed. Separate conclusions supported by the latest event from missing history. No absolute ban on a new database, but give minimum design/limits.
+3. recheck repeats the same assignment, not a new round each time. Handle awaiting-commit after complete. Exclude not only ACK but probe PING/WAKE from practical work stages.
+
+Assess whether current APIs can display approval/work on one card, or identify minimum missing identity. Resolve existing-rule matters such as ACK prefixes before sending two questions to the user. No implementation/other edits. Record return after second Return and stop.
+
+## 第2回Return（姫記入）
+
+2026-10-18 姫・Opus 5.5。原Proposal・Returnは保持し、補修はここだけに書く。実装・他ファイルの編集なし。参照したのは`activity.py` 50〜68行（直近200件の読み出し）と、実際の`events.jsonl`（72件）のイベントの並びだけ。
+
+### 補修1：承認はtask単位で出し、回には割り当てない
+
+- 初回案の「同じtask＋回の開始時刻以後」は取りやめる。承認カードはrequest前（作業開始時）にも作られるので、その推定では本件の承認さえ落ちる。
+- 修正後：承認バッジは**task単位**にする。そのtaskの未完の承認カード（pending・approved・claimed）の数と状態を出す。consumed・cancelledは折り畳みの履歴だけに出す。どの回のcommitに使うかは表示しない。
+- 並行：同じtaskで依頼が並行しているかは、今のデータでは識別できない。分かる範囲で「承認がどの依頼のものかは未確定」と注記し、所属を確定しない。
+- 現行APIで足りるか：足りる。`GET /commit-approvals`の`taskId`と`status`だけで作れる。
+
+### 補修2：直近200件の範囲で言えることと、言えないことを分ける
+
+`activity.py`の読み出しは直近200件（59行）。
+
+- 言えること：範囲内に1件でもイベントがあるtaskの「最新の実務イベント」。段階は最新イベントだけで決めるので、起点が範囲外でも、段階そのものは出せる。
+- 言えないこと：その仕事がいつ始まったか（`since`）、依頼が何回あったか、範囲外に落ちたtaskの存在。
+- 表示：起点が範囲内に見つからないときは、「開始は記録範囲外」と注記する。推測で埋めない。範囲外に落ちたtaskは、レーンには出ない。そのことをレーンの見出しに一言書く（「直近200件の記録から」）。
+- 最小の拡張（必要になったら）：新しいDBは作らない。serve.pyに、全履歴を読んでtaskごとの最新の実務イベントだけを返す読み出しを1つ足す（`events.jsonl`は追記だけのファイル）。費用は、毎回ファイル全体を読むこと。今の件数なら小さい（推測）。今回は必須にしない。
+
+### 補修3：回の切り方、recheck、complete後のawaiting-commit、疎通の除外
+
+- **回は切らない**：初回案の「回」（cycleId）はやめる。段階は、そのtaskの最新の**実務**イベントだけで決める。`recheck`は同じ依頼のやり直しとして「返却・受入中」に戻すだけで、新しい行は作らない。
+- **complete後のawaiting-commit**：最新のイベントで決めるので、そのまま扱える。`complete`の後に`awaiting-commit`が来ればcommit待ち、`commit`が来れば完了。`complete`が最新なら完了。
+- **新しい仕事**：完了の後に`request`や`work`が来たら、その段階に戻る。同じtaskの前の仕事と今の仕事を分けて表示はしない（分けるなら依頼ID（現行データにはない）が要る。下の「必要な識別情報」）。
+- **疎通（PING・WAKE・ACK）の除外**：次のどれかに当たるイベントは、帯には残すが、段階の判定から外す。
+  - reasonに`PING-`または`WAKE-`で始まるID（`PING-20261018-A`など）を含む。
+  - reasonが`ACK `で始まる。
+  - 今日の実データ（OPS-114のcommit後の`verification`、OPS-048・OPS-117のACK）は、すべてこれで外れる。これは表記の約束に頼るので、READMEの作業イベント更新ルールに「疎通はID（PING-／WAKE-）を含め、応答はreasonを`ACK <ID>`で始める」と1行あればよい（OPS-117の指摘1と同じ。規則への反映は受入側）。
+
+実データでの確認（読み取りだけ）：
+- OPS-114：request→work→verification→return→recheck→acceptance→awaiting-commit→commit→（commit）→verification（PING）。疎通を外すと、最新の実務イベントはcommitで、「完了」。
+- RBT-026：work（Astraの準備）→request→request→work→return→acceptance→commit。最新はcommitで「完了」。requestが2回あっても、行は1つ。
+
+### 現行APIで一枚に出せるか
+
+出せる。条件は、段階は最新の実務イベントだけで決め、承認はtask単位、起点は範囲内でだけ示すこと。依頼の回ごとに承認と作業を正確に結びたいなら、最小限、次の識別情報が要る。
+
+- `request`イベントのidを「依頼ID」とし、その後の実務イベントと承認カードに同じ依頼IDを持たせる欄。
+
+今回の案では、これは不要。
+
+### 未決のユーザー判断（整理後）
+
+ACKの扱いは、上の表記の約束（既存規則の延長）で決められるので外した。残りは次の2点。
+
+1. 「検討中」に何を出すか（初回と同じ）：(a) 実務イベントはあるが、まだ`request`のないtaskだけ（推奨）。(b) Registryで未完なのに依頼票にないtaskも全部。
+2. 直近200件より古い仕事：(a) レーンに出さず、見出しに注記するだけ（推奨、今の構成のまま）。(b) 全履歴から最新を返す読み出しを1つ足す。
+
+参照したキャッシュ：なし。
+
+<a id="astra受入ユーザー提示案2026-10-18"></a>
+## Astra acceptance and proposal for the user (2026-10-18)
+
+Accepted initial design/second repair as design material, not implementation specification or start approval. Hime's assignment ends. Checked the existing 200-event API and taskId-bearing approvals against previously read implementation. No implementation/screen testing.
+
+Minimum design: recent activity per task plus separate approval display. Avoid listing every unstarted task; show actual activity. Do not call it 「全作業の現在地」 while hiding jobs outside 200 events. Present that limitation. Keep approval-only tasks visible with unknown work state.
+
+RBT-026 may have committed records while its contract decision remains WAITING_USER. Do not display task completion merely because 「最新活動がcommit」. Use an activity-specific label like 「記録コミット済み」 with formal Registry state; require this regression. Fix probe detection in implementation planning so ordinary explanations mentioning probe strings are not excluded.
+
+User proposal: first inspect small recent-activity cards showing owner/latest stage/formal state/commit approval. If complete coverage or concurrent-assignment identity is needed, add request IDs first. Reject initial timestamp-based approval membership. Confirm display scope with the user before a separate implementation assignment.
+
+Communication record (JST): request 16:15:28→Hime work 16:15:40→return 16:16:55→repair request16:17:49→recheck16:17:59→return16:18:47. Astra directly detected returns without intermediate user relay. This is one continuous-wait case, not proof of ended-session startup or long-term stability.
+
+<a id="ユーザー判断2026-10-18"></a>
+## User decision (2026-10-18)
+
+「今は最近でいいよ」「つづけてください」 authorize bounded implementation for recent activity from 200 events. No full monitoring/history aggregation. Implementation is OPS-119. Keep incomplete approval-only tasks visible as having no activity information.

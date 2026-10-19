@@ -1,143 +1,153 @@
 # Registry閲覧編集試作
 
-2026-10-16、Astra。OPS-051、親OPS-048。
+## TL;DR（人間向け）
 
-ユーザーがSafari利用を示し、試作を依頼した。単一HTML＋JSONのローカル試作を行う。状態・担当・項目・条件と明示依存を編集してJSONを保存し、AIへ反映依頼する方式。原文と生成元のhash、編集前後を残す。実Registryへの書戻し・自動着手判定は行わない。
+Registryを閲覧・編集してJSONで返す単一HTMLの試作（OPS-051）の作業記録。ユーザーの逐次の配置・表示指定と、JSON取込による正本への反映の往復を記録し、初期の利用を受け入れて完了した。Registryへの直接書き戻しはせず状態の正本はRegistryのまま。後続の改善は恒久OPS-048で扱い、Safari実機の全組合せは検証していない。
 
-試作はMaintanance/RegistryApp/に置く。現行Registryからのsnapshotは取得時点の写しで、ライブ同期ではない。登録・受入による状態変化も含め版のずれを表示する必要がある。
+2026-10-16, Astra. OPS-051, parent OPS-048.
 
-## 検証と返却
+The user indicated using Safari and requested a prototype. A local prototype of a single HTML + JSON is made: edit states, owners, fields, conditions and explicit dependencies, save as JSON, and ask the AI to apply it. Keep the original, the source hash, and before/after. No writing back to the real Registry and no automatic judgment of starting.
 
-[試作と使い方](../RegistryApp/README.md)に配置。HTMLに38 task・11辺のsnapshotを内蔵し、一覧・グラフ・条件等の編集・依存追加削除・変更表示・JSON読込/保存を実装した。外部package・通信・サーバーは不要。
+The prototype is placed in Maintanance/RegistryApp/. The snapshot from the current Registry is a copy at the time of capture, not live synchronization. Version drift must be shown, including state changes from registration and acceptance.
 
-verify.cjsでJS構文、データモデル、変更前後、baseline保持、JSON往復、不正依存の拒否、未知値保持を確認済み。Safari画面操作権限がなく実機試験はできなかった。PlaywrightのWebKit本体も未導入で、UI・ダウンロード・見た目は未検証。したがって試作実装済み・ユーザー試用待ちとし、動作受入完了にはしない。
+<a id="検証と返却"></a>
+## Verification and return
 
-JSONは実装中のRegistryを採取した固定snapshot。OPS-051の作業状態も取得時点のまま。アプリは版を表示し、ライブ同期や元Markdownへの直接反映は行わない。AIへの反映手順とデータ形式はREADMEに記載した。
+Placed in [the prototype and usage](../RegistryApp/README.md). The HTML embeds a snapshot of 38 tasks and 11 edges and implements a list, a graph, editing of conditions etc., adding/removing dependencies, a change view, and JSON load/save. No external packages, communication or server needed.
 
-2026-10-16、ユーザーが起動スニペット方式を希望。READMEへ起動手順を記載した。今回のcommit指示は作業保存として受け、OPS-051はSafari試用待ちのWAITING_USERを維持する。
+verify.cjs confirmed JS syntax, the data model, before/after changes, keeping the baseline, JSON round trips, rejection of invalid dependencies and keeping unknown values. There was no permission to operate Safari's screen, so no device test could be done. Playwright's WebKit was not installed either, so the UI, downloads and appearance are unverified. Therefore it is "prototype implemented, waiting for user trial", not completed behavioural acceptance.
 
-2026-10-16ユーザー依頼：見取り図のnodeへ項目タイトルを最大2行で追加し、幅・高さ・配置間隔を調整。ホバーとキーボードfocusでタイトル全文・状態・担当・条件を表示する。保存データは変更せず、配布用HTMLも同期。Safari実機の表示確認は引き続き未実施。
+The JSON is a fixed snapshot captured from the Registry being implemented. OPS-051's work state is also as of capture. The app shows the version and does not do live synchronization or direct application to the source Markdown. The procedure and data format for AI application are in the README.
 
-2026-10-16ユーザー依頼：左のタスク一覧を初期非表示とし、上部のボタンで表示・非表示を切り替え可能にした。非表示時は見取り図と詳細が全幅を使う。検索・選択内容は開閉で保持する。
+2026-10-16: the user preferred a launch-snippet method. Launch steps were written in the README. This commit instruction is taken as saving the work; OPS-051 stays WAITING_USER, waiting for the Safari trial.
 
-2026-10-16ユーザー依頼：独立タスクを左、明示依存を持つtaskを右のゲートへ寄せる配置へ変更。最終ゲートからの最長距離で列を配置し、独立taskは8件ずつ左側の列へ置く。横スクロールを維持。D/E｜A/B/C→Fのfixtureと現行全辺の方向・重なりなしを検証した。画面上の順序は実行順や新たな依存ではない。
+2026-10-16 user request: added item titles of up to 2 lines to map nodes and adjusted width, height and spacing. Hover and keyboard focus show the full title, state, owner and conditions. Saved data unchanged; the distributed HTML synchronized too. The real Safari display is still not checked.
 
-2026-10-16ユーザー修正：独立taskをグラフから除外し、別の横スクロール一列へ表示。一覧・グラフ・独立列は共通selectedを使い、詳細欄へ連動する。再描画時も独立列の横スクロール位置を維持。先の独立task左列案を置き換える。
+2026-10-16 user request: the task list on the left is hidden initially and can be toggled by a button at the top. When hidden, the map and details use the full width. Search and selection are kept across toggling.
 
-2026-10-16ユーザー指示：マイルストーンを骨格にし、taskを枝葉として表示する。正本の明示関係を引用付きで採取。6表示node・13関係を加え、既存QUALITY-001を1.0判断nodeとして用いた。必須・材料・段階・到達後・再開判断を区別。独立列の判定も統合グラフに追従。マイルストーンは読取専用、正本状態を推定で達成扱いにしない。統合グラフの全辺方向・重なりなし・不正参照拒否と指定の再開判断/Validation gateを検証済み。Safariでの画面確認は引き続きユーザー試用待ち。
+2026-10-16 user request: changed placement to put independent tasks on the left and tasks with explicit dependencies toward the gates on the right. Columns are placed by the longest distance from the final gate, and independent tasks go into left columns of 8 each. Horizontal scrolling is kept. Verified the D/E | A/B/C → F fixture and that all current edges have correct direction and no overlaps. The on-screen order is not execution order or a new dependency.
 
-2026-10-16ユーザー依頼：独立taskを通常と恒久の横スクロール二段へ分割し、恒久を下段へ配置。既存permanentフラグを使い、各段の選択・詳細連動とスクロール位置を保持する。分割の欠落・重複なしを検証。
+2026-10-16 user correction: independent tasks were removed from the graph and shown in a separate horizontally scrolling row. The list, graph and independent row use a common selection linked to the details. The horizontal scroll position of the independent row is kept on redraw. Replaces the earlier proposal of left columns for independent tasks.
 
-2026-10-16ユーザー依頼：グラフ・独立列・恒久列・左一覧の状態を共通配色の下帯に統一。ACTIVEは緑、ユーザー待ちは黄、外部待ちは青、凍結は灰青、ユーザー専任は紫、候補は橙、完了は深めの淡緑、除外・履歴は灰系。文字でも状態を併記し、未知状態は中性色で値を保持する。
+2026-10-16 user instruction: show milestones as the skeleton and tasks as branches and leaves. Captured the canonical's explicit relations with quotations. Added 6 displayed nodes and 13 relations, using the existing QUALITY-001 as the 1.0 decision node. Distinguished required, material, stage, after-arrival and resume-decision. The independent-row judgment also follows the integrated graph. Milestones are read-only and are not treated as achieved by guessing the canonical state. Verified all edge directions and no overlaps in the integrated graph, rejection of invalid references, and the specified resume decision / Validation gate. The Safari screen check still waits for the user's trial.
 
-2026-10-16ユーザー指定：PERM-079をMS-060とMS-070の間に表示。表示専用の配置制約とし、0.7.0への必須依存や実行期限は追加しない。左右位置を検証した。
+2026-10-16 user request: split independent tasks into two horizontally scrolling rows, ordinary and permanent, with permanent below. Uses the existing permanent flag and keeps each row's selection, detail linkage and scroll position. Verified no missing or duplicate items in the split.
 
-2026-10-16ユーザー指定：接続線の交差を減らすためRELEASE-078を同列の先頭へ移し、RELEASE-075より上へ表示。依存関係は変更せず、上下位置を検証した。
+2026-10-16 user request: unified the state of the graph, independent row, permanent row and left list into a lower band with a common colour scheme. ACTIVE green, waiting for user yellow, waiting for external blue, frozen grey-blue, user-only purple, candidate orange, done a deeper pale green, excluded/history greys. The state is also written as text; unknown states use a neutral colour and keep their value.
 
-2026-10-16ユーザー指定：PERM-079を骨格の上側へ配置。マイルストーン・通常taskの段を下へずらして余白を確保。MS-060とMS-070の間という横位置・依存関係は維持し、上下位置を検証した。
+2026-10-16 user designation: show PERM-079 between MS-060 and MS-070. A display-only placement constraint; no required dependency on 0.7.0 or execution deadline is added. Verified left/right positions.
 
-2026-10-16ユーザー指定：MS-VALIDATIONの下にRELEASE-075、076、072を縦配置。同列の既存依存075→076は縦線で表示。配置順から新規依存は作らない。指定順と統合グラフの重なりなしを検証した。
+2026-10-16 user designation: to reduce line crossings, moved RELEASE-078 to the top of the same column, above RELEASE-075. Dependencies unchanged; verified vertical positions.
 
-2026-10-16ユーザー依頼：線の表示切替ではなく、関係の除去操作を追加。実線・点線をクリック（キーボードではEnter/Space）し、両端と条件を確認して除去する。task依存・マイルストーン関係ともJSONの変更として保存し、元の関係はbaselineに保持する。Markdown正本へは直接書き込まない。Safari実操作は未確認。
+2026-10-16 user designation: placed PERM-079 above the skeleton. Shifted milestones and ordinary task rows down to make room. Kept the horizontal position between MS-060 and MS-070 and the dependencies; verified vertical positions.
 
-## 初回JSON取込（2026-10-16、Astra）
+2026-10-16 user designation: placed RELEASE-075, 076 and 072 vertically under MS-VALIDATION. The existing dependency 075 → 076 in the same column is shown as a vertical line. No new dependency is made from placement order. Verified the specified order and no overlaps in the integrated graph.
 
-ユーザー提供 `registry-edited-2026-10-16T05-21-49-758Z.json`（SHA-256 `0dc2ff838d9ead4e47b8ee0f6a48b2a49864b4b7fa053f35a12b76dcc1b7e76f`）のbaselineを配布snapshotと照合し、差分を再計算した。task編集・マイルストーン関係編集はなく、DOC-026→QUALITY-001、DOC-027→QUALITY-001の直接依存2本だけが除去されていた。現行Registryの対象原文も一致したため反映。SPI公開→人間レビュー→1.0判断の経路は維持し、Registryの説明とマイルストーン図を整合させた。ユーザー操作による除去・保存・返却の一往復を確認。task状態の完了判定は行わない。
+2026-10-16 user request: instead of a toggle for showing lines, added an operation to remove a relation. Click a solid or dotted line (Enter/Space with the keyboard), check both ends and the condition, and remove it. Both task dependencies and milestone relations are saved as JSON changes, and the original relations are kept in the baseline. Nothing is written directly to the Markdown canonical. Real Safari operation is unconfirmed.
 
-2026-10-16ユーザー依頼：MS-070からMS-SPIまでの空き列を詰めた。間の登録・公開導線taskを残し、依存関係は変更せず、後続の表示位置も詰めた分だけ左へ移す。
+<a id="初回json取込2026-10-16astra"></a>
+## First JSON import (2026-10-16, Astra)
 
-2026-10-16ユーザー依頼：線クリックで変更前後を示す編集ダイアログを開き、前提・後続を選んでつなぎ替える操作を追加。除去も同じ画面から可能。適用前に候補モデルを検証し、循環・自己依存・重複・不正参照を拒否する。task辺はtask同士、マイルストーン関係は全nodeから選択。種類・条件・旧出典・baselineを保持し、JSON差分に両端変更を記録。正本への反映時に条件文の整合を別途確認する。Safari実操作はユーザー試用待ち。
+Checked the baseline of the user-provided `registry-edited-2026-10-16T05-21-49-758Z.json` (SHA-256 `0dc2ff838d9ead4e47b8ee0f6a48b2a49864b4b7fa053f35a12b76dcc1b7e76f`) against the distributed snapshot and recomputed the diff. There were no task edits or milestone relation edits; only two direct dependencies, DOC-026 → QUALITY-001 and DOC-027 → QUALITY-001, had been removed. The target original text in the current Registry also matched, so it was applied. The route SPI publication → human review → 1.0 decision is kept, and the Registry's explanation and the milestone diagram were aligned. Confirmed one round trip of removal, save and return by user operation. No task completion is judged.
 
-2026-10-16、Astra：ユーザー提供 `registry-edited-2026-10-16T05-28-29-032Z.json`（SHA-256 `876c575324e882333618bb86624ee901d702dc50cbb53100996639b6b979c6bb`）を配布baselineと照合。MS-070→DOC-026をMS-070→QUALITY-005へつなぎ替えた1件のみ。既存release計画の順序と一致するため、登録前ゲート・Registry条件・マイルストーン図と配布snapshotへ反映。ユーザーによるつなぎ替え・保存・返却を確認。task状態は変更しない。
+2026-10-16 user request: closed up the empty columns from MS-070 to MS-SPI. The registration and public-route tasks in between remain, dependencies are unchanged, and later display positions also move left by the amount closed.
 
-2026-10-16ユーザー依頼：基本横間隔を半分へ縮小。通常の列間590pxを295pxとし、幅250pxのnodeが重ならないよう占有列間は295px以上を維持する。依存関係は変更しない。
+2026-10-16 user request: clicking a line opens an edit dialog showing before/after, where the prerequisite and successor can be selected to rewire. Removal is also possible from the same screen. Before applying, the candidate model is verified, rejecting cycles, self-dependencies, duplicates and invalid references. Task edges are between tasks; milestone relations can be chosen from all nodes. Kind, condition, old source and baseline are kept, and the JSON diff records changes of both ends. When applying to the canonical, the consistency of condition text is checked separately. Real Safari operation waits for the user's trial.
 
-2026-10-16ユーザー指定：PERM-079をMS-070の左147.5px（基本間隔の半分）に配置。骨格より上の高さと既存依存は維持する。
+2026-10-16, Astra: checked the user-provided `registry-edited-2026-10-16T05-28-29-032Z.json` (SHA-256 `876c575324e882333618bb86624ee901d702dc50cbb53100996639b6b979c6bb`) against the distributed baseline. Only one change: MS-070 → DOC-026 rewired to MS-070 → QUALITY-005. It matches the order of the existing release plan, so it was applied to the pre-registration gate, Registry conditions, milestone diagram and distributed snapshot. Confirmed rewiring, save and return by the user. Task states are not changed.
 
-2026-10-16ユーザー指定：PERM-079を浮かせた後も残っていた専用列の余白を除去。MS-060とMS-070の間に他のnodeがなければ基本間隔295pxへ詰め、MS-070以降を左へ移動する。PERM-079はMS-070の半間隔左・骨格上を維持。
+2026-10-16 user request: halved the basic horizontal spacing. The ordinary 590px between columns becomes 295px, and occupied columns keep at least 295px so that 250px-wide nodes do not overlap. Dependencies unchanged.
 
-2026-10-16ユーザー修正：直前の詰め方を緩め、MS-060〜MS-070を442.5pxとする。PERM-079はMS-060の60px右・骨格上へ配置。先のMS-070基準の半間隔配置を置き換える。
+2026-10-16 user designation: placed PERM-079 147.5px (half the basic spacing) to the left of MS-070. Keeps the height above the skeleton and the existing dependencies.
 
-2026-10-16ユーザー具体指定：MS-060右端の20px右にPERM-079左端、そこからnode幅の半分125px右にMS-070左端を置く。幅250pxのため、MS-060左端からそれぞれ270px・395px。直前の60px右案を置き換える。
+2026-10-16 user designation: removed the margin of the dedicated column that remained after floating PERM-079. If there are no other nodes between MS-060 and MS-070, close to the basic spacing 295px and move MS-070 onward to the left. PERM-079 keeps half spacing to the left of MS-070, above the skeleton.
 
-2026-10-16ユーザー微調整：MS-060〜PERM-079の端間を基本列と同じ45pxへ拡大（左端間295px）。MS-070はPERM-079左端から125px右を維持し、後続も25px右へ移動。
+2026-10-16 user correction: loosened the previous closing; MS-060 to MS-070 becomes 442.5px. PERM-079 is placed 60px right of MS-060, above the skeleton. Replaces the earlier half-spacing placement based on MS-070.
 
-2026-10-16ユーザー指定：RELEASE-075・076・072の左端をPERM-079と揃えた。縦順と高さは維持し、以前のMS-VALIDATIONと同列という指定を置き換える。依存は変更しない。
+2026-10-16 user concrete designation: put PERM-079's left edge 20px right of MS-060's right edge, and MS-070's left edge half a node width (125px) right of that. With width 250px, these are 270px and 395px from MS-060's left edge. Replaces the previous 60px-right proposal.
 
-2026-10-16ユーザー修正：RELEASE-075・076・072をMS-060左端から半幅125px右へ配置。PERM-079との水平位置合わせを置き換え、縦順を維持する。
+2026-10-16 user fine adjustment: widened the edge gap MS-060 to PERM-079 to 45px, the same as the basic columns (295px between left edges). MS-070 keeps 125px right of PERM-079's left edge, and later nodes also move 25px right.
 
-2026-10-16ユーザー指定：MS-DOC左端をRELEASE-078左端から125px左へ配置。高さ・依存を維持し、左にはみ出す場合は図全体の余白を補正する。
+2026-10-16 user designation: aligned the left edges of RELEASE-075, 076 and 072 with PERM-079. Vertical order and height are kept, replacing the earlier designation of the same column as MS-VALIDATION. Dependencies unchanged.
 
-2026-10-16ユーザー指定：骨格下の枝の半幅オフセットを共通の黄金比短辺（node幅×約0.382、250pxなら約95.5px）へ変更。RELEASE-075・076・072はMS-060左端から右へ、MS-DOCはRELEASE-078左端から左へ適用。上側のPERM-079と骨格の配置は維持する。
+2026-10-16 user correction: placed RELEASE-075, 076 and 072 half a width (125px) right of MS-060's left edge. Replaces horizontal alignment with PERM-079; vertical order kept.
 
-2026-10-16ユーザー指定：PERM-079左端からMS-070左端へのずらしも黄金比短辺（約95.5px）へ変更。MS-060〜PERM-079の端間45pxは維持する。
+2026-10-16 user designation: placed MS-DOC's left edge 125px left of RELEASE-078's left edge. Height and dependencies kept; if it sticks out to the left, the whole figure's margin is corrected.
 
-2026-10-16ユーザー指定：RELEASE-075・076・072をまとめて60px上へ移動。黄金比の横オフセットと縦順・段間隔は維持する。
+2026-10-16 user designation: changed the half-width offset of branches under the skeleton to a common golden-ratio short side (node width × about 0.382, about 95.5px for 250px). Applied to RELEASE-075, 076 and 072 rightward from MS-060's left edge, and to MS-DOC leftward from RELEASE-078's left edge. The upper PERM-079 and the skeleton placement are kept.
 
-2026-10-16ユーザー指定：RELEASE-075の上端をMS-060からMS-VALIDATIONへの縦間隔の2倍下へ配置し、076・072を116px間隔で続ける。直前の60px移動を相対配置へ置換。以前の078より下という配置より今回の指定を優先する。
+2026-10-16 user designation: changed the shift from PERM-079's left edge to MS-070's left edge to the golden-ratio short side (about 95.5px) as well. The 45px edge gap MS-060 to PERM-079 is kept.
 
-2026-10-16ユーザー微調整：リリース3件のまとまりを20px下げて上側余白を拡大。横位置・縦順・3件相互の間隔は維持する。
+2026-10-16 user designation: moved RELEASE-075, 076 and 072 together 60px up. The golden-ratio horizontal offset, vertical order and row spacing are kept.
 
-2026-10-16ユーザー指定：MS-DOC→RELEASE-078の縦間隔をMS-VALIDATION→RELEASE-075と同じに揃える。RELEASE-078の高さのみ調整し、横位置は維持する。
+2026-10-16 user designation: placed RELEASE-075's top edge below by twice the vertical spacing from MS-060 to MS-VALIDATION, followed by 076 and 072 at 116px spacing. Replaces the previous 60px move with relative placement. This designation takes priority over the earlier placement below 078.
 
-2026-10-16ユーザー指定：MS-070→QUALITY-005の縦間隔をMS-VALIDATION→RELEASE-075と統一。DOC-026・027も同じ移動量で連動し、3件間の相対配置と横位置を維持する。
+2026-10-16 user fine adjustment: lowered the group of 3 release tasks by 20px to widen the upper margin. Horizontal position, vertical order and the spacing among the 3 are kept.
 
-2026-10-16ユーザー指定：MS-SPI下のRBT-011、MS-HUMAN下のRBT-001・034・009・QUALITY-002・003を、骨格左端から黄金比短辺ぶん右、上端から共通136px下へ配置。複数件は116px間隔で続ける。依存・SPI登録作業3件の配置は維持。
+2026-10-16 user designation: aligned the vertical spacing MS-DOC → RELEASE-078 with MS-VALIDATION → RELEASE-075. Only RELEASE-078's height is adjusted; horizontal position kept.
 
-2026-10-16ユーザー調整：MS-SPI→MS-HUMAN→QUALITY-001の骨格左端間隔を295pxから442.5px（1.5倍）へ拡大。配下のタスク群も追従し、黄金比の横ずらしと縦間隔は維持する。
+2026-10-16 user designation: unified the vertical spacing MS-070 → QUALITY-005 with MS-VALIDATION → RELEASE-075. DOC-026 and 027 move by the same amount, keeping the relative placement among the 3 and their horizontal positions.
 
-## 現行レイアウトの整理（2026-10-16、Astra）
+2026-10-16 user designation: placed RBT-011 under MS-SPI, and RBT-001, 034, 009, QUALITY-002 and 003 under MS-HUMAN, a golden-ratio short side right of the skeleton's left edge and a common 136px below its top edge. Several follow at 116px spacing. Dependencies and the placement of the 3 SPI registration tasks are kept.
 
-ユーザー依頼で、上記の逐次的な座標補正を4つの共通規則と6表示グループに再編した。現在の仕様はRegistryApp/README.mdの「配置の共通ルール」を参照。以前の個別指定は経緯として保持する。
-前commitとの座標比較では、MS-DOC→MS-060の間が約52px広がる以外、全nodeの高さと後続グループ相互の配置を維持。カード矩形の重なり、全辺方向、各辺を1本ずつ除去した場合、新node追加と逆方向のつなぎ替え時の自動配置、再実行の決定性を検証した。Safari表示はユーザー確認待ち。
+2026-10-16 user adjustment: widened the left-edge spacing of the skeleton MS-SPI → MS-HUMAN → QUALITY-001 from 295px to 442.5px (1.5×). The task groups under them follow, keeping the golden-ratio horizontal shift and vertical spacing.
 
-2026-10-16ユーザー依頼により規則を再編。固定6グループの枝所属を廃止し、合流先・合流段階・直列関係から導出する。骨格順と横並び3件だけを表示指定に残す。上側配置は仕事の意味ではなく合流線からの分離と明記。交差数の最適化は未実装。現行座標の主要条件と新規枝の自動所属を検証。
+<a id="現行レイアウトの整理2026-10-16astra"></a>
+## Tidying the current layout (2026-10-16, Astra)
 
-2026-10-16ユーザー指定：タスク詳細の項目・条件を編集欄から読み取り専用表示へ変更。適用対象は状態・担当に限定。JSONの原文保持・差分検出と依存関係編集は維持する。
+At the user's request, the successive coordinate corrections above were reorganized into 4 common rules and 6 display groups. For the current specification see 「配置の共通ルール」 in RegistryApp/README.md. The earlier individual designations are kept as history.
+Comparing coordinates with the previous commit: except that the gap MS-DOC → MS-060 widens by about 52px, every node's height and the mutual placement of later groups are kept. Verified card rectangle overlaps, all edge directions, automatic placement when each edge is removed one at a time, when a new node is added and when rewired in reverse, and determinism on re-run. The Safari display waits for user confirmation.
 
-2026-10-16ユーザー依頼：正本リンクから整形済みMarkdownを閲覧するダイアログを追加。55文書を表示用コピーとして同梱し、取得日時と非自動更新を表示。許可要素で再構築し実行コードや危険なURLを表示しない。画像・見出しジャンプは対象外。Safari画面はユーザー試用待ち。
+2026-10-16, rules reorganized at the user's request. The fixed branch membership of the 6 groups was abolished; it is derived from the merge target, merge stage and serial relations. Only the skeleton order and the horizontal arrangement of 3 tasks remain as display designations. Stated that upper placement is separation from merging lines, not the work's meaning. Crossing-count optimization is not implemented. Verified the main conditions of the current coordinates and automatic membership of new branches.
 
-2026-10-16ユーザー依頼：見取り図・一覧・独立/恒久カードに正本リンクを追加。複数正本は選択表示し、カード選択から独立したリンク操作にした。キーボードでも開ける。
+2026-10-16 user designation: changed the task detail's fields and conditions from edit fields to read-only display. Editing applies only to state and owner. Keeping the original JSON, diff detection and dependency editing are kept.
 
-2026-10-16ユーザー依頼：恒久タスク専用の見取り図を追加。9件の恒久taskと詳細正本への参照を表示し、依存グラフと意味を分離。既存の選択状態・文書閲覧と連動する。実表示はユーザー確認待ち。
+2026-10-16 user request: added a dialog that shows formatted Markdown from canonical links. 55 documents are bundled as display copies, showing the capture time and that they do not update automatically. Rebuilt with allowed elements, showing no executable code or dangerous URLs. Images and heading jumps are out of scope. The Safari screen waits for the user's trial.
 
-2026-10-16追加指示：依存／恒久の見取り図をタブ切り替えにし、左のタスク一覧を廃止。初期タブは依存、選択・詳細は共有。タブのキーボード操作と恒久9件の収録を検証。
+2026-10-16 user request: added canonical links to the map, list and independent/permanent cards. Multiple canonicals are shown as a choice, and the link operation is independent of card selection. Can also be opened by keyboard.
 
-2026-10-16ユーザー指定：横一列の恒久task欄を撤去し、恒久taskは専用見取り図へ集約。通常の独立task列は維持する。
+2026-10-16 user request: added a dedicated map for permanent tasks. Shows 9 permanent tasks and references to their detailed canonicals, separating meaning from the dependency graph. Linked with the existing selection and document viewing. Real display waits for user confirmation.
 
-2026-10-16ユーザー指定：見取り図カードの正本リンクから背景と矢印を除去し、「正本」の文字だけに変更。クリック領域は維持。
+2026-10-16 additional instruction: made the dependency/permanent maps tab-switched and abolished the left task list. The initial tab is dependency; selection and details are shared. Verified tab keyboard operation and that the 9 permanent tasks are included.
 
-2026-10-16ユーザー指定：見取り図カードの「正本」を状態帯から右上へ移動。背景・矢印なしを維持。
+2026-10-16 user designation: removed the horizontal permanent-task row and gathered permanent tasks into the dedicated map. The ordinary independent-task row is kept.
 
-2026-10-16ユーザー指定：「正本」リンクの右余白を約半分へ縮小。クリック領域もカード内に収める。
+2026-10-16 user designation: removed the background and arrow from the canonical link on map cards, leaving only the text 「正本」. Click area kept.
 
-2026-10-16ユーザー決定：依存条件はAIと相談して決める。追加時の条件入力を撤去し、新規・つなぎ替えを相談待ちとしてJSON保存。旧条件を確定内容として流用せず、取込時に相談してから正本反映する。
+2026-10-16 user designation: moved 「正本」 on map cards from the state band to the top right. Still no background or arrow.
 
-2026-10-16、OPS-052助言の限定反映：骨格の最長路と骨格間経路の横並びを構造から導出。全座標の回帰一致とID置換不変を検証。詳細・保留はTASK_REGISTRY_LAYOUT_ADVICE.mdのAstra受入欄を参照。
+2026-10-16 user designation: reduced the right margin of the 「正本」 link to about half. The click area also stays inside the card.
 
+2026-10-16 user decision: dependency conditions are decided in consultation with the AI. Removed condition input when adding; new connections and rewirings are saved in JSON as waiting for consultation. Old conditions are not reused as settled content; consult at import before applying to the canonical.
 
-## 2026-10-16 恒久タスクと独立タスク表示
+2026-10-16, limited application of the OPS-052 advice: the skeleton's longest path and horizontal arrangement of inter-skeleton routes are derived from structure. Verified regression match of all coordinates and invariance under ID replacement. For details and holds see the Astra acceptance field in TASK_REGISTRY_LAYOUT_ADVICE.md.
 
-ユーザー指示によりHIST-003を常設ACTIVEへ変更。初回の作成・受入・入口接続の完了は維持する。恒久図にRegistryの明示的な親子関係（OPS-048配下のOPS-049〜052）を表示する。親子関係は依存・開始条件ではない。アーカイブ済みの子を自動復活させない。独立タスクはDONE以外を左、DONEを右に安定ソートし、各区分内の元の順序を保つ。snapshotを39件へ更新。モデル検証は通過、Safari表示はユーザー確認待ち。
 
+<a id="2026-10-16-恒久タスクと独立タスク表示"></a>
+## 2026-10-16 Permanent tasks and independent-task display
 
-2026-10-16、ユーザー依頼でAstraが会話から関心度を5段階で仮評価し、表示専用のdisplayInterestへ理由とともに保存。恒久タスクは高関心を左、子は未完了・高関心を上、独立タスクはDONEを右に保ち各区分内で高関心を左に置く。同点は元の順序を維持する。Registry上の優先度・権限・依存・状態を変更する判断ではない。依存図の構造は維持。カードのツールチップに仮評価理由を表示する。
+By user instruction HIST-003 was changed to a standing ACTIVE task. Completion of the first writing, acceptance and entry connection is kept. The permanent map shows the Registry's explicit parent/child relations (OPS-049 to 052 under OPS-048). Parent/child is not a dependency or start condition. Archived children are not revived automatically. Independent tasks are stably sorted with non-DONE on the left and DONE on the right, keeping the original order within each category. Snapshot updated to 39. Model verification passes; the Safari display waits for user confirmation.
 
 
-## 2026-10-16 初期試作の受入完了
+2026-10-16, at the user's request, Astra provisionally rated interest on 5 levels from the conversation and saved it, with reasons, in the display-only displayInterest. Permanent tasks put high interest on the left; children put unfinished and high interest on top; independent tasks keep DONE on the right and put high interest on the left within each category. Ties keep the original order. This is not a decision changing priority, authority, dependencies or state in the Registry. The structure of the dependency map is kept. The card tooltip shows the reason for the provisional rating.
 
-ユーザーの「OPS-051は完了にして、のこりは親タスクでの処理でいい」により、初期試作を受入・DONEとする。現状確認、task選択、正本閲覧、依存編集、JSON返却から正本への反映という初期の利用を受け入れた。残る改善は恒久OPS-048で扱い、本taskを受入待ちに据え置かない。
 
-利用手順はRegistryApp/README.mdを正本とする。採番待ちの読取専用Markdown表示、タスク番号選択、背景クリックでの正本表示終了も実装済み。モデル検査は通過。実機UIの全組合せ・全ブラウザの検証や、交差最適化・複雑な横縦混在の解決を認定するものではない。後続の改善を自動開始する許可にはしない。
+<a id="2026-10-16-初期試作の受入完了"></a>
+## 2026-10-16 Acceptance of the initial prototype completed
 
+By the user's 「OPS-051は完了にして、のこりは親タスクでの処理でいい」, the initial prototype is accepted and DONE. The initial uses were accepted: checking the current state, selecting tasks, viewing canonicals, editing dependencies, and returning JSON to apply to the canonical. Remaining improvements are handled in the permanent OPS-048, and this task is not held waiting for acceptance.
 
-## 根拠と更新条件の追記（2026-10-17 / 姫・Opus 5.5 / OPS-076第4区切り）
+The README in RegistryApp is canonical for usage. Read-only Markdown display of the numbering queue, task-number selection and closing the canonical view by clicking the background are also implemented. Model checks pass. This does not certify verification of every combination of the real UI and every browser, or solving crossing optimization and complex horizontal/vertical mixing. It is not permission to start later improvements automatically.
 
-入力版`1175e583b1857819e9e0b07b83a1cb5fc8be657a`。本文・原返却は変えていない。確認は`git show <版>:…`等の固定treeの読み取りだけで、実行・再レビューはしていない。
 
-| 主張 | 確認方法と結果（成立範囲） | 更新のきっかけ |
+<a id="根拠と更新条件の追記2026-10-17--姫opus-55--ops-076第4区切り"></a>
+## Grounds and update conditions, appended (2026-10-17 / Hime, Opus 5.5 / OPS-076 break 4)
+
+Input version `1175e583b1857819e9e0b07b83a1cb5fc8be657a`. The body and original returns were not changed. Checked only by reading the fixed tree with `git show <版>:…` and the like; no runs or re-review.
+
+| Claim | Check method and result (scope of validity) | Trigger for update |
 | --- | --- | --- |
-| 5・7行目「単一HTML＋JSONのローカル試作、`Maintanance/RegistryApp/`に置く」 | 版の`Maintanance/RegistryApp/`にあるのは`index.template.html`・`serve.py`・`sync.py`・`build-pending.py`・`build-documents.mjs`・`verify.cjs`など。`index.html`は`bbddb7ff3d9261500da0f8fd3abcacc241f330df`で`index.template.html`へ改名。生成物は`Maintanance/Cache/RegistryStudio/`（`.gitignore`の`/Maintanance/Cache/**`）。試作の形は事実として変わった | Studioの構成の変更 |
-| 11行目「38 task・11辺のsnapshot」 | 試作時点の値。今の件数は生成のたびに変わり、固定treeには生成物がない | 件数を根拠には使わない |
+| Lines 5 and 7: 「単一HTML＋JSONのローカル試作、`Maintanance/RegistryApp/`に置く」 (a single HTML + JSON local prototype placed in `Maintanance/RegistryApp/`) | In that version, `Maintanance/RegistryApp/` has `index.template.html`, `serve.py`, `sync.py`, `build-pending.py`, `build-documents.mjs`, `verify.cjs` and others. `index.html` was renamed to `index.template.html` in `bbddb7ff3d9261500da0f8fd3abcacc241f330df`. The generated outputs are in `Maintanance/Cache/RegistryStudio/` (`/Maintanance/Cache/**` in `.gitignore`). The prototype's form has changed as a fact | Changes to Studio's structure |
+| Line 11: 「38 task・11辺のsnapshot」 | The value at prototype time. Current counts change with every generation, and the fixed tree has no generated outputs | Do not use the counts as grounds |
 
-「Registryへの書き戻しなし・状態の正本はRegistry」という方針（試作の判断）はこの変化で変わっていない。
+The policy 「Registryへの書き戻しなし・状態の正本はRegistry」 (no writing back to the Registry; the Registry is canonical for state), a judgment of the prototype, is not changed by this.

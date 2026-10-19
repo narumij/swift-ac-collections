@@ -89,7 +89,7 @@
 
 ### `CP-20261019-004` — 「最近の作業」の活動と「待機完了」を連絡DBへ接続
 
-- queue状態: `CANDIDATE`
+- queue状態: `RECONCILED`（OPS-184へ正式登録）
 - 発見元・ユーザー指示: 上記共通。姫の確認：欄は「直近200件の活動＋未完の承認」から作られ、活動は旧経路`Activity/events.jsonl`（`/activity-events`）。連絡DBの受領・担当中・返答済みは入らない。「待機完了」ボタンは`/activity-wake`へ送る（中身は未確認）。
 - 種別候補: `EXECUTION`（接続方法の小判断を含む）
 - 作業内訳（案）:
@@ -103,11 +103,11 @@
 - 担当候補・受入担当: 未定
 - 停止条件: 2の判断がない間は3へ進まない。
 - 成果・検証: 未着手
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-19 Astra：OPS-184へ登録。[詳細正本](Current/STUDIO_WORK_LANE_LETTERS_CONNECTION.md)に既存内訳を引継ぎ。第1区切りは現状確認・対応表。依頼未送信、実装未承認。
 
 ### `CP-20261019-003` — 「メンバー状態」を連絡DBへ接続
 
-- queue状態: `CANDIDATE`
+- queue状態: `RECONCILED`（OPS-183へ正式登録）
 - 発見元・ユーザー指示: 上記共通。姫の確認：ランプは`/activity-events`→`Activity/events.jsonl`（`activity.py:12`）から作られ、連絡DBの状態を読まない。姫の最後の記録は22:26のACK WAKE…OPS158-CLOSEで、以後の作業はランプに出ない。
 - 種別候補: `EXECUTION`（出どころの小判断を含む）
 - 作業内訳（案）:
@@ -121,7 +121,7 @@
 - 担当候補・受入担当: 未定
 - 停止条件: 2の判断がない間は3へ進まない。
 - 成果・検証: 未着手
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-19 Astra：OPS-183へ登録。[詳細正本](Current/STUDIO_MEMBER_LETTERS_CONNECTION.md)に既存内訳を引継ぎ。第1区切りは現状確認・対応表。依頼未送信、実装未承認。
 
 ### `CP-20261019-002` — 採番待ちqueueをV3 DBへ移す機能の検討
 

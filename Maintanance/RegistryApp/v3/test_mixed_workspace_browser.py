@@ -13,7 +13,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-import v3_inbox as vi  # noqa: E402
+sys.path.insert(0, str(HERE.parent))  # RegistryApp: inbox.py
+import inbox as vi  # noqa: E402
 import v3_studio_server as vs  # noqa: E402
 from test_browser_roundtrip import Browser  # noqa: E402
 from test_v3_inbox import legacy_doc  # noqa: E402
@@ -68,6 +69,17 @@ class Mixed(Browser):
             self.assertIn('競合の可能性', out[side]['notice'], side)
         self.assertIn(LEGACY_NOTE, out['after']['status'])
         self.assertEqual(self.owner(), ('ACTIVE', '担当Y'), 'neither the save nor 更新 writes the DB')
+
+
+    def test_unknown_history_is_told(self):
+        sid = self.v3_save()
+        self.newer_legacy()
+        (self.server.saves / vi.IMPORTS).write_text('{"saveId": \n', encoding='utf-8')  # a broken import history
+        out = self.browser('look')
+        self.assertIn(f'編集版 {sid} を再開中', out['after']['banner'], 'the valid V3 save still resumes')
+        self.assertIn('取り込み記録が読めないため、旧形式の編集版の照合状態は不明です', out['after']['status'])
+        self.assertNotIn('未照合の編集版が', out['after']['status'], 'no count is inferred')
+        self.assertEqual((self.server.latest()['reconciliation'], self.server.latest()['unresolvedLegacy']), ('unknown', None))
 
 
 if __name__ == '__main__':

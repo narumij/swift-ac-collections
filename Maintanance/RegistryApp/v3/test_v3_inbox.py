@@ -1,23 +1,53 @@
 #!/usr/bin/env python3
-"""OPS-177 tests: v3_inbox, the isolated copy of inbox.py that keeps legacy and V3 saves side by side. V3 saves come
-from the real Studio editor (harness); legacy saves are minimal hand-built Studio documents. Every folder is a
-TemporaryDirectory; the real Inbox is never read or written.
+"""OPS-177/179 tests: inbox.py keeping legacy and V3 saves side by side (accepted as the copy v3_inbox in OPS-177,
+merged into inbox.py in OPS-179). V3 saves come from the real Studio editor (harness); legacy saves are minimal
+hand-built Studio documents. Legacy compatibility is checked against the previous inbox.py, read from git at PREVIOUS
+into a temporary file (no kept copy). Every folder is a TemporaryDirectory and every call names it; the real Inbox is
+never read or written (CLI runs get REGISTRY_STUDIO_INBOX).
 
 Run: python3 -B Maintanance/RegistryApp/v3/test_v3_inbox.py -v
 """
 import copy
 import hashlib
+import importlib.util
 import json
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(HERE.parent))  # the production inbox.py, imported only to compare (never on its default folder)
-import inbox  # noqa: E402
-import v3_inbox as vi  # noqa: E402
+sys.path.insert(0, str(HERE.parent))  # RegistryApp: inbox.py, always called with an explicit folder here
+import inbox as vi  # noqa: E402
 from test_change_groups import Groups  # noqa: E402
+
+PREVIOUS = 'ea1d7e62efee3b71e869c823ba9b63304db6eff1'  # the last commit of inbox.py before OPS-179 (legacy only)
+INBOX_PY = HERE.parent / 'inbox.py'
+_previous = {}
+
+
+def setUpModule():
+    tmp = tempfile.TemporaryDirectory()
+    _previous['tmp'] = tmp
+    path = Path(tmp.name) / 'inbox.py'
+    path.write_bytes(subprocess.run(['git', 'show', f'{PREVIOUS}:Maintanance/RegistryApp/inbox.py'], cwd=HERE, capture_output=True, check=True).stdout)
+    spec = importlib.util.spec_from_file_location('inbox_previous', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _previous.update(module=module, path=path)
+
+
+def tearDownModule():
+    _previous.pop('tmp').cleanup()
+
+
+def cli(script, folder, *args):
+    """inbox.py's CLI on a temporary folder only (REGISTRY_STUDIO_INBOX)."""
+    return subprocess.run([sys.executable, '-B', str(script), *args], capture_output=True, text=True, timeout=60,
+                          env=dict(os.environ, REGISTRY_STUDIO_INBOX=str(folder)))
 
 
 def legacy_doc(n=1):
@@ -50,7 +80,7 @@ class Bases(Inbox):
                                         'payloadHash': doc['source']['payloadHash'], 'payloadHashOf': doc['source']['payloadHashOf']})
         stored = json.loads((self.folder / f"registry-edited-{meta['saveId']}.json").read_text(encoding='utf-8'))
         self.assertNotIn('sha256', stored['studioSave']['base'])
-        self.assertEqual(vi.find(self.folder, meta['saveId'], vi.V3)['tasks'], doc['tasks'])
+        self.assertEqual(vi.find(meta['saveId'], vi.V3, self.folder)['tasks'], doc['tasks'])
 
     def test_malformed_bases_are_refused_never_legacy(self):
         good = self.v3_doc()
@@ -99,7 +129,7 @@ class Bases(Inbox):
         self.assertEqual({e['saveId']: e['reason'] for e in out['invalid']},
                          {bad['saveId']: 'source and v3 disagree on generation/revision', meta_only['saveId']: 'the stored base does not match the save'})
         with self.assertRaises(ValueError):
-            vi.find(self.folder, bad['saveId'], vi.V3)
+            vi.find(bad['saveId'], vi.V3, self.folder)
 
 
 class Mixed(Inbox):
@@ -117,7 +147,7 @@ class Mixed(Inbox):
         self.assertEqual(vi.latest(self.folder, vi.V3)['unresolvedLegacy'], [], 'an IMPORTS record ends the report')
         self.assertEqual(self.digest(name), before, 'the legacy file is never changed')
         with self.assertRaises(ValueError):
-            vi.find(self.folder, old['saveId'], vi.V3)
+            vi.find(old['saveId'], vi.V3, self.folder)
 
     def test_series_never_mix_kinds(self):
         v3 = vi.append_save(self.v3_doc(), None, self.folder)
@@ -170,43 +200,122 @@ class Malformed(Inbox):
             vi.append_save(legacy_doc(3), dup['saveId'], self.folder)  # an ambiguous parent
         child = vi.append_save(self.v3_doc(), good['saveId'], self.folder)
         self.assertEqual(child['series'], good['series'])
-        import subprocess
-        run = subprocess.run([sys.executable, '-B', str(HERE / 'v3_inbox.py'), 'list', '--folder', str(self.folder)], capture_output=True, text=True, timeout=60)
+        run = cli(INBOX_PY, self.folder, 'list')
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertIn('invalid (source is not an object)', run.stdout)
         self.assertTrue(all(p.read_bytes() == before[p.name] for p in self.folder.glob('*') if p.name in before), 'nothing is rewritten')
 
 
+class History(Inbox):
+    """A malformed IMPORTS.jsonl: the reconciliation is unknown, nothing is inferred, the V3 save still resumes, and
+    nothing is recorded while duplicates cannot be checked (OPS-179)."""
+
+    def setUp(self):
+        super().setUp()
+        self.v3 = vi.append_save(self.v3_doc(), None, self.folder)
+        self.old = vi.append_save(legacy_doc(), None, self.folder)
+        self.other = vi.append_save(legacy_doc(2), None, self.folder)
+        vi.record_import(self.old['saveId'], '照合済み', self.folder)
+
+    def break_history(self, line):
+        with open(self.folder / vi.IMPORTS, 'a', encoding='utf-8') as out:
+            out.write(line + '\n')
+        return (self.folder / vi.IMPORTS).read_bytes()
+
+    def test_known_history(self):
+        out = vi.latest(self.folder, vi.V3)
+        self.assertEqual((out['reconciliation'], [e['saveId'] for e in out['unresolvedLegacy']]), ('known', [self.other['saveId']]))
+
+    def test_unknown_history_keeps_the_resume(self):
+        for bad in ('{"saveId": ', '5'):
+            with self.subTest(bad=bad):
+                self.break_history(bad)
+                out = vi.latest(self.folder, vi.V3)
+                self.assertEqual(out['save']['studioSave']['saveId'], self.v3['saveId'], 'the valid V3 save still resumes')
+                self.assertEqual((out['reconciliation'], out['unresolvedLegacy']), ('unknown', None), 'neither imported nor unimported is inferred')
+                self.assertEqual(out['importProblems'][-1]['line'], 2 if bad.startswith('{') else 3)
+                self.assertEqual(vi.latest(self.folder)['save']['studioSave']['saveId'], self.other['saveId'], 'the kind-less view does not read the history')
+                records, problems = vi.read_imports(self.folder)
+                self.assertEqual(([r['saveId'] for r in records], len(problems)), ([self.old['saveId']], 1 if bad.startswith('{') else 2))
+                with self.assertRaises(ValueError):
+                    vi.imports(self.folder)
+
+    def test_record_is_refused_while_unknown(self):
+        history = self.break_history('not json')
+        with self.assertRaises(ValueError) as caught:
+            vi.record_import(self.other['saveId'], 'n', self.folder)
+        self.assertIn('duplicates cannot be checked', str(caught.exception))
+        run = cli(INBOX_PY, self.folder, 'record', self.old['saveId'], '--note', 'again')
+        self.assertNotEqual(run.returncode, 0)
+        self.assertEqual((self.folder / vi.IMPORTS).read_bytes(), history, 'nothing appended')
+        listed = cli(INBOX_PY, self.folder, 'list')
+        self.assertEqual(listed.returncode, 0, listed.stderr)
+        self.assertIn('IMPORTS.jsonl: unreadable lines 2; import state unknown', listed.stdout)
+        self.assertEqual(listed.stdout.count('import state unknown'), 3, 'the header and both legacy saves')
+        self.assertNotIn('not imported', listed.stdout)
+
+
+    def unknown_and_blocked(self, history):
+        out = vi.latest(self.folder, vi.V3)
+        self.assertEqual(out['save']['studioSave']['saveId'], self.v3['saveId'], 'the valid V3 save still resumes')
+        self.assertEqual((out['reconciliation'], out['unresolvedLegacy']), ('unknown', None))
+        with self.assertRaises(ValueError):
+            vi.record_import(self.other['saveId'], 'n', self.folder)
+        self.assertEqual((self.folder / vi.IMPORTS).read_bytes(), history, 'nothing appended')
+        listed = cli(INBOX_PY, self.folder, 'list')
+        self.assertEqual(listed.returncode, 0, listed.stderr)
+        self.assertIn('import state unknown', listed.stdout)
+        return out
+
+    def test_malformed_records_are_unknown(self):
+        good = (self.folder / vi.IMPORTS).read_bytes()
+        for bad in ('{"saveId": []}', '{"recordedAt": "t", "note": "n"}', '{"saveId": 5, "recordedAt": "t", "note": "n"}',
+                    '{"saveId": "", "recordedAt": "t", "note": "n"}', '{"saveId": "x", "recordedAt": 1, "note": "n"}', '{"saveId": "x", "recordedAt": "t"}'):
+            with self.subTest(bad=bad):
+                (self.folder / vi.IMPORTS).write_bytes(good)
+                out = self.unknown_and_blocked(self.break_history(bad))
+                self.assertEqual(out['importProblems'], [{'line': 2, 'error': 'not a record: saveId (non-empty text), recordedAt and note (text) are required'}])
+
+    def test_undecodable_history_is_unknown(self):
+        (self.folder / vi.IMPORTS).write_bytes(b'\xff\xfe{"saveId"\n')
+        out = self.unknown_and_blocked((self.folder / vi.IMPORTS).read_bytes())
+        self.assertEqual(out['importProblems'][0]['line'], None)
+        self.assertIn('cannot be read', out['importProblems'][0]['error'])
+
+
 class LegacyOnly(Inbox):
-    """The same legacy-only folder read by the production inbox.py and by the copy."""
+    """The same legacy-only folder read by the previous inbox.py (git PREVIOUS) and by the merged one."""
 
     def build(self):
         self.folder.mkdir()
         (self.folder / 'registry-edited-old.json').write_text(json.dumps(legacy_doc(1)), encoding='utf-8')  # an older save without studioSave
         (self.folder / 'broken.json').write_text('{', encoding='utf-8')
-        first = inbox.append_save(legacy_doc(2), None, self.folder)
-        inbox.append_save(legacy_doc(3), first['saveId'], self.folder)
-        inbox.append_save(legacy_doc(4), first['saveId'], self.folder)  # stale parent: a branch
+        old = _previous['module']
+        first = old.append_save(legacy_doc(2), None, self.folder)
+        old.append_save(legacy_doc(3), first['saveId'], self.folder)
+        old.append_save(legacy_doc(4), first['saveId'], self.folder)  # stale parent: a branch
 
     def test_reads_equal_inbox(self):
         self.build()
+        old = _previous['module']
         strip = lambda saves: [{k: v for k, v in s.items() if k not in ('kind', 'invalid')} for s in saves]
-        self.assertEqual(strip(vi.load_saves(self.folder)), inbox.load_saves(self.folder))
+        self.assertEqual(strip(vi.load_saves(self.folder)), old.load_saves(self.folder))
         self.assertEqual({s.get('kind') for s in vi.load_saves(self.folder) if 'error' not in s}, {'legacy'})
-        self.assertEqual(vi.latest(self.folder), inbox.latest(self.folder))
+        self.assertEqual(vi.latest(self.folder), old.latest(self.folder))
         legacy = vi.latest(self.folder, vi.LEGACY)
-        self.assertEqual((legacy['save'], legacy['heads'], legacy['saves'], legacy['invalid']), (inbox.latest(self.folder)['save'], 3, 4, []))
+        self.assertEqual((legacy['save'], legacy['heads'], legacy['saves'], legacy['invalid']), (old.latest(self.folder)['save'], 3, 4, []))
         self.assertIsNone(vi.latest(self.folder, vi.V3)['save'])
         self.assertEqual(len(vi.latest(self.folder, vi.V3)['unresolvedLegacy']), 4)
 
     def test_appends_equal_inbox(self):
         self.build()
+        old = _previous['module']
         twin = self.dir / 'twin'
         twin.mkdir()
         for p in self.folder.glob('*'):
             (twin / p.name).write_bytes(p.read_bytes())
-        parent = inbox.load_saves(self.folder)[1]['saveId']
-        a = inbox.append_save(legacy_doc(5), parent, self.folder)
+        parent = old.load_saves(self.folder)[1]['saveId']
+        a = old.append_save(legacy_doc(5), parent, self.folder)
         b = vi.append_save(legacy_doc(5), parent, twin)
         same = lambda m: {k: v for k, v in m.items() if k not in ('saveId', 'savedAt', 'series')}
         self.assertEqual(same(a), same(b))
@@ -214,8 +323,16 @@ class LegacyOnly(Inbox):
         self.assertEqual(json.loads((self.folder / f"registry-edited-{a['saveId']}.json").read_text(encoding='utf-8'))['tasks'],
                          json.loads((twin / f"registry-edited-{b['saveId']}.json").read_text(encoding='utf-8'))['tasks'])
         vi.record_import(b['saveId'], 'n', twin)
-        inbox.record_import(a['saveId'], 'n', self.folder)
-        self.assertEqual([r['note'] for r in vi.imports(twin)], [r['note'] for r in inbox.imports(self.folder)])
+        old.record_import(a['saveId'], 'n', self.folder)
+        self.assertEqual([r['note'] for r in vi.imports(twin)], [r['note'] for r in old.imports(self.folder)])
+
+    def test_cli_list_equals_previous(self):
+        self.build()
+        old = _previous['module']
+        old.record_import(old.load_saves(self.folder)[1]['saveId'], 'n', self.folder)
+        before, now = cli(_previous['path'], self.folder, 'list'), cli(INBOX_PY, self.folder, 'list')
+        self.assertEqual((now.returncode, now.stdout), (before.returncode, before.stdout))
+        self.assertIn('imported', now.stdout)
 
 
 if __name__ == '__main__':

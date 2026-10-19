@@ -533,7 +533,7 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 
 ## OPS-177：V3保存と旧保存の隔離共存（`v3_inbox.py`、serverの保存・再開・更新、P6）
 
-- **`v3_inbox.py`**：現用`inbox.py`のcopy。現用のファイルは変えない。
+- **`v3_inbox.py`**：現用`inbox.py`のcopy。現用のファイルは変えない。（OPS-179で`inbox.py`へ統合し、このcopyは消した。下のOPS-179の節を見ること）
   - 置き場は必ず明示する。既定のInboxも`REGISTRY_STUDIO_INBOX`もない。
   - 保存ごとに種類を決める（`base_of`）：
     - legacy：`source.kind`も`v3`の塊もない。基準は今までどおりの`{sha256, head, generatedAt}`。
@@ -576,3 +576,26 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 本番の`serve.py`・`inbox.py`・template・`sync.py`は変えていない。旧保存の変換や照合は扱わない。WebKitだけ。
   - 現用の`inbox.load_saves`にも、同じ壊れたfileで落ちる箇所がある（`source`が配列のときと、studioSaveの欄が欠けたとき）。本番の変更は範囲の外なので、報告だけにする。
   - `IMPORTS.jsonl`に壊れた行があると、`imports`（V3の`latest`も使う）が落ちる。現用と同じで、ここでは直していない。
+
+## OPS-179：保存処理を現用の`inbox.py`へ統合（S3a）
+
+- **統合**：OPS-177で受け入れた`v3_inbox.py`の働きを`RegistryApp/inbox.py`へ移し、`v3_inbox.py`を消した。実装は1つになった。
+  - 置き場の既定（`Inbox/`）、`REGISTRY_STUDIO_INBOX`、関数の引数の順と既定値は今までどおり。
+  - kindなしの`latest`、`append_save`、旧保存だけのfolderの読みと、CLIの`list`の行は、前の`inbox.py`と同じ。
+  - 新しい関数`find(save_id, kind, folder=None)`は、ほかの関数にそろえてfolderを最後にした。
+  - 隔離serverと試験は`inbox.py`を使う。どちらも置き場をいつも明示する。
+- **壊れた取り込みの記録**：
+  - 壊れているとみなすもの：JSONでない行、物でない行、`record_import`が書く形でない記録（saveIdが空でない文字列でない、recordedAtかnoteが文字列でない。例：`{"saveId": []}`）。fileが読めない・UTF-8でない場合も、行番号なし（None）の1件として扱う（受入での補正）。
+  - `read_imports`は、記録と、壊れた行の番号・理由を返す。黙って飛ばさない。
+  - `latest(folder, 'v3-export')`は、有効なV3の保存をそのまま返す。そのうえで`reconciliation: 'unknown'`、`importProblems`、`unresolvedLegacy: None`とする。取り込み済みとも未処理とも推し量らない。記録が読めるときは`reconciliation: 'known'`。
+  - `imports`は今までどおり記録の一覧を返す。壊れた行があれば、今までどおり`ValueError`で止まる（前は`json.JSONDecodeError`。これも`ValueError`の一種）。外から呼んでいるところはなかった。
+  - `record_import`は、壊れた行がある間は、重複を確かめられないので拒否する。何も書き足さない。
+  - CLIの`list`は、先頭に壊れた行を示し、旧保存ごとに「import state unknown」と出す。
+  - P6：「取り込み記録が読めないため、旧形式の編集版の照合状態は不明です（この画面では再開しません・削除しません）。」
+- **試験**：
+  - `test_v3_inbox.py`（14件。記録の形と読めないfileの2件を受入で追加）：旧保存だけのfolderは、gitから一時fileへ読み出した前の`inbox.py`（`PREVIOUS`）と比べる。写しは置かない。
+    - 読み・保存・取り込みの記録・CLIの`list`の出力が同じ。
+    - 壊れた記録（途中で切れたJSON、物でない行）：V3の再開が続く。照合は不明、推し量りなし。kindなしの`latest`は記録を読まない。`record`はAPIでもCLIでも拒否し、fileは変わらない。`list`は不明と出す。
+  - `test_mixed_workspace_browser.py`（4件）：壊れた記録があっても、ページはV3の保存を再開し、不明と知らせ、件数を出さない。
+  - 否定の対照：不明を既知として扱う、`record`が壊れた行を無視する、`imports`が一部だけ返す、旧保存の`list`の行を変える、P6の不明の知らせを外す。それぞれ試験が落ちることを確かめた。
+- **後続（ここではしていない）**：現用templateへのP1〜P6の移植と、`serve.py`のV3 mode。`serve.py`は今もkindなしの`latest(INBOX)`を使う。そのため、現用のInboxにV3の保存が置かれると、それを再開する。これは今までと同じ振る舞いで、変えるのはS3c。

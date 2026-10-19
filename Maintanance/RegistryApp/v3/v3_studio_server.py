@@ -9,8 +9,8 @@ and stopped by the test. It never imports serve.py, sync.py or inbox.py and neve
                    OPS-165 compatibility patches P1-P3 are applied (each must match exactly once).
 - POST /save       the page's own save call: stores the JSON as a new file under saves/ (parent/series as inbox.py does)
                    and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
-- GET /workspace   the latest valid V3 save (v3_inbox.latest, OPS-177), with unresolvedLegacy and invalid for display, so the
-                   page's own resumeWorkspace() runs. Saves live in saves_dir through v3_inbox (a copy of inbox.py).
+- GET /workspace   the latest valid V3 save (inbox.latest, OPS-177/179), with unresolvedLegacy (or reconciliation unknown)
+                   and invalid for display, so the page's own resumeWorkspace() runs. Saves live in saves_dir through inbox.py.
 - POST /sync       a no-op answer: GET / already exports the DB, so 更新 reloads onto it (OPS-177; not a production decision).
 - POST /v3/apply   an explicit DB write: studio_adapter.apply_save on a stored save (single task, OPS-166).
 - POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173),
@@ -20,13 +20,15 @@ and stopped by the test. It never imports serve.py, sync.py or inbox.py and neve
 """
 import json
 import re
+import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import registry_v3_write as w3
 import studio_adapter as sa
-import v3_inbox
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # RegistryApp: inbox.py (OPS-179)
+import inbox  # noqa: E402
 
 TEMPLATE = Path(__file__).resolve().parent.parent / 'index.template.html'
 PATCHES = [
@@ -49,8 +51,8 @@ PATCHES = [
      "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
      'P5 renderPlanTools(): an explicit position select for 版を追加, kept as planPosition on the new START (OPS-176)'),
     ("const result=await response.json();if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;",
-     "const result=await response.json();const legacyLeft=result&&Array.isArray(result.unresolvedLegacy)?result.unresolvedLegacy.length:0;const legacyNote=legacyLeft?'旧形式の未照合の編集版が'+legacyLeft+'件あります（この画面では再開しません・削除しません）。':'';if(legacyNote)report(legacyNote);if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;if(((d.source||{}).kind||'legacy')!==(canonical.kind||'legacy')){report('形式の違う編集版（'+((d.source||{}).kind||'旧形式')+'）は再開しません。'+legacyNote,true);return;}",
-     'P6 resumeWorkspace(): resume only a save of the canonical kind (defense in depth to the server filter) and tell that unreconciled legacy saves remain (OPS-177)'),
+     "const result=await response.json();const legacyLeft=result&&Array.isArray(result.unresolvedLegacy)?result.unresolvedLegacy.length:0;const legacyNote=result&&result.reconciliation==='unknown'?'取り込み記録が読めないため、旧形式の編集版の照合状態は不明です（この画面では再開しません・削除しません）。':legacyLeft?'旧形式の未照合の編集版が'+legacyLeft+'件あります（この画面では再開しません・削除しません）。':'';if(legacyNote)report(legacyNote);if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;if(((d.source||{}).kind||'legacy')!==(canonical.kind||'legacy')){report('形式の違う編集版（'+((d.source||{}).kind||'旧形式')+'）は再開しません。'+legacyNote,true);return;}",
+     'P6 resumeWorkspace(): resume only a save of the canonical kind (defense in depth to the server filter) and tell that unreconciled legacy saves remain, or that their reconciliation is unknown (OPS-177/179)'),
 ]
 
 
@@ -172,19 +174,19 @@ class V3StudioServer(ThreadingHTTPServer):
         return f'http://127.0.0.1:{self.server_address[1]}'
 
     def saves_list(self):
-        return [x['doc'] for x in v3_inbox.load_saves(self.saves) if 'error' not in x]
+        return [x['doc'] for x in inbox.load_saves(self.saves) if 'error' not in x]
 
     def store(self, data):
-        # OPS-177: the isolated copy of inbox.py (v3_inbox) on saves_dir; a mixed legacy/V3 folder keeps both kinds
+        # OPS-177/179: inbox.py on saves_dir (always explicit, never the default Inbox); a mixed legacy/V3 folder keeps both kinds
         parent = (data.pop('studioSave', None) or {}).get('parent')
-        meta = v3_inbox.append_save(data, parent, self.saves)  # ValueError: invalid base, unknown or other-kind parent
+        meta = inbox.append_save(data, parent, self.saves)  # ValueError: invalid base, unknown or other-kind parent
         return {'file': f"registry-edited-{meta['saveId']}.json", 'folder': str(self.saves), 'save': meta}
 
     def load(self, save_id):
-        return v3_inbox.find(self.saves, save_id, v3_inbox.V3)  # ValueError for a legacy, invalid or unknown save
+        return inbox.find(save_id, inbox.V3, self.saves)  # ValueError for a legacy, invalid or unknown save
 
     def latest(self):
-        return v3_inbox.latest(self.saves, v3_inbox.V3)  # only valid V3 saves resume; legacy ones are reported
+        return inbox.latest(self.saves, inbox.V3)  # only valid V3 saves resume; legacy ones are reported
 
     def start(self):
         self.thread = threading.Thread(target=self.serve_forever, daemon=True)

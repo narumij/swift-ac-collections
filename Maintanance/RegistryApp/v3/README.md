@@ -620,3 +620,50 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - `verify.cjs`は、一時folderに作ったページで通った。`sync.build()`、seedの埋め込み、`build-pending.py`、`build-documents.mjs`の順に作った。
   - `sync.py`の`main()`は使わない。`main()`は`local-tools.json`を書き換えるため。現用のCacheとInboxは変わっていない。
 - **後続**：`serve.py`のV3 mode（S3c）。
+
+## OPS-181：現用`serve.py`の既定offのV3 mode（S3c）
+
+- **起動**：`serve.py --v3-db PATH --v3-saves DIR`。2つは必ず一緒に渡す。
+  - 片方だけなら、引数の誤り（exit 2）。sync.pyも走らず、serverも立たない。
+  - どちらも、すでにあるものに限る。作ることも、移すこともしない。
+  - flagがなければ、今までの経路そのまま。V3のmoduleを読み込まず、DBも開かない。
+- **DBの確かめ**（`v3_mode`）：起動の前に次を確かめ、どれか違えば起動しない。
+  - 読取専用で開ける（`mode=ro`の、逃がした絶対file URI。DBを作らない）。
+  - tableの集まりが、V3のschemaとちょうど同じ。
+  - `schema_version`が合っている。
+  - `quick_check`がok。
+  - exportを読み出せる。
+- **route**（V3 modeのとき）：
+  - `GET /`と`/index.html`：sync.pyが作ったページから、Registryのseedだけを、その時のDBのexportへ差し替える。文書とpendingの塊は、作られたまま残す。
+  - `GET /registry.json`：DBのexport。ページの「正本から始め直す」の提案も、これを見る。
+  - `GET /workspace`：V3の保存だけを再開する。旧保存と、照合が不明なことは、知らせるだけ。
+  - `POST /save`：V3の保存だけを`--v3-saves`へ置く。旧形式・不正な形は400、親が知らない・種類が違うときは409。
+  - `POST /sync`：今までどおりsync.pyを走らせる（文書とpending）。DBには書かず、MarkdownをDBへ取り込み直さない。seedは、GETのたびにDBから作る。
+  - 適用のrouteはない。DBへの書込は`registry_v3_cli.py`だけ。
+  - DBは、要求ごとに読取専用で開く。
+  - restartを勧めるための監視の対象に、V3のmodule（read・write・adapter）を加える。V3 modeのときだけ。
+- **共通の処理**：`serve.v3_page`（seedの差し替え）と`serve.v3_store`（V3の保存）を、隔離のfixture server（`v3_studio_server.py`）も使う。fixtureに残る自分の処理は、試験用の`/v3/apply*`と、文書・pendingを空にすることだけ。
+- **`--v3-documents`は足していない**：本番のserverに適用のrouteがないので、使うところがない。文書の置き場は、CLIの`--document-root`で渡す。
+- **試験**：新しい`test_serve_v3_mode.py`（8件）。一時のroot、port 0、serve自身のHandlerで行う。
+  - 試験の中では、ページの監視（letters・activity・approvals・continuity）は404で答え、現用の記録を読まない。sync.pyの呼び出しは差し替えて、走らせない。
+  - 確かめること：
+    - 拒否で何も作らない（ないDB、ないdir、V3でないDB、tableが多いDB、schemaの版の違い、textのfile）。確かめの前後でDBのbyteが同じ。
+    - 読取専用の接続は書けず、ないDBを作らない。
+    - 引数の組と、sync.pyが走らないこと。
+    - flagなしでV3を読み込まず、そのとき監視にV3のmoduleが入らない。
+    - V3のrouteはすべて上のとおりに動く。どのrouteのあともDBのbyteが同じ。
+    - 既定のmodeは今までどおり。
+    - WebKit（現用のページ）：保存 → 再開 → CLIで適用 → 再開すると、`/registry.json`を通して「正本から始め直す」の提案が出る。旧保存と壊れた取り込み記録が混ざっていても、V3の保存を再開し、照合が不明だと知らせる。
+  - 否定の対照：seedの差し替え、ないDBを作らないこと、V3だけを保存すること、schemaの確かめ、引数の組、V3の`/registry.json`、workspaceの種類のfilter、読取専用で開くことを、1つずつ外した。それぞれ試験が落ちることを確かめた。
+- **限界**：本番での配置、backup・復旧、現用serverの再起動・切替は含まない。V3 modeは、試験の中でしか動かしていない。
+- **受入での補正：1つのexportを1つの読取snapshotにする**。`export_doc`の問い合わせ（view・generation・revision・退役）を、1つの読取transactionの中で行う。
+  - 途中でCLIがcommitしても、exportはそのcommitのまるごと前か、まるごと後になる。新しいrevisionと古い行を組み合わせて返すことはない。
+  - 呼び出し側がtransactionを持っていれば、それをそのまま使い、開いたまま返す。持っていなければ、ここで開き、最後に必ずrollbackで閉じる。読むだけなので、誤りのときも同じ。
+  - ページ・`/registry.json`・CLIの`export`は、どれも同じ`export_doc`を通る。
+  - 新しい`test_export_snapshot.py`（4件、2つの接続）：
+    - 試験の作り：最初の読取の直後に、別の接続から書く。
+    - WALでは、書込はcommitされ、exportはその前の状態のまま揃う。
+    - rollback journalでは、書込はlockで待たされる。
+    - 読取専用のページの接続でも揃い、書けない。
+    - 呼び出し側のtransactionは保たれる。誤りのあとも閉じる。DBは変わらない。
+  - 直す前には、この試験のうち3件が落ちた（revision 1と古いownerの組）。

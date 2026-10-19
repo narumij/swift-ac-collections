@@ -50,6 +50,20 @@ def _canon(x):
 
 
 def export_doc(conn):
+    """One export is one read snapshot (OPS-181): every query of it (the view, generation, revision, retirements) runs
+    in a single read transaction, so a writer committing meanwhile is wholly before or wholly after it. A transaction
+    the caller already holds is used as it is and left open; otherwise one is opened here and always ended. It only
+    reads, so it ends with a rollback, also on errors."""
+    if conn.in_transaction:
+        return _export_doc(conn)
+    conn.execute('BEGIN')
+    try:
+        return _export_doc(conn)
+    finally:
+        conn.execute('ROLLBACK')
+
+
+def _export_doc(conn):
     view = r3.read(conn, 'all')
     gen, rev = w3.generation(conn), w3.revision(conn)
     focus = view['range']['focus']

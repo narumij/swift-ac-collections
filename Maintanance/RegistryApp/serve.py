@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Serve Registry Studio locally; POST /sync runs only the fixed sync.py command, POST /save stores the edited JSON in Inbox/."""
+"""Serve Registry Studio locally; POST /sync runs only the fixed sync.py command, POST /save stores the edited JSON in Inbox/.
+
+V3 mode (OPS-181), off by default: --v3-db PATH --v3-saves DIR, always together. Both must already exist (nothing is
+created or migrated) and the DB must be a V3 DB. Then GET / is the page sync.py built with only its Registry seed
+replaced by a fresh read-only DB export, GET /registry.json is that export, GET /workspace resumes only V3 saves from
+DIR, and POST /save stores only V3 saves there. POST /sync still runs sync.py (documents and the pending queue); it
+never writes the DB. There is no apply route: the DB is written only through v3/registry_v3_cli.py. Without the flags
+nothing of V3 is imported or opened."""
 import argparse
 import datetime
 import re
@@ -35,10 +42,14 @@ INBOX = inbox.INBOX
 MAX_SAVE_BYTES = 10 * 1024 * 1024
 
 
+V3 = None  # OPS-181: the explicit V3 mode, {'db': Path, 'saves': Path} (v3_mode); None keeps every legacy path
+V3_MODULES = ('v3/registry_v3_read.py', 'v3/registry_v3_write.py', 'v3/studio_adapter.py')  # retained in V3 mode
+
+
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py'):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -154,12 +165,103 @@ def get_server_status(path):
     return 200, runtime_status()
 
 
+def v3_modules():
+    """(registry_v3_write, studio_adapter), imported only when the V3 mode is used."""
+    if str(APP / 'v3') not in sys.path:
+        sys.path.insert(0, str(APP / 'v3'))
+    import registry_v3_write
+    import studio_adapter
+    return registry_v3_write, studio_adapter
+
+
+def v3_open(db):
+    """A read-only connection (mode=ro through the escaped absolute file URI): it never creates or writes the DB."""
+    return sqlite3.connect(Path(db).resolve().as_uri() + '?mode=ro', uri=True, isolation_level=None, timeout=5.0)
+
+
+def v3_mode(db, saves):
+    """The V3 mode settings for an existing V3 DB and an existing saves directory, or ValueError. Checks: the file and
+    the directory exist; the DB opens read-only; its tables are exactly the V3 schema's; schema_version matches;
+    quick_check is ok; and an export can be read."""
+    db, saves = Path(db), Path(saves)
+    if not db.is_file():
+        raise ValueError(f'--v3-db {db}: no such file (it is never created)')
+    if not saves.is_dir():
+        raise ValueError(f'--v3-saves {saves}: no such directory (it is never created)')
+    w3, sa = v3_modules()
+    tables = lambda c: {r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")}
+    expected = sqlite3.connect(':memory:')
+    try:
+        expected.executescript(w3.r3.SCHEMA + w3.WRITE_SCHEMA)
+        want = tables(expected)
+    finally:
+        expected.close()
+    try:
+        conn = v3_open(db)
+    except sqlite3.Error as error:
+        raise ValueError(f'--v3-db {db}: cannot be opened read-only: {error}') from None
+    try:
+        have = tables(conn)
+        if have != want:
+            raise ValueError(f'--v3-db {db}: not a V3 DB (tables differ: {", ".join(sorted(have ^ want))})')
+        if conn.execute('SELECT schema_version FROM db_meta').fetchone()[0] != w3.SCHEMA_VERSION:
+            raise ValueError(f'--v3-db {db}: schema version is not {w3.SCHEMA_VERSION}')
+        if conn.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
+            raise ValueError(f'--v3-db {db}: quick_check failed')
+        sa.export_doc(conn)
+    except sqlite3.DatabaseError as error:
+        raise ValueError(f'--v3-db {db}: not a V3 DB: {error}') from None
+    finally:
+        conn.close()
+    return {'db': db.resolve(), 'saves': saves.resolve()}
+
+
+def v3_page(html, conn):
+    """The page with only its Registry seed replaced by a fresh export of the DB (the other blocks stay as built)."""
+    _, sa = v3_modules()
+    block = '<script id="seed" type="application/json">' + json.dumps(sa.export_doc(conn), ensure_ascii=False).replace('<', '\\u003c') + '</script>'
+    html, n = re.subn(r'<script id="seed" type="application/json">.*?</script>', lambda m: block, html, count=1, flags=re.S)
+    if n != 1:
+        raise ValueError('seed block not found in the page')
+    return html
+
+
+class NotV3Save(ValueError):
+    """The posted JSON is not a well-formed V3 export save (answered 400; parent problems stay ValueError, 409)."""
+
+
+def v3_store(data, parent, saves):
+    """Store a V3 save in saves (inbox.append_save). NotV3Save for anything that is not a well-formed V3 export save;
+    ValueError from inbox for an unknown or other-kind parent."""
+    if not (isinstance(data, dict) and data.get('schemaVersion') == 1 and isinstance(data.get('tasks'), list)
+            and isinstance(data.get('edges'), list) and isinstance(data.get('baseline'), dict)):
+        raise NotV3Save('Registry Studio形式のJSONではありません。')
+    try:
+        kind, _ = inbox.base_of(data)
+    except inbox.InvalidBase as error:
+        raise NotV3Save(f'V3の編集版として保存できません：{error}') from None
+    if kind != inbox.V3:
+        raise NotV3Save('V3モードでは、V3の編集版だけを保存できます（旧形式は保存しません）。')
+    return inbox.append_save(data, parent, saves)
+
+
 def get_workspace(path):
-    # the edit version Studio resumes (OPS-082); null when nothing is saved
+    # the edit version Studio resumes (OPS-082); null when nothing is saved. V3 mode: only V3 saves (OPS-181)
+    if V3 is not None:
+        return 200, json_bytes(inbox.latest(V3['saves'], inbox.V3))
     return 200, json_bytes(inbox.latest(INBOX))
 
 
 def get_page(path):
+    if V3 is not None:  # OPS-181: the seed and /registry.json come from the DB, read-only
+        _, sa = v3_modules()
+        conn = v3_open(V3['db'])
+        try:
+            if path == '/registry.json':
+                return 200, json_bytes(sa.export_doc(conn)), 'application/json; charset=utf-8'
+            return 200, v3_page((OUTPUT / 'index.html').read_text(encoding='utf-8'), conn).encode(), 'text/html; charset=utf-8'
+        finally:
+            conn.close()
     if path == '/registry.json':
         return 200, (OUTPUT / 'registry.json').read_bytes(), 'application/json; charset=utf-8'
     return 200, (OUTPUT / 'index.html').read_bytes(), 'text/html; charset=utf-8'
@@ -437,6 +539,8 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(raw.decode('utf-8'))
         except (UnicodeDecodeError, json.JSONDecodeError):
             return self.reply(400, {'error': 'JSONとして読めません。'})
+        if V3 is not None:  # OPS-181: only V3 saves, into the explicit saves directory
+            return self.save_v3(data)
         if not (isinstance(data, dict) and data.get('schemaVersion') == 1 and isinstance(data.get('source'), dict)
                 and isinstance(data['source'].get('sha256'), str) and isinstance(data.get('tasks'), list)
                 and isinstance(data.get('edges'), list) and isinstance(data.get('baseline'), dict)):
@@ -452,14 +556,40 @@ class Handler(BaseHTTPRequestHandler):
         folder = INBOX.relative_to(ROOT).as_posix() if INBOX.is_relative_to(ROOT) else str(INBOX)
         self.reply(200, {'ok': True, 'file': f"registry-edited-{meta['saveId']}.json", 'folder': folder, 'save': meta})
 
+    def save_v3(self, data):
+        claimed = data.pop('studioSave', None) if isinstance(data, dict) else None
+        parent = claimed.get('parent') if isinstance(claimed, dict) else None
+        saves = V3['saves']
+        try:
+            meta = v3_store(data, parent, saves)
+        except NotV3Save as error:
+            return self.reply(400, {'error': str(error)})
+        except ValueError as error:
+            return self.reply(409, {'error': str(error)})
+        except OSError as error:
+            return self.reply(500, {'error': '保存できませんでした：' + str(error)})
+        folder = saves.relative_to(ROOT).as_posix() if saves.is_relative_to(ROOT) else str(saves)
+        self.reply(200, {'ok': True, 'file': f"registry-edited-{meta['saveId']}.json", 'folder': folder, 'save': meta})
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=8088)
+    parser.add_argument('--v3-db', help='V3 mode (with --v3-saves): an existing V3 DB, opened read-only for the page')
+    parser.add_argument('--v3-saves', help='V3 mode (with --v3-db): an existing directory for V3 saves')
     args = parser.parse_args()
+    global V3, STARTUP_FINGERPRINTS
+    if (args.v3_db is None) != (args.v3_saves is None):
+        parser.error('--v3-db and --v3-saves go together')
+    if args.v3_db is not None:
+        try:
+            V3 = v3_mode(args.v3_db, args.v3_saves)
+        except ValueError as error:
+            parser.error(str(error))
+        STARTUP_FINGERPRINTS = runtime_fingerprints()
     subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, check=True)
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
-    print(f'Registry Studio: http://127.0.0.1:{args.port}/  (Ctrl+C to stop)', flush=True)
+    print(f'Registry Studio: http://127.0.0.1:{args.port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

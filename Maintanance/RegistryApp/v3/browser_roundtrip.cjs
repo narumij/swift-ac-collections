@@ -36,7 +36,8 @@ const params = JSON.parse(fs.readFileSync(paramsFile, 'utf8'));
       owner: (document.getElementById('owner') || {}).value, state: (document.getElementById('state') || {}).value,
       title: document.getElementById('selectedTitle').textContent, banner: document.getElementById('sourceInfo').textContent,
       notice: document.getElementById('canonicalNotice').hidden ? null : document.getElementById('canonicalSummary').textContent + '\n' + document.getElementById('canonicalDiff').textContent,
-      status: document.getElementById('status').textContent }));
+      status: document.getElementById('status').textContent,
+      restartSuggested: !(document.getElementById('canonicalRestartNotice') || { hidden: true }).hidden }));  // OPS-181
     if (mode === 'save') {
       await page.click('#taskAreaTab');
       await page.selectOption('#taskPicker', params.task);

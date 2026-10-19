@@ -2,7 +2,8 @@
 """OPS-166 isolated Studio server for the headless-browser round trip. Experiment only.
 
 Binds 127.0.0.1 on an OS-assigned port, keeps every state in the caller's directory (fixture DB, saves/), and is started
-and stopped by the test. It never imports serve.py or sync.py, uses inbox.py only on saves_dir, and never writes the template.
+and stopped by the test. It uses serve.py's V3 page and save functions (never its server or main), inbox.py only on
+saves_dir, never sync.py, and never writes the template. Only the test-only /v3/apply routes are its own.
 
 - GET /            the page, built in memory from a read-only copy of index.template.html: the seed is a fresh
                    studio_adapter.export_doc (so reopening shows the latest DB), documents and the pending queue are empty. The
@@ -29,19 +30,23 @@ import registry_v3_write as w3
 import studio_adapter as sa
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # RegistryApp: inbox.py (OPS-179)
 import inbox  # noqa: E402
+import serve  # noqa: E402  (the shared V3 page and save functions, OPS-181)
 
 TEMPLATE = Path(__file__).resolve().parent.parent / 'index.template.html'
 
 
 def build_page(conn):
-    html = TEMPLATE.read_text(encoding='utf-8')  # the shared template as it is (P1-P6 integrated, OPS-180)
+    """The template as it is (P1-P6 integrated, OPS-180) stands in for the page sync.py builds: this fixture empties
+    its documents and pending blocks (test-only), then serve.v3_page puts the DB export into the seed, as serve.py's
+    V3 mode does on its sync-built page (OPS-181)."""
+    html = TEMPLATE.read_text(encoding='utf-8')
     empty_queue = {'source': '（隔離V3実験：採番待ちqueueは読まない）', 'sources': [], 'generatedAt': '', 'entries': [], 'requests': []}
-    for name, value in (('seed', sa.export_doc(conn)), ('documents', {'generatedAt': '', 'files': {}}), ('pendingSeed', empty_queue)):
+    for name, value in (('documents', {'generatedAt': '', 'files': {}}), ('pendingSeed', empty_queue)):
         block = f'<script id="{name}" type="application/json">' + json.dumps(value, ensure_ascii=False).replace('<', '\\u003c') + '</script>'
         html, n = re.subn(rf'<script id="{name}" type="application/json">.*?</script>', lambda m: block, html, count=1, flags=re.S)
         if n != 1:
             raise ValueError(f'{name} block not found')
-    return html
+    return serve.v3_page(html, conn)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -86,10 +91,10 @@ class Handler(BaseHTTPRequestHandler):
         s.requests.append(('POST', self.path))
         if self.path == '/save':
             data = self.body()
-            if not isinstance(data, dict) or (data.get('source') or {}).get('kind') != 'v3-export' or not isinstance(data.get('v3'), dict):
-                return self.reply(400, {'error': 'only a V3 export can be saved here'})
             try:
                 return self.reply(200, {'ok': True, **s.store(data)})
+            except serve.NotV3Save as error:
+                return self.reply(400, {'ok': False, 'error': str(error)})
             except ValueError as error:
                 return self.reply(409, {'ok': False, 'error': str(error)})
         if self.path == '/sync':
@@ -149,9 +154,10 @@ class V3StudioServer(ThreadingHTTPServer):
         return [x['doc'] for x in inbox.load_saves(self.saves) if 'error' not in x]
 
     def store(self, data):
-        # OPS-177/179: inbox.py on saves_dir (always explicit, never the default Inbox); a mixed legacy/V3 folder keeps both kinds
-        parent = (data.pop('studioSave', None) or {}).get('parent')
-        meta = inbox.append_save(data, parent, self.saves)  # ValueError: invalid base, unknown or other-kind parent
+        # serve.v3_store (OPS-181): inbox.py on saves_dir (always explicit, never the default Inbox); a mixed folder keeps both kinds
+        claimed = data.pop('studioSave', None) if isinstance(data, dict) else None
+        parent = claimed.get('parent') if isinstance(claimed, dict) else None
+        meta = serve.v3_store(data, parent, self.saves)  # NotV3Save; ValueError: unknown or other-kind parent
         return {'file': f"registry-edited-{meta['saveId']}.json", 'folder': str(self.saves), 'save': meta}
 
     def load(self, save_id):

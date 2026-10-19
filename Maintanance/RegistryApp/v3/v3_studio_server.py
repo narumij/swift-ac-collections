@@ -2,11 +2,11 @@
 """OPS-166 isolated Studio server for the headless-browser round trip. Experiment only.
 
 Binds 127.0.0.1 on an OS-assigned port, keeps every state in the caller's directory (fixture DB, saves/), and is started
-and stopped by the test. It never imports serve.py, sync.py or inbox.py and never writes the template.
+and stopped by the test. It never imports serve.py or sync.py, uses inbox.py only on saves_dir, and never writes the template.
 
 - GET /            the page, built in memory from a read-only copy of index.template.html: the seed is a fresh
-                   studio_adapter.export_doc (so reopening shows the latest DB), documents and the pending queue are empty, and the
-                   OPS-165 compatibility patches P1-P3 are applied (each must match exactly once).
+                   studio_adapter.export_doc (so reopening shows the latest DB), documents and the pending queue are empty. The
+                   template is used as it is: its V3 branches (P1-P6) are part of it since OPS-180, no patch is applied.
 - POST /save       the page's own save call: stores the JSON as a new file under saves/ (parent/series as inbox.py does)
                    and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
 - GET /workspace   the latest valid V3 save (inbox.latest, OPS-177/179), with unresolvedLegacy (or reconciliation unknown)
@@ -31,38 +31,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # RegistryApp: 
 import inbox  # noqa: E402
 
 TEMPLATE = Path(__file__).resolve().parent.parent / 'index.template.html'
-PATCHES = [
-    ("typeof d.source.sha256!=='string'",
-     "(d.source.kind==='v3-export'?!(d.v3&&typeof d.source.generation==='string'&&Number.isInteger(d.source.revision)&&d.source.sha256===undefined):typeof d.source.sha256!=='string')",
-     'P1 check(): a V3 export has no source.sha256; accepted only with source.kind v3-export, a generation and an integer revision'),
-    ("'生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')",
-     "(doc.source.kind==='v3-export'?'V3 DB '+doc.source.path+' · 世代 '+doc.source.generation+' · 改訂 '+doc.source.revision+'\\npayloadHash '+doc.source.payloadHash.slice(0,12)+'（'+doc.source.payloadHashOf+'）':'生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版'))",
-     'P2 banner(): a V3 export shows its DB generation, revision and the named payloadHash; no Git HEAD, no committed/uncommitted label'),
-    ("(doc.source.sha256!==canonical.sha256?",
-     "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
-     'P3 banner(): the base comparison of a V3 export uses generation and revision'),
-    ("const PLAN_DIR='Maintanance/Milestones/',PLAN_SOURCE='Maintanance/Milestones/README.md';",
-     "const PLAN_DIR='Maintanance/Milestones/',PLAN_SOURCE='Maintanance/Milestones/README.md';const PLAN_SOURCE_FILE=PLAN_SOURCE;",
-     'P4a keeps the file source under a second name for P4'),
-    ('function planRebuild(d,versions){',
-     "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
-     'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them (OPS-172/173)'),
-    ("const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);",
-     "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
-     'P5 renderPlanTools(): an explicit position select for 版を追加, kept as planPosition on the new START (OPS-176)'),
-    ("const result=await response.json();if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;",
-     "const result=await response.json();const legacyLeft=result&&Array.isArray(result.unresolvedLegacy)?result.unresolvedLegacy.length:0;const legacyNote=result&&result.reconciliation==='unknown'?'取り込み記録が読めないため、旧形式の編集版の照合状態は不明です（この画面では再開しません・削除しません）。':legacyLeft?'旧形式の未照合の編集版が'+legacyLeft+'件あります（この画面では再開しません・削除しません）。':'';if(legacyNote)report(legacyNote);if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;if(((d.source||{}).kind||'legacy')!==(canonical.kind||'legacy')){report('形式の違う編集版（'+((d.source||{}).kind||'旧形式')+'）は再開しません。'+legacyNote,true);return;}",
-     'P6 resumeWorkspace(): resume only a save of the canonical kind (defense in depth to the server filter) and tell that unreconciled legacy saves remain, or that their reconciliation is unknown (OPS-177/179)'),
-]
 
 
 def build_page(conn):
-    html = TEMPLATE.read_text(encoding='utf-8')
-    for old, new, _ in PATCHES:
-        n = html.count(old)
-        if n != 1:
-            raise ValueError(f'patch matched {n} times; the template changed: {old[:40]}')
-        html = html.replace(old, new)
+    html = TEMPLATE.read_text(encoding='utf-8')  # the shared template as it is (P1-P6 integrated, OPS-180)
     empty_queue = {'source': '（隔離V3実験：採番待ちqueueは読まない）', 'sources': [], 'generatedAt': '', 'entries': [], 'requests': []}
     for name, value in (('seed', sa.export_doc(conn)), ('documents', {'generatedAt': '', 'files': {}}), ('pendingSeed', empty_queue)):
         block = f'<script id="{name}" type="application/json">' + json.dumps(value, ensure_ascii=False).replace('<', '\\u003c') + '</script>'

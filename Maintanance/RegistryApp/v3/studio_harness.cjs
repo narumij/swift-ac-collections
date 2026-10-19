@@ -1,7 +1,7 @@
 // OPS-165 function harness: the real Studio functions, extracted by name from a read-only index.template.html, run in a
 // vm with a stub DOM on a V3 export. This is a function harness, not browser validation; the template file is never
-// written. Compatibility patches are applied to the extracted source text only, each must match exactly once, and the
-// list is printed with every result (PATCHES below).
+// written. The functions are taken as they are: the V3 branches (P1-P6) are part of the template since OPS-180, so
+// this harness applies no patch.
 //
 // node studio_harness.cjs edit <export.json> <actions.json> <save-out.json>
 //   loads the export as the page does (check, initializeRelationBaseline), runs the actions through the real editor
@@ -17,32 +17,9 @@ const html = fs.readFileSync(TEMPLATE, 'utf8');
 const fn = name => { const a = html.indexOf('\nfunction ' + name + '('); if (a < 0) throw Error('function not found: ' + name); const m = /\)\s*\{/g; m.lastIndex = a; let i = html.indexOf('{', m.exec(html).index), d = 0; for (; i < html.length; i++) { if (html[i] === '{') d++; else if (html[i] === '}' && --d === 0) break; } return html.slice(a + 1, i + 1); };
 const line = prefix => { const a = html.indexOf('\n' + prefix); if (a < 0) throw Error('line not found: ' + prefix); return html.slice(a + 1, html.indexOf('\n', a + 1)); };
 
-// Compatibility patches of this harness (the production template is unchanged and is NOT claimed to accept a V3 export).
-const PATCHES = [
-  ['check', "typeof d.source.sha256!=='string'",
-   "(d.source.kind==='v3-export'?!(d.v3&&typeof d.source.generation==='string'&&Number.isInteger(d.source.revision)&&d.source.sha256===undefined):typeof d.source.sha256!=='string')",
-   'P1 check(): a V3 export has no source.sha256; it is accepted only with source.kind v3-export, a generation and an integer revision'],
-  ['banner', "'生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版')",
-   "(doc.source.kind==='v3-export'?'V3 DB '+doc.source.path+' · 世代 '+doc.source.generation+' · 改訂 '+doc.source.revision+'\\npayloadHash '+doc.source.payloadHash.slice(0,12)+'（'+doc.source.payloadHashOf+'）':'生成元 '+doc.source.path+' · HEAD '+doc.source.head.slice(0,8)+' · '+doc.source.generatedAt+'\\nSHA-256 '+doc.source.sha256+' · '+(doc.source.dirty?'未コミット差分を含む':'コミット済み版'))",
-   'P2 banner(): a V3 export shows its DB generation and revision and the named payloadHash, never a Git HEAD or a committed/uncommitted label'],
-  ['banner', "(doc.source.sha256!==canonical.sha256?",
-   "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
-   'P3 banner(): the base comparison of a V3 export uses generation and revision instead of sha256'],
-  ['planRebuild', 'function planRebuild(d,versions){',
-   "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
-   'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them instead of leaving stale ones'],
-  ['renderPlanTools', "const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);",
-   "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
-   'P5 renderPlanTools(): 版を追加 gets an explicit position select (insert after a version, or first); the choice is kept as planPosition on the new START (OPS-176; the DB version order is authoritative)'],
-];
 const MIRRORED = ['M4 the proposal dialog: its add line (addProposal, then addMilestoneRelation or addProposalEdge for the chosen place) is called directly; the dialog DOM is not built','M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
   'M2 the page load: check(d); initializeRelationBaseline(d); doc=d (as the open-file handler does)',
   'NOT EXERCISED: serve.py /save and Inbox (they require source.sha256 and would refuse a V3 export); resume over HTTP; the browser'];
-function patched(name) {
-  let src = fn(name);
-  for (const [target, from, to] of PATCHES) if (target === name) { const n = src.split(from).length - 1; if (n !== 1) throw Error(`patch for ${name} matched ${n} times; the template changed`); src = src.replace(from, to); }
-  return src;
-}
 
 class Node {
   constructor(tag, ids) { this.tag = tag; this.ids = ids; this.children = []; this.attrs = {}; this.style = {}; this._text = ''; this.className = ''; this.handlers = {}; this._id = ''; this.title = ''; this.htmlFor = ''; this.rows = 0; this._value = ''; this.hidden = false; }
@@ -64,7 +41,7 @@ function context() {
     'rewireRelation', 'planAddCard', 'planAddVersion', 'renderPlanTools', 'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
     'removeRelation', 'isMilestoneLink', 'linkLabel', 'dataRelation', 'isChainLink', 'addMilestoneRelation', 'editorViewModel', 'milestonePlanBlocks', 'proposalBlocks',
     'drawEditor', 'editorAct', 'editor', 'canonicalDifferences', 'editsReflected'];
-  const src = [line('const STATES='), line('const PLAN_DIR='), 'const PLAN_SOURCE_FILE=PLAN_SOURCE;', line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), line('let planDraft='), patched('check'), patched('banner'), ...names.map(n => n === 'planRebuild' || n === 'renderPlanTools' ? patched(n) : fn(n))].join('\n') +
+  const src = [line('const STATES='), line('const PLAN_DIR='), line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), line('let planDraft='), fn('check'), fn('banner'), ...names.map(fn)].join('\n') +
     '\nconst copy=x=>JSON.parse(JSON.stringify(x));var doc=null,selected=null,dirty=false,formDirty=false,workspace=null,canonical=null;' +
     'function $(id){return __ids.get(id)||null;}function report(m,e){log.push(["report",m,!!e]);}function confirm(m){log.push(["confirm",m]);return true;}' +
     'function renderCanonicalRestartSuggestion(){}function renderCanonicalNotice(){}function showNeighborhood(id){log.push(["neighborhood",id]);}function openDocument(p){}' +
@@ -118,4 +95,4 @@ function resume(saveFile, latestFile) {
 
 const [cmd, ...args] = process.argv.slice(2);
 const result = cmd === 'edit' ? edit(...args) : cmd === 'resume' ? resume(...args) : (() => { throw Error('usage: edit|resume'); })();
-console.log(JSON.stringify({ ...result, patches: PATCHES.map(p => p[3]), mirrored: MIRRORED, template: TEMPLATE }));
+console.log(JSON.stringify({ ...result, mirrored: MIRRORED, template: TEMPLATE }));

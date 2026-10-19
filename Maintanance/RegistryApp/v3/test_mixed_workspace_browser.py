@@ -7,6 +7,7 @@ and the stale-base notice. Folders are TemporaryDirectories; the real Inbox is n
 Run: python3 -B Maintanance/RegistryApp/v3/test_mixed_workspace_browser.py -v
 """
 import hashlib
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -16,7 +17,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))  # RegistryApp: inbox.py
 import inbox as vi  # noqa: E402
 import v3_studio_server as vs  # noqa: E402
-from test_browser_roundtrip import Browser  # noqa: E402
+from test_browser_roundtrip import V3_BRANCHES, Browser  # noqa: E402
 from test_v3_inbox import legacy_doc  # noqa: E402
 
 LEGACY_NOTE = '旧形式の未照合の編集版が1件あります（この画面では再開しません・削除しません）。'
@@ -53,7 +54,7 @@ class Mixed(Browser):
         out = self.browser('look')
         self.assertNotIn('再開中', out['after']['banner'])
         self.assertIn('形式の違う編集版（旧形式）は再開しません。', out['after']['status'])
-        self.assertIn(vs.PATCHES[-1][1], self.server.pages[0], 'P6 is in the served page')
+        self.assertIn(V3_BRANCHES['P6 resumeWorkspace()'], self.server.pages[0], 'P6 is in the served page (from the template)')
 
     def test_refresh_keeps_the_resume_and_the_stale_notice(self):
         sid = self.v3_save()
@@ -80,6 +81,24 @@ class Mixed(Browser):
         self.assertIn('取り込み記録が読めないため、旧形式の編集版の照合状態は不明です', out['after']['status'])
         self.assertNotIn('未照合の編集版が', out['after']['status'], 'no count is inferred')
         self.assertEqual((self.server.latest()['reconciliation'], self.server.latest()['unresolvedLegacy']), ('unknown', None))
+
+
+    def test_open_file_needs_the_same_kind(self):
+        legacy = self.dir / 'legacy.json'
+        legacy.write_text(json.dumps(legacy_doc(), ensure_ascii=False), encoding='utf-8')
+        out = self.browser('openFile', file=str(legacy))
+        self.assertIn('読み込めません：形式の違うJSON（旧形式）は、この画面では開けません。', out['after']['status'])
+        self.assertIn('V3 DB', out['after']['banner'], 'the page keeps its V3 document')
+        same = self.dir / 'v3.json'
+        same.write_text(json.dumps(self.latest_export(), ensure_ascii=False), encoding='utf-8')
+        out = self.browser('openFile', file=str(same))
+        self.assertNotIn('読み込めません', out['after']['status'] or '')
+        self.assertIn('V3 DB', out['after']['banner'])
+
+    def latest_export(self):
+        import urllib.request
+        with urllib.request.urlopen(self.server.origin + '/v3/latest', timeout=30) as r:
+            return json.loads(r.read())
 
 
 if __name__ == '__main__':

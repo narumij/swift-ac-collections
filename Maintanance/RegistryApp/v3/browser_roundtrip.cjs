@@ -9,6 +9,7 @@
 //             OPS-176: tool (+ toolSet {id: value}) presses a button of the card list's plan tools (#planTools)
 //   look:     OPS-177: open /, let the page's own resume settle, read (no edit, no save)
 //   refresh:  OPS-177: resume, press 更新 (POST /sync, then the page reloads), read the resumed page again
+//   openFile: OPS-180: choose params.file in the page's own 開く (#open), then read
 //   blocked:  negative control of the interception: fetch params.url from the page; it must be aborted before sending
 'use strict';
 const pw = require('/opt/homebrew/lib/node_modules/playwright');
@@ -91,6 +92,12 @@ const params = JSON.parse(fs.readFileSync(paramsFile, 'utf8'));
       result.before = await read();
       await Promise.all([page.waitForNavigation({ timeout: 10000 }), page.evaluate(() => document.getElementById('refresh').click())]);
       await page.waitForFunction(() => /再開中/.test(document.getElementById('sourceInfo').textContent), null, { timeout: 10000 });
+      result.after = await read();
+    } else if (mode === 'openFile') {
+      // OPS-180: the page's own 開く (file input #open) with params.file; read the status and banner afterwards
+      await page.evaluate(() => typeof resumed === 'undefined' ? true : resumed.then(() => true));
+      await page.setInputFiles('#open', params.file);
+      await page.waitForTimeout(500);
       result.after = await read();
     } else if (mode === 'blocked') {
       result.fetch = await page.evaluate(async url => { try { await fetch(url); return 'sent'; } catch (e) { return 'failed: ' + e.message; } }, params.url);

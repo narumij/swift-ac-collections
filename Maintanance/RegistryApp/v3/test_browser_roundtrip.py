@@ -28,6 +28,16 @@ ACTOR, EVIDENCE = '姫（試験）', ['TASK_REGISTRY_V3_BROWSER_EXPERIMENT.md#�
 EXPECTED_PATHS = {'GET /', 'GET /workspace', 'POST /save', 'GET /registry.json', 'GET /server-status', 'GET /activity-events', 'GET /commit-approvals',
                   'GET /approval-probe', 'GET /continuity', 'GET /letters'}
 
+# OPS-180: the V3 branches now live in index.template.html itself (no in-memory patch); one marker per branch
+V3_BRANCHES = {'P1 check()': "d.source.kind==='v3-export'?!(d.v3&&typeof d.source.generation==='string'",
+               'P2 banner()': "'V3 DB '+doc.source.path+' · 世代 '",
+               'P3 banner()': "'\\nDBが更新されています：この編集版の土台 世代 '",
+               'P4 planRebuild()': "const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
+               'P5 renderPlanTools() (V3 only)': "if(doc.source&&doc.source.kind==='v3-export'){after=el('select');after.id='planAddVersionAfter';",
+               'P6 resumeWorkspace()': "if(((d.source||{}).kind||'legacy')!==(canonical.kind||'legacy')){report('形式の違う編集版（'",
+               'P6 unknown history': "'取り込み記録が読めないため、旧形式の編集版の照合状態は不明です",
+               'open-file kind check': "throw Error('形式の違うJSON（'"}
+
 
 class Browser(unittest.TestCase):
     def setUp(self):
@@ -106,7 +116,7 @@ class RoundTrip(Browser):
             out.mkdir(parents=True, exist_ok=True)
             (out / 'reopen.png').write_bytes((self.dir / 'reopen.png').read_bytes())
             (out / 'roundtrip.json').write_text(json.dumps({'save': saved, 'reopen': reopened, 'apply': body, 'serverRequests': self.server.requests,
-                                                            'patches': [p[2] for p in vs.PATCHES]}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+                                                            'templateBranches': sorted(V3_BRANCHES)}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
 
 
 class Compare(Browser):
@@ -171,8 +181,9 @@ class Isolation(Browser):
         self.assertNotIn(':8088', self.server.origin)
         self.assertEqual(len(self.server.pages), 1)
         page = self.server.pages[0]
-        for _, new, _ in vs.PATCHES:
-            self.assertIn(new, page)
+        for name, marker in V3_BRANCHES.items():
+            self.assertEqual(page.count(marker), 1, name)  # served from the template as it is
+        self.assertFalse(hasattr(vs, 'PATCHES'), 'no in-memory patch remains')
 
 
 if __name__ == '__main__':

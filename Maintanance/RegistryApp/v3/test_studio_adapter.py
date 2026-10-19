@@ -85,7 +85,7 @@ class Export(Studio):
         self.assertEqual((cards['MS-A2']['state'], cards['MS-A2']['recordedDone']), ('DONE', False), 'display state derived from the focus, the box kept apart')
         self.assertEqual((cards['MS-B1']['state'], cards['START-0.2.0']['state'], cards['END-0.2.0']['state']), ('ACTIVE', 'DONE', 'ACTIVE'))
 
-    def test_unpatched_check_refuses_and_patched_banner_is_honest(self):
+    def test_template_check_accepts_v3_and_banner_is_honest(self):
         exported = self.file('e.json', sa.export_doc(self.conn))
         out = subprocess.run(['node', '-e', '''
 const fs=require('fs'),vm=require('vm');const html=fs.readFileSync(process.argv[1],'utf8');
@@ -93,11 +93,9 @@ const a=html.indexOf('\\nfunction check(');const m=/\\)\\s*\\{/g;m.lastIndex=a;l
 const c={};vm.createContext(c);vm.runInContext(html.slice(a+1,i+1)+';function proposalNodes(){return [];}',c);
 try{c.check(JSON.parse(fs.readFileSync(process.argv[2],'utf8')));console.log('accepted');}catch(e){console.log('refused: '+e.message);}''',
                               str(HERE.parent / 'index.template.html'), str(exported)], capture_output=True, text=True, timeout=60)
-        self.assertTrue(out.stdout.startswith('refused'), 'the production check() does not accept a V3 export (P1 is needed)')
+        self.assertEqual(out.stdout.strip(), 'accepted', 'the template check() accepts a V3 export (P1, integrated in OPS-180)')
         save, result = self.edit([])
-        self.assertEqual(len(result['patches']), 5)  # P1-P3 (OPS-165), P4 planRebuild (OPS-172), P5 renderPlanTools (OPS-176)
-        self.assertTrue(result['patches'][3].startswith('P4 planRebuild()'))
-        self.assertTrue(result['patches'][4].startswith('P5 renderPlanTools()'))
+        self.assertNotIn('patches', result, 'the harness applies no patch (OPS-180)')
         banner = self.latest_rows(save)['banner']
         self.assertIn('世代 ' + w3.generation(self.conn), banner)
         self.assertIn('改訂 0', banner)

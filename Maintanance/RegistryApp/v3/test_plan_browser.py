@@ -16,7 +16,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import registry_v3_write as w3  # noqa: E402
 import v3_studio_server as vs  # noqa: E402
-from test_browser_roundtrip import ACTOR, EVIDENCE, Browser  # noqa: E402
+from test_browser_roundtrip import ACTOR, EVIDENCE, V3_BRANCHES, Browser  # noqa: E402
 
 PLAN = 'plan:milestones'
 EV = ['計画の確認（headless試験）']
@@ -111,7 +111,7 @@ class Conflict(PlanBrowser):
 
     def test_page_has_p4(self):
         self.browser('plan', actions=[{'select': 'MS-A1'}, {'press': '後へ'}])
-        self.assertIn(vs.PATCHES[-1][1], self.server.pages[0])
+        self.assertIn(V3_BRANCHES['P4 planRebuild()'], self.server.pages[0])
 
 
 if __name__ == '__main__':

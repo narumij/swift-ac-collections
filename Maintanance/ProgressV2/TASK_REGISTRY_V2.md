@@ -134,7 +134,7 @@
 | `OPS-177` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3保存と旧保存の隔離共存 | 形式別保存・再開・更新をcopyで接続。旧保存を保持。本番変更なし | `Maintanance/Current/TASK_REGISTRY_V3_MIXED_WORKSPACE.md` |
 | `OPS-178` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3モジュールを正式配置へ移す | 複製なし、処理変更なしでv3へ移動。226試験維持。本番有効化なし | `Maintanance/Current/TASK_REGISTRY_V3_MODULE_PROMOTION.md` |
 | `OPS-179` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3保存処理を現用inboxへ統合 | 旧動作維持・二重実装除去・履歴破損は照合不明。本番再起動なし | `Maintanance/Current/TASK_REGISTRY_V3_INBOX_INTEGRATION.md` |
-| `OPS-180` | `ACTIVE` | Astra調整 / 姫 | [EXECUTION] V3画面対応を現用テンプレートへ統合 | P1〜P6一本化、legacy動作維持。本番切替なし | `Maintanance/Current/TASK_REGISTRY_V3_TEMPLATE_INTEGRATION.md` |
+| `OPS-180` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3画面対応を現用テンプレートへ統合 | P1〜P6一本化、legacy動作維持。本番切替なし | `Maintanance/Current/TASK_REGISTRY_V3_TEMPLATE_INTEGRATION.md` |
 | `OPS-117` | `WAITING_USER` | 姫（レビュー） / Astra（受入） | [EXECUTION] 姫の作業イベント更新ルールを短くレビューする | 2026-10-18ユーザー承認。指定2節のタイミング・権限・待機・返却境界を確認。レビュー3指摘をAstra受入、姫への依頼終了。ACKとcommit待ちの表記を補正。待機中の正式依頼受信後の着手条件はユーザー判断待ち。実装変更なし | `Maintanance/Current/CLAUDE_ACTIVITY_RULE_REVIEW.md` |
 | `OPS-116` | `WAITING_USER` | Claude（姫・原因調査と修正） / Astra（受入） | [EXECUTION] 見取り図の全体fallbackによる骨格配置崩れを修正する | 2026-10-18ユーザー依頼。b9300017後の表示崩れを再現し、原因を確定して限定修正。接続・状態・計画を変えず、骨格・既存配置要求を保持。a810e4f4の修正をAstra技術受入。旧版fallback再現・新版解消とsync/verify成功。技術受入記録は承認済み範囲でcommit。Safari表示確認待ち | `Maintanance/Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md` |
 | `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |

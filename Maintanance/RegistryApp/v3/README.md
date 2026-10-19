@@ -599,3 +599,24 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - `test_mixed_workspace_browser.py`（4件）：壊れた記録があっても、ページはV3の保存を再開し、不明と知らせ、件数を出さない。
   - 否定の対照：不明を既知として扱う、`record`が壊れた行を無視する、`imports`が一部だけ返す、旧保存の`list`の行を変える、P6の不明の知らせを外す。それぞれ試験が落ちることを確かめた。
 - **後続（ここではしていない）**：現用templateへのP1〜P6の移植と、`serve.py`のV3 mode。`serve.py`は今もkindなしの`latest(INBOX)`を使う。そのため、現用のInboxにV3の保存が置かれると、それを再開する。これは今までと同じ振る舞いで、変えるのはS3c。
+
+## OPS-180：V3の画面対応を現用templateへ統合（S3b）
+
+- **統合**：受け入れたP1〜P6（P4aを含む）を`index.template.html`へ書き込んだ。隔離serverとharnessのメモリ上のpatchは消した。どちらも同じtemplateを、そのまま使う。
+  - P1〜P4、P6は、受け入れた文のまま入れた。V3だけの処理は、どれも`source.kind === 'v3-export'`のときだけ働く。
+- **legacyを変えないための補正**：
+  - P5（版を追加する位置の選択）：前は文書の種類にかかわらず出ていた。V3の文書のときだけ出し、`planPosition`もそのときだけ残す。legacyの画面には欄が出ず、legacyの保存に新しい欄は付かない。
+  - 開く（`#open`）：P1で`check()`がV3も受け入れるようになったので、開くときにも、画面の正本とfileのkindを照らし合わせる（P6と同じ考え）。違えば「形式の違うJSON（…）は、この画面では開けません。」として、読み込まない。
+- **試験**：
+  - 新しい`test_template_integration.py`（4件）：
+    - 各分岐がtemplateにちょうど1回ある。
+    - legacyの形の文書では、位置の欄がなく、版を追加しても`planPosition`が付かない。V3では位置が残る。
+    - templateの`check()`は、legacyを今までどおり受け入れ（sha256がなければ拒否）、正しい形のV3だけを受け入れる。
+  - `test_mixed_workspace_browser.py`（5件）：V3の画面で旧形式のfileを開くと拒否し、画面の文書は変わらない。同じ種類のfileは開ける。
+  - driverに`openFile`のmodeを足した。browserの試験では、配信したページに各分岐がちょうど1回あり、serverにpatchが残っていないことを確かめる。
+  - 否定の対照：P5の種類の条件を外す、開くときの照合を外す、P1を元に戻す。それぞれ試験が落ちることを確かめた。
+- **現用の画面の試験**：
+  - `RegistryApp`の`test-*.cjs`（23本。view-modelの基準との比較を含む）と`test-*.py`（7本）がすべて通った。
+  - `verify.cjs`は、一時folderに作ったページで通った。`sync.build()`、seedの埋め込み、`build-pending.py`、`build-documents.mjs`の順に作った。
+  - `sync.py`の`main()`は使わない。`main()`は`local-tools.json`を書き換えるため。現用のCacheとInboxは変わっていない。
+- **後続**：`serve.py`のV3 mode（S3c）。

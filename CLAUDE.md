@@ -104,6 +104,12 @@ updates, and final reports.
 To reduce usage, use English by default for internal instructions and coordinator-to-Claude
 requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
 
+Interpret each user message in the context of the ongoing exchange. Before responding,
+check it against at least the previous two conversational exchanges, including your
+own replies. Resolve omitted subjects, references, and corrections from that context
+rather than treating the message as a standalone request. Look further back only when
+needed; ask briefly if materially different interpretations remain.
+
 ## First response to a new request
 
 Start with the smallest useful response, about ten lines:

@@ -69,6 +69,11 @@ class WriteDisabled(ValueError):
 Refused = r3.Refused
 
 
+class IdentityHeld(ValueError):
+    """The declared ancestry does not allow this registration now (not stated, or an ancestor save already registered
+    the same draft). Raised inside the write transaction; nothing is recorded, so the operation stays unused."""
+
+
 class ConsumedElsewhere(Refused):
     """A constituent named in request.consumes is already claimed by another operation of the same scope."""
 
@@ -557,3 +562,72 @@ def _set_group(conn, operation_id, req, hook):
 
 STRUCTURAL = {'remove_edge': _remove_edge, 'set_edge': _set_edge, 'rewire_edge': _rewire_edge, 'add_milestone_link': _add_link,
               'remove_milestone_link': _remove_link, 'set_milestone_link': _set_link, 'rewire_milestone_link': _rewire_link, 'set_task_group': _set_group}
+
+
+# ---- OPS-171 K4: proposal registration ------------------------------------------------------------------------------
+DRAFT = re.compile(r'draft-[1-9]\d*')
+
+
+def _register_proposal(conn, operation_id, req, hook):
+    """Register one draft and every connection that references it, in this one transaction: number (highwater + 1),
+    proposal_map (saveId, draftId), then the edges and links with the draft ID replaced by the formal ID, validated by
+    the K2 rules on the post-change structure. Any refusal or failure undoes all of it (no number used)."""
+    key, fields = req['proposal'], req['fields']
+    draft = key.get('draftId') if isinstance(key, dict) else None
+    if not isinstance(key, dict) or not isinstance(key.get('saveId'), str) or not key['saveId'] or not isinstance(draft, str) or not DRAFT.fullmatch(draft):
+        raise Refused('proposal needs a saveId and a draft-N id')
+    ancestry = req.get('ancestry')
+    if ancestry == {'independent': True}:
+        ancestors = []
+    elif isinstance(ancestry, dict) and set(ancestry) == {'ancestors'} and isinstance(ancestry['ancestors'], list) and ancestry['ancestors'] \
+            and all(isinstance(a, str) and a for a in ancestry['ancestors']):
+        ancestors = ancestry['ancestors']
+    else:
+        raise IdentityHeld('identity: ancestry not stated (state independent or the known ancestor saves)')
+    for anc in ancestors:  # under this write transaction: an ancestor registered meanwhile holds this one
+        row = conn.execute('SELECT formal_id FROM proposal_map WHERE save_id = ? AND draft_id = ?', (anc, draft)).fetchone()
+        if row:
+            raise IdentityHeld(f'identity: ancestor save {anc} registered {draft} as {row[0]}')
+    if not isinstance(fields, dict) or set(fields) - {'state', 'owner', 'item', 'condition', 'detail', 'group'} or {'state', 'owner', 'item', 'condition', 'detail'} - set(fields) \
+            or not all(isinstance(fields[k], str) and fields[k].strip() for k in ('state', 'owner', 'item')) \
+            or not all(isinstance(fields[k], str) for k in ('condition', 'detail')) \
+            or not (fields.get('group') is None or (isinstance(fields['group'], str) and fields['group'].strip())):
+        raise Refused('fields must be given explicitly: state, owner, item (non-empty text), condition, detail (text), and group (non-empty text or null)')
+    if not isinstance(req.get('edges', []), list) or not isinstance(req.get('links', []), list):
+        raise Refused('edges and links are lists')
+    connections = [('edge', e) for e in req.get('edges', [])] + [('link', e) for e in req.get('links', [])]
+    for kind, e in connections:
+        if not isinstance(e, dict) or not isinstance(e.get('prerequisite'), str) or not isinstance(e.get('successor'), str) \
+                or (kind == 'edge' and e.get('flow', 'SEQUENCE') not in ('SEQUENCE', 'PARALLEL_JOIN')):
+            raise Refused(f'{kind} entries need prerequisite and successor text' + (' and a SEQUENCE/PARALLEL_JOIN flow' if kind == 'edge' else ''))
+        ends = (e['prerequisite'], e['successor'])
+        if ends.count(draft) != 1:
+            raise Refused(f'{kind} {ends[0]} -> {ends[1]} must reference {draft} exactly once')
+        other = ends[1] if ends[0] == draft else ends[0]
+        if DRAFT.fullmatch(other):
+            raise Refused(f'experiment-unsupported: draft-to-draft connection {ends[0]} -> {ends[1]}')
+        if not isinstance(e.get('constraint'), str) or not e['constraint'].strip():
+            raise Refused(f'{kind} {ends[0]} -> {ends[1]}: an explicit consulted constraint is required')
+    if not isinstance(req.get('prefix'), str):
+        raise Refused('prefix is text')
+    result, before, after = _register(conn, operation_id, {'prefix': req['prefix'], 'fields': dict(fields, permanent=False), 'proposal': key})
+    tid = result['id']
+    swap = lambda x: tid if x == draft else x
+    added = []
+    for kind, e in connections:
+        a, b = swap(e['prerequisite']), swap(e['successor'])
+        if kind == 'edge':
+            _insert_edge(conn, operation_id, 'progress', a, b, e.get('flow', 'SEQUENCE'), e['constraint'])
+        else:
+            _link_rules(conn, a, b)
+            if _edge_attrs(conn, 'milestone', a, b) is not None:
+                raise Refused(f'milestone link {a} -> {b} already exists')
+            conn.execute("INSERT INTO graph_edges VALUES ('milestone', ?, ?, NULL, ?)", (a, b, e['constraint']))
+            conn.execute('INSERT OR REPLACE INTO provenance VALUES (?, ?)', (f'edge:milestone:{a}->{b}', 'operation:' + operation_id))
+        added.append({'kind': kind, 'prerequisite': a, 'successor': b, 'constraint': e['constraint']})
+    _cycles(conn, 'progress')  # progress + milestone links + skeleton, after every connection is in place
+    after = dict(after, connections=added)
+    return {'kind': 'register_proposal', 'id': tid, 'proposal': key, 'connections': len(added)}, before, after
+
+
+STRUCTURAL['register_proposal'] = _register_proposal

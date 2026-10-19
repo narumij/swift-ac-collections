@@ -27,6 +27,7 @@ baseline values as the base; the operation ID is derived from the save bytes, so
 import copy
 import hashlib
 import json
+import re
 import urllib.parse
 
 import registry_v3_read as r3
@@ -141,6 +142,23 @@ def _structural_diff(name, now, before, unsupported):
     return sorted(set(before) - set(now)), sorted(set(now) - set(before)), now, before
 
 
+DRAFT_ID = re.compile(r'draft-[1-9]\d*')
+
+
+def _proposals(items, unsupported):
+    if not isinstance(items, list):
+        unsupported.append('proposals is not a list')
+        return []
+    ids = [p.get('id') if isinstance(p, dict) else None for p in items]
+    for p in items:
+        if not isinstance(p, dict) or not isinstance(p.get('id'), str) or not DRAFT_ID.fullmatch(p['id']) or not isinstance(p.get('title'), str) \
+                or not p['title'].strip() or not isinstance(p.get('memo', ''), str) or set(p) - {'id', 'title', 'memo'}:
+            unsupported.append(f'proposal {p!r}: needs id draft-N, a title and an optional memo only')
+    if len(set(ids)) != len(ids):
+        raise SaveRejected('duplicate in proposals')
+    return [p for p in items if isinstance(p, dict)]
+
+
 def _validate(conn, save, structural):
     """Whole-save validation shared by the single-task and the change-group paths; returns the changed fields per task.
     Fail closed: every compared field must have its base in the save, duplicates are refused, unknown fields are refused,
@@ -182,8 +200,13 @@ def _validate(conn, save, structural):
         unsupported.append('milestones (plan)')
     if save['milestoneHead'] != base['milestoneHead']:
         unsupported.append('focus (milestoneHead)')
-    if save.get('proposals') or base.get('proposals'):
-        unsupported.append('proposals')
+    if base.get('proposals'):
+        unsupported.append('baseline proposals')
+    if save.get('proposals'):
+        if not structural:
+            unsupported.append('proposals')
+        else:
+            diffs['proposals'] = _proposals(save['proposals'], unsupported)
     now, before = keyed['tasks']
     if set(now) != set(before):
         unsupported.append('task set')
@@ -225,15 +248,29 @@ def plan_groups(conn, save):
     A rewire is never inferred from the diff; it exists only as an explicit pair resolution (apply_groups)."""
     changed, now, before, v3, diffs = _validate(conn, save, structural=True)
     groups = [{'groupId': 'task:' + tid, 'kind': 'task', 'status': 'ready', 'request': _request(tid, fields, now, before, v3)} for tid, fields in sorted(changed.items())]
+    drafts = {p['id']: {'groupId': 'proposal:' + p['id'], 'kind': 'proposal', 'draft': p, 'edges': [], 'links': [], 'consumes': [],
+                        'status': 'pending', 'pending': ['registration'], 'unsupported': []} for p in diffs.get('proposals', [])}
     for name, short, graph in GRAPHS:
         removed, added, cur, old = diffs[name]
-        ambiguous = bool(removed and added)
+        ambiguous = bool(removed and added)  # an addition that references a draft still makes a removal ambiguous
         for k in removed:
             groups.append({'groupId': f'{short}-remove:{k[0]}->{k[1]}', 'kind': 'remove', 'graph': graph, 'key': list(k), 'old': old[k],
                            'status': 'pending' if ambiguous else 'ready', 'pending': ['pairing'] if ambiguous else []})
         for k in added:
-            groups.append({'groupId': f'{short}-add:{k[0]}->{k[1]}', 'kind': 'add', 'graph': graph, 'key': list(k), 'new': cur[k],
-                           'status': 'pending', 'pending': ['consultation'] + (['pairing'] if ambiguous else [])})
+            ends = [x for x in k if DRAFT_ID.fullmatch(x)]
+            if not ends:
+                groups.append({'groupId': f'{short}-add:{k[0]}->{k[1]}', 'kind': 'add', 'graph': graph, 'key': list(k), 'new': cur[k],
+                               'status': 'pending', 'pending': ['consultation'] + (['pairing'] if ambiguous else [])})
+                continue
+            for d in ends:  # an incident connection belongs to its draft's proposal group only, never to a structural group
+                if d not in drafts:
+                    raise SaveRejected(f'{name} {k[0]} -> {k[1]} references {d}, which is not a proposal of this save')
+                g = drafts[d]
+                g['edges' if graph == 'progress' else 'links'].append({'prerequisite': k[0], 'successor': k[1], **({'flow': cur[k].get('flow')} if graph == 'progress' else {})})
+                g['consumes'].append(f'{short}-add:{k[0]}->{k[1]}')
+                if len(ends) > 1:
+                    g['status'], g['unsupported'] = 'unsupported', g['unsupported'] + [f'experiment-unsupported: draft-to-draft connection {k[0]} -> {k[1]}']
+    groups += [drafts[d] for d in sorted(drafts)]
     if not groups:
         raise SaveRejected('the save changes nothing')
     return groups
@@ -256,8 +293,8 @@ def _units(groups, resolutions):
     constituent). A unit is a ready group, a resolved standalone group, or one pair of a removal and an addition."""
     by_id = {g['groupId']: g for g in groups}
     res = resolutions or {}
-    if not isinstance(res, dict) or set(res) - {'standalone', 'pairs'}:
-        raise SaveRejected('resolutions are {"standalone": {groupId: {...}}, "pairs": [...]}')
+    if not isinstance(res, dict) or set(res) - {'standalone', 'pairs', 'proposals'}:
+        raise SaveRejected('resolutions are {"standalone": {groupId: {...}}, "pairs": [...], "proposals": {groupId: {...}}}')
     standalone, pairs = res.get('standalone', {}), res.get('pairs', [])
     if not isinstance(standalone, dict) or not isinstance(pairs, list):
         raise SaveRejected('malformed resolutions')
@@ -266,7 +303,7 @@ def _units(groups, resolutions):
         if not isinstance(r, dict) or not isinstance(r.get('constraint'), str) or not r['constraint'].strip() or not isinstance(r.get('evidence'), list) or not r['evidence']:
             raise SaveRejected(f'{what}: a consulted constraint (non-empty) and evidence (non-empty list) are required')
     def take(gid, by):
-        if gid not in by_id or by_id[gid]['kind'] == 'task':
+        if gid not in by_id or by_id[gid]['kind'] in ('task', 'proposal'):
             raise SaveRejected(f'resolution names no structural group of this save: {gid}')
         if gid in used:
             raise SaveRejected(f'{gid} is used by more than one resolution ({used[gid]}, {by})')
@@ -295,7 +332,51 @@ def _units(groups, resolutions):
         uid = f"rewire:{r['graph']}:{r['key'][0]}->{r['key'][1]}=>{a['key'][0]}->{a['key'][1]}"
         units[uid] = {'pair': (r, a), 'resolution': p, 'consumes': [rid, aid]}
         pair_of[rid] = pair_of[aid] = uid
+    proposals = res.get('proposals', {})
+    if not isinstance(proposals, dict):
+        raise SaveRejected('malformed proposal resolutions')
+    for gid, r in sorted(proposals.items()):
+        g = by_id.get(gid)
+        if not g or g['kind'] != 'proposal':
+            raise SaveRejected(f'resolution names no proposal of this save: {gid}')
+        if not isinstance(r, dict) or set(r) != {'prefix', 'fields', 'constraints', 'evidence'}:
+            raise SaveRejected(f'{gid}: a proposal resolution needs exactly prefix, fields, constraints and evidence')
+        if not isinstance(r['prefix'], str) or not re.fullmatch(r'[A-Z]+', r['prefix']) or not isinstance(r['fields'], dict):
+            raise SaveRejected(f'{gid}: prefix (A-Z) and fields are required')
+        wanted = {f"edge:{e['prerequisite']}->{e['successor']}" for e in g['edges']} | {f"link:{e['prerequisite']}->{e['successor']}" for e in g['links']}
+        if not isinstance(r['constraints'], dict) or set(r['constraints']) != wanted or not all(isinstance(v, str) and v.strip() for v in r['constraints'].values()):
+            raise SaveRejected(f'{gid}: a consulted constraint is required for exactly these connections: {sorted(wanted)}')
+        if not isinstance(r['evidence'], list) or not r['evidence']:
+            raise SaveRejected(f'{gid}: evidence (non-empty list) is required')
+        units[gid] = {'group': g, 'resolution': r, 'consumes': [gid] + g['consumes']}
     return units, pair_of
+
+
+def _proposal_request(unit, sid, v3, ancestry):
+    g, r = unit['group'], unit['resolution']
+    fields = dict({'item': g['draft']['title']}, **r['fields'])
+    c = r['constraints']
+    return {'kind': 'register_proposal', 'prefix': r['prefix'], 'fields': fields, 'proposal': {'saveId': sid, 'draftId': g['draft']['id']},
+            'edges': [dict(e, constraint=c[f"edge:{e['prerequisite']}->{e['successor']}"]) for e in g['edges']],
+            'links': [dict(e, constraint=c[f"link:{e['prerequisite']}->{e['successor']}"]) for e in g['links']],
+            'ancestry': ancestry, 'generation': v3['generation']}
+
+
+def _identity(conn, groups, ancestry):
+    """Explicit ancestry only: {'independent': True} or {'ancestors': [saveId, ...]}. Anything else keeps every proposal
+    pending on identity; an ancestor that already registered the same draftId keeps that proposal pending."""
+    valid = ancestry == {'independent': True} or (isinstance(ancestry, dict) and set(ancestry) == {'ancestors'} and isinstance(ancestry['ancestors'], list)
+                                                  and ancestry['ancestors'] and all(isinstance(a, str) and a for a in ancestry['ancestors']))
+    for g in groups:
+        if g['kind'] != 'proposal':
+            continue
+        if not valid:
+            g['pending'] = g['pending'] + ['identity: ancestry not stated (state independent or the known ancestor saves)']
+            continue
+        for anc in ancestry.get('ancestors', []):
+            row = conn.execute('SELECT formal_id FROM proposal_map WHERE save_id = ? AND draft_id = ?', (anc, g['draft']['id'])).fetchone()
+            if row:
+                g['pending'] = g['pending'] + [f"identity: ancestor save {anc} registered {g['draft']['id']} as {row[0]}"]
 
 
 def _unit_request(unit, v3, save):
@@ -330,7 +411,11 @@ def _consumed(conn, sid):
     return dict(conn.execute('SELECT constituent, operation_id FROM consumption_claims WHERE scope = ?', (sid,)).fetchall())
 
 
-def apply_groups(conn, save, selected, actor, evidence, resolutions=None, _after_preflight=None):
+def gid_resolved(resolutions, gid):
+    return isinstance(resolutions, dict) and isinstance(resolutions.get('proposals'), dict) and gid in resolutions['proposals']
+
+
+def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancestry=None, _after_preflight=None):
     """Apply only the selected groups of a stored save, each as its own operation (ID = save:<saveId>:<unitId>).
     Selectable units: ready groups, resolved standalone groups, and pairs (rewire:...), which consume both sides.
     Returns every unit in exactly one of applied, alreadyReflected, replayed, conflict, refused, changedContent, pending,
@@ -339,18 +424,25 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, _after
     sid = save_identity(save)
     groups = plan_groups(conn, save)
     v3 = save['v3']
+    _identity(conn, groups, ancestry)
     units, pair_of = _units(groups, resolutions)
+    for gid, u in list(units.items()):  # a resolved proposal still waits when identity is unclear or it is unsupported
+        g = u.get('group', {})
+        if g.get('kind') == 'proposal' and (g['status'] == 'unsupported' or any(p.startswith('identity') for p in g['pending'])):
+            del units[gid]
     for g in groups:
         gid = g['groupId']
         if g['status'] == 'ready' and gid not in units and gid not in pair_of:
             units[gid] = {'group': g, 'resolution': {}, 'consumes': [gid]}
-    pending = {g['groupId']: g['pending'] for g in groups if g['groupId'] not in units and g['groupId'] not in pair_of}
+    pending = {g['groupId']: [p for p in g['pending'] if not (g['kind'] == 'proposal' and p == 'registration' and gid_resolved(resolutions, g['groupId']))]
+               for g in groups if g['groupId'] not in units and g['groupId'] not in pair_of and g['status'] != 'unsupported'}
+    unsupported = {g['groupId']: g['unsupported'] for g in groups if g['status'] == 'unsupported'}
     if not isinstance(selected, list) or len(set(selected)) != len(selected):
         raise SaveRejected('the selection must be a list without duplicates')
     for x in selected:
         if x in pair_of:
             raise SaveRejected(f'{x} is part of {pair_of[x]}; select the pair, not one side')
-        if x not in units and x not in pending:
+        if x not in units and x not in pending and x not in unsupported:
             raise SaveRejected(f'the selection names no unit of this save: {x}')
     consumed = _consumed(conn, sid)
     for uid in selected:
@@ -361,14 +453,17 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, _after
                     raise SaveRejected(f'{c} was already consumed by {consumed[c]}; it cannot be applied again in another form (fail closed)')
     if _after_preflight:
         _after_preflight()  # test-only interleaving point: after the preflight, before any write
-    order = {'remove': 0, 'pair': 1, 'add': 2, 'task': 3}
+    order = {'remove': 0, 'pair': 1, 'add': 2, 'proposal': 3, 'task': 4}
     rank = lambda uid: (order['pair'] if 'pair' in units[uid] else order[units[uid]['group']['kind']], uid)
     out = {k: [] for k in ('applied', 'alreadyReflected', 'replayed', 'conflict', 'refused', 'changedContent', 'pending', 'unselected')}
     for uid in sorted((u for u in selected if u in pending), key=str):
         out['pending'].append({'groupId': uid, 'needs': pending[uid]})
+    for uid in sorted((u for u in selected if u in unsupported), key=str):
+        out['refused'].append({'groupId': uid, 'error': '; '.join(unsupported[uid])})
     for uid in sorted((u for u in selected if u in units), key=rank):
         unit = units[uid]
-        request = unit['group']['request'] if unit.get('group', {}).get('kind') == 'task' else _unit_request(unit, v3, save)
+        kind = unit.get('group', {}).get('kind')
+        request = unit['group']['request'] if kind == 'task' else _proposal_request(unit, sid, v3, ancestry) if kind == 'proposal' else _unit_request(unit, v3, save)
         request = dict(request, consumes=unit['consumes'], consumerScope=sid)
         op = unit_operation_id(sid, uid)
         known = w3.operation(conn, op)
@@ -376,6 +471,9 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, _after
             result = w3.apply(conn, op, dict(request, actor=actor, evidence=evidence + unit['resolution'].get('evidence', [])))
         except w3.OperationMismatch as error:
             out['changedContent'].append({'groupId': uid, 'operationId': op, 'error': str(error)})
+            continue
+        except w3.IdentityHeld as error:  # decided under the write transaction: still pending, nothing recorded
+            out['pending'].append({'groupId': uid, 'needs': [str(error)]})
             continue
         except w3.Refused as error:
             entry = {'groupId': uid, 'operationId': op, 'error': str(error), **({'replayed': True} if known else {})}
@@ -389,7 +487,7 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, _after
         else:
             out['applied'].append(entry)
     chosen = set(selected)
-    for uid in sorted(set(units) | set(pending)):
+    for uid in sorted(set(units) | set(pending) | set(unsupported)):
         if uid not in chosen:
             out['unselected'].append(uid)
     out['complete'] = not any(out[k] for k in ('conflict', 'refused', 'changedContent', 'pending', 'unselected'))

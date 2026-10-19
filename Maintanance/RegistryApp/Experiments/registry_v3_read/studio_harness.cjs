@@ -29,7 +29,7 @@ const PATCHES = [
    "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
    'P3 banner(): the base comparison of a V3 export uses generation and revision instead of sha256'],
 ];
-const MIRRORED = ['M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
+const MIRRORED = ['M4 the proposal dialog: its add line (addProposal, then addMilestoneRelation or addProposalEdge for the chosen place) is called directly; the dialog DOM is not built','M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
   'M2 the page load: check(d); initializeRelationBaseline(d); doc=d (as the open-file handler does)',
   'NOT EXERCISED: serve.py /save and Inbox (they require source.sha256 and would refuse a V3 export); resume over HTTP; the browser'];
 function patched(name) {
@@ -68,6 +68,8 @@ function context() {
     'function __state(){return {doc,selected,dirty,formDirty};}function __setCanonical(s){canonical=copy(s);}' +
     // M3: the relation dialog's apply and remove lines (the dialog DOM is not built): rewireRelation / removeRelation on the shown relation
     'function __rel(a,b){const r=graphData().edges.find(e=>(e.shownFrom||e.prerequisite)===a&&(e.shownFor||e.successor)===b)||doc.edges.find(e=>e.prerequisite===a&&e.successor===b)||(doc.milestoneRelations||[]).find(e=>e.prerequisite===a&&e.successor===b);if(!r)throw Error("relation not found: "+a+" -> "+b);return dataRelation(r);}' +
+    // M4: the proposal dialog's add line (the dialog DOM is not built): addProposal, then the chosen place, then select it
+    'function __proposal(title,memo,v){let {data,id}=addProposal(doc,title,memo);if(v.startsWith("ms:"))data=addMilestoneRelation(data,id,v.slice(3));else if(v.startsWith("task:"))data=addProposalEdge(data,id,v.slice(5),"SEQUENCE");doc=data;selected=id;dirty=true;render();}' +
     'function __remove(a,b){removeRelation(__rel(a,b));}function __rewire(f,t){const orig=__rel(f.prerequisite,f.successor);doc=rewireRelation(doc,orig,t.prerequisite,t.successor);dirty=true;render();}';
   c.__ids = ids;
   vm.runInContext(src, c);
@@ -88,6 +90,7 @@ function edit(exportFile, actionsFile, out) {
     if (a.press) press(c, a.press);
     if (a.remove) c.__remove(a.remove.prerequisite, a.remove.successor);
     if (a.rewire) c.__rewire(a.rewire.from, a.rewire.to);
+    if (a.proposal) c.__proposal(a.proposal.title, a.proposal.memo || '', a.proposal.place || '');
   }
   let save;
   try { save = c.__save(); } catch (e) { throw Error(e.message + ' | editor reports: ' + JSON.stringify(c.log.filter(l => l[0] === 'report'))); }

@@ -17,6 +17,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_rou
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_groups.py -v        # OPS-168：複数taskの変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_structural.py -v  # OPS-169：構造の更新（K2）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_groups.py -v      # OPS-170：保存の構造変更群
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_registration.py -v  # OPS-171：提案の採番（K4）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -357,3 +358,34 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - **1タスクずつの経路**（`plan_save`）は、今までどおり構造の変更を拒否する。
 - 試験のharnessに`remove`と`rewire`の操作を足した（M3）。関係のdialogの「適用」と「除去」の行を、DOMを作らずに直接呼ぶ。
 - 版・カード・計画、提案の採番、親子のUI、恒久の区分、本番への接続は扱っていない。
+
+## OPS-171：提案の採番（K4、`register_proposal`と`proposal:<draft>`の群）
+
+- **書込**（`registry_v3_write.register_proposal`）：1つの操作で、仮カード1件を正式に採番し、そのカードを参照するprogressの辺と到達点への接続をすべて、正式なIDに置き換えて書く。
+  - 採番はhighwater+1で、`proposal_map`の（saveId、draftId）も一緒に書く。
+  - 辺と接続は、K2の規則（端点が生きていること・対応する向き・重複・変更後の循環）で確かめる。
+  - 1つでも拒否されたり途中で失敗したりしたら、全部を取り消す。番号も使わない。
+  - 仮カードどうしの接続は、この実験では対応していない。adapterでも書込の側でも拒否する。
+- **群**（`plan_groups`）：
+  - 仮カードごとに`proposal:<draftId>`を作る。それを参照する辺と接続は、この群にだけ属する。構造の群にはならない。
+  - consumption claimには、この群と、属する辺と接続のすべてを入れる。
+  - 解決までは`registration`の確認待ち。
+- **解決**（`resolutions.proposals`）：`{prefix, fields, constraints, evidence}`を明示する。
+  - `constraints`は、属する辺と接続にちょうど対応しなければならない。
+  - `item`は、指定がなければ提案のタイトルにする。
+- **系列**（`ancestry`）：呼ぶ側が`{"independent": true}`か`{"ancestors": [...]}`を明示する。
+  - 示されていなければ、`identity`の確認待ち。示されていないことを、独立した保存だという証拠にはしない。
+  - 示された祖先の保存が、同じdraftIdをすでに登録していれば、`identity`の確認待ちのままにする。sameAsや新規と決め直す処理は、この区切りにはない。
+  - 示された系列は要求の中身に入り、digestにも含まれる。書込のトランザクションの中で、もう一度確かめる（受入での補正）。
+    - 事前の確かめのあとで祖先が登録した場合でも、`IdentityHeld`で止める。記録も、claimも、番号も作らない。結果は`pending`として返す。
+    - `register_proposal`を直接呼ぶ場合も、系列の明示が要る。
+  - 系列を変えて同じ操作をもう一度要求すると、`changedContent`になる。
+  - `fields`の型を確かめる。state・owner・itemは空でない文字列、conditionとdetailは文字列、groupは空でない文字列かnull。
+- **1タスクずつの経路**（`plan_save`）は、今までどおり提案を拒否する。
+- 復元した世代は書込を閉じたまま（`WriteDisabled`）。
+- harnessに`proposal`の操作を足した（M4）。提案のdialogの「追加」の行を、DOMを作らずに直接呼ぶ。
+- **限界**：
+  - 複数の仮カードをまとめた原子性はない。
+  - 仮カードどうしの接続はない。
+  - 系列をまたいで同じ提案だと判断することはない。
+  - 本番への接続はない。

@@ -19,6 +19,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_groups.py -v      # OPS-170：保存の構造変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_registration.py -v  # OPS-171：提案の採番（K4）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_edits.py -v             # OPS-172：既存カードの計画編集（K5の一部）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_browser.py -v           # OPS-173：計画編集の隔離ブラウザ往復
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -408,5 +409,22 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - ほかの出典を持つ線は、ふつうの接続の変更として扱う。黙って捨てることはない。
 - **限界**：
   - 新しい版やカード、ゲート、focus、`recordedDone`、版の改名と削除、`planCondition`、draft-msへの接続は扱わない。
-  - 隔離serverのページ（OPS-166）にはP4を当てていない。ブラウザで計画を編集すると、古い骨格の線が残る。
+  - 隔離serverのページにもP4を当てた（OPS-173。P4aで、元の出典の値を別の名前で残す）。
   - ゲートのIDが`GATE-`で始まらない場合、Studioの`planParts`がそれをカードと読む。今のデータには、そういうゲートはない。
+
+## OPS-173：計画編集の隔離ブラウザでの往復
+
+- **server**：ページにP4（とP4a）を足した。`POST /v3/apply-groups`を新しく設けた。`{saveId, selected, resolutions, ancestry?, actor, evidence}`を受けて`apply_groups`を呼ぶ。
+  - `/save`は、今までどおりDBに書かない。
+  - 本番の8088、実DB、Inbox、templateには触れない。
+- **driver**：`plan`のmodeを足した。
+  1. ページ自身の再開（`resumed`）が終わるのを待つ。
+  2. 実際の編集欄で`select`・`fill`・`choose`・`press`を行う。
+  3. ページの保存ボタンで保存する。
+- **試験**（`test_plan_browser.py`、4件）：
+  - 並べ替え：保存（DBは変わらない）→ 新しい文脈で再開 → 確かめなしの適用は確認待ち → 確かめを付けて適用 → 最新のexport → 再送しても改訂は増えない。
+    - 骨格の線は置き換わり、重複がない。READMEを出典とする線はない。タスクの接続も保たれる。
+  - 移動と改名を、1つの操作で行う。
+  - 2回目のブラウザ編集：最初の保存から再開して続ける。古い基準の競合として拒否し、改名も反映しない。食い違う確かめは拒否する。
+  - ページにP4が当たっていること。
+- **限界**：WebKitだけ。新しい版やカード、ゲート、focus、`recordedDone`は扱わない。適用は試験から明示的に呼ぶ。ページには適用の操作がない。

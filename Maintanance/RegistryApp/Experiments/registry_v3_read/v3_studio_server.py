@@ -10,7 +10,8 @@ and stopped by the test. It never imports serve.py, sync.py or inbox.py and neve
 - POST /save       the page's own save call: stores the JSON as a new file under saves/ (parent/series as inbox.py does)
                    and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
 - GET /workspace   the latest save, as inbox.latest, so the page's own resumeWorkspace() runs.
-- POST /v3/apply   the only DB write, an explicit step: studio_adapter.apply_save on a stored save.
+- POST /v3/apply   an explicit DB write: studio_adapter.apply_save on a stored save (single task, OPS-166).
+- POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173).
 - GET /v3/latest   a fresh export, for assertions.
 - anything else    404 (logged); /sync, /registry.json, the pollers and approvals are not served.
 """
@@ -36,6 +37,12 @@ PATCHES = [
     ("(doc.source.sha256!==canonical.sha256?",
      "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
      'P3 banner(): the base comparison of a V3 export uses generation and revision'),
+    ("const PLAN_DIR='Maintanance/Milestones/',PLAN_SOURCE='Maintanance/Milestones/README.md';",
+     "const PLAN_DIR='Maintanance/Milestones/',PLAN_SOURCE='Maintanance/Milestones/README.md';const PLAN_SOURCE_FILE=PLAN_SOURCE;",
+     'P4a keeps the file source under a second name for P4'),
+    ('function planRebuild(d,versions){',
+     "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
+     'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them (OPS-172/173)'),
 ]
 
 
@@ -108,6 +115,17 @@ class Handler(BaseHTTPRequestHandler):
                 op, result = sa.apply_save(conn, save, req['actor'], req['evidence'])
                 return self.reply(200, {'ok': True, 'operationId': op, 'result': result})
             except (sa.SaveRejected, w3.Refused, w3.GenerationMismatch, w3.WriteDisabled, w3.OperationMismatch) as error:
+                return self.reply(409, {'ok': False, 'kind': type(error).__name__, 'error': str(error)})
+            finally:
+                conn.close()
+        if self.path == '/v3/apply-groups':
+            req = self.body()
+            save = s.load(req['saveId'])
+            conn = w3.open_db(s.db_path)
+            try:
+                out = sa.apply_groups(conn, save, req['selected'], req['actor'], req['evidence'], req.get('resolutions'), req.get('ancestry'))
+                return self.reply(200, {'ok': True, **out})
+            except (sa.SaveRejected, w3.GenerationMismatch, w3.WriteDisabled) as error:
                 return self.reply(409, {'ok': False, 'kind': type(error).__name__, 'error': str(error)})
             finally:
                 conn.close()

@@ -5,6 +5,7 @@
 // node browser_roundtrip.cjs <origin> <mode> <params.json> <out.json>
 //   save:     open /, task area, select params.task, set params.owner/state, 変更を適用, (params.addPrerequisite), 保存
 //   reopen:   open / in a fresh context; the page's own resumeWorkspace loads the latest save; read fields, banner, notice
+//   plan:     OPS-173: params.actions (select / fill / choose / press) in the real editor, then 保存
 //   blocked:  negative control of the interception: fetch params.url from the page; it must be aborted before sending
 'use strict';
 const pw = require('/opt/homebrew/lib/node_modules/playwright');
@@ -51,6 +52,20 @@ const params = JSON.parse(fs.readFileSync(paramsFile, 'utf8'));
       await page.selectOption('#taskPicker', params.task);
       result.after = await read();
       if (params.screenshot) await page.screenshot({ path: params.screenshot });
+    } else if (mode === 'plan') {
+      // OPS-173: existing-card plan edits through the real editor, then the page's own save
+      await page.evaluate(() => typeof resumed === 'undefined' ? true : resumed.then(() => true));  // let the page's own resume settle first
+      result.resumedFrom = await page.evaluate(() => (document.getElementById('sourceInfo').textContent.match(/編集版 (\S+) を再開中/) || [])[1] || null);
+      await page.click('#taskAreaTab');
+      for (const a of params.actions) {
+        if (a.select) await page.selectOption('#taskPicker', a.select);
+        if (a.fill) for (const [id, v] of Object.entries(a.fill)) await page.fill('#' + id, v);
+        if (a.choose) for (const [id, v] of Object.entries(a.choose)) await page.selectOption('#' + id, v);
+        if (a.press) await page.evaluate(t => [...document.querySelectorAll('#editor button')].find(b => b.textContent === t).click(), a.press);
+      }
+      await page.evaluate(() => document.getElementById('save').click());
+      await page.waitForFunction(() => /保存しました|保存できませんでした/.test(document.getElementById('status').textContent), null, { timeout: 10000 });
+      result.after = await read();
     } else if (mode === 'blocked') {
       result.fetch = await page.evaluate(async url => { try { await fetch(url); return 'sent'; } catch (e) { return 'failed: ' + e.message; } }, params.url);
     }

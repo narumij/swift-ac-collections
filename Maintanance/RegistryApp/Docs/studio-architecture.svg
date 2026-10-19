@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1080" viewBox="0 0 1900 1080" font-family="-apple-system, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif">
-  <!-- OPS-157 Registry Studio architecture (2026-10-19). Edit this SVG; the PNG is rendered from it. Colors: green = implemented and
-       accepted, orange = implemented and returned, not yet accepted, dashed gray = planned. -->
+  <!-- OPS-157 Registry Studio architecture after the Registry V3 cutover (2026-10-19, OPS-167 DONE). Edit this SVG; the PNG is
+       rendered from it. Colors: green = implemented and accepted, dashed gray = planned or pending, purple = isolated prototype
+       (not connected to the server, not deployed). Sources: REGISTRY_V3_OPERATIONS.md, v3/README.md, serve.py, sync.py,
+       STUDIO_COMMUNICATION_STORE.md, DECISION_DB_STUDY.md. -->
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4c5b5e"/></marker>
     <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#9aa6a2"/></marker>
@@ -10,151 +12,165 @@
       .b{font-size:17px;fill:#243234}
       .s{font-size:15px;fill:#4c5b5e}
       .done{fill:#e7f4ec;stroke:#2f7d55;stroke-width:2.5}
-      .ret{fill:#fff3e0;stroke:#c76b00;stroke-width:2.5}
       .plan{fill:#f6f7f7;stroke:#9aa6a2;stroke-width:2;stroke-dasharray:9 6}
+      .iso{fill:#f1ecfa;stroke:#6b4fa3;stroke-width:2.5;stroke-dasharray:3 4}
       .zone{fill:none;stroke:#c9d3d0;stroke-width:2}
       .ln{stroke:#4c5b5e;stroke-width:2.2;fill:none;marker-end:url(#a)}
       .lnd{stroke:#9aa6a2;stroke-width:2.2;fill:none;stroke-dasharray:8 6;marker-end:url(#ad)}
+      .lab{font-size:14px;fill:#4c5b5e}
     </style>
   </defs>
   <rect width="1900" height="1080" fill="#ffffff"/>
-  <text x="40" y="54" class="t">Registry Studio の構成（2026-10-19 時点）</text>
-  <text x="40" y="86" class="s">サーバーだけがSQLiteを開く。画面とCLIはHTTP経由。成果・仕様・判断の正本はMarkdown。名前は本人申告で、認証ではない。</text>
-  <rect x="1230" y="30" width="34" height="22" rx="4" class="done"/><text x="1274" y="47" class="s">実装・受入済み</text>
-  <rect x="1410" y="30" width="34" height="22" rx="4" class="ret"/><text x="1454" y="47" class="s">実装返却済み・受入前</text>
-  <rect x="1650" y="30" width="34" height="22" rx="4" class="plan"/><text x="1694" y="47" class="s">予定</text>
+  <text x="40" y="54" class="t">Registry Studio の構成（2026-10-19、Registry V3 切替後）</text>
+  <text x="40" y="86" class="s">taskと構造の正本は Registry V3 DB。判断・仕様・成果の正本は Markdown のまま。名前は本人申告で、認証ではない。</text>
+  <rect x="1250" y="30" width="34" height="22" rx="4" class="done"/><text x="1294" y="47" class="s">実装・受入済み</text>
+  <rect x="1440" y="30" width="34" height="22" rx="4" class="plan"/><text x="1484" y="47" class="s">予定・保留</text>
+  <rect x="1610" y="30" width="34" height="22" rx="4" class="iso"/><text x="1654" y="47" class="s">隔離した試作</text>
 
   <!-- C1: user and screen -->
   <rect x="30" y="112" width="440" height="940" rx="14" class="zone"/>
   <rect x="50" y="128" width="400" height="76" rx="10" class="done"/>
   <text x="66" y="160" class="h">ユーザー（ブラウザ）</text>
-  <text x="66" y="188" class="b">見る・承認する・待機完了・編集版を保存</text>
-  <text x="50" y="236" class="h">画面（index.template.html → 生成）</text>
-  <rect x="50" y="252" width="400" height="214" rx="10" class="done"/>
-  <text x="66" y="284" class="h">作業ページ（OPS-153）</text>
-  <text x="66" y="312" class="b">共通snapshot：ソースごとの最終正常値</text>
-  <text x="66" y="336" class="b">・成否・世代・受信時刻、時計、UI入力</text>
-  <text x="66" y="364" class="b">→ deriveStudio（純粋）→ 同じrevision</text>
-  <text x="66" y="392" class="b">View：文字帯・作業カード・メンバー欄・</text>
-  <text x="66" y="416" class="b">待機完了（描画と操作の意図だけ）</text>
-  <text x="66" y="446" class="s">開始待ち・実着手（OPS-151）を含む</text>
-  <rect x="50" y="480" width="400" height="104" rx="10" class="done"/>
-  <text x="66" y="512" class="h">タスクページ：地図VM（区切り0/1）</text>
-  <text x="66" y="540" class="b">依存図・独立・恒久・カード一覧</text>
-  <text x="66" y="566" class="s">互換baseline（file://で隔離して取得）で照合</text>
-  <rect x="50" y="598" width="400" height="108" rx="10" class="plan"/>
-  <text x="66" y="630" class="h">タスクページの残り</text>
-  <text x="66" y="658" class="b">近傍・編集欄（入力の保持）・共通配線</text>
-  <text x="66" y="686" class="s">版を変えると未確定の入力が消える件を含む</text>
-  <rect x="50" y="720" width="400" height="134" rx="10" class="plan"/>
-  <text x="66" y="752" class="h">これからの画面</text>
-  <text x="66" y="780" class="b">連絡の履歴の閲覧（全版・出来事の列）</text>
-  <text x="66" y="806" class="b">メンバー欄のPING</text>
-  <text x="66" y="832" class="b">操作の記録の閲覧</text>
-  <rect x="50" y="868" width="400" height="164" rx="10" class="plan"/>
-  <text x="66" y="900" class="h">エージェントの待機の連携</text>
-  <text x="66" y="928" class="b">自分宛ての未受領を inbox で取得</text>
-  <text x="66" y="954" class="s">取得では受領にしない（受領は明示の記録）</text>
-  <text x="66" y="980" class="s">PINGの切り替え（cutover）は未実施</text>
-  <text x="66" y="1006" class="s">待機の道具は今は jsonl を見ている</text>
+  <text x="66" y="188" class="b">見る・承認する・編集版を保存・再起動</text>
+  <text x="50" y="236" class="h">画面（生成したページ）</text>
+  <rect x="50" y="252" width="400" height="160" rx="10" class="done"/>
+  <text x="66" y="284" class="h">作業ページ</text>
+  <text x="66" y="312" class="b">作業カード・メンバー欄・待機完了</text>
+  <text x="66" y="338" class="b">連絡の一覧・本文・改訂の履歴</text>
+  <text x="66" y="364" class="s">共通snapshot → deriveStudio（純粋）→ View</text>
+  <text x="66" y="390" class="s">閲覧は何も記録しない</text>
+  <rect x="50" y="426" width="400" height="188" rx="10" class="done"/>
+  <text x="66" y="458" class="h">タスクページ（V3）</text>
+  <text x="66" y="486" class="b">DBのexportを表示・編集・保存・再開</text>
+  <text x="66" y="512" class="b">新しい版（位置を選ぶ）・新しいカード・</text>
+  <text x="66" y="538" class="b">条件の提案・計画の並べ替え</text>
+  <text x="66" y="566" class="s">保存はInboxだけ。DBへは書かない</text>
+  <text x="66" y="592" class="s">種類の違う編集版は開かない・再開しない</text>
+  <rect x="50" y="628" width="400" height="128" rx="10" class="plan"/>
+  <text x="66" y="660" class="h">これからの画面</text>
+  <text x="66" y="688" class="b">メンバー欄のPING（旧経路の切替は保留）</text>
+  <text x="66" y="714" class="b">一般の活動の履歴の閲覧</text>
+  <text x="66" y="740" class="s">判断の記録の画面は作らない（試作は隔離）</text>
+  <rect x="50" y="770" width="400" height="262" rx="10" class="done"/>
+  <text x="66" y="802" class="h">起動（ユーザーの操作）</text>
+  <text x="66" y="832" class="b">serve.py --v3-db Data/registry.sqlite3</text>
+  <text x="66" y="858" class="b">          --v3-saves Inbox</text>
+  <text x="66" y="890" class="s">切替後は引数なしの旧モードを使わない</text>
+  <text x="66" y="916" class="s">（旧モードの起動の拒否は後回し）</text>
+  <text x="66" y="948" class="s">起動時と「更新」で sync.py --v3-db が</text>
+  <text x="66" y="972" class="s">ページ・文書の束・採番待ちを作る</text>
+  <text x="66" y="1004" class="s">構造はDBから。フォルダの並びは読まない</text>
 
   <!-- C2: server -->
   <rect x="510" y="112" width="370" height="940" rx="14" class="zone"/>
   <text x="530" y="146" class="h">サーバー serve.py（127.0.0.1）</text>
-  <rect x="530" y="162" width="330" height="138" rx="10" class="done"/>
-  <text x="546" y="194" class="h">承認・保存・待機完了</text>
-  <text x="546" y="222" class="b">承認（全部か無しか）</text>
-  <text x="546" y="248" class="b">編集版の保存（Inbox）</text>
-  <text x="546" y="274" class="b">待機完了のWAKE（jsonlへ書く）</text>
-  <rect x="530" y="316" width="330" height="158" rx="10" class="ret"/>
-  <text x="546" y="348" class="h">連絡のAPI（H25）</text>
-  <text x="546" y="376" class="b">送信・受領・着手・返答・辞退</text>
-  <text x="546" y="402" class="b">取り下げ・閉じる・改訂（理由つき）</text>
-  <text x="546" y="428" class="b">inbox（自分宛ての未完了だけ）</text>
-  <text x="546" y="456" class="s">閲覧では何も記録しない</text>
-  <rect x="530" y="490" width="330" height="160" rx="10" class="ret"/>
-  <text x="546" y="522" class="h">記録のAPI（H21・H22）</text>
-  <text x="546" y="550" class="b">操作ID（同じ内容は再生、違えば拒否）</text>
-  <text x="546" y="576" class="b">承認CLIの経由・PINGとACK</text>
-  <text x="546" y="602" class="b">代理のACKは本人の応答にしない</text>
-  <text x="546" y="630" class="s">未送信と結果不明を区別、宛先は127.0.0.1だけ</text>
-  <rect x="530" y="666" width="330" height="140" rx="10" class="done"/>
-  <text x="546" y="698" class="h">読み取り</text>
-  <text x="546" y="726" class="b">activity（直近200件）・continuity</text>
-  <text x="546" y="752" class="b">作業の進行・サーバーの状態</text>
-  <text x="546" y="778" class="b">画面・registry.json</text>
-  <text x="530" y="846" class="s">同じ由来のPOSTだけを受け付ける。</text>
-  <text x="530" y="870" class="s">ボタンや名前は権限ではない。</text>
-  <text x="530" y="894" class="s">サーバーが毎回検証する。</text>
+  <rect x="530" y="162" width="330" height="214" rx="10" class="done"/>
+  <text x="546" y="194" class="h">V3 の読取（--v3-db）</text>
+  <text x="546" y="222" class="b">GET / ：ページのseedだけを</text>
+  <text x="546" y="248" class="b">DBのexportへ差し替える</text>
+  <text x="546" y="274" class="b">GET /registry.json ：同じexport</text>
+  <text x="546" y="300" class="b">要求ごとに読取専用で開く（mode=ro）</text>
+  <text x="546" y="328" class="s">1回のexportは1つの読取snapshot</text>
+  <text x="546" y="354" class="s">適用の入口はない（書くのはCLI）</text>
+  <rect x="530" y="392" width="330" height="138" rx="10" class="done"/>
+  <text x="546" y="424" class="h">編集版の保存と再開</text>
+  <text x="546" y="452" class="b">POST /save ：V3の編集版だけ</text>
+  <text x="546" y="478" class="b">GET /workspace ：V3だけを再開</text>
+  <text x="546" y="506" class="s">旧保存は残す。照合が不明なら知らせる</text>
+  <rect x="530" y="546" width="330" height="188" rx="10" class="done"/>
+  <text x="546" y="578" class="h">承認・連絡の API</text>
+  <text x="546" y="606" class="b">承認（全部か無しか）</text>
+  <text x="546" y="632" class="b">連絡：送信・受領・着手・返答・</text>
+  <text x="546" y="658" class="b">辞退・停止・閉じる・改訂</text>
+  <text x="546" y="686" class="b">操作ID（同じ内容は再送）</text>
+  <text x="546" y="712" class="s">新しい依頼は連絡DBで受ける</text>
+  <rect x="530" y="750" width="330" height="128" rx="10" class="done"/>
+  <text x="546" y="782" class="h">待機完了・活動の読み取り</text>
+  <text x="546" y="810" class="b">WAKE を events.jsonl へ書く</text>
+  <text x="546" y="836" class="b">活動・continuity を読む</text>
+  <text x="546" y="862" class="s">活動の全部を移したわけではない</text>
+  <rect x="530" y="894" width="330" height="138" rx="10" class="done"/>
+  <text x="546" y="926" class="h">POST /sync</text>
+  <text x="546" y="954" class="b">sync.py --v3-db を走らせる</text>
+  <text x="546" y="980" class="b">（文書の束・採番待ち）</text>
+  <text x="546" y="1008" class="s">DBへ書かない・Markdownを取り込まない</text>
 
-  <!-- C3: agents (lower half; the upper half is the corridor to SQLite) -->
-  <rect x="920" y="112" width="330" height="940" rx="14" class="zone"/>
-  <text x="940" y="146" class="h">AIエージェント</text>
-  <text x="940" y="172" class="s">Astra・姫・評価役など（会話から）</text>
-  <rect x="940" y="716" width="290" height="316" rx="10" class="done"/>
-  <text x="956" y="748" class="b">approvals.py・comm.py</text>
-  <text x="956" y="772" class="s">HTTP経由（DBを直接開かない）</text>
-  <text x="956" y="812" class="b">activity.py</text>
-  <text x="956" y="836" class="s">jsonlへ直接追記（作業イベント）</text>
-  <text x="956" y="876" class="b">continuity.py</text>
-  <text x="956" y="900" class="s">継続確認の印</text>
-  <text x="956" y="940" class="b">sync.py</text>
-  <text x="956" y="964" class="s">Markdown から registry.json と</text>
-  <text x="956" y="988" class="s">画面を作る</text>
-  <text x="956" y="1018" class="s">正本の文書は直接編集する</text>
+  <!-- C3: stores -->
+  <rect x="920" y="112" width="490" height="940" rx="14" class="zone"/>
+  <text x="940" y="146" class="h">保存先</text>
+  <rect x="940" y="162" width="450" height="150" rx="10" class="done"/>
+  <text x="956" y="194" class="h">Registry V3 DB（SQLite、正本）</text>
+  <text x="956" y="222" class="b">Data/registry.sqlite3（Git対象外）</text>
+  <text x="956" y="248" class="b">task・グラフ・版・カード・focus・採番</text>
+  <text x="956" y="274" class="s">開くのは：サーバー（読取専用）・CLI（書込）・</text>
+  <text x="956" y="296" class="s">viewの生成とbackupの手順</text>
+  <rect x="940" y="328" width="450" height="110" rx="10" class="done"/>
+  <text x="956" y="360" class="h">backup（リポジトリの外）</text>
+  <text x="956" y="388" class="b">~/Documents/RegistryStudioBackups/…</text>
+  <text x="956" y="414" class="s">上書きしない。復元は新しい世代で、書込は閉じたまま</text>
+  <rect x="940" y="454" width="450" height="136" rx="10" class="done"/>
+  <text x="956" y="486" class="h">承認・連絡 DB（SQLite）</text>
+  <text x="956" y="514" class="b">Approvals/approvals.sqlite3</text>
+  <text x="956" y="540" class="b">承認・操作の記録・連絡（letters）</text>
+  <text x="956" y="566" class="s">開くのはサーバーだけ（CLIはAPI経由）</text>
+  <rect x="940" y="606" width="450" height="104" rx="10" class="done"/>
+  <text x="956" y="638" class="h">活動の記録 events.jsonl</text>
+  <text x="956" y="666" class="b">依頼・着手・返却などの活動、WAKE、PING</text>
+  <text x="956" y="692" class="s">連絡は連絡DBへ移った。全部の移行ではない</text>
+  <rect x="940" y="726" width="450" height="92" rx="10" class="done"/>
+  <text x="956" y="758" class="h">Inbox（編集版）</text>
+  <text x="956" y="786" class="b">V3の編集版と旧形式の編集版が並ぶ</text>
+  <text x="956" y="808" class="s">旧保存は消さず、変換せず、1件ずつ照合する</text>
+  <rect x="940" y="834" width="450" height="198" rx="10" class="done"/>
+  <text x="956" y="866" class="h">Markdown（正本と生成view）</text>
+  <text x="956" y="894" class="b">判断・仕様・成果・制度：正本のまま</text>
+  <text x="956" y="920" class="b">Registry・Rules の表、STRUCTURE.generated.md：</text>
+  <text x="956" y="946" class="b">DBから作る読取用の view（手で書き換えない）</text>
+  <text x="956" y="974" class="s">HEAD.md・カードの箱・フォルダの並びは</text>
+  <text x="956" y="998" class="s">DBから作り直さない（読み手は古くなりうる）</text>
+  <text x="956" y="1022" class="s">Cache：生成したページと registry.json</text>
 
-  <!-- C4: storage -->
-  <rect x="1290" y="112" width="580" height="940" rx="14" class="zone"/>
-  <text x="1310" y="146" class="h">保存先</text>
-  <rect x="1310" y="162" width="540" height="326" rx="10" class="done"/>
-  <text x="1326" y="194" class="h">approvals.sqlite3（サーバー専用）</text>
-  <text x="1326" y="224" class="b">承認：requests・history（追記だけ）</text>
-  <rect x="1326" y="244" width="508" height="106" rx="8" class="ret"/>
-  <text x="1340" y="272" class="b">operations・messages・acks・meta</text>
-  <text x="1340" y="298" class="s">操作の記録、PINGとACK、切り替え点、送信者の一覧</text>
-  <text x="1340" y="324" class="s">承認の変化と同じトランザクションで確定</text>
-  <rect x="1326" y="362" width="508" height="110" rx="8" class="ret"/>
-  <text x="1340" y="390" class="b">letters・letter_texts・letter_events</text>
-  <text x="1340" y="416" class="s">連絡の原文と改訂の全版、状態の出来事</text>
-  <text x="1340" y="442" class="s">＝新方式の連絡（LTR-）の活動記録の正本（jsonlへ写さない）</text>
-  <rect x="1310" y="504" width="540" height="196" rx="10" class="done"/>
-  <text x="1326" y="536" class="h">Activity/events.jsonl（追記だけ）</text>
-  <text x="1326" y="564" class="b">未移行：依頼・着手・返却・受入・commit</text>
-  <text x="1326" y="590" class="b">WAKE とその ACK（第2段で移行予定）</text>
-  <text x="1326" y="616" class="b">PING：cutover未実施のため、ここにも書ける</text>
-  <text x="1326" y="646" class="s">移行したのは新方式の連絡だけ（受入前）。全ログではない。</text>
-  <text x="1326" y="672" class="s">既存の依頼と履歴は移さず、消さない。continuity.json も同じ場所。</text>
-  <rect x="1310" y="716" width="540" height="316" rx="10" class="done"/>
-  <text x="1326" y="748" class="h">Markdown の正本（git管理）</text>
-  <text x="1326" y="778" class="b">TASK_REGISTRY_V2.md（タスクと状態）</text>
-  <text x="1326" y="804" class="b">Current/*.md：依頼・返却・受入・仕様・判断</text>
-  <text x="1326" y="830" class="b">Milestones/（版とゲート）</text>
-  <text x="1326" y="866" class="s">成果・仕様・判断はここが正本。</text>
-  <text x="1326" y="892" class="s">連絡は本文をDBに持ち、ここの節を任意に参照する</text>
-  <text x="1326" y="918" class="s">（参照は記録するときに、節と本文の存在を確かめる）</text>
-  <text x="1326" y="958" class="s">Inbox/：画面で保存した編集版（AIが取り込む）</text>
+  <!-- C4: writers -->
+  <rect x="1440" y="112" width="430" height="940" rx="14" class="zone"/>
+  <text x="1460" y="146" class="h">書き手（調整担当・CLI・エージェント）</text>
+  <rect x="1460" y="162" width="370" height="262" rx="10" class="done"/>
+  <text x="1476" y="194" class="h">正式反映の一巡（調整担当）</text>
+  <text x="1476" y="222" class="b">1. 反映前の backup と確かめ</text>
+  <text x="1476" y="248" class="b">2. registry_v3_cli.py apply-groups</text>
+  <text x="1476" y="274" class="b">    （保存・選択・基準を明示）</text>
+  <text x="1476" y="300" class="b">3. view を作り直す（replace_in_place）</text>
+  <text x="1476" y="326" class="b">4. 必要なら sync.py --v3-db</text>
+  <text x="1476" y="352" class="b">5. 反映後の backup → commit</text>
+  <text x="1476" y="382" class="s">書き手は1人。同じ操作IDで再送できる</text>
+  <text x="1476" y="406" class="s">focus・DONE も CLI の操作で書く</text>
+  <rect x="1460" y="440" width="370" height="128" rx="10" class="done"/>
+  <text x="1476" y="472" class="h">連絡の道具 comm.py</text>
+  <text x="1476" y="500" class="b">サーバーのAPIを通る（DBを直接開かない）</text>
+  <text x="1476" y="526" class="b">待機は連絡DBのwatchとjsonlの両方</text>
+  <text x="1476" y="552" class="s">PINGの旧経路の切替は保留</text>
+  <rect x="1460" y="584" width="370" height="128" rx="10" class="done"/>
+  <text x="1476" y="616" class="h">エージェント（Astra・姫など）</text>
+  <text x="1476" y="644" class="b">正本のMarkdownと生成viewを読む</text>
+  <text x="1476" y="670" class="b">DB管理の表を手で書き換えない</text>
+  <text x="1476" y="696" class="s">表とDBが違えばDBを確かめる</text>
+  <rect x="1460" y="728" width="370" height="150" rx="10" class="iso"/>
+  <text x="1476" y="760" class="h">判断の記録の試作（OPS-158）</text>
+  <text x="1476" y="788" class="b">専用の decision_cli.py だけで開く</text>
+  <text x="1476" y="814" class="b">サーバーにつながっていない・未配備</text>
+  <text x="1476" y="840" class="s">記録は承認ではない。正本はMarkdown</text>
+  <text x="1476" y="864" class="s">詳しくは decision-db.png</text>
 
-  <!-- arrows: user to screen, screen to server -->
-  <path class="ln" d="M430 204 L430 250"/>
-  <path class="ln" d="M450 300 C485 300 490 230 528 230"/>
-  <path class="ln" d="M450 400 C490 400 490 720 528 720"/>
-  <path class="ln" d="M450 530 C490 530 495 760 528 760"/>
-  <path class="lnd" d="M450 780 C490 780 490 420 528 420"/>
-  <path class="lnd" d="M450 920 C495 920 495 600 528 600"/>
-  <!-- server to storage through the corridor above the agents -->
-  <path class="ln" d="M860 210 C1080 210 1100 224 1308 224"/>
-  <path class="ln" d="M860 380 C1080 380 1100 420 1324 420"/>
-  <path class="ln" d="M860 540 C1080 540 1100 300 1324 300"/>
-  <path class="ln" d="M860 280 C1000 280 1060 470 1100 560 C1140 640 1220 600 1308 600"/>
-  <path class="ln" d="M1308 660 C1100 660 1000 700 862 700"/>
-  <!-- agents -->
-  <path class="ln" d="M940 760 C905 760 900 600 862 600"/>
-  <path class="ln" d="M940 790 C900 790 895 440 862 440"/>
-  <path class="ln" d="M1230 820 C1270 820 1270 680 1308 680"/>
-  <path class="ln" d="M1230 960 C1270 960 1270 860 1308 860"/>
-  <text x="1010" y="236" class="s">承認</text>
-  <text x="1010" y="372" class="s">連絡</text>
-  <text x="1010" y="520" class="s">操作・PING</text>
-  <text x="1070" y="455" class="s">WAKE</text>
-  <text x="1010" y="690" class="s">読む</text>
+  <!-- arrows: only in the gutters between columns -->
+  <path d="M400 204 L400 252" class="ln"/>
+  <path d="M450 330 L530 330" class="ln"/><text x="462" y="320" class="lab">HTTP</text>
+  <path d="M450 520 L530 470" class="ln"/>
+  <path d="M860 236 L940 236" class="ln"/><text x="866" y="226" class="lab">読取専用</text>
+  <path d="M860 470 L940 770" class="ln"/>
+  <path d="M860 600 L940 522" class="ln"/>
+  <path d="M860 810 L940 660" class="ln"/>
+  <path d="M860 960 L940 1010" class="ln"/><text x="872" y="952" class="lab">Cache</text>
+  <path d="M1460 236 L1390 236" class="ln"/><text x="1404" y="226" class="lab">書込</text>
+  <path d="M1460 222 L1390 382" class="ln"/>
+  <path d="M1460 410 L1390 870" class="ln"/><text x="1418" y="560" class="lab">view</text>
+  <path d="M1390 990 L1460 700" class="ln"/><text x="1424" y="930" class="lab">読む</text>
 </svg>

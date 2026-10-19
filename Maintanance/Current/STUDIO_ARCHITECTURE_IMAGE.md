@@ -70,3 +70,81 @@ RegistryAppだけを対象に、View/VM/Model、server/API、SQLite活動SSoT、
 ## Astra確認（2026-10-19）
 
 PNGを実際に開き、日本語文字の可読性・切れなし・実装/受入前/予定の区別を確認。H25時点の作業ツリー図として技術受入。実稼働図とは区別する。今後の連絡UI完成を表す図ではない。commit待ち。
+
+
+## 姫返却（LTR-20261019-5C26B6A9…：V3切替後の構成図と判断DB試作の図）
+
+2026-10-19 姫・Opus 5.5。コード・DB・実サーバーには触れていない。commitなし（図はAstraの受入とcommit）。
+
+一時作業物:
+
+| 記録項目 | 内容 |
+| --- | --- |
+| パス | `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops157-diagram-render.Tg4khVxoKW`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops157-diagram-render.Tg4khVxoKW`） |
+| 作成 | 2026-10-19 22:07 JST、姫 |
+| 用途 | OPS-157：SVGからPNGを描き出すheadless WebKitの一時スクリプトと、その出力の確認 |
+| 状態 | 削除済み（2026-10-19 22:11 JST、姫。PNGを保存して目で確かめたため） |
+| 保持条件 | PNGを保存して目で確かめたら削除する。成果は持たない |
+| 証拠の保存先 | `RegistryApp/Docs/`のSVGとPNG、この返却欄 |
+
+**画像**（日本語の横長、どちらも1900×1080）：
+- 構成図（更新）：`Maintanance/RegistryApp/Docs/studio-architecture.svg`と`.png`
+- 判断の記録の試作（新しく作った）：`Maintanance/RegistryApp/Docs/decision-db.svg`と`.png`
+- READMEの入口：`RegistryApp/README.md`の5行目の1行だけを直した（2つの図へのリンク）。
+
+**構成図で描いたこと**：
+- 列は、画面｜サーバー｜保存先｜書き手。矢印は、列と列のすき間だけを通す。
+- taskと構造の正本は、Registry V3 DB（`Data/registry.sqlite3`）。
+  - サーバー（`--v3-db`）は、要求ごとに読取専用で開き、seedと`/registry.json`をexportで出す。適用の入口はない。
+  - 書くのは、調整担当がCLIで行う正式反映だけ（backup → `apply-groups` → viewの作り直し → 必要なら`sync.py --v3-db` → backup → commit）。
+- Markdownの表とSTRUCTUREは、DBから作る読取用のview。判断・仕様・成果・制度の正本は、Markdownのまま。
+- 承認・連絡のDBはサーバーだけが開き、`comm.py`はAPIを通る。活動の記録は`events.jsonl`に残っていて、全部の移行ではない（PINGの切替は保留）。
+- Inboxには、V3の編集版と旧形式の編集版が並ぶ。
+- 判断の記録の試作は紫で、サーバーにつながっていないと書いた。
+- 前の版の「サーバーだけがSQLiteを開く」は外した。DBごとに、開くものを書き分けた。
+
+**判断DBの図で描いたこと**：
+- ファイルに保存する表は、`meta`と`events`（追記だけ、triggerでUPDATE・DELETEを止める）の2つだけ。
+- 判断・改訂・参照は、eventsを畳み込んで作るもの（メモリ上で、表ではない）として、破線で描き分けた。
+- ほかに描いたもの：
+  - 書く操作の5種と、適用の手順（BEGIN IMMEDIATE、再送・食い違い、基準、拒否も記録）。
+  - 読むこと（読取専用、確認候補の規則、export）。
+  - 保全（排他で作るbackupと`validate`。復元して書き込む入口はない）。
+  - 正本（Markdown）と、しないこと。
+
+**確かめたこと**：
+- 隔離したheadlessのWebKitで描き、PNGを目で見た（外のURLは止めた）。
+- 構成図：1回目は、サーバーから保存先への矢印が書き手の列を横切り、ラベルが本文に重なり、ユーザーからの矢印が見出しに重なり、`/sync`の欄の文字が箱からはみ出していた。列を組み替えて直した。2回目では、書き手から正本への2本の矢印が交わっていたので、始点と終点を変えて交わらないようにした。
+- 判断DBの図：「読むこと」の箱を横切る2本の矢印を外し、文で書いた。
+- 最終の画像で、文字が読めること、切れていないこと、矢印の行き先が正しいことを確かめた。
+
+**根拠にしたファイル**：
+- `Current/REGISTRY_V3_OPERATIONS.md`
+- `RegistryApp/v3/README.md`（OPS-176〜181、K9、B4）
+- `serve.py`・`sync.py`
+- `Current/STUDIO_COMMUNICATION_STORE.md`（H36の実運用の受入と、PINGの保留）
+- `Current/DECISION_DB_STUDY.md`
+- `Evidence/OPS-158/durable/`の`decision_store.py`・`decision_cli.py`・`README.md`
+
+**描いていない・注意**：
+- 作業ツリーとV3の運用手順を描いた図で、実稼働のすべてを確かめたものではない。
+- 活動の記録のうち、どれが移ったかの細目は描いていない（全部が移ったとは描いていない）。
+- probe、APIの全部、Cacheの中身の細目は、省いた。
+
+**受入前の訂正（LTR-20261019-680C1DA8…）**：判断DBの図の左下の文を直す。
+
+一時作業物:
+
+| 記録項目 | 内容 |
+| --- | --- |
+| パス | `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops157-diagram-fix.rCmJU80a77`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops157-diagram-fix.rCmJU80a77`） |
+| 作成 | 2026-10-19 22:12 JST、姫 |
+| 用途 | OPS-157：訂正したdecision-db.svgを描き出す一時スクリプトと、その出力の確認 |
+| 状態 | 削除済み（2026-10-19 22:12 JST、姫。PNGを保存して確かめたため） |
+| 保持条件 | PNGを保存して確かめたら削除する。成果は持たない |
+| 証拠の保存先 | `RegistryApp/Docs/decision-db.png`、この返却欄 |
+
+訂正：左下の「storeは出典の場所と、その行のsha256を持つだけ」を、「storeは本文の写しと出典を記録する（試行の引用は行のsha256も持つ）」へ直した（`events.request`は本文の写しを持ち、行のhashは試行の引用にあるだけで、`_locator`は求めていない）。SVGとPNGだけを変え、PNGを目で確かめた。
+
+## Astra受入：V3切替後と判断DB試作の図
+2026-10-19。両PNGを実際に開き、文字の可読性、矢印、実装/予定/隔離の区別を確認。判断DBが出典だけを保持するという説明は本文の写しも保持すると補正し、再描画を確認した。Registry V3のCLI writerとserver reader、連絡DBのAPI経路、未移行の活動記録を描き分けた現在のコード/運用構成図として受入。全稼働状態の監査ではない。

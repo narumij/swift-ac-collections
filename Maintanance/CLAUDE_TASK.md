@@ -710,3 +710,8 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — watch状態ファイル補正 H-20261019-31
 
 [連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H31へ。破損状態ファイルの型と保存失敗を明示的に扱う小補正。画面は次割当。commitなし、返却後連続待機。
+
+
+## OPS-156 — 連絡閲覧 H-20261019-32
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H32へ。閲覧VM/View/配線と隔離試験。index.template.htmlを割当、OPS154残りは並行編集しない。DB/API固定、実稼働操作なし、commitなし、返却後連続待機。

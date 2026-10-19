@@ -108,9 +108,9 @@
 | `OPS-149` | `WAITING_USER` | Astra調整 / 姫 | [DISCOVERY] 停止確認とメンバー表示の通信仕様を協議 | 姫と2往復完了。区間付き代理確認・表示案を提案、実装移行判断待ち。規約本体・実装変更なし | `Maintanance/Current/MEMBER_STOP_COMMUNICATION_DISCUSSION.md` |
 | `OPS-152` | `PROPOSED` | Astra調整 / 独立確認役 | [DISCOVERY] コミット承認照合の独立確認を限定試行する準備 | 常駐せず実行前/後の差分と有効承認を照合。会話承認と分割範囲も扱う。未確認は後続commit保留、無断巻戻し/全員停止なし | `Maintanance/Current/COMMIT_AUTHORIZATION_REVIEW_PILOT.md` |
 | `OPS-153` | `DONE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] Studioの表示状態をViewModelへ集約する | 4段階実装・独立評価補正・技術受入完了。最終19試験と同期照合PASS。隔離WebKit確認、実サーバー/実画面未操作。ユーザーcommit承認済み、キャッシュ更新は成果commit後 | `Maintanance/Current/STUDIO_VIEW_MODEL_DISCUSSION.md` |
-| `OPS-154` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] タスク画面のViewModel化 | ユーザーが段階実装・試験を承認。既存編集/保存/選択/レイアウトを維持し、姫との最小内訳協議から技術受入まで。commit別承認 | `Maintanance/Current/TASK_VIEW_MODEL_MIGRATION.md` |
-| `OPS-155` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] メンバーへ画面からPINGを送る | ユーザー実装依頼。対象/ID/本人ACKで疎通を確認、自動起動なし。OPS154の占有区切りで通信協議後実装、commit別承認 | `Maintanance/Current/STUDIO_MEMBER_PING.md` |
-| `OPS-156` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] サーバー専用SQLiteへ通信記録を保存 | ユーザー実装依頼。初期対象PING/ACK等、API経由のみ、既存jsonlと二重正本にしない。OPS155と仕様協議し隔離試験、commit別承認 | `Maintanance/Current/STUDIO_COMMUNICATION_STORE.md` |
+| `OPS-154` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] タスク画面のViewModel化 | ユーザーが段階実装・試験を承認。地図VM区切り0/1をf828bdbeで受入保存。近傍・編集・共通配線は残り。連絡閲覧の画面占有後に再開 | `Maintanance/Current/TASK_VIEW_MODEL_MIGRATION.md` |
+| `OPS-155` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] メンバーへ画面からPINGを送る | ユーザー実装依頼。対象/ID/本人ACKで疎通を確認、自動起動なし。ユーザーが画面実装を後回しにし、連絡DBを優先。基盤のみ部分実装 | `Maintanance/Current/STUDIO_MEMBER_PING.md` |
+| `OPS-156` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] サーバー専用SQLiteへ通信記録を保存 | ユーザー実装依頼。連絡原文/版/応答DBと軽量一覧・差分待機を5360265b/72ca7731で受入。H32閲覧画面実装中。実稼働切替・待機接続は未完了、PING画面は保留 | `Maintanance/Current/STUDIO_COMMUNICATION_STORE.md` |
 | `OPS-157` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry Studioのアーキテクチャ画像 | ユーザー依頼。現行実装と作業中/予定を区別した日本語の横長図、編集元/PNG/README入口。SVG/PNGとREADME入口を画像確認して技術受入。作業ツリー図、実稼働とは区別。ユーザー継続commit承認に基づき成果を保存 | `Maintanance/Current/STUDIO_ARCHITECTURE_IMAGE.md` |
 | `OPS-158` | `ACTIVE` | Astra | [DISCOVERY] 判断と判断キャッシュのDB管理を検討 | ユーザー依頼の検討のみ。元判断・依存つなぎ替え・コピーの更新境界と少数試行案。連絡DBを優先、移行実装なし | `Maintanance/Current/DECISION_DB_STUDY.md` |
 | `OPS-117` | `WAITING_USER` | 姫（レビュー） / Astra（受入） | [EXECUTION] 姫の作業イベント更新ルールを短くレビューする | 2026-10-18ユーザー承認。指定2節のタイミング・権限・待機・返却境界を確認。レビュー3指摘をAstra受入、姫への依頼終了。ACKとcommit待ちの表記を補正。待機中の正式依頼受信後の着手条件はユーザー判断待ち。実装変更なし | `Maintanance/Current/CLAUDE_ACTIVITY_RULE_REVIEW.md` |

@@ -8,6 +8,7 @@ import json
 import subprocess
 import sys
 import threading
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -16,6 +17,7 @@ import approvals
 import continuity
 import probe
 import sqlite3
+import studio_store
 
 import inbox  # edit versions in Inbox/ (OPS-082)
 
@@ -137,6 +139,17 @@ def get_continuity(path):
         return 503, {'error': 'Continuity unavailable'}
 
 
+def get_comm(path):
+    # OPS-156: communication records and the operation log; read through the server only.
+    try:
+        if path == '/comm-messages':
+            store = studio_store.Store()
+            return 200, json_bytes(store.messages() | {'cutover': store.cutover_point()})
+        return 200, json_bytes(approvals.Store().operations())
+    except (OSError, sqlite3.Error):
+        return 503, {'error': 'Studio records unavailable'}
+
+
 def get_server_status(path):
     return 200, runtime_status()
 
@@ -158,11 +171,67 @@ GET_ROUTES = {
     '/activity-events': get_activity, '/activity-commits': get_activity,
     '/work-progress': get_work_progress, '/server-status': get_server_status, '/workspace': get_workspace,
     '/continuity': get_continuity,
+    '/comm-messages': get_comm, '/studio-operations': get_comm,
     '/': get_page, '/index.html': get_page, '/registry.json': get_page,
 }
 # POST path -> the X-Registry-Studio value it requires
 POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
-                '/activity-wake': 'activity-wake'}
+                '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
+                '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
+                '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
+LETTER_ACTIONS = ('letters-send', 'letters-event', 'letters-revise', 'letters-senders')
+
+
+def get_letters(parsed):
+    """H-20261019-25: GET /letters?task=&member=&state=&limit=, /letters/<id>, /letters-inbox?owner=, /letters-senders.
+    Reading records nothing (it is not a receipt). Names in the query are self-reports, not authentication."""
+    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=False)
+    if any(len(v) != 1 for v in query.values()):
+        return 400, {'error': 'Each query parameter at most once'}
+    q = {k: v[0] for k, v in query.items()}
+    store = studio_store.Store()
+    try:
+        if parsed.path == '/letters-inbox':
+            if set(q) != {'owner'}:
+                raise ValueError('Expected owner')
+            return 200, json_bytes(store.inbox(q['owner']))
+        if parsed.path == '/letters-senders':
+            if q:
+                raise ValueError('No parameters')
+            return 200, json_bytes(store.senders())
+        if parsed.path == '/letters':
+            if not set(q) <= {'task', 'member', 'state', 'limit'}:
+                raise ValueError('Unexpected parameter')
+            return 200, json_bytes(store.letters(q.get('task'), q.get('member'), q.get('state'), q.get('limit', 200)))
+        return 200, json_bytes(store.letter(urllib.parse.unquote(parsed.path[len('/letters/'):])))
+    except LookupError as error:
+        return 404, {'error': str(error)}
+    except (ValueError, TypeError) as error:
+        return 400, {'error': str(error) or 'Invalid request'}
+    except (OSError, sqlite3.Error):
+        return 503, {'error': 'Studio records unavailable'}
+
+
+LETTER_FIELDS = {
+    'letters-send': ({'operationId', 'sender', 'recipient', 'taskId', 'body'}, {'recordedBy', 'refDoc', 'refSection'}),
+    'letters-event': ({'operationId', 'letterId', 'event', 'actor'}, {'recordedBy', 'claimedAt', 'note', 'body', 'refDoc', 'refSection', 'revision'}),
+    'letters-revise': ({'operationId', 'letterId', 'part', 'actor', 'body', 'reason'}, {'recordedBy', 'refDoc', 'refSection'}),
+    'letters-senders': ({'names', 'recordedBy'}, set()),
+}
+
+
+def letter_action(store, action, body):
+    required, optional = LETTER_FIELDS[action]
+    if not required <= set(body) <= required | optional:
+        raise ValueError('Expected ' + ', '.join(sorted(required)))
+    g = body.get
+    if action == 'letters-send':
+        return store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'))
+    if action == 'letters-event':
+        return store.event(g('operationId'), g('letterId'), g('event'), g('actor'), g('recordedBy'), g('claimedAt'), g('note', ''), g('body'), g('refDoc'), g('refSection'), g('revision'))
+    if action == 'letters-revise':
+        return store.revise(g('operationId'), g('letterId'), g('part'), g('actor'), g('body'), g('reason'), g('recordedBy'), g('refDoc'), g('refSection'))
+    return store.set_senders(g('names'), g('recordedBy'))
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -188,6 +257,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
+        parsed = urllib.parse.urlsplit(self.path)
+        if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
+            return self.reply(*get_letters(parsed))
         route = GET_ROUTES.get(self.path)
         if route is None:
             return self.reply(404, {'error': 'Not found'})
@@ -205,7 +277,80 @@ class Handler(BaseHTTPRequestHandler):
             return self.save()
         if action == 'activity-wake':
             return self.activity_wake()
+        if action in ('approvals-cli', 'comm-ping', 'comm-ack', 'comm-cutover') + LETTER_ACTIONS:
+            return self.studio_records(action)
         return self.commit_approvals()
+
+    def json_body(self, limit):
+        """The JSON object of a POST, or None after replying with the error."""
+        if (self.headers.get('Content-Type', '').split(';')[0].strip().lower() != 'application/json'
+                or self.headers.get('Transfer-Encoding') is not None):
+            self.reply(400, {'error': 'JSON body required'})
+            return None
+        lengths = self.headers.get_all('Content-Length', [])
+        if len(lengths) != 1 or not re.fullmatch(r'[0-9]{1,7}', lengths[0]) or not 0 < int(lengths[0]) <= limit:
+            self.reply(411, {'error': 'Content-Length required within the size limit'})
+            return None
+        self.connection.settimeout(5)
+        try:
+            raw = self.rfile.read(int(lengths[0]))
+            body = json.loads(raw.decode('utf-8'))
+            if len(raw) != int(lengths[0]) or not isinstance(body, dict):
+                raise ValueError('Invalid body')
+            return body
+        except (ValueError, UnicodeDecodeError, RecursionError, OSError):
+            self.reply(400, {'error': 'Invalid JSON body'})
+            return None
+
+    def studio_records(self, action):
+        """OPS-156: the approvals command line, PING / ACK and the PING cutover. Only this server opens the database.
+        The same-origin headers are a guard, not authentication: a record is a local self-report of the member named."""
+        body = self.json_body(128 * 1024)
+        if body is None:
+            return None
+        try:
+            if action == 'approvals-cli':
+                return self.reply(200, approvals.run_cli_command(approvals.Store(), body))
+            store = studio_store.Store()
+            if action in LETTER_ACTIONS:
+                return self.reply(200, letter_action(store, action, body))
+            if action == 'comm-ping':
+                if set(body) != {'operationId', 'target', 'taskId'}:
+                    raise ValueError('Expected operationId, target, taskId')
+                owners = {r['owner'] for r in activity.read_events()} - {activity.WAKE_SENDER}
+                if body['target'] not in owners:
+                    raise LookupError('Unknown member')
+                return self.reply(200, store.ping(body['operationId'], body['target'], body['taskId']))
+            if action == 'comm-ack':
+                if not {'messageId', 'owner'} <= set(body) <= {'messageId', 'owner', 'recordedBy', 'claimedAt'}:
+                    raise ValueError('Expected messageId and owner')
+                return self.reply(200, store.ack(body['messageId'], body['owner'], body.get('recordedBy'), body.get('claimedAt')))
+            if set(body) != {'afterEventId'}:
+                raise ValueError('Expected afterEventId')
+            result = store.cutover(body['afterEventId'])
+            # The point is committed in the database first; the marker that makes activity.py refuse PING lines follows.
+            # If writing the marker fails, the point stays recorded and the same request is safe to send again: a resend
+            # of the same point is a replay that writes the marker. The reply says so instead of a plain failure.
+            try:
+                marker = activity.ping_cutover_file()
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                temp = marker.with_suffix('.tmp')
+                temp.write_text(json.dumps({'afterEventId': result['afterEventId'], 'recordedAt': result['recordedAt']}) + '\n', encoding='utf-8')
+                temp.replace(marker)
+            except OSError:
+                return self.reply(503, {'error': 'The cutover is recorded in the database but the activity marker was not written; '
+                                                 'send the same request again', 'cutover': result, 'marker': False})
+            return self.reply(200, result | {'marker': True})
+        except approvals.Conflict as error:
+            return self.reply(409, {'error': str(error)})
+        except LookupError as error:
+            return self.reply(409, {'error': str(error)})
+        except (ValueError, TypeError) as error:
+            return self.reply(400, {'error': str(error) or 'Invalid request'})
+        except subprocess.SubprocessError:
+            return self.reply(500, {'error': 'Repository check failed'})
+        except (OSError, sqlite3.Error):
+            return self.reply(503, {'error': 'Studio records unavailable'})
 
     def sync(self):
         """Run only the fixed sync.py command, one at a time."""

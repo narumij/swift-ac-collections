@@ -661,3 +661,42 @@ OPS-138の区切り後、[正式依頼](Current/STUDIO_CONTINUITY_STATUS.md)へ�
 ## OPS-153 — 最終技術受入・待機終了
 
 H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DISCUSSION.md)を参照。WAKE-20261019-Pへ同番号ACKと本人endedを記録して待機終了。commit・キャッシュ更新は未依頼。
+
+
+## OPS-154 — タスク画面VM化の内訳 H-20261019-16
+
+[正式依頼](Current/TASK_VIEW_MODEL_MIGRATION.md)へ。まず最小境界と作業内訳の限定調査。返却欄と本人記録のみ編集、返却後連続待機。実装は次割当から。
+
+## OPS-155/156 — 通信SQLite・PING・操作履歴の協議 H-20261019-18
+
+[正式依頼](Current/STUDIO_COMMUNICATION_STORE.md)末尾へ。H17実装を固定したまま、最小仕様と内訳を協議。編集は自身の返却欄のみ。実装は次割当、返却後連続待機。
+
+
+## OPS-156 — 連絡DB設計照合 H-20261019-24
+
+[正本末尾H24](Current/STUDIO_COMMUNICATION_STORE.md#astra設計照合-h-20261019-24連絡本文の保持)へ。連絡原文はDB、成果/仕様/判断はMarkdownの境界を補正し、最小内訳を返してください。新返却欄のみ占有、コード/live/commit変更なし。返却先Astra（/root）、返却後連続待機。
+
+
+## OPS-156 — 連絡DB実装 H-20261019-25
+
+[正本末尾H25](Current/STUDIO_COMMUNICATION_STORE.md#実装依頼-h-20261019-25連絡dbapicli)へ。H24内訳1〜5のDB/API/CLIと隔離試験を正式割当。占有は正本指定、画面/live/AGENTS/commit変更なし。返却先Astra（/root）、返却後連続待機。
+
+
+## OPS-157 — 構成画像 H-20261019-26
+
+[構成画像の正本](Current/STUDIO_ARCHITECTURE_IMAGE.md)末尾H26へ。H25コードは固定して独立評価中。DocsのSVG/PNGとREADME入口・自身返却欄のみ占有。実装済み/未受入/予定を描き分け、日本語画像を作成。返却後連続待機、commitなし。
+
+
+## OPS-156 — 独立評価補正 H-20261019-27
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H27へ。受領版の競合と原文改行の2件を補正・試験し、取り下げの停止応答経路は最小案を先に返す。H26画像は返却固定。コード占有はH27指定、live/画面/commit変更なし、返却後連続待機。
+
+
+## OPS-156 — 停止応答実装 H-20261019-28
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H28へ。停止要請をinboxに残し本人stopped/先行returnedで応答する最小案を実装。強制closedは追加しない。H27と同じ占有、隔離試験のみ、commitなし、返却後連続待機。
+
+
+## OPS-156 — 閲覧・待機連携の内訳 H-20261019-29
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H29へ。H28コード固定中に、連絡閲覧と待機連携の最小内訳を返す。新返却欄のみ編集、live/コード/commit変更なし、返却後連続待機。

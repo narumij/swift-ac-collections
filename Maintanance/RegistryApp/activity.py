@@ -138,7 +138,18 @@ def check_ref(doc, section):
     return {'path': relative.as_posix(), 'section': section}
 
 
+# OPS-156: from the recorded PING cutover on, PING and its ACK go through the Studio server (comm.py) and are no longer
+# written here. The marker is written by the server when the cutover is recorded; before it this file is unchanged.
+PING_RECORD = re.compile(r'^(ACK )?PING-\d{8}-')
+
+
+def ping_cutover_file():
+    return EVENTS.with_name('ping-cutover.json')
+
+
 def append_event(task_id, kind, owner, reason='', commit_sha='', at=None, next_owner='', presence='', ref=None):
+    if PING_RECORD.match(reason or '') and ping_cutover_file().exists():
+        raise ValueError('PING and its ACK are recorded through the Studio server since the cutover; use comm.py (nothing was written)')
     event = validate_event(dict(schemaVersion=1, id=uuid.uuid4().hex, taskId=task_id, event=kind, owner=owner,
                                 timestamp=at or datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
                                 reason=reason, commitSha=commit_sha, next=next_owner, presence=presence, ref=ref))

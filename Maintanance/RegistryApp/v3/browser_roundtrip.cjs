@@ -3,6 +3,7 @@
 // recorded. The browser is closed in finally, also on failure.
 //
 // node browser_roundtrip.cjs <origin> <mode> <params.json> <out.json>
+//   params.blockPaths (any mode, OPS-167 K9): same-origin paths aborted before sending, recorded in blockedSameOrigin
 //   save:     open /, task area, select params.task, set params.owner/state, 変更を適用, (params.addPrerequisite), 保存
 //   reopen:   open / in a fresh context; the page's own resumeWorkspace loads the latest save; read fields, banner, notice
 //   plan:     OPS-173: params.actions (select / fill / choose / press) in the real editor, then 保存
@@ -24,7 +25,10 @@ const params = JSON.parse(fs.readFileSync(paramsFile, 'utf8'));
     const context = await browser.newContext({ viewport: { width: 1400, height: 1000 }, locale: 'ja-JP', timezoneId: 'UTC' });
     await context.route('**/*', route => {
       const url = route.request().url();
-      if (new URL(url).origin === origin) { result.requests.push(route.request().method() + ' ' + new URL(url).pathname); return route.continue(); }
+      const u = new URL(url);
+      // OPS-167 K9: params.blockPaths are same-origin paths aborted before sending (a real serve.py's live pollers)
+      if (u.origin === origin && (params.blockPaths || []).some(p => u.pathname === p || u.pathname.startsWith(p + '/'))) { result.blockedSameOrigin = (result.blockedSameOrigin || []).concat(u.pathname); return route.abort('blockedbyclient'); }
+      if (u.origin === origin) { result.requests.push(route.request().method() + ' ' + u.pathname); return route.continue(); }
       result.blocked.push(url);
       return route.abort('blockedbyclient');
     });

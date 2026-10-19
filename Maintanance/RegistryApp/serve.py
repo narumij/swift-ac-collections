@@ -6,12 +6,16 @@ created or migrated) and the DB must be a V3 DB. Then GET / is the page sync.py 
 replaced by a fresh read-only DB export, GET /registry.json is that export, GET /workspace resumes only V3 saves from
 DIR, and POST /save stores only V3 saves there. POST /sync still runs sync.py (documents and the pending queue); it
 never writes the DB. There is no apply route: the DB is written only through v3/registry_v3_cli.py. Without the flags
-nothing of V3 is imported or opened."""
+nothing of V3 is imported or opened.
+
+--output DIR (OPS-167 K9), for isolated runs: an existing directory used instead of Cache/RegistryStudio; sync.py (at
+start and on POST /sync) writes its page, registry.json and tools record there, never into Cache or local-tools.json."""
 import argparse
 import datetime
 import re
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import threading
@@ -36,6 +40,7 @@ WORK_PROGRESS = OUTPUT / 'work-progress.json'
 MAX_PROGRESS_BYTES = 32 * 1024
 PROGRESS_STAGES = ('preparation', 'work', 'verification', 'acceptance', 'awaiting-commit')
 SYNC_LOCK = threading.Lock()
+SYNC_ENV = None  # OPS-167 K9: with --output, sync.py writes its page, data and tools record there (REGISTRY_STUDIO_APP/TOOLS)
 # Edited JSON handed to the AI (OPS-082). Fixed on the server side; clients never choose the path. REGISTRY_STUDIO_INBOX
 # exists only so tests can use an isolated folder. Not under Cache/, so sync and restarts keep it.
 INBOX = inbox.INBOX
@@ -465,7 +470,7 @@ class Handler(BaseHTTPRequestHandler):
         if not SYNC_LOCK.acquire(blocking=False):
             return self.reply(409, {'error': '更新中です。完了を待ってください。'})
         try:
-            result = subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT,
+            result = subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, **({'env': SYNC_ENV} if SYNC_ENV else {}),
                                     capture_output=True, text=True, timeout=300)
             output = result.stdout + result.stderr
             self.reply(200 if result.returncode == 0 else 500,
@@ -577,8 +582,16 @@ def main():
     parser.add_argument('--port', type=int, default=8088)
     parser.add_argument('--v3-db', help='V3 mode (with --v3-saves): an existing V3 DB, opened read-only for the page')
     parser.add_argument('--v3-saves', help='V3 mode (with --v3-db): an existing directory for V3 saves')
+    parser.add_argument('--output', help='an existing directory for the generated page and data instead of Cache/RegistryStudio '
+                                         '(sync.py writes there, its tools record included); for isolated runs')
     args = parser.parse_args()
-    global V3, STARTUP_FINGERPRINTS
+    global V3, STARTUP_FINGERPRINTS, OUTPUT, WORK_PROGRESS, SYNC_ENV
+    if args.output is not None:
+        output = Path(args.output)
+        if not output.is_dir():
+            parser.error(f'--output {output}: no such directory (it is never created)')
+        OUTPUT, WORK_PROGRESS = output.resolve(), output.resolve() / 'work-progress.json'
+        SYNC_ENV = dict(os.environ, REGISTRY_STUDIO_APP=str(OUTPUT), REGISTRY_STUDIO_TOOLS=str(OUTPUT / 'local-tools.json'))
     if (args.v3_db is None) != (args.v3_saves is None):
         parser.error('--v3-db and --v3-saves go together')
     if args.v3_db is not None:
@@ -587,9 +600,9 @@ def main():
         except ValueError as error:
             parser.error(str(error))
         STARTUP_FINGERPRINTS = runtime_fingerprints()
-    subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
-    print(f'Registry Studio: http://127.0.0.1:{args.port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
+    print(f'Registry Studio: http://127.0.0.1:{server.server_port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

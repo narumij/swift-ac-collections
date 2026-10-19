@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -218,6 +219,103 @@ class Drift(Shadow):
             si.run(self.root(), tamper=lambda dest: (dest / si.REGISTRY).write_text(registry().replace('担当B', '改ざん'), encoding='utf-8'))
         with self.assertRaises(si.Tampered):
             si.run(self.root(), tamper=lambda dest: (dest / si.MILESTONES / '0.3.0' / 'extra.md').write_text('x', encoding='utf-8'))
+
+
+
+class ImportDb(Shadow):
+    """B3 (OPS-167 K9): a persistent DB only when equal, at a new path in an existing directory, never overwritten."""
+
+    def out(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        return Path(tmp.name)
+
+    def test_creates_a_db_that_reads_as_the_current_reader(self):
+        root, out = self.root(), self.out()
+        report = si.import_db(out / 'registry.sqlite3', root)
+        self.assertTrue(report['equal'])
+        self.assertEqual(report['created'], str(out / 'registry.sqlite3'))
+        self.assertEqual(sorted(p.name for p in out.iterdir()), ['registry.sqlite3'], 'no temporary file is left')
+        conn = si.w3.open_db(str(out / 'registry.sqlite3'))
+        try:
+            view = si.r3.read(conn, 'all')
+            self.assertEqual(len(view['ids']['tasks']), report['consumption']['tasks'])
+            self.assertTrue(si.w3.write_enabled(conn))
+        finally:
+            conn.close()
+
+    def test_never_overwrites_and_never_creates_directories(self):
+        root, out = self.root(), self.out()
+        existing = out / 'registry.sqlite3'
+        existing.write_bytes(b'keep')
+        with self.assertRaises(si.Exists):
+            si.import_db(existing, root)
+        self.assertEqual(existing.read_bytes(), b'keep')
+        with self.assertRaises(si.Unknown):
+            si.import_db(out / 'missing' / 'registry.sqlite3', root)
+        self.assertFalse((out / 'missing').exists())
+        raced = out / 'raced.sqlite3'
+        with self.assertRaises(si.Exists):
+            si.import_db(raced, root, _before_link=lambda db: db.write_bytes(b'someone else'))
+        self.assertEqual(raced.read_bytes(), b'someone else', 'the late file is not clobbered')
+        self.assertEqual(sorted(p.name for p in out.iterdir()), ['raced.sqlite3', 'registry.sqlite3'])
+
+    def test_unowned_files_next_to_the_db_are_kept(self):
+        """Review correction: only the directory the import creates is removed (a file with the old temporary name, or
+        another import's files, are never deleted), also when creating the DB fails."""
+        import os
+        root, out = self.root(), self.out()
+        decoys = {out / f'.registry.sqlite3.importing-{os.getpid()}': b'not mine', out / '.registry.sqlite3.importing-other': b'another import'}
+        for path, data in decoys.items():
+            path.write_bytes(data)
+        real, calls = si.w3.create, []
+
+        def second_fails(path, fixture):  # compare's own DB is created; the persistent one (in the owned directory) fails
+            calls.append(Path(path).parent)
+            if len(calls) == 2:
+                Path(path).write_bytes(b'half written')
+                raise si.w3.Refused('injected failure')
+            return real(path, fixture)
+        with mock.patch.object(si.w3, 'create', side_effect=second_fails), self.assertRaises(si.w3.Refused):
+            si.import_db(out / 'registry.sqlite3', root)
+        self.assertEqual(calls[1].parent, out, 'the persistent DB was being made in an owned directory next to the target')
+        self.assertFalse(calls[1].exists(), 'the owned directory was removed')
+        self.assertEqual({p: p.read_bytes() for p in decoys}, decoys)
+        self.assertEqual(sorted(p.name for p in out.iterdir()), sorted(p.name for p in decoys), 'no owned leftover, nothing created')
+        si.import_db(out / 'registry.sqlite3', root)
+        self.assertEqual({p: p.read_bytes() for p in decoys}, decoys, 'kept after a successful import too')
+
+    def test_nothing_is_created_on_differences_drift_or_failure(self):
+        out = self.root(), self.out()
+        root, out = out
+        with mock.patch.object(si, 'compare', return_value={'equal': False, 'differences': ['tasks']}):
+            report = si.import_db(out / 'a.sqlite3', root)
+        self.assertEqual((report['equal'], report['created']), (False, None))
+        with self.assertRaises(si.Drift):
+            si.import_db(out / 'b.sqlite3', root, after_copy=lambda dest: (root / si.REGISTRY).write_text(registry() + '\n追記\n', encoding='utf-8'))
+        with self.assertRaises(si.Tampered):
+            si.import_db(out / 'c.sqlite3', self.root(), tamper=lambda dest: (dest / si.REGISTRY).write_text(registry().replace('担当B', '改ざん'), encoding='utf-8'))
+        real, calls = si.reader_contract, []
+
+        def second_differs(sync, dest):  # the compare reads equal; the read-back of the created DB does not
+            calls.append(dest)
+            reader, errors = real(sync, dest)
+            if len(calls) == 2:
+                reader = (dict(reader[0], tasks={}),) + reader[1:]
+            return reader, errors
+        with mock.patch.object(si, 'reader_contract', side_effect=second_differs), self.assertRaises(si.Unknown) as caught:
+            si.import_db(out / 'd.sqlite3', self.root())
+        self.assertIn('does not read back', str(caught.exception))
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(list(out.iterdir()), [], 'no DB and no temporary file')
+
+    def test_cli(self):
+        root, out = self.root(), self.out()
+        with mock.patch.object(si, 'REPO', root), mock.patch.object(si.import_db, '__defaults__', (root, None, None, None)):
+            self.assertEqual(si.main(['shadow_import.py', '--create-db', str(out / 'x.sqlite3')]), 0)
+            self.assertTrue((out / 'x.sqlite3').is_file())
+            with mock.patch('sys.stderr'):
+                self.assertEqual(si.main(['shadow_import.py', '--create-db', str(out / 'x.sqlite3')]), 2, 'an existing path is a refusal')
 
 
 class Deviations(Shadow):

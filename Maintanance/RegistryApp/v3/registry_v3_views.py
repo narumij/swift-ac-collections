@@ -18,8 +18,11 @@ hand). Unknown or ambiguous layouts and unrenderable values are refused, never g
 """
 import hashlib
 import json
+import os
 import re
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -35,6 +38,15 @@ TARGETS = ('Task Registry', 'Task precedence', '恒久タスクの親子関係',
 
 class ViewRefused(ValueError):
     """The template layout or a value cannot be rendered safely; nothing was generated."""
+
+
+class ViewPartial(OSError):
+    """replace_in_place: publishing failed after some files were already replaced (an I/O failure, not a refusal).
+    published and unpublished name the files; rerunning replace_in_place regenerates from the current state."""
+
+    def __init__(self, message, published, unpublished):
+        super().__init__(message)
+        self.published, self.unpublished = published, unpublished
 
 
 def _natural(s):
@@ -359,6 +371,75 @@ def drift(listing, conn):
     listing: {version: [card id in file-name order]} as read from a folder tree."""
     db = {v['name']: [c['id'] for c in v['cards']] for v in _structure(conn)['versions']}
     return {v: {'files': listing.get(v, []), 'db': db.get(v, [])} for v in sorted(set(db) | set(listing)) if listing.get(v, []) != db.get(v, [])}
+
+
+def replace_in_place(root, conn, structure_rel=None, _before_write=None):
+    """B2 (OPS-167 K9): regenerate the Registry and Rules views in place under root (and the STRUCTURE view at
+    structure_rel, when given). Only the generated rows change (render_*: prose, headings and other sections are kept
+    byte for byte), and a guard refuses rows edited by hand since the last generation. Before anything is written:
+    - every DB read of the rendering and of check() shares one read snapshot (a caller's transaction is kept);
+    - check() of the rendered texts must be equal;
+    - an existing STRUCTURE file must still carry its own valid guard;
+    - every target file must still hold the exact bytes that were read (else drift: refused).
+    A refusal (ViewRefused) writes nothing. Then every changed file is staged in a directory this call creates
+    exclusively next to its target (tempfile.mkdtemp, same filesystem) and published by one rename per file. Publishing
+    several files is not atomic as a whole: if a later rename fails, ViewPartial names the published and unpublished
+    files (a mixed view until rerun; rerunning regenerates from the current state). Only the owned staging directories
+    are removed; no file this call did not create is touched.
+    The drift check does not lock the files: an edit after it can be overwritten. Run this as the only writer of these
+    files (the freeze / exclusive-writer boundary of the cutover procedure).
+    Returns {'changed': [relative paths whose bytes changed], 'report': check()}."""
+    root = Path(root)
+    targets = [si.REGISTRY, si.RULES] + ([structure_rel] if structure_rel else [])
+    before = {rel: (root / rel).read_bytes() if (root / rel).exists() else None for rel in targets}
+    if before[si.REGISTRY] is None or before[si.RULES] is None:
+        raise ViewRefused('the Registry and Rules files must exist; they are views of existing documents')
+    if structure_rel and before[structure_rel] is not None:
+        parse_structure(before[structure_rel].decode('utf-8'))  # an edited STRUCTURE view is refused, not overwritten
+    own = not conn.in_transaction
+    if own:
+        conn.execute('BEGIN')
+    try:
+        rendered = {si.REGISTRY: render_registry(before[si.REGISTRY].decode('utf-8'), conn), si.RULES: render_rules(before[si.RULES].decode('utf-8'), conn)}
+        structure = render_structure(conn)
+        if structure_rel:
+            rendered[structure_rel] = structure
+        report = check(rendered[si.REGISTRY], rendered[si.RULES], structure, conn)
+    finally:
+        if own:
+            conn.execute('ROLLBACK')
+    if not report['equal']:
+        raise ViewRefused(f"the regenerated views do not check equal ({report['parts']}); nothing was written")
+    if _before_write:
+        _before_write(root)
+    for rel in targets:
+        now = (root / rel).read_bytes() if (root / rel).exists() else None
+        if now != before[rel]:
+            raise ViewRefused(f'{rel} changed while regenerating; nothing was written')
+    changed = [rel for rel in targets if rendered[rel].encode('utf-8') != before[rel]]
+    owned, staged = [], {}
+    try:
+        for rel in changed:  # stage everything first: nothing is published until every file is written
+            target = root / rel
+            d = Path(tempfile.mkdtemp(prefix=f'.{target.name}.regenerating-', dir=target.parent))
+            owned.append(d)
+            staged[rel] = d / target.name
+            with open(staged[rel], 'xb') as f:
+                f.write(rendered[rel].encode('utf-8'))
+        published = []
+        for rel in changed:
+            try:
+                os.replace(staged[rel], root / rel)
+            except OSError as error:
+                if published:
+                    raise ViewPartial(f'published {published}, then {rel} failed ({error}); rerun to finish', published,
+                                      [r for r in changed if r not in published]) from error
+                raise
+            published.append(rel)
+    finally:
+        for d in owned:
+            shutil.rmtree(d, ignore_errors=True)
+    return {'changed': changed, 'report': report}
 
 
 def generate(root, conn, out_dir):

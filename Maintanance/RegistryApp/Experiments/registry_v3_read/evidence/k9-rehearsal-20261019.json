@@ -1,0 +1,125 @@
+{
+ "1_import": {
+  "equal": true,
+  "created": true,
+  "differences": [],
+  "deviations": [],
+  "consumption": {
+   "tasks": 95,
+   "management": 52,
+   "progress": 10,
+   "milestone": 26,
+   "versions": 8,
+   "cards": 6,
+   "gates": 7
+  },
+  "outOfScopeRows": 0,
+  "ledgerMissingPrefixes": []
+ },
+ "2_views": {
+  "changed": [
+   "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+   "Maintanance/ProgressV2/TASK_RULES_V2.md",
+   "Maintanance/ProgressV2/STRUCTURE.generated.md"
+  ],
+  "checkEqual": true,
+  "permanent": true,
+  "syncReaderOnViews": {
+   "equal": true,
+   "differences": []
+  }
+ },
+ "3_launch": {
+  "port": 59944,
+  "v3Mode": true,
+  "syncWroteOutput": [
+   "index.html",
+   "local-tools.json",
+   "registry.json"
+  ]
+ },
+ "4_legacy": {
+  "copiedLegacyJson": 7,
+  "importsCopied": true,
+  "statusMentionsLegacy": true,
+  "resumedNothing": true,
+  "pageErrors": [],
+  "blockedSameOriginKinds": [
+   "/activity-events",
+   "/approval-probe",
+   "/commit-approvals",
+   "/continuity",
+   "/letters"
+  ]
+ },
+ "5_save_resume": {
+  "task": "DOC-026",
+  "saveStatusOk": true,
+  "v3Saves": 1,
+  "resumed": true,
+  "restartSuggestedBefore": false,
+  "pageErrors": []
+ },
+ "6_cli": {
+  "exit": 0,
+  "status": "ok",
+  "applied": [
+   "task:DOC-026"
+  ],
+  "replayExit": 0,
+  "replayed": [
+   "task:DOC-026"
+  ],
+  "restartSuggestedAfter": true,
+  "revision": 1
+ },
+ "6b_plan": {
+  "resumedFrom": true,
+  "pending": [
+   "plan-confirmation",
+   "document"
+  ],
+  "newVersions": [
+   {
+    "name": "9.9.9",
+    "after": "1.0.0",
+    "positionGiven": true
+   }
+  ],
+  "exit": 6,
+  "status": "incomplete",
+  "applied": [
+   "plan:milestones"
+  ],
+  "otherOutcomes": {
+   "unselected": [
+    "task:DOC-026"
+   ]
+  },
+  "versionsNow": [
+   "0.9.0",
+   "1.0.0",
+   "9.9.9"
+  ]
+ },
+ "7_regenerate": {
+  "changed": [
+   "Maintanance/ProgressV2/TASK_REGISTRY_V2.md",
+   "Maintanance/ProgressV2/TASK_RULES_V2.md",
+   "Maintanance/ProgressV2/STRUCTURE.generated.md"
+  ],
+  "checkEqual": true,
+  "syncReaderOnViews": {
+   "readerRefused": [
+    "Release path must be one connected sequence without cycles"
+   ]
+  },
+  "placementDrift": "reported",
+  "handEditRefused": true
+ },
+ "8_live_unchanged": {
+  "files": 13,
+  "unchanged": true,
+  "serverStopped": true
+ }
+}

@@ -24,6 +24,7 @@ from unittest import mock
 HERE = Path(__file__).resolve().parent
 APP = HERE.parent
 sys.path.insert(0, str(HERE))
+import hermetic  # noqa: E402,F401  (first: temporary roots for every live path, OPS-167 K9)
 sys.path.insert(0, str(APP))
 import inbox  # noqa: E402
 import registry_v3_write as w3  # noqa: E402
@@ -192,6 +193,98 @@ class Settings(Mode):
         self.assertFalse(set(serve.V3_MODULES) & set(serve.runtime_fingerprints()), 'no V3 fingerprint without the mode')
         self.start()
         self.assertTrue(set(serve.V3_MODULES) <= set(serve.runtime_fingerprints()))
+
+
+class Output(Mode):
+    """--output DIR (OPS-167 K9 B1): sync.py writes there, its tools record included; nothing is created."""
+
+    def run_main(self, argv):
+        patches = [mock.patch.object(serve, n, getattr(serve, n)) for n in ('OUTPUT', 'WORK_PROGRESS', 'SYNC_ENV', 'V3', 'STARTUP_FINGERPRINTS')]
+        server = mock.Mock(server_port=1234, serve_forever=mock.Mock(side_effect=KeyboardInterrupt))
+        with mock.patch.object(sys, 'argv', ['serve.py', *argv]), mock.patch.object(serve, 'ThreadingHTTPServer', return_value=server), \
+                mock.patch('builtins.print'):
+            for patcher in patches:
+                patcher.start()
+            try:
+                serve.main()
+                return serve.OUTPUT, serve.WORK_PROGRESS, serve.SYNC_ENV
+            finally:
+                for patcher in reversed(patches):
+                    patcher.stop()
+
+    def test_output_redirects_sync(self):
+        target = self.dir / 'isolated-out'
+        target.mkdir()
+        output, progress, env = self.run_main(['--port', '0', '--output', str(target)])
+        self.assertEqual((output, progress), (target.resolve(), target.resolve() / 'work-progress.json'))
+        self.assertEqual((env['REGISTRY_STUDIO_APP'], env['REGISTRY_STUDIO_TOOLS']), (str(target.resolve()), str(target.resolve() / 'local-tools.json')))
+        self.assertEqual(len(self.sync_calls), 1)
+        call = serve.subprocess.run.call_args
+        self.assertEqual(call.kwargs['env']['REGISTRY_STUDIO_APP'], str(target.resolve()), 'the startup sync writes into --output')
+
+    def test_missing_output_is_refused(self):
+        with mock.patch('sys.stderr'), self.assertRaises(SystemExit) as caught:
+            self.run_main(['--output', str(self.dir / 'none')])
+        self.assertEqual(caught.exception.code, 2)
+        self.assertFalse((self.dir / 'none').exists())
+        self.assertEqual(self.sync_calls, [])
+
+    def test_default_keeps_cache_and_no_env(self):
+        output, _, env = self.run_main(['--port', '0'])
+        self.assertEqual((output, env), (self.out, None))  # setUp's patched OUTPUT: untouched without --output
+        self.assertNotIn('env', serve.subprocess.run.call_args.kwargs, 'the default sync call is exactly as before')
+
+
+class RealProcess(unittest.TestCase):
+    """The real serve.py process (B1): --port 0 --output TMP --v3-db --v3-saves, the real startup sync.py into TMP, the
+    tools record copied into TMP, the approvals DB in TMP. Only /, /registry.json and /workspace are fetched (no live
+    poller). The live Cache and local-tools.json must not change; the process is stopped at the end."""
+
+    def test_isolated_launch(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        d = Path(tmp.name)
+        for name in ('out', 'saves', 'legacy'):
+            (d / name).mkdir()
+        w3.create(str(d / 'db.sqlite3'), copy.deepcopy(BASE))
+        live_tools = APP / 'local-tools.json'
+        if live_tools.exists():
+            (d / 'out' / 'local-tools.json').write_bytes(live_tools.read_bytes())  # read-only copy so sync.py finds node/marked
+        watched = [live_tools, *(APP.parent / 'Cache' / 'RegistryStudio').glob('*')]
+        before = {p: (p.stat().st_mtime_ns, hashlib.sha256(p.read_bytes()).hexdigest()) for p in watched if p.is_file()}
+        # REGISTRY_STUDIO_APP/TOOLS also point into TMP from the parent environment: even a regression of --output (which the
+        # in-process Output tests catch) cannot reach the live Cache or local-tools.json from this test (a lesson of K9)
+        env = dict(__import__('os').environ, REGISTRY_STUDIO_APPROVALS_DB=str(d / 'approvals.sqlite3'), REGISTRY_STUDIO_INBOX=str(d / 'legacy'),
+                   REGISTRY_STUDIO_APP=str(d / 'out'), REGISTRY_STUDIO_TOOLS=str(d / 'out' / 'local-tools.json'))
+        proc = subprocess.Popen([sys.executable, '-B', str(APP / 'serve.py'), '--port', '0', '--output', str(d / 'out'),
+                                 '--v3-db', str(d / 'db.sqlite3'), '--v3-saves', str(d / 'saves')],
+                                cwd=APP.parent.parent, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        self.addCleanup(proc.stdout.close)
+        self.addCleanup(lambda: (proc.poll() is None and (proc.terminate(), proc.wait(10))))
+        lines = []
+        for line in proc.stdout:
+            lines.append(line)
+            if line.startswith('Registry Studio: http://127.0.0.1:'):
+                break
+        self.assertIsNone(proc.poll(), ''.join(lines)[-3000:])
+        port = int(re.search(r'127\.0\.0\.1:(\d+)/', lines[-1]).group(1))
+        self.assertNotEqual(port, 8088)
+        self.assertIn('V3 mode', lines[-1])
+        origin = f'http://127.0.0.1:{port}'
+        with urllib.request.urlopen(origin + '/', timeout=30) as r:
+            page = r.read().decode('utf-8')
+        seed = json.loads(re.search(r'<script id="seed" type="application/json">(.*?)</script>', page, re.S).group(1))
+        self.assertEqual(seed['source']['kind'], 'v3-export')
+        docs = json.loads(re.search(r'<script id="documents" type="application/json">(.*?)</script>', page, re.S).group(1))
+        self.assertTrue(docs['files'], 'the documents built by the real sync.py are kept')
+        with urllib.request.urlopen(origin + '/workspace', timeout=30) as r:
+            self.assertIsNone(json.loads(r.read())['save'])
+        self.assertTrue((d / 'out' / 'index.html').is_file() and (d / 'out' / 'registry.json').is_file(), 'sync.py wrote into --output')
+        proc.terminate()
+        proc.wait(10)
+        after = {p: (p.stat().st_mtime_ns, hashlib.sha256(p.read_bytes()).hexdigest()) for p in watched if p.is_file()}
+        self.assertEqual(after, before, 'the live Cache and local-tools.json are untouched')
+        hermetic.assert_live_unchanged(self)
 
 
 class Routes(Mode):

@@ -667,3 +667,34 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
     - 読取専用のページの接続でも揃い、書けない。
     - 呼び出し側のtransactionは保たれる。誤りのあとも閉じる。DBは変わらない。
   - 直す前には、この試験のうち3件が落ちた（revision 1と古いownerの組）。
+
+## OPS-167 K9：リハーサルのための配管（B1〜B3）と、一時rootでのリハーサル
+
+- **B3 取込でDBを残す**：`shadow_import.import_db(path)`と、CLIの`--create-db NEW.sqlite3`。
+  - `run()`と同じ手順（snapshot→verify→parse→compare）を通し、比べた結果が等しいときだけDBを作る。
+  - すでにあるpathには書かない。ないdirは作らない。
+  - 同じdirの一時名で作り、読み戻して今の読み手ともう一度比べる。それから、上書きしないlink（`os.link`）で置く。失敗すれば、DBも一時fileも残らない。
+- **B1 本物のプロセスを隔離して起動する**：`serve.py --output DIR`（すでにあるdirに限る。既定は今までどおり）。
+  - 起動時と`/sync`のsync.pyは、`REGISTRY_STUDIO_APP`と`REGISTRY_STUDIO_TOOLS`をDIRに向ける。sync.pyの`TOOLS_RECORD`は環境で上書きできるようにした（既定は同じ）。
+  - port 0のときも、実際のportを表示する。
+- **B2 viewをその場で作り直す**：`registry_v3_views.replace_in_place(root, conn, structure_rel=None)`。
+  - 生成した行だけを差し替え、guardで手の書き換えを拒否する。
+  - 読取は1つのsnapshot。書く前に`check`が等しいこと、STRUCTUREのguardが正しいことを確かめる。
+  - 読んだbyteから変わっていれば（drift）拒否する。fileごとに一時file→renameで置く。
+- **driver**：`blockPaths`で、同じoriginの指定pathを送る前に止める（本物のserveの、現用の記録を見に行く監視）。
+- **試験**：`test_shadow_import` +4、`test_serve_v3_mode` +4（本物のプロセスの起動を1件含む）、`test_registry_v3_views` +4（書込と並ぶsnapshotの試験を1件含む）。合計262件。
+  - 否定の対照は、上書きしないlink、読み戻し、drift、`check`の等しさ、snapshot、STRUCTUREのguard、`--output`の環境、ないdirを作らないこと。
+  - 前もって存在を確かめる処理は、linkと二重の守りになっている。そのため、片方を外しても試験は通る。
+- **リハーサルの結果**：`../Experiments/registry_v3_read/evidence/k9-rehearsal-20261019.json`（件数だけで、旧保存の本文は含まない）。経過はOPS-167の正本にある。
+- **事故**：B1の否定の対照の1つ（toolsの環境を外す）を、本物のプロセスの試験と一緒に走らせた。そのため、現用の`local-tools.json`が1回書き直された（20:34:09、node・markedは同じで、確かめた時刻だけが変わった）。Cacheは変わっていない。今は試験のプロセスにも一時のTOOLSを渡しているので、同じことは起きない。
+- **レビューでの補正**（Astraの早い段階のレビュー3件）：
+  - **持ち主のいない一時fileを消さない**：B3は、DBを作るときに自分だけのdir（`tempfile.mkdtemp`、置き場所の隣）を使い、消すのもそのdirだけにした。B2の作り直しも同じにした（作り直す全fileを、自分だけのdirにまず置いてから出す）。どちらも、同じ名前の他人のfileは残ることを試験した。
+  - **一部だけ出た状態を報告する**：作り直したfileは1つずつrenameで出す。2つ目以降で失敗したら`ViewPartial`（出たfileと、出なかったfile）を返し、「何も書かなかった」とは言わない。もう一度走らせれば揃う（2つ目の失敗を注入して試験した）。
+  - **書き手は1人に限る**：driftの確かめはfileを錠で止めないので、確かめたあとの編集は上書きされうる。作り直しは、ただ1人の書き手として、凍結の間に行う。
+- **フォルダを読むもの**（`test_folder_consumers.py`、7件）：viewはMilestonesのフォルダもHEAD.mdも作り直さない（K8の限界）。そのため、DBだけを変えたあとに`sync.build`（文書とpendingの更新の入口）が見るものを、試験で固定した。
+  - 並べ替え：file名の順のまま（cardsとskeletonがずれる）。
+  - 新しいcardの文書を、その版のフォルダに置く：揃う。
+  - 新しいcardの文書をほかに置く：見えない。
+  - フォルダのない新しい版：見えない。
+  - フォルダのある新しい版：拒否される（B4）。
+  - focus：書く操作がまだない。一時DBで直接変えても、読み手はHEAD.mdのまま。

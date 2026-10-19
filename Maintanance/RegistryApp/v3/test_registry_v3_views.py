@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -166,6 +167,122 @@ class Fixture(Views):
         wrong = views['rules'].replace('| `TASK` | `101` |', '| `TASK` | `100` |')
         report = rv.check(views['registry'], wrong, views['structure'], conn)
         self.assertEqual((report['equal'], report['parts']['ledger']), (False, False), 'a ledger that lags the DB is not equal')
+
+
+
+class InPlace(Views):
+    """B2 (OPS-167 K9): guarded in-place regeneration of the views under an explicit (temporary) root."""
+    STRUCTURE = 'Maintanance/ProgressV2/STRUCTURE.generated.md'
+    tree = Fixture.tree  # the fixture tree only, not Fixture's tests again
+
+    def update(self, conn, owner='担当X', base='担当C'):
+        w3.apply(conn, f'op-{owner}', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base}, 'changes': {'owner': owner},
+                                       'generation': w3.generation(conn), 'actor': ACTOR, 'evidence': EVIDENCE})
+
+    def test_first_and_later_regeneration_change_only_generated_rows(self):
+        root, conn, _, _ = self.build(self.tree())
+        hand = {rel: (root / rel).read_text(encoding='utf-8') for rel in (si.REGISTRY, si.RULES)}
+        out = rv.replace_in_place(root, conn, self.STRUCTURE)
+        self.assertTrue(out['report']['equal'])
+        self.assertEqual(sorted(out['changed']), sorted([si.REGISTRY, si.RULES, self.STRUCTURE]), 'the first run adds guards and the STRUCTURE view')
+        for rel in (si.REGISTRY, si.RULES):
+            self.assertTrue(self.preserved(hand[rel], (root / rel).read_text(encoding='utf-8')), rel)
+        first = (root / si.REGISTRY).read_text(encoding='utf-8')
+        self.assertEqual(rv.replace_in_place(root, conn, self.STRUCTURE)['changed'], [], 'nothing to change: no write')
+        rules_before = (root / si.RULES).read_text(encoding='utf-8')
+        self.update(conn)
+        out = rv.replace_in_place(root, conn, self.STRUCTURE)
+        self.assertEqual(sorted(out['changed']), sorted([si.REGISTRY, si.RULES, self.STRUCTURE]), 'every guard records the new revision')
+        rules_diff = [b for a, b in zip(rules_before.split('\n'), (root / si.RULES).read_text(encoding='utf-8').split('\n')) if a != b]
+        self.assertTrue(rules_diff and all(rv.GUARD.fullmatch(line.strip()) for line in rules_diff), 'in Rules only the guard line moved')
+        diff = [b for a, b in zip(first.split('\n'), (root / si.REGISTRY).read_text(encoding='utf-8').split('\n')) if a != b and not b.startswith('<!--')]
+        self.assertEqual(diff, ['| `TASK-003` | `ACTIVE` | 担当X | Bで始まる仕事 | Bの開始後に着手 | Maintanance/Current/B作業.md |'])
+        self.assertEqual(sorted(p.name for p in (root / si.REGISTRY).parent.iterdir() if p.name.startswith('.')), [], 'no temporary file is left')
+
+    def test_refusals_write_nothing(self):
+        root, conn, _, _ = self.build(self.tree())
+        rv.replace_in_place(root, conn, self.STRUCTURE)
+        self.update(conn)
+        state = lambda: {rel: (root / rel).read_bytes() for rel in (si.REGISTRY, si.RULES, self.STRUCTURE)}
+        edited = (root / si.REGISTRY).read_text(encoding='utf-8').replace('| 担当B |', '| 手で書き換え |')
+        (root / si.REGISTRY).write_text(edited, encoding='utf-8')
+        before = state()
+        with self.assertRaises(rv.ViewRefused) as caught:
+            rv.replace_in_place(root, conn, self.STRUCTURE)
+        self.assertIn('edited by hand', str(caught.exception))
+        self.assertEqual(state(), before)
+        root2, conn2, _, _ = self.build(self.tree())
+        rv.replace_in_place(root2, conn2, self.STRUCTURE)
+        (root2 / self.STRUCTURE).write_text((root2 / self.STRUCTURE).read_text(encoding='utf-8').replace('focus', 'focus ', 1), encoding='utf-8')
+        with self.assertRaises(rv.ViewRefused):
+            rv.replace_in_place(root2, conn2, self.STRUCTURE)
+        root3, conn3, _, _ = self.build(self.tree())
+        rv.replace_in_place(root3, conn3)
+        self.update(conn3)
+        snapshot = {rel: (root3 / rel).read_bytes() for rel in (si.REGISTRY, si.RULES)}
+        with self.assertRaises(rv.ViewRefused) as caught:
+            rv.replace_in_place(root3, conn3, _before_write=lambda r: (r / si.RULES).write_text((r / si.RULES).read_text(encoding='utf-8') + '\n追記\n', encoding='utf-8'))
+        self.assertIn('changed while regenerating', str(caught.exception))
+        self.assertEqual((root3 / si.REGISTRY).read_bytes(), snapshot[si.REGISTRY], 'the Registry was not written either')
+
+    def test_one_snapshot_while_a_writer_commits(self):
+        root, conn, db, _ = self.build(self.tree())
+        conn.execute('PRAGMA journal_mode = WAL')
+        writer = w3.open_db(str(db))
+        self.addCleanup(writer.close)
+        real = rv.render_rules
+
+        def rules_then_write(template, c):  # the CLI commits between the Registry and the Rules rendering
+            text = real(template, c)
+            self.update(writer)
+            return text
+        with unittest.mock.patch.object(rv, 'render_rules', side_effect=rules_then_write):
+            out = rv.replace_in_place(root, conn)
+        self.assertTrue(out['report']['equal'], 'the whole regeneration is the state before the commit')
+        self.assertIn('| 担当C |', (root / si.REGISTRY).read_text(encoding='utf-8'))
+        self.assertEqual(w3.revision(conn), 1, 'the commit happened meanwhile')
+        self.assertIn('| 担当X |', rv.replace_in_place(root, conn) and (root / si.REGISTRY).read_text(encoding='utf-8'), 'the next run shows it')
+
+    def test_unowned_files_are_kept_and_partial_publication_is_reported(self):
+        """Review correction: staging uses owned directories only; a failure while publishing the second file is reported
+        as ViewPartial (Registry published, Rules not), never as 'nothing written'; a rerun finishes it."""
+        root, conn, _, _ = self.build(self.tree())
+        rv.replace_in_place(root, conn)
+        self.update(conn)
+        folder = (root / si.REGISTRY).parent
+        decoy = folder / '.TASK_RULES_V2.md.regenerating'
+        decoy.write_bytes(b'not mine')
+        real = rv.os.replace
+        calls = []
+
+        def second_fails(src, dst):
+            calls.append(Path(dst).name)
+            if len(calls) == 2:
+                raise OSError('injected publication failure')
+            return real(src, dst)
+        rules_before = (root / si.RULES).read_bytes()
+        with unittest.mock.patch.object(rv.os, 'replace', side_effect=second_fails), self.assertRaises(rv.ViewPartial) as caught:
+            rv.replace_in_place(root, conn)
+        self.assertEqual((caught.exception.published, caught.exception.unpublished), ([si.REGISTRY], [si.RULES]))
+        self.assertIn('| 担当X |', (root / si.REGISTRY).read_text(encoding='utf-8'), 'the Registry was published')
+        self.assertEqual((root / si.RULES).read_bytes(), rules_before, 'the Rules were not')
+        self.assertEqual(decoy.read_bytes(), b'not mine')
+        self.assertEqual(sorted(p.name for p in folder.iterdir() if p.name.startswith('.')), [decoy.name], 'only owned staging was removed')
+        out = rv.replace_in_place(root, conn)
+        self.assertEqual((out['changed'], out['report']['equal']), ([si.RULES], True), 'a rerun finishes the mixed view')
+
+    def test_check_must_be_equal_and_the_caller_transaction_is_kept(self):
+        root, conn, _, _ = self.build(self.tree())
+        before = self.hashes(root)
+        real = rv.check
+        with unittest.mock.patch.object(rv, 'check', side_effect=lambda *a, **k: dict(real(*a, **k), equal=False)), self.assertRaises(rv.ViewRefused):
+            rv.replace_in_place(root, conn)
+        self.assertEqual(self.hashes(root), before)
+        self.assertFalse(conn.in_transaction, 'the read snapshot is ended')
+        conn.execute('BEGIN')
+        rv.replace_in_place(root, conn)
+        self.assertTrue(conn.in_transaction)
+        conn.execute('ROLLBACK')
 
 
 class Corrections(Views):

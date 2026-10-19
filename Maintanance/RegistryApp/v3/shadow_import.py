@@ -22,8 +22,9 @@ Steps
    reported. Excluded fields are listed with their reason; the exclusion is not full compatibility.
    Known DESIGN deviations (gate ID used as destination, missing or terminal gate) are reported separately.
 
-Run: python3 -B Maintanance/RegistryApp/v3/shadow_import.py [--evidence FILE.json]
-Exit: 0 equal, 1 differences, 2 refused (drift, tampering or unknown input).
+Run: python3 -B Maintanance/RegistryApp/v3/shadow_import.py [--evidence FILE.json] [--create-db NEW.sqlite3]
+Exit: 0 equal, 1 differences, 2 refused (drift, tampering or unknown input; with --create-db also an existing path).
+--create-db (B3, OPS-167 K9): import_db keeps a V3 DB at a new path, only when equal; see import_db.
 """
 import argparse
 import hashlib
@@ -31,6 +32,7 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -70,6 +72,10 @@ class Tampered(Refusal):
 
 class Unknown(Refusal):
     kind = 'unknown input'
+
+
+class Exists(Refusal):
+    kind = 'exists'
 
 
 def sha256(data):
@@ -491,12 +497,66 @@ def run(root=REPO, after_copy=None, tamper=None):
             'consumption': consumption, **result}
 
 
+def import_db(db_path, root=REPO, after_copy=None, tamper=None, _before_link=None):
+    """B3 (OPS-167 K9): a persistent V3 DB from the same pipeline as run() (snapshot, verify, parse, compare), made only
+    when the comparison is equal. db_path must not exist (never overwritten) and its directory must exist (never
+    created). The DB is created under a temporary name in that directory from the same parsed fixture, read back and
+    compared with the current reader on the same copy once more, and then linked into place without clobbering. The
+    temporary DB lives in a directory this call creates exclusively (tempfile.mkdtemp) next to db_path, so the link stays
+    on one filesystem; only that owned directory is removed afterwards, and no file it did not create is touched. Any
+    failure leaves nothing at db_path. Returns the report with 'created' (the path, or None when the comparison found
+    differences)."""
+    db = Path(db_path)
+    if db.exists() or db.is_symlink():
+        raise Exists(f'{db} already exists; an import never overwrites a DB')
+    if not db.parent.is_dir():
+        raise Unknown(f'{db.parent} is not an existing directory; an import never creates one')
+    sync = load_sync()
+    with tempfile.TemporaryDirectory(prefix='k9-import-') as tmp:
+        dest, work = Path(tmp) / 'copy', Path(tmp) / 'work'
+        dest.mkdir()
+        work.mkdir()
+        manifest = snapshot(root, dest, after_copy)
+        if tamper:
+            tamper(dest)
+        verify(dest, manifest)
+        fixture, consumption = parse(dest, manifest, sync.vkey)
+        result = compare(dest, fixture, sync, work)
+        report = {'manifest': manifest, 'orderSource': 'sync.vkey on the captured folder names (current implementation order, fixed input)',
+                  'consumption': consumption, **result, 'created': None}
+        if not result['equal']:
+            return report
+        owned = Path(tempfile.mkdtemp(prefix=f'.{db.name}.importing-', dir=db.parent))  # exclusively ours
+        partial = owned / db.name
+        try:
+            w3.create(str(partial), fixture)
+            conn = w3.open_db(str(partial))
+            try:
+                mine = db_contract(r3.read(conn, 'all'))
+            finally:
+                conn.close()
+            reader, errors = reader_contract(sync, dest)
+            if reader is None or reader[0] != mine:
+                raise Unknown(f'the created DB does not read back as the current reader: {errors or "differences"}')
+            if _before_link:
+                _before_link(db)
+            try:
+                os.link(partial, db)  # never clobbers: FileExistsError if something appeared at db_path meanwhile
+            except FileExistsError:
+                raise Exists(f'{db} appeared while importing; nothing was overwritten') from None
+        finally:
+            shutil.rmtree(owned)  # only the directory this call created
+    report['created'] = str(db)
+    return report
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--evidence', help='write the report JSON here')
+    ap.add_argument('--create-db', help='B3: also create a persistent V3 DB at this new path when the comparison is equal')
     args = ap.parse_args(argv[1:])
     try:
-        report = run()
+        report = import_db(args.create_db) if args.create_db else run()
     except Refusal as error:
         print(f'{error.kind}: {error}', file=sys.stderr)
         return 2
@@ -509,6 +569,8 @@ def main(argv):
           f"task-shaped among them {len(c['taskShapedOutOfScope'])}")
     print(f"deviations={report['deviations']} ledgerMissingPrefixes={report['ledgerMissingPrefixes']}")
     print(f"ranges={report['ranges']}")
+    if args.create_db:
+        print(f"created={report['created']}")
     return 0 if report['equal'] else 1
 
 

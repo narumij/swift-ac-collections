@@ -372,7 +372,7 @@ def tool(flag, env, default):
 # Order: --flag > environment variable > saved local record (reused only if it still works) > PATH >
 # known install locations. The record is environment-specific and untracked; the README describes
 # how to check it, not where the binaries are.
-TOOLS_RECORD = CODE / 'local-tools.json'
+TOOLS_RECORD = Path(os.environ.get('REGISTRY_STUDIO_TOOLS', CODE / 'local-tools.json'))  # the override is for isolated runs (OPS-167 K9)
 NODE_CANDIDATES = [
     '~/.cache/codex-runtimes/*/dependencies/node/bin/node',
     '/opt/homebrew/bin/node', '/usr/local/bin/node',

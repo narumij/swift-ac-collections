@@ -43,6 +43,20 @@
 
 ## 採番待ち
 
+### `CP-20261020-002` — 連絡の送信日時・受領日時を揃えて画面に出す
+
+- queue状態: `RECONCILED`（ユーザー「パッチにしてあすとらさんに渡してもらおうかな」、2026-10-20）
+- 発見元・ユーザー指示: 2026-10-20、`sentAt`が実はサーバー受領時刻で送信・受領の時刻が名前どおりに分かれていない件（姫が作ったもの：5360265bb・72ca7731f）。ユーザーの中継した仕様「サーバーが操作を成立させるときにイベントと時刻を一緒に保存」「画面には送信日時・受領日時」「本人による時刻入力は不要」。指示「1〜3をやって。隔離環境でまず見せて。欄の削除や過去データの書き換えは含めない」。
+- 種別候補: `EXECUTION`
+- 対象範囲: 1 送信の時刻を`sent`の出来事1つに揃え`sentAt`もそこから取る／2 軽量一覧と本文に`receivedAt`（最初の本人の受領）を足す／3 画面に「送信日時」「受領日時」、他の出来事は「記録日時」。
+- 対象外: 欄の削除（`claimed_at`含む）、過去データの書き換え、本番8088・本番出力・本番DB、commit。
+- 停止条件: 隔離環境でユーザーに見せた時点で止める。本番反映はユーザーの確認後。
+- 一時作業物: 見せ用サーバーは既存の`OPS-183-184-demo`一時ディレクトリ（OPS-183正本に記録済み）を再利用、http://127.0.0.1:54051/ 。
+- 成果・検証: 実施（未commit・本番未反映）。`studio_store.py`：送信は時計を1回だけ読み`letters`と`sent`の出来事に同じ時刻／一覧と本文の`sentAt`は`sent`の出来事から、`receivedAt`は本人の最初の`received`から（代理は数えない、未受領はnull）。`index.template.html`：一覧の行に「送信日時 … · 受領日時 …|未受領」、本文の出来事は送信日時・受領日時・記録日時、本文の版は記録日時。先に失敗を確認した試験：`test-studio-letters.py`の新1件（時計2回で失敗）・`test-view-model-letters.cjs`の追加分（「サーバー受領」で失敗）→実装後に通過。`test-*.cjs`全部・`test-*.py`は`test-letters-lanes-browser.py`以外通過。同試験は本番サーバーのログ`Cache/RegistryStudio/production-server.log`が試験中に書き換わり、`v3/hermetic`のlive指紋が一致しないため失敗（試験自体の判定は通過。本番の8088が動いているためで、この変更とは無関係。直していない）。過去データは書き換えていない（古い連絡は表示だけが`sent`の出来事の時刻に変わる、差は最大約1ミリ秒）。
+- 受渡し: パッチ`Current/Evidence/CP-20261020-002/letter-times.patch`（153行、sha256 `90206ee7d224bbc43272438bcc226c8a294e453d6ce08157432a7f84ef0d4955`、基準`126f189a7`、対象4ファイル。`git apply --check --cached`で基準に当たることを確認）。作業ツリーの変更も同じ内容のまま残してある（姫はcommitしない）。姫は連絡の送り手一覧に入っていないため、連絡DBでは送れない。本番反映前にユーザーが隔離環境 http://127.0.0.1:54051/ で確認する。
+- 受入向けの照合（2026-10-20、受入担当の指摘「stashの適用は途中で失敗しても一部の変更が入る場合がある」を受けて）: 実差分（対象4ファイルの`git diff --binary`）とパッチを`cmp`でバイト一致を確認。`git diff --name-only HEAD`は対象4ファイルと本queueだけ。誤って当てかけたstash（`rights-notice-before-history-rewrite-20261016`）の追跡ファイル4つ（LICENSE・Maintanance/DOCUMENT.md・README.ja.md・README.md）はHEADと差なし、未追跡扱いの2つ（Maintanance/LICENSE.md・Maintanance/User/AI_MEMORY_SUPPORT_RIGHTS_INTENT.md）は追跡済みでHEADと差なし・更新時刻10-17 00:02:53のまま。stashは`stash@{0}`に残っている。
+- Codex reconciliation: 2026-10-20 Astra受入。ユーザー「検収して、よければ取り込んでください」に基づく。基準126f189a7からの対象4ファイルのdiffと提出patchがバイト一致、sha256一致。送信時刻一本化、本人の最初の受領のみ、閲覧非記録、再送時刻保持を確認。連絡25試験、letters VM/DOM、既存member連携検査が成功。パッチは作業ツリーへ適用済みのため再適用しない。既存DBの書換え・claimed_at削除なし。本番再起動後、配信HTMLの日時表示と一覧APIのreceivedAtを確認済み（画面目視は未実施）。commitは未実施。
+
 ### `CP-20261019-006` — Studioの表示・経路の接続もれ全点検（報告）
 
 - queue状態: `AWAITING_COORDINATOR`

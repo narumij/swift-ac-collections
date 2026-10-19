@@ -56,6 +56,15 @@ const parts=['letters'];
  assert(v.detail.body.stop.startsWith('停止要請中')&&v.detail.body.stop.includes('占有の解除でもありません'));
  const ev=v.detail.body.events;assert.equal(ev[2].proxy,true);assert(ev[2].text.startsWith('停止の応答 — Fable（代理の記録：記録者 Astra調整。状態は変わらない）'));assert(ev[2].meta.includes('本人の申告 2026-10-19T14:00:00+09:00'));
  s=apply(s,{source:'letterDetail',ok:true,value:{...det,state:'stopped',stateLabel:'停止済み（本人の応答）'},forId:b.id});assert.equal(c.lettersViewModel(s).detail.body.stop,'停止済み（宛先の本人の応答）');
+ // CP-20261020-002: the send and receipt times are labelled as such; other events are "記録日時", never "受領"
+ assert(ev[0].meta.startsWith('送信日時 '),ev[0].meta);assert(ev[1].meta.startsWith('記録日時 '),ev[1].meta);assert(!ev.some(e=>e.meta.includes('サーバー受領')));
+ {const rec=D(b,{events:[{event:'received',actor:'姫',recorded_by:'姫',effective:true,note:'',claimed_at:null,received_at:'2026-10-19T05:03:00Z'}]});
+  const t2=apply(s,{source:'letterDetail',ok:true,value:rec,forId:b.id});assert(c.lettersViewModel(t2).detail.body.events[0].meta.startsWith('受領日時 '));
+  assert(!c.lettersViewModel(t2).detail.body.texts.some(x=>x.meta.includes('サーバー受領')),'a text revision says 記録日時');}
+ {const one=(o)=>apply(s,{source:'letters',ok:true,value:{letters:[{...b,...o}],hasMore:false,nextCursor:null},forKey:c.letterListKey(s.ui)});
+  const row=o=>c.lettersViewModel(one(o)).rows[0].text;
+  assert.match(row({sentAt:'2026-10-19T05:00:00Z',receivedAt:null}),/送信日時 .+ · 受領日時 未受領/,'not received yet');
+  assert.match(row({sentAt:'2026-10-19T05:00:00Z',receivedAt:'2026-10-19T05:03:00Z'}),/送信日時 .+ · 受領日時 \S/);}
  // the list failing keeps the last rows and says so
  s=apply(s,{source:'letters',ok:false,forKey:c.letterListKey(s.ui)});v=c.lettersViewModel(s);assert.equal(v.status,'一覧の取得不調 · 最後に読めた内容');assert.equal(v.rows.length,3);
  // choice and filters survive polling

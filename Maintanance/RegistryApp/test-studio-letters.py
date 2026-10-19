@@ -266,6 +266,26 @@ class StoreTests(Base):
             self.assertEqual(l['lastEvent'], meta[-1])
         self.assertEqual([(e['event'], e['actor'], e['recordedBy'], e['effective']) for e in x['events']][-1], ('stopped', '姫', 'Astra', False), 'a proxy stop is told apart')
 
+    def test_send_and_receipt_times_are_the_server_times_of_those_events(self):
+        """CP-20261020-002: the send time is the time of the `sent` event (one clock reading, also in letters), the receipt
+        time that of the recipient's own first `received`. Reading records nothing; a replay keeps the first times."""
+        same = op()
+        sent = self.send(operation_id=same)
+        self.assertEqual(self.raw("SELECT l.received_at = e.received_at FROM letters l JOIN letter_events e ON e.letter_id = l.id AND e.event = 'sent'"), [(1,)], 'one clock reading for the send')
+        first = lambda: next(l for l in self.s.letters_brief()['letters'] if l['id'] == sent['id'])
+        self.assertEqual((first()['sentAt'], first()['receivedAt']), (first()['events'][0]['at'], None), 'not received yet: no receipt time')
+        self.s.inbox('姫'); self.s.letters(); self.s.letter(sent['id'])
+        self.assertIsNone(first()['receivedAt'], 'reading is not a receipt')
+        self.ev(sent, 'received', recorded_by='Astra')  # a proxy record is not her receipt
+        self.assertIsNone(first()['receivedAt'])
+        self.ev(sent, 'received')
+        got = first()
+        self.assertEqual(got['receivedAt'], next(e['at'] for e in got['events'] if e['event'] == 'received' and e['effective']))
+        full = self.s.letter(sent['id'])
+        self.assertEqual((full['sentAt'], full['receivedAt']), (got['sentAt'], got['receivedAt']), 'the full letter says the same')
+        again = self.send(operation_id=same)
+        self.assertEqual((again['replayed'], again['sentAt']), (True, got['sentAt']), 'a replay keeps the first time')
+
     def test_brief_pages_are_stable_complete_and_filtered_on_the_server(self):
         self.s.set_senders(['Astra', 'ユーザー', '姫'], 'ユーザー')
         made, who = [], {}

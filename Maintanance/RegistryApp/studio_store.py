@@ -149,6 +149,15 @@ def _body(value):
     return value
 
 
+def _event_times(events, letter_time):
+    """CP-20261020-002: the send time is the server time of the `sent` event; the receipt time that of the recipient's own
+    first `received` (None until then; a proxy record is not a receipt). Both are the times the server made those events,
+    never a time read from a list. A letter written before the send used one clock reading falls back to its own row."""
+    sent = next((e for e in events if e['event'] == 'sent'), None)
+    received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
+    return {'sentAt': sent['received_at'] if sent else letter_time, 'receivedAt': received['received_at'] if received else None}
+
+
 def _ref(doc, section):
     if doc is None and section is None:
         return None, None
@@ -196,9 +205,10 @@ class LetterMixin:
                              (letter_id, part, revision, body, reason, ref[0], ref[1], recorded_by, approvals.now(), operation_id))
         return cursor.lastrowid
 
-    def _insert_event(self, con, letter_id, event, actor, recorded_by, claimed_at, text_sequence, note, effective, operation_id):
+    def _insert_event(self, con, letter_id, event, actor, recorded_by, claimed_at, text_sequence, note, effective, operation_id, at=None):
+        # `at`: the server time of the operation that makes this event, when the caller already read the clock for it
         con.execute('INSERT INTO letter_events(letter_id,event,actor,recorded_by,claimed_at,received_at,text_sequence,note,effective,operation_id) VALUES (?,?,?,?,?,?,?,?,?,?)',
-                    (letter_id, event, actor, recorded_by, claimed_at, approvals.now(), text_sequence, note, 1 if effective else 0, operation_id))
+                    (letter_id, event, actor, recorded_by, claimed_at, at or approvals.now(), text_sequence, note, 1 if effective else 0, operation_id))
 
     def send(self, operation_id, sender, recipient, task_id, body, recorded_by=None, ref_doc=None, ref_section=None):
         if not isinstance(operation_id, str) or not approvals.OPERATION_ID.fullmatch(operation_id):
@@ -224,9 +234,11 @@ class LetterMixin:
                 raise approvals.Conflict('A letter is sent by the sender itself; a proxy send is not accepted')
             letter_id = f'LTR-{_local_date()}-{uuid.uuid4().hex.upper()}'
             self._record_operation(con, operation_id, 'letter-send', payload, recorded_by, 'applied', {'letterId': letter_id})
-            con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, approvals.now()))
+            # CP-20261020-002: one clock reading for the send; the letter row and its `sent` event carry the same time
+            at = approvals.now()
+            con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, at))
             text_id = self._insert_text(con, letter_id, 'request', body, '', ref, recorded_by, operation_id)
-            self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id)
+            self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id, at)
             return self._letter(con, letter_id) | {'replayed': False}
 
     def event(self, operation_id, letter_id, event, actor, recorded_by=None, claimed_at=None, note='', body=None, ref_doc=None, ref_section=None, revision=None):
@@ -337,7 +349,7 @@ class LetterMixin:
         received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
         seen = next((t['revision'] for t in texts if received and t['sequence'] == received['text_sequence']), None)
         value = {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
-                 'sentAt': row['received_at'], 'state': state, 'stateLabel': STATES.get(state, state),
+                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
                  'request': latest['request'], 'reply': latest['reply'],
                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
                  'events': events}
@@ -418,7 +430,7 @@ class LetterMixin:
                 stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
                 meta = [{'event': e['event'], 'actor': e['actor'], 'recordedBy': e['recorded_by'], 'effective': bool(e['effective']), 'at': e['received_at']} for e in events]
                 out.append({'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
-                            'sentAt': row['received_at'], 'state': current, 'stateLabel': STATES.get(current, current),
+                            **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
                             'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
                             'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
                             'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,

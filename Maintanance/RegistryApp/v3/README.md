@@ -698,3 +698,23 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - フォルダのない新しい版：見えない。
   - フォルダのある新しい版：拒否される（B4）。
   - focus：書く操作がまだない。一時DBで直接変えても、読み手はHEAD.mdのまま。
+
+## OPS-167 B4：V3 modeの文書・pendingの生成を、旧来の構造の確かめから切り離す
+
+- **`sync.py --v3-db PATH`**（`serve.py`のV3 modeが、起動時と`/sync`で渡す。`serve.sync_args()`）：
+  - ページのデータは、V3 DBを読取専用で開いて作るexportにする（task・グラフ・版・card・focusは、すべてDBから）。
+  - MarkdownのRegistryとMilestonesのフォルダを、構造としては確かめない（`build()`を呼ばない）。
+  - pending（`build-pending.py`）と文書の束（`build-documents.mjs`）は、今までどおりの手順で作る。Registryのviewも、束ねる文書に残す（`extraDocuments`）。
+  - DBが指す文書（taskとmilestoneのdetail）は、すべて存在しなければならない。足りなければ、名前を挙げて、何も書かずに止まる。黙って抜かさない。
+  - 確かめは`v3/verify_v3.cjs`で行う（ページのscript、`check()`がDBのexportを受け入れること、seed、DBが指す文書とRegistryがすべて束にあること、pending）。失敗したら前の出力に戻す。
+- **`build-documents.mjs`**：`extraDocuments`も束ねる。`.md`でない`source.path`（`v3-db`）は文書として扱わない。legacyのデータでは、束（130件、file・missing・hash）がHEADのものと同じであることを確かめた。
+- **legacy mode**：引数なしの`sync.py`と、その中の`build()`の確かめ・`verify.cjs`は変わらない。
+- **試験**（`test_v3_sync.py`、6件。DBは、repositoryの写しから`import_db`で作る。文書はrepositoryのものを読むだけで、そこには作らない）：
+  - DBだけの変更（並べ替え、フォルダのない新しい版、Milestonesの外にある文書を持つ新しいcard、focus）のあとで、seedはDBの順・版・card・focusになる。外の文書も束に入る。
+  - DBが指す文書がなければ、名前を挙げて止まり、前の出力は変わらない。
+  - 旧来の`build()`は呼ばれない。
+  - `extraDocuments`だけで束ねられる。
+  - `serve`は、V3 modeのときだけ`--v3-db`を渡す。
+  - 本物のプロセスの起動のあと、DBだけを変えてから`/sync`する。ページはDBのfocusになり、新しい文書が束に入る。
+- 否定の対照（守りの下で、liveの`local-tools.json`の時刻を確かめながら行った）：文書の不足の確かめ、`--v3-db`の受け渡し、`extraDocuments`、milestoneの文書の束（verify_v3が止める）、旧来の`build()`の呼び出し。それぞれ試験が落ちた。
+- 旧来のfixture DB（作り物の文書path）は、V3 modeでは起動しない（正しい拒否）。そのため、本物のプロセスの試験（OPS-181 B1）は、取込んだDBに替えた。

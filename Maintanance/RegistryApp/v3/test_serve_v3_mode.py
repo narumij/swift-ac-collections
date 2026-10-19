@@ -29,6 +29,7 @@ sys.path.insert(0, str(APP))
 import inbox  # noqa: E402
 import registry_v3_write as w3  # noqa: E402
 import serve  # noqa: E402
+import shadow_import as si  # noqa: E402
 import studio_adapter as sa  # noqa: E402
 from test_browser_roundtrip import ACTOR, BASE, EVIDENCE  # noqa: E402
 from test_v3_inbox import legacy_doc  # noqa: E402
@@ -246,7 +247,9 @@ class RealProcess(unittest.TestCase):
         d = Path(tmp.name)
         for name in ('out', 'saves', 'legacy'):
             (d / name).mkdir()
-        w3.create(str(d / 'db.sqlite3'), copy.deepcopy(BASE))
+        # imported from a snapshot of the repository (read only): V3 mode's startup sync bundles every document the DB
+        # refers to and refuses missing ones (OPS-167 B4), so the fixture DB's invented paths would not start
+        self.assertTrue(si.import_db(d / 'db.sqlite3')['created'])
         live_tools = APP / 'local-tools.json'
         if live_tools.exists():
             (d / 'out' / 'local-tools.json').write_bytes(live_tools.read_bytes())  # read-only copy so sync.py finds node/marked

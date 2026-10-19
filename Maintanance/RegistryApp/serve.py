@@ -250,6 +250,12 @@ def v3_store(data, parent, saves):
     return inbox.append_save(data, parent, saves)
 
 
+def sync_args():
+    """sync.py's arguments: none in the legacy mode (as before); --v3-db in V3 mode, so documents and the pending queue
+    are built without the legacy structural validation and the structure comes from the DB (OPS-167 B4)."""
+    return ['--v3-db', str(V3['db'])] if V3 is not None else []
+
+
 def get_workspace(path):
     # the edit version Studio resumes (OPS-082); null when nothing is saved. V3 mode: only V3 saves (OPS-181)
     if V3 is not None:
@@ -470,7 +476,7 @@ class Handler(BaseHTTPRequestHandler):
         if not SYNC_LOCK.acquire(blocking=False):
             return self.reply(409, {'error': '更新中です。完了を待ってください。'})
         try:
-            result = subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, **({'env': SYNC_ENV} if SYNC_ENV else {}),
+            result = subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, **({'env': SYNC_ENV} if SYNC_ENV else {}),
                                     capture_output=True, text=True, timeout=300)
             output = result.stdout + result.stderr
             self.reply(200 if result.returncode == 0 else 500,
@@ -600,7 +606,7 @@ def main():
         except ValueError as error:
             parser.error(str(error))
         STARTUP_FINGERPRINTS = runtime_fingerprints()
-    subprocess.run([sys.executable, str(APP / 'sync.py')], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
+    subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
     print(f'Registry Studio: http://127.0.0.1:{server.server_port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:

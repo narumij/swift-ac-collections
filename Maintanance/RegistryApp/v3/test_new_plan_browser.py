@@ -12,6 +12,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import hermetic  # noqa: E402,F401  (first: temporary roots for every live path, OPS-167 K9)
 import registry_v3_write as w3  # noqa: E402
 from test_browser_roundtrip import ACTOR, EVIDENCE  # noqa: E402
 from test_new_plan_items import card_doc  # noqa: E402

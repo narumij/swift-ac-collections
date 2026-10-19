@@ -20,6 +20,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import hermetic  # noqa: E402,F401  (first: temporary roots for every live path, OPS-167 K9)
 sys.path.insert(0, str(HERE.parent))  # RegistryApp: inbox.py, always called with an explicit folder here
 import inbox as vi  # noqa: E402
 from test_change_groups import Groups  # noqa: E402

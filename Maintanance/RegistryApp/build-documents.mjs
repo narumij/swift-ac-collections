@@ -6,7 +6,7 @@ const {marked}=await import(process.argv[2]?pathToFileURL(path.resolve(process.a
 const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../..');
 const output=process.env.REGISTRY_STUDIO_APP||path.resolve(here,'../Cache/RegistryStudio');
 const data=JSON.parse(fs.readFileSync(path.join(output,'registry.json'),'utf8'));
-const refs=new Set([data.source.path]);
+const refs=new Set([data.source.path,...(data.extraDocuments||[])].filter(r=>/\.md$/.test(r)));  // V3 (OPS-167 B4): source.path is v3-db; extraDocuments names the Registry view
 for(const t of [...data.tasks,...(data.milestones||[])])for(const m of t.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g))refs.add(m[0]);
 const files={},missing=[];
 for(const ref of refs){const full=path.resolve(root,ref);if(!fs.existsSync(full)){missing.push(ref);continue;}if(!fs.realpathSync(full).startsWith(root+path.sep))throw Error('Path outside repository');const md=fs.readFileSync(full,'utf8');files[ref]={html:marked.parse(md),sha256:crypto.createHash('sha256').update(md).digest('hex')};}

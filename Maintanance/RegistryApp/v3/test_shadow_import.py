@@ -14,6 +14,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import hermetic  # noqa: E402,F401  (first: temporary roots for every live path, OPS-167 K9)
 import shadow_import as si  # noqa: E402
 
 TASKS = [('TASK-001', 'ACTIVE', '担当A', '親の常設タスク', '常設の判断を保つこと', 'Maintanance/Current/常設.md', None),

@@ -14,6 +14,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import hermetic  # noqa: E402,F401  (first: temporary roots for every live path, OPS-167 K9)
 import studio_adapter as sa  # noqa: E402
 from test_browser_roundtrip import V3_BRANCHES  # noqa: E402
 from test_studio_adapter import Studio  # noqa: E402

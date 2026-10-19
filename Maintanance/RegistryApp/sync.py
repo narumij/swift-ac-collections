@@ -5,6 +5,7 @@ Usage (from the repository root):
   python3 Maintanance/RegistryApp/sync.py --check   # report drift only; writes nothing
   python3 Maintanance/RegistryApp/sync.py           # regenerate registry.json and the HTML seed
   python3 Maintanance/RegistryApp/sync.py --show-tools  # which node/marked would be used, and from where
+  python3 Maintanance/RegistryApp/sync.py --v3-db PATH  # V3 mode (OPS-167 B4): see main_v3
 
 registry.json is built from nothing on every run (2026-10-17): tasks, edges and the milestone connection
 table come from the Task Registry; milestone cards from the gate files in Maintanance/Milestones/; the
@@ -463,9 +464,78 @@ def save_tools_record(node, marked):
 
 
 EMPTY = dict(tasks=[], edges=[], source={})
+DOC_REF = re.compile(r'(?:Maintanance|Sources|Tests)/[^`\s|]+?\.md')  # the references build-documents.mjs bundles
+
+
+def main_v3(db):
+    """V3 mode (OPS-167 B4), used by serve.py --v3-db: the page data is the read-only export of the V3 DB (tasks, graph,
+    versions, cards, focus all come from the DB), so the Markdown Registry and the Milestones folders are not validated
+    as structure here. Documents and the pending queue are built as in the legacy mode (build-pending.py,
+    build-documents.mjs), and the Registry view itself stays a bundled document. Every document the DB refers to must
+    exist (none is silently left out): a missing one fails the run before anything is written. The result is checked
+    by v3/verify_v3.cjs; on any failure the previous registry.json and index.html are restored."""
+    db = Path(db)
+    if not db.is_file():
+        print(f'--v3-db {db}: no such file (it is never created)')
+        sys.exit(1)
+    sys.path.insert(0, str(CODE / 'v3'))
+    import sqlite3
+    import studio_adapter
+    conn = sqlite3.connect(db.resolve().as_uri() + '?mode=ro', uri=True, isolation_level=None, timeout=5.0)
+    try:
+        data = studio_adapter.export_doc(conn)
+    finally:
+        conn.close()
+    refs = sorted({m for item in data['tasks'] + data['milestones'] for m in DOC_REF.findall(item.get('detail') or '')})
+    missing = [r for r in refs if not (ROOT / r).is_file()]
+    if missing:
+        print('Documents the V3 DB refers to are missing (nothing was written):\n  ' + '\n  '.join(missing))
+        sys.exit(1)
+    data['extraDocuments'] = [REGISTRY.relative_to(ROOT).as_posix()]  # the Registry view, bundled as the legacy source is
+    print(f"V3 DB {db}: generation {data['source']['generation']}, revision {data['source']['revision']}; "
+          f"tasks {len(data['tasks'])}, milestones {len(data['milestones'])}, documents referenced {len(refs)}")
+    node, marked, tool_notes = resolve_tools()
+    print('\n'.join(tool_notes))
+    APP.mkdir(parents=True, exist_ok=True)
+    child_env = dict(os.environ, REGISTRY_STUDIO_APP=str(APP.resolve()))
+    backup = Path(tempfile.mkdtemp(prefix='registry-studio-sync-'))
+    saved = [f for f in (JSON, HTML) if f.exists()]
+    for f in saved:
+        shutil.copy2(f, backup / f.name)
+    try:
+        shutil.copy2(CODE / 'index.template.html', HTML)
+        JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        embed({k: v for k, v in data.items() if k != 'extraDocuments'})
+        subprocess.run([sys.executable, str(CODE / 'build-pending.py')], cwd=ROOT, check=True, env=child_env)
+        if not node:
+            raise FileNotFoundError('node not found; documents cannot be rebuilt or verified. Pass --node PATH once (it is then saved to local-tools.json), or see RegistryApp/README.md')
+        subprocess.run([node, str(CODE / 'build-documents.mjs')] + ([marked] if marked else []), cwd=CODE, check=True, env=child_env)
+        subprocess.run([node, str(CODE / 'v3' / 'verify_v3.cjs')], cwd=CODE, check=True, env=child_env)
+    except (subprocess.CalledProcessError, OSError, ValueError) as e:
+        for f in saved:
+            shutil.copy2(backup / f.name, f)
+        for f in (JSON, HTML):
+            if f not in saved and f.exists():
+                f.unlink()
+        shutil.rmtree(backup)
+        print(f'FAILED ({e}); restored registry.json and index.html to their state before this run')
+        sys.exit(1)
+    shutil.rmtree(backup)
+    save_tools_record(node, marked)
+    print('sync complete (V3): registry.json from the DB, HTML seed, pending queue, documents, verify_v3.cjs passed')
 
 
 def main():
+    if '--v3-db' in sys.argv:  # checked before any side effect; unsupported combinations are refused, never ignored
+        i = sys.argv.index('--v3-db')
+        if i + 1 >= len(sys.argv) or sys.argv[i + 1].startswith('--'):
+            print('--v3-db needs the path of an existing V3 DB')
+            sys.exit(2)
+        clash = [f for f in ('--check', '--show-tools') if f in sys.argv]
+        if clash:
+            print(f"--v3-db cannot be combined with {', '.join(clash)} (not supported in V3 mode; nothing was done)")
+            sys.exit(2)
+        return main_v3(sys.argv[i + 1])
     if '--show-tools' in sys.argv:
         node, marked, notes = resolve_tools()
         print('\n'.join(notes))

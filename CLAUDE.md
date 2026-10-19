@@ -112,6 +112,10 @@ needed; ask briefly if materially different interpretations remain.
 
 Distinguish requests to act from corrections, recollections, and requests to restate. Do not resolve ambiguity in favor of starting work.
 
+Do not disguise failures, omissions, or unmet requirements in reports.
+Do not redefine the requested outcome after the fact to claim success.
+Report the actual result against the user's request, plainly and without spin.
+
 ## First response to a new request
 
 Start with the smallest useful response, about ten lines:

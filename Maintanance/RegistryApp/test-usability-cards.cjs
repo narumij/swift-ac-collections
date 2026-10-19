@@ -19,8 +19,18 @@ assert.equal(c.twoLineTitle('',width,measure).length,0,'empty title has no lines
 assert(c.twoLineTitle(long,width,null).length<=2);
 // The old 16-character cut is gone; the full text is kept in the card's <title>.
 assert(!html.includes(".slice(0,16)));"),'no fixed 16-character cut');
-assert(html.includes("svg('title',{},n.id+' '+(t.item||''))"),'full title in the card');
-assert(html.includes("g.onclick=()=>select(n.id);"),'clicking a local-map card still selects it');
+// OPS-154 stage 2 moved the card into neighborhoodViewModel/drawNeighborhood: check the behavior on fixture b instead of source text.
+{const fn=name=>{const a=html.indexOf('\nfunction '+name+'(');assert(a>=0,name);const m=/\)\s*\{/g;m.lastIndex=a;let i=html.indexOf('{',m.exec(html).index),d=0;for(;i<html.length;i++){if(html[i]==='{')d++;else if(html[i]==='}'&&--d===0)break;}return html.slice(a+1,i+1);};
+ class Node{constructor(tag){this.tag=tag;this.children=[];this.attrs={};this.style={};this.textContent='';}setAttribute(k,v){this.attrs[k]=String(v);}append(...ns){this.children.push(...ns);}appendChild(n){this.children.push(n);}replaceChildren(...ns){this.children=ns;}}
+ const d={document:{createElementNS:(ns,t)=>new Node(t),createElement:t=>new Node(t)}};vm.createContext(d);
+ vm.runInContext(['el','svg','stateStyle','proposalNodes','twoLineTitle','neighborhood','neighborhoodLayout','wrapLines','drawSvgSpec','neighborhoodViewModel','drawNeighborhood'].map(fn).join('\n'),d);
+ const data=JSON.parse(fs.readFileSync(__dirname+'/task-view-model-fixture-b.json','utf8'));
+ const center=data.edges.map(e=>data.tasks.find(t=>t.id===e.prerequisite)).find(t=>t&&measure(t.id+' '+t.item)>2*width);assert(center,'fixture has a linked task with a long title');
+ const model=d.neighborhoodViewModel({data,center:center.id,expanded:new Set(),measure:null,documentPaths:()=>[]});
+ const box=new Node('div'),count=new Node('span'),picked=[];d.drawNeighborhood(box,count,model,{select:id=>picked.push(id),reset(){},center(){},expand(){},documents(){}});
+ const all=n=>[n,...n.children.flatMap(all)],cards=all(box).filter(n=>n.tag==='g'&&n.onclick);assert(cards.length>=2,'cards are drawn');
+ const card=cards.find(g=>g.children.some(x=>x.tag==='title'&&x.textContent===center.id+' '+center.item));assert(card,'full title in the card');
+ card.onclick();assert.deepEqual(picked,[center.id],'clicking a local-map card still selects it');}
 
 // 6. Plan editor: closed by default, open state kept on the function across re-renders, summary shows pending input/changes.
 assert(html.includes("box.id='planToolsDetails';box.open=!!renderPlanTools.open;"),'closed by default, restored on render');

@@ -237,3 +237,75 @@ Modelの正本/編集版/選択/UI入力からVMを導出し、ViewはDOM/SVGと
 ## 区切り0/1技術受入（2026-10-19 Astra調整）
 
 H20と独立ROUND2を照合し、地図VM区切りを受入。明示sourceで大域doc変更の影響を除去、独立/カードViewがVMの文書情報と帯を描くことを確認。baseline互換証拠と契約試験を区別する。既知の版変更時未確定入力消失・近傍・編集・共通配線は残り2〜4で対処、OPS154はACTIVEを維持。実サーバー/実フォント/狭幅未確認。
+
+## 姫の結果（区切り2：近傍とホバーのVM、2026-10-19）
+
+2026-10-19 姫・Opus 5.5。依頼は連絡DBの`LTR-20261019-B3FF8B6BD1114E09859180DD6D617615`（v1を読んで受領）。返答もその連絡に記録する。区切り3・4（編集欄・配線）には触れていない。ユーザーの画面・実サーバー・実DB・AGENTS.mdには触れていない。commitなし。
+
+### 変更（`index.template.html`：`7aa08935…`→`e99382ee…2fcc880b`）
+
+- **`neighborhoodViewModel({data, center, expanded, measure, documentPaths})`**（純粋）を作った。
+  - 中身：局所の見取り図のSVGのVM（`drawSvgSpec`の木）、見出し、中心の本文、3つの欄（前提・後続・展開した先）の行。
+  - 行は、矢印・種類と条件・相手・「ここを中心に」と「この先を展開」を出せるかを持つ。
+  - **ホバー**：カードと線の全文はSVGの`title`で、VMに入っている。依存図のホバーの説明（`graphTip`の文字）は、区切り1から既にVMにある（`intent.tip`）。ホバーを出すかどうかの切り替え（`graphHoverEnabled`）は、ホバーの時点でViewが読むUIの状態のまま。
+  - 文字の幅は注入する（`measure`。nullなら、既存の文字数による見積もり）。
+  - 大域の`doc`は読まない。データを変えない。
+- **`drawNeighborhood(box, count, vm, intents)`**：描くことと、意図を返すことだけ。意図は`select`・`documents`・`reset`・`center`・`expand`。見取り図の中心を横方向に寄せるscrollは、Viewが行う。
+- **`renderNeighborhood`**：中心がまだなければ、選んでいるものを中心にする（今までどおりのUIの状態）。VMを作ってViewへ渡し、意図を既存の動作（中心の変更、展開、1段に戻す、選択、文書を開く）に結ぶ。
+- **変えていないもの**：配置、選択の共有、展開と折りたたみ、ホバーの切り替え、未確定の入力（編集欄は区切り3）。
+
+### 試験と証拠
+
+- **新しい`test-task-view-model-neighbor.cjs`**（`f7960f56…ffc2202d`）：
+  - **互換のbaseline**：`task-view-model-neighbor.baseline.json`（`8746193b…ff4992ac`）。抽出の前のコードから、stubのDOM・文字数の見積もり・匿名のfixture bで取得した7つの場面をそのまま比べる。7つの場面は次のとおり。
+    - 線の多いタスク
+    - 展開して先が増える場面（6ノード・5本）
+    - マイルストーンが中心
+    - 文書のあるタスク
+    - 線のない追加案
+    - 中心が未設定で、選んでいるものになる
+    - 未知の中心
+  - **VMの契約**：
+    - データを変えない
+    - 中心の強調と「· 中心」
+    - カードと線のホバーの全文
+    - 純粋
+    - 注入した幅で折り返しが変わる
+    - 欄の構成、展開した相手は「中心に」だけを出す
+    - 文書のリンクの有無（追加案にはない）
+    - 未知の中心
+    - 大域の`doc`を変えてもVMは同じ
+  - **固定VM→DOM**：要素の並び、空の欄は「ありません。」、意図（カードのクリックとEnter、文書、1段に戻す、中心に、展開）だけを返すこと、空のVM。Viewのソースが、導出の関数と大域の状態を参照しないこと。
+- **否定対照**（一時コピー）：VMで大域の`doc`を読む、1段に戻すの意図を取り違える、ホバーの全文を短くする。どれも落ちた。
+- **そのほか**：`sync.py`（verify.cjsを含む）は成功。`node test-*.cjs`は`test-usability-cards.cjs`を除いてPASS（下）。
+- **隔離headless**（WebKit、`file://`、fixture b、証拠は`/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.bSHhJ4Gfmp/`）：
+  - 依存図のノードを選び、「接続を見る」→2ノード・1本
+  - 「この先を展開」→4ノード・3本
+  - 「ここを中心に」→中心がMS-VALIDATIONに
+  - 1段に戻す、カードのクリックで選択
+  - ページのエラーは0件
+
+### 止まっている点（許可が要る）
+
+**`test-usability-cards.cjs`の22・23行が落ちる**：
+- この試験は、ソースの文字列そのものを確かめている。`svg('title',{},n.id+' '+(t.item||''))`と`g.onclick=()=>select(n.id);`。
+- 守っている中身（カードの全文のtitle、カードのクリックで選ぶこと）は保たれている。baselineの一致と、上の契約・DOMの試験で確かめた。抽出によってコードの形が変わったため、文字列が一致しなくなった。
+- 依頼の占有には、usability系の試験が入っていない。前の区切りでも「変更が要るなら、先に対象を返す」とされた。だから、この2行は直していない。
+- 直す案：2行を、新しい形の同じ意味の確かめに置き換える。全文のtitleは`{tag:'title',attrs:{},text:n.id+' '+(t.item||'')}`、クリックは`node.onclick=()=>intents.select(intent.id)`。許可があれば直す。
+
+### 追補：usability試験の2行を振る舞いの確認に置き換えた（2026-10-19）
+
+依頼は`LTR-20261019-1F6F5C08FC414F36915C9E9CE99F3993`（v1を読んで受領）。占有の範囲は`test-usability-cards.cjs`のこの2つの確認だけ。
+
+- **`test-usability-cards.cjs`**（`be702c9f…`→`0d9a4d96…972448d8`）：文字列の一致による2つの確認を、振る舞いの確認に置き換えた。
+  - 方法：fixture bから、線のある、題名が2行の幅を超えるタスクを選ぶ。`neighborhoodViewModel`から`drawNeighborhood`までをstubのDOMで描く。
+  - 確かめること：そのタスクのカードの`title`が全文（`id + ' ' + item`）であること。カードの`onclick`が、そのidで`select`の意図を返すこと。
+  - ほかの確認（2行の題名、16文字で切っていないこと、計画の編集欄）は変えていない。
+- **否定対照**（一時コピー）：カードのtitleを`.slice(0,16)`で切ると「full title in the card」で落ちる。`select`の意図を捨てると「clicking a local-map card still selects it」で落ちる。
+- **実行**：`node test-usability-cards.cjs`、`node test-task-view-model-neighbor.cjs`、`node test-*.cjs`はすべてPASS。`sync.py`（verifyを含む）は成功。製品コード・実サーバー・実DBには触れていない。commitなし。
+- これで、上の「止まっている点」は解消した。
+
+
+## 区切り2技術受入（2026-10-19 Astra）
+
+独立評価で明示入力VM・大域doc非依存・入力非変更・固定VM描画と各intentを確認。近傍7場面baseline/契約/DOMとmaps試験PASS。Astraも近傍試験と更新後usability試験を再実行PASS。旧文字列検査2件は実際の全文title/クリック意図の検査へ更新し、製品機能の追加はなし。区切り2を受入、区切り3/4は未完了。

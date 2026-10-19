@@ -108,7 +108,7 @@
 | `OPS-149` | `WAITING_USER` | Astra調整 / 姫 | [DISCOVERY] 停止確認とメンバー表示の通信仕様を協議 | 姫と2往復完了。区間付き代理確認・表示案を提案、実装移行判断待ち。規約本体・実装変更なし | `Maintanance/Current/MEMBER_STOP_COMMUNICATION_DISCUSSION.md` |
 | `OPS-152` | `PROPOSED` | Astra調整 / 独立確認役 | [DISCOVERY] コミット承認照合の独立確認を限定試行する準備 | 常駐せず実行前/後の差分と有効承認を照合。会話承認と分割範囲も扱う。未確認は後続commit保留、無断巻戻し/全員停止なし | `Maintanance/Current/COMMIT_AUTHORIZATION_REVIEW_PILOT.md` |
 | `OPS-153` | `DONE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] Studioの表示状態をViewModelへ集約する | 4段階実装・独立評価補正・技術受入完了。最終19試験と同期照合PASS。隔離WebKit確認、実サーバー/実画面未操作。ユーザーcommit承認済み、キャッシュ更新は成果commit後 | `Maintanance/Current/STUDIO_VIEW_MODEL_DISCUSSION.md` |
-| `OPS-154` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] タスク画面のViewModel化 | ユーザーが段階実装・試験を承認。地図VM区切り0/1をf828bdbeで受入保存。近傍・編集・共通配線は残り。連絡閲覧の画面占有後に再開 | `Maintanance/Current/TASK_VIEW_MODEL_MIGRATION.md` |
+| `OPS-154` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] タスク画面のViewModel化 | ユーザーが段階実装・試験を承認。地図VM区切り0/1をf828bdbeで受入保存。近傍/hoverの区切り2をDB依頼で再開、姫本人の受領/着手を確認。編集・共通配線は残り | `Maintanance/Current/TASK_VIEW_MODEL_MIGRATION.md` |
 | `OPS-155` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] メンバーへ画面からPINGを送る | ユーザー実装依頼。対象/ID/本人ACKで疎通を確認、自動起動なし。ユーザーが画面実装を後回しにし、連絡DBを優先。基盤のみ部分実装 | `Maintanance/Current/STUDIO_MEMBER_PING.md` |
 | `OPS-156` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] サーバー専用SQLiteへ通信記録を保存 | ユーザー実装依頼。連絡原文/版/応答DBと軽量一覧・差分待機を5360265b/72ca7731で受入。H32〜35閲覧/全ページ取得を受入。ユーザー再起動後に連絡DBの待機接続・本人往復疎通・closeを確認、PING画面は保留 | `Maintanance/Current/STUDIO_COMMUNICATION_STORE.md` |
 | `OPS-157` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry Studioのアーキテクチャ画像 | ユーザー依頼。現行実装と作業中/予定を区別した日本語の横長図、編集元/PNG/README入口。SVG/PNGとREADME入口を画像確認して技術受入。作業ツリー図、実稼働とは区別。ユーザー継続commit承認に基づき成果を保存 | `Maintanance/Current/STUDIO_ARCHITECTURE_IMAGE.md` |

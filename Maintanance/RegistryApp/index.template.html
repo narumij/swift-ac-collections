@@ -606,38 +606,64 @@ function neighborMeasure(){
  if(!ctx||typeof ctx.measureText!=='function')return null;ctx.font='600 12px -apple-system, sans-serif';return str=>ctx.measureText(str).width;
 }
 function renderNeighborhood(){
- const box=$('neighborBox');if(!box)return;box.replaceChildren();if(!neighborCenter)neighborCenter=selected;
- const view=neighborhood(doc,neighborCenter,neighborExpanded);$('neighborCount').textContent=view.nodes.length?view.nodes.length+'ノード・'+view.edges.length+'本':'';
- if(!view.nodes.length){box.append(el('p','中心にするノードがありません。インスペクタの「接続を見る」で選んでください。','muted'));return;}
+ const box=$('neighborBox');if(!box)return;if(!neighborCenter)neighborCenter=selected;
+ const vm=neighborhoodViewModel({data:doc,center:neighborCenter,expanded:neighborExpanded,measure:neighborMeasure(),documentPaths:t=>t.proposal?[]:cardDocumentPaths(t,documentBundle)});
+ drawNeighborhood(box,$('neighborCount'),vm,{
+  select,
+  reset:()=>{neighborExpanded.clear();renderNeighborhood();},
+  center:id=>{neighborCenter=id;neighborExpanded.clear();renderNeighborhood();},
+  expand:id=>{neighborExpanded.add(id);renderNeighborhood();},
+  documents:(id,paths)=>{if(paths.length===1){openDocument(paths[0]);return;}const dialog=$('documentDialog');$('documentTitle').textContent=id+' の正本';$('documentStamp').textContent='読む文書を選択してください';$('documentBody').replaceChildren(documentLinks(paths.join('\n')));if(!dialog.open)dialog.showModal();}});
+}
+// OPS-154 stage 2: the neighborhood (local map) as a pure view model. Inputs: the edit version, the center, the expanded
+// IDs, a text-width function (or null for the character estimate) and the document paths of a node. Nothing global is
+// read and the data are never changed. The SVG is a view model tree (drawSvgSpec); hover texts are the SVG titles.
+// Intents: select (a card), documents (a card's link), reset, center and expand (the rows below the map).
+function neighborhoodViewModel({data,center,expanded,measure,documentPaths}){
+ const view=neighborhood(data,center,expanded);
+ if(!view.nodes.length)return {count:'',empty:'中心にするノードがありません。インスペクタの「接続を見る」で選んでください。'};
  const byId=new Map(view.nodes.map(n=>[n.id,n])),label=id=>{const n=byId.get(id);return id+(n?' · '+(n.kind==='milestone'?'到達点':n.kind==='proposal'?'追加案':n.state):'');};
- const top=el('div',undefined,'buttons'),reset=el('button','1段に戻す');reset.onclick=()=>{neighborExpanded.clear();renderNeighborhood();};top.append(reset);box.append(top);
- const c=byId.get(neighborCenter);box.append(el('h3','中心：'+label(neighborCenter)),el('p',c.item||'','muted'));
- // Local map (OPS-094): the center in the middle, prerequisites left, successors right, each shown line between its real ends.
- // Same nodes and lines as the text list below. Clicking a card selects it (the center follows, OPS-093).
- {const L=neighborhoodLayout(view),W=210,H=84,GX=90,GY=26,source=new Map([...(doc.tasks||[]),...proposalNodes(doc),...(doc.milestones||[])].map(t=>[t.id,t]));
-  const cols=2*L.span+1,width=cols*W+(cols-1)*GX+40,height=(2*L.rows+1)*H+2*L.rows*GY+40,cx=id=>20+(L.pos.get(id)[0]+L.span)*(W+GX),cy=id=>20+(L.pos.get(id)[1]+L.rows)*(H+GY);
-  const s=svg('svg',{width,height,viewBox:`0 0 ${width} ${height}`,role:'group','aria-label':neighborCenter+' を中心にした局所見取り図'}),defs=svg('defs',{}),m=svg('marker',{id:'neighborArrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'});m.append(svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#78998c'}));defs.append(m);s.append(defs);
-  for(const e of view.edges){const x1=cx(e.prerequisite)+W,y1=cy(e.prerequisite)+H/2,x2=cx(e.successor),y2=cy(e.successor)+H/2;
-   const path=svg('path',{d:`M${x1},${y1} C${x1+GX/2},${y1} ${x2-GX/2},${y2} ${x2},${y2}`,fill:'none',stroke:'#78998c','stroke-width':1.5,'marker-end':'url(#neighborArrow)','data-edge':e.prerequisite+'>'+e.successor});path.append(svg('title',{},e.prerequisite+' → '+e.successor+'\n'+e.kind+' / '+(e.constraint||'条件文なし')));s.append(path);}
-  for(const n of view.nodes){const t=source.get(n.id)||{id:n.id,item:'（データにないID）',state:'',detail:''},x=cx(n.id),y=cy(n.id),center=n.id===neighborCenter;
-   const g=svg('g',{class:'node',tabindex:0,role:'button','aria-label':n.id+' '+(t.item||''),'data-node':n.id,transform:`translate(${x} ${y})`});
-   g.append(svg('rect',{width:W,height:H,rx:7,fill:center?'#d4edbc':n.kind==='milestone'?'#fff1c9':'#fff',stroke:center?'#126c58':'#b8ccc0','stroke-width':center?2.5:1,'stroke-dasharray':t.proposal?'5 3':''}),
-    svg('text',{x:10,y:17,fill:'#657477'},n.id+(center?' · 中心':n.kind==='milestone'?' · 到達点':t.proposal?' · 追加案':'')),...twoLineTitle((t.item||'').replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,''),W-20,neighborMeasure()).map((line,i)=>svg('text',{x:10,y:34+i*16,fill:'#213b32','font-weight':600,'font-size':12},line)),svg('title',{},n.id+' '+(t.item||'')));
-   const band=stateStyle(t.proposal?'追加案':(t.state||''));g.append(svg('path',{d:`M0 58 H${W} V${H-7} Q${W} ${H} ${W-7} ${H} H7 Q0 ${H} 0 ${H-7} Z`,fill:band.bg}),svg('text',{x:10,y:76,fill:band.fg,'font-weight':600},t.proposal?'追加案':(t.state||'')));
-   g.onclick=()=>select(n.id);g.onkeydown=ev=>{if(ev.key==='Enter')select(n.id);};s.append(g);
-   const paths=t.proposal?[]:cardDocumentPaths(t,documentBundle);if(paths.length){const a=svg('a',{href:'#document',tabindex:0,'aria-label':n.id+' の正本を読む',transform:`translate(${x+W-46} ${y+2})`});a.append(svg('rect',{width:42,height:20,fill:'transparent'}),svg('text',{x:8,y:14,fill:'#126c58'},'正本'));
-    a.onclick=ev=>{ev.preventDefault();ev.stopPropagation();if(paths.length===1){openDocument(paths[0]);return;}const dialog=$('documentDialog');$('documentTitle').textContent=n.id+' の正本';$('documentStamp').textContent='読む文書を選択してください';$('documentBody').replaceChildren(documentLinks(paths.join('\n')));if(!dialog.open)dialog.showModal();};s.append(a);}}
-  const area=el('div',undefined,'graph neighbor-map');area.append(s);box.append(area);
-  // Keep the center card in view: scroll the local map so its middle column is centered.
-  if(typeof area.scrollLeft==='number'&&area.clientWidth)area.scrollLeft=Math.max(0,(width-area.clientWidth)/2);}
- const row=(e,other,arrow)=>{const n=byId.get(other),div=el('div',undefined,'edge-row');div.append(el('strong',arrow),el('p',e.kind+(e.flow?' · '+e.flow:'')+' / '+(e.constraint||'条件文なし'),'muted'));
-  if(n&&n.kind!=='unknown'){const go=el('button','ここを中心に');go.onclick=()=>{neighborCenter=other;neighborExpanded.clear();renderNeighborhood();};div.append(go);
-   if(!n.expanded){const more=el('button','この先を展開');more.onclick=()=>{neighborExpanded.add(other);renderNeighborhood();};div.append(more);}}
-  return div;};
- const pre=view.edges.filter(e=>e.successor===neighborCenter),post=view.edges.filter(e=>e.prerequisite===neighborCenter),further=view.edges.filter(e=>e.successor!==neighborCenter&&e.prerequisite!==neighborCenter);
- box.append(el('h3','前提（→ 中心）'+pre.length+'本'));if(!pre.length)box.append(el('p','ありません。','muted'));for(const e of pre)box.append(row(e,e.prerequisite,label(e.prerequisite)+' → '+neighborCenter));
- box.append(el('h3','後続（中心 →）'+post.length+'本'));if(!post.length)box.append(el('p','ありません。','muted'));for(const e of post)box.append(row(e,e.successor,neighborCenter+' → '+label(e.successor)));
- if(further.length){box.append(el('h3','展開した先 '+further.length+'本'));for(const e of further){const other=byId.get(e.prerequisite)&&byId.get(e.prerequisite).depth>=(byId.get(e.successor)||{depth:0}).depth?e.prerequisite:e.successor;box.append(row(e,other,label(e.prerequisite)+' → '+label(e.successor)));}}
+ const c=byId.get(center),L=neighborhoodLayout(view),W=210,H=84,GX=90,GY=26,source=new Map([...(data.tasks||[]),...proposalNodes(data),...(data.milestones||[])].map(t=>[t.id,t]));
+ const cols=2*L.span+1,width=cols*W+(cols-1)*GX+40,height=(2*L.rows+1)*H+2*L.rows*GY+40,cx=id=>20+(L.pos.get(id)[0]+L.span)*(W+GX),cy=id=>20+(L.pos.get(id)[1]+L.rows)*(H+GY);
+ const children=[{tag:'defs',attrs:{},children:[{tag:'marker',attrs:{id:'neighborArrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto'},children:[{tag:'path',attrs:{d:'M 0 0 L 10 5 L 0 10 z',fill:'#78998c'}}]}]}];
+ for(const e of view.edges){const x1=cx(e.prerequisite)+W,y1=cy(e.prerequisite)+H/2,x2=cx(e.successor),y2=cy(e.successor)+H/2;
+  children.push({tag:'path',attrs:{d:`M${x1},${y1} C${x1+GX/2},${y1} ${x2-GX/2},${y2} ${x2},${y2}`,fill:'none',stroke:'#78998c','stroke-width':1.5,'marker-end':'url(#neighborArrow)','data-edge':e.prerequisite+'>'+e.successor},
+   children:[{tag:'title',attrs:{},text:e.prerequisite+' → '+e.successor+'\n'+e.kind+' / '+(e.constraint||'条件文なし')}]});}
+ for(const n of view.nodes){const t=source.get(n.id)||{id:n.id,item:'（データにないID）',state:'',detail:''},x=cx(n.id),y=cy(n.id),isCenter=n.id===center,band=stateStyle(t.proposal?'追加案':(t.state||''));
+  children.push({tag:'g',attrs:{class:'node',tabindex:0,role:'button','aria-label':n.id+' '+(t.item||''),'data-node':n.id,transform:`translate(${x} ${y})`},intent:{type:'select',id:n.id},children:[
+   {tag:'rect',attrs:{width:W,height:H,rx:7,fill:isCenter?'#d4edbc':n.kind==='milestone'?'#fff1c9':'#fff',stroke:isCenter?'#126c58':'#b8ccc0','stroke-width':isCenter?2.5:1,'stroke-dasharray':t.proposal?'5 3':''}},
+   {tag:'text',attrs:{x:10,y:17,fill:'#657477'},text:n.id+(isCenter?' · 中心':n.kind==='milestone'?' · 到達点':t.proposal?' · 追加案':'')},
+   ...twoLineTitle((t.item||'').replace(/^\[(EXECUTION|DISCOVERY|DECISION)\]\s*/,''),W-20,measure).map((line,i)=>({tag:'text',attrs:{x:10,y:34+i*16,fill:'#213b32','font-weight':600,'font-size':12},text:line})),
+   {tag:'title',attrs:{},text:n.id+' '+(t.item||'')},
+   {tag:'path',attrs:{d:`M0 58 H${W} V${H-7} Q${W} ${H} ${W-7} ${H} H7 Q0 ${H} 0 ${H-7} Z`,fill:band.bg}},{tag:'text',attrs:{x:10,y:76,fill:band.fg,'font-weight':600},text:t.proposal?'追加案':(t.state||'')}]});
+  const paths=documentPaths(t);
+  if(paths.length)children.push({tag:'a',attrs:{href:'#document',tabindex:0,'aria-label':n.id+' の正本を読む',transform:`translate(${x+W-46} ${y+2})`},intent:{type:'documents',id:n.id,paths},
+   children:[{tag:'rect',attrs:{width:42,height:20,fill:'transparent'}},{tag:'text',attrs:{x:8,y:14,fill:'#126c58'},text:'正本'}]});}
+ const row=(e,other,arrow)=>{const n=byId.get(other),known=!!(n&&n.kind!=='unknown');return {arrow,text:e.kind+(e.flow?' · '+e.flow:'')+' / '+(e.constraint||'条件文なし'),other,canCenter:known,canExpand:known&&!n.expanded};};
+ const pre=view.edges.filter(e=>e.successor===center),post=view.edges.filter(e=>e.prerequisite===center),further=view.edges.filter(e=>e.successor!==center&&e.prerequisite!==center);
+ const sections=[{heading:'前提（→ 中心）'+pre.length+'本',rows:pre.map(e=>row(e,e.prerequisite,label(e.prerequisite)+' → '+center))},
+  {heading:'後続（中心 →）'+post.length+'本',rows:post.map(e=>row(e,e.successor,center+' → '+label(e.successor)))}];
+ if(further.length)sections.push({heading:'展開した先 '+further.length+'本',rows:further.map(e=>{const other=byId.get(e.prerequisite)&&byId.get(e.prerequisite).depth>=(byId.get(e.successor)||{depth:0}).depth?e.prerequisite:e.successor;return row(e,other,label(e.prerequisite)+' → '+label(e.successor));}),noEmpty:true});
+ return {count:view.nodes.length+'ノード・'+view.edges.length+'本',empty:null,heading:'中心：'+label(center),item:c.item||'',width,
+  svg:{tag:'svg',attrs:{width,height,viewBox:`0 0 ${width} ${height}`,role:'group','aria-label':center+' を中心にした局所見取り図'},children},sections};
+}
+// The neighborhood view: draws the view model as given and turns clicks into intents. The map is centered horizontally.
+function drawNeighborhood(box,count,vm,intents){
+ box.replaceChildren();count.textContent=vm.count;
+ if(vm.empty){box.append(el('p',vm.empty,'muted'));return;}
+ const top=el('div',undefined,'buttons'),reset=el('button','1段に戻す');reset.onclick=()=>intents.reset();top.append(reset);box.append(top);
+ box.append(el('h3',vm.heading),el('p',vm.item,'muted'));
+ const s=drawSvgSpec(vm.svg,(intent,node)=>{
+  if(intent.type==='select'){node.onclick=()=>intents.select(intent.id);node.onkeydown=ev=>{if(ev.key==='Enter')intents.select(intent.id);};}
+  else if(intent.type==='documents')node.onclick=ev=>{ev.preventDefault();ev.stopPropagation();intents.documents(intent.id,intent.paths);};});
+ const area=el('div',undefined,'graph neighbor-map');area.append(s);box.append(area);
+ // Keep the center card in view: scroll the local map so its middle column is centered.
+ if(typeof area.scrollLeft==='number'&&area.clientWidth)area.scrollLeft=Math.max(0,(vm.width-area.clientWidth)/2);
+ for(const sec of vm.sections){box.append(el('h3',sec.heading));if(!sec.rows.length&&!sec.noEmpty)box.append(el('p','ありません。','muted'));
+  for(const r of sec.rows){const div=el('div',undefined,'edge-row');div.append(el('strong',r.arrow),el('p',r.text,'muted'));
+   if(r.canCenter){const go=el('button','ここを中心に');go.onclick=()=>intents.center(r.other);div.append(go);
+    if(r.canExpand){const more=el('button','この先を展開');more.onclick=()=>intents.expand(r.other);div.append(more);}}
+   box.append(div);}}
 }
 function showNeighborhood(id){neighborCenter=id;neighborExpanded.clear();switchMap('neighbor');renderNeighborhood();}
 function permanentMap(){

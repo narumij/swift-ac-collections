@@ -3,7 +3,7 @@
 written and read back -> three-way rows against a fresh export -> apply to the V3 experiment DB.
 Each test owns a TemporaryDirectory and closes its connections. Expected values are written by hand.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adapter.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_studio_adapter.py -v
 """
 import copy
 import json
@@ -92,7 +92,7 @@ const fs=require('fs'),vm=require('vm');const html=fs.readFileSync(process.argv[
 const a=html.indexOf('\\nfunction check(');const m=/\\)\\s*\\{/g;m.lastIndex=a;let i=html.indexOf('{',m.exec(html).index),d=0;for(;i<html.length;i++){if(html[i]==='{')d++;else if(html[i]==='}'&&--d===0)break;}
 const c={};vm.createContext(c);vm.runInContext(html.slice(a+1,i+1)+';function proposalNodes(){return [];}',c);
 try{c.check(JSON.parse(fs.readFileSync(process.argv[2],'utf8')));console.log('accepted');}catch(e){console.log('refused: '+e.message);}''',
-                              str(HERE.parent.parent / 'index.template.html'), str(exported)], capture_output=True, text=True, timeout=60)
+                              str(HERE.parent / 'index.template.html'), str(exported)], capture_output=True, text=True, timeout=60)
         self.assertTrue(out.stdout.startswith('refused'), 'the production check() does not accept a V3 export (P1 is needed)')
         save, result = self.edit([])
         self.assertEqual(len(result['patches']), 5)  # P1-P3 (OPS-165), P4 planRebuild (OPS-172), P5 renderPlanTools (OPS-176)

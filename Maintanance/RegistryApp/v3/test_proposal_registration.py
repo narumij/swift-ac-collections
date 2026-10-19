@@ -2,7 +2,7 @@
 """OPS-171 tests: proposal registration (K4) from real Studio saves: one register_proposal operation numbers the draft
 and writes every incident connection with the formal ID, or nothing. Explicit resolution and explicit ancestry only.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_registration.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_proposal_registration.py -v
 """
 import copy
 import sys

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """OPS-174 tests: the thin CLI, run as a subprocess on fixture DBs in a TemporaryDirectory. Expected values by hand.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_cli.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_cli.py -v
 """
 import copy
 import hashlib

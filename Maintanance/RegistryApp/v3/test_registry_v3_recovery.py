@@ -3,7 +3,7 @@
 Cases follow TASK_REGISTRY_V3_RECOVERY_EXPERIMENT.md「受入と範囲」. Each test owns a TemporaryDirectory and closes every
 connection it opens. Expected values are written by hand.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_recovery.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_recovery.py -v
 """
 import copy
 import json

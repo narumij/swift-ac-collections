@@ -4,7 +4,7 @@ save, a fresh-context resume that takes only the V3 save even when a legacy save
 the server hands it a save of another kind (P6), and 更新 (the no-op /sync, then the page's reload) keeping the resume
 and the stale-base notice. Folders are TemporaryDirectories; the real Inbox is never used.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_mixed_workspace_browser.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_mixed_workspace_browser.py -v
 """
 import hashlib
 import sys

@@ -3,7 +3,7 @@
 from the real Studio editor (harness); legacy saves are minimal hand-built Studio documents. Every folder is a
 TemporaryDirectory; the real Inbox is never read or written.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_v3_inbox.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_v3_inbox.py -v
 """
 import copy
 import hashlib
@@ -14,7 +14,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(HERE.parent.parent))  # the production inbox.py, imported only to compare (never on its default folder)
+sys.path.insert(0, str(HERE.parent))  # the production inbox.py, imported only to compare (never on its default folder)
 import inbox  # noqa: E402
 import v3_inbox as vi  # noqa: E402
 from test_change_groups import Groups  # noqa: E402

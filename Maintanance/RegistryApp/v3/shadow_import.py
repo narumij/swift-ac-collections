@@ -22,7 +22,7 @@ Steps
    reported. Excluded fields are listed with their reason; the exclusion is not full compatibility.
    Known DESIGN deviations (gate ID used as destination, missing or terminal gate) are reported separately.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]
+Run: python3 -B Maintanance/RegistryApp/v3/shadow_import.py [--evidence FILE.json]
 Exit: 0 equal, 1 differences, 2 refused (drift, tampering or unknown input).
 """
 import argparse
@@ -41,8 +41,8 @@ sys.path.insert(0, str(HERE))
 import registry_v3_read as r3  # noqa: E402
 import registry_v3_write as w3  # noqa: E402
 
-REPO = HERE.parent.parent.parent.parent
-SYNC = HERE.parent.parent / 'sync.py'
+REPO = HERE.parent.parent.parent
+SYNC = HERE.parent / 'sync.py'
 REGISTRY = 'Maintanance/ProgressV2/TASK_REGISTRY_V2.md'
 RULES = 'Maintanance/ProgressV2/TASK_RULES_V2.md'
 MILESTONES = 'Maintanance/Milestones'

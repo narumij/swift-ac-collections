@@ -8,7 +8,7 @@ the three graphs, card order, gates and the derived skeleton) must be equal. Whe
 as the destination, a missing gate, a terminal gate), the expected value is the DESIGN's; the current reader's refusal is
 recorded as KNOWN DEVIATION and is never counted as the expected result.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_read.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_read.py -v
 """
 import copy
 import importlib.util
@@ -24,7 +24,7 @@ sys.path.insert(0, str(HERE))
 import registry_v3_read as r3  # noqa: E402
 
 BASE = json.loads((HERE / 'fixtures' / 'base.json').read_text(encoding='utf-8'))
-SYNC = HERE.parent.parent / 'sync.py'
+SYNC = HERE.parent / 'sync.py'
 REPORT = []  # (case, expected-from, note) printed at the end
 
 

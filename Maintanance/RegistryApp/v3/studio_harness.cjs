@@ -12,7 +12,7 @@
 //   editsReflected of the save's baseline, the save and the latest export).
 'use strict';
 const fs = require('fs'), vm = require('vm'), path = require('path');
-const TEMPLATE = process.env.STUDIO_TEMPLATE || path.join(__dirname, '..', '..', 'index.template.html');
+const TEMPLATE = process.env.STUDIO_TEMPLATE || path.join(__dirname, '..', 'index.template.html');
 const html = fs.readFileSync(TEMPLATE, 'utf8');
 const fn = name => { const a = html.indexOf('\nfunction ' + name + '('); if (a < 0) throw Error('function not found: ' + name); const m = /\)\s*\{/g; m.lastIndex = a; let i = html.indexOf('{', m.exec(html).index), d = 0; for (; i < html.length; i++) { if (html[i] === '{') d++; else if (html[i] === '}' && --d === 0) break; } return html.slice(a + 1, i + 1); };
 const line = prefix => { const a = html.indexOf('\n' + prefix); if (a < 0) throw Error('line not found: ' + prefix); return html.slice(a + 1, html.indexOf('\n', a + 1)); };

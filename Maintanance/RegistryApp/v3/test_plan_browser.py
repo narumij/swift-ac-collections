@@ -3,7 +3,7 @@
 the page's own save, a fresh-context resume, an explicit /v3/apply-groups with a confirmation, and the latest export.
 Saving never writes the DB. Reuses the OPS-166 server, driver, origin interception and cleanup.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_browser.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_plan_browser.py -v
 """
 import json
 import sys

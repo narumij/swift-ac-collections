@@ -2,7 +2,7 @@
 """OPS-163 tests: the fixed-source shadow import on small canonical-shaped trees in a per-test TemporaryDirectory.
 Expected values are written by hand. The real repository is not read here (run shadow_import.py for that).
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_import.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_shadow_import.py -v
 """
 import copy
 import subprocess

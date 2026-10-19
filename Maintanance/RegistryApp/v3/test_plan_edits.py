@@ -2,7 +2,7 @@
 """OPS-172 tests: existing-card plan edits (K5 slice) from real Studio editor saves: reorder, move between versions and
 rename as ONE atomic apply_plan, after an explicit confirmation. Versions, gates, focus and recordedDone stay fixed.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_edits.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_plan_edits.py -v
 """
 import copy
 import sys

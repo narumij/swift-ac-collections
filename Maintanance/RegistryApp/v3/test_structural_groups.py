@@ -3,7 +3,7 @@
 edges and milestone links mapped to the K2 operations, with consultation and pairing resolutions. A rewire is never
 inferred; pairs consume both sides for good. Expected values are written by hand.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_groups.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_structural_groups.py -v
 """
 import copy
 import sys

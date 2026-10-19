@@ -28,7 +28,7 @@ import registry_v3_write as w3
 import studio_adapter as sa
 import v3_inbox
 
-TEMPLATE = Path(__file__).resolve().parent.parent.parent / 'index.template.html'
+TEMPLATE = Path(__file__).resolve().parent.parent / 'index.template.html'
 PATCHES = [
     ("typeof d.source.sha256!=='string'",
      "(d.source.kind==='v3-export'?!(d.v3&&typeof d.source.generation==='string'&&Number.isInteger(d.source.revision)&&d.source.sha256===undefined):typeof d.source.sha256!=='string')",

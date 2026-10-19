@@ -4,7 +4,7 @@ fresh-context resume, an explicit /v3/apply-groups (first pending, then with tem
 resolutions), the latest export and a replay; and a card-condition acknowledgement. The isolated server is given a
 document root under the test's TemporaryDirectory; live documents are never read.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_new_plan_browser.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_new_plan_browser.py -v
 """
 import sys
 import unittest

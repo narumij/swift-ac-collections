@@ -2,7 +2,7 @@
 """OPS-168 tests: task-only change groups. Saves are made with the real Studio editor (studio_harness.cjs, function
 harness), written and read back, and given a saveId as the isolated server stores it. Each test owns a TemporaryDirectory.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_groups.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_change_groups.py -v
 """
 import copy
 import json

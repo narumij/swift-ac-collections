@@ -4,7 +4,7 @@ and driven by headless WebKit (browser_roundtrip.cjs, installed Playwright, noth
 Save -> reopen -> compare with the latest DB -> explicit apply. A save never writes the DB.
 The server and the browser are stopped also when a test fails.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_roundtrip.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_browser_roundtrip.py -v
 """
 import copy
 import json

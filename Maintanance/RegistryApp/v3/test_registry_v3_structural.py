@@ -3,7 +3,7 @@
 link add/remove/set/rewire for the supported directions; task group). Expected values are written by hand. Every
 refusal leaves the structure unchanged and is recorded; rewires roll back fully when they fail between remove and add.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_structural.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_structural.py -v
 """
 import copy
 import json

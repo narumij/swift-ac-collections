@@ -3,7 +3,7 @@
 Cases follow TASK_REGISTRY_V3_CONTRACT_EXPERIMENT.md「区切り2の試験案」. Expected values are written by hand.
 Each test owns its connections and its directory and closes/removes them at its end.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_write.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_write.py -v
 """
 import copy
 import json

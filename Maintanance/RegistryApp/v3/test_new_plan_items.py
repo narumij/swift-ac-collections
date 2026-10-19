@@ -3,7 +3,7 @@
 draft card through the plan mapping, and durable document-proposal acknowledgements. Saves come from the real Studio
 editor and plan tools (studio_harness.cjs with the P5 position select). Documents live in a per-test document root.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_new_plan_items.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_new_plan_items.py -v
 """
 import copy
 import sys

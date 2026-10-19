@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """OPS-175 tests: generated read-only views (K8a). Templates are fixed read-only copies; outputs go to fresh trees.
 
-Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_views.py -v
+Run: python3 -B Maintanance/RegistryApp/v3/test_registry_v3_views.py -v
 """
 import copy
 import hashlib
@@ -20,7 +20,7 @@ import shadow_import as si  # noqa: E402
 import test_shadow_import as tsi  # noqa: E402
 
 ACTOR, EVIDENCE = '姫（view試験）', ['TASK_REGISTRY_V3_READ_VIEWS.md#実装と検証']
-REPO = HERE.parent.parent.parent.parent
+REPO = HERE.parent.parent.parent
 
 
 class Views(unittest.TestCase):

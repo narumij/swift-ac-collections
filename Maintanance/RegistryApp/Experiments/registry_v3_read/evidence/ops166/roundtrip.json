@@ -1,0 +1,156 @@
+{
+ "save": {
+  "mode": "save",
+  "requests": [
+   "GET /",
+   "GET /registry.json",
+   "GET /server-status",
+   "GET /activity-events",
+   "GET /commit-approvals",
+   "GET /approval-probe",
+   "GET /workspace",
+   "GET /continuity",
+   "GET /letters",
+   "POST /save"
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "after": {
+   "owner": "担当X",
+   "state": "DONE",
+   "title": "TASK-003",
+   "banner": "V3 DB v3-db · 世代 gen-5522a055f3bc453abc1baa2903e67188 · 改訂 0\npayloadHash 3463395e3ffd（canonical JSON of tasks, edges, milestones and milestoneRelations of this export） · 2件の変更\n編集版 20261019T074722246810Z-cfb5b428 を再開中",
+   "notice": null,
+   "status": "サーバーに保存しました：/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmpnvr9lclj/saves/v3-save-20261019T074722246810Z-cfb5b428.json　AIに「Inboxを取り込んで」と伝えてください。"
+  }
+ },
+ "reopen": {
+  "mode": "reopen",
+  "requests": [
+   "GET /",
+   "GET /registry.json",
+   "GET /server-status",
+   "GET /activity-events",
+   "GET /commit-approvals",
+   "GET /approval-probe",
+   "GET /workspace",
+   "GET /continuity",
+   "GET /letters"
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "after": {
+   "owner": "担当X",
+   "state": "DONE",
+   "title": "TASK-003",
+   "banner": "V3 DB v3-db · 世代 gen-5522a055f3bc453abc1baa2903e67188 · 改訂 0\npayloadHash 3463395e3ffd（canonical JSON of tasks, edges, milestones and milestoneRelations of this export） · 2件の変更\n編集版 20261019T074722246810Z-cfb5b428 を再開中",
+   "notice": null,
+   "status": ""
+  }
+ },
+ "apply": {
+  "ok": true,
+  "operationId": "studio-save:46b5cb67fb9052ddf8803c7499b4f210",
+  "result": {
+   "kind": "update_task",
+   "id": "TASK-003",
+   "applied": [
+    "owner",
+    "state"
+   ],
+   "alreadyReflected": [],
+   "revision": 1
+  }
+ },
+ "serverRequests": [
+  [
+   "GET",
+   "/"
+  ],
+  [
+   "GET",
+   "/registry.json"
+  ],
+  [
+   "GET",
+   "/server-status"
+  ],
+  [
+   "GET",
+   "/activity-events"
+  ],
+  [
+   "GET",
+   "/commit-approvals"
+  ],
+  [
+   "GET",
+   "/approval-probe"
+  ],
+  [
+   "GET",
+   "/workspace"
+  ],
+  [
+   "GET",
+   "/continuity"
+  ],
+  [
+   "GET",
+   "/letters?brief=1&limit=50"
+  ],
+  [
+   "POST",
+   "/save"
+  ],
+  [
+   "GET",
+   "/"
+  ],
+  [
+   "GET",
+   "/registry.json"
+  ],
+  [
+   "GET",
+   "/server-status"
+  ],
+  [
+   "GET",
+   "/activity-events"
+  ],
+  [
+   "GET",
+   "/approval-probe"
+  ],
+  [
+   "GET",
+   "/workspace"
+  ],
+  [
+   "GET",
+   "/commit-approvals"
+  ],
+  [
+   "GET",
+   "/continuity"
+  ],
+  [
+   "GET",
+   "/letters?brief=1&limit=50"
+  ],
+  [
+   "POST",
+   "/v3/apply"
+  ],
+  [
+   "POST",
+   "/v3/apply"
+  ]
+ ],
+ "patches": [
+  "P1 check(): a V3 export has no source.sha256; accepted only with source.kind v3-export, a generation and an integer revision",
+  "P2 banner(): a V3 export shows its DB generation, revision and the named payloadHash; no Git HEAD, no committed/uncommitted label",
+  "P3 banner(): the base comparison of a V3 export uses generation and revision"
+ ]
+}

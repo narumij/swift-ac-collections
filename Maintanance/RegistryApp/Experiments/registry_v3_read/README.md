@@ -13,6 +13,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_import.py -v       # OPS-163：固定写しの照合（試験用の木）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_recovery.py -v  # OPS-164：世代・履歴・backup・復元
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adapter.py -v       # OPS-165：Studio関数との接続（node要）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_roundtrip.py -v    # OPS-166：隔離HTTP・headless WebKit（導入済みPlaywright要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -249,3 +250,43 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - 旧い保存は拒否するだけ。manifestによる移行はしていない。
 - 範囲currentでの境界のstub、計画・接続・提案の書込はない。
 - 版のパスは表示用に作ったもので、ファイルは存在しない。
+
+## OPS-166：隔離HTTP・headlessブラウザでの往復（`v3_studio_server.py`・`browser_roundtrip.cjs`）
+
+- **エンジン**：導入済みのPlaywright 1.64.1（`/opt/homebrew/lib/node_modules/playwright`）のWebKit 2370を、headlessで使う。何も新しく導入しない。PythonのPlaywrightはないので、ブラウザの操作はnodeのスクリプトで行う。
+- **server**（`V3StudioServer`）：
+  - `127.0.0.1`に、OSが割り当てたportで立てる。状態はすべて試験の`TemporaryDirectory`に置く（fixtureのDB、`saves/`）。
+  - 試験が起動し、失敗したときも`addCleanup`で止める。serve.py・sync.py・inbox.pyは使わず、templateは読むだけ。
+  - `GET /`：ページを、templateを読んだものからメモリ上で作る。
+    - seedは、その時点の`export_doc`。そのため、開き直すと最新のDBが見える。
+    - 文書の束と採番待ちのqueueは空にする。
+    - 互換のための変更P1〜P3を当てる。
+  - `POST /save`：ページ自身の保存。`saves/`に、新しいファイルとして保存するだけ。**DBには書かない**。V3でない文書は拒否する。
+  - `GET /workspace`：最新の保存を返す。ページ自身の`resumeWorkspace()`が、そのまま動く。
+  - `POST /v3/apply`：DBに書く唯一の経路。試験が明示的に呼ぶ。
+  - `GET /v3/latest`：最新のexport。
+  - それ以外はすべて404。`/sync`は404なので、「更新」と「正本から始める」は何もできない。
+- **送る前に遮る**：`context.route('**/*')`で、隔離したoriginでないリクエストは送る前に`abort`し、記録する。
+  - 否定対照として、`http://blocked.invalid/`へのfetchが送られずに失敗することを確かめた。
+  - 本番の8088には、どの段階でも接続しない。
+  - ページが送ったリクエストと、serverが受けたリクエストの両方を記録し、決まった一覧の中に収まることを確かめる。
+- **互換のための変更**：OPS-165のP1・P2・P3の3つだけ。メモリ上のページに当て、それぞれちょうど1回だけ当たることを確かめる。新しい変更はない。
+  - URLは変えていない。隔離したserverが、自分で`/save`と`/workspace`を返すため。
+  - 採番待ちのqueueは、`entries: []`の空のqueueとして渡した。これは変更ではなく、seedの中身。
+- **試験**（`test_browser_roundtrip.py`、7件）：
+  - 往復：実際の編集欄で担当と状態を変える→保存する（DBは変わらない）→新しい文脈で開き直す（ページ自身が再開し、値と基準の表示が保たれる）→明示的に適用する→もう一度適用すると前の結果を返す。
+  - 別の欄の変更：bannerに「DBが更新されています」、通知に競合なしの行。
+  - 同じ欄の競合：通知に「【競合の可能性あり】」が出て、適用は拒否される。
+  - 世代の変更：拒否する。
+  - UIでの未対応の混在した編集：拒否する。
+  - 遮断の否定対照
+  - 受けたpathの一覧と、P1〜P3が当たっていること
+- **証拠**：`evidence/ops166/`（`reopen.png`と`roundtrip.json`）。`OPS166_EVIDENCE=<dir>`を付けて往復の試験を走らせると、保存される。
+
+### OPS-166の限界
+
+- WebKitだけ。作業の区域（活動・連絡・承認）、文書の表示、server状態の取得は404か空にしている。
+  - そのためページの上に「サーバーの更新状態を確認できない旧バージョンです」と出るが、これは本番の文言で、この実験では意味がない。
+- Inbox、IMPORTS、複数のタブにまたがる系列の扱いは、parent/branchedの最小限だけ。
+- 保存したときの報告の文（「AIに『Inboxを取り込んで』と…」）は、本番の文言のまま。
+- 実際のフォントでの見た目は、画像1枚で確かめただけ。

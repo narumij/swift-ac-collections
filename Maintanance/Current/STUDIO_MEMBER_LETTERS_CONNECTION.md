@@ -4,7 +4,7 @@
 連絡DBの受領・着手と本人申告を区別して表示する。返却済みから本人待機を推定しない。
 姫がすでに提出した内訳を使い、現状確認・対応表の受入後に実装へ進む。内訳の再提出を求めない。
 
-OPS-183 / PROPOSED / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。依頼送信・着手はまだ。原返却：CP-20261019-003（CLAUDE_PENDING_TASKS.md）。親OPS-048。
+OPS-183 / ACTIVE / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。第1区切り受入済み。実装・試験を姫へ依頼（下記）。原返却：CP-20261019-003（CLAUDE_PENDING_TASKS.md）。親OPS-048。
 
 ## 既存の作業内訳（姫の案を引継ぎ）
   1. 現状の固定：`createMemberLampView`の入力・「新着」「継続確認」の条件と既存試験（`test-view-model-members.cjs`）を控える。
@@ -57,6 +57,25 @@ OPS-183 / PROPOSED / 2026-10-19。ユーザー指示で正式登録。担当：�
 
 **4. 停止点**：ここで止める。3・4（実装・試験）は受入と依頼の後。
 
+**姫の補正（2026-10-19 23:55ごろ）**：上の「返答済み・未close：宛先のランプには出さない」と、会話で姫が出した「返答済み・未closeは今回は画面に出さない」の既定案は、ユーザーの判断ではなく姫の提案。ユーザー指摘（`TASK_REGISTRY_APP.md`「返答済み連絡を省略しない」）に従い、既定にしない。返答済みは「確認待ち」として相手の作業中と区別して出し、原文へ辿れる形を前提に案を作り直す。原返却は変えず、この補正を優先する。
+
 
 ## 連携
 OPS-183・OPS-184は対応表の共通読取部分を共有できる。並行実装時は同じファイルの占有を重ねず、受入時に分担する。
+
+## Astra acceptance and implementation assignment (2026-10-19)
+
+Stage 1 is accepted with the corrections below, including Hime's returned-letter correction. The user requested that Astra complete acceptance and send the implementation assignment. Hime may now implement stages 3–4 for OPS-183 and OPS-184 together; no further stage-1 approval is pending. This accepts the mapping, not a completed implementation.
+
+- Share one `/letters?brief=1` reader between member status and recent work; add last-event metadata to the brief response. Preserve actor/effective/proxy distinctions. Do not infer self-declared presence from letter events or present a counterpart's action as the member's own activity. If last-event-only data cannot support a per-member latest-action claim, label the narrower observation honestly.
+- Merge legacy activity and letter events chronologically; do not replace or erase either source. Keep returned/unclosed letters visible as sender confirmation pending, distinct from recipient work. Counts/collapsing are allowed only with access to originals. Do not auto-close old letters.
+- A closed letter means that exchange is closed, not that the task is DONE. Task grouping must not hide other still-open/confirmation-pending letters under a newer closed exchange.
+- Respect pagination: one shared reader does not mean one page. Older pending letters must remain discoverable; an incomplete/failed fetch must not be shown as zero/no communication. Retain explicit loading/error/incomplete states.
+- Use existing JSONL WAKE semantics: extend `comm.py letter watch` to observe WAKE alongside letters, with independent progress/deduplication and existing ACK behavior. Do not introduce a new DB kind or substitute work withdrawal for waiting termination.
+
+### Scope and completion
+Hime owns the related Studio client/VM/template, brief-list server metadata, comm.py watcher, focused tests and necessary usage documentation for these two tasks. One writer handles shared files. Presence storage, continuity storage, approval policy, database migration and unrelated cleanup are outside this assignment.
+
+Prepare isolated tests first and demonstrate a failing regression before fixing it. Use temporary DBs, a dedicated test server/port and headless browser: send → receive/start/reply → VM → rendered member/work display, plus WAKE → watch → ACK → display. Cover returned/unclosed, closed versus task completion, pagination and fetch failure. Record retained tests and justified changes. Do not use port 8088, production data, restart the user's server or commit. Report unsupported real-browser checks honestly; component checks alone do not complete acceptance.
+
+Return implementation, evidence and remaining limitations to Astra; stop and report after two consecutive correction rounds. Do not ask the user again about the choices settled here. This bounded implementation does not close the broader all-communications requirement and does not authorize routine autonomous operation.

@@ -730,3 +730,8 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — フィルタ変更中の旧cursor補正 H-20261019-35
 
 [連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H35へ。旧ページ値を新フィルタの結果に見せず、取得キー不一致時のページ送りを防ぐ。template/letters試験だけ、返却後連続待機、commitなし。
+
+
+## OPS-156 — 実運用の待機接続 H-20261019-36
+
+ユーザー再起動済み。[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H36へ。手元待機へwatchを接続し、DBの新しい疎通依頼を本人として処理。この導入依頼は旧経路で返却、新DB依頼はDBだけで返却。API経由のみ、コード/commit変更なし、連続待機。

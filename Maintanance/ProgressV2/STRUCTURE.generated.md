@@ -1,6 +1,6 @@
 # V3 milestone structure (generated from the DB, read-only)
 
-<!-- V3-GENERATED structure: generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=5; sha256=d6e7b94ada8e4b6705e4d3bbef967d24c2ea976a5e3f81041a1329817ccd568d -->
+<!-- V3-GENERATED structure: generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=8; sha256=d6e7b94ada8e4b6705e4d3bbef967d24c2ea976a5e3f81041a1329817ccd568d -->
 Card and gate files stay documents; their folder and file names are not this structure.
 
 focus "0.6.0"

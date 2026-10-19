@@ -14,6 +14,10 @@ export_doc(conn) -- scope 'all', focus kept as milestoneHead.
   Version paths (milestone.gate) are display-only, built from version and position (v3.displayOnly), never edit evidence.
 - Retired tasks are left out of tasks and listed in v3.retired; edges that touch them are listed in v3.hiddenEdges.
 
+OPS-168 change groups: plan_groups / apply_groups split a stored save into one group per changed task (its state/owner
+changes, atomic), apply only the selected groups as separate operations save:<saveId>:<groupId>, and report applied,
+already reflected, replayed, conflict, refused, changed content and unselected groups apart. Whole-save rejections stay.
+
 plan_save(conn, save) / apply_save(conn, save, actor, evidence) -- one save changes the state and/or owner of exactly ONE
 task. Everything else is rejected for the whole save BEFORE any write: an old save (no V3 base), another generation,
 more than one task, any other task field, a task set change, any edge, milestone link, milestone/plan or proposal change.
@@ -116,9 +120,10 @@ def _keyed(xs, key, where):
     return out
 
 
-def plan_save(conn, save):
-    """The single update_task request of a save, or SaveRejected with the reason. Reads only; writes nothing.
-    Fail closed: every compared field must have its base in the save, duplicates are refused, unknown fields are refused."""
+def _task_changes(conn, save):
+    """Whole-save validation shared by the single-task and the change-group paths; returns the changed fields per task.
+    Fail closed: every compared field must have its base in the save, duplicates are refused, unknown fields are refused,
+    and any unsupported (structural, plan, focus, proposal, other task field) change rejects the whole save."""
     src, v3 = save.get('source') or {}, save.get('v3')
     if src.get('kind') != 'v3-export' or not isinstance(v3, dict) or 'sha256' in src:
         raise SaveRejected('old save: it has no V3 base (generation/revision); migration by manifest is not part of this step')
@@ -168,11 +173,77 @@ def plan_save(conn, save):
             changed[tid] = fields
     if unsupported:
         raise SaveRejected('unsupported changes, nothing applied: ' + '; '.join(unsupported))
+    return changed, now, before, v3
+
+
+def _request(tid, fields, now, before, v3):
+    return {'kind': 'update_task', 'id': tid, 'base': {f: before[tid][f] for f in fields}, 'changes': {f: now[tid][f] for f in fields},
+            'generation': v3['generation']}
+
+
+def plan_save(conn, save):
+    """The single update_task request of a save (OPS-165 single-task path), or SaveRejected. Reads only."""
+    changed, now, before, v3 = _task_changes(conn, save)
     if len(changed) != 1:
         raise SaveRejected(f'a save must change exactly one task, it changes {len(changed)}' + (': ' + ', '.join(changed) if changed else ''))
     (tid, fields), = changed.items()
-    return {'kind': 'update_task', 'id': tid, 'base': {f: before[tid][f] for f in fields}, 'changes': {f: now[tid][f] for f in fields},
-            'generation': v3['generation']}
+    return _request(tid, fields, now, before, v3)
+
+
+def plan_groups(conn, save):
+    """OPS-168 change groups: one group per changed task (all its state/owner changes, atomic). Reads only.
+    The whole save is still rejected for an old/malformed base, another generation, duplicates or any unsupported change."""
+    changed, now, before, v3 = _task_changes(conn, save)
+    if not changed:
+        raise SaveRejected('the save changes no task')
+    return [{'groupId': 'task:' + tid, 'request': _request(tid, fields, now, before, v3)} for tid, fields in sorted(changed.items())]
+
+
+def save_identity(save):
+    """The stable identity of a save: the saveId given when it was stored. Without one, groups cannot be identified."""
+    sid = (save.get('studioSave') or {}).get('saveId')
+    if not isinstance(sid, str) or not sid:
+        raise SaveRejected('the save has no saveId; store it first so its groups have a stable identity')
+    return sid
+
+
+def apply_groups(conn, save, selected, actor, evidence):
+    """Apply only the selected groups of a stored save, each as its own operation (ID = save:<saveId>:<groupId>).
+    Returns every group in exactly one of: applied, alreadyReflected, replayed, conflict, refused, changedContent,
+    unselected; complete is true only when every group is applied, reflected or replayed. Validation (whole save, the
+    selection) happens before any write."""
+    sid = save_identity(save)
+    groups = plan_groups(conn, save)
+    ids = [g['groupId'] for g in groups]
+    if not isinstance(selected, list) or len(set(selected)) != len(selected) or set(selected) - set(ids):
+        raise SaveRejected(f'the selection must name groups of this save: {sorted(set(selected or []) - set(ids)) or selected!r}')
+    out = {k: [] for k in ('applied', 'alreadyReflected', 'replayed', 'conflict', 'refused', 'changedContent', 'unselected')}
+    for g in groups:
+        gid = g['groupId']
+        if gid not in selected:
+            out['unselected'].append(gid)
+            continue
+        op = f'save:{sid}:{gid}'
+        known = w3.operation(conn, op)
+        try:
+            result = w3.apply(conn, op, dict(g['request'], actor=actor, evidence=evidence))
+        except w3.OperationMismatch as error:
+            out['changedContent'].append({'groupId': gid, 'operationId': op, 'error': str(error)})
+            continue
+        except w3.Refused as error:
+            entry = {'groupId': gid, 'operationId': op, 'error': str(error), **({'replayed': True} if known else {})}
+            out['conflict' if str(error).startswith('conflict on') else 'refused'].append(entry)
+            continue
+        entry = {'groupId': gid, 'operationId': op, 'result': result}
+        if known:
+            out['replayed'].append(entry)
+        elif result['applied']:
+            out['applied'].append(entry)
+        else:
+            out['alreadyReflected'].append(entry)
+    out['complete'] = not (out['conflict'] or out['refused'] or out['changedContent'] or out['unselected'])
+    out['saveId'], out['groups'] = sid, ids
+    return out
 
 
 def operation_id(save):

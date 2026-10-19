@@ -14,6 +14,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_impo
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_recovery.py -v  # OPS-164：世代・履歴・backup・復元
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adapter.py -v       # OPS-165：Studio関数との接続（node要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_roundtrip.py -v    # OPS-166：隔離HTTP・headless WebKit（導入済みPlaywright要）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_groups.py -v        # OPS-168：複数taskの変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -290,3 +291,16 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - Inbox、IMPORTS、複数のタブにまたがる系列の扱いは、parent/branchedの最小限だけ。
 - 保存したときの報告の文（「AIに『Inboxを取り込んで』と…」）は、本番の文言のまま。
 - 実際のフォントでの見た目は、画像1枚で確かめただけ。
+
+## OPS-168：複数タスクの変更群（`studio_adapter.plan_groups`・`apply_groups`）
+
+- **群**：変わったタスクごとに1つの群（`task:<ID>`）を作る。そのタスクのstateとownerの変更は、1つの操作でまとめて反映する。片方の欄だけが反映されることはない。
+- **選んだ群だけを適用する**：`apply_groups(conn, save, selected, actor, evidence)`。
+  - 操作IDは`save:<saveId>:<groupId>`。`saveId`は保存したときに付いたもので、ないと拒否する。
+  - 同じIDで中身が違う要求は`changedContent`として拒否し、何も書かない。
+  - 結果は次のどれか1つに分ける：`applied`・`alreadyReflected`・`replayed`・`conflict`・`refused`・`changedContent`・`unselected`。
+  - `complete`が真になるのは、すべての群が適用されたか、反映済みか、再送で同じ結果を返したときだけ。そうでなければ、保存全体を反映済みとは扱わない。
+- **保存全体を拒否する場合**（そのまま残している）：旧い保存・形式の誤り・世代の違い・重複・知らない欄・構造や提案や計画やfocusの変更が混ざったもの。
+- 選択が不正な場合（知らない群、重複）と、変更がない場合は、書く前に拒否する。
+- 1タスクずつの経路（`plan_save`・`apply_save`）と、ブラウザでの試験は、そのまま残している。
+- **採用していないこと**：OPS-167の発行の記録（journal）案。正しい形のまま末尾だけが切れたものは、hashの連鎖だけでは見抜けない。また、古いけれど互いに矛盾しない2つの写しは、最新であることの証明にならない。この問題は未解決のまま残し、K3は実装していない。

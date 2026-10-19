@@ -191,7 +191,7 @@ def apply(conn, operation_id, request, hook=None):
             (operation_id, gen, want, status, dump(result), rev, dump(request), request['actor'], dump(request.get('evidence', [])), dump(before), dump(after)))
         conn.execute('SAVEPOINT work')
         try:
-            result, before, after = _run(conn, operation_id, request)
+            result, before, after = _run(conn, operation_id, request, hook)
         except Refused as error:
             conn.execute('ROLLBACK TO work')
             conn.execute('RELEASE work')
@@ -224,8 +224,12 @@ def _live_task(conn, tid):
         raise Refused(f'{tid} is retired')
 
 
-def _run(conn, operation_id, req):
+def _run(conn, operation_id, req, hook=None):
     kind = req['kind']
+    if kind in STRUCTURAL:
+        return STRUCTURAL[kind](conn, operation_id, req, hook)
+    if kind in EXPERIMENT_UNSUPPORTED:
+        raise Refused(f'experiment-unsupported: {kind} ({EXPERIMENT_UNSUPPORTED[kind]}); this is not a canonical prohibition')
     if kind == 'register_task':
         return _register(conn, operation_id, req)
     if kind == 'update_task':
@@ -316,3 +320,217 @@ def _add_edge(conn, operation_id, req):
     conn.execute('INSERT INTO provenance VALUES (?, ?)', (f'edge:{graph}:{a}->{b}', 'operation:' + operation_id))
     edge = {'graph': graph, 'prerequisite': a, 'successor': b, 'flow': req.get('flow'), 'constraint': req.get('constraint', '')}
     return {'kind': 'add_edge', 'graph': graph, 'prerequisite': a, 'successor': b}, None, edge
+
+
+# ---- OPS-169 K2: structural writes ----------------------------------------------------------------------------------
+# Every op names the current values it relies on (base); a missing target or another value is a conflict. Changes are
+# validated on the post-change structure inside the transaction; a remove + add pair is one operation (hook 'between'
+# runs between them, test-only). conditionReview is never stored: a new edge or link needs explicit constraint text,
+# which the DB stores but does not approve.
+
+EXPERIMENT_UNSUPPORTED = {
+    'reparent': 'single-parent policy and a dedicated reparent op are undecided (OPS-167); use rewire_edge on the management graph',
+    'set_task_permanent': 'who may change permanence is undecided (OPS-167)',
+}
+# milestone link directions this experiment supports; others are undecided, not forbidden
+LINK_SUPPORTED = {('task', 'end'), ('task', 'card'), ('card', 'task'), ('start', 'task')}
+
+
+def _conflict(what, detail):
+    raise Refused(f'conflict on {what}: {detail}')
+
+
+def _edge_attrs(conn, graph, a, b):
+    row = conn.execute('SELECT flow, constraint_text FROM graph_edges WHERE graph = ? AND prerequisite = ? AND successor = ?', (graph, a, b)).fetchone()
+    return None if row is None else {'flow': row[0], 'constraint': row[1]}
+
+
+def _expect(what, current, base):
+    if current is None:
+        _conflict(what, 'it no longer exists')
+    for k, v in base.items():
+        if current.get(k) != v:
+            _conflict(what, f'{k} changed since the base')
+
+
+def _cycles(conn, graph):
+    if graph == 'management':
+        edges = conn.execute("SELECT prerequisite, successor FROM graph_edges WHERE graph = 'management'").fetchall()
+    else:
+        edges = conn.execute("SELECT prerequisite, successor FROM graph_edges WHERE graph IN ('progress','milestone')").fetchall() + r3.skeleton(conn)
+    if (n := r3._cycle(edges)):
+        raise Refused(f'{graph} cycle through {n}')
+
+
+def _constraint(req, graph):
+    c = req.get('constraint')
+    if graph in ('progress', 'milestone') and (not isinstance(c, str) or not c.strip()):
+        raise Refused('explicit constraint text is required for a new edge or link (conditionReview is not stored, nothing is carried over)')
+    return c if graph != 'management' else ''
+
+
+def _exact_base(req, fields, what=''):
+    """The request's base must be a mapping with exactly these fields: missing, partial, unknown or malformed bases are
+    refused before any change (destructive ops must state everything they remove)."""
+    base = req.get('base') if 'base' in req else None
+    if not isinstance(base, dict) or set(base) != set(fields):
+        raise Refused('base must be exactly ' + (', '.join(sorted(fields)) if fields else '{}') + what)
+    return base
+
+
+def _edge_base(graph, req):
+    return _exact_base(req, {'flow', 'constraint'}) if graph == 'progress' else _exact_base(req, set(), ' for management')
+
+
+def _graph(req):
+    if req['graph'] not in ('progress', 'management'):
+        raise Refused(f"graph must be progress or management, not {req['graph']}")
+    return req['graph']
+
+
+def _insert_edge(conn, operation_id, graph, a, b, flow, constraint):
+    for x in (a, b):
+        _live_task(conn, x)
+    if a == b:
+        raise Refused('an edge needs two different tasks')
+    if _edge_attrs(conn, graph, a, b) is not None:
+        raise Refused(f'{graph} edge {a} -> {b} already exists')
+    if graph == 'progress' and flow not in ('SEQUENCE', 'PARALLEL_JOIN'):
+        raise Refused(f'flow must be SEQUENCE or PARALLEL_JOIN, not {flow!r}')
+    conn.execute('INSERT INTO graph_edges VALUES (?, ?, ?, ?, ?)', (graph, a, b, flow if graph == 'progress' else None, constraint))
+    conn.execute('INSERT OR REPLACE INTO provenance VALUES (?, ?)', (f'edge:{graph}:{a}->{b}', 'operation:' + operation_id))
+
+
+def _delete_edge(conn, graph, a, b):
+    conn.execute('DELETE FROM graph_edges WHERE graph = ? AND prerequisite = ? AND successor = ?', (graph, a, b))
+    conn.execute('DELETE FROM provenance WHERE subject = ?', (f'edge:{graph}:{a}->{b}',))
+
+
+def _remove_edge(conn, operation_id, req, hook):
+    graph, a, b = _graph(req), req['prerequisite'], req['successor']
+    current = _edge_attrs(conn, graph, a, b)
+    _expect(f'{graph} edge {a} -> {b}', current, _edge_base(graph, req))
+    _delete_edge(conn, graph, a, b)  # endpoints may be retired: removal is cleanup
+    return {'kind': 'remove_edge', 'graph': graph, 'prerequisite': a, 'successor': b}, dict(current, graph=graph, prerequisite=a, successor=b), None
+
+
+def _set_edge(conn, operation_id, req, hook):
+    a, b = req['prerequisite'], req['successor']
+    if req.get('graph') != 'progress':
+        raise Refused('only progress edges have flow and constraint')
+    changes = req.get('changes')
+    if not isinstance(changes, dict) or not changes or set(changes) - {'flow', 'constraint'}:
+        raise Refused('set_edge changes flow and/or constraint')
+    base = _exact_base(req, set(changes))
+    for x in (a, b):
+        _live_task(conn, x)  # a setter keeps the edge: its endpoints must be live (only removal cleans up retired ones)
+    current = _edge_attrs(conn, 'progress', a, b)
+    _expect(f'progress edge {a} -> {b}', current, base)
+    if changes.get('flow', current['flow']) not in ('SEQUENCE', 'PARALLEL_JOIN'):
+        raise Refused(f"flow must be SEQUENCE or PARALLEL_JOIN, not {changes['flow']!r}")
+    if 'constraint' in changes and (not isinstance(changes['constraint'], str) or not changes['constraint'].strip()):
+        raise Refused('constraint text must not be empty')
+    for k, column in (('flow', 'flow'), ('constraint', 'constraint_text')):
+        if k in changes:
+            conn.execute(f'UPDATE graph_edges SET {column} = ? WHERE graph = ? AND prerequisite = ? AND successor = ?', (changes[k], 'progress', a, b))
+    return {'kind': 'set_edge', 'prerequisite': a, 'successor': b}, dict(current, prerequisite=a, successor=b), dict(current, **changes, prerequisite=a, successor=b)
+
+
+def _rewire_edge(conn, operation_id, req, hook):
+    graph = _graph(req)
+    (a, b), (c, d) = (req['from']['prerequisite'], req['from']['successor']), (req['to']['prerequisite'], req['to']['successor'])
+    if (a, b) == (c, d):
+        raise Refused('rewire needs a different edge')
+    current = _edge_attrs(conn, graph, a, b)
+    _expect(f'{graph} edge {a} -> {b}', current, _edge_base(graph, req))
+    constraint = _constraint(req, graph)
+    _delete_edge(conn, graph, a, b)
+    if hook:
+        hook('between')
+    _insert_edge(conn, operation_id, graph, c, d, req.get('flow', current['flow']), constraint)
+    _cycles(conn, graph)
+    after = dict(_edge_attrs(conn, graph, c, d), graph=graph, prerequisite=c, successor=d)
+    return {'kind': 'rewire_edge', 'graph': graph, 'from': [a, b], 'to': [c, d]}, dict(current, graph=graph, prerequisite=a, successor=b), after
+
+
+def _milestone_kinds(conn, a, b):
+    kinds = [conn.execute('SELECT kind FROM nodes WHERE id = ?', (x,)).fetchone() for x in (a, b)]
+    for x, k in zip((a, b), kinds):
+        if k is None:
+            raise Refused(f'unknown ID {x}')
+    return tuple(k[0] for k in kinds)
+
+
+def _link_rules(conn, a, b):
+    kinds = _milestone_kinds(conn, a, b)
+    if kinds.count('task') != 1:
+        raise Refused(f'a milestone link joins exactly one task and one milestone node, got {kinds}')
+    if 'gate' in kinds:
+        raise Refused('canonical: tasks are not connected to a release gate (Milestones/README, Registry マイルストーン接続)')
+    if kinds not in LINK_SUPPORTED:
+        raise Refused(f'experiment-unsupported direction {kinds[0]} -> {kinds[1]}: undecided (OPS-167), not a canonical prohibition')
+    _live_task(conn, a if kinds[0] == 'task' else b)
+
+
+def _add_link(conn, operation_id, req, hook):
+    a, b = req['prerequisite'], req['successor']
+    _link_rules(conn, a, b)
+    if _edge_attrs(conn, 'milestone', a, b) is not None:
+        raise Refused(f'milestone link {a} -> {b} already exists')
+    constraint = _constraint(req, 'milestone')
+    conn.execute('INSERT INTO graph_edges VALUES (?, ?, ?, NULL, ?)', ('milestone', a, b, constraint))
+    conn.execute('INSERT OR REPLACE INTO provenance VALUES (?, ?)', (f'edge:milestone:{a}->{b}', 'operation:' + operation_id))
+    _cycles(conn, 'milestone')
+    return {'kind': 'add_milestone_link', 'prerequisite': a, 'successor': b}, None, {'prerequisite': a, 'successor': b, 'constraint': constraint}
+
+
+def _remove_link(conn, operation_id, req, hook):
+    a, b = req['prerequisite'], req['successor']
+    current = _edge_attrs(conn, 'milestone', a, b)
+    _expect(f'milestone link {a} -> {b}', current, _exact_base(req, {'constraint'}))
+    _delete_edge(conn, 'milestone', a, b)  # a retired task's link may be removed: cleanup
+    return {'kind': 'remove_milestone_link', 'prerequisite': a, 'successor': b}, {'prerequisite': a, 'successor': b, 'constraint': current['constraint']}, None
+
+
+def _set_link(conn, operation_id, req, hook):
+    a, b, changes = req['prerequisite'], req['successor'], req.get('changes')
+    base = _exact_base(req, {'constraint'})
+    if not isinstance(changes, dict) or set(changes) != {'constraint'} or not isinstance(changes['constraint'], str) or not changes['constraint'].strip():
+        raise Refused('set_milestone_link changes the constraint only, with non-empty text')
+    kinds = _milestone_kinds(conn, a, b)
+    if kinds.count('task') == 1:
+        _live_task(conn, a if kinds[0] == 'task' else b)  # a setter keeps the link: its task must be live
+    current = _edge_attrs(conn, 'milestone', a, b)
+    _expect(f'milestone link {a} -> {b}', current, base)
+    conn.execute("UPDATE graph_edges SET constraint_text = ? WHERE graph = 'milestone' AND prerequisite = ? AND successor = ?", (changes['constraint'], a, b))
+    return {'kind': 'set_milestone_link', 'prerequisite': a, 'successor': b}, {'constraint': current['constraint']}, {'constraint': changes['constraint']}
+
+
+def _rewire_link(conn, operation_id, req, hook):
+    (a, b), (c, d) = (req['from']['prerequisite'], req['from']['successor']), (req['to']['prerequisite'], req['to']['successor'])
+    if (a, b) == (c, d):
+        raise Refused('rewire needs a different link')
+    current = _edge_attrs(conn, 'milestone', a, b)
+    _expect(f'milestone link {a} -> {b}', current, _exact_base(req, {'constraint'}))
+    _delete_edge(conn, 'milestone', a, b)
+    if hook:
+        hook('between')
+    _, _, after = _add_link(conn, operation_id, {'prerequisite': c, 'successor': d, 'constraint': req.get('constraint')}, None)
+    return {'kind': 'rewire_milestone_link', 'from': [a, b], 'to': [c, d]}, {'prerequisite': a, 'successor': b, 'constraint': current['constraint']}, after
+
+
+def _set_group(conn, operation_id, req, hook):
+    tid, group = req['id'], req['group']
+    _live_task(conn, tid)
+    if group is not None and (not isinstance(group, str) or not group.strip()):
+        raise Refused('group is a non-empty heading text or null')
+    base = _exact_base(req, {'group'})
+    current = conn.execute('SELECT task_group FROM tasks WHERE id = ?', (tid,)).fetchone()[0]
+    if current != group:  # equal to the new value: already reflected, as update_task
+        _expect(f'{tid} group', {'group': current}, base)
+    conn.execute('UPDATE tasks SET task_group = ? WHERE id = ?', (group, tid))
+    return {'kind': 'set_task_group', 'id': tid, 'alreadyReflected': current == group}, {'id': tid, 'group': current}, {'id': tid, 'group': group}
+
+
+STRUCTURAL = {'remove_edge': _remove_edge, 'set_edge': _set_edge, 'rewire_edge': _rewire_edge, 'add_milestone_link': _add_link,
+              'remove_milestone_link': _remove_link, 'set_milestone_link': _set_link, 'rewire_milestone_link': _rewire_link, 'set_task_group': _set_group}

@@ -15,6 +15,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adapter.py -v       # OPS-165：Studio関数との接続（node要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_roundtrip.py -v    # OPS-166：隔離HTTP・headless WebKit（導入済みPlaywright要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_groups.py -v        # OPS-168：複数taskの変更群
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_structural.py -v  # OPS-169：構造の更新（K2）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -304,3 +305,29 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - 選択が不正な場合（知らない群、重複）と、変更がない場合は、書く前に拒否する。
 - 1タスクずつの経路（`plan_save`・`apply_save`）と、ブラウザでの試験は、そのまま残している。
 - **採用していないこと**：OPS-167の発行の記録（journal）案。正しい形のまま末尾だけが切れたものは、hashの連鎖だけでは見抜けない。また、古いけれど互いに矛盾しない2つの写しは、最新であることの証明にならない。この問題は未解決のまま残し、K3は実装していない。
+
+## OPS-169：構造の更新（K2、`registry_v3_write.py`の`STRUCTURAL`）
+
+- **操作**：
+  - `remove_edge`：progressかmanagementの辺を消す。
+  - `set_edge`：progressの辺のflowと条件文を変える。
+  - `rewire_edge`：辺をつなぎ替える。消すことと足すことを、1つの操作で行う。
+  - `add_milestone_link`・`remove_milestone_link`・`set_milestone_link`・`rewire_milestone_link`：到達点への接続を足す・消す・変える・つなぎ替える。
+  - `set_task_group`：タスクの区分を変える。
+- **共通**：
+  - どの操作も、頼りにする今の値（`base`）を示す。対象がない、または値が違えば、競合として拒否する。
+  - `base`は厳密に確かめる（受入での補正）。欠けている・一部だけ・知らない欄がある・形が違うものは、何かを変える前に拒否する。
+    - 消す操作とつなぎ替える操作：progressは`{flow, constraint}`のすべて、到達点の接続は`{constraint}`。managementは明示した`{}`。
+    - 値を設定する操作：変える欄とちょうど同じ欄（区分は`{group}`）。
+  - 値を設定する操作は、残る辺や接続を扱うので、端点が退役していないことを求める。消す操作は、片付けとして、退役した端点のものも消せる。
+  - 変更したあとの構造で、次のことを確かめる。端点があり種類が合うこと、新しい端点が退役していないこと、重複がないこと、循環がないこと。循環は、managementと、progress・接続・骨格を合わせたものとで、別々に確かめる。
+  - 途中で失敗したら、全体を取り消す。試験では、消してから足すまでの間（`between`）に失敗を入れて確かめた。
+  - 同じIDでの再送は前の結果を返す。前と後を記録する。
+- **条件文**：新しい辺や接続には、明示した条件文が要る。`conditionReview`は保存しない。古い条件文を黙って引き継がない。条件文をDBに保存することは、その文を承認したという意味ではない。
+- **正本に根拠がある拒否**：版ゲートと結ぶ接続（どちらの向きも）。
+- **この実験で対応していないもの**（正式に禁じたのではなく、OPS-167で決めることが残っている）：
+  - 接続の向きのうち、END→タスクとタスク→STARTなど、`LINK_SUPPORTED`の外にあるもの
+  - `reparent`
+  - `set_task_permanent`
+  - managementの辺に、親を1つに限る制約は足していない。今のモデルのまま。
+- 版とカードの構造の更新、発行の記録（journal）、Studioの保存からの構造の群の扱い、本番への接続は行っていない。

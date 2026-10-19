@@ -528,3 +528,49 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - **限界**：
   - 文書はファイルシステムにあるので、SQLiteの原子性の外にある。根拠は、adapterが確かめた時点のもの（ロックではない）。
   - ゲート、focus、`recordedDone`、版の改名と削除は扱わない。
+
+## OPS-177：V3保存と旧保存の隔離共存（`v3_inbox.py`、serverの保存・再開・更新、P6）
+
+- **`v3_inbox.py`**：現用`inbox.py`のcopy。現用のファイルは変えない。
+  - 置き場は必ず明示する。既定のInboxも`REGISTRY_STUDIO_INBOX`もない。
+  - 保存ごとに種類を決める（`base_of`）：
+    - legacy：`source.kind`も`v3`の塊もない。基準は今までどおりの`{sha256, head, generatedAt}`。
+    - v3-export：adapterの保存全体の確かめに合わせて確かめる（`v3`の塊がある、`source.sha256`がない、sourceとv3でgeneration・revisionが一致する、generationは空でない文字列、revisionは0以上の整数、payloadHashは64桁の16進、payloadHashOfがある）。基準は`{kind, generation, revision, payloadHash, payloadHashOf}`。sha256の鍵そのものを持たない。
+    - それ以外（未知のkind、kindのない`v3`の塊、sourceとv3の食い違い、不正な値）は不正。legacyとしては読まない。保存は拒否し、置いてあるものは一覧で不正として区別して、再開しない。保存した基準が中身と合わないV3の保存も不正。
+  - 種類の違う親への保存は拒否する。系列に種類が混ざらない。上書きしないこと、古いタブが新しい系列を始めることは今までどおり。
+  - 置いてある各fileの識別（studioSave）は、並べ替えや親の照合に使う前に、file1つずつ形と型を確かめる（受入での補正）。
+    - studioSaveのない古い保存で`source`が物でない、`exportedAt`が文字列でない。studioSaveの欄が5つ（saveId・savedAt・series・parent・base）でない、型が違う。同じsaveIdを2つのfileが名乗る（両方）。
+    - これらは理由を付けて不正として一覧に出す。再開にも親にも使わない。ほかの保存の読みは壊さない。kindなしの`latest`でも、使える識別のある保存だけを見る。
+  - `latest(folder, kind)`：その種類の、有効な保存のうち最新のものだけを返す。
+    - V3では、表示用に`unresolvedLegacy`（IMPORTSに記録のない旧保存のsaveId・日時・file）と`invalid`も返す。
+    - IMPORTSに記録がないことは「まだ照合していない」という意味で、必ず新しい処理が要るとは言わない。変換・適用・削除はしない。
+    - kindを渡さなければ、`inbox.latest`とまったく同じ答え。
+  - V3の消費はDBの操作の記録にある。IMPORTS.jsonlには旧保存の取り込みだけを記録する。
+- **隔離server**：
+  - 保存・読込・再開は、`saves_dir`の上で`v3_inbox`を通す（旧保存と混ざった1つのfolder）。
+  - `/workspace`は有効なV3の保存だけを返す。
+  - `/save`で不正な基準や種類の違う親を渡すと409。
+  - `/v3/apply`と`/v3/apply-groups`は、V3でない保存を409で拒否する。
+  - `POST /sync`は何もせずに答える。GET /が毎回DBからexportを作るので、「更新」はページの再読込で最新のDBに載る。これは隔離serverの答えにすぎず、本番の同期の方式を決めたものではない。
+- **P6**（`resumeWorkspace`）：
+  - 画面の正本と再開する保存のkindを照らし合わせ、違えば再開しない（「形式の違う編集版（…）は再開しません。」）。serverのfilterに重ねた守り。
+  - 未照合の旧保存が残っていれば、それを知らせる（「旧形式の未照合の編集版がN件あります（この画面では再開しません・削除しません）。」）。文言は仮。
+- **試験**：
+  - `test_v3_inbox.py`（8件）：
+    - 有効なV3の保存の隣に、壊れたfile（`source`が配列、空のstudioSave、savedAtが数、余分な欄、exportedAtが数、JSONの配列、saveIdの重複）を置く → 有効な保存を再開し、壊れたfileは理由付きで一覧に出る。`list`も落ちない。fileは書き換えない。
+    - V3の基準にsha256がない。11種の不正な基準を拒否し、何も保存しない。
+    - あとで書き換えられた保存（sourceとv3の食い違い、基準の食い違い）は一覧に出て、再開しない。
+    - 混ざったfolder：新しい旧保存はV3の再開に出ず、未照合として出る。IMPORTSに記録すれば出なくなる。旧ファイルは1バイトも変わらない。
+    - 種類の違う親・知らない親を拒否する。系列と枝分かれは今までどおり。
+    - 旧保存だけのfolder：現用の`inbox.py`と読み（load_saves・latest）・保存（meta）・取り込みの記録が等しい（kindの欄を除く）。studioSaveのない古い保存と、読めないファイルを含む。
+  - `test_mixed_workspace_browser.py`（3件、WebKit）：
+    - ページの保存のあとに、それより新しい旧保存を置く → 新しい文脈でV3の保存だけを再開し、未照合の通知を出す。旧ファイルは変わらない。
+    - serverが旧保存を返したとき（filterを外したserver）→ ページが再開を拒否する（P6）。
+    - DBが進んだあとで「更新」：`POST /sync` → 再読込 → 同じ保存を再開し、古い基準の通知（P3のbannerと差分）を保つ。DBには書かない。
+  - driverに`look`と`refresh`のmodeを足した。試験の土台は、`EXTRA_PATHS`（`POST /sync`）を受け付けるようにした。
+  - 否定の対照：kindのfilter、P6、種類の違う親の拒否、legacyへのfallback、V3の基準の空のsha256、`/sync`、保存した基準の照合を1つずつ外し、それぞれ試験が落ちることを確かめた。
+- **限界**：
+  - 本番の物理的な置き場（V3の保存を実際のInboxに旧保存と同じfolderで置くか）は未決。ここでは隔離した1つのfolderで共存を示しただけ。
+  - 本番の`serve.py`・`inbox.py`・template・`sync.py`は変えていない。旧保存の変換や照合は扱わない。WebKitだけ。
+  - 現用の`inbox.load_saves`にも、同じ壊れたfileで落ちる箇所がある（`source`が配列のときと、studioSaveの欄が欠けたとき）。本番の変更は範囲の外なので、報告だけにする。
+  - `IMPORTS.jsonl`に壊れた行があると、`imports`（V3の`latest`も使う）が落ちる。現用と同じで、ここでは直していない。

@@ -20,3 +20,13 @@ LTR-20261019-99B42B7BDDAE4CF89C924B09EC11D523の内訳を採用。experiment内v
 
 ## 返却
 姫が実装・試験、Astraが独立受入とcommit。実server/DB/Inbox/template/syncの変更・本番切替・旧保存変換は禁止。
+
+## 初回返却の確認（2026-10-19）
+LTR-20261019-2605C8FA92894E49AADE3047BC0417DFを受領。Astraの一時folder再現で、sourceが配列の旧形式JSONはAttributeError、studioSaveが空objectのJSONはKeyErrorでlatest全体が停止した。不正保存の隔離表示という受入条件を満たさないため、LTR-20261019-15EFF45C27D24CD893C6824C6BFD1360で補正依頼。正常保存と混在しても正常分を再開でき、不正分はfile単位で報告すること。本番は未変更、受入保留。
+
+## 補正後の受入（2026-10-19）
+LTR-20261019-15EFF45C27D24CD893C6824C6BFD1360返却を受入。保存metadataを並べ替え/ID利用前に検査し、不正metadata・不正source・重複saveIdを個別に隔離する。正常なV3保存は再開できる。
+
+Astra独立実行：全226試験成功（69.505秒、ResourceWarningなし）。旧形式互換、mixed保存、形式不一致拒否、WebKit再開/更新後の競合通知を含む。`git diff --check`成功。OPS-177 DONE、隔離実装までの受入。本番配置と切替は未実施。
+
+残る制約：IMPORTS.jsonlの不正行で履歴読取とlatest(V3)が停止する。正常履歴を前提とする今回の受入から分離し、OPS-167の切替前確認に記録。現用inbox自体の同種不具合はこの隔離修正では変わらない。

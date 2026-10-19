@@ -52,7 +52,7 @@ class Browser(unittest.TestCase):
         self.assertEqual(result['pageErrors'], [])
         if mode != 'blocked':
             self.assertEqual(result['blocked'], [], 'nothing outside the isolated origin was even attempted')
-        self.assertTrue(set(result['requests']) <= EXPECTED_PATHS | {'POST /save'}, result['requests'])
+        self.assertTrue(set(result['requests']) <= EXPECTED_PATHS | {'POST /save'} | getattr(self, 'EXTRA_PATHS', set()), result['requests'])  # OPS-177: a subclass may allow POST /sync
         return result
 
     def apply(self, save_id):

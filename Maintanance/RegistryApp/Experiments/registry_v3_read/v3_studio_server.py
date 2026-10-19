@@ -9,23 +9,24 @@ and stopped by the test. It never imports serve.py, sync.py or inbox.py and neve
                    OPS-165 compatibility patches P1-P3 are applied (each must match exactly once).
 - POST /save       the page's own save call: stores the JSON as a new file under saves/ (parent/series as inbox.py does)
                    and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
-- GET /workspace   the latest save, as inbox.latest, so the page's own resumeWorkspace() runs.
+- GET /workspace   the latest valid V3 save (v3_inbox.latest, OPS-177), with unresolvedLegacy and invalid for display, so the
+                   page's own resumeWorkspace() runs. Saves live in saves_dir through v3_inbox (a copy of inbox.py).
+- POST /sync       a no-op answer: GET / already exports the DB, so 更新 reloads onto it (OPS-177; not a production decision).
 - POST /v3/apply   an explicit DB write: studio_adapter.apply_save on a stored save (single task, OPS-166).
 - POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173),
                    with the document_root given to the constructor (OPS-176; none: new cards and acknowledgements stay pending).
 - GET /v3/latest   a fresh export, for assertions.
 - anything else    404 (logged); /sync, /registry.json, the pollers and approvals are not served.
 """
-import datetime
 import json
 import re
-import secrets
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import registry_v3_write as w3
 import studio_adapter as sa
+import v3_inbox
 
 TEMPLATE = Path(__file__).resolve().parent.parent.parent / 'index.template.html'
 PATCHES = [
@@ -47,6 +48,9 @@ PATCHES = [
     ("const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);",
      "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
      'P5 renderPlanTools(): an explicit position select for 版を追加, kept as planPosition on the new START (OPS-176)'),
+    ("const result=await response.json();if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;",
+     "const result=await response.json();const legacyLeft=result&&Array.isArray(result.unresolvedLegacy)?result.unresolvedLegacy.length:0;const legacyNote=legacyLeft?'旧形式の未照合の編集版が'+legacyLeft+'件あります（この画面では再開しません・削除しません）。':'';if(legacyNote)report(legacyNote);if(!result||!result.save||dirty||formDirty||generation!==workspaceGeneration)return;const d=result.save,meta=d.studioSave;if(((d.source||{}).kind||'legacy')!==(canonical.kind||'legacy')){report('形式の違う編集版（'+((d.source||{}).kind||'旧形式')+'）は再開しません。'+legacyNote,true);return;}",
+     'P6 resumeWorkspace(): resume only a save of the canonical kind (defense in depth to the server filter) and tell that unreconciled legacy saves remain (OPS-177)'),
 ]
 
 
@@ -110,10 +114,20 @@ class Handler(BaseHTTPRequestHandler):
             data = self.body()
             if not isinstance(data, dict) or (data.get('source') or {}).get('kind') != 'v3-export' or not isinstance(data.get('v3'), dict):
                 return self.reply(400, {'error': 'only a V3 export can be saved here'})
-            return self.reply(200, {'ok': True, **s.store(data)})
+            try:
+                return self.reply(200, {'ok': True, **s.store(data)})
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'error': str(error)})
+        if self.path == '/sync':
+            # OPS-177: no Markdown sync here; GET / builds a fresh DB export, so 更新 reloads onto the latest DB.
+            # This is the isolated server's answer only, not a decision on the production sync method.
+            return self.reply(200, {'ok': True, 'output': 'V3: no Markdown sync; the page export is built from the DB on GET /'})
         if self.path == '/v3/apply':
             req = self.body()
-            save = s.load(req['saveId'])
+            try:
+                save = s.load(req['saveId'])
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'kind': 'SaveRejected', 'error': str(error)})
             conn = w3.open_db(s.db_path)
             try:
                 op, result = sa.apply_save(conn, save, req['actor'], req['evidence'])
@@ -124,7 +138,10 @@ class Handler(BaseHTTPRequestHandler):
                 conn.close()
         if self.path == '/v3/apply-groups':
             req = self.body()
-            save = s.load(req['saveId'])
+            try:
+                save = s.load(req['saveId'])
+            except ValueError as error:
+                return self.reply(409, {'ok': False, 'kind': 'SaveRejected', 'error': str(error)})
             conn = w3.open_db(s.db_path)
             try:
                 out = sa.apply_groups(conn, save, req['selected'], req['actor'], req['evidence'], req.get('resolutions'), req.get('ancestry'),
@@ -155,31 +172,19 @@ class V3StudioServer(ThreadingHTTPServer):
         return f'http://127.0.0.1:{self.server_address[1]}'
 
     def saves_list(self):
-        return sorted((json.loads(p.read_text(encoding='utf-8')) for p in self.saves.glob('*.json')), key=lambda d: d['studioSave']['savedAt'])
+        return [x['doc'] for x in v3_inbox.load_saves(self.saves) if 'error' not in x]
 
     def store(self, data):
-        with self.lock:
-            saves = self.saves_list()
-            parent = (data.pop('studioSave', None) or {}).get('parent')
-            by_id = {d['studioSave']['saveId']: d for d in saves}
-            stale = parent is not None and any(d['studioSave'].get('parent') == parent for d in saves)
-            now = datetime.datetime.now(datetime.timezone.utc)
-            save_id = now.strftime('%Y%m%dT%H%M%S%fZ') + '-' + secrets.token_hex(4)
-            series = save_id if parent is None or stale or parent not in by_id else by_id[parent]['studioSave']['series']
-            meta = {'saveId': save_id, 'savedAt': now.isoformat(), 'series': series, 'parent': parent}
-            with open(self.saves / f'v3-save-{save_id}.json', 'x', encoding='utf-8') as out:
-                out.write(json.dumps(dict(data, studioSave=meta), ensure_ascii=False, indent=1) + '\n')
-            return {'file': f'v3-save-{save_id}.json', 'folder': str(self.saves), 'save': dict(meta, branched=stale)}
+        # OPS-177: the isolated copy of inbox.py (v3_inbox) on saves_dir; a mixed legacy/V3 folder keeps both kinds
+        parent = (data.pop('studioSave', None) or {}).get('parent')
+        meta = v3_inbox.append_save(data, parent, self.saves)  # ValueError: invalid base, unknown or other-kind parent
+        return {'file': f"registry-edited-{meta['saveId']}.json", 'folder': str(self.saves), 'save': meta}
 
     def load(self, save_id):
-        return json.loads((self.saves / f'v3-save-{save_id}.json').read_text(encoding='utf-8'))
+        return v3_inbox.find(self.saves, save_id, v3_inbox.V3)  # ValueError for a legacy, invalid or unknown save
 
     def latest(self):
-        saves = self.saves_list()
-        if not saves:
-            return None
-        parents = {d['studioSave'].get('parent') for d in saves}
-        return {'save': saves[-1], 'heads': sum(1 for d in saves if d['studioSave']['saveId'] not in parents), 'saves': len(saves)}
+        return v3_inbox.latest(self.saves, v3_inbox.V3)  # only valid V3 saves resume; legacy ones are reported
 
     def start(self):
         self.thread = threading.Thread(target=self.serve_forever, daemon=True)

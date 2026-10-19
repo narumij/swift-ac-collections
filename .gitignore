@@ -30,3 +30,6 @@ Benchmarks/.build/
 
 # Python bytecode cache
 __pycache__/
+
+# Registry V3 authoritative local database (2026-10-19 user-approved cutover)
+/Maintanance/RegistryApp/Data/

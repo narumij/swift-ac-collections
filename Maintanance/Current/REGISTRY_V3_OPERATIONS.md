@@ -24,6 +24,8 @@ python3 Maintanance/RegistryApp/serve.py --v3-db Maintanance/RegistryApp/Data/re
 5. 必要な文書更新は`sync.py --v3-db <DB>`で行う。これはCacheへ書く操作であり、読取専用検査ではない。V3の`--check`併用は禁止。
 6. 反映後backupを検証し、許可された範囲をcommitする。作業終了時にもbackupを取る。自動削除はしない。
 
+新しいtaskの直接登録は`register_task`を上記CLIの`apply`で実行する。採番・再送の契約は[実装READMEの更新契約](../RegistryApp/v3/README.md#区切り2更新契約registry_v3_writepy)を参照する。
+
 ## 位置と完了
 `set_focus`は既存版への読取境界変更であり到達事実ではない。`set_recorded_done`は実cardのbooleanだけを更新する。いずれもgeneration/actor/evidence/baseを含む既存CLI apply契約を使う。詳細例は[実装README](../RegistryApp/v3/README.md)。HEAD.mdや旧cardのチェックボックスをDBへ再取込しない。
 

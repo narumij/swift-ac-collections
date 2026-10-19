@@ -38,7 +38,7 @@ Inbox反映や判断キャッシュ更新を頼めますが、新しい製品判
 
 ## 手順の正本
 
-- Inbox反映：[Studio利用手順](../RegistryApp/README.md#aiがjsonを取り込むとき)。原JSONは変更・削除しない。
+- Inbox反映：[Registry V3運用手順](REGISTRY_V3_OPERATIONS.md#正式反映の一巡)。backup・CLI適用・生成view再生成と照合を行い、DB管理表は手編集しない。旧形式の保存は個別照合する。原JSONは変更・削除しない。
 - 状態・採番・変更権限：[Task Rules](../ProgressV2/TASK_RULES_V2.md)。
 - 一時作業物・キャッシュ・掃除：[共通作業規則](../ProgressV2/COMMONS.md)。
 

@@ -47,8 +47,11 @@ ownership or final acceptance authority.
 
 ## Coordinator Assignments
 
-Follow the selected request and the occupancy and handoff rules in
-[CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md).
+Follow the current request route in the [shared entry point](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md#現在の依頼を受け取る).
+For DB assignments, read the addressed inbox and selected letter, then its task and
+canonical document. Use a request-file assignment only when explicitly designated.
+The occupancy and handoff rules in [CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md)
+still apply; its historical requests do not restart work or continuous waiting.
 
 The coordinator must register the task in the Task Registry before issuing the request
 and include its stable ID in the request. Check the scope, editable files, return
@@ -100,6 +103,13 @@ updates, and final reports.
 
 To reduce usage, use English by default for internal instructions and coordinator-to-Claude
 requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
+
+## Work Managed Through the Communication DB
+
+Use the selected letter for receipt and return, following the
+[communication procedure](Maintanance/RegistryApp/README.md#communication-db).
+Keep results, evidence, specifications and decisions in the referenced canonical document.
+Do not duplicate a DB assignment into a request file or the old notification route.
 
 ## Work Managed Through a Request File
 

@@ -71,14 +71,11 @@ Task precedenceには、内部task間の必須AND前提だけを記録する。F
 
 採番時に参照する。普段の仕事選択のために、番号表を読み直す必要はない。
 
-次の表を、Task Registry IDのprefixごとの**最後に使用した番号**を保持する正本とする。現行Registryから
-Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。
-行の削除、移動、状態変更、改名、またはtaskの統合を理由に番号を戻さず、欠番を再利用しない。
+prefixごとの使用済み番号の境界（highwater）と発行記録の正本はRegistry V3 DBである。次の表はDBから生成する読取用のviewであり、手編集しない。Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。削除・移動・状態変更・改名・統合を理由に番号を戻さず、欠番を再利用しない。
 
-既存prefixでtaskを新規登録するときは、この表の最後の番号へ1を加えたIDを使い、**新しいtask行の追加と同じ編集で**
-表の番号も更新する。採番したtaskを同じ編集で取りやめた場合も、その番号は使用済みとして表に残す。新しいprefixを
-導入するときは、既存のRegistryとArchivedに同じprefixがないことを確認し、最初のtask行と同じ編集でそのprefixを
-表へ追加する。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。
+新規登録は[V3運用手順](../Current/REGISTRY_V3_OPERATIONS.md#正式反映の一巡)に従い、CLIの登録操作で行う。DBがhighwaterと発行記録を確認し、task登録と採番を同じトランザクションで確定する。成功応答の正式IDを使い、表から次番号を推測して発行しない。確定済みの登録を後から取りやめても番号を解放しない。確定前に失敗した操作は発行済みとは扱わず、応答不明なら同じ操作ID・本文で結果を確認する。
+
+新prefixの導入時は既存記録との衝突を確認し、DBの対応する登録経路を使う。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。DB不在・破損時は表から採番を再開せず、V3運用手順の復旧条件に従う。
 
 初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
@@ -219,7 +216,7 @@ Gitはcommitの履歴、MarkdownのRegistryと決定記録は現在の仕事・�
 
 番号の出現だけでtaskの実施・完了・担当・採用を確定しない。削除行の番号も過去の使用の手掛かりであり、番号解放ではない。出現しないことも未使用の証拠にはならない。未commitの採番や、取り消した採番があり得るため、索引から採番表の番号を引き下げない。
 
-日常の採番は採番表で行う。索引は使用履歴の点検・復元やtaskと変更の照合に使い、現在の状態表をSQLiteにも複製しない。索引がない・古い・壊れた場合は、対象を絞ってGitと記録を直接照合する。全履歴の再調査を毎回の前提にしない。
+日常の採番はRegistry V3 DBの登録操作で行う。ここでいう履歴索引はRegistry V3 DBとは別物で、使用履歴の点検・復元やtaskと変更の照合に使う。履歴索引を現在の状態や採番の正本にしない。索引がない・古い・壊れた場合は、対象を絞ってGitと記録を直接照合する。全履歴の再調査を毎回の前提にしない。
 
 索引の作成・差分更新・照合・再作成は、[メンテナンス手順](TASK_HISTORY_INDEX_MAINTENANCE.md)を必要時に参照する。通常起動時の通読対象には加えない。
 

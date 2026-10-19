@@ -2,6 +2,8 @@
 
 # レジストリスタジオ（仮）— 利用手順の正本
 
+構成図：[Docs/studio-architecture.png](Docs/studio-architecture.png)（編集元は[SVG](Docs/studio-architecture.svg)。2026-10-19時点、OPS-157）
+
 現行のサーバー保存の約束は[試行保存契約 v1](../Current/REGISTRY_STUDIO_SAVE_CONTRACT.md)を正本とする。下記の旧ダウンロード手順・実装経緯は、サーバー保存へ一律適用しない。具体的操作は「サーバー保存」以降の節を参照する。
 
 

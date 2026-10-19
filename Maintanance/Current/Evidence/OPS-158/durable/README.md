@@ -7,22 +7,25 @@
 | ファイル | 内容 |
 | --- | --- |
 | `decision_store.py` | 追記だけのイベントstore。初期化、適用、状態の畳み込み、照会、確認候補、書出し |
-| `decision_cli.py` | `init`・`apply`・`query [--review]`・`export`。exit：0 成功・再送、1 拒否、2 形の誤り、3 見つからない、5 同じ操作IDで違う要求 |
+| `decision_cli.py` | `init`・`apply`・`query [--review]`・`export`・`backup --to`・`validate`。exit：0 成功・再送、1 拒否、2 形の誤り、3 見つからない、5 同じ操作IDで違う要求 |
 | `fixtures.py` | D1〜D3を、受入済みの`../result.json`から実行時に導く（標本の写しをもう1つ持たない） |
-| `test_decision_store.py` | 試験12件。storeは、すべてunittestの`TemporaryDirectory`の中に作る |
+| `test_decision_store.py` | 試験17件。storeは、すべてunittestの`TemporaryDirectory`の中に作る |
 
 ## 決まり
 
 - `events`は追記だけ。UPDATEとDELETEはtriggerが止める。拒否も記録するので、同じ操作IDの再送は同じ拒否を返す。
 - 状態は、doneのイベントを順に畳み込んで作る。書き換える状態の列はない。
-- 操作は次の4つだけ。訂正と撤回は、今回は作らない。
+- 操作は次の5つだけ。訂正は作らない（誤記も新しい改訂として扱う）。
   - `register`：新しいIDと、改訂1の案。IDは再利用しない。範囲（scope）が違えば、別のIDにする。
   - `propose`：改訂n+1の案。`base_revision`は最新でなければならない。
   - `record_adoption`：外で行われた決定を記録する。`decided_by`と`source`は必須。`replaces`は今採用されている改訂（なければnull）でなければならない。権限は与えず、出典の中身も確かめない。
-  - `add_reference`：すでにある判断の改訂への参照。copy・historical-open・source・rejected-alternative・evidenceのどれか。
+  - `add_reference`：すでにある判断の改訂への参照。copy・historical-open・source・rejected-alternative・evidenceのどれか。copyは`supersedes`で、同じ判断の、まだ置き換えられていないcopyを名指しできる（新しい採用と照らし合わせて確かめたもの）。古い参照は残り、「置き換え済み」の印が付いて、確認候補から外れる。
+  - `record_withdrawal`：外で行われた撤回を記録する。`decided_by`・`source`・`base_adopted`（今採用されている改訂）は必須。何も消さない。撤回したあとは採用された改訂がなくなり、撤回した改訂は二度と採用できない（新しい案が要る）。
 - `init`は新しいfileだけを作る。すでにあるpathは拒否する。ほかの入口は、すでにあるstoreだけを`mode=rw`で開き、fileを作らない。
 - 適用は`BEGIN IMMEDIATE`の中で行う。同じ操作IDで同じ要求なら再送、違えば食い違い。古い基準は拒否し、後から来たほうで上書きしない。
-- `review_candidates`：採用されている改訂より古い改訂を指すcopyだけを並べる（最新の採用より前に作られたcopy）。まだ採用がなければ、何も並べない。採用されていない新しい案を指すcopyも並べない。何も変えない。ほかの判断には触れない（受入での補正）。
+- `review_candidates`：置き換えられていないcopyのうち、採用されている改訂より古い改訂を指すものだけを並べる。撤回のあとで採用がなければ、撤回した改訂とそれより古い改訂を指すものを並べる。一度も採用がなければ、何も並べない。採用されていない新しい案を指すcopyも並べない。何も変えない。ほかの判断には触れない。
+- 読取：`query`・`export`・`validate`は、読取専用（`mode=ro`）で開く。出力には、権限の違いの注記（`AUTHORITY`）を付ける。
+- 保全：`backup`は、新しく排他的に作ったfileへSQLiteのbackupを書き、確かめる。すでにあるpathは拒否して残す。失敗したときに消すのは、自分で作ったfileだけ。`validate`は、読取専用でintegrity・schema・畳み込みを確かめる。復元して書き込む入口はない。backupは読むだけ（`query`で照会する）。
 
 ## 試験と否定の対照
 
@@ -40,6 +43,7 @@
   - 2つの接続が同じ基準で書いたときの競合と、lockの間は書けないこと。
   - CLIの往復。
 - 否定の対照：triggerを外す、`propose`の基準、`replaces`、digestの照合、確認候補の種類の絞り込み、拒否の記録、暗黙の作成。1つずつ外し、それぞれ試験が落ちることを確かめた（2026-10-19）。
+- 追加分の否定の対照（記録した一時dirを使った）：置き換え済みを候補から外すこと、二重の置き換え、撤回した改訂の再採用、撤回後の候補、読取専用、backupで上書きしないこと、撤回の基準。それぞれ試験が落ちた。
 
 ## 手続きの漏れ（2026-10-19、姫）
 
@@ -49,9 +53,22 @@
 - 否定の対照で控えたfileは、`mktemp -d`の中にあり、すぐに消した。
 - そのpathは記録しておらず、ここであとから作ることもしない。
 
+## 一時作業物:
+
+| 記録項目 | 内容 |
+| --- | --- |
+| パス | `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops158-durable-controls.kSHOe9T6WF`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/ops158-durable-controls.kSHOe9T6WF`） |
+| 作成 | 2026-10-19 22:02 JST、姫 |
+| 用途 | OPS-158「日常接続前の隔離実装範囲」：否定の対照で`decision_store.py`を元に戻すための控え |
+| 状態 | 削除済み（2026-10-19 22:04 JST、姫。否定の対照が終わったため） |
+| 保持条件 | 否定の対照が終わったら削除する。成果は持たない |
+| 証拠の保存先 | 試験結果は手紙の返却とこのREADME |
+
+試験のstoreは、試験ごとのunittestの`TemporaryDirectory`の中に作る。試験の終わりに自動で消えるので、ここには載せない。
+
 ## 限界
 
 - 意味の確かめは人が行う。`record_adoption`は「記録した」であって「正しい」ではない。
-- 訂正・撤回、範囲どうしの関係、出典の自動監視、backup・復元、本番での配置は、扱わない。
+- 訂正の操作、範囲どうしの関係、出典の自動監視、locatorの検査、復元して書き込むこと、UI、本番での配置は、扱わない。
 - 参照は手で登録する。登録されていないcopyは、copyがないことの証拠にならない（D2）。
 - 状態は毎回すべてのイベントを畳み込んで作る。数件の試作だから足りている。

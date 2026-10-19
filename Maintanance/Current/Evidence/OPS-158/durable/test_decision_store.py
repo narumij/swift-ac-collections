@@ -195,6 +195,95 @@ class Contracts(Store):
         self.assertIsNone(busy.execute("SELECT 1 FROM events WHERE op_id = 'w3'").fetchone(), 'nothing half-written while locked')
 
 
+
+class Daily(Store):
+    """日常接続前の隔離実装範囲: copy supersedes, withdrawal, read-only reading, backup and validate."""
+
+    def ref(self, op, rid, rev, did='D1', kind='copy', supersedes=None):
+        req = {'kind': 'add_reference', 'actor': ACTOR, 'ref_id': rid, 'decision': did, 'revision': rev, 'ref_kind': kind, 'locator': SOURCE}
+        if supersedes is not None:
+            req['supersedes'] = supersedes
+        return ds.apply(self.conn, op, req)
+
+    def withdraw(self, op, did='D2', base=1, decided_by='user', source=SOURCE):
+        return ds.apply(self.conn, op, {'kind': 'record_withdrawal', 'actor': ACTOR, 'id': did, 'base_adopted': base, 'decided_by': decided_by, 'source': source})
+
+    def test_superseding_a_checked_copy(self):
+        self.load_fixture()
+        self.propose('p1')
+        self.adopt('a1')
+        self.assertEqual(ds.review_candidates(self.conn, 'D1'), ['R1'])
+        self.ref('s1', 'R1b', 2, supersedes='R1')  # R1 was checked against revision 2
+        self.assertEqual(ds.review_candidates(self.conn, 'D1'), [], 'the checked copy leaves the review list')
+        refs = ds.decision(self.conn, 'D1')['references']
+        self.assertEqual((refs['R1']['supersededBy'], refs['R1']['revision'], refs['R1b']['supersededBy']), ('R1b', 1, None), 'the old reference stays')
+        for op, kwargs, words in (('s2', {'rid': 'R1c', 'rev': 2, 'supersedes': 'R1'}, 'already superseded by R1b'),
+                                  ('s3', {'rid': 'R2b', 'rev': 2, 'supersedes': 'R2'}, 'is not one'),  # R2 is historical-open
+                                  ('s4', {'rid': 'R3b', 'rev': 1, 'did': 'D2', 'supersedes': 'R1b'}, 'is not one'),  # another decision
+                                  ('s5', {'rid': 'R1d', 'rev': 2, 'kind': 'evidence', 'supersedes': 'R1b'}, 'is not one'),
+                                  ('s6', {'rid': 'R1e', 'rev': 2, 'supersedes': 'R404'}, 'is not one')):
+            with self.subTest(op=op), self.assertRaises(ds.Refused) as caught:
+                self.ref(op, **kwargs)
+            self.assertIn(words, str(caught.exception))
+
+    def test_withdrawal_is_recorded_and_never_readopted(self):
+        self.load_fixture()
+        self.ref('c1', 'C1', 1, did='D2')
+        for op, kwargs, words in (('w0', {'base': 2}, 'base_adopted must name the adopted revision 1'), ('w1', {'decided_by': ''}, 'decided_by'),
+                                  ('w2', {'source': {}}, 'source')):
+            with self.subTest(op=op), self.assertRaises(ds.Refused) as caught:
+                self.withdraw(op, **kwargs)
+            self.assertIn(words, str(caught.exception))
+        out = self.withdraw('w3')
+        self.assertIn('grants no authority', out['note'])
+        d = ds.decision(self.conn, 'D2')
+        self.assertEqual((d['adopted'], d['withdrawn'], d['revisions']['1']['withdrawal']['decidedBy']), (None, 1, 'user'))
+        self.assertEqual(d['revisions']['1']['statement'], json.loads(fixtures.RESULT.read_text(encoding='utf-8'))['decisions']['D2']['text'], 'nothing deleted')
+        self.assertEqual(ds.review_candidates(self.conn, 'D2'), ['C1'], 'copies of the withdrawn revision are to be reviewed')
+        with self.assertRaises(ds.Refused) as caught:
+            self.adopt('w4', did='D2', revision=1, replaces=None)
+        self.assertIn('cannot be adopted again', str(caught.exception))
+        with self.assertRaises(ds.Refused):
+            self.withdraw('w5', base=1)  # nothing adopted any more
+        self.propose('w6', did='D2', base=1, statement='a new proposal after the withdrawal')
+        self.adopt('w7', did='D2', revision=2, replaces=None)
+        self.assertEqual((ds.decision(self.conn, 'D2')['adopted'], ds.review_candidates(self.conn, 'D2')), (2, ['C1']))
+
+    def test_reading_is_read_only_with_the_authority_note(self):
+        self.load_fixture()
+        before = self.path.read_bytes()
+        reader = ds.open_store(self.path, readonly=True)
+        self.addCleanup(reader.close)
+        self.assertEqual(ds.decision(reader, 'D1')['authority'], ds.AUTHORITY)
+        with self.assertRaises(sqlite3.OperationalError) as caught:
+            ds.apply(reader, 'ro1', {'kind': 'propose', 'actor': ACTOR, 'id': 'D1', 'base_revision': 1, 'statement': 'x', 'source': SOURCE})
+        self.assertIn('readonly', str(caught.exception))
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_backup_and_validate(self):
+        self.load_fixture()
+        target = self.dir / 'backup.sqlite3'
+        out = ds.backup(self.conn, target)
+        self.assertEqual((out['events'], out['decisions']), (len(fixtures.operations()), ['D1', 'D2', 'D3']))
+        kept = self.dir / 'kept.sqlite3'
+        kept.write_bytes(b'not mine')
+        with self.assertRaises(FileExistsError):
+            ds.backup(self.conn, kept)
+        self.assertEqual(kept.read_bytes(), b'not mine')
+        before = target.read_bytes()
+        reader = ds.open_store(target, readonly=True)
+        self.addCleanup(reader.close)
+        self.assertEqual(ds.decision(reader, 'D3')['adopted'], 1, 'a backup is queried read-only')
+        self.assertEqual(target.read_bytes(), before)
+        broken = self.dir / 'broken.sqlite3'
+        broken.write_bytes(before[:len(before) // 2])
+        foreign = self.dir / 'foreign.sqlite3'
+        sqlite3.connect(foreign).execute('CREATE TABLE t (x)').connection.close()
+        for bad in (broken, foreign, kept):
+            with self.subTest(bad=bad.name), self.assertRaises(ds.NotADecisionStore):
+                ds.validate(bad)
+
+
 class Cli(Store):
     def cli(self, *args, stdin=None):
         run = subprocess.run([sys.executable, '-B', str(HERE / 'decision_cli.py'), *map(str, args)], input=stdin, capture_output=True, text=True, timeout=60)
@@ -220,7 +309,17 @@ class Cli(Store):
         code, out = self.cli('query', '--db', fresh, '--id', 'D1', '--review')
         self.assertEqual((code, out['result']), (0, []))
         code, out = self.cli('export', '--db', fresh)
-        self.assertEqual([e['status'] for e in out['result']][-2:], ['done', 'refused'])
+        self.assertEqual(([e['status'] for e in out['result']][-2:], out['authority']), (['done', 'refused'], ds.AUTHORITY))
+        before = fresh.read_bytes()
+        self.assertEqual(self.cli('query', '--db', fresh, '--id', 'D1')[1]['authority'], ds.AUTHORITY)
+        self.assertEqual(fresh.read_bytes(), before, 'query and export do not write')
+        code, out = self.cli('backup', '--db', fresh, '--to', self.dir / 'cli-backup.sqlite3')
+        self.assertEqual((code, out['result']['decisions']), (0, ['D1', 'D2', 'D3']))
+        self.assertEqual(self.cli('backup', '--db', fresh, '--to', self.dir / 'cli-backup.sqlite3')[0], 1, 'never overwrites')
+        self.assertEqual(self.cli('validate', '--db', self.dir / 'cli-backup.sqlite3')[0], 0)
+        (self.dir / 'junk.sqlite3').write_bytes(b'junk')
+        self.assertEqual(self.cli('validate', '--db', self.dir / 'junk.sqlite3')[0], 2)
+        self.assertEqual(self.cli('validate', '--db', self.dir / 'none.sqlite3')[0], 3)
 
 
 if __name__ == '__main__':

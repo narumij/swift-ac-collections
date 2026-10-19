@@ -5,6 +5,10 @@
   apply   --db PATH --op ID --request FILE|-    one operation (see decision_store); the same --op replays
   query   --db PATH --id ID [--review]          one decision (all revisions, references); --review: copy review candidates
   export  --db PATH                             every event in order (for review)
+  backup  --db PATH --to NEW_PATH               a validated SQLite backup into a new file (an existing path is refused)
+  validate --db PATH                            integrity, schema and fold of a store or backup, read-only
+query, export and validate open the store read-only and print the authority note. A backup is only read (query it);
+there is no restore writer.
 
 Output: one JSON object on stdout with "ok" and "status". Exit: 0 ok/replayed, 1 refused, 2 malformed,
 3 not found (no store at the path, or no such decision), 5 operation ID used with a different request.
@@ -38,7 +42,8 @@ def load(source):
 def main(argv):
     ap = argparse.ArgumentParser(prog='decision_cli.py', description=__doc__.split('\n')[0])
     sub = ap.add_subparsers(dest='command', required=True)
-    for name, extra in (('init', []), ('apply', [('--op', True), ('--request', True)]), ('query', [('--id', True)]), ('export', [])):
+    for name, extra in (('init', []), ('apply', [('--op', True), ('--request', True)]), ('query', [('--id', True)]), ('export', []),
+                        ('backup', [('--to', True)]), ('validate', [])):
         p = sub.add_parser(name)
         p.add_argument('--db', required=True)
         for flag, required in extra:
@@ -56,8 +61,15 @@ def main(argv):
             return emit('refused', error=f'{args.db} already exists; init never overwrites')
         except OSError as error:
             return emit('malformed', error=str(error))
+    if args.command == 'validate':
+        try:
+            return emit('ok', result=ds.validate(args.db), authority=ds.AUTHORITY)
+        except FileNotFoundError as error:
+            return emit('notFound', error=str(error))
+        except ds.NotADecisionStore as error:
+            return emit('malformed', error=str(error))
     try:
-        conn = ds.open_store(args.db)
+        conn = ds.open_store(args.db, readonly=args.command in ('query', 'export'))
     except FileNotFoundError as error:
         return emit('notFound', error=str(error))
     except ds.NotADecisionStore as error:
@@ -74,8 +86,13 @@ def main(argv):
                 return emit('malformed', error=str(error))
         if args.command == 'query':
             value = ds.review_candidates(conn, args.id) if args.review else ds.decision(conn, args.id)
-            return emit('notFound', error=f'no decision {args.id}') if value is None else emit('ok', result=value)
-        return emit('ok', result=ds.export(conn))
+            return emit('notFound', error=f'no decision {args.id}') if value is None else emit('ok', result=value, authority=ds.AUTHORITY)
+        if args.command == 'backup':
+            try:
+                return emit('ok', result=ds.backup(conn, args.to))
+            except FileExistsError:
+                return emit('refused', error=f'{args.to} already exists; a backup never overwrites')
+        return emit('ok', result=ds.export(conn), authority=ds.AUTHORITY)
     finally:
         conn.close()
 

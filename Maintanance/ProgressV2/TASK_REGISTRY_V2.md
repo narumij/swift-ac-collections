@@ -112,7 +112,7 @@
 | `OPS-155` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] メンバーへ画面からPINGを送る | ユーザー実装依頼。対象/ID/本人ACKで疎通を確認、自動起動なし。ユーザーが画面実装を後回しにし、連絡DBを優先。基盤のみ部分実装 | `Maintanance/Current/STUDIO_MEMBER_PING.md` |
 | `OPS-156` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] サーバー専用SQLiteへ通信記録を保存 | ユーザー実装依頼。連絡原文/版/応答DBと軽量一覧・差分待機を5360265b/72ca7731で受入。H32〜35閲覧/全ページ取得を受入。ユーザー再起動後に連絡DBの待機接続・本人往復疎通・closeを確認、PING画面は保留 | `Maintanance/Current/STUDIO_COMMUNICATION_STORE.md` |
 | `OPS-157` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry Studioのアーキテクチャ画像 | ユーザー依頼。現行実装と作業中/予定を区別した日本語の横長図、編集元/PNG/README入口。SVG/PNGとREADME入口を画像確認して技術受入。作業ツリー図、実稼働とは区別。ユーザー継続commit承認に基づき成果を保存 | `Maintanance/Current/STUDIO_ARCHITECTURE_IMAGE.md` |
-| `OPS-158` | `ACTIVE` | Astra | [DISCOVERY] 判断と判断キャッシュのDB管理を検討 | ユーザー依頼の検討のみ。元判断・依存つなぎ替え・コピーの更新境界と少数試行案。連絡DBを優先、移行実装なし | `Maintanance/Current/DECISION_DB_STUDY.md` |
+| `OPS-158` | `ACTIVE` | Astra | [DISCOVERY] 判断と判断キャッシュのDB管理を検討 | Registry V3本番切替と基本確認の後に再開。元判断/依存/コピーの更新境界と少数試行案を検討。判断DBの実移行は別 | `Maintanance/Current/DECISION_DB_STUDY.md` |
 | `OPS-159` | `DONE` | Astra調整 / 姫 | [DISCOVERY] Task Registry V3のDB境界と移行照合を設計する | 設計調査を完了。隔離読取実験OPS-160へ引渡し。実データ移行なし | `Maintanance/Current/TASK_REGISTRY_V3_DESIGN.md` |
 | `OPS-160` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry V3の隔離DB読取実験 | 隔離読取実験を補正付き受入。Astra再実行20試験成功。構造/順序/現在範囲/境界参照を確認。完全移行・更新API・実DB変更は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_READ_EXPERIMENT.md` |
 | `OPS-161` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3読取属性と更新契約の隔離試験 | 読取27/更新19試験をAstra再実行して受入。再送競合補正・使用済み番号のダミー予約を確認。本番接続/完全移行は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_CONTRACT_EXPERIMENT.md` |
@@ -121,6 +121,7 @@
 | `OPS-164` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3世代・変更履歴・backup復元の隔離試行 | 隔離試行受入済み。全79試験成功。新世代復元・書込停止・検証bytes固定・既存出力保護を確認。実運用の最新採番境界と再開手順は未決、本番切替は別 | `Maintanance/Current/TASK_REGISTRY_V3_RECOVERY_EXPERIMENT.md` |
 | `OPS-165` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3とStudioの隔離接続 | 単一task編集の隔離関数経路を補正付き受入。Astra全98試験成功。HTTP/実ブラウザと構造編集は未対応、本番切替なし | `Maintanance/Current/TASK_REGISTRY_V3_STUDIO_ADAPTER.md` |
 | `OPS-166` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3隔離HTTP・ブラウザ試行 | 隔離WebKit経路受入。Astra全105試験成功、保存とDB反映の分離/再開/競合/再送を確認。本番切替・広範な編集は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_BROWSER_EXPERIMENT.md` |
+| `OPS-167` | `ACTIVE` | Astra調整 / 姫 | [DISCOVERY] V3切替前の残差とリハーサルを設計 | 継続指示。本番機能の欠落/未反映保存/採番/復旧条件を整理。本番変更なし | `Maintanance/Current/TASK_REGISTRY_V3_CUTOVER_REHEARSAL.md` |
 | `OPS-117` | `WAITING_USER` | 姫（レビュー） / Astra（受入） | [EXECUTION] 姫の作業イベント更新ルールを短くレビューする | 2026-10-18ユーザー承認。指定2節のタイミング・権限・待機・返却境界を確認。レビュー3指摘をAstra受入、姫への依頼終了。ACKとcommit待ちの表記を補正。待機中の正式依頼受信後の着手条件はユーザー判断待ち。実装変更なし | `Maintanance/Current/CLAUDE_ACTIVITY_RULE_REVIEW.md` |
 | `OPS-116` | `WAITING_USER` | Claude（姫・原因調査と修正） / Astra（受入） | [EXECUTION] 見取り図の全体fallbackによる骨格配置崩れを修正する | 2026-10-18ユーザー依頼。b9300017後の表示崩れを再現し、原因を確定して限定修正。接続・状態・計画を変えず、骨格・既存配置要求を保持。a810e4f4の修正をAstra技術受入。旧版fallback再現・新版解消とsync/verify成功。技術受入記録は承認済み範囲でcommit。Safari表示確認待ち | `Maintanance/Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md` |
 | `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |
@@ -371,6 +372,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-164` |
 | `OPS-048` | `OPS-165` |
 | `OPS-048` | `OPS-166` |
+| `OPS-048` | `OPS-167` |
 | `DOC-030` | `OPS-058` |
 | `OPS-058` | `OPS-068` |
 | `OPS-044` | `OPS-067` |

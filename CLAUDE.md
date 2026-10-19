@@ -104,6 +104,22 @@ updates, and final reports.
 To reduce usage, use English by default for internal instructions and coordinator-to-Claude
 requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
 
+## First response to a new request
+
+Start with the smallest useful response, about ten lines:
+the purpose in the user's words, the simplest working form, and what you actually checked.
+Make assumptions that materially affect the result explicit, especially dependencies
+on existing systems. Distinguish checked facts from assumptions.
+Do not add detailed design, option lists, or unnecessary decision requests.
+
+Before sending, review it as the receiver: do names match their meaning, does the
+proposal meet the stated purpose, and can it be assessed without further investigation?
+Resolve checkable uncertainties yourself. Do not leave the receiver to reconstruct
+or repair the proposal, or label settled matters and implementation choices as user decisions.
+
+Expand after the premise is established. If the conversation already establishes it,
+proceed within the authorized scope without asking for confirmation again.
+
 ## Work Managed Through the Communication DB
 
 Use the selected letter for receipt and return, following the

@@ -1420,3 +1420,18 @@ Python24試験とletters VMを再実行PASS。独立確認が発見した旧curs
 ユーザー再起動後、API経由で送信者初版を登録。LTR-20261019-314BE6E2534C46B4B245E8BF27410426で送信→姫本人のv1受領→着手→返答→Astraの一覧検出/本文照合→closeを確認。代理0、旧jsonlにDB依頼の重複なし。姫は手元待機のwatch接続を返却。新規連絡はDB経路へ移せる。既存の旧経路の依頼は旧経路で閉じる。
 
 ユーザーはAI間連絡の英語使用を承認。連絡原文は英語可、人間向け報告と画面要点は日本語を維持する。PINGの旧経路切替・画面は引き続き保留で、OPS156全体の移行完了とはしない。
+
+## 姫：旧「依頼中」欄の削除（ユーザー直接依頼、2026-10-19）
+採番待ち：`CP-20261019-001`（`Maintanance/CLAUDE_PENDING_TASKS.md`）。OPS-156への統合か別IDかは調整担当が決める。
+ユーザー「そもそも欄自体を削除しようか。作業だしな、区分としては」「じゃ、それやって」。旧依頼票（CLAUDE_TASK.md・FABLE_TASK.md）から作る「依頼中」欄は、依頼の終了を見ず、未完taskの古い節を出し続けていた（6件すべて返却・受入済み）。依頼は作業の区分で、連絡DBの閲覧が作業側にある。欄と生成を削除する。採番待ちは残す。commitしない。
+
+一時作業物:
+- `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-156-request-panel.KTFAfQBaoL`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-156-request-panel.KTFAfQBaoL`）・姫・2026-10-19 23:13・変更前後のStudio出力（V3 DBのbackup写しからのsync）と試験サーバー・状態「削除済み」（2026-10-19、結果確認後）
+
+変更：`index.template.html`の欄・`renderRequests()`・呼び出し・専用CSS2行・リセット確認文の「依頼中」を削除。`build-pending.py`の依頼票読取と`requests`出力を削除（採番待ちは不変）。`RegistryApp/README.md:292`へ削除の一行を追記。
+
+検証（本番DBはread-onlyでbackup写しを取り、一時出力へsync。8088・本番出力には触れていない）：
+- `sync.py --v3-db`と`verify_v3.cjs`：変更前後ともPASS。
+- `test-*.cjs` 23本：変更前後とも全0終了で一致。`v3/test_serve_v3_mode.py` 12件OK。
+- headless WebKitで一時出力を表示：変更前は欄あり・表示、task-shell 135、エラー0。変更後は欄なし、採番待ち「0件」表示、task-shell 129（欄の6件分）、エラー0。
+- 現在の本番出力`Cache/RegistryStudio`は再生成していない。次の通常のsync・再起動で反映される。

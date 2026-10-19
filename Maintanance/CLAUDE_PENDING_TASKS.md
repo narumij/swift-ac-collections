@@ -43,6 +43,119 @@
 
 ## 採番待ち
 
+### `CP-20261019-006` — Studioの表示・経路の接続もれ全点検（報告）
+
+- queue状態: `AWAITING_COORDINATOR`
+- 発見元・ユーザー指示: 2026-10-19、ユーザー「他に接続もれがないか、全点検してリストアップして、報告の未採番追加しといて」。
+- 種別候補: `DISCOVERY`（報告のみ。修正なし）
+- 方法: serve.pyの固定route全部と、画面テンプレートがそれぞれを呼ぶ回数、埋め込みseedを機械で数え、各routeの読む先をコードで確かめた。DBは読み取り専用。スクリプトと出力は`Current/Evidence/CP-20261019-006/`（`audit_sources.py`・`audit_sources.out.txt`）。他の利用者は`comm.py`・試験・正本のgrepで当てた。
+- 結果A（つながっている）: 構造のseedと`/registry.json`（V3 DB、read-only）、`/workspace`（V3保存）、連絡の一覧・本文（`/letters?`・`/letters/<id>`→approvals.sqlite3のletters）、`/commit-approvals`（approvals.sqlite3）、`/sync`・`/save`・`/server-status`。文書の束（`documents`）はファイルが正本で設計どおり。
+- 結果B（既に記録済み）: 依頼中（001、削除済み）、採番待ち（002）、メンバー状態（003）、最近の作業の活動と待機完了（004）、承認レーンと実commit（005）。
+- 結果C（今回の新規。旧経路が残る）:
+  - C1 「作業イベントの履歴」帯：`/activity-events`→`Activity/events.jsonl`。003・004と同じ出どころの別の欄。連絡DBの事象は出ない。004へ統合候補。
+  - C2 継続確認：`/continuity`（`serve.py:149`）→`Activity/continuity.json`（`continuity.py:15`、OPS-139）。ファイルで、連絡DBと別。003へ統合候補。
+  - C3 「疎通確認（動作確認専用）」欄：`/approval-probe`→`Approvals/probe.sqlite3`（承認の形での疎通、7件）。実運用の疎通は連絡DBで確認済み（H-20261019-36受入）。残すか外すかの判断が必要。
+  - C4 PING送信の宛先一覧：`serve.py:439`が`events.jsonl`の`owner`から作る。連絡DBの宛先（`/letters-senders`等）と別。PINGの旧経路切替はOPS-156で保留中、同所へ統合候補。
+- 結果D（画面が読まないroute。意図は未確認）:
+  - D1 `/activity-commits`（`serve.py:103`、git logの直近30件）：画面は`kind`を`['events']`だけ回す（`index.template.html:1301`）。当初設計（`REGISTRY_STUDIO_ACTIVITY_TIMELINE.md`）は下段にcommitを出す。外した経緯は未確認。005の材料（直接許可のcommitを出す出どころ）になりうる。
+  - D2 `/work-progress`（`serve.py:76`）：画面からの参照0、出力に`work-progress.json`なし。試験と正本の記述だけ残る。廃止か未接続かは未確認。
+  - D3 `/comm-messages`・`/studio-operations`・`/approvals-cli`・`/comm-ping`・`/comm-ack`・`/comm-cutover`・`/letters-send`等：画面からは0、`comm.py`と試験が使う。CLI用で設計どおりと見られる（未確認）。
+  - D4 判断DB（`RegistryApp/decisions`、Data/decision-assist.sqlite3）：Studioに表示なし。OPS-158ではCLIでの日常利用として配備。設計どおりと見られる。
+- 対象外: 修正、DB・schema変更、本番8088・本番出力・ユーザー画面の操作。CLI・AI側の手順文書の経路は点検範囲外（画面とserverのrouteに限った）。
+- 担当候補・受入担当: 姫（点検）／調整担当（受入・C1〜C4とD1・D2の採否、既存003〜005への統合）
+- 停止条件: 点検の返却で止まる。
+- 成果・検証: 実施済み（上記）。数え方の限界：文字列での照合なので、動的に組むroute名は`/activity-`の1件だけ手で足した。literalでないfetch呼び出し4か所（`fetchJson(letterListQuery)`・`fetch(path)`・`fetchRecord(endpoint)`・`fetchRecord()`）は手で読み、既出の`/letters?`・承認・`/continuity`に当たることを確かめた。
+- Codex reconciliation: 未処理
+
+共通の発見元（003〜005）: 2026-10-19、CP-20261019-001の後にユーザーがStudio作業側を順に点検。「作業のメンバー状態もDBとつながってなさそうだね」「最近の作業もつながってないね」「コミット事前承認もつながってないね」「作業内訳を添えて、接続依頼をそれぞれについて未採番に追加しといて」。002と同じく、V3・連絡DBへの切替で表示の出どころが旧経路に残った群。内訳は姫の見立てで、担当・採否は調整担当が決める。
+
+### `CP-20261019-005` — 「最近の作業」とコミット事前承認レーンを実際のcommit運用へ接続
+
+- queue状態: `CANDIDATE`
+- 発見元・ユーザー指示: 上記共通。姫の確認（読み取り専用）：画面は`/commit-approvals`→`Approvals/approvals.sqlite3`を読み、配線は有効（`serve.py:283`）。ただし最後の承認記録は10-19 06:03 JSTのfinishで、47件ほぼ使用済み。同日21:57〜22:59の12 commitは承認レーンを通らず、ユーザーの直接許可（AGENTS.md:78の外）で行われ、画面に出ない。承認とV3 task・実commitの照合有無は未確認。
+- 種別候補: `DECISION`→`EXECUTION`（直接許可のcommitを画面に出すかはユーザー判断）
+- 作業内訳（案）:
+  1. 現状の固定：承認の各状態と`commitSha`の記録経路、レーンの表示条件を読む。照合の有無を確かめる。
+  2. 判断材料：直接許可のcommitを表示に含めるか（含めるなら出どころはgit logか、記録用の新しい事象か）、承認レーンを今後も使うかをユーザーへ返す。
+  3. 決定後の実装：表示の出どころを追加／整理し、承認DBの意味（承認≠実行）を保つ。
+  4. 試験：一時DB・試験サーバーで、承認経由・直接許可・混在の3通りを確認。8088・本番DBに触れない。
+- 対象外: AGENTS.md:78の変更、承認DBのschema変更（判断前）、commit・push。
+- 完了条件: 判断が記録され、決定どおりの表示が試験で確認される。
+- 前提・既存task候補: OPS-114／OPS-119（承認・作業レーン）系、OPS-156（approvals.sqlite3に連絡の表も同居）。
+- 担当候補・受入担当: 未定（ユーザー判断が先）
+- 停止条件: 判断前に実装しない。
+- 成果・検証: 未着手
+- Codex reconciliation: 未処理
+
+### `CP-20261019-004` — 「最近の作業」の活動と「待機完了」を連絡DBへ接続
+
+- queue状態: `CANDIDATE`
+- 発見元・ユーザー指示: 上記共通。姫の確認：欄は「直近200件の活動＋未完の承認」から作られ、活動は旧経路`Activity/events.jsonl`（`/activity-events`）。連絡DBの受領・担当中・返答済みは入らない。「待機完了」ボタンは`/activity-wake`へ送る（中身は未確認）。
+- 種別候補: `EXECUTION`（接続方法の小判断を含む）
+- 作業内訳（案）:
+  1. 現状の固定：`workLaneItems`の入力と、`/activity-wake`が書く先・誰が読むかを確かめ、既存試験（`test-work-lane.cjs`等）を控える。
+  2. 対応表：連絡DBの状態（sent/received/started/returned/declined/withdrawn/stopped/closed）を作業カードの段階へ写す案を作る。旧活動を残すか（併記・置換）を調整担当へ返す。
+  3. 実装：レーンが`/letters?brief=1`も読む。待機完了は連絡DBの連絡（停止要請や専用kind）へ寄せるかを2の判断に従う。
+  4. 試験：一時DBで状態ごとのカードを確認し、既存試験の差分を説明する。
+- 対象外: 連絡DBの状態遷移の変更、メンバー状態（003）、承認（005）。
+- 完了条件: 連絡DBでの受領・着手・返答がレーンに出る。待機完了の経路が決定どおり。
+- 前提・既存task候補: OPS-156（PINGの旧経路切替・画面は保留中）、OPS-119。003と同時に行うと重複が減る。
+- 担当候補・受入担当: 未定
+- 停止条件: 2の判断がない間は3へ進まない。
+- 成果・検証: 未着手
+- Codex reconciliation: 未処理
+
+### `CP-20261019-003` — 「メンバー状態」を連絡DBへ接続
+
+- queue状態: `CANDIDATE`
+- 発見元・ユーザー指示: 上記共通。姫の確認：ランプは`/activity-events`→`Activity/events.jsonl`（`activity.py:12`）から作られ、連絡DBの状態を読まない。姫の最後の記録は22:26のACK WAKE…OPS158-CLOSEで、以後の作業はランプに出ない。
+- 種別候補: `EXECUTION`（出どころの小判断を含む）
+- 作業内訳（案）:
+  1. 現状の固定：`createMemberLampView`の入力・「新着」「継続確認」の条件と既存試験（`test-view-model-members.cjs`）を控える。
+  2. 出どころの案：本人申告（旧活動）と連絡DBの宛先ごとの開いた連絡（`/letters-inbox?owner=`）をどう合わせるか。本人申告を連絡DBへ移すかは調整担当へ返す。
+  3. 実装：ランプが連絡DBも読む。読めないときの表示を決める。
+  4. 試験：一時DBで、担当中・返答済み・連絡なしのランプを確認。
+- 対象外: 連絡DBの仕様変更、最近の作業（004）。
+- 完了条件: 連絡DBで受領・着手した担当がランプに反映される。
+- 前提・既存task候補: OPS-156、OPS-151（開始待ち）。004と共通の読取部品にできる。
+- 担当候補・受入担当: 未定
+- 停止条件: 2の判断がない間は3へ進まない。
+- 成果・検証: 未着手
+- Codex reconciliation: 未処理
+
+### `CP-20261019-002` — 採番待ちqueueをV3 DBへ移す機能の検討
+
+- queue状態: `CANDIDATE`
+- 発見元・ユーザー指示: 2026-10-19、CP-20261019-001の作業中に、V3 DBに採番待ちの表がないと判明（表は`proposal_map`〈Studioの追加案と正式IDの対応、0件〉と`id_allocations`等のみ）。画面の「採番待ち」は今も`build-pending.py`がMarkdownの`CLAUDE_PENDING_TASKS.md`・`FABLE_PENDING_TASKS.md`から作る。ユーザー「もしかして、DBに採番待ち機能ないの？ｗ」「今の採番まちに、採番待ち機能をDBに追加する検討を依頼って追加しておいてｗ」。
+- 種別候補: `DECISION`（検討。実装は別判断）
+- 対象範囲: 採番待ちをDBで持つか、持つならどのDB（registry／連絡／別）・書込み経路（CLI）・既存Markdown queueの扱い・Studio表示の出どころを検討し、案を返す。
+- 作業内訳（案、10-19追記）:
+  1. 現状の固定：queueの項目・状態（CANDIDATE〜RECONCILED）・`build-pending.py`の読取規則、V3の`proposal_map`との違いを書き出す。
+  2. 置き場の比較：registry DB（採番と同じ所）／approvals.sqlite3（連絡と同じ所）／Markdown維持の3案で、書込み担当・CLI・backup・正本の関係を並べる。
+  3. 移行案：既存8＋本日分の扱い（写す・凍結・並行しない）と、`CLAUDE_PENDING_TASKS.md`・`FABLE_PENDING_TASKS.md`の役割を案にする。
+  4. 返却：採否の材料を正本へ。実装は別判断。
+- 対象外: 実装、DBのschema変更、既存queueの移行・削除。
+- 完了条件: 検討結果（採否の材料と案）が正本に残り、採否はユーザー／調整担当が決める。
+- 前提・既存task候補: V3 Registry（OPS-167系）、連絡DB（OPS-156）。CP-20261019-001と同じ「切替で旧経路に残った表示」。
+- 担当候補・受入担当: 未定（ユーザー／調整担当が割当）
+- 停止条件: 検討の割当がない間は着手しない。
+- 成果・検証: 未着手
+- Codex reconciliation: 未処理
+
+### `CP-20261019-001` — Studioの旧「依頼中」欄の削除
+
+- queue状態: `AWAITING_COORDINATOR`
+- 発見元・ユーザー指示: 2026-10-19、ユーザー「依頼中が6件みえるんだけど、実際どうなんだろ？」→調査で6件とも返却・受入済みと判明。「そもそも欄自体を削除しようか。作業だしな、区分としては」「じゃ、それやって」。Astraの使用量に余裕がないため姫が実施。
+- 種別候補: `EXECUTION`
+- 対象範囲: `RegistryApp/index.template.html`（欄・`renderRequests()`・呼び出し・専用CSS・リセット確認文の語）、`RegistryApp/build-pending.py`（依頼票の読取と`requests`出力）、`RegistryApp/README.md:292`へ一行。
+- 対象外: 採番待ちの表示、連絡DB、本番DB・8088・本番出力への書込み、commit。
+- 完了条件: 欄が生成されず、採番待ちと既存試験が変わらない。
+- 前提・既存task候補: OPS-156（連絡DB。依頼は連絡で見る）への統合候補。統合か別IDかは調整担当が決める。
+- 担当候補・受入担当: 姫（実施）／調整担当（受入）
+- 停止条件: 修正が2つ続く、または採番待ち・既存試験が変わる。
+- 成果・検証: 実施済み。詳細と一時作業物の記録（削除済み）は`Current/STUDIO_COMMUNICATION_STORE.md`末尾「姫：旧『依頼中』欄の削除」。V3 sync・`verify_v3.cjs`・`test-*.cjs` 23本・`v3/test_serve_v3_mode.py` 12件が変更前後で一致、headless WebKitで欄なし・エラー0。本番画面はユーザーの「正本から新しく始める」で反映を確認（欄が消え、採番待ち0件。0件は本queueの全8件がRECONCILEDで正しい）。未commit。
+- Codex reconciliation: 未処理
+
 ### `CP-20261018-005` — Registry Studio ユーザビリティ改善案（姫）
 
 - queue状態: `RECONCILED`（OPS-125へ正式接続、提案資料受領・実装なし）

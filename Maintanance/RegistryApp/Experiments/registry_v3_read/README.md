@@ -489,3 +489,42 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - **受入での補正**：
   - 差し替える前に、受入済みの取り込み（`parse_registry`・`parse_rules`）で型板を確かめる。行の形が違うものや、キーの重複は拒否する。黙って直したり捨てたりはしない。
   - 全体の`equal`は、表と構造が等しいことに加えて、恒久の文とDBの印が一致し、退役と隠した辺の数が合うことも求める。
+
+## OPS-176：新しい版とカード、正本の文書、提案の確かめ（`plan:milestones`の拡張と`card-condition:<id>`）
+
+- **新しい版**：Studioの計画の道具（P5）で、追加する位置（`#planAddVersionAfter`）を選ぶ。選んだ位置は、新しいSTARTの`planPosition`に残る。
+  - adapterは、計画の中のSTART/ENDから新しい版を読む。位置がなければ`version-position`の確認待ちで、何も書かない。
+  - 書込（`apply_plan`の`versionsBase`・`newVersions`）は、今の版の順序そのものを基準にする。違えば競合。START-/END-のnodeを足し、版の位置を振り直す。DBの版の順序が正（利用者の決定）。
+  - ゲートは作らない。骨格は、版の中の鎖、END→ゲート、基準にあったゲート→STARTの線から導く。
+- **新しいカード**：計画の中の`draft-ms-N`。正式に登録する前に、正本の文書を用意しておく（利用者の決定）。
+  - `resolutions.plan.newCards`で、draftごとに`{id, document}`を明示する。文書がなければ確認待ち（カードは提案のまま）。
+  - 文書は`document_root`の下から読む。宣言するIDか名前が違えば拒否する。IDは、今のnodeとも退役したIDとも重ねない。
+  - 書込は`newCards`に`documentEvidence {path, sha256}`を残す。結果の`newCards`は、draftから正式なIDへの対応。
+  - `draftMap`は一対一（受入での補正）。キーは`draft-ms-N`で、新しいカードと同じ数。2つのdraftを1つのカードへ写すことはできない。
+- **文書の置き場**（受入での補正）：明示したときだけ読む。
+  - CLIの`apply-groups --document-root DIR`。ディレクトリでなければ入力の誤り。cwdやrepositoryへの代わりの読み先はない。
+  - 隔離serverは`V3StudioServer(db, saves, document_root=None)`。試験では、TemporaryDirectoryの中に用意した文書を渡す。
+  - どちらも、渡さなければ、新しいカードと提案の確かめは確認待ちのまま。
+- **draftのタスク → draftのカード**：提案の群（`proposal:<draft>`）は、`plan:milestones`の操作の記録にある対応で`draft-ms-N`を置き換える。
+  - 計画がまだ適用されていなければ、確認待ち。同じ呼び出しで、計画を先に適用する（順：remove, pair, plan, condition, add, proposal, task）。
+  - 計画が成功して提案が拒否されたら、完了ではない。拒否は記録に残るので、直すときは新しい保存にする。
+- **提案の確かめ**（`card-condition:<id>`、`acknowledge_document_proposal`）：`planCondition`の文は、DBのデータにしない。
+  - 文書があるだけでは満たさない。`resolutions.documents`で`{document, evidence}`を明示して確かめる。
+  - 記録には、文のdigestと、文書のpathとsha256が残る。同じ保存で再送すれば再送。同じidentityで文が変われば`changedContent`。
+- **試験**（`test_new_plan_items.py`、14件。保存はharnessの実際の編集欄と計画の道具で作る）：
+  - draftの対応：同じ正式IDを2つのdraftに選べば保存全体の拒否。書込に直接、一対一でない`draftMap`や形の違うキーを渡せば拒否。
+  - CLI：`--document-root`がなければ、cwdに文書があっても確認待ち。ないディレクトリは入力の誤り。渡せば登録。
+  - カード：文書を待ってから登録する。ID違いを拒否。IDの再利用を拒否（カード・タスク・START）。古い基準。同じ系列の二重登録。
+  - 版：選んだ位置。位置がなければ確認待ち。古い版の順序。新しい版の中のカード。
+  - draftからdraft：計画のあとで提案。計画は成功、提案は拒否なら、完了ではない。
+  - 提案の確かめ：明示して記録、再送、文が変われば拒否。文書がなければ確認待ち。
+  - 否定の対照：文書の確かめ・ID違い・版の順序・位置・確かめの文書を1つずつ外し、それぞれ試験が落ちることを確かめた。
+    受入での補正のあとに、`draftMap`の一対一・serverの文書の置き場・CLIのflag・cwdへの代わりの読み先も、同じように確かめた。
+- **ブラウザの試験**（`test_new_plan_browser.py`、3件、WebKit）：
+  - 計画の道具で版（位置を選ぶ）とカードを足す → ページの保存 → 新しい文脈で再開 → 適用は確認待ち → 文書がなければ確認待ちでDBは変わらない → 一時の文書を用意して適用 → 最新のexport → 再送。
+  - 提案の確かめ：文書があるだけでは確認待ち。明示して確かめ、再送。
+  - 文書の置き場がないserverでは確認待ち。
+  - driverの`tool`は、閉じた枠の中の欄に値を入れ、ページ自身のinput/changeの処理を起こしてから、道具のボタンを押す。
+- **限界**：
+  - 文書はファイルシステムにあるので、SQLiteの原子性の外にある。根拠は、adapterが確かめた時点のもの（ロックではない）。
+  - ゲート、focus、`recordedDone`、版の改名と削除は扱わない。

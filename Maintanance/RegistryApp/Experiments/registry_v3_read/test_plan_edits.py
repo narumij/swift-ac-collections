@@ -141,18 +141,14 @@ class Boundaries(Plan):
         self.assertIn('link-add:MS-A1->MS-B1', [g['groupId'] for g in sa.plan_groups(self.conn, other)], 'a line with another source is an ordinary link change')
 
     def test_out_of_scope_plan_edits_are_unsupported(self):
+        # OPS-176 changed two cases: planCondition is now a separate document proposal, and a planned draft-ms card a new
+        # card waiting for its document (test_new_plan_items.py). recordedDone and gate changes stay unsupported.
         save = self.stored([{'select': 'MS-A2'}, {'set': {'planItem': 'A の次', 'planCondition': '到達条件の案'}}, {'press': '名前・条件を適用'}], 'S-1')
-        g = self.plan_group(save)
-        self.assertEqual(g['status'], 'unsupported')
-        self.assertIn('planCondition', g['unsupported'][0])
-        before = self.snapshot()
-        out = sa.apply_groups(self.conn, save, [PLAN], ACTOR, EVIDENCE)
-        self.assertEqual(self.ids(out, 'refused'), [PLAN])
-        self.assertEqual(self.snapshot(), before)
+        groups = {g['groupId']: g for g in sa.plan_groups(self.conn, save)}
+        self.assertNotIn(PLAN, groups, 'no structural plan change')
+        self.assertEqual((groups['card-condition:MS-A2']['status'], groups['card-condition:MS-A2']['text']), ('pending', '到達条件の案'))
         for change, words in ((lambda d: next(m for m in d['milestones'] if m['id'] == 'MS-A1').update(recordedDone=False), 'recordedDone'),
-                              (lambda d: next(m for m in d['milestones'] if m['id'] == 'GATE-0.2.0').update(item='改名'), 'gates, versions and focus are fixed'),
-                              (lambda d: d['milestones'].append({'id': 'draft-ms-1', 'kind': 'milestone', 'item': '新', 'state': 'ACTIVE', 'owner': '', 'condition': '',
-                                                                 'detail': '', 'raw': '', 'gate': 'Maintanance/Milestones/0.1.0/DRAFT_MS_1.md', 'planned': True}), 'new or removed')):
+                              (lambda d: next(m for m in d['milestones'] if m['id'] == 'GATE-0.2.0').update(item='改名'), 'gates and existing versions are fixed')):
             crafted = self.stored([], 'S-x')
             change(crafted)
             g = self.plan_group(crafted)
@@ -175,7 +171,7 @@ class Boundaries(Plan):
         with self.assertRaises(w3.Refused) as caught:
             w3.apply(self.conn, 'direct', {'kind': 'apply_plan', 'cardsBase': {'0.1.0': ['MS-A1', 'MS-A2']}, 'cards': {'0.1.0': ['MS-A2', 'MS-A1', 'MS-B1']},
                                            'generation': w3.generation(self.conn), 'actor': ACTOR, 'evidence': []})
-        self.assertIn('no card is added or removed', str(caught.exception))
+        self.assertIn('nothing else is added or removed', str(caught.exception))
 
     def test_single_task_path_still_rejects_plans(self):
         save = self.stored([{'select': 'MS-A1'}, {'press': '後へ'}], 'S-1')

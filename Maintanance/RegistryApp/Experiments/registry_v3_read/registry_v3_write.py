@@ -634,28 +634,68 @@ STRUCTURAL['register_proposal'] = _register_proposal
 
 
 # ---- OPS-172 K5 (existing cards only): one atomic plan change -----------------------------------------------------------
+VERSION_NAME = re.compile(r'[0-9A-Za-z][0-9A-Za-z.\-]*')  # the Studio planAddVersion rule
+CARD_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]*')
+DRAFT_CARD = re.compile(r'draft-ms-[1-9]\d*')  # a Studio draft card (studio_adapter.DRAFT_CARD)
+
+
 def _apply_plan(conn, operation_id, req, hook):
-    """Reorder and move EXISTING cards and rename their display names, as one change. Version order and membership of
-    versions, gates, focus and recordedDone stay fixed; no node is created. The base is the exact ordered card list of
-    every touched version and the base name of every renamed card; any difference is a conflict. The skeleton is derived
-    from the result and the combined graph is checked for cycles; task links stay on their card IDs."""
+    """One plan change: reorder and move existing cards, rename them (OPS-172), and (OPS-176) add new versions at an
+    explicit position and register new cards with an explicit formal ID. The base is the exact ordered card list of
+    every touched version, the exact version order when versions are added, and the base name of every renamed card;
+    any difference is a conflict. New IDs are unique among all nodes and never retired ones. A new card carries the
+    evidence of its prepared canonical document ({path, sha256} taken by the caller before this transaction; the file
+    system is outside SQLite's atomicity, so this records what was checked, not a lock on the file). No gate is created
+    and a new version is not connected to its neighbours. The skeleton is derived and the combined graph is checked for
+    cycles; task links stay on their card IDs."""
     cards_base, cards, renames = req.get('cardsBase'), req.get('cards'), req.get('renames', {})
-    if not isinstance(cards_base, dict) or not isinstance(cards, dict) or set(cards_base) != set(cards) or not isinstance(renames, dict) or not (cards or renames):
-        raise Refused('apply_plan needs cardsBase and cards for the same touched versions (and/or renames)')
-    versions = {r[0] for r in conn.execute('SELECT name FROM versions')}
+    new_versions, new_cards, draft_map = req.get('newVersions', []), req.get('newCards', {}), req.get('draftMap', {})
+    if not isinstance(cards_base, dict) or not isinstance(cards, dict) or set(cards_base) != set(cards) or not isinstance(renames, dict) \
+            or not isinstance(new_versions, list) or not isinstance(new_cards, dict) or not isinstance(draft_map, dict) or not (cards or renames or new_versions):
+        raise Refused('apply_plan needs cardsBase and cards for the same touched versions (and/or renames, new versions)')
+    current_versions = [r[0] for r in conn.execute('SELECT name FROM versions ORDER BY position')]
+    order = list(current_versions)
+    added = []
+    if new_versions:
+        if req.get('versionsBase') != current_versions:
+            raise Refused('conflict on the version order: it changed since the base')
+        for nv in new_versions:
+            if not isinstance(nv, dict) or set(nv) != {'name', 'position'} or not isinstance(nv['name'], str) or not VERSION_NAME.fullmatch(nv['name']) \
+                    or type(nv['position']) is not int:
+                raise Refused('a new version is {name (letters, digits, dots, hyphens), position (integer)}')
+            name = nv['name']
+            if name in order or conn.execute('SELECT 1 FROM nodes WHERE id IN (?, ?)', ('START-' + name, 'END-' + name)).fetchone():
+                raise Refused(f'version {name} or its START/END already exists')
+            if not 0 <= nv['position'] <= len(order):
+                raise Refused(f'position {nv["position"]} is outside the version list (0..{len(order)})')
+            order.insert(nv['position'], name)
+            added.append(name)
     for v in cards:
-        if v not in versions:
-            raise Refused(f'unknown version {v} (versions are not created here)')
+        if v not in current_versions and v not in added:
+            raise Refused(f'unknown version {v}')
         for lst in (cards_base[v], cards[v]):
             if not isinstance(lst, list) or not all(isinstance(x, str) for x in lst) or len(set(lst)) != len(lst):
                 raise Refused(f'{v}: card lists are lists of distinct card IDs')
         current = [r[0] for r in conn.execute('SELECT node FROM version_members WHERE version = ? ORDER BY position', (v,))]
         if current != cards_base[v]:
             raise Refused(f'conflict on version {v}: card order changed since the base')
+    for cid, c in new_cards.items():
+        if not isinstance(cid, str) or not CARD_ID.fullmatch(cid) or cid.startswith(('START-', 'END-', 'GATE-')):
+            raise Refused(f'{cid!r} is not a card ID')
+        if conn.execute('SELECT 1 FROM nodes WHERE id = ?', (cid,)).fetchone() or conn.execute('SELECT 1 FROM retirements WHERE id = ?', (cid,)).fetchone():
+            raise Refused(f'{cid} is already used (IDs are never reused)')
+        ev = c.get('documentEvidence') if isinstance(c, dict) else None
+        if not isinstance(c, dict) or set(c) != {'name', 'detail', 'documentEvidence'} or not isinstance(c['name'], str) or not c['name'].strip() \
+                or not isinstance(c['detail'], str) or not c['detail'] or not isinstance(ev, dict) or set(ev) != {'path', 'sha256'} \
+                or ev['path'] != c['detail'] or not re.fullmatch(r'[0-9a-f]{64}', str(ev['sha256'])):
+            raise Refused(f'{cid}: a new card needs name, detail and documentEvidence {{path = detail, sha256}} of its prepared document')
     before_set = sorted(x for v in cards_base for x in cards_base[v])
     after_set = sorted(x for v in cards for x in cards[v])
-    if before_set != after_set:
-        raise Refused('apply_plan only reorders and moves the cards of the touched versions: no card is added or removed')
+    if after_set != sorted(before_set + list(new_cards)):
+        raise Refused('apply_plan reorders and moves the cards of the touched versions and adds exactly the new cards: nothing else is added or removed')
+    if not all(isinstance(k, str) and DRAFT_CARD.fullmatch(k) for k in draft_map) or len(draft_map) != len(new_cards) \
+            or set(draft_map.values()) != set(new_cards):
+        raise Refused('draftMap maps distinct Studio drafts (draft-ms-N) one-to-one onto the new cards')
     before_names = {}
     for cid, r in sorted(renames.items()):
         row = conn.execute("SELECT name, kind FROM nodes WHERE id = ?", (cid,)).fetchone()
@@ -666,7 +706,21 @@ def _apply_plan(conn, operation_id, req, hook):
         if row[0] != r['base']:
             raise Refused(f'conflict on card {cid}: name changed since the base')
         before_names[cid] = row[0]
-    before = {'cards': {v: list(cards_base[v]) for v in cards_base}, 'names': before_names}
+    before = {'cards': {v: list(cards_base[v]) for v in cards_base}, 'names': before_names, **({'versions': current_versions} if added else {})}
+    if added:
+        conn.execute('UPDATE versions SET position = position + 1000000')
+        for name in added:
+            conn.execute('INSERT INTO versions VALUES (?, ?)', (name, -1 - added.index(name)))
+            for kind, prefix in (('start', 'START-'), ('end', 'END-')):
+                conn.execute('INSERT INTO nodes VALUES (?, ?, ?)', (prefix + name, kind, prefix + name))
+                conn.execute('INSERT INTO provenance VALUES (?, ?)', ('node:' + prefix + name, 'operation:' + operation_id))
+            conn.execute('INSERT INTO provenance VALUES (?, ?)', ('version:' + name, 'operation:' + operation_id))
+        for i, name in enumerate(order):
+            conn.execute('UPDATE versions SET position = ? WHERE name = ?', (i, name))
+    for cid, c in sorted(new_cards.items()):
+        conn.execute("INSERT INTO nodes VALUES (?, 'card', ?)", (cid, c['name']))
+        conn.execute('INSERT INTO milestone_details VALUES (?, ?, 0)', (cid, c['detail']))
+        conn.execute('INSERT INTO provenance VALUES (?, ?)', ('node:' + cid, 'operation:' + operation_id))
     for v in cards:
         conn.execute('DELETE FROM version_members WHERE version = ?', (v,))
     for v in sorted(cards):
@@ -675,8 +729,22 @@ def _apply_plan(conn, operation_id, req, hook):
     for cid, r in renames.items():
         conn.execute('UPDATE nodes SET name = ? WHERE id = ?', (r['name'], cid))
     _cycles(conn, 'progress')  # progress + milestone links + the skeleton derived from the new order
-    after = {'cards': {v: list(cards[v]) for v in cards}, 'names': {cid: r['name'] for cid, r in renames.items()}}
-    return {'kind': 'apply_plan', 'versions': sorted(cards), 'renamed': sorted(renames)}, before, after
+    after = {'cards': {v: list(cards[v]) for v in cards}, 'names': {cid: r['name'] for cid, r in renames.items()},
+             **({'versions': order} if added else {}), **({'newCards': {cid: dict(c) for cid, c in new_cards.items()}} if new_cards else {})}
+    return {'kind': 'apply_plan', 'versions': sorted(cards), 'renamed': sorted(renames), 'addedVersions': added, 'newCards': dict(draft_map)}, before, after
 
 
+def _acknowledge_document_proposal(conn, operation_id, req, hook):
+    """Record that a document-change proposal (planCondition) was handled in its canonical document. No canonical DB
+    data changes. Existence of a document is not satisfaction: the request names the proposal text digest, the document
+    {path, sha256} as checked by the caller (outside SQLite's atomicity), and non-empty evidence."""
+    doc = req.get('document')
+    if not isinstance(req.get('saveId'), str) or not req['saveId'] or not isinstance(req.get('groupId'), str) or not req['groupId'].startswith('card-condition:') \
+            or not re.fullmatch(r'[0-9a-f]{64}', str(req.get('textDigest'))) or not isinstance(doc, dict) or set(doc) != {'path', 'sha256'} \
+            or not isinstance(doc['path'], str) or not doc['path'] or not re.fullmatch(r'[0-9a-f]{64}', str(doc['sha256'])) or not req.get('evidence'):
+        raise Refused('acknowledge_document_proposal needs saveId, groupId card-condition:<id>, textDigest, document {path, sha256} and evidence')
+    return {'kind': 'acknowledge_document_proposal', 'groupId': req['groupId'], 'textDigest': req['textDigest']}, None, {'document': doc}
+
+
+STRUCTURAL['acknowledge_document_proposal'] = _acknowledge_document_proposal
 STRUCTURAL['apply_plan'] = _apply_plan

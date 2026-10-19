@@ -35,7 +35,8 @@ class Browser(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         self.dir = Path(tmp.name)
         w3.create(str(self.dir / 'db.sqlite3'), copy.deepcopy(BASE))
-        self.server = vs.V3StudioServer(self.dir / 'db.sqlite3', self.dir / 'saves').start()
+        docs = getattr(self, 'DOCUMENT_ROOT', None)  # OPS-176: a subclass may name a temporary document root under self.dir
+        self.server = vs.V3StudioServer(self.dir / 'db.sqlite3', self.dir / 'saves', None if docs is None else self.dir / docs).start()
         self.addCleanup(self.server.stop)  # runs even when the test fails
         self.conn = w3.open_db(str(self.dir / 'db.sqlite3'))
         self.addCleanup(self.conn.close)

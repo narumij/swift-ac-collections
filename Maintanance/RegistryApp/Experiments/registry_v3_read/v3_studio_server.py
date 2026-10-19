@@ -11,7 +11,8 @@ and stopped by the test. It never imports serve.py, sync.py or inbox.py and neve
                    and answers in serve.py's shape. It NEVER writes the DB. A document without the V3 base is refused.
 - GET /workspace   the latest save, as inbox.latest, so the page's own resumeWorkspace() runs.
 - POST /v3/apply   an explicit DB write: studio_adapter.apply_save on a stored save (single task, OPS-166).
-- POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173).
+- POST /v3/apply-groups  an explicit DB write with selected groups and resolutions: studio_adapter.apply_groups (OPS-173),
+                   with the document_root given to the constructor (OPS-176; none: new cards and acknowledgements stay pending).
 - GET /v3/latest   a fresh export, for assertions.
 - anything else    404 (logged); /sync, /registry.json, the pollers and approvals are not served.
 """
@@ -43,6 +44,9 @@ PATCHES = [
     ('function planRebuild(d,versions){',
      "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
      'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them (OPS-172/173)'),
+    ("const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);",
+     "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
+     'P5 renderPlanTools(): an explicit position select for 版を追加, kept as planPosition on the new START (OPS-176)'),
 ]
 
 
@@ -123,7 +127,8 @@ class Handler(BaseHTTPRequestHandler):
             save = s.load(req['saveId'])
             conn = w3.open_db(s.db_path)
             try:
-                out = sa.apply_groups(conn, save, req['selected'], req['actor'], req['evidence'], req.get('resolutions'), req.get('ancestry'))
+                out = sa.apply_groups(conn, save, req['selected'], req['actor'], req['evidence'], req.get('resolutions'), req.get('ancestry'),
+                                      document_root=s.document_root)
                 return self.reply(200, {'ok': True, **out})
             except (sa.SaveRejected, w3.GenerationMismatch, w3.WriteDisabled) as error:
                 return self.reply(409, {'ok': False, 'kind': type(error).__name__, 'error': str(error)})
@@ -135,9 +140,12 @@ class Handler(BaseHTTPRequestHandler):
 class V3StudioServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, db_path, saves_dir):
+    def __init__(self, db_path, saves_dir, document_root=None):
         super().__init__(('127.0.0.1', 0), Handler)
         self.db_path, self.saves = str(db_path), Path(saves_dir)
+        # OPS-176: the canonical documents new cards and acknowledgements are checked against; given explicitly by the
+        # caller (a test fixture of prepared temporary documents). None (the default): they stay pending, never the repo.
+        self.document_root = None if document_root is None else Path(document_root)
         self.saves.mkdir(parents=True, exist_ok=True)
         self.requests, self.pages, self.lock = [], [], threading.Lock()
         self.thread = None

@@ -6,6 +6,7 @@
 //   save:     open /, task area, select params.task, set params.owner/state, 変更を適用, (params.addPrerequisite), 保存
 //   reopen:   open / in a fresh context; the page's own resumeWorkspace loads the latest save; read fields, banner, notice
 //   plan:     OPS-173: params.actions (select / fill / choose / press) in the real editor, then 保存
+//             OPS-176: tool (+ toolSet {id: value}) presses a button of the card list's plan tools (#planTools)
 //   blocked:  negative control of the interception: fetch params.url from the page; it must be aborted before sending
 'use strict';
 const pw = require('/opt/homebrew/lib/node_modules/playwright');
@@ -62,6 +63,17 @@ const params = JSON.parse(fs.readFileSync(paramsFile, 'utf8'));
         if (a.fill) for (const [id, v] of Object.entries(a.fill)) await page.fill('#' + id, v);
         if (a.choose) for (const [id, v] of Object.entries(a.choose)) await page.selectOption('#' + id, v);
         if (a.press) await page.evaluate(t => [...document.querySelectorAll('#editor button')].find(b => b.textContent === t).click(), a.press);
+        if (a.tool) {  // OPS-176: the card list's plan tools (new card, new version with its position)
+          // the tools sit in a panel closed by default: set the value and fire the page's own input/change handlers
+          await page.evaluate(([t, values]) => {
+            for (const [id, v] of Object.entries(values)) {
+              const e = document.getElementById(id); if (!e) throw Error('no field ' + id);
+              e.value = v; if (e.value !== v) throw Error('value not accepted: ' + id + '=' + v);
+              e.dispatchEvent(new Event(e.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+            }
+            const b = [...document.querySelectorAll('#planTools button')].find(n => n.textContent === t); if (!b) throw Error('no tool ' + t); b.click();
+          }, [a.tool, a.toolSet || {}]);
+        }
       }
       await page.evaluate(() => document.getElementById('save').click());
       await page.waitForFunction(() => /保存しました|保存できませんでした/.test(document.getElementById('status').textContent), null, { timeout: 10000 });

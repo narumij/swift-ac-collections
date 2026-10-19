@@ -13,7 +13,9 @@ never created.
   apply         --db PATH --op ID --request FILE|-        registry_v3_write.apply
   plan-groups   --db PATH --save FILE|-                   studio_adapter.plan_groups (read-only)
   apply-groups  --db PATH --save FILE|- --selection FILE|-   studio_adapter.apply_groups
-                selection = {"selected": [...], "actor": "...", "evidence": [...], "resolutions": {...}?, "ancestry": {...}?}
+                [--document-root DIR]   selection = {"selected": [...], "actor": "...", "evidence": [...], "resolutions": {...}?, "ancestry": {...}?}
+                --document-root (OPS-176): the directory canonical documents are read from, for new cards and document
+                acknowledgements. Only when given; there is no cwd or repository fallback. Omitted: those groups stay pending.
 
 Output: one JSON object on stdout, always with "ok" and "status". Exit statuses:
   0 ok (read; applied, alreadyReflected or replayed; groups complete)
@@ -142,8 +144,11 @@ def cmd_apply_groups(conn, args):
     if set(sel) - {'selected', 'actor', 'evidence', 'resolutions', 'ancestry'} or not {'selected', 'actor', 'evidence'} <= set(sel):
         raise Fail('malformed', 'selection needs selected, actor and evidence (resolutions and ancestry are optional, never inferred)')
     explicit(sel, ('actor', 'evidence'), 'selection')
+    if args.document_root is not None and not Path(args.document_root).is_dir():
+        raise Fail('malformed', f'--document-root {args.document_root} is not a directory')
     try:
-        out = sa.apply_groups(conn, save, sel['selected'], sel['actor'], sel['evidence'], sel.get('resolutions'), sel.get('ancestry'))
+        out = sa.apply_groups(conn, save, sel['selected'], sel['actor'], sel['evidence'], sel.get('resolutions'), sel.get('ancestry'),
+                              document_root=args.document_root)
     except sa.SaveRejected as error:
         raise Fail('saveRejected', str(error)) from None
     except (w3.GenerationMismatch, w3.WriteDisabled) as error:
@@ -161,7 +166,7 @@ def parser():
                             ('operation', cmd_operation, [('--op', {'required': True})]),
                             ('apply', cmd_apply, [('--op', {'required': True}), ('--request', {'required': True})]),
                             ('plan-groups', cmd_plan_groups, [('--save', {'required': True})]),
-                            ('apply-groups', cmd_apply_groups, [('--save', {'required': True}), ('--selection', {'required': True})])):
+                            ('apply-groups', cmd_apply_groups, [('--save', {'required': True}), ('--selection', {'required': True}), ('--document-root', {'default': None})])):
         p = sub.add_parser(name)
         p.add_argument('--db', required=True)
         for flag, kw in extra:

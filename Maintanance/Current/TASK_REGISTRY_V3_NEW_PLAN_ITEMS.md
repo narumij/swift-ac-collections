@@ -19,3 +19,15 @@ experiment内writer/adapter/CLI/harness/browser tests/READMEのみ。UIは隔離
 
 ## 検証・返却
 新規版/cardの実UI保存・再開、明示位置、文書未準備/ID不一致/衝突/古いbase、draft同士の接続、plan成功後task拒否、再送と保存系列の重複登録、本文ackの変更検出を確認。既存198試験も維持する。姫が実装と証拠を返却し、Astraが独立受入。commitはAstra。
+
+## 初回返却の確認（2026-10-19）
+LTR-20261019-7BC3E619A176438F97F9F48A548E94BAを受領。Astra独立実行で209試験成功（52.247秒）。ただしCLI/隔離serverへdocument_rootが未接続で、新規cardの実ブラウザ往復も未実施のため、完了受入は保留。
+
+LTR-20261019-D44BDAE2AB1A4A7C9841124EDF5423C2で補完依頼。CLIの明示--document-rootと隔離serverへのfixture引数を接続し、一時文書でWebKit保存・再開・明示適用を確認する。指定省略時の推測は行わない。draftMapは値集合の一致だけでは重複対応を排除できないため、一対一対応とdraft keyの検証も依頼。本番変更なし。
+
+## 補完後の受入（2026-10-19）
+LTR-20261019-D44BDAE2AB1A4A7C9841124EDF5423C2を受入。CLIは明示--document-rootのみ使用し、省略時はpending、cwd等へfallbackしない。隔離serverもfixtureから明示指定する。draftMapの一対一性とdraft keyを検証する。
+
+Astra独立実行：全215試験成功（58.671秒、ResourceWarningなし）。WebKitで新規版/cardの追加→保存→新context再開→文書未準備の保留→準備後正式化→再送、本文ackの明示確認と再送を含む。`git diff --check`成功。OPS-176 DONE。
+
+保証は隔離経路まで。文書の検証時点のsha256を記録し、filesystemとSQLiteが原子的に固定されるとは扱わない。本番切替・gate/focus/recordedDone更新・版改名削除は含まない。

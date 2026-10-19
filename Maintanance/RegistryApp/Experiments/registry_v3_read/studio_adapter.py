@@ -29,9 +29,11 @@ import hashlib
 import json
 import re
 import urllib.parse
+from pathlib import Path
 
 import registry_v3_read as r3
 import registry_v3_write as w3
+import shadow_import as si
 
 EDITABLE = ('state', 'owner')
 ABSENT = ['task.raw', 'task.sourceLine', 'edge.raw', 'edge.sourceLine', 'milestoneRelation.source.quote', 'milestoneRelation.source.line', 'milestone.raw']
@@ -150,49 +152,92 @@ DRAFT_ID = re.compile(r'draft-[1-9]\d*')
 CARD_PATH = re.compile(r'Maintanance/Milestones/([^/]+)/([^/]+\.md)')
 
 
+DRAFT_CARD = re.compile(r'draft-ms-[1-9]\d*')
+
+
 def _plan_diff(now, before):
-    """OPS-172: the existing-card plan a save proposes. The display paths are read as a proposal only (confirmed by an
-    explicit resolution). Cards are the baseline entries with recordedDone. Anything else that differs (a new or removed
-    node, a gate or a virtual node, planCondition, recordedDone or other fields) makes the plan unit unsupported."""
+    """The plan a save proposes (OPS-172 existing cards; OPS-176 new versions, new cards, condition proposals). The
+    display paths are read as a proposal only, confirmed by an explicit resolution.
+    - Cards are baseline entries with recordedDone; a new card is a planned draft-ms-N; a new version is a planned
+      virtual START-/END- pair whose explicit position is the START's planPosition {after: version|null} (P5).
+    - planCondition becomes a separate document proposal (conditions), never DB data.
+    - Anything else that differs (a removed node, a gate, an existing virtual node, recordedDone, other fields) makes
+      the plan unit unsupported."""
     b, n = {m['id']: m for m in before}, {m['id']: m for m in now}
     versions = [m['id'][6:] for m in before if m.get('virtual') and m['id'].startswith('START-')]
     folder = lambda m: m['gate'].split('/')[2]
-    out = {'unsupported': [], 'cardsBase': {}, 'cards': {}, 'renames': {}, 'skeleton': set()}
-    if set(b) != set(n):
-        out['unsupported'].append('new or removed milestones (new versions or cards are not part of this slice)')
-    lists_before, lists_now = {v: [] for v in versions}, {v: [] for v in versions}
-    for mid in sorted(set(b) & set(n)):
-        old, new = b[mid], n[mid]
-        if 'recordedDone' not in old:  # a gate or a virtual START/END: fixed
+    out = {'unsupported': [], 'cardsBase': {}, 'cards': {}, 'renames': {}, 'skeleton': set(), 'versionsBase': versions,
+           'newVersions': [], 'newCards': {}, 'conditions': {}, 'needs': []}
+    if set(b) - set(n):
+        out['unsupported'].append('removed milestones: ' + ', '.join(sorted(set(b) - set(n))))
+    for mid in [m['id'] for m in now if m['id'] not in b]:  # array order = the order Studio added them
+        m = n[mid]
+        if m.get('virtual') and m.get('planned') and mid.startswith('START-'):
+            name = mid[6:]
+            if 'END-' + name not in n or ('END-' + name) in b:
+                out['unsupported'].append(f'{mid}: a new version needs its START and END')
+                continue
+            pos = m.get('planPosition')
+            if not (isinstance(pos, dict) and set(pos) == {'after'} and (pos['after'] is None or pos['after'] in versions or pos['after'] in [v['name'] for v in out['newVersions']])):
+                out['newVersions'].append({'name': name, 'after': None, 'positionGiven': False})
+                if 'version-position' not in out['needs']:
+                    out['needs'].append('version-position')
+            else:
+                out['newVersions'].append({'name': name, 'after': pos['after'], 'positionGiven': True})
+        elif m.get('virtual') and m.get('planned') and mid.startswith('END-') and 'START-' + mid[4:] in n:
+            continue
+        elif m.get('planned') and not m.get('virtual') and DRAFT_CARD.fullmatch(mid):
+            out['newCards'][mid] = {'name': m.get('item'), 'version': None}
+            if isinstance(m.get('planCondition'), str) and m['planCondition'].strip():
+                out['conditions'][mid] = m['planCondition']
+        else:
+            out['unsupported'].append(f'{mid}: an unknown new milestone')
+    all_versions = versions + [v['name'] for v in out['newVersions']]
+    lists_before, lists_now = {v: [] for v in versions}, {v: [] for v in all_versions}
+    for mid in sorted(set(n)):
+        new = n[mid]
+        old = b.get(mid)
+        if old is not None and 'recordedDone' not in old:  # a gate or an existing virtual START/END: fixed
             if _canon(old) != _canon(new):
-                out['unsupported'].append(f'{mid}: gates, versions and focus are fixed in this slice')
+                out['unsupported'].append(f'{mid}: gates and existing versions are fixed here')
+            continue
+        if old is None and mid not in out['newCards']:
+            continue
+        m_new = CARD_PATH.fullmatch(new.get('gate', ''))
+        if not m_new or m_new.group(1) not in lists_now:
+            out['unsupported'].append(f'{mid}: its path names no version')
+            continue
+        lists_now[m_new.group(1)].append((m_new.group(2), mid))
+        if old is None:
+            out['newCards'][mid]['version'] = m_new.group(1)
+            if not isinstance(new.get('item'), str) or not new['item'].strip():
+                out['unsupported'].append(f'{mid}: an empty name')
             continue
         changed = {k for k in set(old) | set(new) if old.get(k) != new.get(k)}
-        if changed - {'gate', 'item'}:
-            out['unsupported'].append(f'{mid}: ' + ', '.join(sorted(changed - {'gate', 'item'})) + ' cannot change here (planCondition is not adopted)')
-        m_old, m_new = CARD_PATH.fullmatch(old.get('gate', '')), CARD_PATH.fullmatch(new.get('gate', ''))
-        if not m_new or m_new.group(1) not in lists_now:
-            out['unsupported'].append(f'{mid}: its path names no existing version')
-            continue
+        if changed - {'gate', 'item', 'planCondition'}:
+            out['unsupported'].append(f'{mid}: ' + ', '.join(sorted(changed - {'gate', 'item', 'planCondition'})) + ' cannot change here')
+        if 'planCondition' in changed:
+            if isinstance(new.get('planCondition'), str) and new['planCondition'].strip():
+                out['conditions'][mid] = new['planCondition']
+        m_old = CARD_PATH.fullmatch(old.get('gate', ''))
         lists_before[m_old.group(1)].append((m_old.group(2), mid))
-        lists_now[m_new.group(1)].append((m_new.group(2), mid))
         if 'item' in changed:
             if not isinstance(new.get('item'), str) or not new['item'].strip():
                 out['unsupported'].append(f'{mid}: an empty name')
             out['renames'][mid] = {'base': old['item'], 'name': new.get('item')}
-    for v in versions:
-        before_ids, now_ids = [x for _, x in sorted(lists_before[v])], [x for _, x in sorted(lists_now[v])]
-        if before_ids != now_ids:
+    for v in all_versions:
+        before_ids, now_ids = [x for _, x in sorted(lists_before.get(v, []))], [x for _, x in sorted(lists_now[v])]
+        if before_ids != now_ids or v not in versions:
             out['cardsBase'][v], out['cards'][v] = before_ids, now_ids
     gates = {folder(m): m['id'] for m in before if not m.get('virtual') and 'recordedDone' not in m}
-    targets = {v: [x for _, x in sorted(lists_now[v])] for v in versions}
-    for i, v in enumerate(versions):  # the skeleton the proposed plan implies (as registry_v3_read.skeleton derives it)
-        chain = ['START-' + v] + targets[v] + ['END-' + v]
+    for v in all_versions:  # derived lines Studio itself rebuilds: the chain inside each version, and END -> its gate
+        chain = ['START-' + v] + [x for _, x in sorted(lists_now[v])] + ['END-' + v]
         out['skeleton'] |= set(zip(chain, chain[1:]))
         if v in gates:
             out['skeleton'].add(('END-' + v, gates[v]))
-            if i + 1 < len(versions):
-                out['skeleton'].add((gates[v], 'START-' + versions[i + 1]))
+    for i, v in enumerate(versions):  # gate -> next START lines are not rebuilt by Studio; they stay as in the baseline
+        if v in gates and i + 1 < len(versions):
+            out['skeleton'].add((gates[v], 'START-' + versions[i + 1]))
     return out
 
 
@@ -313,8 +358,9 @@ def plan_groups(conn, save):
                            'status': 'pending' if ambiguous else 'ready', 'pending': ['pairing'] if ambiguous else []})
         for k in added:
             ends = [x for x in k if DRAFT_ID.fullmatch(x)]
+            cards_needed = [x for x in k if DRAFT_CARD.fullmatch(x)]
             if not ends:
-                groups.append({'groupId': f'{short}-add:{k[0]}->{k[1]}', 'kind': 'add', 'graph': graph, 'key': list(k), 'new': cur[k],
+                groups.append({'groupId': f'{short}-add:{k[0]}->{k[1]}', 'kind': 'add', 'graph': graph, 'key': list(k), 'new': cur[k], 'needsCards': cards_needed,
                                'status': 'pending', 'pending': ['consultation'] + (['pairing'] if ambiguous else [])})
                 continue
             for d in ends:  # an incident connection belongs to its draft's proposal group only, never to a structural group
@@ -323,14 +369,19 @@ def plan_groups(conn, save):
                 g = drafts[d]
                 g['edges' if graph == 'progress' else 'links'].append({'prerequisite': k[0], 'successor': k[1], **({'flow': cur[k].get('flow')} if graph == 'progress' else {})})
                 g['consumes'].append(f'{short}-add:{k[0]}->{k[1]}')
+                g.setdefault('needsCards', []).extend(x for x in cards_needed if x not in g.get('needsCards', []))
                 if len(ends) > 1:
                     g['status'], g['unsupported'] = 'unsupported', g['unsupported'] + [f'experiment-unsupported: draft-to-draft connection {k[0]} -> {k[1]}']
     groups += [drafts[d] for d in sorted(drafts)]
     plan = diffs.get('plan')
-    if plan and (plan['cards'] or plan['renames'] or plan['unsupported']):
+    if plan and (plan['cards'] or plan['renames'] or plan['unsupported'] or plan['newVersions'] or plan['newCards']):
         groups.append({'groupId': 'plan:milestones', 'kind': 'plan', 'status': 'unsupported' if plan['unsupported'] else 'pending',
-                       'pending': ['plan-confirmation'], 'unsupported': plan['unsupported'], 'cardsBase': plan['cardsBase'], 'cards': plan['cards'],
-                       'renames': plan['renames']})
+                       'pending': ['plan-confirmation'] + plan['needs'] + (['document'] if plan['newCards'] else []), 'unsupported': plan['unsupported'],
+                       'cardsBase': plan['cardsBase'], 'cards': plan['cards'], 'renames': plan['renames'], 'versionsBase': plan['versionsBase'],
+                       'newVersions': plan['newVersions'], 'newCards': plan['newCards']})
+    for cid, text in sorted((plan or {}).get('conditions', {}).items()):  # a document-change proposal, never DB data
+        groups.append({'groupId': 'card-condition:' + cid, 'kind': 'condition', 'card': cid, 'text': text,
+                       'textDigest': hashlib.sha256(text.encode('utf-8')).hexdigest(), 'status': 'pending', 'pending': ['document'], 'unsupported': []})
     if not groups:
         raise SaveRejected('the save changes nothing')
     return groups
@@ -353,7 +404,7 @@ def _units(groups, resolutions):
     constituent). A unit is a ready group, a resolved standalone group, or one pair of a removal and an addition."""
     by_id = {g['groupId']: g for g in groups}
     res = resolutions or {}
-    if not isinstance(res, dict) or set(res) - {'standalone', 'pairs', 'proposals', 'plan'}:
+    if not isinstance(res, dict) or set(res) - {'standalone', 'pairs', 'proposals', 'plan', 'documents'}:
         raise SaveRejected('resolutions are {"standalone": {groupId: {...}}, "pairs": [...], "proposals": {groupId: {...}}}')
     standalone, pairs = res.get('standalone', {}), res.get('pairs', [])
     if not isinstance(standalone, dict) or not isinstance(pairs, list):
@@ -363,7 +414,7 @@ def _units(groups, resolutions):
         if not isinstance(r, dict) or not isinstance(r.get('constraint'), str) or not r['constraint'].strip() or not isinstance(r.get('evidence'), list) or not r['evidence']:
             raise SaveRejected(f'{what}: a consulted constraint (non-empty) and evidence (non-empty list) are required')
     def take(gid, by):
-        if gid not in by_id or by_id[gid]['kind'] in ('task', 'proposal'):
+        if gid not in by_id or by_id[gid]['kind'] in ('task', 'proposal', 'plan', 'condition'):
             raise SaveRejected(f'resolution names no structural group of this save: {gid}')
         if gid in used:
             raise SaveRejected(f'{gid} is used by more than one resolution ({used[gid]}, {by})')
@@ -413,12 +464,32 @@ def _units(groups, resolutions):
         g, r = by_id.get('plan:milestones'), res['plan']
         if not g:
             raise SaveRejected('resolution names a plan, but the save proposes none')
-        if not isinstance(r, dict) or set(r) != {'cards', 'renames', 'evidence'} or not isinstance(r['evidence'], list) or not r['evidence']:
-            raise SaveRejected('plan:milestones: the resolution restates cards and renames and gives evidence (non-empty list)')
+        allowed = {'cards', 'renames', 'evidence'} | ({'newCards'} if g['newCards'] else set())
+        if not isinstance(r, dict) or set(r) != allowed or not isinstance(r['evidence'], list) or not r['evidence']:
+            raise SaveRejected('plan:milestones: the resolution restates cards and renames, gives evidence (non-empty list)'
+                               + (' and newCards {draft: {id, document}} for every new card' if g['newCards'] else ''))
         if r['cards'] != g['cards'] or r['renames'] != {k: v['name'] for k, v in g['renames'].items()}:
             raise SaveRejected('plan:milestones: the confirmation does not match the plan the save proposes')
+        if g['newCards']:
+            nc = r['newCards']
+            if not isinstance(nc, dict) or set(nc) != set(g['newCards']) or not all(isinstance(v, dict) and set(v) == {'id', 'document'} and isinstance(v['id'], str)
+                                                                                   and isinstance(v['document'], str) and v['document'] for v in nc.values()):
+                raise SaveRejected('plan:milestones: newCards must give {id, document} for exactly the new cards ' + str(sorted(g['newCards'])))
+            if len({v['id'] for v in nc.values()}) != len(nc):
+                raise SaveRejected('plan:milestones: two new cards cannot share a formal ID')
         if g['status'] != 'unsupported':
             units['plan:milestones'] = {'group': g, 'resolution': r, 'consumes': ['plan:milestones']}
+    documents = res.get('documents', {})
+    if not isinstance(documents, dict):
+        raise SaveRejected('malformed document resolutions')
+    for gid, r in sorted(documents.items()):
+        g = by_id.get(gid)
+        if not g or g['kind'] != 'condition':
+            raise SaveRejected(f'resolution names no document proposal of this save: {gid}')
+        if not isinstance(r, dict) or set(r) != {'document', 'evidence'} or not isinstance(r['document'], str) or not r['document'] \
+                or not isinstance(r['evidence'], list) or not r['evidence']:
+            raise SaveRejected(f'{gid}: a document acknowledgement needs exactly document (path) and evidence (non-empty list)')
+        units[gid] = {'group': g, 'resolution': r, 'consumes': [gid]}
     return units, pair_of
 
 
@@ -490,7 +561,72 @@ def gid_resolved(resolutions, gid):
     return isinstance(resolutions, dict) and isinstance(resolutions.get('proposals'), dict) and gid in resolutions['proposals']
 
 
-def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancestry=None, _after_preflight=None):
+def _read_document(root, rel):
+    """(bytes, text) of a canonical document under root, or None when it is not there. Outside SQLite's atomicity: this
+    is the evidence point (the caller's check time), not a lock."""
+    if root is None:
+        return None
+    p = (Path(root) / rel).resolve()
+    if not str(p).startswith(str(Path(root).resolve()) + '/') or not p.is_file():
+        return None
+    data = p.read_bytes()
+    return data, data.decode('utf-8')
+
+
+def _prepare(unit, kind, sid, v3, save, ancestry, mapping, document_root):
+    """('request', req) | ('pending', [reasons]) | ('refused', message) for one unit, just before it is applied."""
+    g = unit.get('group', {})
+    if kind == 'plan':
+        if 'version-position' in g['pending']:
+            return 'pending', ['version-position: a new version needs the position selected in Studio']
+        order, new_versions = list(g['versionsBase']), []
+        for nv in g['newVersions']:
+            pos = 0 if nv['after'] is None else order.index(nv['after']) + 1
+            order.insert(pos, nv['name'])
+            new_versions.append({'name': nv['name'], 'position': pos})
+        draft_map, new_cards = {}, {}
+        for draft, info in sorted(g['newCards'].items()):
+            choice = unit['resolution']['newCards'][draft]
+            doc = _read_document(document_root, choice['document'])
+            if doc is None:
+                return 'pending', [f"document: {choice['document']} is not prepared (the card stays a proposal)"]
+            try:
+                card = si._card(choice['document'], doc[1], False)
+            except si.Refusal as error:
+                return 'refused', f'{draft}: the prepared document is not a card document in the existing format: {error}'
+            if card['id'] != choice['id'] or card['name'] != info['name']:
+                return 'refused', f"{draft}: the document declares {card['id']} / {card['name']!r}, not {choice['id']} / {info['name']!r}"
+            draft_map[draft] = choice['id']
+            new_cards[choice['id']] = {'name': info['name'], 'detail': choice['document'],
+                                       'documentEvidence': {'path': choice['document'], 'sha256': hashlib.sha256(doc[0]).hexdigest()}}
+        swap = lambda xs: [draft_map.get(x, x) for x in xs]
+        return 'request', {'kind': 'apply_plan', 'cardsBase': g['cardsBase'], 'cards': {v: swap(xs) for v, xs in g['cards'].items()}, 'renames': g['renames'],
+                           **({'versionsBase': g['versionsBase'], 'newVersions': new_versions} if new_versions else {}),
+                           **({'newCards': new_cards, 'draftMap': draft_map} if new_cards else {}), 'generation': v3['generation']}
+    if kind == 'condition':
+        doc = _read_document(document_root, unit['resolution']['document'])
+        if doc is None:
+            return 'pending', [f"document: {unit['resolution']['document']} is not there to acknowledge"]
+        return 'request', {'kind': 'acknowledge_document_proposal', 'saveId': sid, 'groupId': g['groupId'], 'textDigest': g['textDigest'],
+                           'document': {'path': unit['resolution']['document'], 'sha256': hashlib.sha256(doc[0]).hexdigest()}, 'generation': v3['generation']}
+    missing = [c for c in g.get('needsCards', []) if c not in mapping]
+    if missing:
+        return 'pending', ['depends on plan:milestones (new card ' + ', '.join(missing) + ' not registered yet)']
+    swap = lambda x: mapping.get(x, x)
+    if kind == 'task':
+        return 'request', g['request']
+    if kind == 'proposal':
+        req = _proposal_request(unit, sid, v3, ancestry)
+        req['links'] = [dict(e, prerequisite=swap(e['prerequisite']), successor=swap(e['successor'])) for e in req['links']]
+        return 'request', req
+    req = _unit_request(unit, v3, save)
+    for k in ('prerequisite', 'successor'):
+        if k in req:
+            req[k] = swap(req[k])
+    return 'request', req
+
+
+def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancestry=None, _after_preflight=None, document_root=None):
     """Apply only the selected groups of a stored save, each as its own operation (ID = save:<saveId>:<unitId>).
     Selectable units: ready groups, resolved standalone groups, and pairs (rewire:...), which consume both sides.
     Returns every unit in exactly one of applied, alreadyReflected, replayed, conflict, refused, changedContent, pending,
@@ -528,7 +664,9 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancest
                     raise SaveRejected(f'{c} was already consumed by {consumed[c]}; it cannot be applied again in another form (fail closed)')
     if _after_preflight:
         _after_preflight()  # test-only interleaving point: after the preflight, before any write
-    order = {'remove': 0, 'pair': 1, 'add': 2, 'proposal': 3, 'plan': 4, 'task': 5}
+    order = {'remove': 0, 'pair': 1, 'plan': 2, 'condition': 3, 'add': 4, 'proposal': 5, 'task': 6}  # the plan first: later units use its card mapping
+    plan_record = w3.operation(conn, unit_operation_id(sid, 'plan:milestones'))
+    mapping = dict(plan_record['result'].get('newCards', {})) if plan_record and plan_record['status'] == 'done' else {}
     rank = lambda uid: (order['pair'] if 'pair' in units[uid] else order[units[uid]['group']['kind']], uid)
     out = {k: [] for k in ('applied', 'alreadyReflected', 'replayed', 'conflict', 'refused', 'changedContent', 'pending', 'unselected')}
     for uid in sorted((u for u in selected if u in pending), key=str):
@@ -537,9 +675,18 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancest
         out['refused'].append({'groupId': uid, 'error': '; '.join(unsupported[uid])})
     for uid in sorted((u for u in selected if u in units), key=rank):
         unit = units[uid]
-        kind = unit.get('group', {}).get('kind')
-        request = (unit['group']['request'] if kind == 'task' else _proposal_request(unit, sid, v3, ancestry) if kind == 'proposal'
-                   else _plan_request(unit, v3) if kind == 'plan' else _unit_request(unit, v3, save))
+        kind = 'pair' if 'pair' in unit else unit.get('group', {}).get('kind')
+        if kind == 'pair':
+            request = _unit_request(unit, v3, save)
+        else:
+            state, value = _prepare(unit, kind, sid, v3, save, ancestry, mapping, document_root)
+            if state == 'pending':
+                out['pending'].append({'groupId': uid, 'needs': value})
+                continue
+            if state == 'refused':
+                out['refused'].append({'groupId': uid, 'error': value})
+                continue
+            request = value
         request = dict(request, consumes=unit['consumes'], consumerScope=sid)
         op = unit_operation_id(sid, uid)
         known = w3.operation(conn, op)
@@ -556,6 +703,8 @@ def apply_groups(conn, save, selected, actor, evidence, resolutions=None, ancest
             out['conflict' if str(error).startswith('conflict on') else 'refused'].append(entry)
             continue
         entry = {'groupId': uid, 'operationId': op, 'result': result}
+        if kind == 'plan':
+            mapping.update(result.get('newCards', {}))
         if known:
             out['replayed'].append(entry)
         elif result.get('applied') == [] and result.get('kind') == 'update_task':

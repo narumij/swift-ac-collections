@@ -31,6 +31,9 @@ const PATCHES = [
   ['planRebuild', 'function planRebuild(d,versions){',
    "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
    'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them instead of leaving stale ones'],
+  ['renderPlanTools', "const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);",
+   "const after=el('select');after.id='planAddVersionAfter';options(after,['（先頭）'].concat(versions),versions[versions.length-1]);const la=el('label','追加する位置（この版の後）');la.append(after);box.append(la);const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);{const s=doc.milestones.find(m=>m.id==='START-'+name);if(s)s.planPosition={after:after.value==='（先頭）'?null:after.value};}",
+   'P5 renderPlanTools(): 版を追加 gets an explicit position select (insert after a version, or first); the choice is kept as planPosition on the new START (OPS-176; the DB version order is authoritative)'],
 ];
 const MIRRORED = ['M4 the proposal dialog: its add line (addProposal, then addMilestoneRelation or addProposalEdge for the chosen place) is called directly; the dialog DOM is not built','M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
   'M2 the page load: check(d); initializeRelationBaseline(d); doc=d (as the open-file handler does)',
@@ -56,16 +59,16 @@ function context() {
   const ids = new Map(), log = [], c = { log, console };
   c.document = { createElement: t => new Node(t, ids), createElementNS: (ns, t) => new Node(t, ids) };
   vm.createContext(c);
-  for (const id of ['editor', 'taskPicker', 'selectedTitle', 'sourceInfo']) new Node(id === 'taskPicker' ? 'select' : 'div', ids).id = id;
+  for (const id of ['editor', 'taskPicker', 'selectedTitle', 'sourceInfo', 'planTools']) new Node(id === 'taskPicker' ? 'select' : 'div', ids).id = id;
   const names = ['el', 'options', 'field', 'documentLinks', 'proposalNodes', 'initializeRelationBaseline', 'planParts', 'planVersions', 'milestonePlanChanges', 'graphData', 'delta',
-    'rewireRelation', 'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
+    'rewireRelation', 'planAddCard', 'planAddVersion', 'renderPlanTools', 'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
     'removeRelation', 'isMilestoneLink', 'linkLabel', 'dataRelation', 'isChainLink', 'addMilestoneRelation', 'editorViewModel', 'milestonePlanBlocks', 'proposalBlocks',
     'drawEditor', 'editorAct', 'editor', 'canonicalDifferences', 'editsReflected'];
-  const src = [line('const STATES='), line('const PLAN_DIR='), 'const PLAN_SOURCE_FILE=PLAN_SOURCE;', line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), patched('check'), patched('banner'), ...names.map(n => n === 'planRebuild' ? patched(n) : fn(n))].join('\n') +
+  const src = [line('const STATES='), line('const PLAN_DIR='), 'const PLAN_SOURCE_FILE=PLAN_SOURCE;', line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), line('let planDraft='), patched('check'), patched('banner'), ...names.map(n => n === 'planRebuild' || n === 'renderPlanTools' ? patched(n) : fn(n))].join('\n') +
     '\nconst copy=x=>JSON.parse(JSON.stringify(x));var doc=null,selected=null,dirty=false,formDirty=false,workspace=null,canonical=null;' +
     'function $(id){return __ids.get(id)||null;}function report(m,e){log.push(["report",m,!!e]);}function confirm(m){log.push(["confirm",m]);return true;}' +
     'function renderCanonicalRestartSuggestion(){}function renderCanonicalNotice(){}function showNeighborhood(id){log.push(["neighborhood",id]);}function openDocument(p){}' +
-    'function render(){editor();}function select(id){if(formDirty&&!confirm("x"))return;formDirty=false;selected=id;render();}' +
+    'function render(){editor();renderPlanTools();}function select(id){if(formDirty&&!confirm("x"))return;formDirty=false;selected=id;render();}' +
     'function __load(d){check(d);initializeRelationBaseline(d);doc=d;canonical=copy(d.source);selected=d.tasks[0]&&d.tasks[0].id;dirty=false;formDirty=false;}' +
     'function __save(){if(formDirty)throw Error("入力中の変更を先に「変更を適用」で確定してください。");check(doc);const out=copy(doc);out.exportedAt=new Date().toISOString();out.changes=delta();out.studioSave={parent:null};return out;}' +
     'function __state(){return {doc,selected,dirty,formDirty};}function __setCanonical(s){canonical=copy(s);}' +
@@ -79,18 +82,20 @@ function context() {
   return c;
 }
 const all = n => [n, ...n.children.flatMap(all)];
-function press(c, text) { const b = all(c.__ids.get('editor')).find(n => n.tag === 'button' && n.textContent === text); if (!b) throw Error('button not found: ' + text); b.onclick(); }
+function press(c, text, where = 'editor') { const b = all(c.__ids.get(where)).find(n => n.tag === 'button' && n.textContent === text); if (!b) throw Error('button not found: ' + text); b.onclick(); }
 
 function edit(exportFile, actionsFile, out) {
   const c = context(), d = JSON.parse(fs.readFileSync(exportFile, 'utf8'));
   c.__load(d);
   c.editor();
+  c.renderPlanTools();
   for (const a of JSON.parse(fs.readFileSync(actionsFile, 'utf8'))) {
     if (a.select) { const p = c.__ids.get('taskPicker'); p.value = a.select; p.onchange(); }
     if (a.set) for (const [k, v] of Object.entries(a.set)) { const n = c.__ids.get(k); if (!n) throw Error('field not found: ' + k); n.value = v; if (n.oninput) n.oninput(); }
     if (a.apply) press(c, '変更を適用');
     if (a.addPrerequisite) { c.__ids.get('prerequisite').value = a.addPrerequisite; press(c, '前提を追加'); }
     if (a.press) press(c, a.press);
+    if (a.pressTool) press(c, a.pressTool, 'planTools');  // the card list's plan tools (renderPlanTools)
     if (a.remove) c.__remove(a.remove.prerequisite, a.remove.successor);
     if (a.rewire) c.__rewire(a.rewire.from, a.rewire.to);
     if (a.proposal) c.__proposal(a.proposal.title, a.proposal.memo || '', a.proposal.place || '');

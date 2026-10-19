@@ -95,8 +95,9 @@ try{c.check(JSON.parse(fs.readFileSync(process.argv[2],'utf8')));console.log('ac
                               str(HERE.parent.parent / 'index.template.html'), str(exported)], capture_output=True, text=True, timeout=60)
         self.assertTrue(out.stdout.startswith('refused'), 'the production check() does not accept a V3 export (P1 is needed)')
         save, result = self.edit([])
-        self.assertEqual(len(result['patches']), 4)  # P1-P3 (OPS-165) and P4 planRebuild (OPS-172)
+        self.assertEqual(len(result['patches']), 5)  # P1-P3 (OPS-165), P4 planRebuild (OPS-172), P5 renderPlanTools (OPS-176)
         self.assertTrue(result['patches'][3].startswith('P4 planRebuild()'))
+        self.assertTrue(result['patches'][4].startswith('P5 renderPlanTools()'))
         banner = self.latest_rows(save)['banner']
         self.assertIn('世代 ' + w3.generation(self.conn), banner)
         self.assertIn('改訂 0', banner)

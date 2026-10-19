@@ -870,54 +870,101 @@ $('closeDocument').onclick=()=>$('documentDialog').close();
 }
 
 
-function renderTaskPicker(){
- const picker=$('taskPicker');picker.replaceChildren();
- for(const t of [...graphData().nodes].sort((a,b)=>a.id.localeCompare(b.id,'en',{numeric:true}))){const option=el('option',t.id);option.value=t.id;option.title=t.item;picker.append(option);}
- picker.value=selected||'';
- picker.onchange=()=>{select(picker.value);picker.value=selected||'';};
-}
-function editor(){renderTaskPicker();const box=$('editor');box.replaceChildren();const t=graphData().nodes.find(t=>t.id===selected);if(!t)return;
- {const look=el('button','接続を見る');look.title='このノードの前提・後続を「接続を見る」タブで表示します（編集内容は変わりません）';look.onclick=()=>showNeighborhood(t.id);const w=el('div',undefined,'buttons');w.append(look);box.append(w);}
- if(t.proposal){proposalEditor(t);return;}
- if(t.kind==='milestone'){$('selectedTitle').textContent=t.item;if(planParts(t)||t.planned)milestonePlanEditor(box,t);box.append(el('p',t.planned?'マイルストーンの計画案（編集版だけにあり、正本はまだありません）':'マイルストーン · 正本の内容（下の計画欄の変更は編集版の案で、正本は変わりません）','muted'),el('h3','条件・判断'),el('pre',t.condition),el('h3','正本'),documentLinks(t.detail));for(const e of graphData().edges.filter(e=>e.successor===t.id||e.prerequisite===t.id)){const d=dataRelation(e);box.append(el('p',d.prerequisite+' → '+d.successor+' / '+linkLabel(d)),el('pre',e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));}return;}
-$('selectedTitle').textContent=t.id+(t.permanent?' · 常設タスク':'');const row=el('div',undefined,'row');box.append(row);const a=el('div'),b=el('div');row.append(a,b);let state=field(a,'状態','state','select','');options(state,[...new Set([...STATES,t.state])],t.state);field(b,'担当','owner','input',t.owner);box.append(el('h3','項目'),el('p',t.item),el('h3','条件・判断の原文'),el('pre',t.condition));
- const apply=el('button','変更を適用','primary'),wrap=el('div',undefined,'buttons');wrap.append(apply);box.append(wrap);apply.onclick=()=>{for(const k of ['state','owner'])t[k]=$(k).value;dirty=true;formDirty=false;render();};
- box.append(el('h3','詳細正本・出典'),documentLinks(t.detail),el('p',doc.source.path+':'+t.sourceLine, 'muted'));
- const details=el('details'),sum=el('summary','生成時の行を読む');details.append(sum,el('pre',t.raw));box.append(details);
- box.append(el('h3','このタスクの前提'));for(const e of doc.edges.filter(e=>e.successor===t.id)){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}removeRelation(e);};div.append(remove,el('strong',e.prerequisite+' · '+e.flow),el('p',(e.conditionReview?'条件：AIと相談待ち。元の条件：':'')+(e.constraint||'未設定'),'muted'));box.append(div);}
- const r=el('div',undefined,'row'),left=el('div'),right=el('div');r.append(left,right);box.append(r);const pre=field(left,'前提タスク','prerequisite','select','');options(pre,doc.tasks.filter(x=>x.id!==t.id).map(x=>x.id),doc.tasks.find(x=>x.id!==t.id)?.id);const flow=field(right,'合流位置','flow','select','');options(flow,['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE');box.append(el('p','依存条件はAIと相談して決めます。追加した接続は相談待ちとして保存されます。','muted'));for(const id of ['prerequisite','flow'])$(id).oninput=null;
- const add=el('button','前提を追加');box.append(add);add.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}const edge={prerequisite:pre.value,successor:t.id,flow:flow.value,constraint:'',conditionReview:'相談待ち',raw:null,sourceLine:null};doc.edges.push(edge);try{check(doc);}catch(e){doc.edges.pop();report(e.message,true);return;}dirty=true;render();};
- box.append(el('h3','このタスクがつながる到達点（このタスク → 到達点）'));const links=(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id);if(!links.length)box.append(el('p','まだありません。','muted'));
- for(const e of links){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.successor),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
- const mr=el('div',undefined,'row'),mleft=el('div'),mright=el('div');mr.append(mleft,mright);box.append(mr);const gateOf=new Map((doc.milestoneRelations||[]).filter(r=>r.prerequisite.startsWith('END-')&&r.successor.startsWith('GATE-')).map(r=>[r.prerequisite,r.successor]));const targets=(doc.milestones||[]).filter(m=>!m.id.startsWith('GATE-')&&!m.id.startsWith('START-'));const target=field(mleft,'到達点（版のENDか途中のカード。版ゲートへは直接つなげない）','milestoneTarget','select','');options(target,targets.map(m=>m.id),targets.find(m=>m.id.startsWith('END-')&&m.state!=='DONE')?.id||targets[0]?.id);for(const o of target.children){const g=gateOf.get(o.value);if(g)o.textContent=o.value+'（→ '+g+'）';}$('milestoneTarget').oninput=null;mright.append(el('p','線は関係の所在だけを示します。完了・着手・再開の条件は、取り込み時にAIと相談して正本（Registryのマイルストーン接続）の制約文へ書きます。','muted'));
- const connect=el('button','到達点へつなぐ');box.append(connect);connect.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,target.value);dirty=true;render();}catch(e){report(e.message,true);}};
+// OPS-154 stage 3: the editor as a view model. editorViewModel reads only its inputs (the edit version, the graph nodes and
+// lines as drawn, the selection) and returns the picker and the editor as blocks; drawEditor builds the DOM and returns intents;
+// editorAct changes the Model by IDs with the existing functions. Typed values live in the drawn fields, not in the Model, so the
+// editor is not redrawn while formDirty (a version change used to redraw it and lose the typed input).
+const EDITOR_GUARD='先に入力の「変更を適用」を押してください。';
+function editorViewModel({data,graph,selected}){
+ const picker={options:[...graph.nodes].sort((a,b)=>a.id.localeCompare(b.id,'en',{numeric:true})).map(t=>({value:t.id,title:t.item})),value:selected||''};
+ const t=graph.nodes.find(t=>t.id===selected);if(!t)return {picker,title:null,blocks:[]};
+ const text=(tag,text,cls)=>({type:'text',tag,text,cls}),muted=s=>text('p',s,'muted'),pick=(label,id,values,value,extra)=>({type:'field',label,id,control:'select',value:'',options:{values,value,...extra},typing:false});
+ const edge=(strong,note,relation)=>({type:'edge',strong,note,intent:{type:'removeRelation',relation}}),none=list=>list.length?[]:[muted('まだありません。')];
+ const blocks=[{type:'buttons',items:[{text:'接続を見る',title:'このノードの前提・後続を「接続を見る」タブで表示します（編集内容は変わりません）',intent:{type:'look',id:t.id}}]}];
+ if(t.proposal)return {picker,title:t.id+' · 追加案',blocks:blocks.concat(proposalBlocks(data,t))};
+ if(t.kind==='milestone'){
+  if(planParts(t)||t.planned)blocks.push(...milestonePlanBlocks(data,t));
+  blocks.push(muted(t.planned?'マイルストーンの計画案（編集版だけにあり、正本はまだありません）':'マイルストーン · 正本の内容（下の計画欄の変更は編集版の案で、正本は変わりません）'),text('h3','条件・判断'),text('pre',t.condition),text('h3','正本'),{type:'documents',detail:t.detail});
+  for(const e of graph.edges.filter(e=>e.successor===t.id||e.prerequisite===t.id)){const d=dataRelation(e);blocks.push(text('p',d.prerequisite+' → '+d.successor+' / '+linkLabel(d,data)),text('pre',e.constraint+(e.source?'\n出典：'+e.source.path+':'+e.source.line:'')));}
+  return {picker,title:t.item,blocks};
+ }
+ const typed=(label,id,control,value,options)=>({type:'field',label,id,control,value,options,typing:true}),rels=data.milestoneRelations||[],ms=data.milestones||[];
+ blocks.push({type:'row',columns:[[typed('状態','state','select','',{values:[...new Set([...STATES,t.state])],value:t.state})],[typed('担当','owner','input',t.owner)]]},
+  text('h3','項目'),text('p',t.item),text('h3','条件・判断の原文'),text('pre',t.condition),
+  {type:'buttons',items:[{text:'変更を適用',cls:'primary',intent:{type:'applyTask',id:t.id,read:{state:'state',owner:'owner'}}}]},
+  text('h3','詳細正本・出典'),{type:'documents',detail:t.detail},muted(data.source.path+':'+t.sourceLine),{type:'details',summary:'生成時の行を読む',text:t.raw},text('h3','このタスクの前提'));
+ for(const e of data.edges.filter(e=>e.successor===t.id))blocks.push(edge(e.prerequisite+' · '+e.flow,(e.conditionReview?'条件：AIと相談待ち。元の条件：':'')+(e.constraint||'未設定'),{...e}));
+ blocks.push({type:'row',columns:[[pick('前提タスク','prerequisite',data.tasks.filter(x=>x.id!==t.id).map(x=>x.id),data.tasks.find(x=>x.id!==t.id)?.id)],[pick('合流位置','flow',['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE')]]},
+  muted('依存条件はAIと相談して決めます。追加した接続は相談待ちとして保存されます。'),{type:'button',text:'前提を追加',intent:{type:'addPrerequisite',id:t.id,read:{prerequisite:'prerequisite',flow:'flow'}}});
+ const links=rels.filter(e=>e.prerequisite===t.id),note=e=>(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定');
+ blocks.push(text('h3','このタスクがつながる到達点（このタスク → 到達点）'),...none(links),...links.map(e=>edge(e.successor,note(e),{...e,flow:'PARALLEL_JOIN'})));
+ const gateOf=new Map(rels.filter(r=>r.prerequisite.startsWith('END-')&&r.successor.startsWith('GATE-')).map(r=>[r.prerequisite,r.successor])),targets=ms.filter(m=>!m.id.startsWith('GATE-')&&!m.id.startsWith('START-'));
+ blocks.push({type:'row',columns:[[pick('到達点（版のENDか途中のカード。版ゲートへは直接つなげない）','milestoneTarget',targets.map(m=>m.id),targets.find(m=>m.id.startsWith('END-')&&m.state!=='DONE')?.id||targets[0]?.id,{labels:Object.fromEntries(targets.filter(m=>gateOf.has(m.id)).map(m=>[m.id,m.id+'（→ '+gateOf.get(m.id)+'）']))})],
+  [muted('線は関係の所在だけを示します。完了・着手・再開の条件は、取り込み時にAIと相談して正本（Registryのマイルストーン接続）の制約文へ書きます。')]]},{type:'button',text:'到達点へつなぐ',intent:{type:'milestoneRelation',id:t.id,read:{target:'milestoneTarget'}}});
  // Milestone as prerequisite (OPS-084): an intermediate card → this task. Shown and added separately so the arrow direction is explicit.
- box.append(el('h3','マイルストーンの後に続く（マイルストーン → このタスク）'));const after=(doc.milestoneRelations||[]).filter(e=>e.successor===t.id&&!e.prerequisite.startsWith('START-'));if(!after.length)box.append(el('p','まだありません。','muted'));
- for(const e of after){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.prerequisite+' → '+t.id),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
- const cards=(doc.milestones||[]).filter(m=>!/^(START|END|GATE)-/.test(m.id)).map(m=>m.id);if(cards.length){const ar=el('div',undefined,'row'),aleft=el('div');ar.append(aleft);box.append(ar);const fromSel=field(aleft,'前提にする途中のカード（このカードの後にこのタスクが続く）','milestoneSource','select','');options(fromSel,cards,cards[0]);fromSel.oninput=null;
-  const fromBtn=el('button','マイルストーンを前提にする');box.append(fromBtn);fromBtn.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,fromSel.value,'from');dirty=true;render();}catch(e){report(e.message,true);}};}
+ const after=rels.filter(e=>e.successor===t.id&&!e.prerequisite.startsWith('START-'));
+ blocks.push(text('h3','マイルストーンの後に続く（マイルストーン → このタスク）'),...none(after),...after.map(e=>edge(e.prerequisite+' → '+t.id,note(e),{...e,flow:'PARALLEL_JOIN'})));
+ const cards=ms.filter(m=>!/^(START|END|GATE)-/.test(m.id)).map(m=>m.id);
+ if(cards.length)blocks.push({type:'row',columns:[[pick('前提にする途中のカード（このカードの後にこのタスクが続く）','milestoneSource',cards,cards[0])]]},{type:'button',text:'マイルストーンを前提にする',intent:{type:'milestoneRelation',id:t.id,direction:'from',read:{target:'milestoneSource'}}});
  // Separate item (OPS-069 step 3, user correction): where this task starts. The stored line is START-x → task; the figure draws it out of the release gate before that version.
- box.append(el('h3','このタスクが始まる版（START）'));const startLinks=(doc.milestoneRelations||[]).filter(e=>e.successor===t.id&&e.prerequisite.startsWith('START-'));if(!startLinks.length)box.append(el('p','まだありません。','muted'));
- for(const e of startLinks){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation({...e,flow:'PARALLEL_JOIN'});div.append(remove,el('strong',e.prerequisite),el('p',(e.conditionReview?'条件：AIと相談待ち。':'')+(e.constraint||'条件未設定'),'muted'));box.append(div);}
- const sr=el('div',undefined,'row'),sleft=el('div'),sright=el('div');sr.append(sleft,sright);box.append(sr);const startIds=(doc.milestones||[]).filter(m=>m.id.startsWith('START-')).map(m=>m.id);
- const startSel=field(sleft,'開始する版のSTART（この版の作業区間で始める仕事）','startSource','select','');options(startSel,startIds,(doc.milestones||[]).find(m=>m.id.startsWith('START-')&&m.state!=='DONE')?.id||startIds[startIds.length-1]);$('startSource').oninput=null;sright.append(el('p','図ではSTARTは描かれず、その版の前の版ゲートから線が出ます。開始条件は取り込み時に制約文（「開始側。」で始める）へ書きます。','muted'));
- const startBtn=el('button','STARTからつなぐ');box.append(startBtn);startBtn.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{doc=addMilestoneRelation(doc,t.id,startSel.value);dirty=true;render();}catch(e){report(e.message,true);}};
+ const startLinks=rels.filter(e=>e.successor===t.id&&e.prerequisite.startsWith('START-')),startIds=ms.filter(m=>m.id.startsWith('START-')).map(m=>m.id);
+ blocks.push(text('h3','このタスクが始まる版（START）'),...none(startLinks),...startLinks.map(e=>edge(e.prerequisite,note(e),{...e,flow:'PARALLEL_JOIN'})),
+  {type:'row',columns:[[pick('開始する版のSTART（この版の作業区間で始める仕事）','startSource',startIds,ms.find(m=>m.id.startsWith('START-')&&m.state!=='DONE')?.id||startIds[startIds.length-1])],
+   [muted('図ではSTARTは描かれず、その版の前の版ゲートから線が出ます。開始条件は取り込み時に制約文（「開始側。」で始める）へ書きます。')]]},{type:'button',text:'STARTからつなぐ',intent:{type:'milestoneRelation',id:t.id,read:{target:'startSource'}}});
+ return {picker,title:t.id+(t.permanent?' · 常設タスク':''),blocks};
 }
+// The view: draws the supplied view model and returns intents with the values of the fields each intent reads.
+function drawEditor(box,title,picker,vm,act){
+ picker.replaceChildren();for(const o of vm.picker.options){const option=el('option',o.value);option.value=o.value;option.title=o.title;picker.append(option);}
+ picker.value=vm.picker.value;picker.onchange=()=>act({type:'select',id:picker.value});
+ box.replaceChildren();if(vm.title!==null)title.textContent=vm.title;
+ const fields=new Map(),press=intent=>()=>act(intent,Object.fromEntries(Object.entries(intent.read||{}).map(([k,id])=>[k,fields.get(id).value])));
+ const button=(b,parent)=>{const n=el('button',b.text,b.cls);if(b.title)n.title=b.title;n.onclick=press(b.intent);parent.append(n);};
+ const draw=(b,parent)=>{
+  if(b.type==='text')parent.append(el(b.tag,b.text,b.cls));
+  else if(b.type==='documents')parent.append(documentLinks(b.detail));
+  else if(b.type==='details'){const d=el('details');d.append(el('summary',b.summary),el('pre',b.text));parent.append(d);}
+  else if(b.type==='buttons'){const w=el('div',undefined,'buttons');for(const x of b.items)button(x,w);parent.append(w);}
+  else if(b.type==='button')button(b,parent);
+  else if(b.type==='edge'){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=press(b.intent);div.append(remove,el('strong',b.strong),el('p',b.note,'muted'));parent.append(div);}
+  else if(b.type==='row'){const r=el('div',undefined,'row');parent.append(r);for(const column of b.columns){const c=el('div');r.append(c);for(const x of column)draw(x,c);}}
+  else if(b.type==='field'){const e=field(parent,b.label,b.id,b.control,b.value);if(b.options){options(e,b.options.values,b.options.value);for(const o of e.children){const label=b.options.labels?.[o.value];if(label)o.textContent=label;}}if(!b.typing)e.oninput=null;fields.set(b.id,e);}
+ };
+ for(const b of vm.blocks)draw(b,box);
+}
+// The presenter: guards and the existing Model changes, unchanged; the intent names the target by ID.
+function editorAct(intent,v={}){
+ const guarded=()=>{if(formDirty){report(EDITOR_GUARD,true);return true;}return false;};
+ const change=f=>{try{f();dirty=true;render();}catch(e){report(e.message,true);}};
+ switch(intent.type){
+  case 'select':select(intent.id);$('taskPicker').value=selected||'';return;
+  case 'look':showNeighborhood(intent.id);return;
+  case 'applyTask':{const t=doc.tasks.find(x=>x.id===intent.id);for(const k of ['state','owner'])t[k]=v[k];dirty=true;formDirty=false;render();return;}
+  case 'removeRelation':removeRelation(intent.relation);return;
+  case 'addPrerequisite':{if(guarded())return;const edge={prerequisite:v.prerequisite,successor:intent.id,flow:v.flow,constraint:'',conditionReview:'相談待ち',raw:null,sourceLine:null};doc.edges.push(edge);try{check(doc);}catch(e){doc.edges.pop();report(e.message,true);return;}dirty=true;render();return;}
+  case 'milestoneRelation':if(guarded())return;change(()=>{doc=addMilestoneRelation(doc,intent.id,v.target,intent.direction);});return;
+  case 'planEditText':change(()=>{doc=planEditText(doc,intent.id,v.item,v.condition);formDirty=false;});return;
+  case 'planReorder':if(guarded())return;change(()=>{doc=planReorder(doc,intent.id,intent.step);});return;
+  case 'planMove':if(guarded())return;change(()=>{doc=planMove(doc,intent.id,v.version);});return;
+  case 'updateProposal':change(()=>{doc=updateProposal(doc,intent.id,v.title,v.memo);formDirty=false;});return;
+  case 'removeProposal':if(!confirm(intent.id+' を取り消しますか？ この案につながる線も一緒に消えます。'))return;change(()=>{doc=removeProposal(doc,intent.id);selected=doc.tasks[0]?.id;formDirty=false;});return;
+  case 'proposalEdge':if(guarded())return;change(()=>{doc=intent.side==='pre'?addProposalEdge(doc,v.other,intent.id,v.flow):addProposalEdge(doc,intent.id,v.other,v.flow);});return;
+ }
+}
+function editor(){if(formDirty)return;drawEditor($('editor'),$('selectedTitle'),$('taskPicker'),editorViewModel({data:doc,graph:graphData(),selected}),editorAct);}
 // Editor for a task proposal (OPS-081): title/memo correction, cancellation, and lines to tasks, proposals and milestones.
 // Plan editor for an intermediate card (OPS-086): name / arrival condition as a proposal, order within its version, move to another version.
-function milestonePlanEditor(box,t){
- const parts=planParts(t);box.append(el('h3','計画の編集（編集版の案・未反映）'));
- if(!parts){box.append(el('p','計画で追加した版の始点・終点です。並び順と前後の版へのつなぎ方は未決のため、ここでは編集しません。','muted'));return;}
- const base=((doc.baseline&&doc.baseline.milestones)||[]).find(m=>m.id===t.id);
- box.append(el('p','計画上の置き場所：'+t.gate+(base&&base.gate!==t.gate?'（正本では '+base.gate+'）':base?'':'（新しいカード）'),'muted'));
- const name=field(box,'名前','planItem','input',t.item),cond=field(box,'到達条件の案（空欄なら変更なし）','planCondition','textarea',t.planCondition||'');
- const guard=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return false;}return true;};
- const apply=el('button','名前・条件を適用','primary'),up=el('button','前へ'),down=el('button','後へ'),wrap=el('div',undefined,'buttons');wrap.append(apply,up,down);box.append(wrap);
- apply.onclick=()=>{try{doc=planEditText(doc,t.id,name.value,cond.value);dirty=true;formDirty=false;render();}catch(e){report(e.message,true);}};
- const step=n=>()=>{if(!guard())return;try{doc=planReorder(doc,t.id,n);dirty=true;render();}catch(e){report(e.message,true);}};up.onclick=step(-1);down.onclick=step(1);
- const others=planVersions(doc).filter(v=>v!==parts.version);if(others.length){const r=el('div',undefined,'row'),left=el('div');r.append(left);box.append(r);const sel=field(left,'別の版へ移動（移動先の最後に入ります）','planVersion','select','');options(sel,others,others[0]);sel.oninput=null;
-  const mv=el('button','この版へ移動');box.append(mv);mv.onclick=()=>{if(!guard())return;try{doc=planMove(doc,t.id,sel.value);dirty=true;render();}catch(e){report(e.message,true);}};}
- box.append(el('p','IDとtaskからの接続はそのまま保ちます。task→ENDの接続は動きません。実際のファイルの移動・改名は、取り込み時にAIが行います。','muted'));
+function milestonePlanBlocks(data,t){
+ const parts=planParts(t),text=(tag,s,cls)=>({type:'text',tag,text:s,cls}),blocks=[text('h3','計画の編集（編集版の案・未反映）')];
+ if(!parts)return blocks.concat([text('p','計画で追加した版の始点・終点です。並び順と前後の版へのつなぎ方は未決のため、ここでは編集しません。','muted')]);
+ const base=((data.baseline&&data.baseline.milestones)||[]).find(m=>m.id===t.id);
+ blocks.push(text('p','計画上の置き場所：'+t.gate+(base&&base.gate!==t.gate?'（正本では '+base.gate+'）':base?'':'（新しいカード）'),'muted'),
+  {type:'field',label:'名前',id:'planItem',control:'input',value:t.item,typing:true},{type:'field',label:'到達条件の案（空欄なら変更なし）',id:'planCondition',control:'textarea',value:t.planCondition||'',typing:true},
+  {type:'buttons',items:[{text:'名前・条件を適用',cls:'primary',intent:{type:'planEditText',id:t.id,read:{item:'planItem',condition:'planCondition'}}},{text:'前へ',intent:{type:'planReorder',id:t.id,step:-1}},{text:'後へ',intent:{type:'planReorder',id:t.id,step:1}}]});
+ const others=planVersions(data).filter(v=>v!==parts.version);
+ if(others.length)blocks.push({type:'row',columns:[[{type:'field',label:'別の版へ移動（移動先の最後に入ります）',id:'planVersion',control:'select',value:'',options:{values:others,value:others[0]},typing:false}]]},{type:'button',text:'この版へ移動',intent:{type:'planMove',id:t.id,read:{version:'planVersion'}}});
+ blocks.push(text('p','IDとtaskからの接続はそのまま保ちます。task→ENDの接続は動きません。実際のファイルの移動・改名は、取り込み時にAIが行います。','muted'));
+ return blocks;
 }
 // Card-list tools (OPS-086): add an intermediate card to a version, or add an unconnected version.
 function renderPlanTools(){
@@ -934,27 +981,25 @@ function renderPlanTools(){
  const addVer=el('button','版を追加');box.append(addVer);addVer.onclick=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}try{const name=vn.value.trim();doc=planAddVersion(doc,vn.value);planDraft.versionName='';dirty=true;render();report('版 '+name+' を計画に追加しました（つながっていない版です）。');}catch(e){report(e.message,true);}};
  const changes=milestonePlanChanges(doc);box.append(el('p',changes.length?'計画の変更 '+changes.length+'件（保存すると取り込み用の差分に入ります）':'計画の変更はまだありません。','muted'));
 }
-function proposalEditor(t){
- const box=$('editor');$('selectedTitle').textContent=t.id+' · 追加案';
- box.append(el('p','正式採番前の追加案です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。状態・担当は取り込み時に決めます。','muted'));
- const title=field(box,'タイトル（必須）','proposalTitle','input',t.item),memo=field(box,'メモ','proposalMemo','textarea',t.memo);
- const wrap=el('div',undefined,'buttons'),apply=el('button','変更を適用','primary'),cancel=el('button','この追加案を取り消す');wrap.append(apply,cancel);box.append(wrap);
- apply.onclick=()=>{try{doc=updateProposal(doc,t.id,title.value,memo.value);dirty=true;formDirty=false;render();}catch(e){report(e.message,true);}};
- cancel.onclick=()=>{if(!confirm(t.id+' を取り消しますか？ この案につながる線も一緒に消えます。'))return;try{doc=removeProposal(doc,t.id);selected=doc.tasks[0]?.id;dirty=true;formDirty=false;render();}catch(e){report(e.message,true);}};
- const guard=()=>{if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return false;}return true;};
- const others=doc.tasks.map(x=>x.id).concat(proposalNodes(doc).map(x=>x.id)).filter(id=>id!==t.id);
- const listEdges=(heading,edges,end)=>{box.append(el('h3',heading));if(!edges.length)box.append(el('p','まだありません。','muted'));for(const e of edges){const div=el('div',undefined,'edge-row'),remove=el('button','削除');remove.onclick=()=>removeRelation(isMilestoneLink(e)?{...e,flow:'PARALLEL_JOIN'}:e);div.append(remove,el('strong',end(e)+(e.flow&&!isMilestoneLink(e)?' · '+e.flow:'')),el('p','条件：AIと相談待ち','muted'));box.append(div);}};
- const addEdgeRow=(label,id,onAdd)=>{const r=el('div',undefined,'row'),left=el('div'),right=el('div');r.append(left,right);box.append(r);const pick=field(left,label,id,'select','');options(pick,others,others[0]);const flow=field(right,'合流位置',id+'Flow','select','');options(flow,['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE');pick.oninput=null;flow.oninput=null;const b=el('button',label+'に追加');box.append(b);b.onclick=()=>{if(!guard())return;try{doc=onAdd(pick.value,flow.value);dirty=true;render();}catch(e){report(e.message,true);}};};
- listEdges('この案の前提',doc.edges.filter(e=>e.successor===t.id),e=>e.prerequisite);
- if(others.length)addEdgeRow('前提','proposalPre',(id,flow)=>addProposalEdge(doc,id,t.id,flow));
- listEdges('この案を前提にする後続',doc.edges.filter(e=>e.prerequisite===t.id),e=>e.successor);
- if(others.length)addEdgeRow('後続','proposalNext',(id,flow)=>addProposalEdge(doc,t.id,id,flow));
+function proposalBlocks(data,t){
+ const muted=s=>({type:'text',tag:'p',text:s,cls:'muted'}),pick=(label,id,values,value)=>({type:'field',label,id,control:'select',value:'',options:{values,value},typing:false});
+ const blocks=[muted('正式採番前の追加案です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。状態・担当は取り込み時に決めます。'),
+  {type:'field',label:'タイトル（必須）',id:'proposalTitle',control:'input',value:t.item,typing:true},{type:'field',label:'メモ',id:'proposalMemo',control:'textarea',value:t.memo,typing:true},
+  {type:'buttons',items:[{text:'変更を適用',cls:'primary',intent:{type:'updateProposal',id:t.id,read:{title:'proposalTitle',memo:'proposalMemo'}}},{text:'この追加案を取り消す',intent:{type:'removeProposal',id:t.id}}]}];
+ const others=data.tasks.map(x=>x.id).concat(proposalNodes(data).map(x=>x.id)).filter(id=>id!==t.id),link=e=>isMilestoneLink(e,data);
+ const listEdges=(heading,edges,end)=>{blocks.push({type:'text',tag:'h3',text:heading});if(!edges.length)blocks.push(muted('まだありません。'));for(const e of edges)blocks.push({type:'edge',strong:end(e)+(e.flow&&!link(e)?' · '+e.flow:''),note:'条件：AIと相談待ち',intent:{type:'removeRelation',relation:link(e)?{...e,flow:'PARALLEL_JOIN'}:{...e}}});};
+ const addEdgeRow=(label,id,side)=>blocks.push({type:'row',columns:[[pick(label,id,others,others[0])],[pick('合流位置',id+'Flow',['SEQUENCE','PARALLEL_JOIN'],'SEQUENCE')]]},{type:'button',text:label+'に追加',intent:{type:'proposalEdge',id:t.id,side,read:{other:id,flow:id+'Flow'}}});
+ listEdges('この案の前提',data.edges.filter(e=>e.successor===t.id),e=>e.prerequisite);
+ if(others.length)addEdgeRow('前提','proposalPre','pre');
+ listEdges('この案を前提にする後続',data.edges.filter(e=>e.prerequisite===t.id),e=>e.successor);
+ if(others.length)addEdgeRow('後続','proposalNext','next');
  // Milestones on both sides (OPS-084): rows show the arrow so the direction cannot be mistaken.
- listEdges('マイルストーンとの接続',(doc.milestoneRelations||[]).filter(e=>e.prerequisite===t.id||e.successor===t.id),e=>e.prerequisite===t.id?t.id+' → '+e.successor:e.prerequisite+' → '+t.id);
- const ms=doc.milestones||[],ahead=ms.filter(m=>!/^(START|GATE)-/.test(m.id)).map(m=>m.id),behind=ms.filter(m=>!/^(END|GATE)-/.test(m.id)).map(m=>m.id);
- const msRow=(label,id,list,initial,button,direction)=>{if(!list.length)return;const r=el('div',undefined,'row'),left=el('div');r.append(left);box.append(r);const sel=field(left,label,id,'select','');options(sel,list,initial||list[0]);sel.oninput=null;const b=el('button',button);box.append(b);b.onclick=()=>{if(!guard())return;try{doc=addMilestoneRelation(doc,t.id,sel.value,direction);dirty=true;render();}catch(e){report(e.message,true);}};};
+ listEdges('マイルストーンとの接続',(data.milestoneRelations||[]).filter(e=>e.prerequisite===t.id||e.successor===t.id),e=>e.prerequisite===t.id?t.id+' → '+e.successor:e.prerequisite+' → '+t.id);
+ const ms=data.milestones||[],ahead=ms.filter(m=>!/^(START|GATE)-/.test(m.id)).map(m=>m.id),behind=ms.filter(m=>!/^(END|GATE)-/.test(m.id)).map(m=>m.id);
+ const msRow=(label,id,list,initial,button,direction)=>{if(!list.length)return;blocks.push({type:'row',columns:[[pick(label,id,list,initial||list[0])]]},{type:'button',text:button,intent:{type:'milestoneRelation',id:t.id,direction,read:{target:id}}});};
  msRow('前提：マイルストーン → この案（途中のカードか、開始する版のSTART）','proposalSource',behind,behind.find(id=>!id.startsWith('START-')),'マイルストーンの後に続ける','from');
  msRow('後続：この案 → 到達点（ENDか途中のカード）','proposalTarget',ahead,ahead.find(id=>id.startsWith('END-')),'到達点へつなぐ');
+ return blocks;
 }
 function openProposalDialog(){
  if(formDirty){report('先に入力の「変更を適用」を押してください。',true);return;}

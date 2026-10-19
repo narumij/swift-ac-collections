@@ -309,3 +309,75 @@ H20と独立ROUND2を照合し、地図VM区切りを受入。明示sourceで大
 ## 区切り2技術受入（2026-10-19 Astra）
 
 独立評価で明示入力VM・大域doc非依存・入力非変更・固定VM描画と各intentを確認。近傍7場面baseline/契約/DOMとmaps試験PASS。Astraも近傍試験と更新後usability試験を再実行PASS。旧文字列検査2件は実際の全文title/クリック意図の検査へ更新し、製品機能の追加はなし。区切り2を受入、区切り3/4は未完了。
+
+## 姫の結果（区切り3：編集欄のVMと操作の意図、2026-10-19）
+
+2026-10-19 姫・Opus 5.5。依頼は連絡DBの`LTR-20261019-501C47221C1349CFB5FA85B790765E7F`（v1を読んで受領）。基準は`9ebf2bddb`。区切り4（共通の配線）には触れていない。ユーザーの画面・実サーバー・実DB・AGENTS.mdには触れていない。commitなし。
+
+### 変更（`index.template.html`：`e99382ee…2fcc880b`→`63e9d8b4…34263706`、変更前の写しは`/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.VNnkxn08nL/ops154s3/`）
+
+- **`editorViewModel({data, graph, selected})`**（純粋）。`milestonePlanBlocks(data, t)`と`proposalBlocks(data, t)`を使う。
+  - 返すもの：タスクの選択欄（IDの数値順、title）、見出し、欄の並び（`text`・`documents`・`details`・`buttons`・`button`・`edge`・`row`・`field`）。
+  - 欄は、種類・選択肢・初期値・ENDの選択肢の「（→ GATE-…）」の表示を持つ。打つと`formDirty`になる欄かどうか（`typing`）も持つ。
+  - 意図は対象をIDで指す。読む欄も`read`として持つ（例：`{type:'applyTask', id, read:{state:'state', owner:'owner'}}`）。
+  - 削除の意図に渡す関係は写しで、Modelの物ではない。
+  - マイルストーンの行は、描いた線（`graph.edges`）から作る。`linkLabel`と`isMilestoneLink`には`data`を渡す。
+- **`drawEditor(box, title, picker, vm, act)`**（View）：描くことと、意図を返すことだけ。
+  - 押したとき、その意図が読む欄のDOMの値を集めて`act(intent, values)`を呼ぶ。
+  - 欄は既存の`field`・`options`で作る。打つ欄だけが`formDirty`を立てる（今までどおり）。
+- **`editorAct(intent, values)`**（プレゼンター）：既存の関数で、IDを指してModelを変える。
+  - 使う関数：`removeRelation`・`check`・`addMilestoneRelation`・`planEditText`・`planReorder`・`planMove`・`updateProposal`・`removeProposal`・`addProposalEdge`・`select`・`showNeighborhood`。
+  - 変えていないもの：ガード（「先に入力の『変更を適用』を…」）・確認の文・エラーの報告・`dirty`と`formDirty`の扱い・選択の変化。
+  - 「変更を適用」は、`doc.tasks`のIDの物を変える（前は、`graphData()`のノードを通して同じ物を変えていた）。
+- **`editor()`**：VMを作ってViewに渡す。**`formDirty`の間は描き直さない**。
+- **振る舞いの変更（依頼の「版の変更でも入力を保つ」に当たる、1点）**：
+  - 前は、版の選択の`onchange`が`render()`を呼び、編集欄を作り直していたので、打っている途中の値が消えていた。区切り0のbaselineでも`inputRetention.afterVersionChange`は元の値だった。
+  - 今は打った値が残る。`render()`が`formDirty`のまま呼ばれるのは、この経路だけ。
+  - 破棄する経路では、先に`formDirty=false`にしてから描き直すので、今までどおり描き直される。破棄する経路は、選択のconfirm・ファイルを開く・正本から始める・適用・取消。
+- **変えていないもの**：保存と再開の契約、「更新」の拒否の条件、30秒の確認（バナーだけ）、`beforeunload`、計画の編集欄、連絡の画面とほかの画面、`verify.cjs`の切り出しの区間。
+
+### 試験と証拠
+
+- **新しい`test-task-view-model-editor.cjs`**（`2420a161…dc66c549`）：
+  - **互換のbaseline**：`task-view-model-editor.baseline.json`（`731c252c…e6bbc98a`）。変更前の写しから、stubのDOMと匿名のfixture bで取得した。同じ写しから2回取ってバイト単位で一致した。
+    - 11の選択について、編集欄・見出し・選択欄のDOM。
+    - 28の操作について、操作のあとのModel（JSON）・`delta()`・選択・`dirty`/`formDirty`・confirmと報告と描き直しの記録・編集欄のDOM。
+    - 操作の内訳：状態と担当の適用、前提の追加・重複・入力中の拒否、前提の削除（はい・いいえ）、到達点へ・2回目の拒否、マイルストーンを前提に、STARTから、到達点の削除、接続を見る、選択欄（入力中にいいえ）、計画の名前・空の拒否・前へ・後への端・版の移動・入力中の拒否、追加案の適用・取消（はい・いいえ）・前提・後続・マイルストーンの後・到達点とその削除・入力中の拒否。
+  - **入力の保持**：打つ→描き直しの要求（版の変更と同じ`render()`）→値が残り、Modelは変わらない→適用でModelに入る→選択のガードで破棄すると、新しい選択が描かれる。
+  - **VMの契約**：
+    - 入力を変えない。同じ入力からは同じVM。大域の`doc`と`selected`を変えてもVMは同じ。
+    - 選択欄の順。打つ欄は`state`と`owner`だけ。欄の並び。
+    - 意図がIDを指すこと、削除の関係が写しであること、到達点の3つの向き、ENDの選択肢の表示。
+    - 計画のカード（前へ/後へ・移動・打つ欄）、版ゲートに欄がないこと、追加案（前提・後続の読む欄、マイルストーンの向き）、未知の選択と選択なし。
+  - **固定VM→DOM**：要素の並び、欄の値と選択肢の表示、打つ欄だけの`oninput`。返すのは意図と、その意図が読む値だけ（選択欄も含む）。見出しなしなら見出しを残すこと。Viewのソースが`doc`・`graphData`・`formDirty`・`selected`を読まないこと。
+- **試験を先に書いた証拠**：変更前の写し（`STUDIO_TEMPLATE=/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.VNnkxn08nL/ops154s3/index.template.html`）では、baselineは一致し、入力の保持の確かめで落ちる（typed value survives a redraw request while formDirty）。
+- **否定対照**（一時コピー）。どれも落ちた。
+  - `formDirty`の間も描き直す→入力の保持の確かめで落ちる。
+  - VMが大域の`doc`を読む→「reads only its inputs」で落ちる。
+  - 適用の対象を`doc.tasks[0]`にする→baselineの「apply state and owner / editor」で落ちる。
+  - Viewが欄の値を渡さない→baselineの操作が途中でTypeErrorになって落ちる（到達点への接続ができず、削除する行がないため）。
+- **そのほか**：`node test-*.cjs`はすべてPASS。`sync.py`（verifyを含む）は成功。既存の試験で、編集欄のソースの文字列を確かめているものはなかったので、既存の試験は変えていない。
+- **隔離headless**（WebKit、`file://`、fixture b、証拠は`/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.uX7SMXJtlp/`の`check.cjs`・`results.json`・`editor.png`）：
+  - RELEASE-076の担当に打つ。地図のタブの往復・カードの並び・版の変更（「全体」）・「更新」の押下（`file://`の注意だけが出る）のあとも、「入力中の値」が残った。
+  - 適用で変更が1→2件。前提の追加で3件。追加案と計画のカードの表示。「前へ」で5件。
+  - ページのエラーは0件。
+- **区切り0の地図のbaseline**（`task-view-model-capture.cjs`と`check`、a・b）：変更の前後の生成ページで、記録した段はa・bとも完全に一致した。違うのは`inputRetention.afterVersionChange`だけで、元の値から「入力中の値」に変わった（上の振る舞いの変更）。
+  - なお、保存されている`task-view-model-maps.baseline.json`との比較では、変更の前の写しでも16か所が違っていた。たとえばbの段6・7のgraph・permanentMap・cardList。これは区切り3より前からある違いで、調べておらず、直してもいない。baselineのファイルは占有の外なので、変えていない。取得物は`/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp.uX7SMXJtlp/before-*.json`と`cap-*.json`。
+
+### 限界と、決めてほしい点
+
+- **確かめられなかったこと**：
+  - stubのDOMの`select.value`は、ブラウザの挙動を簡単にまねたもの。実際の挙動はheadlessで一部を確かめた。
+  - 実際のフォントでの見た目は見ていない（画像は1枚）。
+  - httpでの「更新」と再開の経路は、試験サーバーを起動していないので、実行していない。コードは変えていない。
+- **決めてほしい点（新しい方針の問い）**：
+  - 版の変更のあとも入力を保つため、`formDirty`の間は、編集欄の選択欄（`taskPicker`）も描き直さない。今は、版の変更で選択欄の中身が変わることはないので、表示は同じ。
+  - 将来、`formDirty`のままModelが変わる経路を足すなら、その経路で入力を残すか破棄するかを決める必要がある。
+- **区切り0のbaseline**：`afterVersionChange`を「入力中の値」として取り直すのか、上の16か所と合わせて扱うのかは、Astraに任せる。
+
+
+## 区切り3技術受入・V3開始条件充足（2026-10-19 Astra）
+
+Astraのeditor試験と独立評価で11表示/28操作、純粋VM・固定VM描画・IDによる更新・未確定入力保持を確認。関連maps/近傍試験もPASS。変更前後の地図取得物の差は入力保持の意図した改善だけで、区切り3を受入。OPS159の開始条件を満たした。
+
+将来のModel更新と未確定入力の扱いは将来の変更時に決めるもので、現行の新しいユーザー判断は不要。保存baselineとの既存16差分は区切り3の回帰ではない。盲目的に再生成せず、OPS154残り区切り4の確認事項として残す。HTTP更新/再開の実試験と共通配線も残り、OPS154全体はACTIVEを維持する。

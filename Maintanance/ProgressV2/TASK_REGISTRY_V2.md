@@ -117,6 +117,7 @@
 | `OPS-160` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry V3の隔離DB読取実験 | 隔離読取実験を補正付き受入。Astra再実行20試験成功。構造/順序/現在範囲/境界参照を確認。完全移行・更新API・実DB変更は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_READ_EXPERIMENT.md` |
 | `OPS-161` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3読取属性と更新契約の隔離試験 | 読取27/更新19試験をAstra再実行して受入。再送競合補正・使用済み番号のダミー予約を確認。本番接続/完全移行は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_CONTRACT_EXPERIMENT.md` |
 | `OPS-162` | `DONE` | Astra調整 / 姫 | [DISCOVERY] V3隔離実験から現行運用への接続差分を整理 | 接続差分を受入。次工程は現行正本の固定写し→隔離DB→意味照合に限定。画面adapter/世代・復元/本番切替は後段。本番変更なし | `Maintanance/Current/TASK_REGISTRY_V3_ADOPTION_PLAN.md` |
+| `OPS-163` | `ACTIVE` | Astra調整 / 姫 | [EXECUTION] 現行正本の固定写しをV3隔離DBで照合する | ユーザー継続承認。固定入力manifest、漏れ検出、採番予約、意味比較を実装・検証。現用Studio/実DB/Inboxは変更しない | `Maintanance/Current/TASK_REGISTRY_V3_SHADOW_IMPORT.md` |
 | `OPS-117` | `WAITING_USER` | 姫（レビュー） / Astra（受入） | [EXECUTION] 姫の作業イベント更新ルールを短くレビューする | 2026-10-18ユーザー承認。指定2節のタイミング・権限・待機・返却境界を確認。レビュー3指摘をAstra受入、姫への依頼終了。ACKとcommit待ちの表記を補正。待機中の正式依頼受信後の着手条件はユーザー判断待ち。実装変更なし | `Maintanance/Current/CLAUDE_ACTIVITY_RULE_REVIEW.md` |
 | `OPS-116` | `WAITING_USER` | Claude（姫・原因調査と修正） / Astra（受入） | [EXECUTION] 見取り図の全体fallbackによる骨格配置崩れを修正する | 2026-10-18ユーザー依頼。b9300017後の表示崩れを再現し、原因を確定して限定修正。接続・状態・計画を変えず、骨格・既存配置要求を保持。a810e4f4の修正をAstra技術受入。旧版fallback再現・新版解消とsync/verify成功。技術受入記録は承認済み範囲でcommit。Safari表示確認待ち | `Maintanance/Current/REGISTRY_STUDIO_LAYOUT_FALLBACK_REPAIR.md` |
 | `OPS-107` | `USER_ONLY` | User（判断） / Astra（依頼された補助） | [DECISION] SolのOJT試行の実施と範囲を判断する | 2026-10-18ユーザー指示で登録。小さい実務をSolへ渡しAstraの確認・フィードバック・再試行を行う案。ユーザーがFableを使いこなすための依頼・訂正方法のヒント抽出も目的。Solでの観察とFableへの応用仮説は区別する。2026-10-18ユーザーが小さいならしを承認し、OPS-108へ切出し。継続拡大は未決。判断自体の代行・催促はしない | `Maintanance/Current/SOL_OJT_PILOT_USER_DECISION.md` |
@@ -363,6 +364,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-160` |
 | `OPS-048` | `OPS-161` |
 | `OPS-048` | `OPS-162` |
+| `OPS-048` | `OPS-163` |
 | `DOC-030` | `OPS-058` |
 | `OPS-058` | `OPS-068` |
 | `OPS-044` | `OPS-067` |

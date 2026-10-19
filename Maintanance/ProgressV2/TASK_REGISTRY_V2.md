@@ -112,7 +112,7 @@
 | `OPS-155` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] メンバーへ画面からPINGを送る | ユーザー実装依頼。対象/ID/本人ACKで疎通を確認、自動起動なし。ユーザーが画面実装を後回しにし、連絡DBを優先。基盤のみ部分実装 | `Maintanance/Current/STUDIO_MEMBER_PING.md` |
 | `OPS-156` | `ACTIVE` | Astra調整 / 姫 / スタジオ評価役 | [EXECUTION] サーバー専用SQLiteへ通信記録を保存 | ユーザー実装依頼。連絡原文/版/応答DBと軽量一覧・差分待機を5360265b/72ca7731で受入。H32〜35閲覧/全ページ取得を受入。ユーザー再起動後に連絡DBの待機接続・本人往復疎通・closeを確認、PING画面は保留 | `Maintanance/Current/STUDIO_COMMUNICATION_STORE.md` |
 | `OPS-157` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry Studioのアーキテクチャ画像 | ユーザー依頼。現行実装と作業中/予定を区別した日本語の横長図、編集元/PNG/README入口。SVG/PNGとREADME入口を画像確認して技術受入。作業ツリー図、実稼働とは区別。ユーザー継続commit承認に基づき成果を保存 | `Maintanance/Current/STUDIO_ARCHITECTURE_IMAGE.md` |
-| `OPS-158` | `ACTIVE` | Astra | [DISCOVERY] 判断と判断キャッシュのDB管理を検討 | Registry V3本番切替と基本確認の後に再開。元判断/依存/コピーの更新境界と少数試行案を検討。判断DBの実移行は別 | `Maintanance/Current/DECISION_DB_STUDY.md` |
+| `OPS-158` | `ACTIVE` | Astra | [DISCOVERY] 判断と判断キャッシュのDB管理を検討 | Registry V3本番切替・基本確認後、Astraと姫の評価/感想を両者記入してから再開。元判断/依存/コピーの少数試行案、実移行は別 | `Maintanance/Current/DECISION_DB_STUDY.md` |
 | `OPS-159` | `DONE` | Astra調整 / 姫 | [DISCOVERY] Task Registry V3のDB境界と移行照合を設計する | 設計調査を完了。隔離読取実験OPS-160へ引渡し。実データ移行なし | `Maintanance/Current/TASK_REGISTRY_V3_DESIGN.md` |
 | `OPS-160` | `DONE` | Astra調整 / 姫 | [EXECUTION] Registry V3の隔離DB読取実験 | 隔離読取実験を補正付き受入。Astra再実行20試験成功。構造/順序/現在範囲/境界参照を確認。完全移行・更新API・実DB変更は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_READ_EXPERIMENT.md` |
 | `OPS-161` | `DONE` | Astra調整 / 姫 | [EXECUTION] V3読取属性と更新契約の隔離試験 | 読取27/更新19試験をAstra再実行して受入。再送競合補正・使用済み番号のダミー予約を確認。本番接続/完全移行は対象外 | `Maintanance/Current/TASK_REGISTRY_V3_CONTRACT_EXPERIMENT.md` |

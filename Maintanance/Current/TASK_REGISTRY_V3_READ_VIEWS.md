@@ -16,3 +16,17 @@ Registry表の再読込とDB属性/辺、Rules採番境界の一致をそれぞ�
 
 ## 実装と検証
 experiment内views module/test/READMEのみ。fixture、固定した現行正本copy、CLI更新後の再生成、未知layout/値拒否、生成行改変検出、入力不変を試す。原文全体を読み直す作業や履歴移行には広げない。HEAD・恒久指定の正本切替、本番採用は別。姫が実装・返却、Astraが受入・記録・commit。
+
+## 受入確認（2026-10-19・補正待ち）
+Astraによる独立実行では196試験が成功。ただしfixtureで次の2点を再現したため、受入は保留。
+- 恒久指定が不一致でも全体の`equal`がtrueになる。文章は保持し、不一致を全体結果にも反映する必要がある。
+- task行の余分なセル・重複IDを生成時に拒否せず、上書きで消してしまう。生成前に入力行の形と一意性を検証する必要がある。
+
+姫へLTR-20261019-5EB84E8DD364492E88F683CDF2FDCD1Fで限定補正を依頼。実DB・本番文書は未変更。返却後に再検証する。
+
+## 補正後の受入（2026-10-19）
+LTR-20261019-5EB84E8DD364492E88F683CDF2FDCD1F返却をAstraが確認。恒久指定/件数accountingを全体結果に含め、生成前に既存importerの行形式検査とkey重複検査を行う補正を受入。Rules採番行も生成前に検査する。
+
+Astra独立実行：`python3 -B -W always::ResourceWarning -m unittest discover -s Maintanance/RegistryApp/Experiments/registry_v3_read -p 'test_*.py'`、198件成功（47.291秒）。既存生成行の改変拒否、入力copyの不変、現行固定copyの範囲内一致を含む。`git diff --check`成功。
+
+OPS-175はDONE。保証は隔離した読取view生成・照合まで。本番接続、Milestones folderの往復、移行全体の完了を意味しない。

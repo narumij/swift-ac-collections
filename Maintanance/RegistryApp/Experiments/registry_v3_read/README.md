@@ -21,6 +21,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_re
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_edits.py -v             # OPS-172：既存カードの計画編集（K5の一部）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_browser.py -v           # OPS-173：計画編集の隔離ブラウザ往復
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_cli.py -v        # OPS-174：薄いCLI
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_views.py -v      # OPS-175：生成する読取用の表示（K8a）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -455,3 +456,36 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 6：群が完了していない（結果はすべて出す）
   - 7：保存全体の拒否
 - **扱わない**：新しい書込の種類、focus・gate・`recordedDone`、復旧の再開、生成する表示、本番への接続。
+
+## OPS-175：生成する読取用の表示（K8a、`registry_v3_views.py`）
+
+- **Registry**：取り込みが読む表のデータ行だけを差し替える。
+  - 対象：`## Task Registry`の各区分（`###`）、上位の`## Task precedence`、`## 恒久タスクの親子関係`、`## マイルストーン接続`。
+  - ほかの行は1バイトも変えない。本文、見出し、表の見出し行と区切り行、ほかの節がそうである。
+  - 1つの区分の行が、空行で区切られたいくつかの塊に分かれていることがある（今のRegistryがそう）。その場合も、各行は自分の位置に残す。
+  - 消えた行は取り除く。新しい行は、その区分で残った最後の行のあとに、IDの順で足す。行の順は見せ方にすぎず、照合ではない。
+- **Rules**：`## Task ID採番状態`のデータ行だけを、DBのhighwaterで差し替える。方針の本文は変えない。恒久のIDの文と、DBの印との違いは報告するだけで、文は書き換えない。
+- **STRUCTURE.generated.md**：DBの構造を出す、新しい読取用の表示。中身は、版の順、版ごとのカードの順、ゲート、focus。
+  - それだけで読み戻す、独自のparserを持つ。
+  - カードの順はDBのもので、ファイル名からは取らない。
+- **守りの行**：各表の見出しの前に`<!-- V3-GENERATED rows: … sha256=H -->`を置く。
+  - 次に生成するとき、入力の行がHに合わなければ、手で書き換えられたものとして、上書きせずに拒否する。
+  - STRUCTUREにも、同じ守りの行がある。
+- **拒否**：
+  - 対象の節がない、または重複している。
+  - 対象の節に表が多すぎる、または足りない。
+  - 字下げした行、`###`の中の関係の表、見出しのない行。
+  - 区分に表がない（見出しを作らない）。
+  - 値に改行がある。到達点の接続のほかの表に`|`がある。前後に空白がある。
+  - 空でない出力先。
+- **照合**（`check`）：範囲を限った等しさ。
+  - 生成したRegistryを取り込みの`parse_registry`で読み、DBと比べる。比べるのは、タスク・先行関係・親子・到達点の接続。
+  - Rulesの採番表と、DBのhighwater。
+  - STRUCTUREを読み戻したものと、DB。
+  - 退役したIDと、隠した辺は、数として明示する。そのため、生きている行が抜けていれば、等しくならない。
+  - Milestonesのフォルダの並びとDBの違い（placement drift）は、別に報告するだけ。
+  - Milestonesのフォルダ・HEAD.md・ほかの本文が合っているとは言わない。
+- **出力**：新しい隔離した木にだけ書く。入力は読むだけの写し。
+- **受入での補正**：
+  - 差し替える前に、受入済みの取り込み（`parse_registry`・`parse_rules`）で型板を確かめる。行の形が違うものや、キーの重複は拒否する。黙って直したり捨てたりはしない。
+  - 全体の`equal`は、表と構造が等しいことに加えて、恒久の文とDBの印が一致し、退役と隠した辺の数が合うことも求める。

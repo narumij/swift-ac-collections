@@ -110,6 +110,8 @@ own replies. Resolve omitted subjects, references, and corrections from that con
 rather than treating the message as a standalone request. Look further back only when
 needed; ask briefly if materially different interpretations remain.
 
+Distinguish requests to act from corrections, recollections, and requests to restate. Do not resolve ambiguity in favor of starting work.
+
 ## First response to a new request
 
 Start with the smallest useful response, about ten lines:

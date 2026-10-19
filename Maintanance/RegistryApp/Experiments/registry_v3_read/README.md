@@ -20,6 +20,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_registration.py -v  # OPS-171：提案の採番（K4）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_edits.py -v             # OPS-172：既存カードの計画編集（K5の一部）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_browser.py -v           # OPS-173：計画編集の隔離ブラウザ往復
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_cli.py -v        # OPS-174：薄いCLI
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -428,3 +429,29 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 2回目のブラウザ編集：最初の保存から再開して続ける。古い基準の競合として拒否し、改名も反映しない。食い違う確かめは拒否する。
   - ページにP4が当たっていること。
 - **限界**：WebKitだけ。新しい版やカード、ゲート、focus、`recordedDone`は扱わない。適用は試験から明示的に呼ぶ。ページには適用の操作がない。
+
+## OPS-174：受入済みの処理への薄いCLI（`registry_v3_cli.py`）
+
+- **コマンド**：
+  - `read`・`export`・`operation`：読取と、記録した操作の照会。
+  - `apply`：`registry_v3_write.apply`。
+  - `plan-groups`：読取だけ。
+  - `apply-groups`：選んだ群・解決・系列を明示して適用する。
+- 入力はすべて明示する。DBのpath、操作ID、JSONの要求（generation・actor・evidenceを含む）、群の選択（selected・actor・evidence、必要ならresolutionsとancestry）。
+  - CLIは何も推し量らない。
+  - 新しい操作IDも作らない。応答が分からなかったときは、同じコマンドを同じ`--op`でもう一度実行する。それは再送になる。
+- DBは、すでにあるV3の実験DBでなければならない。`mode=rw`で開くので、pathを打ち間違えても空のDBは作らない。
+  - 開くときは、絶対pathを逃がしたfile URI（`Path.resolve().as_uri()`）を使う（受入での補正）。そのため、`#`・`?`・`%`・空白を含む名前でも、指定したファイルそのものを開く。
+- 要求の`generation`・`actor`・`evidence`と、選択の`actor`・`evidence`は、入力の中に明示されていなければならない。書く前に、あるかどうかと型を確かめる。
+  - 中身のない`evidence: []`は、既存のAPIのとおり受け入れる。CLIが根拠を作ることはしない。
+- **出力**：stdoutにJSONを1つ出す。必ず`ok`と`status`を持つ。
+- **終了の状態**：
+  - 0：成功（読取、適用、反映済み、再送、群がすべて完了）
+  - 1：拒否（記録済みの、決まった理由での拒否）
+  - 2：入力の形の誤り
+  - 3：見つからない（DB、または操作）
+  - 4：今は書けない（世代の違い、前の世代の操作、書込が閉じている、系列の確認待ち）
+  - 5：同じ操作IDで違う要求
+  - 6：群が完了していない（結果はすべて出す）
+  - 7：保存全体の拒否
+- **扱わない**：新しい書込の種類、focus・gate・`recordedDone`、復旧の再開、生成する表示、本番への接続。

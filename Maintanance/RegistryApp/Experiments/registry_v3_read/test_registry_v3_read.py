@@ -13,6 +13,7 @@ Run: python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_regist
 import copy
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -34,10 +35,34 @@ def fixture(change=None):
     return fx
 
 
-def loaded(fx):
+_OPEN = []  # connections opened by the running test; Owned.tearDown closes every one of them
+
+
+def opened():
     conn = r3.connect()
+    _OPEN.append(conn)
+    return conn
+
+
+def loaded(fx):
+    conn = opened()
     r3.load(conn, fx)
     return conn
+
+
+class Owned(unittest.TestCase):
+    """Each test owns the connections it opened (opened()/loaded()) and closes them at its end, deterministically."""
+
+    def setUp(self):
+        self.assertEqual(_OPEN, [], 'no connection is left from an earlier test')
+        self.addCleanup(self._close)
+
+    def _close(self):
+        while _OPEN:
+            conn = _OPEN.pop()
+            conn.close()
+            with self.assertRaises(r3.sqlite3.ProgrammingError):
+                conn.execute('SELECT 1')  # closed
 
 
 def version(fx, name):
@@ -47,31 +72,45 @@ def version(fx, name):
 # ---- the current reader on a throwaway tree (read only; sync.py itself is not changed) ----
 
 def write_tree(fx, root):
-    """The fixture as Registry/Milestones files the current reader understands. File names carry the explicit order."""
+    """The fixture as Registry/Milestones files the current reader understands. File names carry the explicit order.
+    Table cells cannot hold a newline, and the reader unescapes `\\|` only in milestone connections, so the comparison
+    fixture keeps newlines and pipes out of the other cells (they are checked against the experiment alone)."""
     registry = root / 'Maintanance/ProgressV2/TASK_REGISTRY_V2.md'
     registry.parent.mkdir(parents=True)
     rows = ['# Registry', '', '## Task Registry', '', '| ID | 状態 | 担当 | 項目 | 条件 | 正本 |', '| --- | --- | --- | --- | --- | --- |']
-    rows += [f"| `{t['id']}` | `{t['state']}` | {t['owner']} | {t['item']} | 条件 | 正本 |" for t in fx['tasks']]
+    group = None
+    for t in sorted(fx['tasks'], key=lambda t: t['group'] is not None):  # ungrouped rows come before the first ### heading
+        if t['group'] != group:
+            rows += ['', f"### {t['group']}", '', '| ID | 状態 | 担当 | 項目 | 条件 | 正本 |', '| --- | --- | --- | --- | --- | --- |']
+            group = t['group']
+        rows.append(f"| `{t['id']}` | `{t['state']}` | {t['owner']} | {t['item']} | {t['condition']} | {t['detail']} |")
     rows += ['', '## 恒久タスクの親子関係', '', '| 親 | 子 |', '| --- | --- |']
     rows += [f"| `{e['prerequisite']}` | `{e['successor']}` |" for e in fx['management']]
     rows += ['', '## Task precedence', '', '| 後続 | 前提 | Flow | 制約 |', '| --- | --- | --- | --- |']
     rows += [f"| `{e['successor']}` | `{e['prerequisite']}` | `{e['flow']}` | {e.get('constraint', '')} |" for e in fx['progress']]
     rows += ['', '## マイルストーン接続', '', '| 接続元 | 接続先 | 制約 |', '| --- | --- | --- |']
-    rows += [f"| `{e['prerequisite']}` | `{e['successor']}` | {e.get('constraint', '')} |" for e in fx['milestone']]
+    rows += [f"| `{e['prerequisite']}` | `{e['successor']}` | {e.get('constraint', '').replace('|', chr(92) + '|')} |" for e in fx['milestone']]
     registry.write_text('\n'.join(rows) + '\n', encoding='utf-8')
-    (registry.parent / 'TASK_RULES_V2.md').write_text('`TASK-001`は常設の支援nodeとして`ACTIVE`を保つ。\n', encoding='utf-8')
+    permanent = '・'.join(f"`{t['id']}`" for t in fx['tasks'] if t['permanent'])
+    (registry.parent / 'TASK_RULES_V2.md').write_text(f'{permanent}は常設の支援nodeとして`ACTIVE`を保つ。\n', encoding='utf-8')
     ms = root / 'Maintanance/Milestones'
     ms.mkdir(parents=True)
     (ms / 'README.md').write_text('- END-x.y.z は版フォルダごとの集合点で、実ファイルを置かない。\n', encoding='utf-8')
     (ms / 'HEAD.md').write_text(f"# {fx['focus']}\n", encoding='utf-8')
+    def canon(d, detail):
+        target = root / detail
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text('# 正本\n', encoding='utf-8')
+        return f'[正本]({os.path.relpath(target, d)})'
     for v in fx['versions']:
         d = ms / v['name']
         d.mkdir()
         for i, c in enumerate(v['cards']):
-            (d / f'{(i + 1) * 10:02d}_card.md').write_text(f"# カード情報\n\n## ID\n\n`{c['id']}`\n\n## 名前\n\n{c['name']}\n\n## 状態\n\n- [ ] DONE\n\n# 正本\n\nこのファイル\n\n# 記録\n", encoding='utf-8')
+            box = 'x' if c['recordedDone'] else ' '
+            (d / f'{(i + 1) * 10:02d}_card.md').write_text(f"# カード情報\n\n## ID\n\n`{c['id']}`\n\n## 名前\n\n{c['name']}\n\n## 状態\n\n- [{box}] DONE\n\n# 正本\n\n{canon(d, c['detail'])}\n\n# 記録\n", encoding='utf-8')
         if v['gate']:
             g = v['gate']
-            (d / f"{g['id']}.md").write_text(f"# カード情報\n\n## ID\n\n`{g['id']}`\n\n## 名前\n\n{g['name']}\n\n# 正本\n\nこのファイル\n", encoding='utf-8')
+            (d / f"{g['id']}.md").write_text(f"# カード情報\n\n## ID\n\n`{g['id']}`\n\n## 名前\n\n{g['name']}\n\n# 正本\n\n{canon(d, g['detail'])}\n", encoding='utf-8')
 
 
 def current_reader(fx):
@@ -80,7 +119,7 @@ def current_reader(fx):
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
     with tempfile.TemporaryDirectory() as tmp:
-        root = Path(tmp)
+        root = Path(tmp).resolve()  # the reader resolves 正本 links; /var and /private/var must agree
         write_tree(fx, root)
         sync.ROOT = root
         sync.REGISTRY = root / 'Maintanance/ProgressV2/TASK_REGISTRY_V2.md'
@@ -99,7 +138,11 @@ def current_reader(fx):
     chain = [r for r in data['milestoneRelations'] if r['source']['path'].endswith('Milestones/README.md')]
     return {
         'nodes': sorted([t['id'] for t in data['tasks']] + [m['id'] for m in data['milestones']]),
-        'tasks': {t['id']: {'state': t['state'], 'owner': t['owner'], 'item': t['item']} for t in data['tasks']},
+        'tasks': {t['id']: {'state': t['state'], 'owner': t['owner'], 'item': t['item'], 'condition': t['condition'], 'detail': t['detail'],
+                            'permanent': t['permanent'], 'group': t['group']} for t in data['tasks']},
+        'milestones': {m['id']: {'name': m['item'], 'detail': m['detail']} for m in data['milestones'] if not m.get('virtual')},
+        'progressAttributes': sorted([e['prerequisite'], e['successor'], e['flow'], e['constraint']] for e in data['edges']),
+        'milestoneAttributes': sorted([r['prerequisite'], r['successor'], r['constraint']] for r in registry_rel),
         'management': sorted([t['parentTask'], t['id']] for t in data['tasks'] if 'parentTask' in t),
         'progress': sorted([e['prerequisite'], e['successor']] for e in data['edges']),
         'milestone': sorted([r['prerequisite'], r['successor']] for r in registry_rel),
@@ -114,6 +157,9 @@ def common(view):
     return {
         'nodes': view['ids']['nodes'],
         'tasks': view['ids']['tasks'],
+        'milestones': {k: {'name': v['name'], 'detail': v['detail']} for k, v in view['ids']['milestones'].items()},  # recordedDone: the reader only has a derived state
+        'progressAttributes': sorted([e['prerequisite'], e['successor'], e['flow'], e['constraint']] for e in view['edges']['progress']),
+        'milestoneAttributes': sorted([e['prerequisite'], e['successor'], e['constraint']] for e in view['edges']['milestone']),
         'management': view['relations']['management'],
         'progress': view['relations']['progress'],
         'milestone': view['relations']['milestone'],
@@ -134,7 +180,7 @@ BASE_SKELETON = [['START-0.1.0', 'MS-A1'], ['MS-A1', 'MS-A2'], ['MS-A2', 'END-0.
                  ['START-0.3.0', 'END-0.3.0']]
 
 
-class Structure(unittest.TestCase):
+class Structure(Owned):
     def test_base_structure_matches_design(self):
         view = r3.read(loaded(fixture()), 'all')
         self.assertEqual(view['relations']['skeleton'], BASE_SKELETON)
@@ -173,11 +219,11 @@ class Structure(unittest.TestCase):
         REPORT.append(('card order change', 'DESIGN, and current reader agrees', 'file names carry the explicit order'))
 
 
-class KnownDeviations(unittest.TestCase):
+class KnownDeviations(Owned):
     """The DESIGN is the expected value. The current reader's result is recorded, not used as the expectation."""
 
     def test_named_gate_is_not_the_destination(self):
-        fx = fixture(lambda fx: version(fx, '0.1.0').update(gate={'id': 'GATE-9.9.9', 'name': '9.9.9 リリース'}))
+        fx = fixture(lambda fx: version(fx, '0.1.0').update(gate={'id': 'GATE-9.9.9', 'name': '9.9.9 リリース', 'detail': 'Maintanance/Current/任意名ゲート.md'}))
         sk = r3.read(loaded(fx), 'all')['relations']['skeleton']
         self.assertIn(['END-0.1.0', 'GATE-9.9.9'], sk)
         self.assertIn(['GATE-9.9.9', 'START-0.2.0'], sk)  # the next version in order, whatever the gate is called
@@ -198,7 +244,7 @@ class KnownDeviations(unittest.TestCase):
         REPORT.append(('missing gate', 'DESIGN', 'KNOWN DEVIATION: current reader refuses (requires one connected path)'))
 
     def test_terminal_gate_ends_there(self):
-        fx = fixture(lambda fx: version(fx, '0.3.0').update(gate={'id': 'GATE-0.4.0', 'name': '0.4.0 リリース'}))
+        fx = fixture(lambda fx: version(fx, '0.3.0').update(gate={'id': 'GATE-0.4.0', 'name': '0.4.0 リリース', 'detail': 'Maintanance/Current/末尾ゲート.md'}))
         sk = r3.read(loaded(fx), 'all')['relations']['skeleton']
         self.assertEqual(sk[-1], ['END-0.3.0', 'GATE-0.4.0'])
         self.assertFalse([e for e in sk if e[0] == 'GATE-0.4.0'])
@@ -208,7 +254,7 @@ class KnownDeviations(unittest.TestCase):
         REPORT.append(('terminal gate', 'DESIGN', 'KNOWN DEVIATION: current reader refuses (destination missing)'))
 
 
-class FocusAndBoundary(unittest.TestCase):
+class FocusAndBoundary(Owned):
     def test_focus_selects_the_range_and_keeps_all_data(self):
         conn = loaded(fixture())
         current, whole = r3.read(conn, 'current'), r3.read(conn, 'all')
@@ -249,7 +295,82 @@ class FocusAndBoundary(unittest.TestCase):
         self.assertNotIn('sources', json.dumps(view['relations']))
 
 
-class Graphs(unittest.TestCase):
+class Attributes(Owned):
+    """OPS-161 stage 1: stored attributes are returned without loss; expected values are written by hand."""
+
+    def test_attributes_are_returned(self):
+        view = r3.read(loaded(fixture()), 'all')
+        self.assertEqual(view['ids']['tasks']['TASK-001'], {'state': 'ACTIVE', 'owner': '担当A', 'item': '親の常設タスク', 'condition': '常設の判断を保つこと',
+                                                            'detail': 'Maintanance/Current/常設.md', 'permanent': True, 'group': '常設'})
+        self.assertEqual(view['ids']['tasks']['TASK-005']['group'], None)
+        self.assertEqual(view['ids']['milestones']['MS-A1'], {'name': 'A の最初', 'detail': 'Maintanance/Current/A1正本.md', 'recordedDone': True})
+        self.assertEqual(view['ids']['milestones']['GATE-0.2.0'], {'name': '0.2.0 リリース', 'detail': 'Maintanance/Current/GATE-0.2.0の判断.md'})
+        self.assertNotIn('START-0.1.0', view['ids']['milestones'], 'generated START/END carry no attributes')
+        self.assertEqual(view['edges']['progress'], [{'prerequisite': 'TASK-002', 'successor': 'TASK-003', 'flow': 'SEQUENCE', 'constraint': 'Aの結果を使う（同じ版の中）'}])
+        self.assertIn({'prerequisite': 'START-0.2.0', 'successor': 'TASK-003', 'flow': None, 'constraint': '開始側。Bで始める | 版の区間の最初'}, view['edges']['milestone'])
+        self.assertEqual(view['edges']['management'], [{'prerequisite': 'TASK-001', 'successor': 'TASK-002', 'flow': None, 'constraint': ''}])
+        self.assertEqual([[e['prerequisite'], e['successor']] for e in view['edges']['milestone']], view['relations']['milestone'])
+        REPORT.append(('attributes', 'fixture values (hand-written)', 'and the current reader agrees on the common part'))
+
+    def test_multiline_and_pipe_values_round_trip(self):
+        rich = '一行目 | 縦棒\n二行目「引用」\n\t三行目'
+        def change(fx):
+            t = fx['tasks'][2]
+            t.update(owner='担当\n二人', item='項目 | ' + rich, condition=rich, detail='Maintanance/Current/詳細 | 名.md\n補足')
+            version(fx, '0.2.0')['cards'][0].update(name='B の中間\n二行目 | 付き', detail=rich)
+            fx['progress'][0]['constraint'] = rich
+        view = r3.read(loaded(fixture(change)), 'current')
+        task = view['ids']['tasks']['TASK-003']
+        self.assertEqual((task['owner'], task['item'], task['condition'], task['detail']), ('担当\n二人', '項目 | ' + rich, rich, 'Maintanance/Current/詳細 | 名.md\n補足'))
+        self.assertEqual(view['ids']['milestones']['MS-B1'], {'name': 'B の中間\n二行目 | 付き', 'detail': rich, 'recordedDone': False})
+        self.assertEqual(view['edges']['progress'][0]['constraint'], rich)
+        REPORT.append(('multiline and pipe values', 'fixture values (hand-written)', 'experiment only: Markdown cells cannot carry them'))
+
+    def test_recorded_done_is_not_derived_from_focus(self):
+        for focus in ('0.1.0', '0.2.0', '0.3.0'):
+            view = r3.read(loaded(fixture(lambda fx: fx.update(focus=focus))), 'all')
+            self.assertEqual({k: v.get('recordedDone') for k, v in view['ids']['milestones'].items()},
+                             {'MS-A1': True, 'MS-A2': False, 'MS-B1': False, 'GATE-0.2.0': None, 'GATE-0.3.0': None}, focus)
+        REPORT.append(('recorded DONE box', 'fixture values', 'a passed version does not make its cards DONE'))
+
+    def test_current_sources_are_scoped_to_what_was_returned(self):
+        view = r3.read(loaded(fixture()), 'current')
+        self.assertEqual(sorted(view['sources']), sorted(
+            ['node:' + n for n in ('END-0.2.0', 'END-0.3.0', 'GATE-0.3.0', 'MS-B1', 'START-0.2.0', 'START-0.3.0', 'TASK-003', 'TASK-004', 'GATE-0.2.0', 'TASK-002')] +
+            ['version:0.2.0', 'version:0.3.0', 'edge:progress:TASK-002->TASK-003', 'edge:milestone:START-0.2.0->TASK-003',
+             'edge:milestone:TASK-003->END-0.2.0', 'edge:milestone:MS-B1->TASK-004']))
+        self.assertEqual(len(r3.read(loaded(fixture()), 'all')['sources']), 16 + 3 + 1 + 1 + 4, 'the whole read keeps every source')
+        REPORT.append(('provenance scope', 'hand-written set', 'returned nodes, boundary references, edges and versions'))
+
+    def test_boundary_references_carry_no_attributes(self):
+        view = r3.read(loaded(fixture()), 'current')
+        self.assertEqual({tuple(sorted(b)) for b in view['range']['boundary']}, {('id', 'kind', 'versions')})
+        self.assertNotIn('TASK-002', view['ids']['tasks'])
+        self.assertNotIn('GATE-0.2.0', view['ids']['milestones'])
+
+    def test_comparison_detects_attribute_changes(self):
+        reader, _ = current_reader(fixture())
+        changed = fixture(lambda fx: fx['tasks'][3].update(condition='別の条件'))
+        self.assertEqual(differences(common(r3.read(loaded(changed), 'all')), reader), ['tasks'])
+        changed = fixture(lambda fx: fx['milestone'][1].update(constraint='別 | 条件'))
+        self.assertEqual(differences(common(r3.read(loaded(changed), 'all')), reader), ['milestoneAttributes'])
+        changed = fixture(lambda fx: version(fx, '0.1.0')['cards'][1].update(detail='Maintanance/Current/別.md'))
+        self.assertEqual(differences(common(r3.read(loaded(changed), 'all')), reader), ['milestones'])
+
+    def test_malformed_attributes(self):
+        for change, error in ((lambda fx: fx['tasks'][0].pop('condition'), KeyError), (lambda fx: fx['tasks'][0].pop('group'), KeyError),
+                              (lambda fx: version(fx, '0.1.0')['cards'][0].pop('recordedDone'), KeyError),
+                              (lambda fx: version(fx, '0.1.0')['gate'].pop('detail'), KeyError),
+                              (lambda fx: fx['tasks'][0].update(permanent='はい'), r3.Refused),
+                              (lambda fx: version(fx, '0.1.0')['cards'][0].update(recordedDone=1), r3.Refused)):
+            conn = opened()
+            with self.assertRaises(error):
+                r3.load(conn, fixture(change))
+            self.assertFalse(conn.in_transaction)
+            self.assertEqual(conn.execute('SELECT COUNT(*) FROM nodes').fetchone()[0], 0)
+
+
+class Graphs(Owned):
     def test_management_and_progress_are_separate(self):
         view = r3.read(loaded(fixture()), 'all')
         self.assertEqual(view['relations']['management'], [['TASK-001', 'TASK-002']])
@@ -259,9 +380,9 @@ class Graphs(unittest.TestCase):
         self.assertIn(['TASK-002', 'TASK-001'], r3.read(loaded(crossed), 'all')['relations']['progress'])
 
 
-class Refusals(unittest.TestCase):
+class Refusals(Owned):
     def refused(self, fx, words):
-        conn = r3.connect()
+        conn = opened()
         with self.assertRaises(r3.Refused) as caught:
             r3.load(conn, fx)
         self.assertIn(words, str(caught.exception))
@@ -271,7 +392,7 @@ class Refusals(unittest.TestCase):
     def test_duplicate_ids_across_kinds(self):
         self.refused(fixture(lambda fx: version(fx, '0.2.0')['cards'][0].update(id='TASK-003')), 'duplicate ID TASK-003')
         self.refused(fixture(lambda fx: version(fx, '0.1.0')['cards'][0].update(id='START-0.2.0')), 'duplicate ID START-0.2.0')
-        self.refused(fixture(lambda fx: version(fx, '0.2.0').update(gate={'id': 'GATE-0.2.0', 'name': 'x'})), 'duplicate ID GATE-0.2.0')
+        self.refused(fixture(lambda fx: version(fx, '0.2.0').update(gate={'id': 'GATE-0.2.0', 'name': 'x', 'detail': 'x'})), 'duplicate ID GATE-0.2.0')
         self.refused(fixture(lambda fx: fx['versions'].append({'name': '0.1.0', 'cards': [], 'gate': None})), 'duplicate version 0.1.0')
 
     def test_missing_endpoints(self):
@@ -293,7 +414,7 @@ class Refusals(unittest.TestCase):
         # a missing field is not a structural refusal: the original error stays, and nothing is left behind
         for change, error in ((lambda fx: fx['tasks'][1].pop('owner'), KeyError), (lambda fx: fx['versions'][1].pop('name'), KeyError),
                               (lambda fx: fx['milestone'].append({'prerequisite': 'TASK-001'}), KeyError), (lambda fx: fx.update(versions=None), TypeError)):
-            conn = r3.connect()
+            conn = opened()
             with self.assertRaises(error):
                 r3.load(conn, fixture(change))
             self.assertFalse(conn.in_transaction, 'the transaction is closed')
@@ -303,7 +424,7 @@ class Refusals(unittest.TestCase):
             self.assertEqual(len(r3.read(conn, 'all')['ids']['nodes']), 16)
 
     def test_refusal_closes_the_transaction(self):
-        conn = r3.connect()
+        conn = opened()
         with self.assertRaises(r3.Refused):
             r3.load(conn, fixture(lambda fx: fx.update(focus='9.9.9')))
         self.assertFalse(conn.in_transaction)
@@ -315,7 +436,7 @@ class Refusals(unittest.TestCase):
                 r3.read(conn, scope)
 
     def test_generated_ids_cannot_be_written(self):
-        self.refused(fixture(lambda fx: fx['tasks'].append({'id': 'END-0.1.0', 'state': 'ACTIVE', 'owner': 'x', 'item': 'x'})), 'duplicate ID END-0.1.0')
+        self.refused(fixture(lambda fx: fx['tasks'].append({'id': 'END-0.1.0', 'state': 'ACTIVE', 'owner': 'x', 'item': 'x', 'condition': 'x', 'detail': 'x', 'permanent': False, 'group': None})), 'duplicate ID END-0.1.0')
 
 
 if __name__ == '__main__':

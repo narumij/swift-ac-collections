@@ -18,7 +18,9 @@ Model (TASK_REGISTRY_V3_DESIGN.md「既決事項の回収と設計調査の結�
   cycle.
 - focus: the version the default read starts from. It only selects the read range: nothing about arrival (DONE) is
   derived from it, and the loader stores no milestone state at all.
-- provenance: where each row came from in the fixture, returned apart from the structure.
+- attributes (OPS-161): task condition/detail/permanent/group, card and gate name and detail, the card's DONE box as
+  written (recordedDone; gates have none), edge flow and constraint. Stored values only; no value is derived.
+- provenance: where each row came from in the fixture, returned apart from the structure and scoped to what was returned.
 """
 import json
 import sqlite3
@@ -27,7 +29,10 @@ import sys
 SCHEMA = """
 PRAGMA foreign_keys = ON;
 CREATE TABLE nodes (id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK (kind IN ('task','card','gate','start','end')), name TEXT NOT NULL);
-CREATE TABLE tasks (id TEXT PRIMARY KEY REFERENCES nodes(id), state TEXT NOT NULL, owner TEXT NOT NULL, item TEXT NOT NULL);
+CREATE TABLE tasks (id TEXT PRIMARY KEY REFERENCES nodes(id), state TEXT NOT NULL, owner TEXT NOT NULL, item TEXT NOT NULL,
+  condition TEXT NOT NULL, detail TEXT NOT NULL, permanent INTEGER NOT NULL CHECK (permanent IN (0, 1)), task_group TEXT);
+CREATE TABLE milestone_details (id TEXT PRIMARY KEY REFERENCES nodes(id), detail TEXT NOT NULL,
+  recorded_done INTEGER CHECK (recorded_done IN (0, 1)));  -- cards: the DONE box as written; gates: NULL. Never derived from HEAD
 CREATE TABLE versions (name TEXT PRIMARY KEY, position INTEGER NOT NULL UNIQUE);
 CREATE TABLE version_members (version TEXT NOT NULL REFERENCES versions(name), node TEXT NOT NULL UNIQUE REFERENCES nodes(id),
   position INTEGER NOT NULL, UNIQUE (version, position));
@@ -101,7 +106,10 @@ def _node(conn, nid, kind, name, origin):
 def _load(conn, fx, origin):
     for i, t in enumerate(fx.get('tasks', [])):
         _node(conn, t['id'], 'task', t['item'], f'{origin}:tasks[{i}]')
-        conn.execute('INSERT INTO tasks VALUES (?, ?, ?, ?)', (t['id'], t['state'], t['owner'], t['item']))
+        if not isinstance(t['permanent'], bool):
+            raise Refused(f'tasks[{i}]: permanent must be true or false')
+        conn.execute('INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                     (t['id'], t['state'], t['owner'], t['item'], t['condition'], t['detail'], int(t['permanent']), t['group']))
     for vi, v in enumerate(fx['versions']):
         name = v['name']
         if conn.execute('SELECT 1 FROM versions WHERE name = ?', (name,)).fetchone():
@@ -113,9 +121,13 @@ def _load(conn, fx, origin):
         for ci, card in enumerate(v.get('cards', [])):
             _node(conn, card['id'], 'card', card['name'], f'{origin}:versions[{vi}].cards[{ci}]')
             conn.execute('INSERT INTO version_members VALUES (?, ?, ?)', (name, card['id'], ci))
+            if not isinstance(card['recordedDone'], bool):
+                raise Refused(f'versions[{vi}].cards[{ci}]: recordedDone must be true or false')
+            conn.execute('INSERT INTO milestone_details VALUES (?, ?, ?)', (card['id'], card['detail'], int(card['recordedDone'])))
         if v.get('gate'):
             _node(conn, v['gate']['id'], 'gate', v['gate']['name'], f'{origin}:versions[{vi}].gate')
             conn.execute('INSERT INTO version_gates VALUES (?, ?)', (name, v['gate']['id']))
+            conn.execute('INSERT INTO milestone_details VALUES (?, ?, NULL)', (v['gate']['id'], v['gate']['detail']))
     for graph in ('management', 'progress', 'milestone'):
         for i, e in enumerate(fx.get(graph, [])):
             ends = [conn.execute('SELECT kind FROM nodes WHERE id = ?', (x,)).fetchone() for x in (e['prerequisite'], e['successor'])]
@@ -174,9 +186,10 @@ def _locations(conn):
 def read(conn, scope='current'):
     """Read the stored structure. scope 'all' returns everything; 'current' (default) the versions from the focus on,
     the tasks connected to them, and every edge that touches them -- endpoints outside the range are returned as
-    boundary references with their location, never dropped or rewired. Parts: ids, relations, order, range, sources.
-    Structural experiment, not a full-fidelity migration: sources is the whole provenance table for either scope, and the
-    stored flow and constraint text of edges are neither returned nor compared."""
+    boundary references with their location (ID, kind, versions; no attributes), never dropped or rewired.
+    Parts: ids (with the stored attributes of the returned nodes), relations (pairs), edges (the same edges with flow and
+    constraint), order, range, sources (provenance of the returned nodes, boundary references, edges and versions only).
+    Experiment, not a full-fidelity migration: no Markdown position (raw/sourceLine) and no derived state are returned."""
     if scope not in ('current', 'all'):
         raise ValueError(f"unknown read scope {scope!r}: use 'current' or 'all'")
     focus = conn.execute('SELECT version FROM focus').fetchone()
@@ -192,21 +205,30 @@ def read(conn, scope='current'):
     if scope == 'all' or focus is None:
         in_range |= {n for n, k in kinds.items() if k == 'task'}  # unplaced tasks are part of the whole view only
     relations = {'skeleton': [list(e) for e in skeleton(conn) if e[0] in in_range or e[1] in in_range]}
+    edges = {}
     for graph in ('management', 'progress', 'milestone'):
-        relations[graph] = [[a, b] for a, b in conn.execute('SELECT prerequisite, successor FROM graph_edges WHERE graph = ? ORDER BY prerequisite, successor', (graph,))
-                            if a in in_range or b in in_range]
+        edges[graph] = [{'prerequisite': a, 'successor': b, 'flow': f, 'constraint': c} for a, b, f, c in
+                        conn.execute('SELECT prerequisite, successor, flow, constraint_text FROM graph_edges WHERE graph = ? ORDER BY prerequisite, successor', (graph,))
+                        if a in in_range or b in in_range]
+        relations[graph] = [[e['prerequisite'], e['successor']] for e in edges[graph]]
     touched = {x for edges in relations.values() for e in edges for x in e}
     boundary = sorted(({'id': x, 'kind': kinds[x], 'versions': sorted(task_places.get(x, ())) if kinds[x] == 'task' else [where[x]]}
                        for x in touched - in_range), key=lambda b: b['id'])
     order = {v: [r[0] for r in conn.execute('SELECT node FROM version_members WHERE version = ? ORDER BY position', (v,))] for v in in_versions}
-    tasks = {r[0]: {'state': r[1], 'owner': r[2], 'item': r[3]} for r in conn.execute('SELECT id, state, owner, item FROM tasks ORDER BY id') if r[0] in in_range}
+    tasks = {r[0]: {'state': r[1], 'owner': r[2], 'item': r[3], 'condition': r[4], 'detail': r[5], 'permanent': bool(r[6]), 'group': r[7]}
+             for r in conn.execute('SELECT id, state, owner, item, condition, detail, permanent, task_group FROM tasks ORDER BY id') if r[0] in in_range}
+    milestones = {r[0]: {'name': r[1], 'detail': r[2], **({} if r[3] is None else {'recordedDone': bool(r[3])})}
+                  for r in conn.execute('SELECT m.id, n.name, m.detail, m.recorded_done FROM milestone_details m JOIN nodes n ON n.id = m.id ORDER BY m.id') if r[0] in in_range}
+    wanted = {'node:' + n for n in in_range | {b['id'] for b in boundary}} | {'version:' + v for v in in_versions} | \
+             {f"edge:{g}:{e['prerequisite']}->{e['successor']}" for g, es in edges.items() for e in es}
     gates = {v: g for v, g in conn.execute('SELECT version, gate FROM version_gates') if v in in_versions}
     return {
-        'ids': {'nodes': sorted(in_range), 'kinds': {n: kinds[n] for n in sorted(in_range)}, 'tasks': tasks},
+        'ids': {'nodes': sorted(in_range), 'kinds': {n: kinds[n] for n in sorted(in_range)}, 'tasks': tasks, 'milestones': milestones},
         'relations': relations,
+        'edges': edges,
         'order': {'versions': in_versions, 'cards': order, 'gates': gates},
         'range': {'scope': scope, 'focus': focus[0] if focus else None, 'boundary': boundary},
-        'sources': dict(conn.execute('SELECT subject, origin FROM provenance ORDER BY subject')),
+        'sources': {k: v for k, v in conn.execute('SELECT subject, origin FROM provenance ORDER BY subject') if k in wanted},
     }
 
 
@@ -214,16 +236,18 @@ def main(argv):
     if len(argv) not in (2, 3) or (len(argv) == 3 and argv[2] not in ('current', 'all')):
         print('usage: registry_v3_read.py FIXTURE.json [current|all]', file=sys.stderr)
         return 2
-    conn = connect()
     with open(argv[1], encoding='utf-8') as f:
         fixture = json.load(f)
+    conn = connect()
     try:
         load(conn, fixture, argv[1])
+        print(json.dumps(read(conn, argv[2] if len(argv) == 3 else 'current'), ensure_ascii=False, indent=1))
+        return 0
     except Refused as error:
         print('refused:', error, file=sys.stderr)
         return 1
-    print(json.dumps(read(conn, argv[2] if len(argv) == 3 else 'current'), ensure_ascii=False, indent=1))
-    return 0
+    finally:
+        conn.close()
 
 
 if __name__ == '__main__':

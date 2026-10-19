@@ -715,3 +715,8 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — 連絡閲覧 H-20261019-32
 
 [連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H32へ。閲覧VM/View/配線と隔離試験。index.template.htmlを割当、OPS154残りは並行編集しない。DB/API固定、実稼働操作なし、commitなし、返却後連続待機。
+
+
+## OPS-156 — 待機導入手順 H-20261019-33
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H33へ。コード固定中に規約/READMEと待機運用を照合、新返却欄のみ。live/道具変更なし、返却後連続待機。

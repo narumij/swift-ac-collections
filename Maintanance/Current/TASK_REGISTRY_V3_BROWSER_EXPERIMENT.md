@@ -16,3 +16,11 @@ OPS-162工程3の残り。OPS-165の単一task担当/状態編集と明示的V3�
 HTTPから読込→実際の編集UIで担当/状態変更→隔離領域へ保存→ページ再開→同じ編集と基準が保持→最新DBとの差分確認→単一task更新を通す。再送の二重適用、同欄競合、別欄変更、世代変更、未対応編集の拒否を確認する。実験のDB反映操作は明示操作とし、保存だけで正本更新しない。
 
 ユーザー画面は操作せずheadlessで実施。使用engineと実行範囲・省略した機能・互換patchを報告する。広い本番機能の再実装ではなく、実経路の最小確認に限定する。正本/Registry/commitはAstra。
+
+## 実装内訳の受入（2026-10-19）
+
+LTR-20261019-20EB16AE80CF434A99695D077B2D4237の提案を採用。既存Node/Playwright/WebKitで実行可能、インストール不要。実験folderにstdlib HTTP server、Node browser driver、Python試験を追加する。原本templateはメモリ上のコピーでOPS-165の3patchのみ適用する案。追加patchが必要なら明示する。
+
+GET /・/workspace・/v3/latest、POST /save・/v3/applyのみ提供。saveは専用領域への追記だけ、applyは保存IDを指定した明示操作だけ。その他は404。ブラウザのroute interceptionで隔離origin外への通信を送信前に拒否し、要求記録でも検証する。
+
+WebKitで実編集、再開、再送、別欄/同欄競合、世代変更、未対応編集混在を試す。実サーバーの稼働情報/連絡/承認/文書表示等は対象外。スクリーンショットは必要なとき一時証跡とし、目視品質保証とは呼ばない。serverとbrowserはfinallyで停止する。

@@ -11,6 +11,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/registry_v3_read.py Maintanance/RegistryApp/Experiments/registry_v3_read/fixtures/base.json [current|all]
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_write.py -v   # 区切り2：更新契約
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_import.py -v       # OPS-163：固定写しの照合（試験用の木）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_recovery.py -v  # OPS-164：世代・履歴・backup・復元
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -155,3 +156,43 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - Studioの形式（`source.sha256`・`raw`・行番号）は作らない。
 - 採番表は、prefixごとの番号だけ。IDごとの過去の履歴ではない。
 - 現行の読取がセルの中の`\|`を戻すのは、到達点の接続だけ。両方とも同じ写しを読むので一致するが、意味の上では未解決のまま。
+
+## OPS-164：世代・変更履歴・backupと復元（`registry_v3_recovery.py`）
+
+- **世代**：DBを作るときに世代ID（`db_meta.generation`）を付ける。
+  - 要求は、`generation`・`actor`（自己申告。認証はしない）・`evidence`（根拠の参照の一覧）を持つ。
+  - 世代が違う要求は、何も変えずに拒否する（`GenerationMismatch`）。記録もしない。
+  - 改訂番号は、世代の中での順序。
+- **操作の履歴**：`operations`に、次のものを変更と同じトランザクションで保存する。
+  - 要求の本文・digest・結果・実行者・根拠・変更の前と後
+  - 拒否も、要求と結果を残す。前と後はない。
+  - 照会は`registry_v3_write.operation()`。
+- **backup**：SQLiteのbackup APIで、整合した写しを新しいファイルに作る。
+  - `<path>.manifest.json`に、schemaの版・世代・改訂・大きさ・SHA-256を記録する。
+  - すでにあるファイルとmanifestは上書きしない。
+  - 書き先は`O_EXCL`で排他的に確保する。確かめてから作るまでの間に別のファイルが現れても、それには触れない。
+  - 失敗したときに消すのは、自分が作ったファイルだけ。
+  - 写しはメモリへ取ってからserializeし、書いたバイト列そのもののhashをmanifestに記録する。
+- **確かめ**：次のどれかが合わなければ拒否する。
+  - バイト列とmanifest
+  - `PRAGMA integrity_check`
+  - DB自身のschemaの版・世代・改訂と、manifest
+- **復元**：確かめたbackupから、新しいファイルへ写す。
+  - backupのバイト列とmanifestは1回だけ読み、確かめたバイト列をメモリ（`deserialize`）に固定して、それを写す。確かめたあとでファイルが差し替えられたり消されたりしても、確かめていないバイト列が入ることはなく、`lineage`が指すhashとも食い違わない。
+  - 新しい世代を発行し、元の世代・改訂・backupのhashを`lineage`に記録する。
+  - 古い操作の記録は、照会できるように残す。
+  - 古い世代の要求と、新しい世代の同じ操作IDは、再実行しない（`OperationFromEarlierGeneration`）。
+- **書込は閉じたまま始まる**：backupは、その後に発行した番号を含まないことがある。そのため、復元したhighwaterが安全だとは言わない。
+  - 書込を開けるのは、明示的な`enable_writes(conn, actor, evidence, issued_through)`だけ。
+    - `issued_through`は、すべてのprefixについて、highwaterを下げない値でなければならない。
+    - 呼んだ人・根拠・値を`lineage`に記録する。
+  - 自動では開けない。ファイルを開き直しても閉じたまま。
+
+### OPS-164の限界と、決まっていないこと
+
+- **決まっていないこと**：
+  - 本当の復旧で、`issued_through`（最後に発行した番号の境界）を誰がどこから得るか。
+    - 試験`test_the_api_cannot_know_the_real_boundary`が示すこと：backupのhighwaterのまま開けると、backupの後に元のDBで発行された`TASK-007`が、別の仕事として再び発行される。
+  - 新しい世代で、前の世代と同じ操作IDを使ったら拒否するのか。この実験では一律に拒否する。名前空間を分けるかどうかは決めていない。
+- **manifestには署名がない**。ページの中身だけを変え、manifestもそれに合わせて作り直したものは、`integrity_check`では見抜けない。見抜けるのは構造の壊れだけ。
+- 1つのプロセスの中の、Pythonから呼ぶ契約の試験だけ。保存の期間、保管の場所、実際の運用での復旧手順は扱わない。

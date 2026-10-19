@@ -19,6 +19,15 @@ import registry_v3_read as r3  # noqa: E402
 import registry_v3_write as w3  # noqa: E402
 
 BASE = json.loads((HERE / 'fixtures' / 'base.json').read_text(encoding='utf-8'))
+def full(conn, request):
+    """The request as the API requires it: explicit generation, self-declared actor, evidence references (OPS-164)."""
+    return dict({'actor': '姫（試験）', 'evidence': []}, **request, generation=w3.generation(conn))
+
+
+def apply(conn, operation_id, request, hook=None):
+    return w3.apply(conn, operation_id, full(conn, request), hook)
+
+
 NEW = {'state': 'PROPOSED', 'owner': '担当F', 'item': '新しい仕事', 'condition': '着手の条件', 'detail': 'Maintanance/Current/新規.md'}
 
 
@@ -56,7 +65,7 @@ class Db(unittest.TestCase):
         def run(name, op, req, hook=None):
             conn = w3.open_db(self.path)
             try:
-                out[name] = w3.apply(conn, op, req, hook)
+                out[name] = apply(conn, op, req, hook)
             except Exception as error:  # returned to the test
                 out[name] = error
             finally:
@@ -89,30 +98,30 @@ class Register(Db):
 
     def test_replay_returns_the_same_result_without_writing(self):
         req = {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW}
-        first = w3.apply(self.conn, 'op-1', req)
+        first = apply(self.conn, 'op-1', req)
         before = self.state()
-        again = w3.apply(self.connect(), 'op-1', copy.deepcopy(req))
+        again = apply(self.connect(), 'op-1', copy.deepcopy(req))
         self.assertEqual(again, first)
         self.assertEqual(self.state(), before, 'no new number, revision or record')
 
     def test_same_id_with_another_request_is_refused(self):
-        first = w3.apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})
+        first = apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})
         before = self.state()
         with self.assertRaises(w3.OperationMismatch):
-            w3.apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': dict(NEW, item='別の内容')})
+            apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': dict(NEW, item='別の内容')})
         self.assertEqual(self.state(), before)
         self.assertEqual(json.loads(before['operations'][0][2]), first)
 
     def test_proposal_key_maps_once(self):
         req = {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW, 'proposal': {'saveId': 'S-1', 'draftId': 'draft-1'}}
-        first = w3.apply(self.conn, 'op-1', req)
+        first = apply(self.conn, 'op-1', req)
         self.assertEqual(first['id'], 'TASK-006')
         with self.assertRaises(w3.Refused) as caught:
-            w3.apply(self.conn, 'op-2', req)
+            apply(self.conn, 'op-2', req)
         self.assertIn('already registered as TASK-006', str(caught.exception))
         self.assertEqual(self.state()['highwater'], {'TASK': 6}, 'no second number for the same proposal')
         self.assertEqual(self.state()['proposals'], [('S-1', 'draft-1', 'TASK-006')])
-        other = w3.apply(self.conn, 'op-3', dict(req, proposal={'saveId': 'S-2', 'draftId': 'draft-1'}))
+        other = apply(self.conn, 'op-3', dict(req, proposal={'saveId': 'S-2', 'draftId': 'draft-1'}))
         self.assertEqual(other['id'], 'TASK-007', 'the same draft ID in another save is a different key')
 
     def test_failure_leaves_nothing_and_publishes_no_candidate(self):
@@ -120,14 +129,14 @@ class Register(Db):
         def fail(stage):
             raise RuntimeError('injected at ' + stage)
         with self.assertRaises(RuntimeError) as caught:
-            w3.apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW}, fail)
+            apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW}, fail)
         self.assertNotIn('TASK-006', str(caught.exception))
         self.assertFalse(self.conn.in_transaction)
         self.assertEqual(self.state(), before, 'no task, number, revision or operation record')
-        self.assertEqual(w3.apply(self.conn, 'op-2', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-006',
+        self.assertEqual(apply(self.conn, 'op-2', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-006',
                          'the unpublished candidate was never issued')
         with self.assertRaises(RuntimeError):
-            w3.apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-002', 'base': {'owner': '担当B'}, 'changes': {'owner': 'X'}}, fail)
+            apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-002', 'base': {'owner': '担当B'}, 'changes': {'owner': 'X'}}, fail)
         self.assertEqual(self.task('TASK-002')['owner'], '担当B')
         self.assertEqual(w3.revision(self.conn), 1)
 
@@ -150,9 +159,9 @@ class Ledger(unittest.TestCase):
     def test_issued_through_covers_absent_ids(self):
         conn, _ = self.make({'TASK': 100, 'OPS': 160})
         self.assertEqual(dict(conn.execute('SELECT prefix, highwater FROM id_allocations')), {'TASK': 100, 'OPS': 160})
-        self.assertEqual(w3.apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-101')
-        self.assertEqual(w3.apply(conn, 'op-2', {'kind': 'register_task', 'prefix': 'OPS', 'fields': NEW})['id'], 'OPS-161', 'a prefix with no present ID')
-        self.assertEqual(w3.apply(conn, 'op-3', {'kind': 'register_task', 'prefix': 'DOC', 'fields': NEW})['id'], 'DOC-001', 'no ledger and no ID: starts at 1')
+        self.assertEqual(apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-101')
+        self.assertEqual(apply(conn, 'op-2', {'kind': 'register_task', 'prefix': 'OPS', 'fields': NEW})['id'], 'OPS-161', 'a prefix with no present ID')
+        self.assertEqual(apply(conn, 'op-3', {'kind': 'register_task', 'prefix': 'DOC', 'fields': NEW})['id'], 'DOC-001', 'no ledger and no ID: starts at 1')
 
     def test_ledger_reserves_an_interval_without_dummy_tasks(self):
         conn, _ = self.make({'TASK': 100})
@@ -161,7 +170,7 @@ class Ledger(unittest.TestCase):
         self.assertEqual(conn.execute("SELECT COUNT(*) FROM nodes WHERE kind = 'task'").fetchone()[0], 5, 'no dummy task nodes')
         self.assertEqual([r[0] for r in conn.execute('SELECT id FROM issued_ids ORDER BY number')], ['TASK-001', 'TASK-002', 'TASK-003', 'TASK-004', 'TASK-005'],
                          'issue rows only for the fixture tasks; absent numbers get no historical identity')
-        made = w3.apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id']
+        made = apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id']
         self.assertEqual(made, 'TASK-101')
         self.assertTrue(w3.is_reserved(conn, 'TASK', 101))
         self.assertEqual(sorted(r3.read(conn, 'all')['ids']['tasks']), ['TASK-001', 'TASK-002', 'TASK-003', 'TASK-004', 'TASK-005', 'TASK-101'],
@@ -169,7 +178,7 @@ class Ledger(unittest.TestCase):
 
     def test_without_ledger_the_present_ids_decide(self):
         conn, _ = self.make(None)
-        self.assertEqual(w3.apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-006')
+        self.assertEqual(apply(conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-006')
 
     def test_invalid_ledgers_are_refused_and_leave_no_file_state(self):
         for ledger, words in (({'TASK': 3}, 'below the present TASK-005'), ({'task': 10}, 'bad prefix'), ({'TASK': -1}, 'non-negative integer'),
@@ -196,7 +205,7 @@ class SameOperation(Db):
     is stored."""
 
     def conflicting(self):
-        w3.apply(self.conn, 'op-0', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': '担当C'}, 'changes': {'owner': '担当X'}})
+        apply(self.conn, 'op-0', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': '担当C'}, 'changes': {'owner': '担当X'}})
         return {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': '担当C'}, 'changes': {'owner': '担当Y'}}  # stale base: refused
 
     def race_on_refusal(self, first, second):
@@ -208,7 +217,7 @@ class SameOperation(Db):
         def run(name, req, hook=None):
             conn = w3.open_db(self.path)
             try:
-                out[name] = w3.apply(conn, 'op-x', req, hook)
+                out[name] = apply(conn, 'op-x', req, hook)
             except Exception as error:
                 out[name] = error
             finally:
@@ -231,7 +240,7 @@ class SameOperation(Db):
         a, b, stored = self.race_on_refusal(refused, valid)
         self.assertIsInstance(a, w3.Refused)
         self.assertIsInstance(b, w3.OperationMismatch, 'the ID belongs to the refused request')
-        self.assertEqual(stored[:2], (w3.digest(refused), 'refused'))
+        self.assertEqual(stored[:2], (w3.digest(full(self.conn, refused)), 'refused'))
         self.assertEqual(json.loads(stored[2])['error'], str(a))
         self.assertEqual(self.task('TASK-004')['owner'], '担当D', 'the competing request changed nothing')
 
@@ -241,63 +250,63 @@ class SameOperation(Db):
         self.assertIsInstance(a, w3.Refused)
         self.assertIsInstance(b, w3.Refused)
         self.assertEqual(str(a), str(b))
-        self.assertEqual(stored[:2], (w3.digest(refused), 'refused'))
+        self.assertEqual(stored[:2], (w3.digest(full(self.conn, refused)), 'refused'))
 
 
 class Update(Db):
     def test_independent_fields_from_the_same_base_both_stay(self):
         base = self.task('TASK-003')
-        one = w3.apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
-        two = w3.apply(self.connect(), 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
+        one = apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
+        two = apply(self.connect(), 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
         self.assertEqual((one['applied'], two['applied']), (['owner'], ['state']))
         self.assertEqual((self.task('TASK-003')['owner'], self.task('TASK-003')['state']), ('担当X', 'DONE'))
 
     def test_item_change_keeps_the_node_name(self):
-        w3.apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'item': 'Bで始まる仕事'}, 'changes': {'item': '新しい項目名'}})
+        apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'item': 'Bで始まる仕事'}, 'changes': {'item': '新しい項目名'}})
         self.assertEqual(self.task('TASK-003')['item'], '新しい項目名')
         self.assertEqual(self.conn.execute("SELECT name FROM nodes WHERE id = 'TASK-003'").fetchone()[0], '新しい項目名')
         self.assertEqual(self.conn.execute('SELECT COUNT(*) FROM tasks t JOIN nodes n ON n.id = t.id WHERE n.name <> t.item').fetchone()[0], 0)
 
     def test_conflicting_change_is_refused_and_replayed(self):
         base = self.task('TASK-003')
-        w3.apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
+        apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
         late = {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner'], 'state': base['state']}, 'changes': {'owner': '担当Y', 'state': 'DONE'}}
         before = self.state()
         with self.assertRaises(w3.Refused) as caught:
-            w3.apply(self.connect(), 'op-2', late)
+            apply(self.connect(), 'op-2', late)
         self.assertIn('conflict on TASK-003: owner', str(caught.exception))
         self.assertEqual(self.task('TASK-003'), dict(base, owner='担当X'), 'the whole operation is refused, state included')
         self.assertEqual(w3.revision(self.conn), before['revision'])
         with self.assertRaises(w3.Refused):
-            w3.apply(self.conn, 'op-2', late)  # the refusal is replayed
+            apply(self.conn, 'op-2', late)  # the refusal is replayed
         with self.assertRaises(w3.OperationMismatch):
-            w3.apply(self.conn, 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
-        reduced = w3.apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
+            apply(self.conn, 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
+        reduced = apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'state': base['state']}, 'changes': {'state': 'DONE'}})
         self.assertEqual(reduced['applied'], ['state'], 'the reduced request goes under a new operation ID')
 
     def test_already_reflected_and_base_required(self):
         base = self.task('TASK-003')
-        w3.apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
-        same = w3.apply(self.conn, 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
+        apply(self.conn, 'op-1', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
+        same = apply(self.conn, 'op-2', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'owner': base['owner']}, 'changes': {'owner': '担当X'}})
         self.assertEqual((same['applied'], same['alreadyReflected']), ([], ['owner']))
         with self.assertRaises(w3.Refused):
-            w3.apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-003', 'base': {}, 'changes': {'owner': 'Z'}})
+            apply(self.conn, 'op-3', {'kind': 'update_task', 'id': 'TASK-003', 'base': {}, 'changes': {'owner': 'Z'}})
         with self.assertRaises(w3.Refused):
-            w3.apply(self.conn, 'op-4', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'id': 'x'}, 'changes': {'id': 'TASK-999'}})
+            apply(self.conn, 'op-4', {'kind': 'update_task', 'id': 'TASK-003', 'base': {'id': 'x'}, 'changes': {'id': 'TASK-999'}})
 
 
 class Retire(Db):
     def test_retired_id_is_never_reused_or_edited(self):
-        made = w3.apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id']
-        w3.apply(self.conn, 'op-2', {'kind': 'retire_task', 'id': made, 'reason': '登録直後に取り消し'})
-        self.assertEqual(w3.apply(self.conn, 'op-3', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-007')
+        made = apply(self.conn, 'op-1', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id']
+        apply(self.conn, 'op-2', {'kind': 'retire_task', 'id': made, 'reason': '登録直後に取り消し'})
+        self.assertEqual(apply(self.conn, 'op-3', {'kind': 'register_task', 'prefix': 'TASK', 'fields': NEW})['id'], 'TASK-007')
         with self.assertRaises(w3.Refused) as caught:
-            w3.apply(self.conn, 'op-4', {'kind': 'update_task', 'id': made, 'base': {'owner': NEW['owner']}, 'changes': {'owner': 'X'}})
+            apply(self.conn, 'op-4', {'kind': 'update_task', 'id': made, 'base': {'owner': NEW['owner']}, 'changes': {'owner': 'X'}})
         self.assertIn('retired', str(caught.exception))
         with self.assertRaises(w3.Refused):
-            w3.apply(self.conn, 'op-5', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-003', 'successor': made, 'flow': 'SEQUENCE'})
+            apply(self.conn, 'op-5', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-003', 'successor': made, 'flow': 'SEQUENCE'})
         with self.assertRaises(w3.Refused):
-            w3.apply(self.conn, 'op-6', {'kind': 'retire_task', 'id': made, 'reason': '二回目'})
+            apply(self.conn, 'op-6', {'kind': 'retire_task', 'id': made, 'reason': '二回目'})
         self.assertIn(made, self.state()['issued'])
         self.assertTrue(self.conn.execute('SELECT 1 FROM nodes WHERE id = ?', (made,)).fetchone(), 'the node stays as a reservation')
 
@@ -319,17 +328,17 @@ class Edges(Db):
         w3.create(path, copy.deepcopy(BASE))
         alone = w3.open_db(path)
         self.addCleanup(alone.close)
-        self.assertEqual(w3.apply(alone, 'op-b', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-003', 'flow': 'SEQUENCE'})['revision'], 1)
+        self.assertEqual(apply(alone, 'op-b', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-003', 'flow': 'SEQUENCE'})['revision'], 1)
 
     def test_management_and_progress_are_not_merged(self):
-        w3.apply(self.conn, 'op-1', {'kind': 'add_edge', 'graph': 'management', 'prerequisite': 'TASK-003', 'successor': 'TASK-004'})
-        w3.apply(self.conn, 'op-2', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-003', 'flow': 'SEQUENCE'})
+        apply(self.conn, 'op-1', {'kind': 'add_edge', 'graph': 'management', 'prerequisite': 'TASK-003', 'successor': 'TASK-004'})
+        apply(self.conn, 'op-2', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-003', 'flow': 'SEQUENCE'})
         with self.assertRaises(w3.Refused) as caught:
-            w3.apply(self.conn, 'op-3', {'kind': 'add_edge', 'graph': 'management', 'prerequisite': 'TASK-002', 'successor': 'TASK-001'})
+            apply(self.conn, 'op-3', {'kind': 'add_edge', 'graph': 'management', 'prerequisite': 'TASK-002', 'successor': 'TASK-001'})
         self.assertIn('management cycle', str(caught.exception))
         # TASK-002 -> MS-A2 -> END-0.1.0 -> GATE-0.2.0 -> START-0.2.0 -> MS-B1 -> TASK-004: closing it needs the milestone links and the skeleton
         with self.assertRaises(w3.Refused) as caught:
-            w3.apply(self.conn, 'op-4', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-002', 'flow': 'SEQUENCE'})
+            apply(self.conn, 'op-4', {'kind': 'add_edge', 'graph': 'progress', 'prerequisite': 'TASK-004', 'successor': 'TASK-002', 'flow': 'SEQUENCE'})
         self.assertIn('progress cycle', str(caught.exception))
         view = r3.read(self.conn, 'all')
         self.assertIn(['TASK-003', 'TASK-004'], view['relations']['management'])

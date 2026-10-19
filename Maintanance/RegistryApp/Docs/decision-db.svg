@@ -21,14 +21,14 @@
     </style>
   </defs>
   <rect width="1900" height="1080" fill="#ffffff"/>
-  <text x="40" y="54" class="t">判断の記録の試作（OPS-158、隔離）</text>
-  <text x="40" y="86" class="s">判断の正本は Markdown のまま。サーバーにつながっていない・未配備。記録は承認ではなく、参照は全部ではない。</text>
+  <text x="40" y="54" class="t">判断の補助DB（OPS-158、CLI運用）</text>
+  <text x="40" y="86" class="s">判断の正本は Markdown のまま。CLIで運用中・サーバーには未接続。記録は承認ではなく、参照は全部ではない。</text>
   <rect x="1180" y="30" width="34" height="22" rx="4" class="tbl"/><text x="1224" y="47" class="s">ファイルに保存する表</text>
   <rect x="1420" y="30" width="34" height="22" rx="4" class="der"/><text x="1464" y="47" class="s">畳み込みで作る（表ではない）</text>
   <rect x="1720" y="30" width="34" height="22" rx="4" class="op"/><text x="1764" y="47" class="s">操作・読取</text>
 
   <rect x="20" y="104" width="1600" height="956" rx="16" class="iso"/>
-  <text x="40" y="134" class="s">Maintanance/Current/Evidence/OPS-158/durable/（隔離した試作。本番の置き場は未決）</text>
+  <text x="40" y="134" class="s">実装：RegistryApp/decisions/ ｜ 保存：Data/decision-assist.sqlite3（Git対象外）</text>
 
   <!-- writes -->
   <rect x="40" y="150" width="420" height="300" rx="10" class="op"/>
@@ -121,7 +121,7 @@
   <text x="1656" y="140" class="h">しないこと</text>
   <text x="1656" y="172" class="b">サーバーへ接続</text>
   <text x="1656" y="200" class="b">画面（UI）</text>
-  <text x="1656" y="228" class="b">本番の配置</text>
+  <text x="1656" y="228" class="b">他DBとの統合</text>
   <text x="1656" y="256" class="b">自動の登録・判断</text>
   <text x="1656" y="284" class="b">全量の移行</text>
   <text x="1656" y="312" class="b">出典の自動監視</text>

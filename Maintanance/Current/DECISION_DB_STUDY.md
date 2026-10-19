@@ -1,9 +1,9 @@
 # 判断と判断キャッシュのDB管理検討
 
 ## TL;DR（人間向け）
-判断の内容・根拠・依存関係とコピー判断をDBで扱うと、探索と再確認を減らせるか検討する。V3切替後の調査を再開し、既存判断3件の隔離試行案まで具体化した。移行の実行は未承認。
+判断の補助DBを2026-10-19に本番配置し、初期3判断の登録・照会を確認した。本文の写し・改訂・出典・コピー参照を扱う。判断の正本は文書のまま。CLIで利用でき、Studio画面/サーバーは未接続。[運用手順](../RegistryApp/decisions/README.md)。
 
-OPS-158 / ACTIVE / Astra / 2026-10-19。親OPS-103。ユーザー「それも検討して」に基づく検討のみ。
+OPS-158 / DONE / Astra / 2026-10-19。初期検討からユーザーの段階的承認で隔離試行・本番補助DB配置まで実施。以下の未承認/未実施の記録は各時点の履歴であり、最新状態は末尾の本番導入結果を参照。
 
 ## 検討範囲
 
@@ -229,3 +229,21 @@ Astra、2026-10-19T22:05:47.300030+09:00。path `/var/folders/x9/2p70phpx3_xdvwx
 
 ## 両者の締め完了
 2026-10-19。図は3c8e8db7b、Astra評価/感想/調整役振り返りは5f172ccd2。姫本人の評価/感想は明示許可によりfc7df3e57、会話の観測範囲の事実訂正はb4ef1398fで本人がcommitした。両者のお手入れ返却を受領。姫の古い8一時領域は過去証拠の参照先として保全し、live待機状態も保持。今回の掃除を過去全体の掃除へ広げない。今回の実装・図・振り返りの区切りは完了。補助DBの本番配置と日常利用開始は未実施。
+
+## 本番の補助DB導入の承認
+2026-10-19。ユーザーは「本番まだだったのか。さきにほんばんだったな」と訂正し、補助DBの本番配置・初期3件・照会の提示へ「つづけて」と指示。`RegistryApp/Data/decision-assist.sqlite3` を作成し、正本を文書に残したままCLIで日常利用を開始する。コードは `RegistryApp/decisions/` へ採用し、Evidenceの試作はその時点の証拠として固定する。今後の実装修正は採用先で行う。
+
+保存先はGit管理外であることを確認済み。backupは `/Users/narumij/Documents/RegistryStudioBackups/swift-ac-collections/` 配下の専用導入ディレクトリへ。本人の決定記録3件を照合して初期登録する。記録者はAstra、決定者は原記録のユーザーとし、試験担当の名前を本番登録者として流用しない。終了後に姫へWAKEを送り、待機終了の応答を確認する。
+
+### 一時作業物:
+Astra、2026-10-19T22:19:58.587959+09:00。path `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/decision-production-check-q1_9lnum` / realpath `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/decision-production-check-q1_9lnum`。用途：採用先で17試験。使用中。保持：結果保存まで。証拠：本書。
+
+採用先で17試験成功。一時領域は結果保存後Astraが削除済み。
+
+## 本番導入結果（2026-10-19）
+
+ユーザーの明示継続指示に基づき、補助DB `Maintanance/RegistryApp/Data/decision-assist.sqlite3` を初期化した。3判断・10操作。登録前に引用行のhashを現在の文書と照合し、全件一致。各操作前と全操作後のsnapshotを `/Users/narumij/Documents/RegistryStudioBackups/swift-ac-collections/decision-assist-20261019T222022` へ保存・検証した。採用先で17試験成功。3件の読取とCLIのDEC-CARD-DOCUMENT照会成功。記録者Astra、決定者userを区別している。
+
+本番のIDはDEC-VERSION-ORDER、DEC-CARD-DOCUMENT、DEC-RESTORE-ISSUANCE。試験用IDとは区別する。参照は初期標本の4件だけであり、全copyを登録したとはしない。登録済みの確認候補は0。これは全体に問題がないという意味ではない。
+
+運用README・図を更新しPNGを確認した。コード/手順/導入結果はGit、DBはGit対象外、snapshotはrepo外。日常の必要な判断から登録を増やせる段階に達したため、この初期導入を完了とする。新機能・全履歴移行・UIは今回の完了条件ではない。

@@ -25,7 +25,7 @@
   <text x="40" y="86" class="s">taskと構造の正本は Registry V3 DB。判断・仕様・成果の正本は Markdown のまま。名前は本人申告で、認証ではない。</text>
   <rect x="1250" y="30" width="34" height="22" rx="4" class="done"/><text x="1294" y="47" class="s">実装・受入済み</text>
   <rect x="1440" y="30" width="34" height="22" rx="4" class="plan"/><text x="1484" y="47" class="s">予定・保留</text>
-  <rect x="1610" y="30" width="34" height="22" rx="4" class="iso"/><text x="1654" y="47" class="s">隔離した試作</text>
+  <rect x="1610" y="30" width="34" height="22" rx="4" class="iso"/><text x="1654" y="47" class="s">独立した補助DB</text>
 
   <!-- C1: user and screen -->
   <rect x="30" y="112" width="440" height="940" rx="14" class="zone"/>
@@ -50,7 +50,7 @@
   <text x="66" y="660" class="h">これからの画面</text>
   <text x="66" y="688" class="b">メンバー欄のPING（旧経路の切替は保留）</text>
   <text x="66" y="714" class="b">一般の活動の履歴の閲覧</text>
-  <text x="66" y="740" class="s">判断の記録の画面は作らない（試作は隔離）</text>
+  <text x="66" y="740" class="s">判断DBの画面は未実装（CLIで利用）</text>
   <rect x="50" y="770" width="400" height="262" rx="10" class="done"/>
   <text x="66" y="802" class="h">起動（ユーザーの操作）</text>
   <text x="66" y="832" class="b">serve.py --v3-db Data/registry.sqlite3</text>
@@ -154,9 +154,9 @@
   <text x="1476" y="670" class="b">DB管理の表を手で書き換えない</text>
   <text x="1476" y="696" class="s">表とDBが違えばDBを確かめる</text>
   <rect x="1460" y="728" width="370" height="150" rx="10" class="iso"/>
-  <text x="1476" y="760" class="h">判断の記録の試作（OPS-158）</text>
+  <text x="1476" y="760" class="h">判断の補助DB（OPS-158）</text>
   <text x="1476" y="788" class="b">専用の decision_cli.py だけで開く</text>
-  <text x="1476" y="814" class="b">サーバーにつながっていない・未配備</text>
+  <text x="1476" y="814" class="b">CLIで運用中・サーバーには未接続</text>
   <text x="1476" y="840" class="s">記録は承認ではない。正本はMarkdown</text>
   <text x="1476" y="864" class="s">詳しくは decision-db.png</text>
 

@@ -412,7 +412,7 @@ class LetterMixin:
                 args += [member, member]
             sql += (' WHERE ' + ' AND '.join(where) if where else '') + ' ORDER BY rowid DESC'
             for row in con.execute(sql, args).fetchall():
-                events = con.execute('SELECT event, actor, recorded_by, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
+                events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
                 current = None
                 for e in events:
                     if e['effective'] and e['event'] != 'revised':
@@ -428,15 +428,12 @@ class LetterMixin:
                 if received is not None and received['text_sequence'] is not None:
                     seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
                 stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
-                meta = [{'event': e['event'], 'actor': e['actor'], 'recordedBy': e['recorded_by'], 'effective': bool(e['effective']), 'at': e['received_at']} for e in events]
                 out.append({'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
                             **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
                             'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
                             'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
                             'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
-                            'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None,
-                            # OPS-183/184: who did what and when (no text). A proxy record (effective false) is kept and marked, not hidden.
-                            'events': meta, 'lastEvent': meta[-1] if meta else None})
+                            'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None})
                 next_cursor = f'r{row["rowid"]}'
             return {'letters': out, 'brief': True, 'limit': limit, 'cursor': cursor, 'hasMore': has_more, 'nextCursor': next_cursor if has_more else None}
 

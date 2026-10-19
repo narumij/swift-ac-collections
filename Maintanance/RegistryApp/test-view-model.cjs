@@ -103,7 +103,7 @@ const ALL=['members','cards','timeline','wake'];
  k=st.snapshot().sources.continuity;assert.deepEqual([k.generation,k.ok,k.receivedAt],[2,false,12000],'a failed fetch is ok=false');assert.equal(k.value.base.owners['甲'].at,'2026-10-19T06:00:00Z','never overwritten by the failure');
  assert(c.deriveStudio(st.snapshot()).members.entries.find(e=>e.owner==='甲').body.includes('継続 不調'));
  // the page studio uses the wall clock by default and passes performance.now() for continuity
- assert(/function createStudio\(\{views,registryState,withCurrent=true,withLetters=false,now=\(\)=>Date\.now\(\)\}\)/.test(html));}  // OPS-183/184: withLetters added
+ assert(/function createStudio\(\{views,registryState,withCurrent=true,now=\(\)=>Date\.now\(\)\}\)/.test(html));}
 // WAKE: the result belongs to the owner and request state fixed at the start of the send (A sending -> B chosen -> A answers).
 for(const outcome of ['success','failure']){
  const st=c.createStudio({views:{wake:{show(){}}}});st.activity(rows([ev('T-11','work','甲','x'),ev('T-11','work','乙','y')]));

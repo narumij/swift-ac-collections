@@ -467,3 +467,5 @@ python3 Maintanance/RegistryApp/comm.py letter watch --owner 姫 --state-file "$
 
 ## 判断の補助DB
 2026-10-19からCLIで日常利用。[運用・照会手順](decisions/README.md)。文書の判断正本は維持し、Studio画面/サーバーには未接続。
+
+メンバー状態（OPS-183）：連絡DBの開いた連絡・送り手の確認待ち・最後の本人連絡を表示。申告状態とは区別する。OPS-184の作業カード合成・letter watchのWAKE追加は2026-10-20ユーザー指示で撤去。

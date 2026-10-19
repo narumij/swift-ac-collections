@@ -4,7 +4,7 @@
 連絡DBの受領・着手と本人申告を区別して表示する。返却済みから本人待機を推定しない。
 姫がすでに提出した内訳を使い、現状確認・対応表の受入後に実装へ進む。内訳の再提出を求めない。
 
-OPS-183 / ACTIVE / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。第1区切り受入済み。実装・試験を姫へ依頼（下記）。原返却：CP-20261019-003（CLAUDE_PENDING_TASKS.md）。親OPS-048。
+OPS-183 / DONE / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。実装・隔離試験をAstra受入済み。本番表示は未確認（下記）。原返却：CP-20261019-003（CLAUDE_PENDING_TASKS.md）。親OPS-048。
 
 ## 既存の作業内訳（姫の案を引継ぎ）
   1. 現状の固定：`createMemberLampView`の入力・「新着」「継続確認」の条件と既存試験（`test-view-model-members.cjs`）を控える。
@@ -79,3 +79,51 @@ Hime owns the related Studio client/VM/template, brief-list server metadata, com
 Prepare isolated tests first and demonstrate a failing regression before fixing it. Use temporary DBs, a dedicated test server/port and headless browser: send → receive/start/reply → VM → rendered member/work display, plus WAKE → watch → ACK → display. Cover returned/unclosed, closed versus task completion, pagination and fetch failure. Record retained tests and justified changes. Do not use port 8088, production data, restart the user's server or commit. Report unsupported real-browser checks honestly; component checks alone do not complete acceptance.
 
 Return implementation, evidence and remaining limitations to Astra; stop and report after two consecutive correction rounds. Do not ask the user again about the choices settled here. This bounded implementation does not close the broader all-communications requirement and does not authorize routine autonomous operation.
+
+### 姫返却：実装区切り（OPS-183/184共通、2026-10-20）
+一時作業物:
+- `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-183-184-oldpage.3UqpL3AAhB`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-183-184-oldpage.3UqpL3AAhB`）・姫・2026-10-20 00:08・変更前の`index.template.html`（`git show 4f201e216:`）を置き、端から端の試験が変更前の画面で失敗することを示す・状態「削除済み」（2026-10-20、確認後。同じ場所で一時のsync出力も作って消した）
+
+依頼はAstraの受入・実装依頼（上の英語の節）。基準commit `af9847cb3`。commitなし、8088・本番DB・本番出力・ユーザーの画面には触れていない。OPS-184側の返却は[こちら](STUDIO_WORK_LANE_LETTERS_CONNECTION.md#姫返却実装区切りops-183184共通2026-10-20)から本節を参照する。
+
+**変更**
+- `studio_store.py`：軽量一覧の各連絡に`events`（出来事・記録した本人`actor`・記録者`recordedBy`・`effective`・時刻。本文なし）と`lastEvent`を足した。代理記録は`effective:false`のまま残す。
+- `index.template.html`：連絡の全ページを1つの読取（`readLetterFeed`、200件×最大10ページ、超えたら「一部のみ」）でメンバー状態とカードに渡す。
+  - ランプ：申告状態は変えない。宛先の開いた連絡、送り手の確認待ち（返答済み・辞退・停止済みで未close）、本人が`effective`で記録した最後の連絡の出来事（「最後の連絡」と明記）。3件超は件数と「連絡欄で原文」。連絡にしかいない担当も出す。読み込み中・取得不調（最後に読めた内容を保持）・一部のみを文で出す。
+  - カード：taskごとに旧活動と連絡の新しい方で段階を出す（どちらも消さない）。連絡の件数を状態別に添える。閉じた連絡は「連絡は閉じた」「次：不明（連絡は閉じた・taskの完了ではありません）」。カードの行数が増えるので、カードの表示は行の数に合わせて行を足すようにした。
+- `comm.py letter watch`：同じ1回でjsonlのWAKEも読む（既存の`activity._WakeScan`で判定、ACKは従来どおり）。WAKEの進み具合は状態ファイルの`wake`に別に持つ。活動記録が読めなければ`wake.error`、WAKEは進めない、連絡は通常どおり。連絡にも変化がなければ終了コード1。
+- `RegistryApp/README.md`：watchの`wake`と、ランプ・カードの読み方を追記。
+
+**試験**
+- 先に失敗を確認：`test-studio-letters.py`の新しい2件（軽量一覧の出来事、watchのWAKE）は`KeyError`で失敗→実装後に通過。`test-letters-lanes.cjs`（新規、VMと読取）は`readLetterFeed`なしで失敗→通過。端から端の`test-letters-lanes-browser.py`（新規）は、変更前の画面（`4f201e216`のテンプレート）で「連絡が出ない」で失敗し、変更後に通過。
+- 端から端（新規）：一時の連絡DB・承認DB・probe DB・活動記録・継続記録・出力、`serve.py`のHandlerを127.0.0.1の空きポートで、headless WebKit。①送信→受領・着手・返答→ランプとカード（申告状態は待機中のまま、担当中、最後の連絡、送り手の確認待ち、閉じた連絡とtask完了の区別、古い返答済みを隠さない）②連絡の読取を503にして「取得不調」と最後の内容の保持③回復後、画面の「待機完了」→watchが`wake: new`→本人のACK記録→画面に「ACK済み」。画面のエラー0、外への通信0、live fileの指紋は前後で同じ（`v3/hermetic`）。
+- 既存：`test-*.cjs` 24本、`test-*.py` 8本、`v3/test_serve_v3_mode.py`・`test_browser_roundtrip.py`・`test_plan_browser.py`・`test_studio_adapter.py`はすべて通過。V3 DBの写しからの一時syncで`verify_v3.cjs`通過、画面のエラー0。
+- 変えた既存試験：`test-studio-letters.py`のwatchの「GETは1回」を「inboxと活動記録の各1回」に（WAKEを読むため）。HttpTestsの活動記録を一時ファイルへ固定（それまでは本番の`events.jsonl`を読んでいた）。`test-view-model.cjs`の`createStudio`の引数の形の確認に`withLetters=false`を足した。
+
+**限界・未確認**
+- ページ送りの確認は単体（読取の全ページ・上限・失敗）だけ。端から端は1ページ分の件数。
+- watchのWAKEは`/activity-events`の直近200件の範囲。もっと古い未ACKのWAKEは見えない（Studioの表示と同じ範囲）。
+- 「最後の連絡」は連絡DBの出来事だけ。jsonlの「最後」とは別の行で、どちらが新しいかの合成はしていない。
+- 実ブラウザ（ユーザーのSafari）では未確認。本番への反映には、ユーザーの再起動か「正本から新しく始める」が要る。
+- **訂正**：第1区切りで「連絡DBで待機している担当にはStudioの待機完了が届かない」と書いたのは言い過ぎ。姫の待機の道具はjsonlも見ているので届いていた。届かないのは、`letter watch`だけで待つ担当。
+- 気づいた別件（直していない）：`serve.py`の`get_letters`は`studio_store.Store()`を`try`の外で作る。DBを開けないと503ではなく例外になる。
+
+### Astra implementation acceptance (2026-10-20)
+
+Accepted the bounded implementation for OPS-183/184 after reviewing the actual diff and independently running `test-letters-lanes-browser.py` (1 WebKit test), `test-studio-letters.py` (25 tests), and `test-letters-lanes.cjs`, `test-view-model-members.cjs`, `test-work-lane.cjs`, `test-view-model.cjs` (all passed). `git diff --check` passed. The browser scenario seeds letter transitions through the real store, then exercises the real server read routes and rendered page; WAKE uses the page action, watcher and ACK. It is not proof of every real-agent communication route.
+
+Returned/unclosed remains visible, closed exchanges do not set task DONE, member presence is not inferred from a return, and failed reads retain prior content with an error indicator. Separate legacy-last and last-letter lines are accepted because their sources are explicit. Pagination/cap coverage is unit-level; the browser case is one page. The 200-event WAKE window and incomplete-feed indication are retained limitations.
+
+This completes these implementation tasks, not production deployment or the broader all-communications requirement. No live restart or user browser was operated. User Safari and post-restart production display remain unverified. The reported Store-construction exception is outside this change and remains an observation, not a fixed defect.
+
+Communication reconciliation: the implementation return was received in these canonical documents via the user's acceptance request. LTR-20261019-7958BDD87963439EA5EED856FA7E7995 was still `sent` when checked; do not fabricate Hime's receipt/start/reply events. Acceptance is recorded here and separately communicated to Hime.
+
+### Production deployment (2026-10-20)
+
+User explicitly requested production deployment so the result can be viewed after one exchange. Astra gracefully stopped the identified port-8088 server and restarted it with the same V3 DB/Inbox arguments (new PID 98738). HTTP checks confirmed the served page includes the shared letter-feed wiring and the production brief endpoint returns events/lastEvent for 91 letters, hasMore=false. No save was discarded or DB migrated. Existing browser tabs require a normal reload to load the new JavaScript; the user browser was not operated. Production HTTP integration is verified; visual rendering on user Safari remains unverified.
+
+一時作業物（ユーザーへの見せ用の試験サーバー）:
+- `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-183-184-demo.ufKSMJa44f`（実体 `/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-183-184-demo.ufKSMJa44f`）・姫・2026-10-20 01:05・試験と同じ一時DB・一時活動記録で試験専用サーバーを127.0.0.1の別ポートで起動し、ユーザーがブラウザで見る・状態「使用中」
+
+## 2026-10-20 OPS-184撤回時の扱い
+ユーザーが撤回対象をOPS-184のみと指定。OPS-183の実装・受入は維持し、メンバー状態への連絡DB接続を残す。

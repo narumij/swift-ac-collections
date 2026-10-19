@@ -1218,10 +1218,10 @@ function createActivityView(track,status,makeNode,getActive=()=>null,current=nul
 // injectable wall clock in milliseconds since the epoch (Date.now by default); the continuity clock is performance.now().
 // Late or failed answers are ordered at the input boundary: the activity and approval pollers are single-flight, and the
 // continuity fetch drops older answers; a failed fetch is recorded as ok=false and keeps the last good value.
-function emptyStudioSnapshot(parts,{registryState=()=>'',withCurrent=true}={}){
+function emptyStudioSnapshot(parts,{registryState=()=>'',withCurrent=true,withLetters=false}={}){
  const source=value=>({generation:0,receivedAt:null,ok:null,value});
- return {revision:0,parts:[...parts],registryState,withCurrent,last:'',clock:0,activitySeen:null,freshOwners:new Set(),
-  sources:{activity:source([]),approvals:source([]),continuity:source(null),letters:source([]),letterDetail:source(null)},
+ return {revision:0,parts:[...parts],registryState,withCurrent,withLetters,last:'',clock:0,activitySeen:null,freshOwners:new Set(),
+  sources:{activity:source([]),approvals:source([]),continuity:source(null),letters:source([]),letterDetail:source(null),letterFeed:source(null)},
   ui:{memberOrder:[],wakeSelected:'',wakeBusy:false,wakeSending:null,wakeNote:'',wakeNoteFor:'',letterSelected:'',letterMember:'',letterState:'',letterCursor:null}};
 }
 // Pure: the next snapshot for one input. A failed result keeps the last good value. A member-only or WAKE-only snapshot does
@@ -1233,7 +1233,7 @@ function applyStudioInput(s,input){
  // H-20261019-34: a list page answer (or failure) for another page or filter than the one now shown is ignored the same way.
  if(input.source==='letters'&&input.forKey!==undefined&&input.forKey!==letterListKey(s.ui))return s;
  const n={...s,sources:{...s.sources},ui:{...s.ui},revision:s.revision+1,last:input.source,freshOwners:new Set()},has=p=>s.parts.includes(p);
- if(['activity','approvals','continuity','letters','letterDetail'].includes(input.source)){
+ if(['activity','approvals','continuity','letters','letterDetail','letterFeed'].includes(input.source)){
   const old=s.sources[input.source];n.sources[input.source]={generation:old.generation+1,receivedAt:input.at??null,ok:!!input.ok,value:input.ok?input.value:old.value,...(old.key!==undefined?{key:old.key}:{})};
   if(input.source==='continuity'&&Number.isFinite(input.now))n.clock=input.now;
   // H-20261019-35: a list page is kept with the key (page and filters) it was read for
@@ -1258,8 +1258,8 @@ function studioContinuity(s){
 }
 // Pure: the view models of the requested parts, all of the same revision.
 function deriveStudio(s,parts=s.parts){
- const out={revision:s.revision},act=s.sources.activity,want=p=>parts.includes(p);
- if(want('members')){const cont=studioContinuity(s),entries=stableMemberOrder(s.ui.memberOrder,memberViewModels(memberModel(act.value),cont.owners,cont.text));
+ const out={revision:s.revision},act=s.sources.activity,want=p=>parts.includes(p),lf=s.withLetters?letterFeedState(s.sources.letterFeed):null;
+ if(want('members')){const cont=studioContinuity(s),entries=stableMemberOrder(s.ui.memberOrder,memberViewModels(memberModel(act.value),cont.owners,cont.text,lf&&{text:lf.memberText,byOwner:memberLetters(lf.letters)}));
   out.members={entries,order:entries.map(e=>e.owner),fresh:s.last==='activity'?s.freshOwners:new Set(),failed:act.ok===false,failureText:owner=>memberFailureText(owner,cont.text)};}
  if(want('cards'))out.cards=workLaneViewModel(workLaneItems(act.value,s.sources.approvals.value,s.registryState),workLaneTrouble(act.ok===false,s.sources.approvals.ok===false));
  if(want('timeline'))out.timeline=act.ok===false?{failed:true,text:ACTIVITY_FAILURE_TEXT}:activityTimelineViewModel(act.value,s.withCurrent);
@@ -1269,8 +1269,8 @@ function deriveStudio(s,parts=s.parts){
 }
 // The one presenter: applies each input, derives once, and hands the parts that depend on that input to their views with the
 // same revision. The shown member order is written back as a UI input. Operations (WAKE send) run here, never in a view.
-function createStudio({views,registryState,withCurrent=true,now=()=>Date.now()}){
- const parts=Object.keys(views).filter(k=>views[k]);let s=emptyStudioSnapshot(parts,{registryState,withCurrent});
+function createStudio({views,registryState,withCurrent=true,withLetters=false,now=()=>Date.now()}){
+ const parts=Object.keys(views).filter(k=>views[k]);let s=emptyStudioSnapshot(parts,{registryState,withCurrent,withLetters});
  const draw={letters:(v,vm,rev)=>v.show(vm,rev),members:(v,vm,rev)=>{if(vm.failed)v.showFailure(vm.failureText,rev);else{v.show(vm.entries,vm.fresh,rev);v.recovered();}},
   cards:(v,vm,rev)=>v.update(vm,rev),timeline:(v,vm,rev)=>vm.failed?v.showFailure(vm.text,rev):v.show(vm,rev),wake:(v,vm,rev)=>v.show(vm,rev)};
  const input=x=>{const next=applyStudioInput(s,x);if(next===s)return null;s=next;const vm=deriveStudio(s);
@@ -1285,6 +1285,8 @@ function createStudio({views,registryState,withCurrent=true,now=()=>Date.now()})
   tick:perf=>input({source:'clock',now:perf}),
   // OPS-156 H-20261019-32: letters, read only (GET). The detail names the letter it was asked for.
   letters:(value,forKey)=>input({source:'letters',ok:true,value,forKey,at:now()}),lettersFailure:forKey=>input({source:'letters',ok:false,forKey,at:now()}),
+  // OPS-183/184: every page of the brief list ({letters, complete}), read by one reader for the members and the cards
+  letterFeed:value=>input({source:'letterFeed',ok:true,value,at:now()}),letterFeedFailure:()=>input({source:'letterFeed',ok:false,at:now()}),
   letterDetail:(forId,value)=>input({source:'letterDetail',ok:true,value,forId,at:now()}),letterDetailFailure:forId=>input({source:'letterDetail',ok:false,forId,at:now()}),
   letterSelect:id=>input({source:'letters-ui',patch:{letterSelected:id}}),letterFilter:patch=>input({source:'letters-ui',patch:{...patch,letterCursor:null}}),
   letterPage:cursor=>input({source:'letters-ui',patch:{letterCursor:cursor}}),
@@ -1463,12 +1465,55 @@ function memberTime(at){const d=new Date(at);return Number.isFinite(d.getTime())
 // order shown; memberFailureText is the text kept while the activity fetch fails. "・新着" is a display effect added by the view.
 function memberModel(rows){return {states:presenceStates(rows),pendings:startPendings(rows)};}
 const UNDECLARED={state:'unknown',at:'',legacy:false,last:null};
-function memberViewModels(model,continuityOwners,continuityText){
+// OPS-183/184: the letters as a second source of the member status and the cards, read by one reader over every page of
+// /letters?brief=1. A letter event recorded by someone else (effective false) is kept by the server and shown in the
+// letters view, but it is nobody's own action here. A letter event never changes a declared state (protocol §2).
+const LETTER_STATE_TEXT={sent:'未受領',received:'受領',started:'担当中',withdrawn:'停止要請',returned:'返答済み',declined:'辞退',stopped:'停止済み',closed:'閉じた'};
+const LETTER_EVENT_TEXT={sent:'送信',received:'受領',started:'着手',returned:'返答',declined:'辞退',withdrawn:'停止要請',stopped:'停止応答',closed:'閉じた'};
+const LETTER_OPEN=new Set(['sent','received','started','withdrawn']),LETTER_TO_CONFIRM=new Set(['returned','declined','stopped']);
+async function readLetterFeed(fetchJson,{limit=200,maxPages=10}={}){
+ const letters=[];let cursor=null;
+ for(let page=0;page<maxPages;page++){
+  const v=await fetchJson('/letters?brief=1&limit='+limit+(cursor?'&cursor='+encodeURIComponent(cursor):''));
+  if(!v||!Array.isArray(v.letters))throw Error('Invalid letters page');
+  letters.push(...v.letters);
+  if(!v.hasMore)return {letters,complete:true};
+  if(typeof v.nextCursor!=='string')throw Error('Invalid letters cursor');cursor=v.nextCursor;
+ }
+ return {letters,complete:false};  // more pages than read: said as incomplete, never as all
+}
+// The reader's state as texts: not read yet, failed (with or without a last good read), incomplete, or read.
+function letterFeedState(src){
+ const v=src.value,failed=src.ok===false,letters=v?v.letters:[];
+ const memberText=!v?(failed?'連絡 取得不調（連絡なしではありません）':'連絡 読み込み中'):failed?'連絡 取得不調（最後に読めた内容）':v.complete?'':'連絡 一部のみ（古いページは未取得）';
+ return {letters,failed,memberText,laneText:!v&&!failed?'連絡 読み込み中':v&&!v.complete?'連絡は一部のみ':''};
+}
+const letterShortId=id=>String(id).slice(0,21);
+const letterLastAt=l=>{const e=(l.events||[]).filter(x=>x.effective).at(-1);return e?e.at:l.sentAt;};
+function memberLetters(letters){
+ const by=new Map(),of=o=>by.get(o)||by.set(o,{open:[],confirm:[],last:null}).get(o);
+ for(const l of letters){
+  if(l.recipient!=='ユーザー'){const m=of(l.recipient);if(LETTER_OPEN.has(l.state))m.open.push({id:l.id,state:l.state,from:l.sender,at:l.sentAt});}
+  if(l.sender!=='ユーザー'){const m=of(l.sender);if(LETTER_TO_CONFIRM.has(l.state))m.confirm.push({id:l.id,state:l.state,to:l.recipient,at:letterLastAt(l)});}
+  for(const e of l.events||[])if(e.effective&&e.actor!=='ユーザー'){const m=of(e.actor);if(!m.last||Date.parse(e.at)>Date.parse(m.last.at))m.last={event:e.event,id:l.id,at:e.at};}
+ }
+ return by;
+}
+function memberLetterLines(info){
+ if(!info)return '';
+ const items=[...info.open.map(x=>LETTER_STATE_TEXT[x.state]+' '+letterShortId(x.id)+'（'+x.from+' '+memberTime(x.at)+'）'),
+  ...info.confirm.map(x=>'確認待ち '+letterShortId(x.id)+'（'+x.to+' '+LETTER_STATE_TEXT[x.state]+' '+memberTime(x.at)+'）')];
+ return (info.last?'\n最後の連絡 '+LETTER_EVENT_TEXT[info.last.event]+' '+letterShortId(info.last.id)+' '+memberTime(info.last.at):'')+
+  items.slice(0,3).map(t=>'\n'+t).join('')+(items.length>3?'\n…ほか'+(items.length-3)+'件（連絡欄で原文）':'');
+}
+function memberViewModels(model,continuityOwners,continuityText,letters=null){
  // members = activity owners, recipients with an open 開始待ち, and owners with only a continuity mark (未申告, not invented)
+ // OPS-183: and the members of the letters (letters=null: a studio without the letters reader, the text is as before)
  const all=new Map(model.states);for(const o of model.pendings.keys())if(!all.has(o))all.set(o,UNDECLARED);for(const o of continuityOwners)if(!all.has(o)&&o!=='ユーザー')all.set(o,UNDECLARED);
+ if(letters)for(const o of letters.byOwner.keys())if(!all.has(o))all.set(o,UNDECLARED);
  return [...all].map(([owner,s])=>({owner,state:s.state,pending:model.pendings.has(owner),
   head:owner+'：'+PRESENCE_LABELS[s.state]+(s.at?' '+memberTime(s.at):'')+(s.legacy?'（旧ACKからの読み）':''),
-  body:'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+pendingLines(model.pendings.get(owner))+'\n'+continuityText(owner)}));
+  body:'\n最後 '+(s.last?s.last.label+' '+memberTime(s.last.at):'なし')+pendingLines(model.pendings.get(owner))+(letters?memberLetterLines(letters.byOwner.get(owner))+(letters.text?'\n'+letters.text:''):'')+'\n'+continuityText(owner)}));
 }
 // The shown order is a display input, not a reading of the history: members already shown keep their previous order,
 // new members are added at the end in view-model order, members that left are dropped (one that returns goes to the end).
@@ -1603,7 +1648,7 @@ function createLetterPolls({studio,fetchJson}){
 function workLaneInstance(){
  if(!workLaneInstance.value){
   const states=new Map(JSON.parse($('seed').textContent).tasks.map(t=>[t.id,t.state])),make=tag=>document.createElement(tag),select=$('wake-owner');
-  const studio=workLaneInstance.value=createStudio({registryState:id=>states.get(id),views:{
+  const studio=workLaneInstance.value=createStudio({registryState:id=>states.get(id),withLetters:true,views:{
    timeline:createActivityTimelineView($('activity-events'),$('activity-events-status'),make,()=>document.activeElement,{heading:$('activity-current-heading'),detail:$('activity-current-detail')}),
    cards:createWorkLaneView({track:$('work-lane-track'),status:$('work-lane-status'),makeNode:make,getActive:()=>document.activeElement}),
    members:createMemberLampView({box:$('presence-lamps'),makeNode:make}),
@@ -1611,12 +1656,15 @@ function workLaneInstance(){
    letters:createLettersView({list:$('letters-list'),detail:$('letters-detail'),status:$('letters-status'),member:$('letters-member'),state:$('letters-state'),older:$('letters-older'),latest:$('letters-latest'),makeNode:make,
     onSelect:id=>{studio.letterSelect(id);letterPolls.detail();},onFilter:patch=>{studio.letterFilter(patch);letterPolls.list();},onPage:cursor=>{studio.letterPage(cursor);letterPolls.list();}})}});
   // OPS-156 H-20261019-32: the letters are read with GET only, one request at a time per kind; a detail answer names its letter.
-  const letterPolls=createLetterPolls({studio,fetchJson:async path=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);try{const response=await fetch(path,{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}}});
+  const fetchJson=async path=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);try{const response=await fetch(path,{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}};
+  const letterPolls=createLetterPolls({studio,fetchJson});
+  // OPS-183/184: one reader of every brief page for the members and the cards (one read at a time; a failure keeps the last good one)
+  let feedBusy=false;const pollFeed=async()=>{if(feedBusy)return;feedBusy=true;try{studio.letterFeed(await readLetterFeed(fetchJson));}catch(e){studio.letterFeedFailure();}finally{feedBusy=false;}};
   // OPS-141: continuity marks feed the same snapshot (5 s fetch, paused while the page is hidden); the clock is an input every second.
   if(typeof location!=='undefined'&&location.protocol!=='file:'&&typeof fetch==='function'){
    const status=createContinuityStatus({onData:data=>studio.continuity(data,performance.now()),fetchRecord:async()=>{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);try{const response=await fetch('/continuity',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('unavailable');return await response.json();}finally{clearTimeout(timer);}}});
    status.poll();setInterval(()=>{if(!document.hidden)status.poll();},5000);setInterval(()=>studio.tick(performance.now()),1000);
-   letterPolls.list();setInterval(()=>{if(!document.hidden){letterPolls.list();letterPolls.detail();}},5000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){status.poll();studio.tick(performance.now());}});
+   letterPolls.list();pollFeed();setInterval(()=>{if(!document.hidden){letterPolls.list();letterPolls.detail();pollFeed();}},5000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){status.poll();studio.tick(performance.now());}});
   }
  }
  return workLaneInstance.value;

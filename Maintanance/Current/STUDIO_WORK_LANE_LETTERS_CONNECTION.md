@@ -1,10 +1,11 @@
 # 最近の作業と待機完了を連絡DBへ接続する
 
 ## TL;DR
+2026-10-20ユーザー指示によりOPS-184の実装を撤回。最近の作業カード合成とletter watchのWAKE追加を元に戻す。OPS-183は維持。以下の受入・投入記録は経緯であり、再実装の許可ではない。
 連絡DBの受領・着手・返答を表示し、待機完了の操作から相手への到達・本人ACKまで確認する。
 姫がすでに提出した内訳を使い、現状確認・対応表の受入後に実装へ進む。内訳の再提出を求めない。
 
-OPS-184 / ACTIVE / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。第1区切り受入済み。実装・試験を姫へ依頼（下記）。原返却：CP-20261019-004（CLAUDE_PENDING_TASKS.md）。親OPS-048。
+OPS-184 / PROPOSED / 2026-10-19。ユーザー指示で正式登録。担当：姫、受入：調整担当。実装・隔離試験をAstra受入済み。本番表示は未確認（下記）。原返却：CP-20261019-004（CLAUDE_PENDING_TASKS.md）。親OPS-048。
 
 ## 既存の作業内訳（姫の案を引継ぎ）
   1. 現状の固定：`workLaneItems`の入力と、`/activity-wake`が書く先・誰が読むかを確かめ、既存試験（`test-work-lane.cjs`等）を控える。
@@ -86,3 +87,26 @@ Hime owns the related Studio client/VM/template, brief-list server metadata, com
 Prepare isolated tests first and demonstrate a failing regression before fixing it. Use temporary DBs, a dedicated test server/port and headless browser: send → receive/start/reply → VM → rendered member/work display, plus WAKE → watch → ACK → display. Cover returned/unclosed, closed versus task completion, pagination and fetch failure. Record retained tests and justified changes. Do not use port 8088, production data, restart the user's server or commit. Report unsupported real-browser checks honestly; component checks alone do not complete acceptance.
 
 Return implementation, evidence and remaining limitations to Astra; stop and report after two consecutive correction rounds. Do not ask the user again about the choices settled here. This bounded implementation does not close the broader all-communications requirement and does not authorize routine autonomous operation.
+
+### 姫返却：実装区切り（OPS-183/184共通、2026-10-20）
+共通の返却は[OPS-183の正本の同名の節](STUDIO_MEMBER_LETTERS_CONNECTION.md#姫返却実装区切りops-183184共通2026-10-20)に置いた（変更・試験・限界・第1区切りの訂正）。OPS-184に当たるのは、カードの合成、待機完了→watch→ACK→表示、閉じた連絡とtask完了の区別。
+
+### Astra implementation acceptance (2026-10-20)
+
+Accepted the bounded implementation for OPS-183/184 after reviewing the actual diff and independently running `test-letters-lanes-browser.py` (1 WebKit test), `test-studio-letters.py` (25 tests), and `test-letters-lanes.cjs`, `test-view-model-members.cjs`, `test-work-lane.cjs`, `test-view-model.cjs` (all passed). `git diff --check` passed. The browser scenario seeds letter transitions through the real store, then exercises the real server read routes and rendered page; WAKE uses the page action, watcher and ACK. It is not proof of every real-agent communication route.
+
+Returned/unclosed remains visible, closed exchanges do not set task DONE, member presence is not inferred from a return, and failed reads retain prior content with an error indicator. Separate legacy-last and last-letter lines are accepted because their sources are explicit. Pagination/cap coverage is unit-level; the browser case is one page. The 200-event WAKE window and incomplete-feed indication are retained limitations.
+
+This completes these implementation tasks, not production deployment or the broader all-communications requirement. No live restart or user browser was operated. User Safari and post-restart production display remain unverified. The reported Store-construction exception is outside this change and remains an observation, not a fixed defect.
+
+Communication reconciliation: the implementation return was received in these canonical documents via the user's acceptance request. LTR-20261019-7958BDD87963439EA5EED856FA7E7995 was still `sent` when checked; do not fabricate Hime's receipt/start/reply events. Acceptance is recorded here and separately communicated to Hime.
+
+### Production deployment (2026-10-20)
+
+User explicitly requested production deployment so the result can be viewed after one exchange. Astra gracefully stopped the identified port-8088 server and restarted it with the same V3 DB/Inbox arguments (new PID 98738). HTTP checks confirmed the served page includes the shared letter-feed wiring and the production brief endpoint returns events/lastEvent for 91 letters, hasMore=false. No save was discarded or DB migrated. Existing browser tabs require a normal reload to load the new JavaScript; the user browser was not operated. Production HTTP integration is verified; visual rendering on user Safari remains unverified.
+
+## 2026-10-20 ユーザー指示による撤回
+
+「ごめん、184だけもどし」に従い、OPS-184の最近の作業への連絡カード合成とletter watchのWAKE監視追加を撤去。OPS-183のメンバー状態への連絡DB接続と共通読取は維持する。過去の受入は履歴として残すが、184の完了扱いを取り消しPROPOSEDへ戻す。新たな実装は依頼しない。既存の通信記録・判断・保存データは削除しない。
+
+確認：連絡CLI/store 24件、VM・letters-lanes検査、隔離WebKitでメンバー表示・読取失敗/復帰・連絡カードが増えないことを確認。最初のブラウザ試験は稼働中サーバーのログ更新とlive-file検査が競合し失敗。サーバー停止後の同試験は成功。

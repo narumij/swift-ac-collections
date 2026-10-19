@@ -260,6 +260,11 @@ class StoreTests(Base):
         for l in brief['letters']:
             f = full[l['id']]
             self.assertEqual((l['state'], l['requestRevision'], l['revisedAfterReceipt']), (f['state'], f['request']['revision'], f['revisedAfterReceipt']), 'the brief list agrees with the full one')
+            # OPS-183/184: who did what and when, without any text; a proxy record stays marked as not effective
+            meta = [{'event': e['event'], 'actor': e['actor'], 'recordedBy': e['recorded_by'], 'effective': e['effective'], 'at': e['received_at']} for e in f['events']]
+            self.assertEqual(l['events'], meta)
+            self.assertEqual(l['lastEvent'], meta[-1])
+        self.assertEqual([(e['event'], e['actor'], e['recordedBy'], e['effective']) for e in x['events']][-1], ('stopped', '姫', 'Astra', False), 'a proxy stop is told apart')
 
     def test_brief_pages_are_stable_complete_and_filtered_on_the_server(self):
         self.s.set_senders(['Astra', 'ユーザー', '姫'], 'ユーザー')
@@ -412,6 +417,11 @@ class HttpTests(Base):
         e.start()
         self.addCleanup(e.stop)
         self.main = threading.current_thread()
+        # OPS-184: watch also reads /activity-events; the record is a temporary file, never the live Activity/
+        self.events = self.root / 'Activity' / 'events.jsonl'
+        a = patch.object(activity, 'EVENTS', self.events)
+        a.start()
+        self.addCleanup(a.stop)
 
     def cli(self, *argv, stdin=b''):
         out, real = io.StringIO(), sqlite3.connect

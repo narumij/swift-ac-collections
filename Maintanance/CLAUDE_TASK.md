@@ -741,3 +741,8 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-185 — 未採番DBの単独試作（2026-10-20）
 
 ユーザーの明示指示による正式依頼。CP-20261020-004の未採番再依頼は取消済み。現行の依頼・対象・完了条件・返却欄は[詳細正本](Current/PENDING_DB_STANDALONE_TRIAL.md)。姫はこの正式IDで着手し、最初の小さな一巡で返却する。commitは含まない。
+
+
+## OPS-187 — Studio連絡の実接続試験・パッチ返却（2026-10-20）
+
+現在のファイル経路の正式依頼。親OPS-186、[依頼・受入条件・Return](Current/STUDIO_LETTERS_E2E_PATCH.md)。姫はこの1件を実施し、実サーバーとheadlessブラウザの一巡を試験して小さいパッチを返す。本番反映・commit・後続への自動展開は含まない。

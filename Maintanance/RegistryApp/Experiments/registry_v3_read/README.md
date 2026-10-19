@@ -12,6 +12,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/registry_v3_read
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_write.py -v   # 区切り2：更新契約
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_import.py -v       # OPS-163：固定写しの照合（試験用の木）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_recovery.py -v  # OPS-164：世代・履歴・backup・復元
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adapter.py -v       # OPS-165：Studio関数との接続（node要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -196,3 +197,55 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 新しい世代で、前の世代と同じ操作IDを使ったら拒否するのか。この実験では一律に拒否する。名前空間を分けるかどうかは決めていない。
 - **manifestには署名がない**。ページの中身だけを変え、manifestもそれに合わせて作り直したものは、`integrity_check`では見抜けない。見抜けるのは構造の壊れだけ。
 - 1つのプロセスの中の、Pythonから呼ぶ契約の試験だけ。保存の期間、保管の場所、実際の運用での復旧手順は扱わない。
+
+## OPS-165：Studioとの隔離接続（`studio_adapter.py`・`studio_harness.cjs`）
+
+**これは関数harnessで、ブラウザでの確かめではない。** 本物のStudioの関数を、読むだけの`index.template.html`から名前で切り出し、stubのDOMを付けてnodeのvmで動かす。原本のtemplate・sync・serve・Inboxは変えない。
+
+- **export**（`export_doc`）：範囲はall。focusは`milestoneHead`として保つ。
+  - `source`は`{kind: 'v3-export', generation, revision, payloadHash, payloadHashOf}`。
+    - `source.sha256`は作らない。旧来の意味（Registryのファイル）に新しい意味を入れないため。
+    - `payloadHash`は、何のhashかを明示した別の値。
+  - `raw`は`''`。行番号と引用はない。どちらも`v3.absent`で明示する。空の値は互換のためで、出典があるという主張ではない。
+  - マイルストーンの状態は、focusから表示用に導く（`v3.derived`）。カードには`recordedDone`も付ける。
+  - 版のパス（`gate`）は表示用（`v3.displayOnly`）。編集の根拠にはしない。
+  - 退役したタスクは`tasks`に入れず、`v3.retired`に挙げる。それにつながる辺は`v3.hiddenEdges`に挙げる。
+- **harness**（`edit`・`resume`）：
+  - `edit`：
+    1. ページと同じ手順で読み込む（`check`・`initializeRelationBaseline`）。
+    2. 本物の編集欄（`editorViewModel`・`drawEditor`・`editorAct`）で、担当と状態を変えて適用する。
+    3. 保存ボタンと同じ形の保存JSONをファイルに書く。
+  - `resume`：保存JSONを読み戻し、bannerと三者比較（`canonicalDifferences`・`editsReflected`）を出す。三者は、保存の基準・保存・最新のexport。
+  - **互換のための変更**。harnessの中だけで行い、それぞれ切り出したソースにちょうど1回だけ当たることを確かめる。結果にも毎回、一覧を出す。
+    - P1 `check()`：`source.kind`が`v3-export`で、世代と整数の改訂があるときに限って、`sha256`なしを受け入れる。
+    - P2 `banner()`：DBの世代・改訂・payloadHashを出す。Gitの「コミット済み版」「未コミット差分」は出さない。
+    - P3 `banner()`：基準の比較を、世代と改訂で行う。
+  - **まねたもの**：
+    - M1 保存の中身：保存ボタンの処理は名前のない矢印関数なので、切り出さずにまねた。
+    - M2 読み込みの手順
+  - **試していないもの**：serve.pyの`/save`とInbox（`source.sha256`を要求するので、V3のexportは拒否される）、HTTPでの再開、ブラウザ。
+  - 原本のtemplateがV3のexportをそのまま受け入れる、とは主張しない。原本の`check()`は拒否する（試験で確かめた）。
+- **適用**（`plan_save`・`apply_save`）：
+  - 1回の保存で、1つのタスクのstateとownerだけを適用する。2つの欄は、既存の`apply`の1つのトランザクションで適用する。
+  - 書く前に、保存全体を拒否する場合。部分的な反映は作らない。
+    - 旧い保存（V3の基準がないもの）
+    - 世代の違い
+    - 2つ以上のタスク
+    - ほかの欄
+    - タスクの集合の変化
+    - 辺・到達点の接続・計画・提案の変化
+  - 操作IDは保存のバイト列から作る。同じ保存をもう一度適用すると、前の結果を返す。
+  - **閉じる側に倒す**（受入での補正、2026-10-19）：
+    - exportの基準には、比べるすべての欄（tasks・edges・milestoneRelations・milestones・milestoneHead）を入れる。
+    - 保存か基準に欄が1つでも欠けていれば、形式の誤りとして拒否する。基準に欄がないことを「変わっていない」とは見なさない。
+    - IDや関係の重複は、まとめずに拒否する。
+    - 知らない欄は拒否する。
+    - `source`と`v3`の世代・改訂は一致しなければならない。改訂は整数で、DBより新しくてはならない。
+    - focus（`milestoneHead`）の変更は、未対応として拒否する。
+
+### OPS-165の限界
+
+- 関数harnessだけ。実際のブラウザ・サーバー・Inboxでは確かめていない。
+- 旧い保存は拒否するだけ。manifestによる移行はしていない。
+- 範囲currentでの境界のstub、計画・接続・提案の書込はない。
+- 版のパスは表示用に作ったもので、ファイルは存在しない。

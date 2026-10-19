@@ -718,3 +718,21 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 本物のプロセスの起動のあと、DBだけを変えてから`/sync`する。ページはDBのfocusになり、新しい文書が束に入る。
 - 否定の対照（守りの下で、liveの`local-tools.json`の時刻を確かめながら行った）：文書の不足の確かめ、`--v3-db`の受け渡し、`extraDocuments`、milestoneの文書の束（verify_v3が止める）、旧来の`build()`の呼び出し。それぞれ試験が落ちた。
 - 旧来のfixture DB（作り物の文書path）は、V3 modeでは起動しない（正しい拒否）。そのため、本物のプロセスの試験（OPS-181 B1）は、取込んだDBに替えた。
+
+## OPS-167 移行の欠け：focusと、cardのDONE（recordedDone）を書く操作
+
+- **`set_focus`** `{kind, base: {focus: 今のfocus}, focus: 版の名前}`：focus（既定の読取がどこから始まるか）を、すでにある版へ移す。
+  - 今のfocusが基準と違えば競合として拒否する。行き先がすでにfocusなら「反映済み」。
+  - focusは読取の範囲を選ぶだけで、到達を記録しない。recordedDoneを推し量ったり変えたりはしない。
+- **`set_recorded_done`** `{kind, id: card, base: {recordedDone: 今の値}, recordedDone: true|false}`：本物のcardのDONEの箱だけを記録する。
+  - ゲート・START/END・task・知らないIDは拒否する（どれも状態が導かれるもので、記録する箱を持たない）。
+  - focusは動かさない。値は真偽値に限る。
+- どちらも、今までの`registry_v3_cli.py apply`を通る。世代、操作IDの再送、基準の値の競合、transactionは、既存の約束をそのまま使う。
+- **表示との関係**（受入済みのexportの規則）：cardの表示の状態は、focusより前の版ならDONE、focusの版から先は記録された箱で決まる。focusを戻すと表示は変わるが、記録された箱は変わらない。
+- legacy modeとUIは変えていない。
+- **試験**（`test_focus_and_done.py`、6件、CLIを通す）：
+  - exportまで通した往復、再送で改訂が増えないこと、同じ操作IDで違う要求、古い基準の競合、反映済み。
+  - 知らない版、空のfocus、基準の欠けや余分の拒否。世代の違いと、復元したあとで書込が閉じていること。
+  - 本物のcardだけに書けること（ゲート・START・END・task・知らないIDの拒否）、真偽値でない値の拒否。
+  - focusが表示だけを動かし、記録された箱を変えないこと。
+  - 否定の対照：版の確かめ、focusの基準、cardの種類、recordedDoneの基準を、1つずつ外した。focusが箱を書き換えるように変えたものも試した。それぞれ試験が落ちた。

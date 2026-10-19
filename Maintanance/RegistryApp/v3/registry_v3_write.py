@@ -748,3 +748,50 @@ def _acknowledge_document_proposal(conn, operation_id, req, hook):
 
 STRUCTURAL['acknowledge_document_proposal'] = _acknowledge_document_proposal
 STRUCTURAL['apply_plan'] = _apply_plan
+
+
+def _set_focus(conn, operation_id, req, hook):
+    """OPS-167 migration gap: move the focus (the version the default read starts from) to an existing version. The
+    base is the current focus; a different current focus is a conflict, the target already in place is already
+    reflected. Focus only selects the read range: it records nothing about arrival, and recordedDone is never derived
+    from it (nor changed by it)."""
+    focus = req.get('focus')
+    if not isinstance(focus, str) or not focus:
+        raise Refused('set_focus needs focus (a version name)')
+    if not conn.execute('SELECT 1 FROM versions WHERE name = ?', (focus,)).fetchone():
+        raise Refused(f'focus names an unknown version {focus}')
+    base = _exact_base(req, {'focus'})
+    row = conn.execute('SELECT version FROM focus').fetchone()
+    current = row[0] if row else None
+    if current != focus:
+        _expect('focus', {'focus': current}, base)
+    if row:
+        conn.execute('UPDATE focus SET version = ?', (focus,))
+    else:
+        conn.execute('INSERT INTO focus VALUES (1, ?)', (focus,))
+    return {'kind': 'set_focus', 'focus': focus, 'alreadyReflected': current == focus}, {'focus': current}, {'focus': focus}
+
+
+def _set_recorded_done(conn, operation_id, req, hook):
+    """OPS-167 migration gap: record a real card's DONE box (recordedDone), with its current value as the base. Gates,
+    START/END and tasks have no recorded box (their state is derived) and are refused. Nothing else changes: the focus
+    is not moved, and no derived state is written."""
+    cid, value = req.get('id'), req.get('recordedDone')
+    if type(value) is not bool:
+        raise Refused('set_recorded_done needs recordedDone (true or false)')
+    row = conn.execute("SELECT n.kind, m.recorded_done FROM nodes n LEFT JOIN milestone_details m ON m.id = n.id WHERE n.id = ?", (cid,)).fetchone()
+    if not row or row[0] != 'card' or row[1] is None:
+        raise Refused(f'{cid} is not a card with a recorded DONE box (gates, START/END and tasks are derived or have none)')
+    base = _exact_base(req, {'recordedDone'})
+    if type(base['recordedDone']) is not bool:
+        raise Refused('base.recordedDone is true or false')
+    current = bool(row[1])
+    if current != value:
+        _expect(f'{cid} recordedDone', {'recordedDone': current}, base)
+    conn.execute('UPDATE milestone_details SET recorded_done = ? WHERE id = ?', (int(value), cid))
+    return ({'kind': 'set_recorded_done', 'id': cid, 'recordedDone': value, 'alreadyReflected': current == value},
+            {'id': cid, 'recordedDone': current}, {'id': cid, 'recordedDone': value})
+
+
+STRUCTURAL['set_focus'] = _set_focus
+STRUCTURAL['set_recorded_done'] = _set_recorded_done

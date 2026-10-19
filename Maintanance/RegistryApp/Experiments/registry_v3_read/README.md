@@ -10,6 +10,8 @@
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_read.py -v
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/registry_v3_read.py Maintanance/RegistryApp/Experiments/registry_v3_read/fixtures/base.json [current|all]
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_write.py -v   # 区切り2：更新契約
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_shadow_import.py -v       # OPS-163：固定写しの照合（試験用の木）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
 Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現行の読取（`sync.py`の`build()`）との比較では、一時ディレクトリにRegistryとMilestonesの写しを書く。`sync.py`はモジュールとして読み込み、パスを差し替えて使う。`sync.py`そのものは変えない。
@@ -114,3 +116,42 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
 - 退役は、読取（`registry_v3_read.read`）にまだ出ない。
 - 辺の追加は、管理と進捗だけ。到達点の接続と、版・カードの操作はない。
 - `operations`には、成功と拒否の結果をずっと残す。消し方や保存の期間は決めていない。
+
+## OPS-163：現行正本の固定写しの照合（`shadow_import.py`）
+
+1. **写す**：一時ディレクトリに写し、manifestに記録する。
+   - 写すもの：Registry、Rules、`Milestones/README.md`、`HEAD.md`、版フォルダのすべての項目、それらの`# 正本`のリンク先。
+   - 記録するもの：パス・役割・大きさ・SHA-256、Gitの基準（HEADのcommit、HEADのblob、写した内容のblob、未commitの差分）。
+   - 写したあと元を読み直し、フォルダも数え直す。変化があれば`Drift`で止める。
+2. **確かめる**：写しを、manifestのhashと照らす。合わなければ`Tampered`。
+3. **読む**：写しだけを読む。現行の読取とは別の、独立した読取で読む。
+   - 対象の節の表の行は、すべて取り込む。
+   - 取り込めない形は`Unknown`で拒否する。
+     - 列の数が違う、IDが逆引用符で囲まれていない
+     - `###`の中の先行関係の行（現行の読取は黙って読み飛ばす）
+     - DONEの箱が0個か2個以上のカード
+     - 版フォルダの中の、知らないファイルやサブフォルダ
+     - HEADや採番表の形の誤り
+   - 対象の外の節にある表の行は、報告するだけ。タスクの行の形をした行は、`taskShapedOutOfScope`として別に挙げる。
+   - 受入で見つかった誤った成功への対策（2026-10-19）：
+     - 対象の4つの節は、それぞれちょうど1回だけ現れなければならない。節の名前の誤りや重複は拒否する。
+     - 字下げした表の行：対象の節の中なら拒否する。対象の外の節なら`indented`として報告する。採番表の中なら拒否する。
+     - 版フォルダそのもの（空のものを含む）を、manifestの`listing`・写し・確かめ・変化の検出に含める。空の版は照合でも落とさない。
+   - 版の順は、現行の実装の順（`sync.vkey`）を、固定した入力として記録する。
+4. **照合する**：隔離したDBに読み込み、同じ写しを現行の読取（`sync.build()`）が読んだ結果と、意味で比べる。
+   - 比べるもの：タスクの属性、親子、先行関係（flow・constraint）、到達点の接続（constraint）、版とカードの順、ゲート、骨格、カードの名前と正本。
+   - `recordedDone`は、現行の読取が箱を使う版（HEAD以降）だけで比べる。HEADより前の版は、派生したDONEと並べて報告するだけ。
+   - 採番：採番表の番号までを予約し、次の番号を報告する。過去のタスクは復元しない。
+   - 除いたもの（`raw`・`sourceLine`・派生した状態・`source`の塊・関係の出典）は、理由と一緒に`excluded`へ出す。完全な互換とは呼ばない。
+   - 原型仕様との既知の差は、`deviations`として別に報告する。
+
+**証拠**：`evidence/shadow-a18395bfb.json`（HEAD `a18395bfb`、未commitの入力なし）。
+- 結果：`equal=True`、差分なし、既知の差なし、採番表に欠けたprefixなし、対象の外の表の行は0。
+- 取り込んだ件数：タスク77、親子34、先行10、到達点の接続26、版8、カード6、ゲート7、採番表のprefix18。
+- 読取の範囲：focusは0.6.0。currentは45ノードで境界の参照が5、allは106ノード。
+
+**限界**：
+- 写しと比較は、1回だけの点検。正本はMarkdownのままで、DBは一時的なもの。
+- Studioの形式（`source.sha256`・`raw`・行番号）は作らない。
+- 採番表は、prefixごとの番号だけ。IDごとの過去の履歴ではない。
+- 現行の読取がセルの中の`\|`を戻すのは、到達点の接続だけ。両方とも同じ写しを読むので一致するが、意味の上では未解決のまま。

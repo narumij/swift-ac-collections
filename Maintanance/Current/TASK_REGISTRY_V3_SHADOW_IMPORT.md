@@ -14,3 +14,19 @@ OPS-162の最小工程を実装。実験フォルダだけにshadow readerと試
 意味データ比較はtask属性・親子・先行関係・到達点接続・版/カード順・明示カード状態・current/allと採番予約。raw/行番号や派生DONE等は除外理由を明示。除外を完全互換と呼ばない。未知/欠落入力の負例を含める。
 
 姫は実験フォルダ、Astraは本正本/Registryと受入記録を担当。返却は連絡DB。実DB、現用server、Inbox、Studio生成物、原型仕様は変更禁止。commitはAstra。
+
+## 初回受領と補正依頼
+
+2026-10-19。初回返却LTR-20261019-56D376F714EA428692019C6F4E5870D1。現行a18395bfb固定入力で77task/34親子/10先行/26接続/8版/13カード・ゲート、共通部分一致。Astraがshadow12試験を再実行して成功。
+
+独立の負例で、先行節名の誤字→progress0のままequal、先行行の空白字下げ→同様、空版0.4.0追加→版数が増えないままequalを再現。新旧readerが同じ欠落をするため比較だけでは検出できなかった。必須節の存在/重複、空白付き表候補、空版を含むdirectory manifest/変化検出の補正を依頼（LTR-20261019-3E8B0C7C79ED4BEAB02CCA1D57EF5265）。受入は補正後。
+
+## 受入（2026-10-19 Astra）
+
+補正返却を受入。必須4節の存在/重複検査、字下げ表候補の拒否、空版を含むfolder manifestを追加した。対象外節のtask形行は別欄で報告される。正本の意味を推測して取り込まない。
+
+Astraはshadow18試験を再実行、全成功・ResourceWarningなし。さらに現行入力で `shadow_import.run()` を独立再実行しequal=true、77task/34親子/10先行/26接続/8版/6中間カード/7ゲート/18prefix、対象外行・対象外task形行とも0件を確認。先に数えた147行と一致する。diffチェック成功。
+
+固定入力基準a18395bfbの証拠は `RegistryApp/Experiments/registry_v3_read/evidence/shadow-a18395bfb.json`。この受入記録とRegistry状態更新は検証後の変更なので、証拠はそれ以前の固定入力を示す。次回は新たなmanifestで再実行する。
+
+本taskはDONE。意味データの共通部分は照合できたが、旧Studio形式・派生状態・Markdown出典表示の互換はまだなく、本番切替はしていない。task/先行表のescaped pipeは新旧ともescape保持で一致しており、文字列一致を意味の正規化完了とは扱わない。

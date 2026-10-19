@@ -1,5 +1,7 @@
 # Task制度の参照 V2
 
+> **2026-10-19 V3切替：** task・依存・採番・版順・現在位置・card完了記録の正本は `Maintanance/RegistryApp/Data/registry.sqlite3`。本書のDB管理表は生成viewであり手編集しない。正式反映は[運用手順](../Current/REGISTRY_V3_OPERATIONS.md)へ。DB不在時は古い表から再作成せず停止して確認する。
+
 > 2026-10-14、ユーザーの接続指示により、制度・採番・文書権限の参照先を本書へ切り替えた。[入口](PROGRESS_OVERVIEW_V2.md)から、その操作に必要な節を参照する。状態名やIDを暗記する必要はない。制度の参照は、個別taskの開始・再開や操作の許可を意味しない。
 
 コード表記のファイルパスはリポジトリ直下を基準とする。
@@ -81,6 +83,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
 
+<!-- V3-GENERATED rows: table=Task ID採番状態; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=0; rows=18; sha256=4b78fcf3449d92794b13b04e96425c517aba85bc42b517857b807a40be9e3852 -->
 | Prefix | 最後に使用した番号 |
 | --- | ---: |
 | `API` | `010` |

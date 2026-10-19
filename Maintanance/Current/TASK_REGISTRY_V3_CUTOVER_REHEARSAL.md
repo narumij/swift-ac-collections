@@ -252,3 +252,10 @@ LTR-20261019-1D96ADBC422C4EA3A409630EC6DB9581を受領。set_focusとset_recorde
 ユーザー回答「いえす」により、Data/registry.sqlite3、既存Inbox共存、Documents/RegistryStudioBackups/swift-ac-collections/へのbackup、単独writer期間、ユーザーによるサーバー停止・起動を採用。配置案は提案から決定へ移行した。
 
 現在は停止連絡待ち。Git除外の準備と本記録だけを行い、実DB作成・生成viewへの切替・現用サーバー再起動はまだ行わない。停止確認後、調整担当が入力確定から実施する。
+
+## 本番データ準備完了（Astra、2026-10-19 21:22 JST）
+ユーザーの「とめだ」を受け、8088 listenerなし、作業木cleanを確認。入力commitは8f04ab69e。`/Users/narumij/Documents/RegistryStudioBackups/swift-ac-collections/cutover-20261019T212233+0900/`に旧入力snapshot/manifest、取込報告、初回DB backup/manifest、view報告を保存した。
+
+95 task、8版を差分ゼロで取込。世代`gen-1d0b9780ab114593931e911eb83e1ae2`、revision 0。backup検証成功。Registry/Rules/STRUCTUREを生成、入口とMilestones READMEへV3正本の境界を明記。[運用手順](REGISTRY_V3_OPERATIONS.md)を用意した。V3 sync成功、129文書・参照欠落なし。説明追記後もview再生成equal、生成表変更なし。
+
+現在はユーザーによるV3サーバー起動待ち。基本のHTTP確認・保存/再開/正式反映の確認はまだ行っていない。切替完了・OPS-167 DONEとはしない。

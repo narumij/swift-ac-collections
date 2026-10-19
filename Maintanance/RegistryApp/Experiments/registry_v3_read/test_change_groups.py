@@ -122,19 +122,25 @@ class WholeSave(Groups):
         self.assertEqual(new.execute('SELECT COUNT(*) FROM operations').fetchone()[0], 0)
 
     def test_mixed_structural_change(self):
+        # OPS-170 changed this case: the added edge is its own group, pending consultation, instead of a whole-save rejection
         save = self.stored([{'select': 'TASK-003'}, {'set': {'owner': '担当X'}}, {'apply': True}, {'addPrerequisite': 'TASK-005'},
                             {'select': 'TASK-004'}, {'set': {'owner': '担当Z'}}, {'apply': True}], 'S-1')
-        self.unchanged(lambda: sa.apply_groups(self.conn, save, [A, B], ACTOR, EVIDENCE), 'unsupported changes, nothing applied: edges')
+        out = sa.apply_groups(self.conn, save, [A, B, 'edge-add:TASK-005->TASK-003'], ACTOR, EVIDENCE)
+        self.assertEqual((self.ids(out, 'applied'), out['pending'], out['complete']), ([A, B], [{'groupId': 'edge-add:TASK-005->TASK-003', 'needs': ['consultation']}], False))
+        self.assertIsNone(self.conn.execute("SELECT 1 FROM graph_edges WHERE prerequisite = 'TASK-005'").fetchone())
+        with self.assertRaises(sa.SaveRejected) as caught:  # the single-task path still rejects structural changes
+            sa.plan_save(self.conn, save)
+        self.assertIn('unsupported changes, nothing applied: edges', str(caught.exception))
 
     def test_selection_and_identity(self):
         save = self.two_tasks()
-        self.unchanged(lambda: sa.apply_groups(self.conn, save, ['task:TASK-999'], ACTOR, EVIDENCE), 'the selection must name groups')
-        self.unchanged(lambda: sa.apply_groups(self.conn, save, [A, A], ACTOR, EVIDENCE), 'the selection must name groups')
+        self.unchanged(lambda: sa.apply_groups(self.conn, save, ['task:TASK-999'], ACTOR, EVIDENCE), 'the selection names no unit')
+        self.unchanged(lambda: sa.apply_groups(self.conn, save, [A, A], ACTOR, EVIDENCE), 'without duplicates')
         anonymous = copy.deepcopy(save)
         del anonymous['studioSave']
         self.unchanged(lambda: sa.apply_groups(self.conn, anonymous, [A], ACTOR, EVIDENCE), 'no saveId')
         empty = self.stored([], 'S-0')
-        self.unchanged(lambda: sa.apply_groups(self.conn, empty, [], ACTOR, EVIDENCE), 'changes no task')
+        self.unchanged(lambda: sa.apply_groups(self.conn, empty, [], ACTOR, EVIDENCE), 'changes nothing')
 
     def test_single_task_path_is_unchanged(self):
         save = self.two_tasks()

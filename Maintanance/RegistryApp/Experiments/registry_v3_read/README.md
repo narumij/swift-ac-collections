@@ -16,6 +16,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_studio_adap
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_browser_roundtrip.py -v    # OPS-166：隔離HTTP・headless WebKit（導入済みPlaywright要）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_groups.py -v        # OPS-168：複数taskの変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_structural.py -v  # OPS-169：構造の更新（K2）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_groups.py -v      # OPS-170：保存の構造変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -331,3 +332,28 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - `set_task_permanent`
   - managementの辺に、親を1つに限る制約は足していない。今のモデルのまま。
 - 版とカードの構造の更新、発行の記録（journal）、Studioの保存からの構造の群の扱い、本番への接続は行っていない。
+
+## OPS-170：保存の構造変更群（`plan_groups`・`apply_groups`の拡張）
+
+- **保存に残るもの**：辺にはIDがなく、つなぎ替えは配列の同じ位置を上書きする。そのとき古い条件文が残り、`conditionReview`が付く。削除すると位置がずれる。そのため、保存の前と後の差分だけでは、つなぎ替えを確定しない。
+- **群**：
+  - `edge-remove:` / `link-remove:`：基準の値をすべて付けて消す。同じグラフに追加がなければ、すぐ適用できる（ready）。
+  - `edge-add:` / `link-add:`：いつも相談待ち（consultation）。保存しただけでは`conditionReview`を解かない。
+  - 同じグラフに削除と追加が混ざると、両方とも対応の確認待ち（pairing）になる。追加だけを選んでも適用しない。
+- **解決**（`resolutions`）：
+  - `{"standalone": {groupId: {...}}}`：単独の削除は`{}`。単独の追加は、相談で決めた`constraint`と`evidence`を付ける。
+  - `{"pairs": [{remove, add, constraint, evidence}]}`：削除1つと追加1つを、同じグラフの1つの`rewire:<graph>:<old>=><new>`にする。原子的なつなぎ替えになり、両方を使い切る。
+  - 次のものは、書く前に拒否する：知らない群、同じ側を2回使うこと、グラフをまたぐ対、形の違い、空の条件文や根拠、対の片側だけを選ぶこと。
+- **使い切りの安定**：操作の要求に`consumes`を入れ、同じ保存の以前の操作（成功も拒否も）から、どの差分を使ったかを読む。
+  - 対を適用したあとに、その片側を単独で使うことはできない。別の相手と対にし直すこともできない。単独で適用したあとに、対にすることもできない。いずれも、閉じる側に倒して拒否する。
+  - 解決の中身も要求に入るので、同じIDで解決を変えると`changedContent`になる。
+  - **強制するのは書込のトランザクションの中**（受入での補正）。`registry_v3_write.apply`が、`BEGIN IMMEDIATE`の中で`consumption_claims`（scopeと差分と操作）を確かめる。
+    - ほかの操作が使い切った差分を求める操作は、`ConsumedElsewhere`として拒否して記録する。この操作は差分を使い切らない。
+    - 拒否された操作も、それが求めた差分を使い切る。
+    - adapterの事前の確かめは、早く分かりやすい知らせを出すためだけに残す。
+    - 2つの接続を決まった順に交互させる試験で、確かめた。
+  - 操作IDは`save:<%で逃がしたsaveId>:<unitId>`。`%`・`_`・`:`を含む別々のsaveIdが混ざらない。SQLのLIKEは使わない。
+- **順序**：削除、つなぎ替え、追加、タスクの順に1つずつ適用する。これは決まった順序であって、群が独立だという保証ではない。群をまたぐ原子性は扱わない。一部だけが成功した結果も、そのまま返す。
+- **1タスクずつの経路**（`plan_save`）は、今までどおり構造の変更を拒否する。
+- 試験のharnessに`remove`と`rewire`の操作を足した（M3）。関係のdialogの「適用」と「除去」の行を、DOMを作らずに直接呼ぶ。
+- 版・カード・計画、提案の採番、親子のUI、恒久の区分、本番への接続は扱っていない。

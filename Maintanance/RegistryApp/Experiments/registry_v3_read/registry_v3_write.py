@@ -39,6 +39,7 @@ CREATE TABLE retirements (id TEXT PRIMARY KEY REFERENCES nodes(id), revision INT
 CREATE TABLE proposal_map (save_id TEXT NOT NULL, draft_id TEXT NOT NULL, formal_id TEXT NOT NULL UNIQUE REFERENCES nodes(id), PRIMARY KEY (save_id, draft_id));
 CREATE TABLE db_meta (one INTEGER PRIMARY KEY CHECK (one = 1), schema_version INTEGER NOT NULL, generation TEXT NOT NULL,
   write_enabled INTEGER NOT NULL CHECK (write_enabled IN (0, 1)));
+CREATE TABLE consumption_claims (scope TEXT NOT NULL, constituent TEXT NOT NULL, operation_id TEXT NOT NULL, PRIMARY KEY (scope, constituent));
 CREATE TABLE lineage (sequence INTEGER PRIMARY KEY AUTOINCREMENT, generation TEXT NOT NULL, event TEXT NOT NULL, detail TEXT NOT NULL);
 CREATE TABLE revisions (generation TEXT NOT NULL, revision INTEGER NOT NULL, operation_id TEXT NOT NULL UNIQUE, PRIMARY KEY (generation, revision));
 CREATE TABLE operations (operation_id TEXT PRIMARY KEY, generation TEXT NOT NULL, digest TEXT NOT NULL, status TEXT NOT NULL CHECK (status IN ('done','refused')),
@@ -66,6 +67,10 @@ class WriteDisabled(ValueError):
 
 
 Refused = r3.Refused
+
+
+class ConsumedElsewhere(Refused):
+    """A constituent named in request.consumes is already claimed by another operation of the same scope."""
 
 
 def create(path, fixture):
@@ -189,8 +194,13 @@ def apply(conn, operation_id, request, hook=None):
         record = lambda status, result, rev, before, after: conn.execute(
             'INSERT INTO operations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             (operation_id, gen, want, status, dump(result), rev, dump(request), request['actor'], dump(request.get('evidence', [])), dump(before), dump(after)))
+        claims = _claims(request)
         conn.execute('SAVEPOINT work')
         try:
+            for scope, c in claims:  # checked under this write transaction, not only in a caller's preflight
+                row = conn.execute('SELECT operation_id FROM consumption_claims WHERE scope = ? AND constituent = ?', (scope, c)).fetchone()
+                if row and row[0] != operation_id:
+                    raise ConsumedElsewhere(f'{c} already consumed by {row[0]}; it cannot be used again in another form (fail closed)')
             result, before, after = _run(conn, operation_id, request, hook)
         except Refused as error:
             conn.execute('ROLLBACK TO work')
@@ -198,6 +208,8 @@ def apply(conn, operation_id, request, hook=None):
             if hook:
                 hook('refused')
             record('refused', {'error': str(error)}, None, None, None)
+            if not isinstance(error, ConsumedElsewhere):  # a refused operation still holds what it consumed
+                conn.executemany('INSERT INTO consumption_claims VALUES (?, ?, ?)', [(scope, c, operation_id) for scope, c in claims])
             conn.execute('COMMIT')
             raise
         conn.execute('RELEASE work')
@@ -206,12 +218,23 @@ def apply(conn, operation_id, request, hook=None):
         result['revision'] = revision(conn) + 1
         conn.execute('INSERT INTO revisions VALUES (?, ?, ?)', (gen, result['revision'], operation_id))
         record('done', result, result['revision'], before, after)  # the change and its history commit together
+        conn.executemany('INSERT INTO consumption_claims VALUES (?, ?, ?)', [(scope, c, operation_id) for scope, c in claims])
         conn.execute('COMMIT')
         return result
     except BaseException:
         if conn.in_transaction:
             conn.execute('ROLLBACK')
         raise
+
+
+def _claims(request):
+    """(scope, constituent) pairs an operation claims: request.consumes within request.consumerScope (OPS-170)."""
+    consumes, scope = request.get('consumes'), request.get('consumerScope')
+    if consumes is None and scope is None:
+        return []
+    if not isinstance(scope, str) or not scope or not isinstance(consumes, list) or not consumes or not all(isinstance(c, str) and c for c in consumes) or len(set(consumes)) != len(consumes):
+        raise ValueError('consumes needs a non-empty consumerScope and a non-empty list of distinct constituents')
+    return [(scope, c) for c in consumes]
 
 
 def _live_task(conn, tid):

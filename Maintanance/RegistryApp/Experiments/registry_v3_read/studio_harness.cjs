@@ -29,7 +29,7 @@ const PATCHES = [
    "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
    'P3 banner(): the base comparison of a V3 export uses generation and revision instead of sha256'],
 ];
-const MIRRORED = ['M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
+const MIRRORED = ['M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
   'M2 the page load: check(d); initializeRelationBaseline(d); doc=d (as the open-file handler does)',
   'NOT EXERCISED: serve.py /save and Inbox (they require source.sha256 and would refuse a V3 export); resume over HTTP; the browser'];
 function patched(name) {
@@ -55,7 +55,7 @@ function context() {
   vm.createContext(c);
   for (const id of ['editor', 'taskPicker', 'selectedTitle', 'sourceInfo']) new Node(id === 'taskPicker' ? 'select' : 'div', ids).id = id;
   const names = ['el', 'options', 'field', 'documentLinks', 'proposalNodes', 'initializeRelationBaseline', 'planParts', 'planVersions', 'milestonePlanChanges', 'graphData', 'delta',
-    'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
+    'rewireRelation', 'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
     'removeRelation', 'isMilestoneLink', 'linkLabel', 'dataRelation', 'isChainLink', 'addMilestoneRelation', 'editorViewModel', 'milestonePlanBlocks', 'proposalBlocks',
     'drawEditor', 'editorAct', 'editor', 'canonicalDifferences', 'editsReflected'];
   const src = [line('const STATES='), line('const PLAN_DIR='), line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), patched('check'), patched('banner'), ...names.map(fn)].join('\n') +
@@ -65,7 +65,10 @@ function context() {
     'function render(){editor();}function select(id){if(formDirty&&!confirm("x"))return;formDirty=false;selected=id;render();}' +
     'function __load(d){check(d);initializeRelationBaseline(d);doc=d;canonical=copy(d.source);selected=d.tasks[0]&&d.tasks[0].id;dirty=false;formDirty=false;}' +
     'function __save(){if(formDirty)throw Error("入力中の変更を先に「変更を適用」で確定してください。");check(doc);const out=copy(doc);out.exportedAt=new Date().toISOString();out.changes=delta();out.studioSave={parent:null};return out;}' +
-    'function __state(){return {doc,selected,dirty,formDirty};}function __setCanonical(s){canonical=copy(s);}';
+    'function __state(){return {doc,selected,dirty,formDirty};}function __setCanonical(s){canonical=copy(s);}' +
+    // M3: the relation dialog's apply and remove lines (the dialog DOM is not built): rewireRelation / removeRelation on the shown relation
+    'function __rel(a,b){const r=graphData().edges.find(e=>(e.shownFrom||e.prerequisite)===a&&(e.shownFor||e.successor)===b)||doc.edges.find(e=>e.prerequisite===a&&e.successor===b)||(doc.milestoneRelations||[]).find(e=>e.prerequisite===a&&e.successor===b);if(!r)throw Error("relation not found: "+a+" -> "+b);return dataRelation(r);}' +
+    'function __remove(a,b){removeRelation(__rel(a,b));}function __rewire(f,t){const orig=__rel(f.prerequisite,f.successor);doc=rewireRelation(doc,orig,t.prerequisite,t.successor);dirty=true;render();}';
   c.__ids = ids;
   vm.runInContext(src, c);
   return c;
@@ -83,6 +86,8 @@ function edit(exportFile, actionsFile, out) {
     if (a.apply) press(c, '変更を適用');
     if (a.addPrerequisite) { c.__ids.get('prerequisite').value = a.addPrerequisite; press(c, '前提を追加'); }
     if (a.press) press(c, a.press);
+    if (a.remove) c.__remove(a.remove.prerequisite, a.remove.successor);
+    if (a.rewire) c.__rewire(a.rewire.from, a.rewire.to);
   }
   let save;
   try { save = c.__save(); } catch (e) { throw Error(e.message + ' | editor reports: ' + JSON.stringify(c.log.filter(l => l[0] === 'report'))); }

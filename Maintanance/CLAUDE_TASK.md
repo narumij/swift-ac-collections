@@ -737,3 +737,7 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — 実運用の待機接続 H-20261019-36
 
 ユーザー再起動済み。[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H36へ。手元待機へwatchを接続し、DBの新しい疎通依頼を本人として処理。この導入依頼は旧経路で返却、新DB依頼はDBだけで返却。API経由のみ、コード/commit変更なし、連続待機。
+
+## OPS-185 — 未採番DBの単独試作（2026-10-20）
+
+ユーザーの明示指示による正式依頼。CP-20261020-004の未採番再依頼は取消済み。現行の依頼・対象・完了条件・返却欄は[詳細正本](Current/PENDING_DB_STANDALONE_TRIAL.md)。姫はこの正式IDで着手し、最初の小さな一巡で返却する。commitは含まない。

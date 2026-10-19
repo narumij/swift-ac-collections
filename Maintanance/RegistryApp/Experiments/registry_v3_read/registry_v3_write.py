@@ -631,3 +631,52 @@ def _register_proposal(conn, operation_id, req, hook):
 
 
 STRUCTURAL['register_proposal'] = _register_proposal
+
+
+# ---- OPS-172 K5 (existing cards only): one atomic plan change -----------------------------------------------------------
+def _apply_plan(conn, operation_id, req, hook):
+    """Reorder and move EXISTING cards and rename their display names, as one change. Version order and membership of
+    versions, gates, focus and recordedDone stay fixed; no node is created. The base is the exact ordered card list of
+    every touched version and the base name of every renamed card; any difference is a conflict. The skeleton is derived
+    from the result and the combined graph is checked for cycles; task links stay on their card IDs."""
+    cards_base, cards, renames = req.get('cardsBase'), req.get('cards'), req.get('renames', {})
+    if not isinstance(cards_base, dict) or not isinstance(cards, dict) or set(cards_base) != set(cards) or not isinstance(renames, dict) or not (cards or renames):
+        raise Refused('apply_plan needs cardsBase and cards for the same touched versions (and/or renames)')
+    versions = {r[0] for r in conn.execute('SELECT name FROM versions')}
+    for v in cards:
+        if v not in versions:
+            raise Refused(f'unknown version {v} (versions are not created here)')
+        for lst in (cards_base[v], cards[v]):
+            if not isinstance(lst, list) or not all(isinstance(x, str) for x in lst) or len(set(lst)) != len(lst):
+                raise Refused(f'{v}: card lists are lists of distinct card IDs')
+        current = [r[0] for r in conn.execute('SELECT node FROM version_members WHERE version = ? ORDER BY position', (v,))]
+        if current != cards_base[v]:
+            raise Refused(f'conflict on version {v}: card order changed since the base')
+    before_set = sorted(x for v in cards_base for x in cards_base[v])
+    after_set = sorted(x for v in cards for x in cards[v])
+    if before_set != after_set:
+        raise Refused('apply_plan only reorders and moves the cards of the touched versions: no card is added or removed')
+    before_names = {}
+    for cid, r in sorted(renames.items()):
+        row = conn.execute("SELECT name, kind FROM nodes WHERE id = ?", (cid,)).fetchone()
+        if not row or row[1] != 'card':
+            raise Refused(f'{cid} is not an existing card')
+        if not isinstance(r, dict) or set(r) != {'base', 'name'} or not isinstance(r['name'], str) or not r['name'].strip():
+            raise Refused(f'{cid}: a rename is {{base, name}} with non-empty text')
+        if row[0] != r['base']:
+            raise Refused(f'conflict on card {cid}: name changed since the base')
+        before_names[cid] = row[0]
+    before = {'cards': {v: list(cards_base[v]) for v in cards_base}, 'names': before_names}
+    for v in cards:
+        conn.execute('DELETE FROM version_members WHERE version = ?', (v,))
+    for v in sorted(cards):
+        for i, cid in enumerate(cards[v]):
+            conn.execute('INSERT INTO version_members VALUES (?, ?, ?)', (v, cid, i))
+    for cid, r in renames.items():
+        conn.execute('UPDATE nodes SET name = ? WHERE id = ?', (r['name'], cid))
+    _cycles(conn, 'progress')  # progress + milestone links + the skeleton derived from the new order
+    after = {'cards': {v: list(cards[v]) for v in cards}, 'names': {cid: r['name'] for cid, r in renames.items()}}
+    return {'kind': 'apply_plan', 'versions': sorted(cards), 'renamed': sorted(renames)}, before, after
+
+
+STRUCTURAL['apply_plan'] = _apply_plan

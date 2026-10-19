@@ -18,6 +18,7 @@ python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_change_grou
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_registry_v3_structural.py -v  # OPS-169：構造の更新（K2）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_structural_groups.py -v      # OPS-170：保存の構造変更群
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_proposal_registration.py -v  # OPS-171：提案の採番（K4）
+python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/test_plan_edits.py -v             # OPS-172：既存カードの計画編集（K5の一部）
 python3 -B Maintanance/RegistryApp/Experiments/registry_v3_read/shadow_import.py [--evidence FILE.json]   # 現行正本を読むだけ
 ```
 
@@ -389,3 +390,23 @@ Pythonの標準ライブラリだけを使う。DBはメモリ内に作る。現
   - 仮カードどうしの接続はない。
   - 系列をまたいで同じ提案だと判断することはない。
   - 本番への接続はない。
+
+## OPS-172：既存カードの計画編集（K5の一部、`apply_plan`と`plan:milestones`）
+
+- **書込**（`apply_plan`）：既存のカードの並べ替え、版の間の移動、表示名の変更を、1つの操作で行う。
+  - 基準は2つ。触れる版ごとの、今のカードの順序そのもの。名前を変えるカードの、今の名前。どちらかが違えば競合として拒否する。
+  - 触れる版の中のカードの集合は変えない。カードを足すことも消すことも、新しいIDを作ることもしない。
+  - 版の順序と構成、ゲート、focus、`recordedDone`は固定。
+  - 変更したあとの骨格（DBから導く）を含めて、循環を確かめる。タスクの接続は、カードのIDに付いたまま動かさない。
+- **群**（`plan:milestones`、保存ごとに1つ）：
+  - 表示用のpathから読んだ順序と所属は、提案として扱うだけ。
+  - `resolutions.plan`で、cards・renames（読んだものと完全に一致すること）・evidenceを明示して確かめるまでは、`plan-confirmation`の確認待ち。
+  - 次のものがあれば、この群は未対応になる：新しい版やカード、カードの削除、ゲートや版の変更、`planCondition`、`recordedDone`の変更、その他の欄。
+- **骨格の線**（G2）：
+  - harnessの中だけで、templateをメモリ上で変更する（P4 `planRebuild()`）。V3のexportでは`v3-db:skeleton`の線を派生の線として扱うので、計画を組み直すと古い線が置き換わる。`Milestones/README.md`を出典として名乗ることはしない。
+  - adapterは、`v3-db:skeleton`の線だけを、知っている派生の線として差分から除く。ただし、その集合は、保存が示す計画から導かれる骨格と一致しなければならない。一致しなければ、保存全体を拒否する。
+  - ほかの出典を持つ線は、ふつうの接続の変更として扱う。黙って捨てることはない。
+- **限界**：
+  - 新しい版やカード、ゲート、focus、`recordedDone`、版の改名と削除、`planCondition`、draft-msへの接続は扱わない。
+  - 隔離serverのページ（OPS-166）にはP4を当てていない。ブラウザで計画を編集すると、古い骨格の線が残る。
+  - ゲートのIDが`GATE-`で始まらない場合、Studioの`planParts`がそれをカードと読む。今のデータには、そういうゲートはない。

@@ -16,3 +16,10 @@ planConditionは正本へ自動採用しない。新規版/card・draft-ms接続
 
 ## 受入
 実UI関数経由の保存で並べ替え・移動・表示名変更、再送、変更要求の食い違い、古い基準、循環時rollback、骨格線の重複防止を検証する。復元DBは閉じたまま。姫が実装と試験、Astraが独立受入・記録・commit。
+
+## 受入結果（2026-10-19）
+返却LTR-20261019-538FA024229D4296A986B76ABD89E0B3。Astraが全175試験を32.501秒で独立実行し成功、ResourceWarningなし。対象版の順序と変更名の基準照合、移動と改名の原子的更新、循環時rollback、再送、明示確認を受入。固定IDとtask接続を維持する。
+
+隔離harnessのP4でv3-db:skeletonを置き換え対象にし、旧派生線の残存を防いだ。adapterは提案した構造の骨格と派生線の集合一致を検査する。他の出典の線は勝手に除外しない。実Markdownを出典と偽装していない。
+
+限定範囲として完了。本番template・Milestonesに変更なし。OPS-166の隔離browser serverにはP4がまだなく、実ブラウザ計画編集は後続接続が必要。GATE-以外のgate IDをStudio planPartsがcard扱いする制約も残り、opaque ID全般のUI保証はまだない。新規版/card・gate/focus/recordedDone等は未対応のまま明示拒否する。

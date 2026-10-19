@@ -28,6 +28,9 @@ const PATCHES = [
   ['banner', "(doc.source.sha256!==canonical.sha256?",
    "(doc.source.kind==='v3-export'?(doc.source.generation!==canonical.generation||doc.source.revision!==canonical.revision?'\\nDBが更新されています：この編集版の土台 世代 '+doc.source.generation+' 改訂 '+doc.source.revision+' → 最新 世代 '+canonical.generation+' 改訂 '+canonical.revision:''):'')+(doc.source.kind!=='v3-export'&&doc.source.sha256!==canonical.sha256?",
    'P3 banner(): the base comparison of a V3 export uses generation and revision instead of sha256'],
+  ['planRebuild', 'function planRebuild(d,versions){',
+   "function planRebuild(d,versions){const PLAN_SOURCE=(d.source&&d.source.kind==='v3-export')?'v3-db:skeleton':PLAN_SOURCE_FILE;",
+   'P4 planRebuild(): for a V3 export the derived chain lines are the export\'s v3-db:skeleton lines (not Milestones/README.md), so a replan replaces them instead of leaving stale ones'],
 ];
 const MIRRORED = ['M4 the proposal dialog: its add line (addProposal, then addMilestoneRelation or addProposalEdge for the chosen place) is called directly; the dialog DOM is not built','M3 the relation dialog: its apply line (doc=rewireRelation(doc,orig,pre,to)) and remove button (removeRelation(orig)) are called directly; the dialog DOM is not built','M1 the save payload: the first statements of the page\'s save button handler (check, copy, exportedAt, changes=delta(), studioSave {parent: null}); the handler is an inline arrow function, so it is mirrored here rather than extracted',
   'M2 the page load: check(d); initializeRelationBaseline(d); doc=d (as the open-file handler does)',
@@ -58,7 +61,7 @@ function context() {
     'rewireRelation', 'planClone', 'planCards', 'planRenumber', 'planRebuild', 'planCard', 'planEditText', 'planReorder', 'planMove', 'nextProposalId', 'addProposal', 'updateProposal', 'removeProposal', 'addProposalEdge',
     'removeRelation', 'isMilestoneLink', 'linkLabel', 'dataRelation', 'isChainLink', 'addMilestoneRelation', 'editorViewModel', 'milestonePlanBlocks', 'proposalBlocks',
     'drawEditor', 'editorAct', 'editor', 'canonicalDifferences', 'editsReflected'];
-  const src = [line('const STATES='), line('const PLAN_DIR='), line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), patched('check'), patched('banner'), ...names.map(fn)].join('\n') +
+  const src = [line('const STATES='), line('const PLAN_DIR='), 'const PLAN_SOURCE_FILE=PLAN_SOURCE;', line('const CHAIN_NOTE='), line('const EDITOR_GUARD='), patched('check'), patched('banner'), ...names.map(n => n === 'planRebuild' ? patched(n) : fn(n))].join('\n') +
     '\nconst copy=x=>JSON.parse(JSON.stringify(x));var doc=null,selected=null,dirty=false,formDirty=false,workspace=null,canonical=null;' +
     'function $(id){return __ids.get(id)||null;}function report(m,e){log.push(["report",m,!!e]);}function confirm(m){log.push(["confirm",m]);return true;}' +
     'function renderCanonicalRestartSuggestion(){}function renderCanonicalNotice(){}function showNeighborhood(id){log.push(["neighborhood",id]);}function openDocument(p){}' +

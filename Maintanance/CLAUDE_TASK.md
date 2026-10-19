@@ -700,3 +700,13 @@ H-15補正と独立ROUND3を受入。[正本末尾](Current/STUDIO_VIEW_MODEL_DI
 ## OPS-156 — 閲覧・待機連携の内訳 H-20261019-29
 
 [連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H29へ。H28コード固定中に、連絡閲覧と待機連携の最小内訳を返す。新返却欄のみ編集、live/コード/commit変更なし、返却後連続待機。
+
+
+## OPS-156 — 軽量一覧と差分待機 H-20261019-30
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H30へ。brief/watchの実装・隔離試験を割当。理由先頭LTR-の拒否案は採用せずactivity.py固定。返却後連続待機、commitなし。
+
+
+## OPS-156 — watch状態ファイル補正 H-20261019-31
+
+[連絡DB正本](Current/STUDIO_COMMUNICATION_STORE.md)末尾H31へ。破損状態ファイルの型と保存失敗を明示的に扱う小補正。画面は次割当。commitなし、返却後連続待機。

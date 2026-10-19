@@ -232,6 +232,35 @@ class StoreTests(Base):
         self.assertEqual((x['state'], x['stopRequested'], x['stopReason']), ('withdrawn', True, ''))
         self.assertEqual(self.ev(sent, 'stopped', note='了解')['state'], 'stopped')
 
+    def test_brief_list_reads_no_text(self):
+        a, b = self.send(), self.send(recipient='Fable')
+        self.ev(a, 'received')
+        self.s.revise(op(), a['id'], 'request', 'Astra', '第2版', '訂正')
+        self.ev(a, 'started')
+        self.ev(a, 'withdrawn', actor='Astra', note='止める')
+        self.ev(a, 'stopped', recorded_by='Astra', note='代理')
+        statements, real = [], sqlite3.connect
+        def traced(*args, **kwargs):
+            con = real(*args, **kwargs)
+            con.set_trace_callback(statements.append)
+            return con
+        with patch.object(approvals.sqlite3, 'connect', traced):
+            brief = self.s.letters_brief()
+        reads = [s for s in statements if s.lstrip().upper().startswith('SELECT')]
+        self.assertTrue(reads)
+        self.assertFalse([s for s in reads if 'body' in s.lower() or ('select *' in s.lower() and 'letter_texts' in s.lower())], 'no query reads a text')
+        self.assertNotIn('body', json.dumps(brief, ensure_ascii=False))
+        self.assertNotIn(BODY.splitlines()[0], json.dumps(brief, ensure_ascii=False))
+        x = next(l for l in brief['letters'] if l['id'] == a['id'])
+        self.assertEqual((x['state'], x['stateLabel'], x['requestRevision'], x['replyRevision'], x['requestRevisionAtReceipt'], x['revisedAfterReceipt'], x['stopRequested'], x['stopReason'], x['proxyRecords']),
+                         ('withdrawn', '停止要請', 2, None, 1, True, True, '止める', 1))
+        self.assertEqual([l['id'] for l in self.s.letters_brief(member='Fable')['letters']], [b['id']])
+        self.assertEqual([l['id'] for l in self.s.letters_brief(state='withdrawn')['letters']], [a['id']])
+        full = {l['id']: l for l in self.s.letters()['letters']}
+        for l in brief['letters']:
+            f = full[l['id']]
+            self.assertEqual((l['state'], l['requestRevision'], l['revisedAfterReceipt']), (f['state'], f['request']['revision'], f['revisedAfterReceipt']), 'the brief list agrees with the full one')
+
     def test_body_limits_and_optional_references(self):
         with self.assertRaises(ValueError):
             self.send(body='   ')
@@ -392,6 +421,90 @@ class HttpTests(Base):
         self.assertEqual((box[0]['stopRequested'], box[0]['stopReason']), (True, '取りやめ'))
         code, out = self.cli('letter', 'stop', sent['id'], '--actor', '姫', '--note', '未着手', '--body-file', '-', stdin=b'partial\r\n')
         self.assertEqual((code, json.loads(out)['state'], json.loads(out)['reply']['body']), (0, 'stopped', 'partial\r\n'))
+
+    def test_watch_reports_changes_once_and_never_loses_them(self):
+        state = self.root / 'watch-hime.json'
+        gets = []
+        original = serve.Handler.do_GET
+        def counting(handler):
+            gets.append(handler.path)
+            return original(handler)
+        watch = lambda owner='姫', f=state: self.cli('letter', 'watch', '--owner', owner, '--state-file', str(f))
+        with patch.object(serve.Handler, 'do_GET', counting):
+            code, out = watch()
+            self.assertEqual((code, json.loads(out)['changes']), (3, []), 'empty inbox: nothing new')
+            sent = self.send()
+            events_before = len(self.raw('SELECT * FROM letter_events'))
+            gets.clear()
+            code, out = watch()
+            self.assertEqual(len(gets), 1, 'one GET only')
+            self.assertEqual((code, [c['changes'] for c in json.loads(out)['changes']]), (0, [['new']]))
+            self.assertEqual(len(self.raw('SELECT * FROM letter_events')), events_before, 'watching records no receipt')
+            self.assertEqual(watch()[0], 3, 'reported once')
+            self.s.revise(op(), sent['id'], 'request', 'Astra', '第2版', '訂正')
+            self.assertEqual([c['changes'] for c in json.loads(watch()[1])['changes']], [['revision']])
+            self.ev(sent, 'received', revision=2)
+            self.assertEqual([c['changes'] for c in json.loads(watch()[1])['changes']], [['state']])
+            self.ev(sent, 'withdrawn', actor='Astra', note='止める')
+            changed = json.loads(watch()[1])['changes'][0]
+            self.assertEqual((changed['changes'], changed['stopReason']), (['state', 'stop'], '止める'))
+            # a failure leaves the state file as it was, and the change is still reported afterwards
+            self.ev(sent, 'stopped', note='了解')
+            other = self.send()
+            saved = state.read_bytes()
+            with socket.socket() as s:
+                s.bind(('127.0.0.1', 0))
+                dead = s.getsockname()[1]
+            with patch.dict(os.environ, {'REGISTRY_STUDIO_URL': f'http://127.0.0.1:{dead}'}):
+                code, out = self.cli('letter', 'watch', '--owner', '姫', '--state-file', str(self.root / 'watch-dead.json'))
+            self.assertEqual((code, json.loads(out)['outcome']), (1, 'not-sent'))
+            original_get = studio_client.get
+            def fail(path):
+                raise studio_client.StudioError('lost', 'unknown')
+            with patch.object(studio_client, 'get', fail):
+                code, out = watch()
+            self.assertEqual((code, json.loads(out)['outcome']), (1, 'unknown'))
+            self.assertEqual(state.read_bytes(), saved, 'the state file did not move')
+            code, out = watch()
+            self.assertEqual((code, sorted(c['id'] for c in json.loads(out)['changes'])), (0, [other['id']]), 'the new letter is still reported; the stopped one left the inbox')
+        # a state file is bound to its owner and server
+        self.assertEqual(watch(owner='Fable')[0], 2)
+        with patch.dict(os.environ, {'REGISTRY_STUDIO_URL': f'http://127.0.0.1:{self.server.server_port + 1}'}):
+            self.assertEqual(watch()[0], 2)
+        port = self.server.server_port
+        damaged = ['{not json', '[]', 'null', '"x"', '{}', json.dumps({'owner': '姫', 'server': str(port), 'seen': {}}),
+                   json.dumps({'owner': '姫', 'server': port, 'seen': []}), json.dumps({'owner': '姫', 'server': port, 'seen': {'L': None}}),
+                   json.dumps({'owner': '姫', 'server': port, 'seen': {'L': {'state': 'sent'}}}),
+                   json.dumps({'owner': '姫', 'server': port, 'seen': {'L': {'state': 'sent', 'requestRevision': '1', 'stopRequested': False}}}),
+                   json.dumps({'owner': '姫', 'server': port, 'seen': {'L': {'state': 'sent', 'requestRevision': 1, 'stopRequested': 0}}})]
+        for i, text in enumerate(damaged):
+            bad = self.root / f'bad{i}.json'
+            bad.write_text(text, encoding='utf-8')
+            code, out = watch(f=bad)
+            self.assertEqual(code, 2, text)
+            self.assertEqual(bad.read_text(encoding='utf-8'), text, 'a damaged file is left as it was')
+
+    def test_watch_save_failure_is_explicit_and_keeps_the_old_file(self):
+        state = self.root / 'watch-save.json'
+        watch = lambda: self.cli('letter', 'watch', '--owner', '姫', '--state-file', str(state))
+        self.assertEqual(watch()[0], 3)
+        saved = state.read_bytes()
+        sent = self.send()
+        real_replace = os.replace
+        def failing(src, dst):
+            if dst == str(state):
+                raise OSError('disk full')
+            return real_replace(src, dst)
+        with patch.object(os, 'replace', failing):
+            code, out = watch()
+        self.assertEqual(code, 4)
+        self.assertIn('not saved', out)
+        self.assertIn(sent['id'], out, 'the change was printed')
+        self.assertEqual(state.read_bytes(), saved, 'the previous file is kept')
+        self.assertFalse((self.root / 'watch-save.json.tmp').exists(), 'no temporary file is left')
+        code, out = watch()
+        self.assertEqual((code, [c['id'] for c in json.loads(out)['changes']]), (0, [sent['id']]), 'printed again: not lost')
+        self.assertEqual(json.loads(self.cli('letter', 'list', '--brief')[1])['brief'], True)
 
     def test_http_guards_and_queries(self):
         call = lambda path, action, body: studio_client._call('POST', path, action, body)

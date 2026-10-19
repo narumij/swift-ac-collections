@@ -200,8 +200,12 @@ def get_letters(parsed):
                 raise ValueError('No parameters')
             return 200, json_bytes(store.senders())
         if parsed.path == '/letters':
-            if not set(q) <= {'task', 'member', 'state', 'limit'}:
+            if not set(q) <= {'task', 'member', 'state', 'limit', 'brief'}:
                 raise ValueError('Unexpected parameter')
+            if 'brief' in q:
+                if q['brief'] != '1':
+                    raise ValueError('brief must be 1')
+                return 200, json_bytes(store.letters_brief(q.get('task'), q.get('member'), q.get('state'), q.get('limit', 50)))
             return 200, json_bytes(store.letters(q.get('task'), q.get('member'), q.get('state'), q.get('limit', 200)))
         return 200, json_bytes(store.letter(urllib.parse.unquote(parsed.path[len('/letters/'):])))
     except LookupError as error:

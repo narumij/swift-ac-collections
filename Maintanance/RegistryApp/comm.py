@@ -17,7 +17,12 @@ Letters (H-20261019-25; the original texts are kept by the server, with every re
   comm.py letter stop LTR-... --actor 姫 --note '状況' [--body-file partial.md]   (the answer to a stop request)
   comm.py letter close LTR-... --actor Astra                          (after a reply, a decline or a stop answer)
   comm.py letter revise LTR-... --part request|reply --actor A --reason '理由' --body-file new.md
-  comm.py letter list [--task T] [--member M] [--state sent|received|started|returned|declined|withdrawn|closed]
+  comm.py letter list [--task T] [--member M] [--state sent|received|started|returned|declined|withdrawn|stopped|closed] [--brief]
+  comm.py letter watch --owner 姫 --state-file F   (one GET of my inbox, compared with F: new / state / revision / stop)
+      exit 0 = something changed (printed), 3 = nothing new, 1 = server trouble (F unchanged), 2 = F is damaged or
+      belongs to another owner or server, 4 = changes printed but F could not be saved (F unchanged; they will be
+      printed again next time). A change may be printed more than once, never lost. It never records a receipt and
+      never starts anything; receive with `letter receive --revision N`.
   comm.py letter senders [--set NAME ... --recorded-by ユーザー]
 --body-file - reads standard input. Names are self-reports, not authentication; the letter rules grant no work
 authority. A withdrawal records a request to stop: it is not an immediate stop, there is no forced close, and no letter
@@ -29,7 +34,9 @@ conversation as unrecorded, and send the same ACK with --claimed-at once the ser
 (the request was sent but no answer came back; check `comm.py list` before sending again).
 """
 import argparse
+import contextlib
 import json
+import os
 import sys
 import urllib.parse
 import uuid
@@ -76,10 +83,16 @@ def main():
     lst = letter.add_parser('list')
     for name in ('task', 'member', 'state', 'limit'):
         lst.add_argument('--' + name)
+    lst.add_argument('--brief', action='store_true')
+    watch = letter.add_parser('watch')
+    watch.add_argument('--owner', required=True)
+    watch.add_argument('--state-file', required=True)
     senders = letter.add_parser('senders')
     senders.add_argument('--set', nargs='+')
     senders.add_argument('--recorded-by')
     args = parser.parse_args()
+    if args.command == 'letter' and args.letter == 'watch':
+        sys.exit(watch_command(args))
     if args.command == 'letter':
         try:
             result = letter_command(args)
@@ -142,12 +155,81 @@ def letter_command(args):
                                   refDoc=args.ref_doc, refSection=args.ref_section))
     if args.letter == 'list':
         query = {k: v for k, v in (('task', args.task), ('member', args.member), ('state', args.state), ('limit', args.limit)) if v}
+        if args.brief:
+            query['brief'] = '1'
         return studio_client.get('/letters' + ('?' + urllib.parse.urlencode(query) if query else ''))
     if args.set:
         if not args.recorded_by:
             raise ValueError('--set needs --recorded-by')
         return studio_client.post('/letters-senders', 'letters-senders', {'names': args.set, 'recordedBy': args.recorded_by})
     return studio_client.get('/letters-senders')
+
+
+def _signature(letter):
+    return {'state': letter['state'], 'requestRevision': (letter.get('request') or {}).get('revision'), 'stopRequested': bool(letter.get('stopRequested'))}
+
+
+def watch_command(args):
+    """One GET of OWNER's inbox compared with STATE_FILE. The file records the owner and the server it was made for, and
+    is replaced only after a successful fetch and after the changes were printed, so a failure loses nothing."""
+    path = os.path.abspath(args.state_file)
+    try:
+        server = studio_client.server_address()
+    except studio_client.StudioError as error:
+        print(json.dumps({'error': str(error), 'outcome': error.outcome}, ensure_ascii=False))
+        return 1
+    previous = {'owner': args.owner, 'server': server, 'seen': {}}
+    if os.path.exists(path):
+        try:
+            with open(path, encoding='utf-8') as stream:
+                previous = json.load(stream)
+        except (OSError, ValueError) as error:
+            print(json.dumps({'error': f'state file unreadable: {error}'}, ensure_ascii=False))
+            return 2
+        if not _valid_state(previous):
+            print(json.dumps({'error': 'state file is damaged (not the shape watch writes); nothing was changed'}, ensure_ascii=False))
+            return 2
+        if previous['owner'] != args.owner or previous['server'] != server:
+            print(json.dumps({'error': 'state file belongs to another owner or server', 'stateFile': {'owner': previous['owner'], 'server': previous['server']}}, ensure_ascii=False))
+            return 2
+    try:
+        inbox = studio_client.get('/letters-inbox?' + urllib.parse.urlencode({'owner': args.owner}))
+    except studio_client.StudioError as error:
+        print(json.dumps({'error': str(error), 'outcome': error.outcome}, ensure_ascii=False))
+        return 1
+    seen, changes, now = previous['seen'], [], {}
+    for letter in inbox['letters']:
+        sig = _signature(letter)
+        now[letter['id']] = sig
+        old = seen.get(letter['id'])
+        kinds = ['new'] if old is None else [k for k, field in (('state', 'state'), ('revision', 'requestRevision'), ('stop', 'stopRequested')) if old.get(field) != sig[field]]
+        if kinds:
+            changes.append({'id': letter['id'], 'taskId': letter['taskId'], 'sender': letter['sender'], 'changes': kinds, 'state': letter['state'],
+                            'stateLabel': letter['stateLabel'], 'requestRevision': sig['requestRevision'], 'stopRequested': sig['stopRequested'],
+                            'stopReason': letter.get('stopReason')})
+    print(json.dumps({'owner': args.owner, 'open': len(now), 'changes': changes}, ensure_ascii=False, indent=2), flush=True)
+    temp = path + '.tmp'
+    try:
+        with open(temp, 'w', encoding='utf-8') as stream:
+            json.dump({'owner': args.owner, 'server': server, 'seen': now}, stream, ensure_ascii=False)
+        os.replace(temp, path)
+    except OSError as error:
+        with contextlib.suppress(OSError):
+            os.remove(temp)
+        print(json.dumps({'error': f'state file not saved ({error}); the previous file is kept and these changes will be printed again', 'saved': False}, ensure_ascii=False), flush=True)
+        return 4
+    return 0 if changes else 3
+
+
+def _valid_state(value):
+    if not isinstance(value, dict) or not isinstance(value.get('owner'), str) or type(value.get('server')) is not int or not isinstance(value.get('seen'), dict):
+        return False
+    for key, sig in value['seen'].items():
+        if not isinstance(key, str) or not isinstance(sig, dict) or set(sig) != {'state', 'requestRevision', 'stopRequested'}:
+            return False
+        if not isinstance(sig['state'], str) or not (sig['requestRevision'] is None or type(sig['requestRevision']) is int) or type(sig['stopRequested']) is not bool:
+            return False
+    return True
 
 
 if __name__ == '__main__':

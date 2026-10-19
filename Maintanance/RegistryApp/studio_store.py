@@ -365,6 +365,42 @@ class LetterMixin:
                 x['stopReason'] = stop['note'] if stop else None
             return {'owner': owner, 'letters': open_}
 
+    def letters_brief(self, task=None, member=None, state=None, limit=50):
+        """H-20261019-30: the list without any text. The queries read metadata, event kinds and revision numbers only;
+        no body column is selected, so a long list does not read every original text."""
+        if state is not None and state not in STATES:
+            raise ValueError('Unknown state')
+        limit = int(limit)
+        if not 0 < limit <= 1000:
+            raise ValueError('Invalid limit')
+        with self.transaction() as con:
+            out = []
+            for row in con.execute('SELECT id, kind, sender, recipient, task_id, received_at FROM letters ORDER BY rowid DESC').fetchall():
+                if task and row['task_id'] != task or member and member not in (row['sender'], row['recipient']):
+                    continue
+                events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
+                current = None
+                for e in events:
+                    if e['effective'] and e['event'] != 'revised':
+                        current = e['event']
+                if state and current != state:
+                    continue
+                revisions = dict(con.execute('SELECT part, MAX(revision) FROM letter_texts WHERE letter_id=? GROUP BY part', (row['id'],)).fetchall())
+                received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
+                seen = None
+                if received is not None and received['text_sequence'] is not None:
+                    seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
+                stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
+                out.append({'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+                            'sentAt': row['received_at'], 'state': current, 'stateLabel': STATES.get(current, current),
+                            'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
+                            'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
+                            'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
+                            'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None})
+                if len(out) >= limit:
+                    break
+            return {'letters': out, 'brief': True}
+
     def letters(self, task=None, member=None, state=None, limit=200):
         if state is not None and state not in STATES:
             raise ValueError('Unknown state')

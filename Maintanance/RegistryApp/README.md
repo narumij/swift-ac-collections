@@ -424,3 +424,25 @@ repoルートで例：`python3 -B Maintanance/RegistryApp/activity.py --task RBT
 ### 現在作業の疎通除外（2026-10-19）
 
 現在作業の文字帯は、最近の作業と同じ専用PING/WAKE・ACK判定で疎通を除き、最後の実務イベントを表示する。疎通の履歴カードは残す。疎通しかない取得範囲では「未登録」と表示し、ACKを姫の作業中とは扱わない。
+
+
+### 連絡DBの読み取り（OPS-156、導入準備）
+
+対応サーバーへ切替後に利用する。実運用の切替完了を意味しない。連絡原文と版・出来事はDB、成果や判断は既存の正本に残る。意味と二重送信の禁止は[通信規約0.4](../Current/COMMUNICATION_PROTOCOL.md)を参照。
+
+```sh
+python3 Maintanance/RegistryApp/comm.py letter list --brief
+python3 Maintanance/RegistryApp/comm.py letter inbox --owner 姫
+python3 Maintanance/RegistryApp/comm.py letter show LTR-...
+```
+
+差分を1回だけ調べる例：
+
+```sh
+studio_watch_dir=$(mktemp -d)
+python3 Maintanance/RegistryApp/comm.py letter watch --owner 姫 --state-file "$studio_watch_dir/watch.json"
+```
+
+状態ファイルは担当・サーバーごとに分け、待機を続ける間は同じパスを使う。終了時は共通作業規則に従って掃除する。毎回新規にすると新着として再通知される。終了コード0は変化あり、3は変化なし、1はサーバー取得失敗、2は状態ファイルの不備、4は出力後の状態保存失敗（次回再出力される）。GETやwatchは受領・着手・自動起動を行わない。本文を読んだ本人が、その版を指定して受領する。
+
+旧jsonlの依頼は旧経路のまま完結させ、DBへ同じ仕事を新規発注し直さない。watchは一回読み取りの道具であり、待機ループそのものではない。

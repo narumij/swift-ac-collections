@@ -54,6 +54,69 @@
 - 成果・検証: 2026-10-20、89件すべてを`HIME_LETTER_REWRITES.md`に1件ずつ書き直した（依頼・書き直し・気づき）。冒頭に、通して見えたことを置いた（3,000字超52件、受入で戻された補正18件、戻された推奨の繰り返し、287件はV3の試験の数）。字数はdumpのヘッダから数えた。書き直しは姫の読みで、内容の照合は受入側に任せる。
 - Codex reconciliation: 未処理
 
+### `CP-20261020-006` — 連絡DBの試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「未採番タスクで、まず連絡DBのテストについて、試験が主張すること・実際に確認していること・抜けなどについて精読して、一覧をmdにして」
+- 対象範囲: `Maintanance/RegistryApp/test-studio-letters.py`（25件）を、実装（studio_store.py・approvals.py・comm.py・studio_client.py）と突き合わせて読む。成果は`Maintanance/Current/LETTER_TESTS_CLOSE_READING.md`。試験は実行しない。
+- 対象外: 試験と実装の修正、`test-studio-store.py`・`test-view-model-letters.cjs`（「まず」の範囲の外）、commit。
+- 一時作業物: なし（REPLACEの確認は`:memory:`だけ）
+- 成果・検証: 2026-10-20、精読を終えた。大きい抜けは5つ（REPLACEで追記だけが破れる、読み取りが書込みの鍵とschemaの作成を伴う、返答が失われたあとに同じIDで送り直す道がない、32KBのバイトと文字数を区別していない、遷移表の一部しか試していない）。REPLACEは`:memory:`で再現した。ほかはコードを読んでの判断。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-007` — 判断DBの試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「判断DBもやって。特に以下3点 - AIの提案を、ユーザーの確定判断として扱わないか - 改訂・失効した判断が、現行判断として返らないか - 指定したスコープ外の判断が、適用対象として混ざらないか」
+- 対象範囲: `Maintanance/RegistryApp/decisions/test_decision_store.py`（17件）を、実装と突き合わせて読む。成果は`Maintanance/Current/DECISION_DB_TESTS_CLOSE_READING.md`。本番のDBは開かない。
+- 対象外: 試験と実装の修正、commit。
+- 一時作業物: なし（`fold`・`_check`をメモリ上で呼んだだけ）
+- 成果・検証: 2026-10-20、精読を終えた。(1) 決めた人と記録した人が同じ採用も通る（AIの自己採用が、採用済みとして返る）。(2) 置き換えられた版にも`adoption`が残り、置き換えたあとに撤回すると、版ごとに読むと古い版1が現行に見える。(3) スコープで引く照会がなく、知らない欄（`scope`など）を黙って受け付ける。(1)〜(3)の危ない点は、メモリ上で確かめた。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-008` — Registry V3の試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「次、レジストリV3の試験。以下の3点重点で 発行済みIDを再利用しないか。古い状態を前提にした更新が、他の変更を上書きしないか。失敗・再送で、部分更新や二重登録が起きないか。」
+- 対象範囲: `Maintanance/RegistryApp/v3/`の書込みに関わる試験（write・recovery・structural・change_groups・structural_groups・proposal_registration・new_plan_items・focus_and_done・cli）を、`registry_v3_write.py`・`registry_v3_recovery.py`と突き合わせて読む。成果は`Maintanance/Current/REGISTRY_V3_TESTS_CLOSE_READING.md`。本番のDBは開かない。
+- 対象外: 試験と実装の修正、commit。
+- 一時作業物: `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/CP-20261020-008.VfAaRDuYDl`・姫・2026-10-20・fixtureから作った試験用DBで、card IDとtask IDのぶつかりを1回確かめる・状態「削除済み（2026-10-20、確認のあと直ちに削除）」
+- 成果・検証: 2026-10-20、精読を終えた。(1) 次のtask番号と同じ名前のカードを作れ、そのあと同じ接頭辞の登録が止まる（一時DBで確かめた）。復元のあとの再利用は、もとからの未決（試験9）。(2) `retire_task`に前提の値がない。(3) `apply_plan`の途中で失敗する場合の試験がない。まとまりをまたぐ部分適用は、設計どおり報告される。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-009` — コミット承認DBの試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「つぎ、コミット承認DBの試験 1. 承認した対象・範囲が、実行時にも一致しているか。2. 使用済み・取消済みの承認を再利用できないか。3. 承認・実行開始・コミット完了を混同せず、失敗時も記録が正しく残るか。」
+- 対象範囲: `test-approvals.py`と、`test-studio-store.py`の承認部分を、`approvals.py`・`serve.py`の受付と突き合わせて読む。成果は`Maintanance/Current/COMMIT_APPROVAL_TESTS_CLOSE_READING.md`。
+- 対象外: 試験と実装の修正、本番の承認DB、commit。
+- 一時作業物: なし
+- 成果・検証: 2026-10-20、精読を終えた（コードを読んでの判断で、実行はしていない）。(1) 承認者を確かめない（actorは「ユーザー」に固定、同じ機械からHTTPで送れる）。(2) claimの返答が失われるとtokenが分からず、checkoutが止まる。(3) claim・finishの失敗が記録に残らない。そのほか、前提のcommitと期限がないこと、state列が守られていないこと。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-010` — 保存・復元・Inbox取り込みの試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「次は保存・復元・Inbox取り込みの試験 1. 保存成功と表示した内容が、再起動後も戻るか。2. 正本の更新で、未反映の編集が消えたり上書きされたりしないか。3. 取り込みの一部失敗・再実行で、変更が抜けたり二重適用されたりしないか。」
+- 対象範囲: 保存・再開・取り込みの試験（test-serve.py、v3のinbox・browser・groups・proposal）を、inbox.py・serve.py・index.template.html・studio_adapter.pyと突き合わせて読む。「復元」は再起動のあとの再開と読んだ。成果は`Maintanance/Current/SAVE_RESUME_IMPORT_TESTS_CLOSE_READING.md`。
+- 対象外: 試験と実装の修正、本番のInbox、commit。
+- 一時作業物: なし
+- 成果・検証: 2026-10-20、精読を終えた（コードを読んでの判断で、実行はしていない）。(1) 再起動して再開する試験がなく、fsyncもない。書く途中の失敗では壊れたファイルが残り、試験はmockで飛ばしている。(2) 消さない・上書きしない仕組みはしっかりしている。(3) 保存し直した下書きtaskは、祖先を書かないと二重登録になる。古い形式の取り込みは、直すことと記録することが別々。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-011` — 起動・更新経路の試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「つぎは、起動・更新経路のテスト」（重点の指定なし。姫が、起動・更新・知らせの3点で読んだ）
+- 対象範囲: test-serve.py、v3/test_serve_v3_mode.py、v3/test_v3_sync.pyを、serve.py・sync.py・index.template.htmlと突き合わせて読む。成果は`Maintanance/Current/STARTUP_REFRESH_TESTS_CLOSE_READING.md`。
+- 対象外: 試験と実装の修正、動いている8088、commit。
+- 一時作業物: なし
+- 成果・検証: 2026-10-20、精読を終えた（コードを読んでの判断で、実行はしていない）。(1) 切り替えのあとでも旧modeで起動でき、syncがportより先に走る。(2) 更新はその場で書き換え、打ち切りや想定外の例外では戻らない。旧modeで戻す処理の試験がない。(3) `studio_store.py`が再起動の見張りから漏れている。
+- Codex reconciliation: 未処理
+
+### `CP-20261020-012` — 表示との接続の試験の精読
+- queue状態: `USER_AUTHORIZED`
+- 発見元・ユーザー指示: 2026-10-20「そのあと、表示との接続のテストかな」→「表示との接続のテストもね。」（重点の指定なし。姫が、契約・古さ・配線の3点で読んだ）
+- 対象範囲: RegistryAppの`test-*.cjs`と、v3のブラウザ試験を、index.template.html・studio_store.py・serve.pyと突き合わせて読む。成果は`Maintanance/Current/DISPLAY_CONNECTION_TESTS_CLOSE_READING.md`。
+- 対象外: 試験と実装の修正、動いている画面、commit。
+- 一時作業物: なし
+- 成果・検証: 2026-10-20、精読を終えた（コードを読んでの判断で、実行はしていない）。(1) 連絡・承認・activityは、サーバーの実際の出力ではなく、手書きのJSONで画面を試している。(2) 作業欄を本物のブラウザで本物のサーバーにつないだ試験がない。(3) `test-work-progress.cjs`はactivityの試験の再実行で、ページは`/work-progress`を使っていない。
+- Codex reconciliation: 未処理
+
 ### `CP-20261020-004` — 未採番をDBの表にする（試作）
 
 

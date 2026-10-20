@@ -132,6 +132,19 @@ or repair the proposal, or label settled matters and implementation choices as u
 Expand after the premise is established. If the conversation already establishes it,
 proceed within the authorized scope without asking for confirmation again.
 
+## When encountering a problem
+
+Before choosing a solution, briefly state the problem and distinguish three perspectives:
+- User: which stated goal or concern is affected. Cite the relevant request; say “unknown” if unclear.
+- Coordinator: effects on dependencies, handoffs, verification, or ongoing work.
+- Worker: effects on implementation, testing, effort, or available tools.
+
+Use “none identified” where appropriate. Do not invent concerns to fill every category, or present a worker preference or coordinator concern as a user requirement.
+
+List proposed solutions separately from the observed problem. For each proposal, identify whose concern it addresses and any change to the agreed scope or approach. Discovering a problem does not authorize expanding the work. Proceed within existing authorization; return the issue before taking action that exceeds it.
+
+Keep this report short. Agreement that a problem exists is not approval of a proposed solution.
+
 ## Work Managed Through the Communication DB
 
 Use the selected letter for receipt and return, following the

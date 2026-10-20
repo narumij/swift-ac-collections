@@ -51,7 +51,7 @@ function createApprovalController({ fetchRecord, view, isHidden, schedule, cance
   function disconnected() { clear(); pending = false; generation++; fresh = false; if (getController) getController.abort(); availability(); view.failure('取得不調 · 最終情報を保持。操作停止中'); }
   return { poll, act, visibility, disconnected, receive(value) { generation++; if (getController) getController.abort(); apply(value); availability(); } };
 }
-function createApprovalView({ track, status, policy, all, dialog, detail, close, makeNode, signals = false, extraStatuses = [], extraAllButtons = [] }) {
+function createApprovalView({ track, status, policy, all, dialog, detail, close, makeNode, signals = false, extraStatuses = [], extraAllButtons = [], taskTrack = null }) {
   const cards = new Map(); let rows = [], enabled = false, busy = false, action = () => { }, inspected = null;
   const statuses = [status, ...extraStatuses], allButtons = [all, ...extraAllButtons];
   const setStatus = text => statuses.forEach(node => { if (node.textContent !== text) node.textContent = text; });
@@ -80,19 +80,24 @@ function createApprovalView({ track, status, policy, all, dialog, detail, close,
       const visible = rows.filter(r => !['consumed', 'cancelled'].includes(r.status));
       if (dialog.open && inspected) { const row = value.entries.find(r => r.id === inspected); if (row) details(row); }
       const keep = new Set(visible.map(r => r.id)); for (const [id, card] of cards) if (!keep.has(id)) { card.node.remove(); cards.delete(id); }
-      let index = 0; const scrollLeft = track.scrollLeft;
+      let index = 0; const positions = new Map(), scrollLeft = track.scrollLeft;
       for (const row of visible) {
         let card = cards.get(row.id);
         if (!card) {
           const node = makeNode('article'), title = makeNode('strong'), state = makeNode('span'), buttons = makeNode('div'), inspect = makeNode('button'), approve = makeNode('button'), revoke = makeNode('button');
-          node.className = 'approval-card'; buttons.className = 'approval-actions'; inspect.type = approve.type = revoke.type = 'button';
+          node.className = taskTrack ? 'work-approval-entry' : 'approval-card'; buttons.className = 'approval-actions'; inspect.type = approve.type = revoke.type = 'button';
           set(inspect, '詳細'); set(approve, '承認'); buttons.appendChild(inspect); buttons.appendChild(approve); buttons.appendChild(revoke); node.appendChild(title); node.appendChild(state); node.appendChild(buttons);
           card = { node, title, state, inspect, approve, revoke, row }; cards.set(row.id, card);
           inspect.onclick = () => { details(card.row); if (!dialog.open) dialog.showModal(); };
           approve.onclick = () => action('approve', [{ id: card.row.id, revision: card.row.revision }]); revoke.onclick = () => action('cancel', [{ id: card.row.id, revision: card.row.revision }]);
         }
         card.row = row; set(card.title, row.heading); card.title.title = row.heading; set(card.state, row.stateText); card.node.dataset.status = row.status;
-        if (track.children[index] !== card.node) track.insertBefore(card.node, track.children[index] || null);
+        const parent = taskTrack ? taskTrack(row.taskId) : track;
+        if (parent) {
+          const at = positions.get(parent) || 0;
+          if (parent.children[at] !== card.node) parent.insertBefore(card.node, parent.children[at] || null);
+          positions.set(parent, at + 1);
+        }
         index++;
         if (dialog.open && inspected === row.id) details(row);
       }

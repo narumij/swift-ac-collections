@@ -66,11 +66,13 @@ def work_view():
     global _WORK_VIEW
     with _WORK_VIEW_LOCK:
         if _WORK_VIEW is None:
-            states = {row['id']: row.get('state', '') for row in registry_tasks()}
+            registry_path = V3['db'] if V3 is not None else OUTPUT / 'registry.json'
             _WORK_VIEW = WorkStateBinding(
                 work_notifications.observe_activity(activity.EVENTS), work_notifications.approval_changes,
-                activity.read_events, lambda: approvals.Store().list(), states.get,
-                work_notifications.letter_changes, lambda: studio_store.Store().work_events())
+                activity.read_events, lambda: approvals.Store().list(), {},
+                work_notifications.letter_changes, lambda: studio_store.Store().work_events(),
+                work_notifications.observe_registry(registry_path),
+                lambda: {row['id']: row.get('state', '') for row in registry_tasks()})
         return _WORK_VIEW.model
 
 
@@ -565,6 +567,17 @@ class Handler(BaseHTTPRequestHandler):
                 if inbox_after is not None and owner is None:raise ValueError('inboxAfter requires owner')
                 if inbox_after is not None and not re.fullmatch(r'[0-9a-f]{64}',inbox_after):raise ValueError('Invalid inboxAfter context')
                 inbox_baseline=(inbox_after if inbox_after is not None else store.inbox_notice_context(owner)) if owner is not None else None
+                if len(q.get('approvalChanges',[]))>1 or len(q.get('approvalAfter',[]))>1:
+                    raise ValueError('approvalChanges and approvalAfter may appear only once')
+                approval_option=q.get('approvalChanges',[None])[0]
+                if approval_option not in (None,'1'):raise ValueError('approvalChanges must be 1')
+                approval_watch=approval_option=='1'
+                approval_after=q.get('approvalAfter',[None])[0]
+                if approval_after is not None:
+                    if not approval_watch:raise ValueError('approvalAfter requires approvalChanges=1')
+                    if not re.fullmatch(r'[0-9]{1,19}',approval_after) or int(approval_after)>9223372036854775807:
+                        raise ValueError('Invalid approvalAfter cursor')
+                approval_baseline=(int(approval_after) if approval_after is not None else store.approval_change_cursor()) if approval_watch else None
                 event = dict(owner=owner, round_id=q['round'][0], connection_id=secrets.token_hex(16))
                 watching = 'wait' in q
                 if watching:
@@ -575,15 +588,24 @@ class Handler(BaseHTTPRequestHandler):
                         out=store.show_round(q['round'][0])
                         inbox_context=store.inbox_notice_context(owner) if owner is not None else None
                         inbox_changed=owner is not None and inbox_context!=inbox_baseline
-                        if out['context']!=q.get('after',[''])[0] or inbox_changed or time.monotonic()>=until:break
+                        approval_cursor=store.approval_change_cursor() if approval_watch else None
+                        approval_changed=approval_watch and approval_cursor!=approval_baseline
+                        if out['context']!=q.get('after',[''])[0] or inbox_changed or approval_changed or time.monotonic()>=until:break
                         time.sleep(.1)
                     if owner is not None:
                         out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed}
+                    if approval_watch:
+                        reasons=[]
+                        if out['context']!=q.get('after',[''])[0]:reasons.append('round-context')
+                        if inbox_changed:reasons.append('inbox')
+                        if approval_changed:reasons.append('approval-change')
+                        out=out|{'approvalCursor':approval_cursor,'approvalChanged':approval_changed,'wakeReasons':reasons or ['timeout']}
                     return self.reply(200,out)
                 finally:
                     if watching:
                         notifications.waiting_ended.send(**event)
             except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
+            except (OSError,sqlite3.Error):return self.reply(503,{'error':'Watch records unavailable'})
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
             return self.reply(*get_letters(parsed))
         if parsed.path == '/task-context':

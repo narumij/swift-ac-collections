@@ -33,6 +33,25 @@ class WorkNotificationsTests(unittest.TestCase):
             finally:
                 observer.close()
 
+    def test_registry_wal_companion_notifies(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'registry.sqlite3'
+            wal = Path(str(path) + '-wal')
+            path.write_bytes(b'fixture')
+            changes = Changes()
+            observer = FileObserver(path, changes, companions=(wal,))
+            try:
+                wal.write_bytes(b'created')
+                self.assertGreater(changes.wait(0, 2), 0)
+                import time
+                time.sleep(.05)
+                revision = changes.wait(None, 0)
+                with wal.open('ab') as stream:
+                    stream.write(b'new commit')
+                self.assertGreater(changes.wait(revision, 2), revision)
+            finally:
+                observer.close()
+
     def test_only_committed_history_notifies(self):
         with tempfile.TemporaryDirectory() as directory:
             store = approvals.Store(Path(directory) / 'approvals.sqlite3', Path(directory).resolve())

@@ -1006,14 +1006,29 @@ header .header-note {
    border-left-width: 4px
 }
 
-/* OPS-132: taller work cards for the separate next line (fixed height keeps polling from moving the page); the next
-   line wraps to two lines at most, its full text stays in the card title. Text colours match the left line. */
+/* Work cards follow their content height; approval controls stay in the same card. */
 #work-lane-track {
-   height: 138px
+   height: auto;
+   align-items: flex-start
 }
 
 #work-lane-track .work-card {
-   height: 122px
+   height: auto;
+   padding: 6px 8px;
+   gap: 3px
+}
+
+.work-card-approvals {
+   min-height: 0
+}
+
+.work-approval-entry {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+   border-top: 1px solid var(--line);
+   padding-top: 4px;
+   margin-top: 4px
 }
 
 .work-card .work-next {
@@ -1487,3 +1502,8 @@ header h1 {
 .member-list .presence-lamp[data-border="solid"] { border-style: solid; }
 .member-list .presence-lamp[data-border="dotted"] { border-style: dotted; }
 .member-list .presence-lamp[data-border="red"] { border-style: solid; border-color: #c0392b; }
+
+/* Approval colour is independent of the next worker. */
+#work-lane-track .work-card[data-approval="pending"] { border-left-color: #c0392b; background: #fff; }
+#work-lane-track .work-card[data-approval="approved"] { border-left-color: #28b463; background: #fff; }
+#work-lane-track .work-card[data-approval="none"] { border-left-color: #45b8e8; background: #fff; }

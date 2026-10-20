@@ -39,12 +39,12 @@ class WorkStateTests(unittest.TestCase):
         probe = event(4, kind='work', owner='甲', reason='ACK PING-20261019-A：受信')
         model = WorkState()
         snap = model.update_activity([request, started, waiting, probe])
-        self.assertEqual(snap['timeline']['current']['heading'], '現在：T-1 · 甲 · 作業')
+        self.assertEqual(snap['timeline']['current']['heading'], '最新の活動：T-1 · 甲 · 作業')
         self.assertEqual(len(snap['timeline']['cards']), 4, 'timeline retains probe and state notices')
         self.assertEqual(snap['cards']['cards'][0]['stage'], '着手')
         returned = event(5, kind='return', owner='乙', reason='返却', next='調整', presence='waiting')
         snap = model.update_activity([request, started, waiting, probe, returned])
-        self.assertEqual(snap['timeline']['current']['heading'], '現在：T-1 · 乙 · 返却')
+        self.assertEqual(snap['timeline']['current']['heading'], '最新の活動：T-1 · 乙 · 返却')
         self.assertEqual(snap['cards']['cards'][0]['stage'], '返却・受入待ち')
         self.assertEqual(snap['cards']['cards'][0]['next'], 'known')
 
@@ -75,6 +75,55 @@ class WorkStateTests(unittest.TestCase):
         snap = model.failure('approvals')
         self.assertIn('承認の取得不調', snap['cards']['status'])
         self.assertEqual(len(snap['approvals']['requests']), 4)
+
+    def test_unified_tasks_prioritize_pending_then_first_start(self):
+        model = WorkState()
+        records = [event(1, 'T-9', 'request'), event(2, 'T-2', reason='着手：開始'),
+                   event(3, 'T-1', 'request'), event(4, 'T-1', reason='着手：開始'),
+                   event(8, 'T-2', 'return'), event(9, 'T-1', 'request')]
+        model.update_activity(records)
+        def approval(identity, task, status='pending'):
+            return dict(id=identity, taskId=task, status=status, revision=1, title=identity,
+                        scope='purpose', paths=['a'], condition='tested', branch='topic',
+                        createdAt='2026-10-19', updatedAt='2026-10-19')
+        pending = [approval('a', 'T-1'), approval('b', 'T-1', 'approved'),
+                   approval('c', 'T-2'), approval('d', 'T-0'), approval('e', 'T-3', 'claimed'),
+                   approval('past', 'T-8', 'consumed'), approval('cancel', 'T-8', 'cancelled')]
+        snap = model.update_approvals(pending)
+        cards = snap['cards']['cards']
+        self.assertEqual([c['taskId'] for c in cards], ['T-2', 'T-1', 'T-0', 'T-9', 'T-3'])
+        self.assertEqual([a['id'] for a in cards[1]['approvalEntries']], ['a', 'b'])
+        self.assertEqual(cards[0]['startAt'], records[1]['timestamp'])
+        self.assertEqual(cards[3]['startSource'], 'request')
+        self.assertIn('依頼時刻を代用', cards[3]['lines'][-1])
+        self.assertEqual(cards[2]['startSource'], 'unknown')
+        self.assertEqual(cards[2]['lines'][-1], '開始：不明')
+        # Return, verification and a later start do not reorder or replace first start.
+        records += [event(10, 'T-2', 'request'), event(11, 'T-2', reason='着手：再開'), event(12, 'T-2', 'return')]
+        snap = model.update_activity(records)
+        self.assertEqual([c['taskId'] for c in snap['cards']['cards']], ['T-2', 'T-1', 'T-0', 'T-9', 'T-3'])
+        self.assertEqual(snap['cards']['cards'][0]['startAt'], records[1]['timestamp'])
+        # The server retains an observed start when it slips out of the bounded read window.
+        snap = model.update_activity(records[-3:])
+        self.assertEqual(snap['cards']['cards'][0]['startAt'], records[1]['timestamp'])
+        # Approval changes only move between priority groups, never use updatedAt for order.
+        pending[0]['status'] = 'approved'; pending[2]['status'] = 'approved'
+        pending[2]['updatedAt'] = '2026-10-30'
+        snap = model.update_approvals(pending)
+        self.assertEqual([c['taskId'] for c in snap['cards']['cards']], ['T-0', 'T-2', 'T-1', 'T-3'])
+        self.assertEqual(len(snap['cards']['cards'][2]['approvalEntries']), 2)
+
+    def test_letter_start_is_earliest_start_not_return_time(self):
+        model = WorkState()
+        model.update_activity([event(1, 'T-1', 'request'), event(6, 'T-1', 'request')])
+        model.update_letters([dict(sequence=1, letter_id='LTR-TEST', task_id='T-1', actor='甲',
+                                   sender='Astra', recipient='甲', event='started', received_at=event(3)['timestamp']),
+                              dict(sequence=2, letter_id='LTR-TEST', task_id='T-1', actor='甲',
+                                   sender='Astra', recipient='甲', event='returned', received_at=event(8)['timestamp'])])
+        card = model.snapshot()['cards']['cards'][0]
+        self.assertEqual(card['startSource'], 'started')
+        self.assertEqual(datetime.fromisoformat(card['startAt']), BASE + timedelta(seconds=3))
+        self.assertEqual(card['stage'], '返却・受入待ち')
 
     def test_wake_owners_pending_and_exact_ack(self):
         wake = 'WAKE-20261019-Q'

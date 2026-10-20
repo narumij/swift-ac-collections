@@ -1,7 +1,7 @@
 <section id="workArea" class="work-area" role="tabpanel" aria-labelledby="workAreaTab" aria-label="作業">
     <div class="work-activity">
-        <section class="activity-current" aria-label="現在の作業詳細">
-            <div id="activity-current-heading">現在の作業：読み込み待ち</div>
+        <section class="activity-current" aria-label="最新の活動詳細">
+            <div id="activity-current-heading">最新の活動：読み込み待ち</div>
             <div id="activity-current-detail">担当・時刻・詳細をここに表示します</div>
         </section>
         <section class="activity-timelines" aria-label="作業イベントの履歴">
@@ -18,7 +18,7 @@
     </section>
     <section class="approval-lane work-lane" aria-label="最近の作業とコミット事前承認">
         <div class="approval-heading">
-            <h2>最近の作業（ここです）</h2><span id="work-lane-status" role="status">読み込み待ち</span><span class="wake-control"><select
+            <h2>最近の作業とコミット承認</h2><span id="work-lane-status" role="status">読み込み待ち</span><span class="wake-control"><select
                     id="wake-owner" aria-label="待機完了を依頼する担当"></select><button type="button" id="wake-send"
                     disabled>待機完了</button><small>選んだ担当に待機終了を依頼</small><span id="wake-status"
                     role="status"></span></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status"
@@ -26,17 +26,13 @@
                 disabled>表示中の未承認0件を承認</button>
         </div>
         <p class="approval-policy"
-            title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの並行した依頼は区別しません。疎通確認（PING・WAKE・ACK）は工程に数えません。">
-            直近200件の活動＋未完の承認から（全taskの現在地ではありません · 正式な状態はRegistry · 同じtaskの並行依頼は区別しません）</p>
-        <div id="work-lane-track" class="approval-track" aria-label="最近の作業（新しい順）" tabindex="0"></div>
-        <div id="approval-details">
-            <h3>コミット事前承認の詳細（個別の承認・取消・履歴）</h3>
-            <p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p>
-            <div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div>
-        </div>
+            title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの承認依頼はカード内にすべて表示します。着手未記録は依頼時刻を代用し、開始不明は末尾です。疎通確認（PING・WAKE・ACK）は工程に数えません。">
+            直近200件の活動＋未完の承認から（全taskの現在地ではありません · 正式な状態はRegistry · 承認待ちを先に、各群は開始の古い順 · 着手未記録は依頼時刻を代用 · 開始不明は末尾）</p>
+        <p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p>
+        <div id="work-lane-track" class="approval-track" aria-label="タスクごとの作業と承認（承認待ち優先・開始の古い順）" tabindex="0"></div>
         <details id="work-lane-help">
             <summary>作業カードの色の説明</summary>
-            <p class="approval-policy work-lane-legend">カードの左の線：赤＝承認待ち（最優先。上の承認信号の🔴と同じ意味）・青＝次の担当あり・灰＝この仕事は終了・薄い線＝次は不明
+            <p class="approval-policy work-lane-legend">カードの色：赤＝コミット承認待ち（先に表示）・緑＝承認済み／確保済み・青＝未処理の承認なし
             </p>
         </details>
     </section>

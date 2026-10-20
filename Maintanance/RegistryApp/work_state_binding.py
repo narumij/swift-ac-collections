@@ -6,12 +6,14 @@ from work_state import WorkState
 
 
 class WorkStateBinding:
-    def __init__(self, activity_changes, approval_changes, read_activity, read_approvals, registry_state, letter_changes=None, read_letters=None):
+    def __init__(self, activity_changes, approval_changes, read_activity, read_approvals, registry_state, letter_changes=None, read_letters=None, registry_changes=None, read_registry=None):
         self.model = WorkState(registry_state=registry_state)
         self._sources = [(activity_changes, read_activity, self.model.update_activity, 'activity'),
                          (approval_changes, read_approvals, self.model.update_approvals, 'approvals')]
         if letter_changes is not None:
             self._sources.append((letter_changes, read_letters, self.model.update_letters, 'letters'))
+        if registry_changes is not None:
+            self._sources.insert(0, (registry_changes, read_registry, self.model.update_registry, 'registry'))
         for changes, read, update, source in self._sources:
             revision = changes.wait(None, 0)
             self._refresh(read, update, source)

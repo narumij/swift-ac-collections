@@ -38,11 +38,11 @@ function startWorkPage() {
   const timeline = createActivityTimelineView($('activity-events'), $('activity-events-status'), make, () => document.activeElement, { heading: $('activity-current-heading'), detail: $('activity-current-detail') });
   const cards = createWorkLaneView({ track: $('work-lane-track'), status: $('work-lane-status'), makeNode: make, getActive: () => document.activeElement });
   const wake = createWakeView({ select: $('wake-owner'), button: $('wake-send'), status: $('wake-status'), onChange: () => model.select($('wake-owner').value), onClick: () => model.send(sendWake) });
-  const approval = createApprovalView({ track: $('approval-track'), status: $('approval-status'), policy: $('approval-policy'), all: $('approval-all'), dialog: $('approval-dialog'), detail: $('approval-detail'), close: $('approval-close'), makeNode: make, extraStatuses: [$('header-approval-status')], extraAllButtons: [$('header-approval-all')] });
+  const approval = createApprovalView({ track: $('work-lane-track'), taskTrack: cards.approvalTrack, status: $('approval-status'), policy: $('approval-policy'), all: $('approval-all'), dialog: $('approval-dialog'), detail: $('approval-detail'), close: $('approval-close'), makeNode: make, extraStatuses: [$('header-approval-status')], extraAllButtons: [$('header-approval-all')] });
   const commands = createApprovalController({ fetchRecord: fetch, view: { update() {}, availability: approval.availability, failure: approval.failure }, isHidden: () => document.hidden, schedule: setTimeout, cancel: clearTimeout, makeController: () => new AbortController(), autoPoll: false });
   approval.bind(commands.act);
   model.subscribe(value => {
-    timeline.show(value.timeline); if (!value.connected || value.failed.activity) timeline.showFailure(ACTIVITY_FAILURE_TEXT);
+    timeline.show(value.timeline); if (!value.connected || value.failed.activity || value.failed.letters) timeline.showFailure(ACTIVITY_FAILURE_TEXT);
     cards.update(value.cards); wake.show(value.wake); approval.update(value.approvals);
     if (!value.connected || value.failed.approvals) commands.disconnected(); else commands.receive(value.approvals);
   });

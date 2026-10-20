@@ -570,6 +570,14 @@ python3 Maintanance/RegistryApp/comm.py letter read LTR-... --full           # �
 `add-member <輪番ID> --actor <元依頼の送り手> --turn <現在の番> --member <追加名> --operation-id <保存したUUID>`は末尾追加で、現在の担当を変えない。
 actorは本人認証ではない。他人の名義でNOPしない。SKIPはユーザー承認専用チャネルが必要で、未設定時は利用不可。承認UI/CLIは今回未提供。運用範囲と結果は[正本](../Current/TASK_THREAD_ROUNDS.md)を参照。
 
+### 承認変更でも待機を起こす（ユーザー許可制）
+
+`letter turns watch` の `--wake-on-approval-change` は、ユーザーから使用を明示的に許可された担当だけが使う。担当であることや実装済みであることから許可を推定しない。許可された範囲・期間に従い、撤回されたら使用を止める。この規定は運用上の権限であり、CLIによる本人認証ではない。
+
+初回は現在の承認履歴を基準に待ち、応答の `approvalCursor` を次回の `--approval-cursor <値>` に渡す。`approvalChanged` と `wakeReasons` で承認変更による起床を区別する。オプションなしの待機は従来どおり。
+
+通知は承認一覧を読み直す合図にすぎない。コミット担当は一覧から対象・承認状態・範囲を照合し、既存の `claim` → commit → `finish` を行う。オプションの使用許可は個々のコミット承認を代替しない。起床だけで承認・受領・コミットを実行せず、inboxへ新しい連絡も作らない。
+
 ### 作業ページの表示状態
 
 作業ページは `member_state.py` と `work_state.py` の保持する表示状態を購読する。

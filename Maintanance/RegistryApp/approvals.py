@@ -157,6 +157,14 @@ class Store:
         with self.transaction() as con:
             return self._list(con)
 
+    def approval_change_cursor(self):
+        """Read the durable approval history cursor only; never creates or mutates records."""
+        con = sqlite3.connect(self.database.resolve().as_uri() + '?mode=ro', uri=True, timeout=5)
+        try:
+            return con.execute('SELECT COALESCE(MAX(sequence), 0) FROM history').fetchone()[0]
+        finally:
+            con.close()
+
     def _row(self, con, identity):
         text(identity, 100)
         row = con.execute('SELECT * FROM requests WHERE id=?', (identity,)).fetchone()

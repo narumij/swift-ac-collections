@@ -40,12 +40,16 @@ class RoundWatchNoticeTests(unittest.TestCase):
         self.store_patch.stop()
         self.tmp.cleanup()
 
-    def watch(self, *, owner=None, inbox_context=None, after=None, wait=0):
+    def watch(self, *, owner=None, inbox_context=None, after=None, wait=0, approval_changes=False, approval_cursor=None):
         query = {'round': self.round, 'after': after or self.store.show_round(self.round)['context'], 'wait': str(wait)}
         if owner is not None:
             query['owner'] = owner
         if inbox_context is not None:
             query['inboxAfter'] = inbox_context
+        if approval_changes:
+            query['approvalChanges'] = '1'
+        if approval_cursor is not None:
+            query['approvalAfter'] = approval_cursor
         with urllib.request.urlopen(self.url + '/letter-turns?' + urllib.parse.urlencode(query), timeout=wait + 3) as response:
             return json.loads(response.read())
 
@@ -54,7 +58,7 @@ class RoundWatchNoticeTests(unittest.TestCase):
             return {table: con.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0]
                     for table in ('operations', 'messages', 'acks', 'letters', 'letter_texts', 'letter_events',
                                   'letter_links', 'letter_doc_records', 'letter_doc_snapshots', 'trial_anchors',
-                                  'trial_rounds', 'trial_turns', 'trial_members', 'trial_next', 'trial_skip_policy')}
+                                  'trial_rounds', 'trial_turns', 'trial_members', 'trial_next', 'trial_skip_policy', 'requests', 'history')}
 
     def test_other_recipient_does_not_change_named_owner_context(self):
         before = self.store.inbox_notice_context('Luna')
@@ -127,6 +131,65 @@ class RoundWatchNoticeTests(unittest.TestCase):
         second = subprocess.run(command, env=self.env, capture_output=True, text=True)
         self.assertEqual(second.returncode, 0, second.stderr)
         self.assertEqual(json.loads(second.stdout)['ownerInboxContext'], first_result['ownerInboxContext'])
+
+    def approval(self):
+        return self.store.add(dict(taskId='OPS-197', title='test', scope='limited', paths=['test.txt'], condition='passed', branch='test'))
+
+    def test_approval_watch_baseline_changed_cursor_timeout_and_no_letter_creation(self):
+        card = self.approval()
+        baseline = self.store.approval_change_cursor()
+        before = self.counts()
+        first = self.watch(approval_changes=True, wait=0.15)
+        self.assertFalse(first['approvalChanged'])
+        self.assertEqual(first['approvalCursor'], baseline)
+        self.assertEqual(first['wakeReasons'], ['timeout'])
+        self.assertEqual(self.counts(), before)
+        result = {}
+        waiter = threading.Thread(target=lambda: result.setdefault('watch', self.watch(approval_changes=True, approval_cursor=baseline, wait=2)))
+        waiter.start()
+        time.sleep(.15)
+        self.store.mutate({'action': 'approve', 'targets': [{'id': card['id'], 'revision': 1}]})
+        after_approval = self.counts()
+        waiter.join(3)
+        self.assertFalse(waiter.is_alive())
+        changed = result['watch']
+        self.assertTrue(changed['approvalChanged'])
+        self.assertGreater(changed['approvalCursor'], baseline)
+        self.assertEqual(changed['wakeReasons'], ['approval-change'])
+        self.assertEqual(self.counts(), after_approval)
+        repeated = self.watch(approval_changes=True, approval_cursor=changed['approvalCursor'], wait=.15)
+        self.assertFalse(repeated['approvalChanged'])
+        self.assertEqual(repeated['wakeReasons'], ['timeout'])
+        # A retained older cursor catches a change between consecutive watch calls.
+        self.store.mutate({'action': 'cancel', 'targets': [{'id': card['id'], 'revision': 2}]})
+        cancelled = self.watch(approval_changes=True, approval_cursor=changed['approvalCursor'], wait=2)
+        self.assertTrue(cancelled['approvalChanged'])
+        legacy = self.watch(wait=.15)
+        self.assertNotIn('approvalCursor', legacy)
+        self.assertNotIn('wakeReasons', legacy)
+
+    def test_approval_watch_validation_and_cli_cursor(self):
+        for cursor in (-1, 'bad', '1.5', '999999999999999999999'):
+            with self.subTest(cursor=cursor), self.assertRaises(urllib.error.HTTPError) as error:
+                self.watch(approval_changes=True, approval_cursor=cursor)
+            self.assertEqual(error.exception.code, 400)
+            error.exception.close()
+        with self.assertRaises(urllib.error.HTTPError) as error:
+            self.watch(approval_cursor=0)
+        self.assertEqual(error.exception.code, 400)
+        error.exception.close()
+        command = ['python3', '-B', str(Path(__file__).with_name('comm.py')), 'letter', 'turns', 'watch', self.round,
+                   '--context', self.store.show_round(self.round)['context'], '--wait', '0', '--wake-on-approval-change']
+        first = subprocess.run(command, env=self.env, capture_output=True, text=True)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        cursor = json.loads(first.stdout)['approvalCursor']
+        self.approval()
+        resumed = subprocess.run(command + ['--approval-cursor', str(cursor)], env=self.env, capture_output=True, text=True)
+        self.assertEqual(resumed.returncode, 0, resumed.stderr)
+        self.assertEqual(json.loads(resumed.stdout)['wakeReasons'], ['approval-change'])
+        refused = subprocess.run([a for a in command if a != '--wake-on-approval-change'] + ['--approval-cursor', str(cursor)], env=self.env, capture_output=True, text=True)
+        self.assertNotEqual(refused.returncode, 0)
+        self.assertIn('requires --wake-on-approval-change', refused.stderr)
 
     def test_anchor_withdrawal_still_wakes_legacy_round_watch(self):
         before = self.store.show_round(self.round)['context']

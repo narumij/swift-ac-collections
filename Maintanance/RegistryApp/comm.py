@@ -122,6 +122,8 @@ def main():
         if name=='watch':
             t.add_argument('--context',required=True);t.add_argument('--wait',type=float,default=30)
             t.add_argument('--owner');t.add_argument('--inbox-context')
+            t.add_argument('--wake-on-approval-change', action='store_true', help='Requires prior user permission to use; wake on approval history changes. This never authorizes a commit.')
+            t.add_argument('--approval-cursor', type=int, help='approvalCursor from the previous permitted approval-change watch')
         if name in ('speak','nop'):
             t.add_argument('--actor',required=True);t.add_argument('--turn',type=int,required=True);t.add_argument('--context',required=True);t.add_argument('--operation-id',required=True)
             if name=='speak':t.add_argument('--body-file',required=True)
@@ -194,6 +196,13 @@ def turns_command(args):
                 q.update(after=args.context,wait=args.wait)
                 if args.owner is not None:q['owner']=args.owner
                 if args.inbox_context is not None:q['inboxAfter']=args.inbox_context
+                if args.approval_cursor is not None and not args.wake_on_approval_change:
+                    raise ValueError('--approval-cursor requires --wake-on-approval-change')
+                if args.approval_cursor is not None and args.approval_cursor < 0:
+                    raise ValueError('--approval-cursor must be nonnegative')
+                if args.wake_on_approval_change:
+                    q['approvalChanges']='1'
+                    if args.approval_cursor is not None:q['approvalAfter']=args.approval_cursor
                 timeout=args.wait+5
             result=studio_client._call('GET','/letter-turns?'+urllib.parse.urlencode(q),timeout=timeout)
         else:

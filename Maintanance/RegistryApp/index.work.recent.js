@@ -42,13 +42,14 @@ function workLaneViewModel(items, trouble) { return { cards: items.map(workCardV
 function createWorkLaneView({ track, status, makeNode, getActive = () => null }) {
   const cards = new Map(); const set = (node, text) => { if (node.textContent !== text) node.textContent = text; };
   return {
+    approvalTrack(taskId) { return cards.get(taskId)?.approvals || null; },
     update(vm) {
       const active = getActive(), focused = active && track.contains(active), left = track.scrollLeft;
       const keep = new Set(vm.cards.map(i => i.taskId)); for (const [id, card] of cards) if (!keep.has(id) && !(focused && card.node.contains(active))) { card.node.remove(); cards.delete(id); }
       vm.cards.forEach((it, index) => {
         let card = cards.get(it.taskId);
-        if (!card) { const node = makeNode('article'); node.className = 'approval-card work-card'; node.tabIndex = 0; const lines = ['strong', 'span', 'span', 'span', 'span'].map(t => makeNode(t)); lines[1].className = 'work-next'; lines.forEach(l => node.appendChild(l)); card = { node, lines }; cards.set(it.taskId, card); }
-        it.lines.forEach((t, i) => set(card.lines[i], t)); if (card.node.title !== it.title) card.node.title = it.title; card.node.dataset.stage = it.stage; card.node.dataset.next = it.next;
+        if (!card) { const node = makeNode('article'); node.className = 'approval-card work-card'; node.tabIndex = 0; const lines = ['strong', 'span', 'span', 'span', 'span'].map(t => makeNode(t)); lines[1].className = 'work-next'; lines.forEach(l => node.appendChild(l)); const approvals = makeNode('div'); approvals.className = 'work-card-approvals'; node.appendChild(approvals); card = { node, lines, approvals }; cards.set(it.taskId, card); }
+        it.lines.forEach((t, i) => set(card.lines[i], t)); if (card.node.title !== it.title) card.node.title = it.title; card.node.dataset.stage = it.stage; card.node.dataset.next = it.next; card.node.dataset.approval = it.approvalState || 'none';
         // Do not move cards while one has focus; only their text changes.
         if (!focused && track.children[index] !== card.node) track.insertBefore(card.node, track.children[index] || null);
       });

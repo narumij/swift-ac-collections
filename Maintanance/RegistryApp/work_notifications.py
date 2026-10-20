@@ -24,8 +24,9 @@ class Changes:
 
 class FileObserver:
     """macOS/BSD vnode events cover CLI writes, creation and file replacement."""
-    def __init__(self, path, changes):
+    def __init__(self, path, changes, companions=()):
         self.path, self.changes = Path(path), changes
+        self.companions = tuple(Path(p) for p in companions)
         self._queue = select.kqueue()
         self._stop_read, self._stop_write = socket.socketpair()
         self._queue.control([select.kevent(self._stop_read.fileno(), filter=select.KQ_FILTER_READ,
@@ -39,7 +40,7 @@ class FileObserver:
         parent = self.path.parent
         while not parent.exists():
             parent = parent.parent
-        wanted = {parent, self.path}
+        wanted = {parent, self.path, *self.companions}
         for path, (fd, identity) in list(self._files.items()):
             try:
                 stat = path.stat()
@@ -91,3 +92,16 @@ def observe_activity(path):
         if _activity_observer is None:
             _activity_observer = FileObserver(path, activity_changes)
     return activity_changes
+
+
+registry_changes = Changes()
+_registry_observer = None
+
+
+def observe_registry(path):
+    """Use the same vnode observer for DB commits/replacement, including WAL writes."""
+    global _registry_observer
+    with _observer_lock:
+        if _registry_observer is None:
+            _registry_observer = FileObserver(path, registry_changes, companions=(str(path) + '-wal',))
+    return registry_changes

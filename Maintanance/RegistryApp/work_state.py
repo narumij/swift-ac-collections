@@ -84,15 +84,15 @@ def _probe(reason):
 def _timeline(rows):
     starts = _starts(rows)
     latest = next((r for r in reversed(rows) if not _probe(r['raw']['reason']) and not _notice(r, starts)), None)
-    current = ({'heading': '現在：' + latest['heading'], 'detail': latest['detail'], 'title': latest['title']}
-               if latest else {'heading': '現在の作業：未登録', 'detail': '担当が更新する進行記録です。', 'title': ''})
+    current = ({'heading': '最新の活動：' + latest['heading'], 'detail': latest['detail'], 'title': latest['title']}
+               if latest else {'heading': '最新の活動：未登録', 'detail': '担当が更新する進行記録です。', 'title': ''})
     cards = [{'id': row['id'], 'heading': row['heading'], 'title': row['title'],
               'event': row['event'], 'age': 'latest' if i == len(rows) - 1 else 'older'}
              for i, row in enumerate(rows)]
     return {'cards': cards, 'current': current, 'status': '' if rows else '記録なし'}
 
 
-def _lane(rows, approvals, registry_state):
+def _lane(rows, approvals, registry_state, first_starts):
     starts, by_task = _starts(rows), {}
 
     def item(task):
@@ -100,7 +100,7 @@ def _lane(rows, approvals, registry_state):
             state = registry_state(task) if callable(registry_state) else registry_state.get(task, '')
             by_task[task] = {'taskId': task, 'last': None, 'start': None,
                              'approvals': {'pending': 0, 'approved': 0, 'claimed': 0},
-                             'registryState': state or ''}
+                             'registryState': state or '', 'approvalEntries': []}
         return by_task[task]
 
     for row in rows:
@@ -110,18 +110,32 @@ def _lane(rows, approvals, registry_state):
         it = item(raw['taskId'])
         if not it['last'] or _date(raw['at']) >= _date(it['last']['at']):
             it['last'] = {'event': row['event'], **raw, 'start': row['id'] in starts}
+    # Keep the earliest observed start for this server's life, even if a later
+    # source window no longer contains it. No persistent start dates are invented.
     for row in rows:
         raw = row['raw']
-        it = by_task.get(raw['taskId'])
-        if (it and row['event'] == 'request' and not _probe(raw['reason'])
-                and (not it['start'] or _date(raw['at']) > _date(it['start']['at']))):
-            it['start'] = raw
+        if _probe(raw['reason']) or _notice(row, starts):
+            continue
+        actual = row['event'] == 'work' and (row['id'] in starts or bool(re.match(
+            r'^(?:[A-Z][A-Z0-9]*-\d{8}-[A-Z0-9]+[：:]?)?着手(?:[（:：\s]|$)', raw['reason'])))
+        if not actual and row['event'] != 'request':
+            continue
+        candidate = {**raw, 'source': 'started' if actual else 'request'}
+        previous = first_starts.get(raw['taskId'])
+        if (previous is None or (actual and previous['source'] == 'request') or
+                (candidate['source'] == previous['source'] and _date(candidate['at']) < _date(previous['at']))):
+            first_starts[raw['taskId']] = candidate
     for row in approvals:
         if row['status'] in ('pending', 'approved', 'claimed'):
-            item(row['taskId'])['approvals'][row['status']] += 1
+            it = item(row['taskId'])
+            it['approvals'][row['status']] += 1
+            it['approvalEntries'].append(deepcopy(row))
+    for it in by_task.values():
+        it['start'] = first_starts.get(it['taskId'])
 
     def sort_key(it):
-        return (-(datetime.fromisoformat(it['last']['at'].replace('Z', '+00:00')).timestamp() if it['last'] else 0), it['taskId'])
+        return (not bool(it['approvals']['pending']), it['start'] is None,
+                _date(it['start']['at']).timestamp() if it['start'] else 0, it['taskId'])
 
     cards = []
     for it in sorted(by_task.values(), key=sort_key):
@@ -144,14 +158,17 @@ def _lane(rows, approvals, registry_state):
                  (' · 確保' + str(counts['claimed']) if counts['claimed'] else '')
                  if sum(counts.values()) else '承認なし')
         owner, time, reason = (last['owner'], last['shortTime'], last['reason']) if last else ('', '', '')
-        start_text = '依頼 ' + start['shortTime'] if start else '開始：不明' if last else ''
+        start_text = (('着手 ' if start['source'] == 'started' else '開始：依頼時刻を代用 ') + start['shortTime']
+                      if start else '開始：不明')
         start_note = '' if start or not last else '開始：不明（記録範囲外または未記録）'
         lines = [it['taskId'] + ' · ' + stage, next_text,
                  ' · '.join(x for x in (owner, time) if x) + (' · ' + reason if reason else ''),
                  'Registry：' + (it['registryState'] or '不明') + ' · ' + badge, start_text]
         cards.append({'taskId': it['taskId'], 'lines': lines,
                       'title': '\n'.join(x for x in lines[:4] + [start_note or start_text] if x),
-                      'stage': stage, 'next': next_kind})
+                      'stage': stage, 'next': next_kind, 'approvalEntries': it['approvalEntries'],
+                      'approvalState': 'pending' if counts['pending'] else 'approved' if counts['approved'] or counts['claimed'] else 'none',
+                      'startAt': start['at'] if start else None, 'startSource': start['source'] if start else 'unknown'})
     return cards
 
 
@@ -218,21 +235,23 @@ class WorkState:
         self._registry_state = registry_state or {}
         self._activity = []
         self._letters = []
+        self._first_starts = {}
         self._approvals = {'requests': [], 'policyNotice': policy_notice}
-        self._failed = {'activity': False, 'approvals': False, 'letters': False}
+        self._failed = {'activity': False, 'approvals': False, 'letters': False, 'registry': False}
         self._model = self._build()
 
     def _build(self):
         rows = [_row(raw) for raw in self._activity]
         recent = sorted(rows + [_row(raw) for raw in self._letters], key=lambda row: _date(row['raw']['at']))
-        cards = _lane(recent, self._approvals['requests'], self._registry_state)
-        trouble = ' · '.join(label for key, label in (('activity', '活動の取得不調'), ('approvals', '承認の取得不調'), ('letters', '連絡の取得不調')) if self._failed[key])
+        approval_model = _approvals(self._approvals)
+        cards = _lane(recent, approval_model['visible'], self._registry_state, self._first_starts)
+        trouble = ' · '.join(label for key, label in (('activity', '活動の取得不調'), ('approvals', '承認の取得不調'), ('letters', '連絡の取得不調'), ('registry', 'Registryの取得不調')) if self._failed[key])
         return {'revision': self._revision, 'activity': rows,
-                'timeline': _timeline(rows),
+                'timeline': _timeline(recent),
                 'wake': _wake(rows),
                 'cards': {'cards': cards, 'status': (str(len(cards)) + '件' if cards else '記録なし') +
                           (' · ' + trouble + ' · 最終情報を保持' if trouble else ''), 'stale': bool(trouble)},
-                'approvals': _approvals(self._approvals), 'failed': dict(self._failed)}
+                'approvals': approval_model, 'failed': dict(self._failed)}
 
     def _publish(self):
         self._revision += 1
@@ -254,17 +273,27 @@ class WorkState:
             self._failed['activity'] = False
             return self._publish()
 
+    def update_registry(self, states):
+        if not isinstance(states, dict) or any(not isinstance(k, str) or not isinstance(v, str) for k, v in states.items()):
+            raise ValueError('Expected Registry task states')
+        with self._condition:
+            if states == self._registry_state and not self._failed['registry']:
+                return deepcopy(self._model)
+            self._registry_state = dict(states)
+            self._failed['registry'] = False
+            return self._publish()
+
     def update_letters(self, events):
         rows = []
         for event in events:
             if not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', event['task_id'] or ''):
                 continue
-            returned = event['event'] == 'returned'
+            returned, sent = event['event'] == 'returned', event['event'] == 'sent'
             rows.append(dict(schemaVersion=1,
                 id=hashlib.md5(('letter-event:' + str(event['sequence'])).encode()).hexdigest(),
-                taskId=event['task_id'], event='return' if returned else 'work', owner=event['actor'],
+                taskId=event['task_id'], event='return' if returned else 'request' if sent else 'work', owner=event['actor'],
                 timestamp=_date(event['received_at']).isoformat(timespec='milliseconds'),
-                reason=('返却' if returned else '着手') + '（連絡DB：' + event['letter_id'] + '）',
+                reason=('返却' if returned else '依頼' if sent else '着手') + '（連絡DB：' + event['letter_id'] + '）',
                 next=event['sender'] if returned else event['recipient']))
         for row in rows:
             _row(row)

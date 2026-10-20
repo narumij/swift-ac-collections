@@ -20,7 +20,7 @@
 
 ### 協働と運用
 
-<!-- V3-GENERATED rows: table=Task Registry/協働と運用; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=17; sha256=e811f4a3e2a1e455608cf9718316767d9dc2ccbfd3703a5bf95fab81f8f2182a -->
+<!-- V3-GENERATED rows: table=Task Registry/協働と運用; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=17; sha256=e811f4a3e2a1e455608cf9718316767d9dc2ccbfd3703a5bf95fab81f8f2182a -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `OPS-063` | `DONE` | Astra / Fable（各自回答） | [DISCOVERY] Task Registry運用インタビュー | 2026-10-17ユーザー依頼。両回答と整理をAstra受入済み。追跡負担と改善要望を5問・評価・感想で収集し、提案と改修許可を分けて整理する。制度改修は含まない | `Maintanance/Current/TASK_REGISTRY_OPERATION_INTERVIEW.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/ASTRA.md` / `Maintanance/ProgressV2/RegistryInterview/2026-10-17/FABLE.md` |
@@ -49,7 +49,7 @@
 
 ### 公開とリリース
 
-<!-- V3-GENERATED rows: table=Task Registry/公開とリリース; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=5; sha256=80ad7fa80f80d09ff7065fece7c1430f43ab8c700da021d588f6f99f3d0d7331 -->
+<!-- V3-GENERATED rows: table=Task Registry/公開とリリース; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=5; sha256=80ad7fa80f80d09ff7065fece7c1430f43ab8c700da021d588f6f99f3d0d7331 -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 実施区間はマイルストーン接続で管理し、本文には版を固定しない。一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Milestones/0.6.1/GATE-0.7.0.md` |
@@ -60,7 +60,7 @@
 
 ### RedBlackTreeと品質ゲート
 
-<!-- V3-GENERATED rows: table=Task Registry/RedBlackTreeと品質ゲート; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=12; sha256=b0b007ff589b09003313bc75408feba1fbf4da34c5e4a6b1ec169f430a765ae5 -->
+<!-- V3-GENERATED rows: table=Task Registry/RedBlackTreeと品質ゲート; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=12; sha256=b0b007ff589b09003313bc75408feba1fbf4da34c5e4a6b1ec169f430a765ae5 -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Maintanance/Quality/Profiles/RedBlackTreeCollections.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -79,7 +79,7 @@
 
 ### Permutation
 
-<!-- V3-GENERATED rows: table=Task Registry/Permutation; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=5; sha256=251c907244c7b1fa56821329fb480ee3c242f4202bd6c520a830478d470e1f66 -->
+<!-- V3-GENERATED rows: table=Task Registry/Permutation; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=5; sha256=251c907244c7b1fa56821329fb480ee3c242f4202bd6c520a830478d470e1f66 -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md` / `Maintanance/UserDocuments/NextPermutationModule/UserDocumentationDraft.md` |
@@ -91,20 +91,20 @@
 
 ### OptionalElementBuffer
 
-<!-- V3-GENERATED rows: table=Task Registry/OptionalElementBuffer; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=1; sha256=ff7fe4357888a9696736c2c61317994b1700ab1d75691af20520d9c58b32c69f -->
+<!-- V3-GENERATED rows: table=Task Registry/OptionalElementBuffer; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=1; sha256=ff7fe4357888a9696736c2c61317994b1700ab1d75691af20520d9c58b32c69f -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |
 
 ### ElementBuffer
 
-<!-- V3-GENERATED rows: table=Task Registry/ElementBuffer; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=0; sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -->
+<!-- V3-GENERATED rows: table=Task Registry/ElementBuffer; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=0; sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 
 ### 移行史
 
-<!-- V3-GENERATED rows: table=Task Registry/移行史; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=2; sha256=85cbc1b3cb876cc8e32ac6dd899bc7bd62eff7b7c9987b1000a04913b5a347ff -->
+<!-- V3-GENERATED rows: table=Task Registry/移行史; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=2; sha256=85cbc1b3cb876cc8e32ac6dd899bc7bd62eff7b7c9987b1000a04913b5a347ff -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/History/RefactoringFromAtCoder2025/README.md` / `Maintanance/History/RefactoringFromAtCoder2025/EVIDENCE.md` |
@@ -156,7 +156,7 @@
 | `OPS-099` | `PROPOSED` | Astra（検討案） / User（採否判断） | [DECISION] 判断キャッシュのLRU・保持件数制限の採否検討 | 2026-10-18ユーザー依頼で登録。正本を保持したまま普段参照する判断キャッシュを絞る案を検討する。上位10件は候補値。利用判定・固定枠・退避と再取得・維持費用を整理し、限定試行の採否をユーザーが判断する。今回は登録のみ、実装・自動退避・削除は行わない。 | `Maintanance/Current/JUDGMENT_CACHE_LRU_PROPOSAL.md` |
 
 
-<!-- V3-GENERATED rows: table=Task Registry/調整・運用の個別課題; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=59; sha256=a22fa39ef7b938637a14c22614ae458731d9dbda986c250414d7160600565131 -->
+<!-- V3-GENERATED rows: table=Task Registry/調整・運用の個別課題; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=60; sha256=6f5c4550675f370092be55d16c31b860d9b5e3764e905875912e9bcc20ddea7d -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `OPS-059` | `FROZEN` | Astra（調整） / Claude（調査済み） | [DISCOVERY] Studio末端枝の配置とSafari表示差の調査 | CP-20261016-013を正式登録。ユーザーがリリース優先で凍結。追加返却ではSafari反映をユーザーが確認済み。現時点で未commit差分なし。凍結解除・修正受入は未実施、明示指示待ち。 | `Maintanance/Current/REGISTRY_STUDIO_TERMINAL_BRANCH_LAYOUT.md` |
@@ -179,7 +179,8 @@
 | `OPS-184` | `PROPOSED` | 姫（調査・実装） / 調整担当（対応表の受入・検証） | [EXECUTION] 最近の作業と待機完了を連絡DBへ接続するための対応表と段階実施 | 2026-10-20ユーザー指示で実装撤回。OPS-183は維持。再実装は新しい依頼待ち。 | `Maintanance/Current/STUDIO_WORK_LANE_LETTERS_CONNECTION.md` |
 | `OPS-185` | `DONE` | 姫（試作） / Astra（受入） | [EXECUTION] 未採番DBの単独試作と受渡し試行 | 2026-10-20 単独試作の3点をAstraが別一時DBで再現し受入。本番移行・UI・同時利用は対象外。追加実装は依頼していない。 | Maintanance/Current/PENDING_DB_STANDALONE_TRIAL.md |
 | `OPS-186` | `ACTIVE` | Astra | [EXECUTION] Studio品質改善をTest as Specで段階実施 | ユーザー明示依頼。利用経路の要求を実接続の試験にし、小さなパッチ単位で検収する。初回は連絡の一巡のみ。全指摘の一括修正・件数ノルマではない。 | Maintanance/Current/STUDIO_TEST_AS_SPEC_QUALITY.md |
-| `OPS-187` | `ACTIVE` | 姫（実装・試験） / Astra（検収） | [EXECUTION] 連絡の送信・閲覧・受領を実接続で試験しパッチ返却 | ファイル経路で正式依頼済み。実サーバー・一時DB・headlessブラウザで一巡を試験し、必要な修正だけパッチ返却。本番反映・commitなし。 | Maintanance/Current/STUDIO_LETTERS_E2E_PATCH.md |
+| `OPS-187` | `DONE` | 姫（実装・試験） / Astra（検収） | [EXECUTION] 連絡の送信・閲覧・受領を実接続で試験しパッチ返却 | 2026-10-20 パッチ成果をAstra受入。別一時コピーで実接続1件成功、実装修正なし。旧起動モード・WebKitでの限定合格。V3起動・本番適用・commitは含まない。 | Maintanance/Current/STUDIO_LETTERS_E2E_PATCH.md |
+| `OPS-188` | `ACTIVE` | 姫（試験・パッチ） / Astra（検収） | [EXECUTION] 承認の個別・一括操作を実接続で試験しパッチ返却 | ユーザーの次段実施指示。表示対象だけが承認され記録と画面が一致することを一時DBで確認。パッチ納品、本番適用・commitなし。 | Maintanance/Current/STUDIO_APPROVALS_E2E_PATCH.md |
 
 
 
@@ -191,7 +192,7 @@
 
 ### リリース後の立て直し
 
-<!-- V3-GENERATED rows: table=Task Registry/リリース後の立て直し; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=1; sha256=8d57dd61944658303f9b5abdb022b219c934979d38d7a837070ac8fd03077880 -->
+<!-- V3-GENERATED rows: table=Task Registry/リリース後の立て直し; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=1; sha256=8d57dd61944658303f9b5abdb022b219c934979d38d7a837070ac8fd03077880 -->
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 
@@ -202,7 +203,7 @@
 
 内部task間の必須AND前提を記録する。`SEQUENCE`は前提成果がそろうまで後続を開始・継続しない。`PARALLEL_JOIN`は独立部分を並行でき、後続の完了までに合流する。いずれも状態・委任・再開条件を上書きしない。
 
-<!-- V3-GENERATED rows: table=Task precedence; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=10; sha256=5999065f7a1a95aef7f3419cc0a541e3dbfa4da61467fe2a8ab79a7796e60e95 -->
+<!-- V3-GENERATED rows: table=Task precedence; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=10; sha256=5999065f7a1a95aef7f3419cc0a541e3dbfa4da61467fe2a8ab79a7796e60e95 -->
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
 | `PERM-081` | `PERM-060` | `SEQUENCE` | 現行再現と公開面の影響整理を判断材料とする。調査完了は案の承認ではない |
@@ -374,7 +375,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 親子関係は所属を表し、依存・着手許可を追加しない。履歴化したサブタスクを復活させない。
 
-<!-- V3-GENERATED rows: table=恒久タスクの親子関係; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=56; sha256=54123b897c43cc9bc6cae7dfcce5995f115be3a54e9896c17ba2301a934fde9e -->
+<!-- V3-GENERATED rows: table=恒久タスクの親子関係; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=57; sha256=387be52347a1644b0f4db744d8e485c5871a2a22442c3a2a311a99095e3122fb -->
 | 親 | サブタスク |
 | --- | --- |
 | `OPS-103` | `OPS-106` |
@@ -433,6 +434,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 | `OPS-048` | `OPS-184` |
 | `OPS-048` | `OPS-186` |
 | `OPS-186` | `OPS-187` |
+| `OPS-186` | `OPS-188` |
 
 ## マイルストーン接続
 
@@ -444,7 +446,7 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 
 接続はタスクと到達点の関係を示す。完了・着手・再開の条件は各行の制約文に記載し、線の有無や向きだけでは判定しない。線の種類は2026-10-17に廃止した（Astra助言・ユーザー決定、OPS-062）。制約文は「この到達点の前に完了が必要。」「判断材料。」「到達後。」のいずれかで始め、意味を文章で持つ。状態・ユーザー判断・委任は各タスクの条件に従う。タスクは版の中の行動なので、版ゲート（`GATE-*`）へは接続せず、その版の`END-*`か途中カードへ接続する。
 
-<!-- V3-GENERATED rows: table=マイルストーン接続; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=24; rows=27; sha256=7dd1a87ea38fe58325d6abb872b4fc2e6e8c3b300b1ab0754f59a4e22385a369 -->
+<!-- V3-GENERATED rows: table=マイルストーン接続; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=27; rows=27; sha256=7dd1a87ea38fe58325d6abb872b4fc2e6e8c3b300b1ab0754f59a4e22385a369 -->
 | 接続元 | 接続先 | 制約 |
 | --- | --- | --- |
 | `RELEASE-087` | `END-0.5.4` | 判断材料。2026-10-17ユーザー指定の仮配置。探索対象を絞るための関連付けで、対象版は未確定、到達点の完了条件には含めない。状態・担当・既存の着手条件を変更しない。 |

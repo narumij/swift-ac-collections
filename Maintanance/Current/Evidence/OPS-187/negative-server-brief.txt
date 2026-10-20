@@ -1,0 +1,22 @@
+ Maintanance/RegistryApp/studio_store.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+F
+======================================================================
+FAIL: test_send_view_receive_round_trip (__main__.LettersRoundTrip.test_send_view_receive_round_trip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-187.goA6zDDM2P/repo/Maintanance/RegistryApp/test-letters-e2e.py", line 119, in test_send_view_receive_round_trip
+    self.assertTrue(result['ok'], result.get('error', '') + '\n' + str(result.get('last')))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : page.waitForFunction: Timeout 30000ms exceeded.
+    at /private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-187.goA6zDDM2P/repo/Maintanance/RegistryApp/letters_e2e.cjs:66:16
+OPS-187 · Astra → 姫 · 受領
+LTR-20261020-C928B188…
+送信日時 2026/10/20 8:00:41 · 受領日時 未受領
+---
+最新のページ：1件（新しい順） · これより古い連絡はなし
+
+----------------------------------------------------------------------
+Ran 1 test in 32.152s
+
+FAILED (failures=1)

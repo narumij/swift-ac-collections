@@ -1,0 +1,19 @@
+usage: comm.py letter receive [-h] --actor ACTOR [--recorded-by RECORDED_BY]
+                              [--claimed-at CLAIMED_AT] [--note NOTE]
+                              [--operation-id OPERATION_ID]
+                              [--ref-doc REF_DOC] [--ref-section REF_SECTION]
+                              [--body-file BODY_FILE] --revision REVISION
+                              letter_id
+comm.py letter receive: error: the following arguments are required: --revision
+Studio server refused (409): Only the sender records this event
+--set needs --recorded-by; nothing was sent
+...--sender, --recipient, --cursor and --all need --brief; nothing was sent
+.Studio server refused (400): withdrawn needs a reason or note
+.Studio server not reachable at http://127.0.0.1:55032; nothing was sent or recorded ([Errno 61] Connection refused)
+[Errno 2] No such file or directory: '/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-187.goA6zDDM2P/tmply82mzph/missing.md'; nothing was sent
+....................
+----------------------------------------------------------------------
+Ran 25 tests in 4.980s
+
+OK
+py exit 0

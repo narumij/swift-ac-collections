@@ -133,3 +133,20 @@ Not implemented in shared code. No live changes and no commit.
 分離の作業内訳（R1共通サービス抽出・R2画面中継・R3停止/再起動/切戻し試験）をDISCOVERY成果として受入。実装や本番切替の受入ではない。ユーザーにこの3区切りを提示し、範囲確認までは実装を開始しない。
 通知漏れは実コードと隔離再現で確認。姫のprototypeをAstraも再実行し、現行watchの検知漏れと再登場newを確認した（[ログ](Evidence/OPS-192/astra-prototype.txt)）。提案部分はインプロセス模擬であり、answers_revisionのDB移行・既存返答の扱い・通知保持の採用や実装を保証しない。分離と別の修正候補に残す。初回受領72秒は担当の説明に基づく内訳で、通信遅延なしの一般保証ではない。
 一時作業物：Astraの再現用/tmp/astra-ops192-*、2026-10-20作成・ログ保存後削除済み。実サーバーへの変更なし。
+
+## スレッドを辿る要求（ユーザー、2026-10-20）
+「受け取ったレターについて、スレッドがたどれること」を追加。目的は、文脈を保持し、前提の再掲と復元に必要なやり取りを減らすこと。同じtask IDで集めるだけでは、同一task内の別の話題と続きの会話を区別できない。
+
+受入で確認する利用場面：
+- 受け取ったレターを起点に、その話題の過去の依頼・返答・補正へ辿れる。
+- 同じレター内の改訂だけでなく、別レターに分かれた続きも辿れる。閉じた連絡も文脈として参照できる。
+- 元の本文・版・担当・時刻を参照でき、前提を毎回本文へコピーする必要がない。履歴の閲覧は受領・着手や旧指示の再有効化ではない。
+
+データ構造・CLI/画面での経路・旧レターの扱いは、姫が最小案と確認可能な作業内訳を提示する。既存の分離R1〜R3および通知漏れとの依存関係を整理し、推測で過去レターを自動結合しない。今回は追加DISCOVERYを継続し、実装内訳の確認前に本番変更しない。
+
+## Assignment: thread context follow-up
+Continue OPS-192 discovery with the new user requirement above. Return a small recommended design and file/round/test breakdown, grounded in current code. Explain how a recipient starts from one received letter and traverses prior requests, replies, corrections, revisions, and closed letters in the same conversation, including continuations issued as separate letters. Same-task filtering alone is insufficient. Preserve original records; reading history must not acknowledge or restart work. Do not infer historical thread membership from task IDs or prose automatically.
+
+Cover the data relationship and the minimum CLI/UI navigation needed, legacy unlinked letters, and the relation to the returned-request notification gap and service extraction R1–R3. Avoid expanding into a general chat product or automatic summarization. Show a concrete short correction that can rely on linked context rather than copying the whole original request. Use this task's three recent letters as a manual example, not live migration: 9FE8ADAB…, E9929557…, FBDD4946… (full IDs in this document and the communication DB).
+
+Only edit a new Return subsection here and Evidence/OPS-192/. No shared implementation, live migration, server control or commits. Disposable prototypes are permitted if needed to check an uncertain claim. Provide enough checked evidence for a small review; material gaps will be returned rather than repaired by Astra. Return on the new assignment letter and remain available for feedback.

@@ -1107,15 +1107,15 @@ header .header-note {
 .member-list {
    display: flex;
    flex-wrap: wrap;
-   gap: 10px
+   gap: 8px
 }
 
 .member-list .presence-lamp {
-   flex: 1 1 240px;
-   max-width: 360px;
+   flex: 0 1 180px;
+   max-width: 220px;
    font-size: 13px;
    line-height: 1.6;
-   padding: 8px 12px;
+   padding: 6px 8px;
    border: 1px solid var(--line);
    border-radius: 8px;
    white-space: pre-line;

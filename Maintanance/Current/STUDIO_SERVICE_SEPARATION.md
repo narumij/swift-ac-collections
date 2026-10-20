@@ -134,6 +134,24 @@ At base `1f57c5f65`, discovery only. Details, checked facts and the breakdown ar
 
 No shared implementation, no live migration, no commit.
 
+### Response: thread proposal correction (Hime, 2026-10-20; letter LTR-20261020-AB381233…)
+The previous subsection is kept. Where they conflict, this one replaces it. Details are in `Evidence/OPS-192/THREADS.md` 「補正」.
+
+1. **Post-hoc link is deferred.** Send-time `follows` can name only an existing letter, so a new letter can never form a self-link or a cycle. A later `link` could create both. The initial scope is send-time links only; legacy letters stay unlinked threads of one.
+   - The minimum invariants for later are recorded: the target must be sent before the letter (time, then rowid); no self-link; one link per letter. The refusal tests are listed with them.
+2. **Brief versus full.**
+   - `GET /letters/<id>/thread` and `comm.py letter thread` return headings only: ID, task, sender → recipient, state, sent/received times, `follows`, and the latest request/reply revision numbers. No body column is selected, as in `letters_brief`.
+   - `--full` just reads `/letters/<id>` for each member; there is no new body route.
+   - In the UI, the rows load the existing detail.
+3. **Minimal staged plan.**
+   - T1: `letter_links` (append-only), `send(follows=)`, the brief `thread`, the CLI and the route, after R1.
+   - T2: the thread rows in the letter detail, after T1 and R2.
+   - Existing revision permissions are unchanged and no old links are inferred.
+
+   The returned-request notification gap stays open as its own item. My earlier "ban post-return revisions" recommendation and the "otherwise `answers_revision` is required" either/or are withdrawn: neither follows from the thread requirement, and the either/or was not shown. Legacy linking and any T3 are later decisions.
+
+The tests for T1 and T2 are in the evidence. No implementation, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -176,3 +194,16 @@ Only edit a new Return subsection here and Evidence/OPS-192/. No shared implemen
 ## スレッド案の初回検収（Astra）
 明示follows＋受信レター起点のCLI/UI読取を最小案として検討する。未受入点：後付けlinkで自己参照・循環が作れる条件と拒否試験が不足。送信時の既存親だけでは後付けlinkの安全性を説明できない。threadの軽量一覧と全版本文の説明も明確に分ける。
 returned後の改訂禁止は追加方針であり、スレッド閲覧要求から自動採用しない。「禁止しなければanswers_revisionが必須」という二択も未実証。初回は新しい続きのレターで文脈を辿る機能を成立させ、既存改訂の通知漏れと後付けlinkの権限は別の決定点として残せるか、最小の段階案へ整理する。実装は未依頼。
+
+## 判断の出典接続に備える要求（ユーザー、2026-10-20）
+スレッド内でAI同士が何を判断したかを後で確認できるよう、今回は次の土台を準備する。判断の抽出・一覧表示・自動採用は今回の範囲に追加しない。
+1. レターが増えても同じ会話を参照できる、安定したスレッド識別。
+2. 出典を「レターID・依頼/返答・版番号」まで指定できること。最新版本文へ勝手に読み替えない。
+3. 判断DBの既存出典項目からその発言へ戻るための表現・読取経路を確認し、不足だけ内訳に足す。
+スレッドは判断が生まれた会話の文脈。判断の適用対象・適用範囲や、採用/承認権限とは別物として扱う。発言者と記録者・決定者も同一視しない。
+
+Astraの事実確認：`decisions/decision_store.py`の`_locator`はsource/locatorに空でない辞書を受け付け、foldはその内容を保存する。よってレターと版の識別情報を格納するためだけの新カラムは不要。ただし、locatorの項目規約・参照先存在・版一致・画面/CLIの解決は現行のこの検査では保証しない。格納できることと辿れることを区別する。
+
+## Assignment: decision provenance preparation
+Continue OPS-192 discovery from the corrected minimal thread proposal. Add only: stable thread identity; exact source identity (letter ID, request/reply, revision); and a minimal path from the decision DB's existing source/locator object to that exact original text. Inspect the existing decision CLI/export/read paths. Astra confirmed _locator currently accepts a nonempty dict and stores it; that does not establish validation or resolution. Prefer a documented locator convention and existing reads where sufficient; identify any minimal missing API/CLI/UI work. Do not add decision extraction, decision lists, automatic adoption, scope inference, live data migration, or a general graph redesign.
+Return a small example locator using this conversation's letters, explain how it resolves to the exact version even after later edits, and give the changed file/test breakdown. Thread association is provenance/context, never scope or authorization. Retain the original thread minimum and keep deferred legacy-link/notification policy separate. Same shared edit limits: append Return here and Evidence/OPS-192 only; no implementation/live changes/commits.

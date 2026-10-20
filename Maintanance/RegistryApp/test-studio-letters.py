@@ -61,6 +61,41 @@ class Base(unittest.TestCase):
 
 
 class StoreTests(Base):
+    def test_revision_receipt_preserves_contract(self):
+        sent = self.send(ref_doc='Doc.md', ref_section='仕様')
+        self.ev(sent, 'received')
+        self.ev(sent, 'started')
+        before = self.ev(sent, 'returned', body='done')
+        self.s.revise(op(), sent['id'], 'request', 'Astra', 'v2', 'correction')
+        with self.assertRaises(approvals.Conflict):
+            self.ev(sent, 'revision-received', revision=2, recorded_by='Astra')
+        with self.assertRaises(approvals.Conflict):
+            self.ev(sent, 'revision-received', revision=1)
+        with self.assertRaises(ValueError):
+            self.ev(sent, 'revision-received', revision=3)
+        after = self.ev(sent, 'revision-received', revision=2)
+        for key in ('state', 'receivedAt', 'requestRevisionAtReceipt', 'docRecords'):
+            self.assertEqual(before[key], after[key])
+        self.assertEqual(after['events'][-1]['text_sequence'], after['request']['sequence'])
+        with self.assertRaises(approvals.Conflict):
+            self.ev(sent, 'revision-received', revision=2)
+        other = self.send()
+        self.s.revise(op(), other['id'], 'request', 'Astra', 'v2', 'correction')
+        with self.assertRaises(approvals.Conflict):
+            self.ev(other, 'revision-received', revision=2)
+        self.ev(other, 'withdrawn', actor='Astra', note='stop')
+        with self.assertRaises(approvals.Conflict):
+            self.ev(other, 'revision-received', revision=2)
+
+    def test_revision_receipt_rejects_return_after_stop(self):
+        sent = self.send()
+        self.ev(sent, 'received'); self.ev(sent, 'started')
+        self.ev(sent, 'withdrawn', actor='Astra', note='stop')
+        self.ev(sent, 'returned', body='partial')
+        self.s.revise(op(), sent['id'], 'request', 'Astra', 'v2', 'correction')
+        with self.assertRaisesRegex(approvals.Conflict, 'stop-requested'):
+            self.ev(sent, 'revision-received', revision=2)
+
     def test_original_text_and_state_machine(self):
         sent = self.send()
         self.assertRegex(sent['id'], r'^LTR-\d{8}-[0-9A-F]{32}$')
@@ -163,7 +198,7 @@ class StoreTests(Base):
         x = self.s.event(op(), sent['id'], 'received', '姫', revision=read['revision'])
         self.assertEqual((x['state'], x['requestRevisionAtReceipt'], x['revisedAfterReceipt']), ('received', 1, True), 'v1 was read; v2 is not taken as read')
         self.assertEqual(x['request']['revision'], 2)
-        with self.assertRaisesRegex(ValueError, 'Only received'):
+        with self.assertRaisesRegex(ValueError, 'Only receipt events'):
             self.ev(sent, 'started', revision=2)
         other = self.send()
         self.s.revise(op(), other['id'], 'request', 'Astra', '第2版', '訂正')
@@ -502,6 +537,41 @@ class HttpTests(Http):
         code, out = self.cli('letter', 'stop', sent['id'], '--actor', '姫', '--note', '未着手', '--body-file', '-', stdin=b'partial\r\n')
         self.assertEqual((code, json.loads(out)['state'], json.loads(out)['reply']['body']), (0, 'stopped', 'partial\r\n'))
 
+    def test_trial_wait_and_returned_revision(self):
+        state = self.root / 'trial-watch.json'
+        args = ('letter', 'watch', '--owner', '姫', '--state-file', str(state))
+        self.assertEqual(self.cli(*args, '--wait', '.01', '--interval', '.005')[0], 3)
+        for value in ('0', '-1', 'nan', 'inf'):
+            self.assertEqual(self.cli(*args, '--wait', value)[0], 2)
+        sent = self.send()
+        self.ev(sent, 'received'); self.ev(sent, 'started'); self.ev(sent, 'returned', body='done')
+        self.assertEqual(self.cli(*args)[0], 0)
+        self.s.revise(op(), sent['id'], 'request', 'Astra', 'v2', 'correction')
+        code, out = self.cli(*args, '--wait', '.1', '--interval', '.01')
+        self.assertEqual((code, json.loads(out)['changes'][0]['changes']), (0, ['revision']))
+        code, out = self.cli('letter', 'receive-revision', sent['id'], '--actor', '姫', '--revision', '2')
+        self.assertEqual((code, json.loads(out)['state']), (0, 'returned'))
+        self.assertEqual(self.cli(*args)[0], 3)
+
+    def test_trial_wait_propagates_fetch_and_save_failure(self):
+        import argparse
+        args = argparse.Namespace(wait=.1, interval=.01)
+        for result in (1, 2, 4):
+            with patch.object(comm, 'watch_once', return_value=result) as call:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(comm.watch_command(args), result)
+                self.assertEqual(call.call_count, 1)
+
+    def test_trial_watch_follows_returned_pages(self):
+        args = ('letter', 'watch', '--owner', '姫', '--state-file', str(self.root / 'paged-watch.json'))
+        brief = {'id': 'LTR-paged', 'taskId': 'OPS-194', 'sender': 'Astra', 'state': 'returned', 'stateLabel': '返答済み', 'requestRevision': 2, 'stopRequested': False}
+        pages = [{'letters': []}, {'letters': [], 'hasMore': True, 'nextCursor': 'r2'}, {'letters': [brief], 'hasMore': False, 'nextCursor': None}]
+        with patch.object(studio_client, 'get', side_effect=pages) as get:
+            code, out = self.cli(*args)
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)['changes'][0]['requestRevision'], 2)
+        self.assertIn('cursor=r2', get.call_args_list[-1].args[0])
+
     def test_watch_reports_changes_once_and_never_loses_them(self):
         state = self.root / 'watch-hime.json'
         gets = []
@@ -517,7 +587,7 @@ class HttpTests(Http):
             events_before = len(self.raw('SELECT * FROM letter_events'))
             gets.clear()
             code, out = watch()
-            self.assertEqual(len(gets), 1, 'one GET only')
+            self.assertEqual(len(gets), 2, 'inbox and returned metadata')
             self.assertEqual((code, [c['changes'] for c in json.loads(out)['changes']]), (0, [['new']]))
             self.assertEqual(len(self.raw('SELECT * FROM letter_events')), events_before, 'watching records no receipt')
             self.assertEqual(watch()[0], 3, 'reported once')

@@ -13,6 +13,7 @@ Letters (H-20261019-25; the original texts are kept by the server, with every re
   comm.py letter inbox --owner 姫          (to me, not yet done: 未受領・受領・担当中; reading records nothing)
   comm.py letter show LTR-...
   comm.py letter receive LTR-... --actor 姫 --revision N   (the request revision you read; see inbox / show)
+  comm.py letter receive-revision LTR-... --actor 姫 --revision N   (returned, no stop-request history; state and original receipt stay)
   comm.py letter start LTR-... --actor 姫
   comm.py letter return LTR-... --actor 姫 --body-file reply.md [--ref-doc D --ref-section S]
   comm.py letter decline LTR-... --actor 姫 --note '理由'            (not after work was started)
@@ -23,7 +24,7 @@ Letters (H-20261019-25; the original texts are kept by the server, with every re
   comm.py letter list [--task T] [--member M] [--state sent|received|started|returned|declined|withdrawn|stopped|closed] [--brief]
       --brief pages: [--sender S] [--recipient R] [--cursor C] [--all]. One page (newest first) prints nextCursor;
       --all follows every page. A sender reads its replies with: --brief --sender Astra --state returned --all
-  comm.py letter watch --owner 姫 --state-file F   (one GET of my inbox, compared with F: new / state / revision / stop)
+  comm.py letter watch --owner 姫 --state-file F   [--wait SECONDS --interval SECONDS] (inbox and returned metadata; new / state / revision / stop)
       exit 0 = something changed (printed), 3 = nothing new, 1 = server trouble (F unchanged), 2 = F is damaged or
       belongs to another owner or server, 4 = changes printed but F could not be saved (F unchanged; they will be
       printed again next time). A change may be printed more than once, never lost. It never records a receipt and
@@ -39,6 +40,9 @@ conversation as unrecorded, and send the same ACK with --claimed-at once the ser
 (the request was sent but no answer came back; check `comm.py list` before sending again).
 """
 import argparse
+import time
+import math
+import io
 import contextlib
 import json
 import os
@@ -70,14 +74,14 @@ def main():
         send.add_argument('--' + name)
     letter.add_parser('inbox').add_argument('--owner', required=True)
     letter.add_parser('show').add_argument('letter_id')
-    for name in ('receive', 'start', 'return', 'decline', 'withdraw', 'stop', 'close'):
+    for name in ('receive', 'receive-revision', 'start', 'return', 'decline', 'withdraw', 'stop', 'close'):
         cmd = letter.add_parser(name)
         cmd.add_argument('letter_id')
         cmd.add_argument('--actor', required=True)
         for option in ('recorded-by', 'claimed-at', 'note', 'operation-id', 'ref-doc', 'ref-section'):
             cmd.add_argument('--' + option)
         cmd.add_argument('--body-file', required=name == 'return')
-        if name == 'receive':
+        if name in ('receive', 'receive-revision'):
             cmd.add_argument('--revision', type=int, required=True)
     revise = letter.add_parser('revise')
     revise.add_argument('letter_id')
@@ -104,6 +108,8 @@ def main():
     watch = letter.add_parser('watch')
     watch.add_argument('--owner', required=True)
     watch.add_argument('--state-file', required=True)
+    watch.add_argument('--wait', type=positive_seconds)
+    watch.add_argument('--interval', type=positive_seconds, default=5)
     senders = letter.add_parser('senders')
     senders.add_argument('--set', nargs='+')
     senders.add_argument('--recorded-by')
@@ -145,7 +151,7 @@ def main():
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
-EVENTS = {'receive': 'received', 'start': 'started', 'return': 'returned', 'decline': 'declined', 'withdraw': 'withdrawn', 'stop': 'stopped', 'close': 'closed'}
+EVENTS = {'receive': 'received', 'receive-revision': 'revision-received', 'start': 'started', 'return': 'returned', 'decline': 'declined', 'withdraw': 'withdrawn', 'stop': 'stopped', 'close': 'closed'}
 
 
 def read_body(path):
@@ -249,7 +255,7 @@ PART = {'request': '依頼', 'reply': '返答'}
 DOC_STATUS = {'recorded': '記録', 'missing': 'ファイルがない', 'match': '一致', 'mismatch': '不一致', 'no-record': '依頼時の記録がない',
               'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '比較元の本文が記録にもGitにもない（導入前の記録）・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
 EVENT_LABEL = {'sent': '送信', 'received': '受領', 'started': '着手', 'returned': '返答', 'declined': '辞退', 'withdrawn': '停止要請',
-               'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂'}
+               'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂', 'revision-received': '補正版受領'}
 
 
 def _text_head(t):
@@ -310,7 +316,7 @@ def read_command(args):
         if e['text'] is None:
             continue
         t = texts[(e['letterId'], e['text']['part'], e['text']['revision'])]
-        if e['event'] == 'received':
+        if e['event'] in ('received', 'revision-received'):
             print(f"{PART[t['part']]} v{t['revision']} を読んだと記録")
         else:
             print(f"### {_text_head(t)}\n{t['body']}")
@@ -318,11 +324,38 @@ def read_command(args):
 
 
 def _signature(letter):
-    return {'state': letter['state'], 'requestRevision': (letter.get('request') or {}).get('revision'), 'stopRequested': bool(letter.get('stopRequested'))}
+    return {'state': letter['state'], 'requestRevision': (letter.get('request') or {}).get('revision', letter.get('requestRevision')), 'stopRequested': bool(letter.get('stopRequested'))}
+
+
+def positive_seconds(value):
+    import argparse
+    try:
+        result = float(value)
+        if not math.isfinite(result) or result <= 0:
+            raise ValueError()
+        return result
+    except ValueError:
+        raise argparse.ArgumentTypeError('seconds must be positive and finite')
 
 
 def watch_command(args):
-    """One GET of OWNER's inbox compared with STATE_FILE. The file records the owner and the server it was made for, and
+    wait = getattr(args, 'wait', None)
+    if wait is None:
+        return watch_once(args)
+    deadline = time.monotonic() + wait
+    while True:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            result = watch_once(args)
+        remaining = deadline - time.monotonic()
+        if result != 3 or remaining <= 0:
+            print(out.getvalue(), end='', flush=True)
+            return result
+        time.sleep(min(getattr(args, 'interval', 5), remaining))
+
+
+def watch_once(args):
+    """OWNER's inbox and paged returned metadata compared with STATE_FILE. The file records the owner and the server it was made for, and
     is replaced only after a successful fetch and after the changes were printed, so a failure loses nothing."""
     path = os.path.abspath(args.state_file)
     try:
@@ -346,6 +379,12 @@ def watch_command(args):
             return 2
     try:
         inbox = studio_client.get('/letters-inbox?' + urllib.parse.urlencode({'owner': args.owner}))
+        returned = studio_client.get('/letters?' + urllib.parse.urlencode({'brief': '1', 'recipient': args.owner, 'state': 'returned', 'limit': 1000}))
+        while returned.get('hasMore'):
+            page = studio_client.get('/letters?' + urllib.parse.urlencode({'brief': '1', 'recipient': args.owner, 'state': 'returned', 'limit': 1000, 'cursor': returned['nextCursor']}))
+            returned['letters'] += page['letters']
+            returned['hasMore'], returned['nextCursor'] = page.get('hasMore'), page.get('nextCursor')
+        inbox['letters'] += returned['letters']
     except studio_client.StudioError as error:
         print(json.dumps({'error': str(error), 'outcome': error.outcome}, ensure_ascii=False))
         return 1

@@ -134,6 +134,7 @@ STATES = {'sent': '未受領', 'received': '受領', 'started': '担当中', 're
 # event: (who may act, states it may follow, part of a text written with it or None)
 TRANSITIONS = {
     'received': ('recipient', {'sent'}, None),
+    'revision-received': ('recipient', {'returned'}, None),
     'started': ('recipient', {'received'}, None),
     'returned': ('recipient', {'started', 'withdrawn'}, 'reply'),
     'declined': ('recipient', {'sent', 'received', 'withdrawn'}, None),
@@ -226,7 +227,7 @@ class LetterMixin:
     def _letter_state(self, con, letter_id):
         state = None
         for row in con.execute('SELECT event FROM letter_events WHERE letter_id=? AND effective=1 ORDER BY sequence', (letter_id,)):
-            if row['event'] != 'revised':
+            if row['event'] not in ('revised', 'revision-received'):
                 state = row['event']
         return state
 
@@ -328,11 +329,11 @@ class LetterMixin:
             raise ValueError('This event has no text')
         if event in NOTE_REQUIRED and not note.strip():
             raise ValueError(f'{event} needs a reason or note')
-        if event == 'received':
+        if event in ('received', 'revision-received'):
             if type(revision) is not int or revision < 1:
                 raise ValueError('received needs the request revision that was read')
         elif revision is not None:
-            raise ValueError('Only received names a revision')
+            raise ValueError('Only receipt events name a revision')
         ref = _ref(ref_doc, ref_section)
         payload = {'kind': 'letter-event', 'letterId': letter_id, 'event': event, 'actor': actor, 'recordedBy': recorded_by,
                    'claimedAt': claimed_at, 'note': note, 'body': body, 'ref': list(ref), 'revision': revision}
@@ -357,9 +358,17 @@ class LetterMixin:
                         raise approvals.Conflict('Nothing was started; answer the stop request with stopped or declined')
                     if event == 'declined' and started:
                         raise approvals.Conflict('Work was started; answer the stop request with stopped or returned')
+            if event == 'revision-received':
+                if recorded_by != actor:
+                    raise approvals.Conflict('A revision receipt is recorded by its recipient')
+                if con.execute("SELECT 1 FROM letter_events WHERE letter_id=? AND event='withdrawn' AND effective=1", (letter_id,)).fetchone():
+                    raise approvals.Conflict('A stop-requested letter is outside this trial')
+                prior = con.execute("SELECT MAX(t.revision) FROM letter_events e JOIN letter_texts t ON t.sequence=e.text_sequence WHERE e.letter_id=? AND e.effective=1 AND e.event IN ('received','revision-received')", (letter_id,)).fetchone()[0]
+                if prior is None or revision <= prior:
+                    raise approvals.Conflict('Name a revision newer than the previously received revision')
             self._record_operation(con, operation_id, 'letter-event', payload, recorded_by, 'applied' if effective else 'proxy', {'letterId': letter_id, 'event': event, 'effective': effective})
             text_id = self._insert_text(con, letter_id, part, body, '', ref, recorded_by, operation_id) if part and effective and body is not None else None
-            if event == 'received':
+            if event in ('received', 'revision-received'):
                 # the request revision the recipient says it read; a later revision is shown as "revised after receipt"
                 row = con.execute("SELECT sequence FROM letter_texts WHERE letter_id=? AND part='request' AND revision=?", (letter_id, revision)).fetchone()
                 if row is None:
@@ -644,7 +653,7 @@ class LetterMixin:
                 events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
                 current = None
                 for e in events:
-                    if e['effective'] and e['event'] != 'revised':
+                    if e['effective'] and e['event'] not in ('revised', 'revision-received'):
                         current = e['event']
                 if state and current != state:
                     continue
@@ -694,7 +703,7 @@ class LetterMixin:
                 events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
                 current = None
                 for e in events:
-                    if e['effective'] and e['event'] != 'revised':
+                    if e['effective'] and e['event'] not in ('revised', 'revision-received'):
                         current = e['event']
                 item = self._brief_row(con, row, events, current)
                 latest = {'request': item['requestRevision'], 'reply': item['replyRevision']}

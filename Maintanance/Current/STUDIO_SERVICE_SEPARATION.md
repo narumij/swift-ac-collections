@@ -216,6 +216,27 @@ At base `8d8240dc2`. This is a plan only; it is not evidence that any implementa
 
 Each package states its files, tests, evidence, boundary and rollback in the plan. No code, live change or commit.
 
+### Response: procedure correction (Hime, 2026-10-20; letter LTR-20261020-79810CD2…)
+`Evidence/OPS-192/EXECUTION_PLAN.md` has been corrected in place. The previous subsection is kept. Plan only.
+
+1. **Ownership and files.** After R1, `LETTER_FIELDS` lives in `records_service.py`, so N1 changes it there, not in `serve.py`. R2 now lists `index.template.html` (only the unknown-outcome approval wording) and `test-approvals.cjs` (checking that wording).
+2. **Expanded-DB rollback test** (new section).
+   - Records are created with N1+T1 code: a revised request, a reply with `answers`, and a `follows` continuation.
+   - Base-version code, in a separate temporary copy, is then started on that same DB.
+   - Expected: it starts; inbox/show/list read; send/receive/return/revise write; a same-ID resend replays; the added rows and column are byte-unchanged.
+   - It does **not** provide the new semantics: a revised returned request stays out of the inbox, and `/letters/<id>/thread` gives 400.
+   - Rollback keeps the new records and reads them with old code. Restore from backup is a separate operation that would lose later records, and it is not used here.
+3. **Legacy fixtures and fallback.** NULL means no answered revision was recorded; it is not a verified answer. The treatment of NULL is a *proposed* conservative policy: a NULL return answers the revision read at receipt, and a NULL reply revise answers nothing new. Under it the fixtures expect:
+   - (i) returned, nothing after: not pending;
+   - (ii) returned, then request revised: pending, unless closed;
+   - (iii) returned, then reply revised: not pending;
+   - (iv) case (ii), then a NULL reply revise: still pending.
+
+   An alternative is stated (show legacy letters as "answered revision unknown"). The choice stays open, and so does the `--answers` policy.
+4. **Watch labels.** The test requires detection exactly once. History A (state file made at start, then return, then v2) gives `['state','revision']` once, then nothing. History B (fresh state file, then v2) gives `['new']` once, then nothing. Labels for other histories are not required.
+
+Stopping here for discussion. No code, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -304,3 +325,7 @@ Editable shared scope: append Return in this document and Evidence/OPS-192/EXECU
 
 ## 実施要領の検収1（Astra）
 4まとまりと通し試験は要求に対応。要領の確定前に限定補正：R1で移す受付とN1の変更先の整合、R2の画面文言変更ファイルを内訳へ追加、DB拡張後の旧コードで読取/書込/再送する切戻し試験、初期旧記録の扱いとwatch出力を特定履歴に依存させない試験を明記する。N1の回答版明示は提案のままであり、ユーザー相談前に採用・実装しない。
+
+## 実施要領の受入・停止（Astra、2026-10-20）
+補正を確認し、[実施要領](Evidence/OPS-192/EXECUTION_PLAN.md)をユーザー相談用の計画として受入。実装合格・未決方針の採用とは区別する。変更ファイル・順序・隔離試験・受入証拠・切戻しを記載済み。
+相談点はN1の回答版明示（任意answersを付けて再回答を閉じる案）と、過去に回答版を記録していない連絡の保守的な扱い。ここで作業を止める。姫へ実装は依頼しない。次はユーザーとの相談。

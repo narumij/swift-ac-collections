@@ -297,6 +297,23 @@ No implementation, live change or commit.
 
 No implementation, live change or commit.
 
+### Response: discussion participation added (Hime, 2026-10-20; letter LTR-20261020-4A863BB7…)
+`Evidence/OPS-192/EXECUTION_PLAN.md` §2b is added, kept apart from the basic restoration (steps 1–5: T1, D1, B1, N1, T2), which works without it. Plan only.
+
+- **X1, turns and NOP (store/CLI).**
+  - An append-only `thread_turns` table records `participants`, `mode` (participate or observe, set only by the member), `speak` and `nop` events. The current speaker is derived by folding them; there is no stored state field.
+  - A turn's message is a `--follows` letter from the current speaker to the next one, and the others read it through D1/B1.
+  - An explicit NOP passes the turn and changes nothing: no letter state, no N1 pending, no approval, no pending user decision.
+  - An observer is skipped. The skip is shown as 「自動NOP（閲覧中）」 at read time and never recorded as an act of theirs. A mode switch takes effect at their next turn.
+  - Handoff (replacing a participant) is separate and out of this step.
+- **X2, Studio.** It shows the order, the current turn and the member's mode, with 参加する／閲覧に戻る and NOP buttons.
+- **Decisions.** No ban on in-thread decisions. Ordinary speech, NOP, auto-NOP and observing never become a confirmed decision. An explicit user decision in a thread is sourced from that exact text (letter, part, revision, `recordedBy` ユーザー, object and scope), and only when the user is the sender. No automatic extraction.
+- **Acceptance X-A1–X-A5** cover: the turn order with an observing user shown as auto-NOP; participate, NOP and observe switching; NOP changing nothing; mode set by the member only; and the decision-source rule.
+- **Order.** Basic 1–5, then X1 and X2. Service separation and P2 are independent, after.
+- **Open for discussion:** who sets and changes the participant order, interrupt and skip exceptions (marked unadopted in the canonical), and the earlier two items (N1's order-only completion limit, and an explicit read-version field).
+
+No implementation, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -433,3 +450,8 @@ DB/CLI/Studioで文脈と差分を読む方向は要求に合う。ただし、�
 ユーザーも同じ議論へ参加できる。普段は閲覧のみで自動NOPとし、「参加する」に切り替えると次に回ってきた自分の番で発言する。「閲覧に戻る」で自動NOPへ戻れる。この形を盛り込むようユーザーから依頼された。自動NOPは承認・賛成・判断の放棄ではなく、別に必要なユーザー判断待ちを解消しない。発言順への参加と判断権限を区別して実施要領に含める。実装開始の指示ではない。
 
 補足：ユーザーは「ユーザー判断はスレッドではしないな」、続けて「しちゃうばあいもあるかもしれないがｗ」と述べた。したがってスレッド内判断の禁止規則にはしない。通常の議論参加と正式判断は分け、スレッドで明示的に判断した場合も、その発言・対象・範囲を根拠として扱う。通常発言や自動NOPを確定判断へ昇格させない。判断抽出の自動化は今回の範囲外のまま。
+
+
+## 現行連絡の日本語化と計画補正（2026-10-20）
+ユーザーとの確認を受け、今後の依頼・返却・補正・議論は日本語とする。参加前から連絡を読んで任せられるか確認する必要があるため。通信規約の言語記録を更新。過去原文は維持する。
+実施案は基本復元と議論機能を分けた点を確認。N1は返答の誤字修正でも未処理を消すため、そのまま受入しない。通知・閲覧・回答を区別し、記録していない回答関係を推定で確定しない最小案へ限定再検討を依頼する。実装開始前に相談する区切りは維持する。

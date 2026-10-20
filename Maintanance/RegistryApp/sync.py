@@ -26,6 +26,35 @@ HTML = APP / 'index.html'
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
 
+def assemble_template():
+    text = (CODE / 'index.template.html').read_text(encoding='utf-8')
+    text = text.replace('/* include:index.css */', (CODE / 'index.css').read_text(encoding='utf-8'))
+    for name in ('topbar', 'work', 'task'):
+        marker = f'<!-- include:index.{name}.html -->'
+        if text.count(marker) != 1:
+            raise ValueError(f'Expected one template include: {marker}')
+        text = text.replace(marker, (CODE / f'index.{name}.html').read_text(encoding='utf-8'))
+    def include_script(match):
+        name, section = match.groups()
+        source = (CODE / f'index.{name}.js').read_text(encoding='utf-8')
+        blocks = re.findall(r'(?ms)^// @section (\w+)\n(.*?)\n// @endsection(?:\n|$)', source)
+        matches = [body for key, body in blocks if key == section]
+        if len(matches) != 1:
+            raise ValueError(f'Expected one script section: {name}#{section}')
+        body = matches[0]
+        def include_work(match):
+            region, part = match.groups()
+            source = (CODE / f'index.work.{region}.js').read_text(encoding='utf-8')
+            blocks = re.findall(r'(?ms)^// @section ([\w-]+)\n(.*?)\n// @endsection(?:\n|$)', source)
+            selected = [text for key, text in blocks if key == part]
+            if len(selected) != 1:
+                raise ValueError(f'Expected one work section: {region}#{part}')
+            return selected[0]
+        return re.sub(r'// include-work:([a-z-]+)#([a-z-]+)\n?', include_work, body)
+    text = re.sub(r'(?m)^[ \t]*// include:index\.(topbar|work|task)\.js#(\w+)\n', include_script, text)
+    return text
+
+
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -503,7 +532,7 @@ def main_v3(db):
     for f in saved:
         shutil.copy2(f, backup / f.name)
     try:
-        shutil.copy2(CODE / 'index.template.html', HTML)
+        HTML.write_text(assemble_template(), encoding='utf-8')
         JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         embed({k: v for k, v in data.items() if k != 'extraDocuments'})
         subprocess.run([sys.executable, str(CODE / 'build-pending.py')], cwd=ROOT, check=True, env=child_env)
@@ -576,7 +605,7 @@ def main():
     for f in saved:
         shutil.copy2(f, backup / f.name)
     try:
-        shutil.copy2(CODE / 'index.template.html', HTML)
+        HTML.write_text(assemble_template(), encoding='utf-8')
         JSON.write_text(json.dumps(new, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         embed(new)
         subprocess.run([sys.executable, str(CODE / 'build-pending.py')], cwd=ROOT, check=True, env=child_env)

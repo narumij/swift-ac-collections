@@ -1,0 +1,91 @@
+<div id="workspace" class="layout sidebar-hidden" role="tabpanel" aria-labelledby="taskAreaTab" hidden>
+    <main>
+        <div class="task-toolbar">
+            <div class="header-menu"><button type="button" id="headerMenuButton" aria-haspopup="true"
+                    aria-expanded="false" aria-controls="headerMenu" aria-busy="false"><span class="menu-idle">メニュー
+                        ▾</span><span class="menu-busy">処理中… ▾</span></button>
+                <div id="headerMenu" class="header-menu-list" role="group" aria-label="編集版の操作" hidden><button id="save"
+                        class="primary">編集結果を保存</button><button id="changes">変更内容を見る</button><button id="refresh"
+                        title="ローカルサーバーでJSONを再生成します">更新</button><label class="file" tabindex="0"
+                        role="button">JSONを開く<input id="open" type="file" accept=".json,application/json"></label>
+                    <hr><button id="restart" title="保存済みの編集版は残したまま、最新の正本から新しい編集版を始めます">正本から新しく始める</button>
+                </div>
+            </div>
+            <div class="buttons" role="tablist" aria-label="見取り図"><button id="dependencyTab" role="tab"
+                    aria-selected="true" aria-controls="dependencyView">依存の見取り図</button><button id="permanentTab"
+                    role="tab" aria-selected="false" aria-controls="permanentView"
+                    tabindex="-1">恒久タスクの見取り図</button><button id="protectionTab" role="tab" aria-selected="false"
+                    aria-controls="protectionView" tabindex="-1">配置維持</button><button id="cardsTab" role="tab"
+                    aria-selected="false" aria-controls="cardsView" tabindex="-1">カード一覧</button><button id="neighborTab"
+                    role="tab" aria-selected="false" aria-controls="neighborView" tabindex="-1">接続を見る</button></div>
+        </div>
+        <section id="dependencyView" role="tabpanel" aria-labelledby="dependencyTab" class="panel">
+            <div class="graph-controls"><label class="muted">版 <select id="versionPicker"
+                        aria-label="版ごとの見取り図"></select></label>
+                <details class="graph-help">
+                    <summary>見取り図の解説</summary>
+                    <div id="stateLegend" class="state-legend" aria-label="状態の色見本"></div>
+                    <p class="muted">
+                        上段の金色が到達点の列。到達点への線は一種類で、関係の所在だけを示します。完了・着手・再開の条件は各線の文章（マウスを乗せると表示、正本はRegistryの制約文）で、線の有無や向きだけでは判定しません。タスク間の破線はPARALLEL_JOIN。線をクリックすると、つなぎ替え・除去ができます。到達は自動開始・合格を意味しません。
+                    </p>
+                </details>
+                <div class="buttons" role="group" aria-label="見取り図の表示"><button id="graphZoomOut"
+                        aria-label="見取り図を縮小">−</button><button id="graphZoomReset" aria-label="倍率を100%に戻す"
+                        title="100%に戻す">100%</button><button id="graphZoomIn" aria-label="見取り図を拡大">＋</button><label
+                        style="display:flex;align-items:center;gap:6px;margin:0"><input id="graphHoverEnabled"
+                            type="checkbox" checked style="width:auto">カードの説明を表示</label></div>
+            </div>
+            <div id="graph" class="graph"></div>
+        </section>
+        <section id="permanentView" role="tabpanel" aria-labelledby="permanentTab" class="panel" hidden>
+            <h2>恒久タスクの見取り図 <span id="permanentMapCount" class="count"></span></h2>
+            <p class="muted">上が恒久タスク、下が登録済みのサブタスクと正本です。線は親子・参照関係で、依存や着手順を表しません。タスクを押すと詳細へ、文書を押すと本文を開きます。</p>
+            <div id="permanentMap" class="graph"></div>
+        </section>
+        <section id="protectionView" role="tabpanel" aria-labelledby="protectionTab" class="panel" hidden>
+            <p class="muted">暫定保護・恒久希望と既存指定。恒久希望は決定ではありません。日数は付与日を1日目とする日本時間の暦日です。</p>
+            <div id="protectionList" style="overflow:auto"></div>
+        </section>
+        <section id="cardsView" role="tabpanel" aria-labelledby="cardsTab" class="panel" hidden>
+            <h2>カード一覧 <span id="cardsCount" class="count"></span></h2>
+            <p class="muted">読み込んだ編集版のtask・マイルストーン・追加案をすべて並べます。見取り図の接続や版の絞込みには関係しません。カードを押すと選択し、「正本」で同梱された正本を開きます。</p>
+            <label>並び方<select id="cardOrder" aria-label="カード一覧の並び方">
+                    <option value="id">ID順（PREFIX別）</option>
+                    <option value="grouped">ジャンル別</option>
+                </select></label>
+            <div id="planTools"></div>
+            <div id="cardList"></div>
+        </section>
+        <section id="neighborView" role="tabpanel" aria-labelledby="neighborTab" class="panel" hidden>
+            <h2>接続を見る <span id="neighborCount" class="count"></span></h2>
+            <p class="muted">
+                選んだノードの直接の前提（→このノード）と後続（このノード→）を1段だけ表示します。開いている編集版のすべてのtask・追加案・マイルストーンと線から作り、版の絞込みは通しません。必要なノードだけ「この先を展開」で1段ずつ広げられます。表示を変えても編集内容は変わりません。線は関係の所在で、着手できるかは条件文で判断します。
+            </p>
+            <div id="neighborBox"></div>
+        </section>
+        <section class="panel" style="margin-top:18px">
+            <h2>独立タスク <span id="independentCount" class="count"></span></h2>
+            <p class="muted"><strong>ユーザーからユーザーへの伝言：</strong>整理整頓！ちらかるとAI負荷増える！</p>
+            <div class="buttons"><button id="addProposal">タスク追加</button></div>
+            <p class="muted">追加した案は正式採番前の「追加案」です。保存したJSONをAIへ渡すと、取り込み時に正式IDと正本が付きます。</p>
+            <div id="independent" class="independent-strip"></div>
+        </section>
+        <section class="panel" style="margin-top:18px">
+            <h2>採番待ち <span id="pendingCount" class="count"></span></h2>
+            <p class="muted">正式登録前の受渡し記録です。表示は採番・受入・着手許可を意味しません。</p>
+            <div id="pendingList" class="independent-strip"></div>
+            <p id="pendingStamp" class="muted"></p>
+        </section>
+        <section class="panel" style="margin-top:18px">
+            <div class="inspector-heading">
+                <h2 id="selectedTitle">タスク詳細</h2><select id="taskPicker" aria-label="タスク番号で選択"></select>
+            </div>
+            <div id="editor"></div>
+        </section>
+        <section id="diffPanel" class="panel" style="margin-top:18px" hidden>
+            <h2>AIに渡す変更</h2>
+            <p class="muted">生成元の版と変更前の値を照合してから反映します。関連する変更はまとめて確認してください。</p>
+            <pre id="diff"></pre>
+        </section>
+    </main>
+</div>

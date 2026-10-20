@@ -1,0 +1,37 @@
+<div id="canonicalRestartNotice" role="status" hidden
+    style="background:#e5f3e9;color:#234e36;padding:10px 20px;border-bottom:1px solid #b5d5be">
+    保存した編集内容が正本に反映されています。正本から新しく始めるのがおすすめです。 <button id="canonicalRestartAction">正本から新しく始める</button></div>
+<div id="serverRestartNotice" role="status" hidden
+    style="background:#fff1c2;color:#593c00;padding:12px 20px;border-bottom:1px solid #d5b95c"></div>
+<header>
+    <div class="header-row">
+        <div class="header-left">
+            <div class="buttons header-area-tabs" role="tablist" aria-label="表示する領域"><button id="workAreaTab" role="tab"
+                    aria-selected="true" aria-controls="workArea">作業</button><button id="taskAreaTab" role="tab"
+                    aria-selected="false" aria-controls="workspace" tabindex="-1">タスク</button></div>
+        </div>
+        <h1>Registry Studio</h1>
+        <div class="header-approval" aria-label="コミット事前承認"><span><span
+                    class="header-approval-label">コミット事前承認：</span><span
+                    id="header-approval-status">読み込み待ち</span></span><button type="button" id="header-approval-all"
+                disabled>表示中の未承認0件を承認</button></div>
+    </div>
+    <details id="canonicalNotice" hidden>
+        <summary id="canonicalSummary"></summary>
+        <p>画面を開いた時点の正本と、この編集版の土台との差です。最新の確認には「更新」を使ってください。編集内容は自動で置き換えません。</p>
+        <pre id="canonicalDiff" style="color:var(--ink);max-height:35vh;overflow:auto"></pre>
+        <p>正本を表示したい場合は、編集を保存してから「正本から新しく始める」を選んでください。取り込みの判断はAIと相談できます。</p>
+    </details>
+</header>
+<section class="header-info" aria-label="編集版の説明">
+    <p class="header-note">保存した編集版はサーバーに残り、次に開いたときに再開します。AIに「Inboxを取り込んで」と伝えると反映を相談できます。画面の変更だけでは正本は変わりません。</p>
+</section>
+<dialog id="approval-dialog" aria-labelledby="approval-dialog-title">
+    <h2 id="approval-dialog-title">コミット依頼の詳細</h2>
+    <pre id="approval-detail" tabindex="0"></pre><button type="button" id="approval-close">閉じる</button>
+</dialog>
+<dialog id="probe-dialog" aria-labelledby="probe-dialog-title">
+    <h2 id="probe-dialog-title">疎通ジョブの詳細</h2>
+    <pre id="probe-detail" tabindex="0"></pre><button type="button" id="probe-close">閉じる</button>
+</dialog>
+<div id="status" class="status" role="status" hidden></div>

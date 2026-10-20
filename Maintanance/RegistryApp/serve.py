@@ -24,6 +24,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import activity
+import member_state
+import communication_notifications as notifications
 import approvals
 import task_rounds
 import time
@@ -57,7 +59,7 @@ V3_MODULES = ('v3/registry_v3_read.py', 'v3/registry_v3_write.py', 'v3/studio_ad
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -133,6 +135,10 @@ def get_approvals(path):
         return 200, approval_store(path).list()
     except (OSError, ValueError, sqlite3.Error):
         return 503, {'error': 'Approvals unavailable'}
+
+
+def get_members(path):
+    return 200, member_state.members.snapshot()
 
 
 def get_activity(path):
@@ -283,6 +289,7 @@ def get_page(path):
 
 # Exact paths only: no query strings, prefixes or files chosen by the client.
 GET_ROUTES = {
+    '/members': get_members,
     '/commit-approvals': get_approvals, '/approval-probe': get_approvals,
     '/activity-events': get_activity, '/activity-commits': get_activity,
     '/work-progress': get_work_progress, '/server-status': get_server_status, '/workspace': get_workspace,
@@ -290,11 +297,28 @@ GET_ROUTES = {
     '/comm-messages': get_comm, '/studio-operations': get_comm,
     '/': get_page, '/index.html': get_page, '/registry.json': get_page,
 }
+MEMBER_OPERATIONS = {
+    'members-attendance': ('attend', 'owner'),
+    'members-departure': ('leave', 'owner'),
+    'members-clear': ('clear', None),
+    'members-planned-add': ('add_planned', 'owner'),
+    'members-planned-remove': ('remove_planned', 'owner'),
+    'members-planned-clear': ('clear_planned', None),
+    'members-planned-replace': ('replace_planned', 'plannedMembers'),
+}
+
 # POST path -> the X-Registry-Studio value it requires
-POST_ACTIONS = {'/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+POST_ACTIONS = {'/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
                 '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
+POST_ACTIONS.update({
+    '/members/clear': 'members-clear',
+    '/members/planned/add': 'members-planned-add',
+    '/members/planned/remove': 'members-planned-remove',
+    '/members/planned/clear': 'members-planned-clear',
+    '/members/planned/replace': 'members-planned-replace',
+})
 LETTER_ACTIONS = ('letters-send', 'letters-event', 'letters-revise', 'letters-senders')
 
 
@@ -410,7 +434,10 @@ def letter_action(store, action, body):
     if action == 'letters-send':
         return store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'), g('follows'))
     if action == 'letters-event':
-        return store.event(g('operationId'), g('letterId'), g('event'), g('actor'), g('recordedBy'), g('claimedAt'), g('note', ''), g('body'), g('refDoc'), g('refSection'), g('revision'))
+        result = store.event(g('operationId'), g('letterId'), g('event'), g('actor'), g('recordedBy'), g('claimedAt'), g('note', ''), g('body'), g('refDoc'), g('refSection'), g('revision'))
+        if g('event') in ('received', 'revision-received') and result.get('effective') and not result.get('replayed'):
+            notifications.letter_received.send(owner=g('actor'), letter_id=g('letterId'), revision=g('revision'))
+        return result
     if action == 'letters-revise':
         return store.revise(g('operationId'), g('letterId'), g('part'), g('actor'), g('body'), g('reason'), g('recordedBy'), g('refDoc'), g('refSection'))
     return store.set_senders(g('names'), g('recordedBy'))
@@ -436,10 +463,32 @@ class Handler(BaseHTTPRequestHandler):
         return (self.local_request() and self.headers.get('Origin') == f'http://127.0.0.1:{self.server.server_port}'
                 and self.headers.get('X-Registry-Studio') == action)
 
+    def stream_members(self):
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        self.close_connection = True
+        revision = None
+        try:
+            while True:
+                model = member_state.members.wait(revision)
+                if model['revision'] != revision:
+                    payload = json.dumps(model, ensure_ascii=False)
+                    self.wfile.write(f'data: {payload}\n\n'.encode('utf-8'))
+                    revision = model['revision']
+                else:
+                    self.wfile.write(b': keepalive\n\n')
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass
+
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if self.path == '/members/events':
+            return self.stream_members()
         if parsed.path == '/letter-turns':
             try:
                 q=urllib.parse.parse_qs(parsed.query)
@@ -453,16 +502,24 @@ class Handler(BaseHTTPRequestHandler):
                 if inbox_after is not None and owner is None:raise ValueError('inboxAfter requires owner')
                 if inbox_after is not None and not re.fullmatch(r'[0-9a-f]{64}',inbox_after):raise ValueError('Invalid inboxAfter context')
                 inbox_baseline=(inbox_after if inbox_after is not None else store.inbox_notice_context(owner)) if owner is not None else None
-                until=time.monotonic()+wait
-                while True:
-                    out=store.show_round(q['round'][0])
-                    inbox_context=store.inbox_notice_context(owner) if owner is not None else None
-                    inbox_changed=owner is not None and inbox_context!=inbox_baseline
-                    if out['context']!=q.get('after',[''])[0] or inbox_changed or time.monotonic()>=until:break
-                    time.sleep(.1)
-                if owner is not None:
-                    out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed}
-                return self.reply(200,out)
+                event = dict(owner=owner, round_id=q['round'][0], connection_id=secrets.token_hex(16))
+                watching = 'wait' in q
+                if watching:
+                    notifications.waiting_started.send(**event)
+                try:
+                    until=time.monotonic()+wait
+                    while True:
+                        out=store.show_round(q['round'][0])
+                        inbox_context=store.inbox_notice_context(owner) if owner is not None else None
+                        inbox_changed=owner is not None and inbox_context!=inbox_baseline
+                        if out['context']!=q.get('after',[''])[0] or inbox_changed or time.monotonic()>=until:break
+                        time.sleep(.1)
+                    if owner is not None:
+                        out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed}
+                    return self.reply(200,out)
+                finally:
+                    if watching:
+                        notifications.waiting_ended.send(**event)
             except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
             return self.reply(*get_letters(parsed))
@@ -479,6 +536,18 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, {'error': 'Not found'})
         if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
+        if action in MEMBER_OPERATIONS:
+            body = self.json_body(4096)
+            if body is None:
+                return
+            try:
+                if not isinstance(body, dict):
+                    raise ValueError('JSON object required')
+                method, field = MEMBER_OPERATIONS[action]
+                operation = getattr(member_state.members, method)
+                return self.reply(200, operation(body.get(field)) if field else operation())
+            except (ValueError, AttributeError) as error:
+                return self.reply(400, {'error': str(error)})
         if action == 'letter-turns':
             body=self.json_body(128*1024)
             if body is None:return

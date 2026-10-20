@@ -436,10 +436,31 @@ class LetterMixin:
         con.execute('INSERT INTO letter_doc_records(letter_id,kind,text_sequence,doc,sha256,base_sha256,status,diff,operation_id,received_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
                     (letter_id, kind, text_sequence, doc, sha, base, status, diff, operation_id, approvals.now()))
 
+    def _save_snapshot(self, con, sha, data):
+        """Keep the bytes of a recorded version (once per hash; a later identical version adds nothing)."""
+        con.execute('INSERT OR IGNORE INTO letter_doc_snapshots VALUES (?,?,?)', (sha, data, approvals.now()))
+
+    def _base_bytes(self, con, doc, sha):
+        """The bytes of the recorded version SHA: kept in this DB, else (records from before they were kept) from Git."""
+        row = con.execute('SELECT body FROM letter_doc_snapshots WHERE sha256=?', (sha,)).fetchone()
+        return bytes(row[0]) if row else _git_base(doc, sha)
+
+    def _diff(self, con, doc, base, data, sha):
+        """(status, diff) from the recorded version BASE to DATA (the bytes just read, whose hash is SHA)."""
+        old = self._base_bytes(con, doc, base)
+        if old is None:
+            return 'base-unavailable', None
+        try:
+            return 'diff', _unified(old.decode('utf-8'), data.decode('utf-8'), f'{doc} sha256:{base[:12]}', f'{doc} sha256:{sha[:12]}')
+        except UnicodeDecodeError:
+            return 'not-text', None
+
     def _record_request_doc(self, con, letter_id, text_sequence, doc, operation_id):
         if doc is None:
             return  # no canonical document named: nothing to record (letters without ref_doc stay as they were)
         data = _doc_bytes(doc)
+        if data is not None:
+            self._save_snapshot(con, hashlib.sha256(data).hexdigest(), data)
         self._insert_doc(con, letter_id, 'request', text_sequence, doc, None if data is None else hashlib.sha256(data).hexdigest(),
                          None, 'recorded' if data is not None else 'missing', None, operation_id)
 
@@ -459,15 +480,17 @@ class LetterMixin:
         data = _doc_bytes(doc)
         sha = None if data is None else hashlib.sha256(data).hexdigest()
         status = 'missing' if data is None else 'no-record' if recorded is None else 'match' if sha == recorded else 'mismatch'
-        self._insert_doc(con, letter_id, 'receipt', request_sequence, doc, sha, recorded, status, None, operation_id)
+        diff = None
+        if status == 'mismatch':
+            # the unexpected change is kept as it is (the base stays the request's version) and shown as a diff
+            self._save_snapshot(con, sha, data)
+            diff = self._diff(con, doc, recorded, data, sha)[1]
+        self._insert_doc(con, letter_id, 'receipt', request_sequence, doc, sha, recorded, status, diff, operation_id)
 
     def _record_reply_doc(self, con, letter_id, reply_sequence, operation_id):
         """The diff from the base (the hash recorded with the request revision the recipient received, else the latest
         request) to the file as it is now, and the new hash, both from one read of the file."""
-        received = con.execute("SELECT text_sequence FROM letter_events WHERE letter_id=? AND event='received' AND effective=1 ORDER BY sequence LIMIT 1", (letter_id,)).fetchone()
-        request = received[0] if received and received[0] is not None else con.execute(
-            "SELECT MAX(sequence) FROM letter_texts WHERE letter_id=? AND part='request'", (letter_id,)).fetchone()[0]
-        base = self._request_base(con, request)
+        base = self._request_base(con, self._reply_base_text(con, letter_id, reply_sequence))
         if base is None:
             return
         doc, recorded = base
@@ -481,20 +504,32 @@ class LetterMixin:
         elif sha == recorded:
             status, diff = 'unchanged', ''
         else:
-            old = _git_base(doc, recorded)
-            if old is None:
-                status = 'base-unavailable'
-            else:
-                try:
-                    diff, status = _unified(old.decode('utf-8'), data.decode('utf-8'), f'{doc} sha256:{recorded[:12]}', f'{doc} sha256:{sha[:12]}'), 'diff'
-                except UnicodeDecodeError:
-                    status = 'not-text'
+            status, diff = self._diff(con, doc, recorded, data, sha)
+        if data is not None:
+            self._save_snapshot(con, sha, data)  # the next round starts from this version
         self._insert_doc(con, letter_id, 'reply', reply_sequence, doc, sha, recorded, status, diff, operation_id)
 
+    def _reply_base_text(self, con, letter_id, reply_sequence):
+        """The request revision a reply text is compared with: the one the recipient received, else the latest request
+        revision before that reply text. Used both to make the diff and to name its base record."""
+        received = con.execute("SELECT text_sequence FROM letter_events WHERE letter_id=? AND event='received' AND effective=1 ORDER BY sequence LIMIT 1", (letter_id,)).fetchone()
+        if received and received[0] is not None:
+            return received[0]
+        return con.execute("SELECT MAX(sequence) FROM letter_texts WHERE letter_id=? AND part='request' AND sequence<?", (letter_id, reply_sequence)).fetchone()[0]
+
     def _doc_records(self, con, letter_id):
-        return [{'sequence': r['sequence'], 'kind': r['kind'], 'textSequence': r['text_sequence'], 'doc': r['doc'], 'sha256': r['sha256'],
-                 'baseSha256': r['base_sha256'], 'status': r['status'], 'diff': r['diff'], 'receivedAt': r['received_at']}
-                for r in con.execute('SELECT * FROM letter_doc_records WHERE letter_id=? ORDER BY sequence', (letter_id,))]
+        """The records of a letter. `baseRecord` names the request record a receipt or reply was compared with: the record
+        of the request revision actually chosen as its base (a receipt: the received revision; a reply: as
+        _reply_base_text), never another revision that happens to have the same hash."""
+        out = []
+        for r in con.execute('SELECT * FROM letter_doc_records WHERE letter_id=? ORDER BY sequence', (letter_id,)):
+            base = None
+            if r['kind'] != 'request' and r['base_sha256']:
+                text = r['text_sequence'] if r['kind'] == 'receipt' else self._reply_base_text(con, letter_id, r['text_sequence'])
+                base = next((x['sequence'] for x in out if x['kind'] == 'request' and x['textSequence'] == text), None)
+            out.append({'sequence': r['sequence'], 'kind': r['kind'], 'textSequence': r['text_sequence'], 'doc': r['doc'], 'sha256': r['sha256'],
+                        'baseSha256': r['base_sha256'], 'baseRecord': base, 'status': r['status'], 'diff': r['diff'], 'receivedAt': r['received_at']})
+        return out
 
     def _doc_check(self, con, letter_id, event):
         """For a receipt: the recorded check of the received request against the file (None when no document is named)."""

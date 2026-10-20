@@ -247,7 +247,7 @@ def task_command(args):
 
 PART = {'request': '依頼', 'reply': '返答'}
 DOC_STATUS = {'recorded': '記録', 'missing': 'ファイルがない', 'match': '一致', 'mismatch': '不一致', 'no-record': '依頼時の記録がない',
-              'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '基準本文がGitにない・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
+              'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '比較元の本文が記録にもGitにもない（導入前の記録）・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
 EVENT_LABEL = {'sent': '送信', 'received': '受領', 'started': '着手', 'returned': '返答', 'declined': '辞退', 'withdrawn': '停止要請',
                'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂'}
 
@@ -291,8 +291,10 @@ def read_command(args):
         if records:
             print('\n## 正本のハッシュ（同一性の確認。内容の妥当性ではない）')
             for r in records:
-                print(f"- {r['kind']} · {r['doc']} · {DOC_STATUS.get(r['status'], r['status'])} · {r['sha256'] or 'なし'}"
-                      + (f" · 基準 {r['baseSha256']}" if r['baseSha256'] else ''))
+                print(f"- #{r['sequence']} {r['kind']} · {r['doc']} · {DOC_STATUS.get(r['status'], r['status'])} · {r['sha256'] or 'なし'}")
+                if r['baseSha256']:
+                    kind = next((x['kind'] for x in records if x['sequence'] == r['baseRecord']), None)
+                    print(f"  比較元 #{r['baseRecord']} {kind or '記録'}（{r['baseSha256'][:12]}）→ 比較先 #{r['sequence']}（{(r['sha256'] or 'なし')[:12]}）")
                 if r['diff']:
                     print(r['diff'], end='')
         print('\nスレッド全体の原文は --full。')

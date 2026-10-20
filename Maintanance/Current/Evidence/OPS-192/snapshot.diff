@@ -1,0 +1,349 @@
+diff --git a/Maintanance/RegistryApp/README.md b/Maintanance/RegistryApp/README.md
+index 557e72ca5..d20530e8f 100644
+--- a/Maintanance/RegistryApp/README.md
++++ b/Maintanance/RegistryApp/README.md
+@@ -543,13 +543,15 @@ python3 Maintanance/RegistryApp/comm.py letter read LTR-... --full           # 
+ 
+ `--ref-doc`のある連絡だけが対象。記録先は追記だけの`letter_doc_records`で、`letter show`と`letter read`に出る。
+ 
+-- 送信・依頼の改訂：そのファイル全体のバイト列のsha256を記録する。正規化はしない。再送では、記録済みの値を返す。
++- 送信・依頼の改訂：そのファイル全体のバイト列のsha256と、その本文を記録する。正規化はしない。再送では、記録済みの値を返す。
+ - 受領：受領した版の記録と、いまのファイルを照合する。
+   - 結果：一致／不一致／ファイルなし／依頼時の記録なし。
+   - 不一致は、CLIがstderrで知らせる。受領そのものは止めない。
+ - 返答・返答の改訂：基準（受領した依頼の版の記録）から、いまのファイルへのdiffと、変更後のハッシュを記録する。どちらも1回の読み取りから作る。
+-  - 基準本文は、Gitのindexと直近200 commitから、ハッシュが一致する版を探す。
+-  - 見つからなければ「基準本文がGitにない・diff未作成」とする。変更なし（空のdiff）とは区別する。
++  - 基準本文（第4区切り）：記録した版のバイト列を、同じDBの`letter_doc_snapshots`に、ハッシュごとに1回だけ持つ。保存するのは明示`ref_doc`の版だけ。未commit・未追跡の正本でも、Gitなしでdiffができる。
++  - 受領時の不一致は、依頼の版からのdiffを受領の記録に残す。基準は置き換えない。
++  - 導入前の記録で本文がないときだけGitを探す。見つからなければ「比較元の本文が記録にもGitにもない・diff未作成」とする。変更なし（空のdiff）とは区別する。
++  - `letter read`は、各記録の「比較元 #n → 比較先 #m」とdiffを出す。
+ - ハッシュは同一性の確認で、内容の妥当性や作者の証明ではない。
+ 
+ ## 判断の補助DB
+diff --git a/Maintanance/RegistryApp/approvals.py b/Maintanance/RegistryApp/approvals.py
+index 2f37ef500..c5a37da60 100644
+--- a/Maintanance/RegistryApp/approvals.py
++++ b/Maintanance/RegistryApp/approvals.py
+@@ -87,6 +87,9 @@ STUDIO_SCHEMA = (
+     'CREATE TABLE IF NOT EXISTS letter_doc_records (sequence INTEGER PRIMARY KEY AUTOINCREMENT, letter_id TEXT NOT NULL REFERENCES letters(id), '
+     'kind TEXT NOT NULL, text_sequence INTEGER NOT NULL REFERENCES letter_texts(sequence), doc TEXT NOT NULL, sha256 TEXT, base_sha256 TEXT, '
+     'status TEXT NOT NULL, diff TEXT, operation_id TEXT NOT NULL REFERENCES operations(id), received_at TEXT NOT NULL)',
++    # OPS-192 第4区切り: the bytes of each recorded version of an explicit ref_doc, once per sha256, so that a diff never
++    # depends on Git. Only versions a letter record names are kept.
++    'CREATE TABLE IF NOT EXISTS letter_doc_snapshots (sha256 TEXT PRIMARY KEY, body BLOB NOT NULL, recorded_at TEXT NOT NULL)',
+     "CREATE TRIGGER IF NOT EXISTS letter_links_thread BEFORE INSERT ON letter_links WHEN NEW.thread_id IS NOT "
+     "COALESCE((SELECT thread_id FROM letter_links WHERE letter_id = NEW.follows_id), NEW.follows_id) BEGIN SELECT RAISE(ABORT, 'thread_id must be the thread of the followed letter'); END",
+ )
+@@ -121,7 +124,7 @@ class Store:
+                 con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_history_{operation} BEFORE {operation} ON history BEGIN SELECT RAISE(ABORT, 'append-only history'); END")
+             for statement in STUDIO_SCHEMA:
+                 con.execute(statement)
+-            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records'):
++            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records', 'letter_doc_snapshots'):
+                 for operation in ('UPDATE', 'DELETE'):
+                     con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT, 'append-only {table}'); END")
+             yield con
+diff --git a/Maintanance/RegistryApp/comm.py b/Maintanance/RegistryApp/comm.py
+index a7e4f3f4f..af6ab8e0b 100644
+--- a/Maintanance/RegistryApp/comm.py
++++ b/Maintanance/RegistryApp/comm.py
+@@ -247,7 +247,7 @@ def task_command(args):
+ 
+ PART = {'request': '依頼', 'reply': '返答'}
+ DOC_STATUS = {'recorded': '記録', 'missing': 'ファイルがない', 'match': '一致', 'mismatch': '不一致', 'no-record': '依頼時の記録がない',
+-              'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '基準本文がGitにない・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
++              'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '比較元の本文が記録にもGitにもない（導入前の記録）・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
+ EVENT_LABEL = {'sent': '送信', 'received': '受領', 'started': '着手', 'returned': '返答', 'declined': '辞退', 'withdrawn': '停止要請',
+                'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂'}
+ 
+@@ -291,8 +291,10 @@ def read_command(args):
+         if records:
+             print('\n## 正本のハッシュ（同一性の確認。内容の妥当性ではない）')
+             for r in records:
+-                print(f"- {r['kind']} · {r['doc']} · {DOC_STATUS.get(r['status'], r['status'])} · {r['sha256'] or 'なし'}"
+-                      + (f" · 基準 {r['baseSha256']}" if r['baseSha256'] else ''))
++                print(f"- #{r['sequence']} {r['kind']} · {r['doc']} · {DOC_STATUS.get(r['status'], r['status'])} · {r['sha256'] or 'なし'}")
++                if r['baseSha256']:
++                    kind = next((x['kind'] for x in records if x['sequence'] == r['baseRecord']), None)
++                    print(f"  比較元 #{r['baseRecord']} {kind or '記録'}（{r['baseSha256'][:12]}）→ 比較先 #{r['sequence']}（{(r['sha256'] or 'なし')[:12]}）")
+                 if r['diff']:
+                     print(r['diff'], end='')
+         print('\nスレッド全体の原文は --full。')
+diff --git a/Maintanance/RegistryApp/studio_store.py b/Maintanance/RegistryApp/studio_store.py
+index 1b0f50b14..089963978 100644
+--- a/Maintanance/RegistryApp/studio_store.py
++++ b/Maintanance/RegistryApp/studio_store.py
+@@ -436,10 +436,31 @@ class LetterMixin:
+         con.execute('INSERT INTO letter_doc_records(letter_id,kind,text_sequence,doc,sha256,base_sha256,status,diff,operation_id,received_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
+                     (letter_id, kind, text_sequence, doc, sha, base, status, diff, operation_id, approvals.now()))
+ 
++    def _save_snapshot(self, con, sha, data):
++        """Keep the bytes of a recorded version (once per hash; a later identical version adds nothing)."""
++        con.execute('INSERT OR IGNORE INTO letter_doc_snapshots VALUES (?,?,?)', (sha, data, approvals.now()))
++
++    def _base_bytes(self, con, doc, sha):
++        """The bytes of the recorded version SHA: kept in this DB, else (records from before they were kept) from Git."""
++        row = con.execute('SELECT body FROM letter_doc_snapshots WHERE sha256=?', (sha,)).fetchone()
++        return bytes(row[0]) if row else _git_base(doc, sha)
++
++    def _diff(self, con, doc, base, data, sha):
++        """(status, diff) from the recorded version BASE to DATA (the bytes just read, whose hash is SHA)."""
++        old = self._base_bytes(con, doc, base)
++        if old is None:
++            return 'base-unavailable', None
++        try:
++            return 'diff', _unified(old.decode('utf-8'), data.decode('utf-8'), f'{doc} sha256:{base[:12]}', f'{doc} sha256:{sha[:12]}')
++        except UnicodeDecodeError:
++            return 'not-text', None
++
+     def _record_request_doc(self, con, letter_id, text_sequence, doc, operation_id):
+         if doc is None:
+             return  # no canonical document named: nothing to record (letters without ref_doc stay as they were)
+         data = _doc_bytes(doc)
++        if data is not None:
++            self._save_snapshot(con, hashlib.sha256(data).hexdigest(), data)
+         self._insert_doc(con, letter_id, 'request', text_sequence, doc, None if data is None else hashlib.sha256(data).hexdigest(),
+                          None, 'recorded' if data is not None else 'missing', None, operation_id)
+ 
+@@ -459,15 +480,17 @@ class LetterMixin:
+         data = _doc_bytes(doc)
+         sha = None if data is None else hashlib.sha256(data).hexdigest()
+         status = 'missing' if data is None else 'no-record' if recorded is None else 'match' if sha == recorded else 'mismatch'
+-        self._insert_doc(con, letter_id, 'receipt', request_sequence, doc, sha, recorded, status, None, operation_id)
++        diff = None
++        if status == 'mismatch':
++            # the unexpected change is kept as it is (the base stays the request's version) and shown as a diff
++            self._save_snapshot(con, sha, data)
++            diff = self._diff(con, doc, recorded, data, sha)[1]
++        self._insert_doc(con, letter_id, 'receipt', request_sequence, doc, sha, recorded, status, diff, operation_id)
+ 
+     def _record_reply_doc(self, con, letter_id, reply_sequence, operation_id):
+         """The diff from the base (the hash recorded with the request revision the recipient received, else the latest
+         request) to the file as it is now, and the new hash, both from one read of the file."""
+-        received = con.execute("SELECT text_sequence FROM letter_events WHERE letter_id=? AND event='received' AND effective=1 ORDER BY sequence LIMIT 1", (letter_id,)).fetchone()
+-        request = received[0] if received and received[0] is not None else con.execute(
+-            "SELECT MAX(sequence) FROM letter_texts WHERE letter_id=? AND part='request'", (letter_id,)).fetchone()[0]
+-        base = self._request_base(con, request)
++        base = self._request_base(con, self._reply_base_text(con, letter_id, reply_sequence))
+         if base is None:
+             return
+         doc, recorded = base
+@@ -481,20 +504,32 @@ class LetterMixin:
+         elif sha == recorded:
+             status, diff = 'unchanged', ''
+         else:
+-            old = _git_base(doc, recorded)
+-            if old is None:
+-                status = 'base-unavailable'
+-            else:
+-                try:
+-                    diff, status = _unified(old.decode('utf-8'), data.decode('utf-8'), f'{doc} sha256:{recorded[:12]}', f'{doc} sha256:{sha[:12]}'), 'diff'
+-                except UnicodeDecodeError:
+-                    status = 'not-text'
++            status, diff = self._diff(con, doc, recorded, data, sha)
++        if data is not None:
++            self._save_snapshot(con, sha, data)  # the next round starts from this version
+         self._insert_doc(con, letter_id, 'reply', reply_sequence, doc, sha, recorded, status, diff, operation_id)
+ 
++    def _reply_base_text(self, con, letter_id, reply_sequence):
++        """The request revision a reply text is compared with: the one the recipient received, else the latest request
++        revision before that reply text. Used both to make the diff and to name its base record."""
++        received = con.execute("SELECT text_sequence FROM letter_events WHERE letter_id=? AND event='received' AND effective=1 ORDER BY sequence LIMIT 1", (letter_id,)).fetchone()
++        if received and received[0] is not None:
++            return received[0]
++        return con.execute("SELECT MAX(sequence) FROM letter_texts WHERE letter_id=? AND part='request' AND sequence<?", (letter_id, reply_sequence)).fetchone()[0]
++
+     def _doc_records(self, con, letter_id):
+-        return [{'sequence': r['sequence'], 'kind': r['kind'], 'textSequence': r['text_sequence'], 'doc': r['doc'], 'sha256': r['sha256'],
+-                 'baseSha256': r['base_sha256'], 'status': r['status'], 'diff': r['diff'], 'receivedAt': r['received_at']}
+-                for r in con.execute('SELECT * FROM letter_doc_records WHERE letter_id=? ORDER BY sequence', (letter_id,))]
++        """The records of a letter. `baseRecord` names the request record a receipt or reply was compared with: the record
++        of the request revision actually chosen as its base (a receipt: the received revision; a reply: as
++        _reply_base_text), never another revision that happens to have the same hash."""
++        out = []
++        for r in con.execute('SELECT * FROM letter_doc_records WHERE letter_id=? ORDER BY sequence', (letter_id,)):
++            base = None
++            if r['kind'] != 'request' and r['base_sha256']:
++                text = r['text_sequence'] if r['kind'] == 'receipt' else self._reply_base_text(con, letter_id, r['text_sequence'])
++                base = next((x['sequence'] for x in out if x['kind'] == 'request' and x['textSequence'] == text), None)
++            out.append({'sequence': r['sequence'], 'kind': r['kind'], 'textSequence': r['text_sequence'], 'doc': r['doc'], 'sha256': r['sha256'],
++                        'baseSha256': r['base_sha256'], 'baseRecord': base, 'status': r['status'], 'diff': r['diff'], 'receivedAt': r['received_at']})
++        return out
+ 
+     def _doc_check(self, con, letter_id, event):
+         """For a receipt: the recorded check of the received request against the file (None when no document is named)."""
+diff --git a/Maintanance/RegistryApp/test-studio-letters.py b/Maintanance/RegistryApp/test-studio-letters.py
+index babe2092e..82bc1d0c5 100644
+--- a/Maintanance/RegistryApp/test-studio-letters.py
++++ b/Maintanance/RegistryApp/test-studio-letters.py
+@@ -957,14 +957,15 @@ class DocHashTests(Base):
+         r = self.reply(b)['docRecords'][-1]
+         self.assertEqual((r['status'], r['diff'], r['sha256']), ('missing', None, None))
+ 
+-    def test_base_not_in_git_is_not_an_empty_diff(self):
++    def test_base_outside_git_still_gives_the_diff(self):
+         (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
+         a = self.send(ref_doc='New.md', ref_section='A')
+         self.ev(a, 'received')
+         (self.root / 'New.md').write_text('# N\n\n## A\n\n変えた\n', encoding='utf-8')
+         r = self.reply(a)['docRecords'][-1]
+-        self.assertEqual((r['status'], r['diff'], r['sha256']), ('base-unavailable', None, self.sha('New.md')))
+-        # the same base, once it is in Git (the index here), gives the diff
++        self.assertEqual((r['status'], r['sha256']), ('diff', self.sha('New.md')), '第4区切り: the base is kept, Git or not')
++        self.assertIn('-未commit\n+変えた\n', r['diff'])
++        # the same base in Git (the index here) gives the same kind of diff
+         (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
+         self.git('add', 'New.md')
+         b = self.send(ref_doc='New.md', ref_section='A')
+@@ -1004,9 +1005,7 @@ class DocHashTests(Base):
+ 
+ class DocHashCliTests(Http):
+     def test_receive_tells_a_mismatch_and_read_shows_the_records(self):
+-        import subprocess
+-        for a in (('init', '-q'), ('add', 'Doc.md'), ('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'doc')):
+-            subprocess.run(['git', '-C', str(self.root), *a], check=True, capture_output=True)
++        # no Git here (第4区切り): the diff comes from the kept base
+         (self.root / 'r.md').write_text('依頼\n', encoding='utf-8')
+         code, out = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-192', '--body-file', str(self.root / 'r.md'), '--ref-doc', 'Doc.md', '--ref-section', '仕様')
+         a = json.loads(out)
+@@ -1020,9 +1019,138 @@ class DocHashCliTests(Http):
+         self.ev(a, 'started'); self.ev(a, 'returned', body='返答')
+         code, out = self.cli('letter', 'read', a['id'])
+         self.assertEqual(code, 0, out)
+-        for want in ('## 正本のハッシュ', 'receipt · Doc.md · 不一致', 'reply · Doc.md · 差分を記録', '+受領前の変更'):
++        for want in ('## 正本のハッシュ', 'receipt · Doc.md · 不一致', 'reply · Doc.md · 差分を記録', '+受領前の変更', '比較元 #1 request', '→ 比較先 #3'):
+             self.assertIn(want, out)
+ 
+ 
++class DocSnapshotTests(Base):
++    """OPS-192 第4区切り: with no Git at all, ordinary round trips on an untracked canonical document still record the diff:
++    the bytes of each recorded version of an explicit ref_doc are kept (by sha256, once) in the letters DB, and the diff
++    goes from the request's recorded version to the file as read when the reply is written."""
++
++    def setUp(self):
++        super().setUp()
++        import subprocess
++        r = subprocess.run(['git', '-C', str(self.root), 'rev-parse'], capture_output=True)
++        self.assertNotEqual(r.returncode, 0, 'the temporary directory must not be inside a Git checkout')
++        self.doc = self.root / 'Doc.md'
++
++    def sha(self):
++        import hashlib
++        return hashlib.sha256(self.doc.read_bytes()).hexdigest()
++
++    def edit(self, line):
++        with open(self.doc, 'a', encoding='utf-8', newline='') as f:
++            f.write(line)
++
++    def ref(self, **kw):
++        return self.send(ref_doc='Doc.md', ref_section='仕様', **kw)
++
++    def answer(self, a, revision=1):
++        self.ev(a, 'received', revision=revision)
++        self.ev(a, 'started')
++
++    def last(self, a, kind='reply'):
++        return [r for r in self.s.letter(a['id'])['docRecords'] if r['kind'] == kind][-1]
++
++    def test_two_round_trips_and_revisions_on_an_untracked_document(self):
++        a = self.ref()
++        req = a['docRecords'][0]
++        self.answer(a)
++        self.edit('一往復目\n')
++        self.ev(a, 'returned', body='返答')
++        r = self.last(a)
++        self.assertEqual((r['status'], r['baseSha256'], r['sha256'], r['baseRecord']), ('diff', req['sha256'], self.sha(), req['sequence']))
++        self.assertIn('+一往復目\n', r['diff'])
++        self.edit('返答の改訂で足した\n')
++        self.s.revise(op(), a['id'], 'reply', '姫', '返答2', '追記')
++        r2 = self.last(a)
++        self.assertEqual((r2['status'], r2['baseSha256']), ('diff', req['sha256']), 'a reply revision diffs from the same base')
++        self.assertIn('+一往復目\n+返答の改訂で足した\n', r2['diff'])
++        b = self.send(ref_doc='Doc.md', ref_section='仕様', follows=a['id'])  # round 2 starts from the file as it is now
++        self.assertEqual(b['docRecords'][0]['sha256'], r2['sha256'])
++        self.answer(b)
++        self.edit('二往復目\n')
++        self.ev(b, 'returned', body='返答b')
++        rb = self.last(b)
++        self.assertEqual(rb['status'], 'diff')
++        self.assertIn('+二往復目\n', rb['diff'])
++        self.assertNotIn('+一往復目', rb['diff'], 'round 2 shows only its own change')
++        c = self.ref()
++        self.edit('依頼の改訂前の変更\n')
++        self.s.revise(op(), c['id'], 'request', 'Astra', '依頼v2', '直した', ref_doc='Doc.md', ref_section='仕様')
++        v2 = self.last(c, 'request')
++        self.answer(c, revision=2)
++        self.assertEqual(self.last(c, 'receipt')['status'], 'match', 'received v2 is checked against v2')
++        self.edit('cの変更')  # no final newline
++        self.ev(c, 'returned', body='返答c')
++        rc = self.last(c)
++        self.assertEqual((rc['baseSha256'], rc['baseRecord']), (v2['sha256'], v2['sequence']))
++        self.assertIn('+cの変更\n\\ No newline at end of file\n', rc['diff'])
++        self.assertNotIn('+依頼の改訂前の変更', rc['diff'], 'the change before v2 is not part of this reply')
++
++    def test_base_record_is_the_received_revision_even_with_the_same_hash(self):
++        # 補正1: v1 received, then the request text alone revised to v2 (same file, same hash); the reply's base is v1's record
++        a = self.ref()
++        self.answer(a)
++        self.s.revise(op(), a['id'], 'request', 'Astra', '依頼v2', '文だけ直した', ref_doc='Doc.md', ref_section='仕様')
++        self.edit('返答の変更\n')
++        self.ev(a, 'returned', body='返答')
++        recs = self.s.letter(a['id'])['docRecords']
++        self.assertEqual([r['kind'] for r in recs], ['request', 'receipt', 'request', 'reply'])
++        self.assertEqual(recs[0]['sha256'], recs[2]['sha256'], 'v1 and v2 name the same version of the file')
++        self.assertEqual((recs[1]['baseRecord'], recs[3]['baseRecord']), (recs[0]['sequence'], recs[0]['sequence']), 'the received v1, not v2')
++        self.s.thread(a['id'])  # reading still records nothing new
++        self.assertEqual(len(self.s.letter(a['id'])['docRecords']), 4)
++
++    def test_unexpected_change_at_receipt_stays_a_mismatch_with_its_diff(self):
++        a = self.ref()
++        base = a['docRecords'][0]['sha256']
++        self.edit('受領前に誰かが変えた\n')
++        got = self.ev(a, 'received')['docCheck']
++        self.assertEqual((got['status'], got['baseSha256'], got['sha256']), ('mismatch', base, self.sha()))
++        self.assertIn('+受領前に誰かが変えた\n', got['diff'])
++        self.ev(a, 'started')
++        self.edit('返答の変更\n')
++        self.ev(a, 'returned', body='返答')
++        r = self.last(a)
++        self.assertEqual(r['baseSha256'], base, 'the base is not silently replaced by the file seen at receipt')
++        self.assertIn('+受領前に誰かが変えた\n+返答の変更\n', r['diff'])
++
++    def test_unchanged_resend_bytes_and_reading(self):
++        crlf = '# Doc\r\n\r\n## 仕様\r\n\r\n本文 é\r\n'.encode('utf-8')
++        self.doc.write_bytes(crlf)
++        o = op()
++        a = self.ref(operation_id=o)
++        self.edit('再送の前の変更\n')
++        again = self.ref(operation_id=o)
++        self.assertTrue(again['replayed'])
++        self.assertEqual(self.raw('SELECT body FROM letter_doc_snapshots'), [(crlf,)], 'kept as read, once; a resend changes nothing')
++        self.doc.write_bytes(crlf)
++        self.answer(a)
++        before, data = self.raw('SELECT count(*) FROM letter_doc_records'), self.db.read_bytes()
++        self.s.letter(a['id']); self.s.thread(a['id'])
++        self.assertEqual((self.raw('SELECT count(*) FROM letter_doc_records'), self.db.read_bytes()), (before, data), 'reading records nothing')
++        self.ev(a, 'returned', body='返答')
++        r = self.last(a)
++        self.assertEqual((r['status'], r['diff']), ('unchanged', ''))
++        con = sqlite3.connect(self.db)
++        try:
++            for sql in ("UPDATE letter_doc_snapshots SET body=x''", 'DELETE FROM letter_doc_snapshots'):
++                with self.assertRaises(sqlite3.DatabaseError, msg=sql):
++                    con.execute(sql)
++        finally:
++            con.close()
++
++    def test_a_record_from_before_the_kept_bases_says_why_there_is_no_diff(self):
++        with patch.object(studio_store.LetterMixin, '_save_snapshot', lambda *a: None):  # as the stage-3 code recorded it
++            a = self.ref()
++        self.answer(a)
++        self.edit('変更\n')
++        self.ev(a, 'returned', body='返答')
++        r = self.last(a)
++        self.assertEqual((r['status'], r['diff']), ('base-unavailable', None))
++
++
+ if __name__ == '__main__':
+     unittest.main()

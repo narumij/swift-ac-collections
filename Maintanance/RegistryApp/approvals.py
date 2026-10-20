@@ -87,6 +87,9 @@ STUDIO_SCHEMA = (
     'CREATE TABLE IF NOT EXISTS letter_doc_records (sequence INTEGER PRIMARY KEY AUTOINCREMENT, letter_id TEXT NOT NULL REFERENCES letters(id), '
     'kind TEXT NOT NULL, text_sequence INTEGER NOT NULL REFERENCES letter_texts(sequence), doc TEXT NOT NULL, sha256 TEXT, base_sha256 TEXT, '
     'status TEXT NOT NULL, diff TEXT, operation_id TEXT NOT NULL REFERENCES operations(id), received_at TEXT NOT NULL)',
+    # OPS-192 第4区切り: the bytes of each recorded version of an explicit ref_doc, once per sha256, so that a diff never
+    # depends on Git. Only versions a letter record names are kept.
+    'CREATE TABLE IF NOT EXISTS letter_doc_snapshots (sha256 TEXT PRIMARY KEY, body BLOB NOT NULL, recorded_at TEXT NOT NULL)',
     "CREATE TRIGGER IF NOT EXISTS letter_links_thread BEFORE INSERT ON letter_links WHEN NEW.thread_id IS NOT "
     "COALESCE((SELECT thread_id FROM letter_links WHERE letter_id = NEW.follows_id), NEW.follows_id) BEGIN SELECT RAISE(ABORT, 'thread_id must be the thread of the followed letter'); END",
 )
@@ -121,7 +124,7 @@ class Store:
                 con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_history_{operation} BEFORE {operation} ON history BEGIN SELECT RAISE(ABORT, 'append-only history'); END")
             for statement in STUDIO_SCHEMA:
                 con.execute(statement)
-            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records'):
+            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records', 'letter_doc_snapshots'):
                 for operation in ('UPDATE', 'DELETE'):
                     con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT, 'append-only {table}'); END")
             yield con

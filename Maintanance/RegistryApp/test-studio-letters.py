@@ -957,14 +957,15 @@ class DocHashTests(Base):
         r = self.reply(b)['docRecords'][-1]
         self.assertEqual((r['status'], r['diff'], r['sha256']), ('missing', None, None))
 
-    def test_base_not_in_git_is_not_an_empty_diff(self):
+    def test_base_outside_git_still_gives_the_diff(self):
         (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
         a = self.send(ref_doc='New.md', ref_section='A')
         self.ev(a, 'received')
         (self.root / 'New.md').write_text('# N\n\n## A\n\n変えた\n', encoding='utf-8')
         r = self.reply(a)['docRecords'][-1]
-        self.assertEqual((r['status'], r['diff'], r['sha256']), ('base-unavailable', None, self.sha('New.md')))
-        # the same base, once it is in Git (the index here), gives the diff
+        self.assertEqual((r['status'], r['sha256']), ('diff', self.sha('New.md')), '第4区切り: the base is kept, Git or not')
+        self.assertIn('-未commit\n+変えた\n', r['diff'])
+        # the same base in Git (the index here) gives the same kind of diff
         (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
         self.git('add', 'New.md')
         b = self.send(ref_doc='New.md', ref_section='A')
@@ -1004,9 +1005,7 @@ class DocHashTests(Base):
 
 class DocHashCliTests(Http):
     def test_receive_tells_a_mismatch_and_read_shows_the_records(self):
-        import subprocess
-        for a in (('init', '-q'), ('add', 'Doc.md'), ('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'doc')):
-            subprocess.run(['git', '-C', str(self.root), *a], check=True, capture_output=True)
+        # no Git here (第4区切り): the diff comes from the kept base
         (self.root / 'r.md').write_text('依頼\n', encoding='utf-8')
         code, out = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-192', '--body-file', str(self.root / 'r.md'), '--ref-doc', 'Doc.md', '--ref-section', '仕様')
         a = json.loads(out)
@@ -1020,8 +1019,137 @@ class DocHashCliTests(Http):
         self.ev(a, 'started'); self.ev(a, 'returned', body='返答')
         code, out = self.cli('letter', 'read', a['id'])
         self.assertEqual(code, 0, out)
-        for want in ('## 正本のハッシュ', 'receipt · Doc.md · 不一致', 'reply · Doc.md · 差分を記録', '+受領前の変更'):
+        for want in ('## 正本のハッシュ', 'receipt · Doc.md · 不一致', 'reply · Doc.md · 差分を記録', '+受領前の変更', '比較元 #1 request', '→ 比較先 #3'):
             self.assertIn(want, out)
+
+
+class DocSnapshotTests(Base):
+    """OPS-192 第4区切り: with no Git at all, ordinary round trips on an untracked canonical document still record the diff:
+    the bytes of each recorded version of an explicit ref_doc are kept (by sha256, once) in the letters DB, and the diff
+    goes from the request's recorded version to the file as read when the reply is written."""
+
+    def setUp(self):
+        super().setUp()
+        import subprocess
+        r = subprocess.run(['git', '-C', str(self.root), 'rev-parse'], capture_output=True)
+        self.assertNotEqual(r.returncode, 0, 'the temporary directory must not be inside a Git checkout')
+        self.doc = self.root / 'Doc.md'
+
+    def sha(self):
+        import hashlib
+        return hashlib.sha256(self.doc.read_bytes()).hexdigest()
+
+    def edit(self, line):
+        with open(self.doc, 'a', encoding='utf-8', newline='') as f:
+            f.write(line)
+
+    def ref(self, **kw):
+        return self.send(ref_doc='Doc.md', ref_section='仕様', **kw)
+
+    def answer(self, a, revision=1):
+        self.ev(a, 'received', revision=revision)
+        self.ev(a, 'started')
+
+    def last(self, a, kind='reply'):
+        return [r for r in self.s.letter(a['id'])['docRecords'] if r['kind'] == kind][-1]
+
+    def test_two_round_trips_and_revisions_on_an_untracked_document(self):
+        a = self.ref()
+        req = a['docRecords'][0]
+        self.answer(a)
+        self.edit('一往復目\n')
+        self.ev(a, 'returned', body='返答')
+        r = self.last(a)
+        self.assertEqual((r['status'], r['baseSha256'], r['sha256'], r['baseRecord']), ('diff', req['sha256'], self.sha(), req['sequence']))
+        self.assertIn('+一往復目\n', r['diff'])
+        self.edit('返答の改訂で足した\n')
+        self.s.revise(op(), a['id'], 'reply', '姫', '返答2', '追記')
+        r2 = self.last(a)
+        self.assertEqual((r2['status'], r2['baseSha256']), ('diff', req['sha256']), 'a reply revision diffs from the same base')
+        self.assertIn('+一往復目\n+返答の改訂で足した\n', r2['diff'])
+        b = self.send(ref_doc='Doc.md', ref_section='仕様', follows=a['id'])  # round 2 starts from the file as it is now
+        self.assertEqual(b['docRecords'][0]['sha256'], r2['sha256'])
+        self.answer(b)
+        self.edit('二往復目\n')
+        self.ev(b, 'returned', body='返答b')
+        rb = self.last(b)
+        self.assertEqual(rb['status'], 'diff')
+        self.assertIn('+二往復目\n', rb['diff'])
+        self.assertNotIn('+一往復目', rb['diff'], 'round 2 shows only its own change')
+        c = self.ref()
+        self.edit('依頼の改訂前の変更\n')
+        self.s.revise(op(), c['id'], 'request', 'Astra', '依頼v2', '直した', ref_doc='Doc.md', ref_section='仕様')
+        v2 = self.last(c, 'request')
+        self.answer(c, revision=2)
+        self.assertEqual(self.last(c, 'receipt')['status'], 'match', 'received v2 is checked against v2')
+        self.edit('cの変更')  # no final newline
+        self.ev(c, 'returned', body='返答c')
+        rc = self.last(c)
+        self.assertEqual((rc['baseSha256'], rc['baseRecord']), (v2['sha256'], v2['sequence']))
+        self.assertIn('+cの変更\n\\ No newline at end of file\n', rc['diff'])
+        self.assertNotIn('+依頼の改訂前の変更', rc['diff'], 'the change before v2 is not part of this reply')
+
+    def test_base_record_is_the_received_revision_even_with_the_same_hash(self):
+        # 補正1: v1 received, then the request text alone revised to v2 (same file, same hash); the reply's base is v1's record
+        a = self.ref()
+        self.answer(a)
+        self.s.revise(op(), a['id'], 'request', 'Astra', '依頼v2', '文だけ直した', ref_doc='Doc.md', ref_section='仕様')
+        self.edit('返答の変更\n')
+        self.ev(a, 'returned', body='返答')
+        recs = self.s.letter(a['id'])['docRecords']
+        self.assertEqual([r['kind'] for r in recs], ['request', 'receipt', 'request', 'reply'])
+        self.assertEqual(recs[0]['sha256'], recs[2]['sha256'], 'v1 and v2 name the same version of the file')
+        self.assertEqual((recs[1]['baseRecord'], recs[3]['baseRecord']), (recs[0]['sequence'], recs[0]['sequence']), 'the received v1, not v2')
+        self.s.thread(a['id'])  # reading still records nothing new
+        self.assertEqual(len(self.s.letter(a['id'])['docRecords']), 4)
+
+    def test_unexpected_change_at_receipt_stays_a_mismatch_with_its_diff(self):
+        a = self.ref()
+        base = a['docRecords'][0]['sha256']
+        self.edit('受領前に誰かが変えた\n')
+        got = self.ev(a, 'received')['docCheck']
+        self.assertEqual((got['status'], got['baseSha256'], got['sha256']), ('mismatch', base, self.sha()))
+        self.assertIn('+受領前に誰かが変えた\n', got['diff'])
+        self.ev(a, 'started')
+        self.edit('返答の変更\n')
+        self.ev(a, 'returned', body='返答')
+        r = self.last(a)
+        self.assertEqual(r['baseSha256'], base, 'the base is not silently replaced by the file seen at receipt')
+        self.assertIn('+受領前に誰かが変えた\n+返答の変更\n', r['diff'])
+
+    def test_unchanged_resend_bytes_and_reading(self):
+        crlf = '# Doc\r\n\r\n## 仕様\r\n\r\n本文 é\r\n'.encode('utf-8')
+        self.doc.write_bytes(crlf)
+        o = op()
+        a = self.ref(operation_id=o)
+        self.edit('再送の前の変更\n')
+        again = self.ref(operation_id=o)
+        self.assertTrue(again['replayed'])
+        self.assertEqual(self.raw('SELECT body FROM letter_doc_snapshots'), [(crlf,)], 'kept as read, once; a resend changes nothing')
+        self.doc.write_bytes(crlf)
+        self.answer(a)
+        before, data = self.raw('SELECT count(*) FROM letter_doc_records'), self.db.read_bytes()
+        self.s.letter(a['id']); self.s.thread(a['id'])
+        self.assertEqual((self.raw('SELECT count(*) FROM letter_doc_records'), self.db.read_bytes()), (before, data), 'reading records nothing')
+        self.ev(a, 'returned', body='返答')
+        r = self.last(a)
+        self.assertEqual((r['status'], r['diff']), ('unchanged', ''))
+        con = sqlite3.connect(self.db)
+        try:
+            for sql in ("UPDATE letter_doc_snapshots SET body=x''", 'DELETE FROM letter_doc_snapshots'):
+                with self.assertRaises(sqlite3.DatabaseError, msg=sql):
+                    con.execute(sql)
+        finally:
+            con.close()
+
+    def test_a_record_from_before_the_kept_bases_says_why_there_is_no_diff(self):
+        with patch.object(studio_store.LetterMixin, '_save_snapshot', lambda *a: None):  # as the stage-3 code recorded it
+            a = self.ref()
+        self.answer(a)
+        self.edit('変更\n')
+        self.ev(a, 'returned', body='返答')
+        r = self.last(a)
+        self.assertEqual((r['status'], r['diff']), ('base-unavailable', None))
 
 
 if __name__ == '__main__':

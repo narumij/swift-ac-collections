@@ -1,0 +1,12 @@
+Studio server refused (409): Approved request and branch required
+Studio server refused (409): Repository does not match the fixed checkout
+Studio server refused (409): Active claim token required
+....The request reached http://127.0.0.1:50172 but no answer came back; the result is unknown — it may have been recorded. Check the list before sending again (RemoteDisconnected)
+.Studio server refused (409): Unknown PING
+..Studio server not reachable at http://127.0.0.1:50190; nothing was sent or recorded ([Errno 61] Connection refused)
+Studio server not reachable at http://127.0.0.1:50190; nothing was sent or recorded ([Errno 61] Connection refused)
+...........
+----------------------------------------------------------------------
+Ran 18 tests in 5.326s
+
+OK

@@ -237,6 +237,27 @@ Each package states its files, tests, evidence, boundary and rollback in the pla
 
 Stopping here for discussion. No code, live change or commit.
 
+### Response: user-returned restoration review (Hime, 2026-10-20; letter LTR-20261020-20B6BDF8…)
+At base `f13cadc8c`. Plan only. `Evidence/OPS-192/EXECUTION_PLAN.md` §1–5 is revised; the earlier version is in git.
+
+- **Before and now.**
+  - Before (OPS-187 file route): one document reads top to bottom as Assignment → Return → Acceptance, so corrections and answers sit next to each other. Diff-only reading was possible via `git log -p`, and full reading was the file itself.
+  - Now (OPS-192):
+    - My 8 answers sit together in Return (lines 53–219), away from Astra's corrections (240–337).
+    - Every reply of mine refs the same `Return（姫記入）`.
+    - The letters already carry `ref_doc`/`ref_section` (all 10), yet bodies copy earlier text: E9929557 has 3,898 chars, of which 2,143 are copied.
+    - A revision after return was not delivered (0271EDF4 v2).
+- **Smallest restoration, no code (G1–G4).**
+  - G1: append corrections and answers in time order at the end of the document, with name tags.
+  - G2: each answer names the correction section it answers, and vice versa; reply `ref_section` points at that exact heading (`check_ref` accepts any heading level).
+  - G3: letter bodies carry only the delta plus the ref, so an informed reader reads the delta and a new reader reads the document. This also covers the added 読む量 requirement.
+  - G4: corrections after a return go as new letters, which already reach inbox/watch. Permissions are unchanged, and the N1 gap stays open as its own item.
+- **Example and acceptance.** A short example is in §3, and acceptance A1–A6 in §4. They are checked on the next real exchange; the only machine check is the existing `check_ref`.
+- **Ordering.** G1–G4 first, then WP1 (service separation, a separate requirement), then WP3 (exact source, a separate requirement; doc section plus commit also serves), then WP4. N1, T1 and T2 are not needed for restoration and are kept as later candidates. None of `--answers`, legacy classification, new schema or an edit ban is a prerequisite.
+- **One user choice.** G1 needs the recipient to append name-tagged sections at the document end instead of writing only inside Return. The gain is time-ordered reading; the cost is the simple "recipient owns only Return" line, which is replaced by "append own tagged sections, never rewrite others".
+
+No code, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -343,3 +364,8 @@ Allowed shared changes: revise Evidence/OPS-192/EXECUTION_PLAN.md and append Ret
 
 ## 読む量を選べる要求（ユーザー、2026-10-20）
 「頭に入ってる人は差分だけ確認できればいいし、入ってない人は全文みれるようにする必要がある」。文脈を持つ読み手は今回の追加・訂正だけを確認でき、持たない読み手は同じ起点から会話の原文全体を辿れること。原文を削って差分だけを保存することでも、毎回全文を強制することでもない。要約と原文を混同せず、何に対する差分かを参照できること。
+
+## 現在のゴール確定と復元案の差し戻し（2026-10-20）
+ユーザー：「今のゴールはテキストの正本機能の復元と差分読み機能とを成立させること」。これは連絡DB／Studioで以前の文脈・往復の機能を復元する要求。Markdown運用へ戻すことではない。レターからスレッドが辿れる要求も継続する。事情を知る人には今回の差分、知らない人には原文の全体を同じ起点から提示する。
+今回の返却G1〜G4は正本文書の並べ方に戻り、T1/T2を不要として先送りしているため、このゴールの実施要領として未受入。旧テキストの機能を比較対象とし、連絡記録を再び手でMarkdownに複写・並べ直す運用を主解にしない。範囲を拡大せずDB/CLI/Studioで満たす最小の実施要領へ修正する。
+判断抽出・判断一覧等のアイデアは次段階。サービス分離と出典の要求は消さないが、この復元に必須か独立かを区別して順序を整理する。実装開始ではなく検討ループ継続。

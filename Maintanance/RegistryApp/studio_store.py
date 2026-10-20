@@ -21,6 +21,14 @@ import uuid
 import approvals
 
 PING_ID = re.compile(r'PING-\d{8}-[0-9A-F]{32}')
+ACKABLE_MESSAGE_ID = re.compile(r'(?:PING|NOTICE)-\d{8}-[0-9A-F]{32}')
+TEAM_NOTICES = {
+    'thanks': ('おつかれさま', '全体の作業・待機の区切りをお願いします。'),
+    'pause': ('一時中断', '追加作業を止め、現在の状態を保持してください。'),
+    'cancel': ('中止', '今回の依頼を終了してください。削除や巻戻しは行わないでください。'),
+    'return': ('差し戻し', '受入不可・再確認の依頼です。再実装する範囲は理由に従ってください。'),
+}
+
 
 
 def _local_date():
@@ -41,6 +49,44 @@ def _iso(value):
 
 
 class PingMixin:
+    def team_notice(self, operation_id, kind, reason, targets):
+        if not isinstance(operation_id, str) or not approvals.OPERATION_ID.fullmatch(operation_id):
+            raise ValueError('Invalid operation ID')
+        if not isinstance(kind, str) or kind not in TEAM_NOTICES:
+            raise ValueError('Unknown team notice kind')
+        if not isinstance(reason, str) or len(reason) > 2000 or '\x00' in reason:
+            raise ValueError('Invalid reason')
+        payload = {'kind': kind, 'reason': reason}
+        with self.transaction() as con:
+            previous = self._operation(con, operation_id, 'team-notice', payload)
+            if previous is not None:
+                return previous['result'] | {'replayed': True}
+            if not isinstance(targets, list):
+                raise ValueError('Expected member names')
+            names = list(dict.fromkeys(approvals.text(name, 100).strip() for name in targets))
+            names = [name for name in names if name != 'ユーザー']
+            if not names:
+                raise ValueError('送信先のメンバーがいません')
+            label, body = TEAM_NOTICES[kind]
+            body = label + '：' + body + ('\n理由：' + reason if reason else '')
+            identities = ['NOTICE-' + _local_date() + '-' + uuid.uuid4().hex.upper() for _ in names]
+            result = {'operationId': operation_id, 'noticeKind': kind, 'label': label, 'body': body,
+                      'reason': reason, 'targets': names, 'messageIds': identities, 'sentCount': len(names)}
+            self._record_operation(con, operation_id, 'team-notice', payload, 'ユーザー', 'applied', result)
+            at = approvals.now()
+            con.executemany('INSERT INTO messages VALUES (?,?,?,?,?,?,?)',
+                            [(identity, 'team-notice', name, '', 'ユーザー', operation_id, at) for identity, name in zip(identities, names)])
+            return result | {'replayed': False}
+
+    def _notifications(self, con, owner):
+        identities = [row[0] for row in con.execute("SELECT id FROM messages WHERE kind='team-notice' AND target=? ORDER BY rowid", (owner,))]
+        return [notice for identity in identities if (notice := self._message(con, identity))['status'] == 'unanswered']
+
+    def notifications(self, owner):
+        approvals.text(owner, 100)
+        with self.transaction() as con:
+            return self._notifications(con, owner)
+
     def ping(self, operation_id, target, task_id, actor='ユーザー'):
         if not isinstance(operation_id, str) or not approvals.OPERATION_ID.fullmatch(operation_id):
             raise ValueError('Invalid operation ID')
@@ -59,15 +105,15 @@ class PingMixin:
             return self._message(con, message_id) | {'replayed': False}
 
     def ack(self, message_id, owner, recorded_by=None, claimed_at=None):
-        if not isinstance(message_id, str) or not PING_ID.fullmatch(message_id):
-            raise ValueError('Invalid PING ID')
+        if not isinstance(message_id, str) or not ACKABLE_MESSAGE_ID.fullmatch(message_id):
+            raise ValueError('Invalid message ID')
         approvals.text(owner, 80)
         recorded_by = owner if recorded_by is None else approvals.text(recorded_by, 80)
         claimed_at = _iso(claimed_at)
         with self.transaction() as con:
             message = con.execute('SELECT * FROM messages WHERE id=?', (message_id,)).fetchone()
             if message is None:
-                raise LookupError('Unknown PING')
+                raise LookupError('Unknown message')
             if owner != message['target']:
                 status = 'foreign'
             elif recorded_by != owner:
@@ -84,9 +130,13 @@ class PingMixin:
         row = con.execute('SELECT * FROM messages WHERE id=?', (message_id,)).fetchone()
         acks = [dict(a) for a in con.execute('SELECT * FROM acks WHERE message_id=? ORDER BY sequence', (message_id,))]
         answer = next((a for a in acks if a['status'] == 'answer'), None)
-        return {'id': row['id'], 'kind': row['kind'], 'target': row['target'], 'taskId': row['task_id'], 'sender': row['sender'],
-                'operationId': row['operation_id'], 'receivedAt': row['received_at'],
-                'status': 'answered' if answer else 'unanswered', 'answer': answer, 'acks': acks}
+        result = {'id': row['id'], 'kind': row['kind'], 'target': row['target'], 'taskId': row['task_id'], 'sender': row['sender'],
+                  'operationId': row['operation_id'], 'receivedAt': row['received_at'],
+                  'status': 'answered' if answer else 'unanswered', 'answer': answer, 'acks': acks}
+        if row['kind'] == 'team-notice':
+            notice = json.loads(con.execute('SELECT result FROM operations WHERE id=?', (row['operation_id'],)).fetchone()[0])
+            result.update({key: notice[key] for key in ('noticeKind', 'label', 'body', 'reason', 'targets')})
+        return result
 
     def messages(self, limit=200):
         with self.transaction() as con:
@@ -615,7 +665,7 @@ class LetterMixin:
                 stop = next((e for e in reversed(x['events']) if e['event'] == 'withdrawn' and e['effective']), None) if x['state'] == 'withdrawn' else None
                 x['stopRequested'] = stop is not None
                 x['stopReason'] = stop['note'] if stop else None
-            return {'owner': owner, 'letters': open_}
+            return {'owner': owner, 'letters': open_, 'notifications': self._notifications(con, owner)}
 
     def letters_brief(self, task=None, member=None, state=None, limit=50, cursor=None, sender=None, recipient=None):
         """H-20261019-30: the list without any text. The queries read metadata, event kinds and revision numbers only;

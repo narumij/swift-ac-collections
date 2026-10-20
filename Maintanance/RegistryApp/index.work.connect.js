@@ -35,6 +35,7 @@ class WorkPageViewModel {
 function startWorkPage() {
   if (location.protocol === 'file:') return;
   const make = tag => document.createElement(tag), model = new WorkPageViewModel();
+  createTeamNoticeControl({ buttons: document.querySelectorAll('[data-team-kind]'), reason: $('team-notice-reason'), status: $('team-notice-status'), send: sendTeamNotice });
   const timeline = createActivityTimelineView($('activity-events'), $('activity-events-status'), make, () => document.activeElement, { heading: $('activity-current-heading'), detail: $('activity-current-detail') });
   const cards = createWorkLaneView({ track: $('work-lane-track'), status: $('work-lane-status'), makeNode: make, getActive: () => document.activeElement });
   const wake = createWakeView({ select: $('wake-owner'), button: $('wake-send'), status: $('wake-status'), onChange: () => model.select($('wake-owner').value), onClick: () => model.send(sendWake) });

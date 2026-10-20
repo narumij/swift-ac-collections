@@ -452,6 +452,11 @@ def watch_once(args):
             changes.append({'id': letter['id'], 'taskId': letter['taskId'], 'sender': letter['sender'], 'changes': kinds, 'state': letter['state'],
                             'stateLabel': letter['stateLabel'], 'requestRevision': sig['requestRevision'], 'stopRequested': sig['stopRequested'],
                             'stopReason': letter.get('stopReason')})
+    for notice in inbox.get('notifications', []):
+        sig = {'state': notice['status'], 'requestRevision': None, 'stopRequested': False}
+        now[notice['id']] = sig
+        if seen.get(notice['id']) != sig:
+            changes.append({'id': notice['id'], 'changes': ['notification'], **notice})
     print(json.dumps({'owner': args.owner, 'open': len(now), 'changes': changes}, ensure_ascii=False, indent=2), flush=True)
     temp = path + '.tmp'
     try:

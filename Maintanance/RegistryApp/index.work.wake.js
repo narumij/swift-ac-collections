@@ -59,4 +59,36 @@ async function sendWake(owner) {
 
 
 
+
+// A team notice requests action; sending it never claims receipt or completion.
+function createTeamNoticeControl({ buttons, reason, status, send, operationId = () => crypto.randomUUID().replaceAll('-', '') }) {
+  let busy = false, pending = null;
+  function controls() {
+    for (const button of buttons) button.disabled = busy || !!(pending && pending.kind !== button.dataset.teamKind);
+    reason.disabled = busy || !!pending;
+  }
+  for (const button of buttons) button.onclick = async () => {
+    if (busy || (pending && pending.kind !== button.dataset.teamKind)) return;
+    pending ||= { operationId: operationId(), kind: button.dataset.teamKind, reason: reason.value };
+    busy = true; controls(); status.textContent = '送信中…';
+    try {
+      const result = await send(pending);
+      status.textContent = '送信済み ' + result.sentCount + '名・受領未確認';
+      status.title = result.targets.join('、'); pending = null;
+    } catch (error) {
+      if (error?.refused) { status.textContent = '送信できませんでした：' + error.message; pending = null; }
+      else status.textContent = '結果不明。同じボタンで送信結果を再確認してください';
+    } finally { busy = false; controls(); }
+  };
+}
+async function sendTeamNotice(body) {
+  const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 5000);
+  try {
+    const response = await fetch('/team-notice', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Registry-Studio': 'team-notice' }, body: JSON.stringify(body), signal: controller.signal });
+    const result = await response.json();
+    if (!response.ok) { const error = Error(result.error || '送信を受け付けられません'); error.refused = response.status >= 400 && response.status < 500; throw error; }
+    return result;
+  } finally { clearTimeout(timer); }
+}
+
 // @endsection

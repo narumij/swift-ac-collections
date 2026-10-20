@@ -1507,3 +1507,6 @@ header h1 {
 #work-lane-track .work-card[data-approval="pending"] { border-left-color: #c0392b; background: #fff; }
 #work-lane-track .work-card[data-approval="approved"] { border-left-color: #28b463; background: #fff; }
 #work-lane-track .work-card[data-approval="none"] { border-left-color: #45b8e8; background: #fff; }
+
+.team-notice-controls { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.team-notice-controls input { width: 16em; max-width: 100%; margin: 0; padding: 4px 8px; font-size: 11px; }

@@ -85,7 +85,9 @@ class TaskRoundStore(Store):
                 WHERE l.recipient=? AND l.kind='request' AND e.effective=1 AND e.event!='revision-received'
                 AND (e.event!='revised' OR EXISTS(SELECT 1 FROM letter_texts t
                     WHERE t.sequence=e.text_sequence AND t.part='request'))""",(owner,)).fetchone()[0]
-            value=json.dumps([owner,sequence],ensure_ascii=False,separators=(',',':'))
+            notice_sequence=c.execute("SELECT COALESCE(MAX(rowid),0) FROM messages WHERE kind='team-notice' AND target=?",(owner,)).fetchone()[0]
+            ack_sequence=c.execute("SELECT COALESCE(MAX(a.sequence),0) FROM acks a JOIN messages m ON m.id=a.message_id WHERE m.kind='team-notice' AND m.target=?",(owner,)).fetchone()[0]
+            value=json.dumps([owner,sequence]+([notice_sequence,ack_sequence] if notice_sequence else []),ensure_ascii=False,separators=(',',':'))
             return hashlib.sha256(value.encode()).hexdigest()
 
     def act(self,b):

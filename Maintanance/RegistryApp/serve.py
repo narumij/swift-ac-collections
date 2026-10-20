@@ -329,7 +329,7 @@ MEMBER_OPERATIONS = {
 
 # POST path -> the X-Registry-Studio value it requires
 POST_ACTIONS = {'/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
-                '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
+                '/team-notice': 'team-notice', '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
 POST_ACTIONS.update({
@@ -588,18 +588,21 @@ class Handler(BaseHTTPRequestHandler):
                         out=store.show_round(q['round'][0])
                         inbox_context=store.inbox_notice_context(owner) if owner is not None else None
                         inbox_changed=owner is not None and inbox_context!=inbox_baseline
+                        team_notifications=store.notifications(owner) if owner is not None else []
                         approval_cursor=store.approval_change_cursor() if approval_watch else None
                         approval_changed=approval_watch and approval_cursor!=approval_baseline
-                        if out['context']!=q.get('after',[''])[0] or inbox_changed or approval_changed or time.monotonic()>=until:break
+                        if out['context']!=q.get('after',[''])[0] or inbox_changed or team_notifications or approval_changed or time.monotonic()>=until:break
                         time.sleep(.1)
                     if owner is not None:
-                        out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed}
-                    if approval_watch:
+                        out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed,'notifications':team_notifications,'notificationPending':bool(team_notifications)}
+                    if approval_watch or team_notifications:
                         reasons=[]
                         if out['context']!=q.get('after',[''])[0]:reasons.append('round-context')
                         if inbox_changed:reasons.append('inbox')
                         if approval_changed:reasons.append('approval-change')
-                        out=out|{'approvalCursor':approval_cursor,'approvalChanged':approval_changed,'wakeReasons':reasons or ['timeout']}
+                        if team_notifications:reasons.append('team-notice')
+                        out=out|{'wakeReasons':reasons or ['timeout']}
+                        if approval_watch:out=out|{'approvalCursor':approval_cursor,'approvalChanged':approval_changed}
                     return self.reply(200,out)
                 finally:
                     if watching:
@@ -647,6 +650,17 @@ class Handler(BaseHTTPRequestHandler):
             return self.sync()
         if action == 'save':
             return self.save()
+        if action == 'team-notice':
+            body = self.json_body(16*1024)
+            if body is None:return
+            try:
+                if not isinstance(body, dict) or set(body) != {'operationId', 'kind', 'reason'}:
+                    raise ValueError('Expected operationId, kind and reason')
+                targets = [row['owner'] for row in member_state.members.snapshot()['members']]
+                return self.reply(200, studio_store.Store().team_notice(body['operationId'], body['kind'], body['reason'], targets))
+            except approvals.Conflict as error:return self.reply(409, {'error': str(error)})
+            except ValueError as error:return self.reply(400, {'error': str(error)})
+            except (OSError, sqlite3.Error):return self.reply(503, {'error': 'Team notice unavailable'})
         if action == 'activity-wake':
             return self.activity_wake()
         if action in ('approvals-cli', 'comm-ping', 'comm-ack', 'comm-cutover') + LETTER_ACTIONS:

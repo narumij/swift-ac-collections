@@ -24,6 +24,14 @@
                     role="status"></span></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status"
                     role="status">読み込み待ち</span></span><button type="button" id="approval-all"
                 disabled>表示中の未承認0件を承認</button>
+            <span class="team-notice-controls" aria-label="全員への連絡">
+                <button type="button" data-team-kind="thanks">おつかれさま</button>
+                <button type="button" data-team-kind="pause">一時中断</button>
+                <button type="button" data-team-kind="cancel">中止</button>
+                <button type="button" data-team-kind="return">差し戻し</button>
+                <input id="team-notice-reason" type="text" maxlength="2000" aria-label="全員への連絡の理由（任意）" placeholder="理由（任意）">
+                <span id="team-notice-status" role="status"></span>
+            </span>
         </div>
         <p class="approval-policy"
             title="直近200件の活動と未完のコミット承認から作る表示です。全taskの現在地ではありません。正式な状態はRegistryです。同じtaskの承認依頼はカード内にすべて表示します。着手未記録は依頼時刻を代用し、開始不明は末尾です。疎通確認（PING・WAKE・ACK）は工程に数えません。">

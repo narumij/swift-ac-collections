@@ -1,0 +1,166 @@
+# OPS-192 実行手順（計画。実装の合格の証拠ではない）
+
+base `8d8240dc2`。受け入れた調査（`BREAKDOWN.md`のR1〜R3、`THREADS.md`のT1・T2・P1・P2と、その訂正）を、4つの作業のまとまりに並べ直した。各区切りは、1つのパッチを1つの基準に当てて返す。受入のあとで次へ進む。本番の切り替えは別。
+
+## 要約
+
+| まとまり | 区切り | 中身 | 前提 |
+|---|---|---|---|
+| WP1 共通サービス | R1 → R2 | 連絡・PING・承認を別プロセスにし、DBを開くのはそれだけにする。両方の形をまたぐ書き手の鍵。画面は中継だけ | OPS-191（取り込み済み） |
+| WP2 スレッドと通知 | N1 → T1 → T2 | 返したあとの改訂の通知（N1）、明示の続きとスレッドの一覧（T1）、画面で辿る（T2） | N1：なし。T1：R1。T2：T1とR2 |
+| WP3 出典 | P1・P2 | 版を固定して本文を1つだけ読むCLIと、出典の表し方 | なし |
+| WP4 通しの試験 | R3＋L1 | 依頼→返答→補正→返答の一巡を、画面を止めて戻す場面と一緒に試す。戻しの試験も | WP1〜WP3 |
+
+順番：R1 → N1 → P1・P2 → R2 → T1 → T2 → R3＋L1。N1・P1・P2は、R1の外のファイルだけなので並べ替えてもよい。
+
+試験はどれも、一時ディレクトリのDB・Inbox・出力・tools記録と、試験用のport（0）で行う。8088・生きた保存先・ユーザーのサーバーは使わない。実プロセスの試験の型は、OPS-187〜189の試験（`test-letters-e2e.py`ほか）を使い回す。
+
+## WP1 共通サービス
+
+### R1：抽出と、書き手の鍵
+
+- ファイル：
+  - 新しい`records_service.py`
+    - `serve.py`から`get_letters`・`letter_action`・`studio_records`・`commit_approvals`・`get_approvals`・`get_comm`と`/approval-probe`の扱いを移す。
+    - 単独で`--port`で起動できる。
+  - `serve.py`：それをimportして使う（今の1プロセスの振る舞いのまま）。
+  - `approvals.py`：DBごとの鍵の補助を足す（`<db>.owner.lock`、fcntlの排他）。
+- 鍵：
+  - 単独の共通サービスは、portを取る前に取る。
+  - 互換の`serve.py`（`--records-url`なし）は、syncとportの前に取る。
+  - 取れなければexit 1で、何もしない。
+  - 放すのはプロセスが終わるとき。
+  - `Store`には入れない（既存の試験はそのまま動く）。
+- 試験の準備：一時DBと試験用port。実プロセス。
+- 見えるはずの結果：
+  1. 共通サービスだけで、`comm.py letter send・receive・return`、`comm.py ping・ack`、`approvals.py add・list`が通る。
+  2. 同じDBでの起動の衝突：
+     - 共通サービス→共通サービス、共通サービス→互換、互換→共通サービス：あとの側がexit 1で、DBのbytesは変わらない。
+     - 先の側を止める（killを含む）と、あとの側が起動できる。
+  3. 既存の`test-serve.py`・`test-studio-letters.py`・`test-studio-store.py`・`test-approvals.py`と、OPS-187〜189の試験が通る。
+- 受入の証拠：base・パッチのhash・試験のログ。抽出は移動であることを、diffで確かめる。
+- 戻し：パッチを戻す。DBの形は変わらない。
+
+### R2：画面の中継
+
+- ファイル：`serve.py`に`--records-url http://127.0.0.1:<port>`を足す（明示したときだけ）。中継の口は、`/letters*`・`/letters-*`・`/comm-*`・`/commit-approvals`・`/approval-probe`・`/approvals-cli`。
+- 中継の決まり：
+  - 先に画面側で、今の`studio_request`の確かめをする。通らなければ403で、共通サービスには何も送らない。
+  - 通ったら、HostとOriginを共通サービス向けに付け替える。
+  - 結果：
+    - つながらない → 503 `{"outcome":"not-sent"}`
+    - 送ったあと返答がない → 504 `{"outcome":"unknown"}`
+    - 共通サービスの返答 → そのまま返す
+  - 承認の画面の失敗の文言で、unknownのときだけ「結果不明：一覧で確かめ直します」にする。
+  - 画面のプロセスはDBを開かず、鍵も取らない。
+- 見えるはずの結果：
+  1. OPS-187・188の試験が、画面と共通サービスの2プロセスで通る。
+  2. 画面プロセスのDBの場所を、まだない場所に向けても作られない。
+  3. 誤ったOrigin → 403で、共通サービスへの接続が0。
+  4. 共通サービスが止まっている → 503 not-sentで、DBは変わらない。
+  5. 受け付けてすぐ切る相手 → 504 unknown。
+  6. 正常 → bytesまで一致する。
+- 戻し：`--records-url`を付けずに`serve.py`を起動する。CLIの宛先の戻しは、WP4の戻しの試験で確かめる。
+
+## WP2 スレッドと、返したあとの改訂の通知
+
+### N1：通知の最小（今の権限は変えない）
+
+- 目的：返したあとに依頼が改訂されたら、受け手に届く。もう一度答えたら、未処理ではなくなる。返したあとの改訂も、今の操作も、そのまま使える。
+- 未処理と判定する：状態がreturnedで、最新の依頼の版が、答えた版より新しいとき。
+- 届ける：
+  - `inbox`は、上の判定が真の連絡も返す。目印は`revisedAfterReply: true`。
+  - `watch`は、inboxを出た連絡の最後の印を`seen`に残す（今は捨てている）。戻ってきたときに`['state','revision']`と出る。試作で確かめた（`prototype-output.txt`）。
+- 版の識別：依頼の版の番号（今の`revision`）。
+- 答えたことの記録：
+  - `letter_texts`に、空でもよい列`answers_revision`を1つ足す（`ALTER TABLE ADD COLUMN`。追記だけのtriggerはそのまま）。
+  - `returned`の出来事と`revise --part reply`は、`--answers N`を任意で受ける。
+  - 範囲は1以上、今の依頼の版以下。外れていたら拒否する。
+  - 付けなかった場合は、新しい版に答えたことにしない。だから、誤字だけの直しでは未処理のまま。
+  - 答えた版は、返答の行の`answers_revision`の最大値。値がない行の扱い：
+    - 返す（`returned`）：受領で読んだ版に答えたものとする。
+    - 返答の改訂：答えた版を変えない。
+- 前からある記録：列はNULLになる。上の規則で「受領で読んだ版に答えた」とみなす。だから、改訂のない返した連絡は、今と同じく未処理にならない。
+- 競合と再送：
+  - 依頼の改訂と、返す／返答の改訂は、BEGIN IMMEDIATEで1つずつ並ぶ。`--answers`の範囲は、取引の中の最新の版で確かめる。
+  - 送り手がv3を足すのと同時に受け手がv2に答えれば、未処理のまま残る（正しい）。
+  - 再送は今の操作IDのまま。`answers`はpayloadに入れるので、同じIDで違う値を送れば拒否される。
+  - `watch`の状態ファイルは、今と同じく表示のあとに保存する。
+- 今ある操作：返したあとの依頼の改訂、返答の改訂、返す、どれも今のまま使える。`--answers`を付けないときの振る舞いは、今と変わらない。
+- 決めること：上の答え方の規則は、ユーザーとAstraと話して決める。
+  - 任意の`--answers`で、付けなければ答えにしない。
+  - 列を足す。
+  - 代わりの規則も1つだけ書いておく。「返答の改訂は、いつも最新の依頼に答えたとみなす」。列は要らないが、誤字だけの直しでも未処理が消える。
+  - 返したあとの改訂の禁止は案に含めない。
+- ファイル：`approvals.py`（列）、`studio_store.py`（`event`・`revise`の`answers`、`inbox`の判定）、`comm.py`（`--answers`、watchで印を残す）、`serve.py`の`LETTER_FIELDS`（`answers`を任意に）。
+- 試験（`test-studio-letters.py`に足す。一時DB）：
+  1. 送る→受ける→着手→返す→送り手がv2に改訂 → inboxに出る。watchが`['state','revision']`を1回だけ出す。
+  2. 返答の改訂で`--answers`なし（誤字） → 未処理のまま。`--answers 2` → inboxから出る。
+  3. `--answers 0`・`--answers 3`（版が2のとき） → 拒否する。
+  4. 改訂のない返した連絡、閉じた連絡 → inboxに出ない（今と同じ）。
+  5. 列がNULLの前からある返答 → 受領の版として扱う。
+  6. 同じ操作IDで`answers`だけ違う → 拒否する。
+  7. 既存の25件がそのまま通る。
+- 戻し：パッチを戻す。足した列は、前のコードでは`dict(row)`に余分な欄が増えるだけで、壊れない（`_letter`は`dict(t)`で返す）。
+
+### T1：明示の続きとスレッドの一覧
+
+- ファイル：
+  - `approvals.py`：`letter_links(letter_id PK, follows_id, thread_id, recorded_by, received_at, operation_id)`と、追記だけのtrigger。
+  - `studio_store.py`：
+    - `send(follows=)`で、同じ取引でつながりを書く。`thread_id`は、`follows`先の`thread_id`をそのまま写す（なければ`follows`先のID）。
+    - `thread(id)`は、本文の列を読まない軽い一覧。
+    - `letter()`は`threadId`を返す。
+  - `records_service.py`：`GET /letters/<id>/thread`。
+  - `comm.py`：`letter send --follows`と、`letter thread <id> [--full]`。`--full`は各連絡の`/letters/<id>`を読んで並べる。
+- 範囲の外：後からのlinkと、昔の連絡を推測してつなぐこと。
+- 試験：`THREADS.md`の「補正」に書いたT1の試験と、`thread_id`の試験（「判断の出典への備え」1）。
+- 戻し：パッチを戻す。足した表は、前のコードからは使われない。
+
+### T2：画面で辿る
+
+- ファイル：`index.template.html`（連絡の詳細にスレッドの行を出す。押すと今の`letterSelected`）、`test-view-model-letters.cjs`。
+- 試験：
+  - 実サーバーで、前の連絡の行が見える。押すとその本文がそのまま出る。
+  - サーバーにはGETしか届かず、受領が記録されない。
+  - 駆動部は`letters_e2e.cjs`を広げる。
+- 戻し：パッチを戻す。
+
+## WP3 出典
+
+- P1：`comm.py letter text <id> --part request|reply --revision N [--sha256 H]`（約30行）。
+  - 1つの本文と`recordedBy`を出す。版がなければexit 3、hashが合わなければexit 1で、本文は出さない。
+  - 読むのは今の`/letters/<id>`だけ。
+- P2：`decisions/README.md`に、`letter-text`と`document`の表し方を書く。
+  - 書くのは保存された事実だけ：`recordedBy`と`note`。`speaker`は作らない。
+  - (a) AIの提案、(b) 委任の範囲の運用、(c) ユーザーの原典、を分ける。`decided_by`にユーザーと書けるのは(c)のときだけ（`THREADS.md`の「訂正」）。
+- 試験（P1）：
+  - v1とv2がbytesまで一致する（v2を足したあともv1が変わらない）。
+  - ない版はexit 3。合わないhashはexit 1で、出力はない。
+  - 読んでも行数が変わらず、SQLiteを直接開かない。
+  - 代理の記録は本文の行を増やさない。
+- 戻し：パッチを戻す。表し方は文書だけ。
+
+## WP4 通しの試験（R3＋L1）
+
+- ファイル：新しい`test-conversation-loop.py`（実プロセス2つ。共通サービスと画面）。駆動部は`letters_e2e.cjs`と`approvals_e2e.cjs`を使い回す。
+- 一巡（L1）：
+  1. Astraが依頼を送る → 姫が受ける・着手・返す（`--answers 1`）。
+  2. 画面を止める。Astraが同じ連絡を改訂する（v2）→ 姫の`watch`が`revision`を検知 → 姫が返答を改訂する（`--answers 2`）。
+  3. Astraが`--follows`で続きの連絡を送る → 姫が受ける・返す。
+  4. 承認の`add・list`も、画面が止まっている間に通す。
+  5. 画面を戻す。ページが、最初の連絡（v1・v2・返答）と続きの連絡を、`thread`の行で辿れる。どれも未処理として出ない。サーバーの記録と表示が一致する。
+- 止める・戻すの場面（R3）：
+  - 共通サービスを止める → CLIはnot-sentで何も記録しない。ページは「取得不調」で操作を止める。
+  - 戻すと、両方とも戻る。
+- 戻しの試験：
+  - 切り替えのやり方ごとに試す（`BREAKDOWN.md`の補正2回目の1）。共通サービスを止めて鍵が外れたことを確かめ、互換の`serve.py`を起動する。
+  - 環境変数のない`comm.py letter inbox`と`approvals.py list`が、同じ記録を返す（`DEFAULT_URL`を変えた場合は、その差し戻しのあとで）。
+- 受入の証拠：base・パッチのhash・試験のログ・否定対照。否定対照は次の3つで、それぞれ、どの試験が落ちたかを記録する。
+  - 鍵を外す。
+  - 中継でunknownをnot-sentにする。
+  - watchが出た連絡を捨てる。
+
+## 本番の切り替え（別の区切り）
+
+共通サービスのportと、誰が起動するかを決める。そのうえで、起動と戻しの手順を書く。WP1〜WP4の受入のあとに、ユーザーと決める。

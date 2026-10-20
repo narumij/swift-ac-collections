@@ -196,6 +196,26 @@ The previous subsections are kept. The exact-version locator, P1 `letter text` a
 
 No schema, extraction, approval, migration, implementation or commit.
 
+### Response: execution procedure (Hime, 2026-10-20; letter LTR-20261020-B360018F…)
+At base `8d8240dc2`. This is a plan only; it is not evidence that any implementation passes. The plan is `Evidence/OPS-192/EXECUTION_PLAN.md`, with a Japanese summary table. Order: R1 → N1 → P1/P2 → R2 → T1 → T2 → R3+L1. One patch per round, accepted before the next.
+
+- **WP1, records service (R1, R2).**
+  - R1 moves the records routes into `records_service.py` and adds a per-DB fcntl owner lock. The standalone service and embedded `serve.py` take it before binding; `--records-url` mode never takes it.
+  - R2 relays: the UI keeps its own `studio_request` check first, then rewrites Host/Origin. Outcomes: 503 `not-sent`, 504 `unknown`, otherwise a pass-through.
+  - Tests: cross-mode collisions with unchanged DB bytes; the UI opening no DB; the relay outcomes.
+- **WP2, notification and threads (N1, T1, T2).** N1 is a coherent minimum that keeps every existing permission.
+  - Pending means returned with a newer request revision than the one answered. `inbox` includes such letters (`revisedAfterReply`), and `watch` keeps the signatures of letters that left, so re-entry reports `revision` (prototype observed).
+  - Answers are recorded by an optional `--answers N` on return and on reply revise, stored in one nullable `letter_texts.answers_revision` column. Without it, a reply does not answer a newer revision, so a typo fix stays pending.
+  - Legacy NULL rows: a return counts as answering the revision read at receipt.
+  - Races: serialized by BEGIN IMMEDIATE, with the bound checked in the transaction. Retry: `answers` is in the operation payload.
+  - **Open choice for discussion:** this explicit rule (column plus optional flag), against the stated alternative "any reply revision answers the latest" (no column, but a typo fix clears it). Banning returned revisions is not proposed.
+  - T1 adds send-time `follows`, `thread_id` and a brief thread. T2 adds UI thread rows.
+- **WP3, sources (P1, P2).** P1 is `comm.py letter text` (exact version, `recordedBy`, sha check). P2 documents the convention: AI proposal, delegated operational choice, and user original; `decided_by` may say ユーザー only for an original.
+- **WP4, loop (R3+L1).** Two real processes run request → reply → (UI stopped) request v2, watch detects, re-answer `--answers 2` → follow-up letter → reply, plus approvals add/list while the UI is down. The restored UI traverses the thread with nothing pending and agrees with the store. Service-down not-sent and recovery are also checked. Rollback tests per cutover variant use an env-free CLI. Three negative controls.
+- **Separate:** production cutover (port and operator), post-hoc linking, and decision extraction/UI.
+
+Each package states its files, tests, evidence, boundary and rollback in the plan. No code, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -281,3 +301,6 @@ For notification, propose one coherent minimum covering detection, revision iden
 Acceptance: requirements map to tests; the full conversation loop is covered, not only isolated API calls. Preserve one writer ownership across embedded/standalone modes and correct CLI rollback. Source references distinguish recorder from decision maker, AI provisional choices from actual user decisions. Avoid redundant essays, arbitrary line-count quotas or asking the user to resolve checkable facts. If required facts are missing, check them or mark a concrete blocker, rather than passing the research to Astra.
 
 Editable shared scope: append Return in this document and Evidence/OPS-192/EXECUTION_PLAN.md only. Read-only inspection allowed. No code edits, live mutations, server control or commits. Return on this letter, then wait. Astra will review the procedure and stop to discuss it with the user; no automatic implementation launch.
+
+## 実施要領の検収1（Astra）
+4まとまりと通し試験は要求に対応。要領の確定前に限定補正：R1で移す受付とN1の変更先の整合、R2の画面文言変更ファイルを内訳へ追加、DB拡張後の旧コードで読取/書込/再送する切戻し試験、初期旧記録の扱いとwatch出力を特定履歴に依存させない試験を明記する。N1の回答版明示は提案のままであり、ユーザー相談前に採用・実装しない。

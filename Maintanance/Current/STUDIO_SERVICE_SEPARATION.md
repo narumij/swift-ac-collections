@@ -112,6 +112,28 @@ The disposable prototype is `prototype.py`, with its output in `prototype-output
 Not implemented in shared code. No live changes and no commit.
 - 一時作業物: `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-192.a0JlY2XbbO`・姫・2026-10-20・一時DBでwatchと通知の述語を再現する使い捨ての試作・状態「削除済み（2026-10-20、試作と出力をEvidence/OPS-192へ写したあと削除）」
 
+### Response: thread context (Hime, 2026-10-20; letter LTR-20261020-F30EDE7D…)
+At base `1f57c5f65`, discovery only. Details, checked facts and the breakdown are in `Evidence/OPS-192/THREADS.md`.
+
+- **Data.** Today `letters` has no link to other letters; only `task_id` relates them (schema checked). Add an append-only `letter_links` table: one `follows_id` per letter, naming the earlier letter it continues. It is written in the same transaction as `send(…, follows=)`, and a resend replays.
+  - It is refused when the followed letter is unknown or the sender is not a participant of it.
+  - Cycles are impossible, because the followed letter already exists.
+  - A thread is the tree reached through `follows` (root, then all descendants) in send order. Closed letters are included, and all text revisions stay as they were.
+- **Navigation.**
+  - `GET /letters/<id>/thread` and `comm.py letter thread <id> [--full]` give the same set from any member. Today that path is rejected with 400, so it is free.
+  - In the UI, the letter detail lists the thread, and clicking a row reuses `letterSelected`.
+  - Reading records nothing and starts nothing; this is checked by row counts in the tests.
+- **Legacy letters.** No automatic linking from task ID or prose. An explicit, append-only `link` by the letter's sender, once, with a reason. An unlinked letter is a thread of one.
+- **Example.** The chain would be 9FE8ADAB ← E9929557 ← FBDD4946 ← F30EDE7D. E9929557 (3,898 chars) copied 9FE8's 2,143-character request; with `--follows` its body is about 1,750 chars and points to "the followed letter, request v1". These four letters are currently unlinked; nothing was migrated.
+- **Gap and rounds.**
+  - With links, corrections after a return can be sent as follow-up letters, which reach the existing inbox and watch unchanged. Recommended (T3): refuse `revise request` after `returned`, pointing to `--follows`. That removes the gap and makes the round-2 `answers_revision` and watch changes unnecessary. If it is not adopted, those are still needed.
+  - Order: R1 → T1 (store, service routes, CLI) → R2 (the relay of `/letters/…` covers thread) → T2 (UI) → R3. T3 follows T1 if adopted.
+- **Decisions for the user/Astra:**
+  - whether to limit post-return corrections to follow-up letters (T3);
+  - whether legacy linking is sender-only, and whether these four letters should actually be linked.
+
+No shared implementation, no live migration, no commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -150,3 +172,7 @@ Continue OPS-192 discovery with the new user requirement above. Return a small r
 Cover the data relationship and the minimum CLI/UI navigation needed, legacy unlinked letters, and the relation to the returned-request notification gap and service extraction R1–R3. Avoid expanding into a general chat product or automatic summarization. Show a concrete short correction that can rely on linked context rather than copying the whole original request. Use this task's three recent letters as a manual example, not live migration: 9FE8ADAB…, E9929557…, FBDD4946… (full IDs in this document and the communication DB).
 
 Only edit a new Return subsection here and Evidence/OPS-192/. No shared implementation, live migration, server control or commits. Disposable prototypes are permitted if needed to check an uncertain claim. Provide enough checked evidence for a small review; material gaps will be returned rather than repaired by Astra. Return on the new assignment letter and remain available for feedback.
+
+## スレッド案の初回検収（Astra）
+明示follows＋受信レター起点のCLI/UI読取を最小案として検討する。未受入点：後付けlinkで自己参照・循環が作れる条件と拒否試験が不足。送信時の既存親だけでは後付けlinkの安全性を説明できない。threadの軽量一覧と全版本文の説明も明確に分ける。
+returned後の改訂禁止は追加方針であり、スレッド閲覧要求から自動採用しない。「禁止しなければanswers_revisionが必須」という二択も未実証。初回は新しい続きのレターで文脈を辿る機能を成立させ、既存改訂の通知漏れと後付けlinkの権限は別の決定点として残せるか、最小の段階案へ整理する。実装は未依頼。

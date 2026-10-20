@@ -78,6 +78,12 @@ STUDIO_SCHEMA = (
     'CREATE TABLE IF NOT EXISTS letter_events (sequence INTEGER PRIMARY KEY AUTOINCREMENT, letter_id TEXT NOT NULL REFERENCES letters(id), '
     'event TEXT NOT NULL, actor TEXT NOT NULL, recorded_by TEXT NOT NULL, claimed_at TEXT, received_at TEXT NOT NULL, '
     'text_sequence INTEGER REFERENCES letter_texts(sequence), note TEXT NOT NULL, effective INTEGER NOT NULL, operation_id TEXT NOT NULL REFERENCES operations(id))',
+    # OPS-192 T1: a letter names the letter it follows when it is sent (one link per letter, written in the send's
+    # transaction). thread_id is the root letter of the thread and never changes. Several letters may follow one (a branch).
+    'CREATE TABLE IF NOT EXISTS letter_links (letter_id TEXT PRIMARY KEY REFERENCES letters(id), follows_id TEXT NOT NULL REFERENCES letters(id), '
+    'thread_id TEXT NOT NULL REFERENCES letters(id), operation_id TEXT NOT NULL REFERENCES operations(id), received_at TEXT NOT NULL, CHECK (letter_id <> follows_id))',
+    "CREATE TRIGGER IF NOT EXISTS letter_links_thread BEFORE INSERT ON letter_links WHEN NEW.thread_id IS NOT "
+    "COALESCE((SELECT thread_id FROM letter_links WHERE letter_id = NEW.follows_id), NEW.follows_id) BEGIN SELECT RAISE(ABORT, 'thread_id must be the thread of the followed letter'); END",
 )
 OPERATION_ID = re.compile(r'[0-9a-f]{32}')
 
@@ -110,7 +116,7 @@ class Store:
                 con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_history_{operation} BEFORE {operation} ON history BEGIN SELECT RAISE(ABORT, 'append-only history'); END")
             for statement in STUDIO_SCHEMA:
                 con.execute(statement)
-            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events'):
+            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links'):
                 for operation in ('UPDATE', 'DELETE'):
                     con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT, 'append-only {table}'); END")
             yield con

@@ -296,7 +296,7 @@ LETTER_ACTIONS = ('letters-send', 'letters-event', 'letters-revise', 'letters-se
 
 
 def get_letters(parsed):
-    """H-20261019-25: GET /letters?task=&member=&state=&limit=, /letters/<id>, /letters-inbox?owner=, /letters-senders.
+    """H-20261019-25: GET /letters?task=&member=&state=&limit=, /letters/<id>, /letters/<id>/thread, /letters-inbox?owner=, /letters-senders.
     Reading records nothing (it is not a receipt). Names in the query are self-reports, not authentication."""
     query = urllib.parse.parse_qs(parsed.query, keep_blank_values=False)
     if any(len(v) != 1 for v in query.values()):
@@ -322,7 +322,12 @@ def get_letters(parsed):
             if {'cursor', 'sender', 'recipient'} & set(q):
                 raise ValueError('cursor, sender and recipient are for brief=1')
             return 200, json_bytes(store.letters(q.get('task'), q.get('member'), q.get('state'), q.get('limit', 200)))
-        return 200, json_bytes(store.letter(urllib.parse.unquote(parsed.path[len('/letters/'):])))
+        name = urllib.parse.unquote(parsed.path[len('/letters/'):])
+        if name.endswith('/thread'):  # OPS-192 D1: the thread of the letter, read only
+            if q:
+                raise ValueError('No parameters')
+            return 200, json_bytes(store.thread(name[:-len('/thread')]))
+        return 200, json_bytes(store.letter(name))
     except LookupError as error:
         return 404, {'error': str(error)}
     except (ValueError, TypeError) as error:
@@ -387,7 +392,7 @@ def get_task_context(parsed):
 
 
 LETTER_FIELDS = {
-    'letters-send': ({'operationId', 'sender', 'recipient', 'taskId', 'body'}, {'recordedBy', 'refDoc', 'refSection'}),
+    'letters-send': ({'operationId', 'sender', 'recipient', 'taskId', 'body'}, {'recordedBy', 'refDoc', 'refSection', 'follows'}),
     'letters-event': ({'operationId', 'letterId', 'event', 'actor'}, {'recordedBy', 'claimedAt', 'note', 'body', 'refDoc', 'refSection', 'revision'}),
     'letters-revise': ({'operationId', 'letterId', 'part', 'actor', 'body', 'reason'}, {'recordedBy', 'refDoc', 'refSection'}),
     'letters-senders': ({'names', 'recordedBy'}, set()),
@@ -400,7 +405,7 @@ def letter_action(store, action, body):
         raise ValueError('Expected ' + ', '.join(sorted(required)))
     g = body.get
     if action == 'letters-send':
-        return store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'))
+        return store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'), g('follows'))
     if action == 'letters-event':
         return store.event(g('operationId'), g('letterId'), g('event'), g('actor'), g('recordedBy'), g('claimedAt'), g('note', ''), g('body'), g('refDoc'), g('refSection'), g('revision'))
     if action == 'letters-revise':

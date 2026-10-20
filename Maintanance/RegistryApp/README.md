@@ -517,5 +517,27 @@ python3 Maintanance/RegistryApp/comm.py letter task OPS-192 --doc-lines 0 --full
   - 4：読めたが、正本が見つからない、またはRegistryの詳細に正本のパスがない
 - `--json`で、機械向けの出力になる。
 
+### 続きの連絡とスレッドを読む（OPS-192）
+
+```sh
+python3 Maintanance/RegistryApp/comm.py letter send ... --follows LTR-...   # この連絡は、その連絡の続き
+python3 Maintanance/RegistryApp/comm.py letter read LTR-...                  # この連絡の今の本文と改訂の差
+python3 Maintanance/RegistryApp/comm.py letter read LTR-... --full           # スレッド全体を出来事の順に原文で
+```
+
+- つながり：
+  - 送るときだけ`--follows`で書く。送信と同じ取引に入る。
+  - 後からつなぐことはしない。推測でもつながない。
+  - 1つの連絡に、続きを何通つけてもよい（分岐）。閉じた連絡にもつなげる。
+  - 記録は`letter_links`に追記するだけ。スレッドは根の連絡のIDで、変わらない。
+  - 拒否するもの：存在しない連絡、自分自身へのつながり、同じoperation IDで内容が違う再送。送信者の名簿の制限はそのまま。
+- 既定の読み方：
+  - その連絡の、今の依頼と返答を出す。各版に記録者を付ける。
+  - 依頼：受け手の受領で読んだ版から、今の版への差を出す。
+  - 返答：読んだ版の記録がないので、差は「基準不明」とする。読んだとは扱わない。
+- `--full`：スレッドのすべての連絡（閉じたものも含む）と、出来事・本文の全版を、出来事の通し番号の順に出す。
+- 読むだけ：何も記録しない。口は`GET /letters/<id>/thread`。
+- 終了コード：0 読めた、1 サーバーに届かない・結果不明、2 拒否、3 連絡がない。
+
 ## 判断の補助DB
 2026-10-19からCLIで日常利用。[運用・照会手順](decisions/README.md)。文書の判断正本は維持し、Studio画面/サーバーには未接続。

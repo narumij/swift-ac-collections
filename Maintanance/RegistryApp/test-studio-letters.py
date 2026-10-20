@@ -754,5 +754,143 @@ class TaskReadingTests(Http):
         self.assertEqual(db.read_bytes(), before, 'the V3 DB is only read')
 
 
+class ThreadTests(Http):
+    """OPS-192 第2区切り (T1/D1): a new letter may name the letter it follows (`--follows`); the link is written with the send
+    in one transaction, is append-only and is never inferred. A thread is read from any of its letters: by default that
+    letter's current texts with the revision difference from the revision the recipient read (unknown when not recorded),
+    with --full every letter, event and text revision of the thread in time order. Reading records nothing."""
+
+    def follow(self, prev, **kw):
+        return self.send(follows=prev['id'], **kw)
+
+    def counts(self):
+        return [len(self.raw(f'SELECT * FROM {t}')) for t in ('letters', 'letter_texts', 'letter_events', 'operations', 'letter_links')]
+
+    def test_links_branches_and_closed_predecessors(self):
+        a = self.send(task_id='OPS-901')
+        self.ev(a, 'received'); self.ev(a, 'started'); self.ev(a, 'returned', body='返答a'); self.ev(a, 'closed', actor='Astra')
+        b = self.follow(a, body='補正b')  # a closed letter can still be followed: it is context
+        c = self.s.send(op(), 'ユーザー', '姫', 'OPS-777', '続きc', follows=b['id'])
+        d = self.follow(a, body='分岐d')  # a second letter following a: a branch, not a replacement
+        self.assertEqual((b['follows'], c['follows'], d['follows'], a['follows']), (a['id'], b['id'], a['id'], None))
+        self.assertEqual(self.raw('SELECT letter_id, follows_id, thread_id FROM letter_links ORDER BY rowid'),
+                         [(b['id'], a['id'], a['id']), (c['id'], b['id'], a['id']), (d['id'], a['id'], a['id'])], 'the thread is the root letter')
+        for start in (a, c, d):
+            t = self.s.thread(start['id'])
+            self.assertEqual((t['root'], [x['id'] for x in t['letters']]), (a['id'], [a['id'], b['id'], c['id'], d['id']]))
+        t = self.s.thread(c['id'])
+        self.assertEqual({x['id']: x['follows'] for x in t['letters']}, {a['id']: None, b['id']: a['id'], c['id']: b['id'], d['id']: a['id']})
+        self.assertEqual({x['id']: x['followedBy'] for x in t['letters']}, {a['id']: [b['id'], d['id']], b['id']: [c['id']], c['id']: [], d['id']: []})
+        self.assertEqual(next(x for x in t['letters'] if x['id'] == a['id'])['state'], 'closed')
+        seqs = [e['sequence'] for e in t['events']]
+        self.assertEqual(seqs, sorted(seqs), 'events in the order of the one sequence of all letters')
+        self.assertEqual({e['letterId'] for e in t['events']}, {a['id'], b['id'], c['id'], d['id']})
+        lone = self.send()
+        self.assertEqual([x['id'] for x in self.s.thread(lone['id'])['letters']], [lone['id']], 'nothing is linked by guess')
+
+    def test_refused_links_leave_no_record(self):
+        a = self.send()
+        before = self.counts()
+        with self.assertRaisesRegex(LookupError, 'follow'):
+            self.send(follows='LTR-20261020-' + '0' * 32)
+        with self.assertRaisesRegex(ValueError, 'letter ID'):
+            self.send(follows='nope')
+        with self.assertRaisesRegex(approvals.Conflict, 'senders'):
+            self.s.send(op(), '外部', '姫', 'OPS-156', BODY, follows=a['id'])  # the sender list still applies
+        self.assertEqual(self.counts(), before)
+        o = op()
+        b = self.send(operation_id=o, follows=a['id'])
+        self.assertTrue(self.send(operation_id=o, follows=a['id'])['replayed'])
+        for other in (None, b['id']):
+            with self.assertRaisesRegex(approvals.Conflict, 'different content'):
+                self.send(operation_id=o, follows=other)
+        self.assertEqual(len(self.raw('SELECT * FROM letter_links')), 1, 'a resend links once')
+        linked = self.counts()
+        with patch.object(studio_store.LetterMixin, '_insert_event', side_effect=RuntimeError('injected')):
+            with self.assertRaises(RuntimeError):
+                self.send(follows=a['id'])
+        self.assertEqual(self.counts(), linked, 'no letter or link alone')
+        # a send without --follows keeps the payload it had before links existed (old operation IDs still replay)
+        self.assertEqual(self.raw('SELECT payload_sha256 FROM operations WHERE kind="letter-send" ORDER BY rowid LIMIT 1')[0][0],
+                         approvals.payload_sha256({'kind': 'letter-send', 'sender': 'Astra', 'recipient': '姫', 'taskId': 'OPS-156', 'body': BODY, 'recordedBy': 'Astra', 'ref': [None, None]}))
+
+    def test_link_table_is_append_only_and_guarded(self):
+        a, b = self.send(), self.send()
+        c = self.follow(a)
+        con = sqlite3.connect(self.db)
+        try:
+            for sql in ("UPDATE letter_links SET follows_id='x'", 'DELETE FROM letter_links'):
+                with self.assertRaises(sqlite3.DatabaseError, msg=sql):
+                    con.execute(sql)
+            for row in ((b['id'], b['id'], b['id']), (b['id'], c['id'], c['id'])):  # self link; a thread other than the predecessor's
+                with self.assertRaises(sqlite3.DatabaseError, msg=row):
+                    con.execute("INSERT INTO letter_links VALUES (?,?,?,'00000000000000000000000000000000','t')", row)
+        finally:
+            con.close()
+
+    def test_delta_from_the_revision_that_was_read(self):
+        a = self.send(body='一\n二\n三\n')
+        self.assertEqual(self.s.thread(a['id'])['delta']['request'] | {'text': None},
+                         {'revision': 1, 'base': None, 'basis': 'unknown', 'diff': None, 'text': None}, 'not received: no base, nothing presumed read')
+        self.ev(a, 'received')
+        self.s.revise(op(), a['id'], 'request', 'Astra', '一\n二改\n三\n', '直した')
+        self.ev(a, 'started'); self.ev(a, 'returned', body='返1\n')
+        self.s.revise(op(), a['id'], 'reply', '姫', '返2\n', '追記')
+        t = self.s.thread(a['id'])
+        r = t['delta']['request']
+        self.assertEqual((r['revision'], r['base'], r['basis'], r['text']['body'], r['text']['recorded_by']), (2, 1, 'receipt', '一\n二改\n三\n', 'Astra'))
+        self.assertIn('-二\n', r['diff']); self.assertIn('+二改\n', r['diff'])
+        p = t['delta']['reply']
+        self.assertEqual((p['revision'], p['base'], p['basis'], p['diff'], p['text']['body']), (2, None, 'unknown', None, '返2\n'), 'no record says the sender read reply v1')
+        self.assertEqual([(x['part'], x['revision'], x['recorded_by']) for x in t['texts']],
+                         [('request', 1, 'Astra'), ('request', 2, 'Astra'), ('reply', 1, '姫'), ('reply', 2, '姫')], 'every revision is kept')
+
+    def test_delta_keeps_lines_apart_without_a_final_newline(self):
+        # 補正1: a last line without a newline must not join the next diff line; the missing newline is shown, as in diff(1)
+        mark = '\\ No newline at end of file\n'
+        for old, new, lines in (('旧本文', '新本文', ['-旧本文\n', mark, '+新本文\n', mark]),
+                                ('旧本文\n', '新本文', ['-旧本文\n', '+新本文\n', mark]),
+                                ('旧本文', '新本文\n', ['-旧本文\n', mark, '+新本文\n']),
+                                ('一\n旧', '一\n旧\n', ['-旧\n', mark, '+旧\n']),
+                                ('a\rb\u2028c\n', 'a\rb\u2028d\n', ['-a\rb\u2028c\n', '+a\rb\u2028d\n'])):  # only \n ends a line
+            a = self.send(body=old)
+            self.ev(a, 'received')
+            self.s.revise(op(), a['id'], 'request', 'Astra', new, '直した')
+            d = self.s.thread(a['id'])['delta']['request']
+            body = d['diff'].split('\n')
+            body = [x + '\n' for x in body[3:-1]]  # after ---, +++ and @@; every diff line ends with \n
+            self.assertEqual([x for x in body if not x.startswith(' ')], lines, (old, new))
+            self.assertEqual([t['body'] for t in self.s.thread(a['id'])['texts']], [old, new], 'the original texts are unchanged')
+
+    def test_read_through_comm_cli_records_nothing(self):
+        (self.root / 'a.md').write_text('依頼一\n二\n', encoding='utf-8')
+        code, out = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-901', '--body-file', str(self.root / 'a.md'))
+        a = json.loads(out)
+        self.ev(a, 'received'); self.ev(a, 'started'); self.ev(a, 'returned', body='返答一\n'); self.ev(a, 'closed', actor='Astra')
+        (self.root / 'b.md').write_text('補正\n', encoding='utf-8')
+        code, out = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-901', '--body-file', str(self.root / 'b.md'), '--follows', a['id'])
+        self.assertEqual(code, 0, out)
+        b = json.loads(out)
+        self.assertEqual(b['follows'], a['id'])
+        self.ev(b, 'received')
+        self.s.revise(op(), b['id'], 'request', 'Astra', '補正改\n', '言い直し')
+        before, data = self.counts(), self.db.read_bytes()
+        code, out = self.cli('letter', 'read', b['id'])
+        self.assertEqual(code, 0, out)
+        for want in ('前の連絡：' + a['id'], '依頼 v2（記録 Astra', '補正改', '受領で読んだ v1 からの差', '-補正', '+補正改', '返答：まだない', '--full'):
+            self.assertIn(want, out)
+        self.assertNotIn('返答一', out, 'the default is this letter only')
+        code, out = self.cli('letter', 'read', a['id'], '--full')
+        self.assertEqual(code, 0, out)
+        for want in ('依頼一', '返答一', '補正\n', '補正改', '閉じた', '依頼 v1 を読んだと記録', '記録 姫'):
+            self.assertIn(want, out)
+        self.assertLess(out.index('返答一'), out.index('補正改'), 'time order across letters')
+        code, out = self.cli('letter', 'read', b['id'], '--json')
+        self.assertEqual((code, json.loads(out)['root']), (0, a['id']))
+        self.assertEqual(self.cli('letter', 'read', 'LTR-20261020-' + '0' * 32)[0], 3)
+        self.assertEqual(self.cli('letter', 'read', 'bad')[0], 2)
+        self.assertEqual((self.counts(), self.db.read_bytes()), (before, data), 'reading records nothing')
+
+
 if __name__ == '__main__':
     unittest.main()

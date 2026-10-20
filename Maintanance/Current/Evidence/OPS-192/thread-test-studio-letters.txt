@@ -1,0 +1,63 @@
+test_full_exchange_through_comm_cli (test-studio-letters.HttpTests.test_full_exchange_through_comm_cli) ... usage: python3.14 -m unittest letter receive [-h] --actor ACTOR
+                                             [--recorded-by RECORDED_BY]
+                                             [--claimed-at CLAIMED_AT]
+                                             [--note NOTE]
+                                             [--operation-id OPERATION_ID]
+                                             [--ref-doc REF_DOC]
+                                             [--ref-section REF_SECTION]
+                                             [--body-file BODY_FILE]
+                                             --revision REVISION
+                                             letter_id
+python3.14 -m unittest letter receive: error: the following arguments are required: --revision
+Studio server refused (409): Only the sender records this event
+--set needs --recorded-by; nothing was sent
+ok
+test_http_guards_and_queries (test-studio-letters.HttpTests.test_http_guards_and_queries) ... ok
+test_line_endings_are_kept_from_files_and_standard_input (test-studio-letters.HttpTests.test_line_endings_are_kept_from_files_and_standard_input) ... ok
+test_list_pages_through_comm_cli (test-studio-letters.HttpTests.test_list_pages_through_comm_cli) ... --sender, --recipient, --cursor and --all need --brief; nothing was sent
+ok
+test_stop_request_and_answer_through_comm_cli (test-studio-letters.HttpTests.test_stop_request_and_answer_through_comm_cli) ... Studio server refused (400): withdrawn needs a reason or note
+ok
+test_unreachable_server_sends_nothing (test-studio-letters.HttpTests.test_unreachable_server_sends_nothing) ... Studio server not reachable at http://127.0.0.1:61887; nothing was sent or recorded ([Errno 61] Connection refused)
+[Errno 2] No such file or directory: '/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmp5gu1vaoe/missing.md'; nothing was sent
+ok
+test_watch_reports_changes_once_and_never_loses_them (test-studio-letters.HttpTests.test_watch_reports_changes_once_and_never_loses_them) ... ok
+test_watch_save_failure_is_explicit_and_keeps_the_old_file (test-studio-letters.HttpTests.test_watch_save_failure_is_explicit_and_keeps_the_old_file) ... ok
+test_append_only_tables (test-studio-letters.StoreTests.test_append_only_tables) ... ok
+test_body_limits_and_optional_references (test-studio-letters.StoreTests.test_body_limits_and_optional_references) ... ok
+test_brief_list_reads_no_text (test-studio-letters.StoreTests.test_brief_list_reads_no_text) ... ok
+test_brief_pages_are_stable_complete_and_filtered_on_the_server (test-studio-letters.StoreTests.test_brief_pages_are_stable_complete_and_filtered_on_the_server) ... ok
+test_concurrent_events_one_winner (test-studio-letters.StoreTests.test_concurrent_events_one_winner) ... ok
+test_failure_rolls_back_text_event_and_operation (test-studio-letters.StoreTests.test_failure_rolls_back_text_event_and_operation) ... ok
+test_idempotent_operations_and_reused_ids (test-studio-letters.StoreTests.test_idempotent_operations_and_reused_ids) ... ok
+test_older_withdrawals_still_derive (test-studio-letters.StoreTests.test_older_withdrawals_still_derive) ... ok
+test_original_text_and_state_machine (test-studio-letters.StoreTests.test_original_text_and_state_machine) ... ok
+test_proxy_records_change_nothing (test-studio-letters.StoreTests.test_proxy_records_change_nothing) ... ok
+test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me (test-studio-letters.StoreTests.test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me) ... ok
+test_receipt_names_the_revision_that_was_read (test-studio-letters.StoreTests.test_receipt_names_the_revision_that_was_read) ... ok
+test_refused_transitions_and_who_may_act (test-studio-letters.StoreTests.test_refused_transitions_and_who_may_act) ... ok
+test_revisions_keep_history_and_mark_after_receipt (test-studio-letters.StoreTests.test_revisions_keep_history_and_mark_after_receipt) ... ok
+test_send_and_receipt_times_are_the_server_times_of_those_events (test-studio-letters.StoreTests.test_send_and_receipt_times_are_the_server_times_of_those_events)
+CP-20261020-002: the send time is the time of the `sent` event (one clock reading, also in letters), the receipt ... ok
+test_senders_and_no_proxy_send (test-studio-letters.StoreTests.test_senders_and_no_proxy_send) ... ok
+test_stop_request_and_answers (test-studio-letters.StoreTests.test_stop_request_and_answers) ... ok
+test_documents_and_explicitly_associated_letters (test-studio-letters.TaskReadingTests.test_documents_and_explicitly_associated_letters) ... ok
+test_missing_task_document_and_server_are_told_apart (test-studio-letters.TaskReadingTests.test_missing_task_document_and_server_are_told_apart) ... Studio server refused (404): unknown task OPS-999
+Studio server not reachable at http://127.0.0.1:61922; nothing was sent or recorded ([Errno 61] Connection refused)
+ok
+test_text_output_marks_omissions_and_where_the_whole_is (test-studio-letters.TaskReadingTests.test_text_output_marks_omissions_and_where_the_whole_is) ... ok
+test_v3_mode_reads_the_db_export_not_the_old_json (test-studio-letters.TaskReadingTests.test_v3_mode_reads_the_db_export_not_the_old_json)
+In V3 mode (production) the task comes from the DB export; the generated registry.json is not read. ... ok
+test_delta_from_the_revision_that_was_read (test-studio-letters.ThreadTests.test_delta_from_the_revision_that_was_read) ... ok
+test_delta_keeps_lines_apart_without_a_final_newline (test-studio-letters.ThreadTests.test_delta_keeps_lines_apart_without_a_final_newline) ... ok
+test_link_table_is_append_only_and_guarded (test-studio-letters.ThreadTests.test_link_table_is_append_only_and_guarded) ... ok
+test_links_branches_and_closed_predecessors (test-studio-letters.ThreadTests.test_links_branches_and_closed_predecessors) ... ok
+test_read_through_comm_cli_records_nothing (test-studio-letters.ThreadTests.test_read_through_comm_cli_records_nothing) ... Studio server refused (404): Unknown letter
+Studio server refused (400): Invalid letter ID
+ok
+test_refused_links_leave_no_record (test-studio-letters.ThreadTests.test_refused_links_leave_no_record) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 9.756s
+
+OK

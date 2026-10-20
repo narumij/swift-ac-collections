@@ -1,0 +1,4 @@
+new: thread ['B479', '2328']
+old: list 3 brief 3 closed closed inbox 2
+new again: thread 2 events 4
+OK: the base code reads and uses the extended DB; the new code still reads the thread

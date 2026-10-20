@@ -7,6 +7,9 @@
 
 Letters (H-20261019-25; the original texts are kept by the server, with every revision):
   comm.py letter send --sender Astra --recipient 姫 --task OPS-156 --body-file request.md [--ref-doc D --ref-section S]
+      [--follows LTR-...]   (OPS-192: this letter continues that one; the link is recorded with the send, never later)
+  comm.py letter read LTR-... [--full] [--json]   (the thread: by default this letter's current texts and the revision
+      difference from the revision its recipient read; --full every letter, event and revision of the thread in time order)
   comm.py letter inbox --owner 姫          (to me, not yet done: 未受領・受領・担当中; reading records nothing)
   comm.py letter show LTR-...
   comm.py letter receive LTR-... --actor 姫 --revision N   (the request revision you read; see inbox / show)
@@ -63,7 +66,7 @@ def main():
     send = letter.add_parser('send')
     for name in ('sender', 'recipient', 'task', 'body-file'):
         send.add_argument('--' + name, required=True)
-    for name in ('ref-doc', 'ref-section', 'operation-id'):
+    for name in ('ref-doc', 'ref-section', 'operation-id', 'follows'):
         send.add_argument('--' + name)
     letter.add_parser('inbox').add_argument('--owner', required=True)
     letter.add_parser('show').add_argument('letter_id')
@@ -94,6 +97,10 @@ def main():
     task.add_argument('--full', action='store_true')
     task.add_argument('--json', action='store_true')
     task.add_argument('--doc-lines', type=int, default=40)
+    read = letter.add_parser('read')  # OPS-192 D1: read a thread from one of its letters
+    read.add_argument('letter_id')
+    read.add_argument('--full', action='store_true')
+    read.add_argument('--json', action='store_true')
     watch = letter.add_parser('watch')
     watch.add_argument('--owner', required=True)
     watch.add_argument('--state-file', required=True)
@@ -103,6 +110,8 @@ def main():
     args = parser.parse_args()
     if args.command == 'letter' and args.letter == 'watch':
         sys.exit(watch_command(args))
+    if args.command == 'letter' and args.letter == 'read':
+        sys.exit(read_command(args))
     if args.command == 'letter' and args.letter == 'task':
         sys.exit(task_command(args))
     if args.command == 'letter':
@@ -150,7 +159,7 @@ def letter_command(args):
     op = lambda: args.operation_id or uuid.uuid4().hex
     if args.letter == 'send':
         return studio_client.post('/letters-send', 'letters-send', optional({'operationId': op(), 'sender': args.sender, 'recipient': args.recipient,
-                                  'taskId': args.task, 'body': read_body(args.body_file)}, refDoc=args.ref_doc, refSection=args.ref_section))
+                                  'taskId': args.task, 'body': read_body(args.body_file)}, refDoc=args.ref_doc, refSection=args.ref_section, follows=args.follows))
     if args.letter == 'inbox':
         return studio_client.get('/letters-inbox?' + urllib.parse.urlencode({'owner': args.owner}))
     if args.letter == 'show':
@@ -229,6 +238,62 @@ def task_command(args):
     if not args.full:
         print('\n本文は --full で全版を表示（各連絡は letter show <ID> でも読める）。')
     return 4 if incomplete else 0
+
+
+PART = {'request': '依頼', 'reply': '返答'}
+EVENT_LABEL = {'sent': '送信', 'received': '受領', 'started': '着手', 'returned': '返答', 'declined': '辞退', 'withdrawn': '停止要請',
+               'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂'}
+
+
+def _text_head(t):
+    return f"{PART[t['part']]} v{t['revision']}（記録 {t['recorded_by']} · {t['received_at']}{' · 理由：' + t['reason'] if t['reason'] else ''}）"
+
+
+def read_command(args):
+    """OPS-192 D1: read the thread of a letter through the server only. Read only. Exit: 0 read; 1 server not reachable or
+    result unknown; 2 refused request; 3 unknown letter."""
+    try:
+        got = studio_client.get('/letters/' + urllib.parse.quote(args.letter_id) + '/thread')
+    except studio_client.StudioError as error:
+        print(str(error), file=sys.stderr)
+        return 3 if error.outcome == 'refused' and '(404)' in str(error) else 2 if error.outcome == 'refused' else 1
+    if args.json:
+        print(json.dumps(got, ensure_ascii=False, indent=1))
+        return 0
+    letters = {x['id']: x for x in got['letters']}
+    me = letters[got['letter']]
+    print(f"{me['id']} · {me['taskId']} · {me['sender']} → {me['recipient']} · {me['stateLabel']} · 送信 {me['sentAt']}")
+    print(f"前の連絡：{me['follows'] or 'なし'} · 続き：{' / '.join(me['followedBy']) or 'なし'} · スレッド {got['root']}（{len(letters)}通）")
+    if not args.full:
+        for part in ('request', 'reply'):
+            d = got['delta'][part]
+            if d is None:
+                print(f"\n## {PART[part]}：まだない")
+                continue
+            print(f"\n## {_text_head(d['text'])}\n{d['text']['body']}")
+            if d['basis'] == 'receipt':
+                print(f"### 受領で読んだ v{d['base']} からの差\n{d['diff'] or '（差なし）'}")
+            else:
+                why = '受領の記録がない' if part == 'request' else '返答を読んだ版の記録はない'
+                print(f"### 差：基準不明（{why}。読んだとは扱わない。全版は --full）")
+        print('\nスレッド全体の原文は --full。')
+        return 0
+    print('\n## 連絡')
+    for x in got['letters']:
+        print(f"- {x['id']} · {x['taskId']} · {x['sender']} → {x['recipient']} · {x['stateLabel']} · 前：{x['follows'] or 'なし'}")
+    texts = {(t['letter_id'], t['part'], t['revision']): t for t in got['texts']}
+    print('\n## 流れ（出来事の順、原文）')
+    for e in got['events']:
+        who = e['actor'] if e['recordedBy'] == e['actor'] else f"{e['actor']}（代理記録 {e['recordedBy']}、状態は変えない）"
+        print(f"\n[{e['sequence']}] {e['letterId']} · {EVENT_LABEL.get(e['event'], e['event'])} · {who} · {e['receivedAt']}{' · ' + e['note'] if e['note'] else ''}")
+        if e['text'] is None:
+            continue
+        t = texts[(e['letterId'], e['text']['part'], e['text']['revision'])]
+        if e['event'] == 'received':
+            print(f"{PART[t['part']]} v{t['revision']} を読んだと記録")
+        else:
+            print(f"### {_text_head(t)}\n{t['body']}")
+    return 0
 
 
 def _signature(letter):

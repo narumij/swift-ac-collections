@@ -11,6 +11,7 @@ be) are kept apart, and
 No ACK is "unanswered", never "stopped". Nothing here starts, wakes or resends anything.
 """
 import datetime
+import difflib
 import json
 import re
 import uuid
@@ -168,6 +169,16 @@ def _ref(doc, section):
     return checked['path'], checked['section']
 
 
+def _unified(old, new, old_name, new_name):
+    """A unified diff of two texts. A last line without a newline gets one in the diff, followed by the marker line of
+    diff(1), so it never joins the next line and the missing newline is still shown. The texts themselves are unchanged."""
+    lines = lambda text: re.findall(r'[^\n]*\n|[^\n]+$', text)  # lines end at \n only (a lone \r or U+2028 stays inside)
+    out = []
+    for line in difflib.unified_diff(lines(old), lines(new), old_name, new_name):
+        out.append(line if line.endswith('\n') else line + '\n\\ No newline at end of file\n')
+    return ''.join(out)
+
+
 class LetterMixin:
     def _letter_state(self, con, letter_id):
         state = None
@@ -210,9 +221,13 @@ class LetterMixin:
         con.execute('INSERT INTO letter_events(letter_id,event,actor,recorded_by,claimed_at,received_at,text_sequence,note,effective,operation_id) VALUES (?,?,?,?,?,?,?,?,?,?)',
                     (letter_id, event, actor, recorded_by, claimed_at, at or approvals.now(), text_sequence, note, 1 if effective else 0, operation_id))
 
-    def send(self, operation_id, sender, recipient, task_id, body, recorded_by=None, ref_doc=None, ref_section=None):
+    def send(self, operation_id, sender, recipient, task_id, body, recorded_by=None, ref_doc=None, ref_section=None, follows=None):
+        """`follows` (OPS-192 T1): the existing letter this one continues. The link is written in the same transaction and
+        is part of the operation's content; without it the payload is the one sends had before links existed."""
         if not isinstance(operation_id, str) or not approvals.OPERATION_ID.fullmatch(operation_id):
             raise ValueError('Invalid operation ID')
+        if follows is not None and (not isinstance(follows, str) or not LETTER_ID.fullmatch(follows)):
+            raise ValueError('Invalid letter ID to follow')
         for value in (sender, recipient):
             approvals.text(value, 80)
         recorded_by = sender if recorded_by is None else approvals.text(recorded_by, 80)
@@ -224,6 +239,8 @@ class LetterMixin:
         _body(body)
         ref = _ref(ref_doc, ref_section)
         payload = {'kind': 'letter-send', 'sender': sender, 'recipient': recipient, 'taskId': task_id, 'body': body, 'recordedBy': recorded_by, 'ref': list(ref)}
+        if follows is not None:
+            payload['follows'] = follows
         with self.transaction() as con:
             done = self._operation(con, operation_id, 'letter-send', payload)
             if done is not None:
@@ -232,6 +249,8 @@ class LetterMixin:
                 raise approvals.Conflict('This name is not in the list of letter senders')
             if recorded_by != sender:
                 raise approvals.Conflict('A letter is sent by the sender itself; a proxy send is not accepted')
+            if follows is not None and con.execute('SELECT 1 FROM letters WHERE id=?', (follows,)).fetchone() is None:
+                raise LookupError('Unknown letter to follow')
             letter_id = f'LTR-{_local_date()}-{uuid.uuid4().hex.upper()}'
             self._record_operation(con, operation_id, 'letter-send', payload, recorded_by, 'applied', {'letterId': letter_id})
             # CP-20261020-002: one clock reading for the send; the letter row and its `sent` event carry the same time
@@ -239,6 +258,9 @@ class LetterMixin:
             con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, at))
             text_id = self._insert_text(con, letter_id, 'request', body, '', ref, recorded_by, operation_id)
             self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id, at)
+            if follows is not None:
+                thread = con.execute('SELECT thread_id FROM letter_links WHERE letter_id=?', (follows,)).fetchone()
+                con.execute('INSERT INTO letter_links VALUES (?,?,?,?,?)', (letter_id, follows, thread[0] if thread else follows, operation_id, at))
             return self._letter(con, letter_id) | {'replayed': False}
 
     def event(self, operation_id, letter_id, event, actor, recorded_by=None, claimed_at=None, note='', body=None, ref_doc=None, ref_section=None, revision=None):
@@ -352,10 +374,59 @@ class LetterMixin:
                  **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
                  'request': latest['request'], 'reply': latest['reply'],
                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
-                 'events': events}
+                 'events': events, 'follows': self._follows(con, letter_id)}
         if with_texts:
             value['texts'] = texts
         return value
+
+    def _follows(self, con, letter_id):
+        row = con.execute('SELECT follows_id FROM letter_links WHERE letter_id=?', (letter_id,)).fetchone()
+        return row[0] if row else None
+
+    def thread(self, letter_id):
+        """OPS-192 D1: the thread of LETTER_ID (its root and every letter linked to that root, closed ones included), with
+        every event of those letters in the order of the one event sequence, every text revision with its recorder, and
+        for LETTER_ID itself the current request and reply with the difference from the revision the reader is recorded to
+        have read: the request revision of the recipient's own receipt. The reply has no read record, so its base is
+        unknown; nothing is presumed read. Reading records nothing."""
+        if not isinstance(letter_id, str) or not LETTER_ID.fullmatch(letter_id):
+            raise ValueError('Invalid letter ID')
+        with self.transaction() as con:
+            if con.execute('SELECT 1 FROM letters WHERE id=?', (letter_id,)).fetchone() is None:
+                raise LookupError('Unknown letter')
+            row = con.execute('SELECT thread_id FROM letter_links WHERE letter_id=?', (letter_id,)).fetchone()
+            root = row[0] if row else letter_id
+            links = {r[0]: r[1] for r in con.execute('SELECT letter_id, follows_id FROM letter_links WHERE thread_id=? ORDER BY rowid', (root,))}
+            ids = [r[0] for r in con.execute(f"SELECT id FROM letters WHERE id IN ({','.join('?' * (len(links) + 1))}) ORDER BY rowid", [root, *links])]
+            letters = []
+            for i in ids:
+                x = self._letter(con, i, with_texts=False)
+                letters.append({k: x[k] for k in ('id', 'kind', 'sender', 'recipient', 'taskId', 'sentAt', 'receivedAt', 'state', 'stateLabel', 'requestRevisionAtReceipt')}
+                               | {'follows': links.get(i), 'followedBy': [j for j, f in links.items() if f == i]})
+            marks = ','.join('?' * len(ids))
+            texts = [dict(t) for t in con.execute(f'SELECT * FROM letter_texts WHERE letter_id IN ({marks}) ORDER BY sequence', ids)]
+            by_seq = {t['sequence']: t for t in texts}
+            events = []
+            for e in con.execute(f'SELECT * FROM letter_events WHERE letter_id IN ({marks}) ORDER BY sequence', ids):
+                t = by_seq.get(e['text_sequence'])
+                events.append({'sequence': e['sequence'], 'letterId': e['letter_id'], 'event': e['event'], 'actor': e['actor'], 'recordedBy': e['recorded_by'],
+                               'claimedAt': e['claimed_at'], 'receivedAt': e['received_at'], 'note': e['note'], 'effective': bool(e['effective']),
+                               'text': None if t is None else {'part': t['part'], 'revision': t['revision']}})
+            me = next(x for x in letters if x['id'] == letter_id)
+            delta = {}
+            for part in ('request', 'reply'):
+                mine = [t for t in texts if t['letter_id'] == letter_id and t['part'] == part]
+                if not mine:
+                    delta[part] = None
+                    continue
+                latest = mine[-1]
+                base = me['requestRevisionAtReceipt'] if part == 'request' else None
+                diff = None
+                if base is not None:
+                    old = next(t for t in mine if t['revision'] == base)
+                    diff = _unified(old['body'], latest['body'], f'{part} v{base}', f'{part} v{latest["revision"]}')
+                delta[part] = {'revision': latest['revision'], 'base': base, 'basis': 'receipt' if base is not None else 'unknown', 'diff': diff, 'text': latest}
+            return {'letter': letter_id, 'root': root, 'letters': letters, 'events': events, 'texts': texts, 'delta': delta}
 
     def letter(self, letter_id):
         if not isinstance(letter_id, str) or not LETTER_ID.fullmatch(letter_id):

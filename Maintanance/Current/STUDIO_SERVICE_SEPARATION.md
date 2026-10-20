@@ -329,3 +329,14 @@ Editable shared scope: append Return in this document and Evidence/OPS-192/EXECU
 ## 実施要領の受入・停止（Astra、2026-10-20）
 補正を確認し、[実施要領](Evidence/OPS-192/EXECUTION_PLAN.md)をユーザー相談用の計画として受入。実装合格・未決方針の採用とは区別する。変更ファイル・順序・隔離試験・受入証拠・切戻しを記載済み。
 相談点はN1の回答版明示（任意answersを付けて再回答を閉じる案）と、過去に回答版を記録していない連絡の保守的な扱い。ここで作業を止める。姫へ実装は依頼しない。次はユーザーとの相談。
+
+## ユーザー差し戻し：正本の往復を復元する（2026-10-20）
+ユーザー：「もともと正本でやりとりしてたじゃない？あのときには存在してたけど、今消えちゃってるものをまず復元してるイメージだったな」「ユーザー差し戻しってことで、引き続き検討ループまわしてみて」。前節の計画受入はユーザー採用ではなく、今回差し戻された検討案として扱う。
+基準を、正本で同じ文書に依頼・返却・補正が並び、前後と対応関係を読めていた利用体験の復元へ戻す。版番号の入力や旧記録の分類等の設計都合を先にユーザーへ決めさせない。何が失われ、何を戻せば足りるかを実例から整理し、必要最小限の実施要領を再検討する。サービス分離と出典準備の要求は撤回されていないが、復元との関係・順序を再評価する。検討ループのみ再開。実装・本番変更なし。
+
+## Assignment: user-returned restoration review
+The user returned the execution plan: the purpose was first to restore what canonical-document exchanges already provided, not to design a new communication workflow. Continue the review loop, no implementation.
+Read a small representative prior canonical exchange (request, Return, Astra correction/acceptance in one document) and the current OPS-192 letters. Return a compact before/now/restoration comparison backed by those examples: what context, sequence, correction/response correspondence and decisions could be seen together before, what is missing now, and the smallest way to restore it. Do not assume every historical workflow was perfect or reconstruct all history.
+Revise EXECUTION_PLAN.md around that user-visible experience. For each proposed addition, explain which lost capability it restores, or mark it as a separate existing requirement (service separation / exact source). Reassess ordering. Do not make --answers input, legacy classification, a new schema, or forbidding edits prerequisites merely because the earlier plan proposed them. Prefer reusing existing record/history relationships where sufficient; name real limits honestly. Preserve exact originals and AI/user attribution. No automatic inferred historical links or retroactive user decisions.
+Show one concrete request→return→correction→re-answer example as the recipient and user would read it, without repeating full context. Derive acceptance scenarios from that example. If a genuine user behavior choice remains, explain the lost capability/tradeoff rather than exposing internal machinery as the question.
+Allowed shared changes: revise Evidence/OPS-192/EXECUTION_PLAN.md and append Return in this canonical. Preserve prior Returns; git retains prior plan. No code edits, production operations, DB migration, or commits. Short reply with evidence location. Astra will review and return material gaps; finish this planning loop and stop for user discussion before implementation.

@@ -1,0 +1,89 @@
+test_editing_studio_store_recommends_a_restart (__main__.Startup.test_editing_studio_store_recommends_a_restart) ... FAIL
+test_every_retained_studio_module_is_watched (__main__.Startup.test_every_retained_studio_module_is_watched)
+Every module of this directory that serve.py retains at import is in the restart fingerprints. ... FAIL
+test_failed_generation_exits_and_releases_the_port (__main__.Startup.test_failed_generation_exits_and_releases_the_port) ... FAIL
+test_normal_startup_serves_a_valid_page (__main__.Startup.test_normal_startup_serves_a_valid_page) ... FAIL
+test_occupied_port_changes_nothing (__main__.Startup.test_occupied_port_changes_nothing) ... ok
+
+======================================================================
+FAIL: test_editing_studio_store_recommends_a_restart (__main__.Startup.test_editing_studio_store_recommends_a_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 132, in test_editing_studio_store_recommends_a_restart
+    self.until_serving(proc)
+    ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 82, in until_serving
+    self.fail('the server did not start:\n' + ''.join(lines)[-3000:])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: the server did not start:
+Source problems (fix them; nothing was written):
+  Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md: 正本 link not found: ../../MILESTONES.md
+  Maintanance/Milestones/0.9.0/10_QUALITY-0001.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md
+  Maintanance/Milestones/0.9.0/GATE-1.0.0.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md
+  Release path must be one connected sequence without cycles
+Traceback (most recent call last):
+  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-mnjscx15/root/Maintanance/RegistryApp/serve.py", line 621, in <module>
+    main()
+    ~~~~^^
+  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-mnjscx15/root/Maintanance/RegistryApp/serve.py", line 609, in main
+    subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-mnjscx15/root/Maintanance/RegistryApp/sync.py']' returned non-zero exit status 1.
+
+
+======================================================================
+FAIL: test_every_retained_studio_module_is_watched (__main__.Startup.test_every_retained_studio_module_is_watched)
+Every module of this directory that serve.py retains at import is in the restart fingerprints.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 171, in test_every_retained_studio_module_is_watched
+    self.assertEqual(retained - watched, set(), 'retained but not watched for a restart')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+'studio_store.py' : retained but not watched for a restart
+
+======================================================================
+FAIL: test_failed_generation_exits_and_releases_the_port (__main__.Startup.test_failed_generation_exits_and_releases_the_port)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 122, in test_failed_generation_exits_and_releases_the_port
+    self.assertIn('FAILED', out)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: 'FAILED' not found in 'Source problems (fix them; nothing was written):\n  Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md: 正本 link not found: ../../MILESTONES.md\n  Maintanance/Milestones/0.9.0/10_QUALITY-0001.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md\n  Maintanance/Milestones/0.9.0/GATE-1.0.0.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md\n  Release path must be one connected sequence without cycles\nTraceback (most recent call last):\n  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-va_sjoad/root/Maintanance/RegistryApp/serve.py", line 621, in <module>\n    main()\n    ~~~~^^\n  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-va_sjoad/root/Maintanance/RegistryApp/serve.py", line 609, in main\n    subprocess.run([sys.executable, str(APP / \'sync.py\'), *sync_args()], cwd=ROOT, check=True, **({\'env\': SYNC_ENV} if SYNC_ENV else {}))\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/opt/homebrew/Cellar/python@3.14/3.14.2_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 577, in run\n    raise CalledProcessError(retcode, process.args,\n                             output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command \'[\'/opt/homebrew/opt/python@3.14/bin/python3.14\', \'/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-va_sjoad/root/Maintanance/RegistryApp/sync.py\']\' returned non-zero exit status 1.\n'
+
+======================================================================
+FAIL: test_normal_startup_serves_a_valid_page (__main__.Startup.test_normal_startup_serves_a_valid_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 106, in test_normal_startup_serves_a_valid_page
+    self.until_serving(proc)
+    ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/test-startup-safety.py", line 82, in until_serving
+    self.fail('the server did not start:\n' + ''.join(lines)[-3000:])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: the server did not start:
+Source problems (fix them; nothing was written):
+  Maintanance/Milestones/0.8.0/10_HUMAN_REVIEW.md: 正本 link not found: ../../MILESTONES.md
+  Maintanance/Milestones/0.9.0/10_QUALITY-0001.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md
+  Maintanance/Milestones/0.9.0/GATE-1.0.0.md: 正本 link not found: ../../Quality/Profiles/RedBlackTreeCollections.md
+  Release path must be one connected sequence without cycles
+Traceback (most recent call last):
+  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-r7fk1r1_/root/Maintanance/RegistryApp/serve.py", line 621, in <module>
+    main()
+    ~~~~^^
+  File "/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-r7fk1r1_/root/Maintanance/RegistryApp/serve.py", line 609, in main
+    subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/ops189-r7fk1r1_/root/Maintanance/RegistryApp/sync.py']' returned non-zero exit status 1.
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.357s
+
+FAILED (failures=4)

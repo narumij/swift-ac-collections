@@ -1,0 +1,11 @@
+test_editing_studio_store_recommends_a_restart (__main__.Startup.test_editing_studio_store_recommends_a_restart) ... ok
+test_every_retained_studio_module_is_watched (__main__.Startup.test_every_retained_studio_module_is_watched)
+Every module of this directory that serve.py retains at import is in the restart fingerprints. ... ok
+test_failed_generation_exits_and_releases_the_port (__main__.Startup.test_failed_generation_exits_and_releases_the_port) ... ok
+test_normal_startup_serves_a_valid_page (__main__.Startup.test_normal_startup_serves_a_valid_page) ... ok
+test_occupied_port_changes_nothing (__main__.Startup.test_occupied_port_changes_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 5.617s
+
+OK

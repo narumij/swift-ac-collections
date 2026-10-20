@@ -1,0 +1,3 @@
+sync-before-bind exit 1
+unwatched-studio-store exit 1
+restored

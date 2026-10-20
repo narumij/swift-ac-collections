@@ -1,0 +1,30 @@
+F
+======================================================================
+FAIL: test_isolated_launch (__main__.RealProcess.test_isolated_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/v3/test_serve_v3_mode.py", line 272, in test_isolated_launch
+    self.assertIsNone(proc.poll(), ''.join(lines)[-3000:])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 is not None : Documents the V3 DB refers to are missing (nothing was written):
+  Maintanance/Cache/Astra/AI_GATE.md
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/serve.py", line 621, in <module>
+    main()
+    ~~~~^^
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/serve.py", line 609, in main
+    subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/repo/Maintanance/RegistryApp/sync.py', '--v3-db', '/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-189.UZC2VcgDnC/tmpoh7f4fxx/db.sqlite3']' returned non-zero exit status 1.
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.630s
+
+FAILED (failures=1)
+base exit 1
+ Maintanance/RegistryApp/serve.py | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)

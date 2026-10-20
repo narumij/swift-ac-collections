@@ -1,0 +1,24 @@
+Base e1d7f8f5efce656698878cddbcc5679f0953bbe5
+SHA-256 and git apply --check PASS
+test_editing_studio_store_recommends_a_restart (__main__.Startup.test_editing_studio_store_recommends_a_restart) ... ok
+test_every_retained_studio_module_is_watched (__main__.Startup.test_every_retained_studio_module_is_watched)
+Every module of this directory that serve.py retains at import is in the restart fingerprints. ... ok
+test_failed_generation_exits_and_releases_the_port (__main__.Startup.test_failed_generation_exits_and_releases_the_port) ... ok
+test_normal_startup_serves_a_valid_page (__main__.Startup.test_normal_startup_serves_a_valid_page) ... ok
+test_occupied_port_changes_nothing (__main__.Startup.test_occupied_port_changes_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.997s
+
+OK
+test_activity_wake (__main__.ServeTests.test_activity_wake) ... ok
+test_approvals (__main__.ServeTests.test_approvals) ... ok
+test_get_routes (__main__.ServeTests.test_get_routes) ... ok
+test_post_guards (__main__.ServeTests.test_post_guards) ... ok
+test_save (__main__.ServeTests.test_save) ... ok
+test_sync (__main__.ServeTests.test_sync) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.155s
+
+OK

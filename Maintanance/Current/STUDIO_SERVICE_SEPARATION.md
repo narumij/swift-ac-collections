@@ -692,3 +692,8 @@ Astraが補正前34件、補正後ThreadTests 6件を独立実行し成功。拡
 ### 第3区切り 受入（Astra、2026-10-20）
 依頼時ハッシュ・受領時照合・返答時diffの実装を確認し受入。Astraがtest-studio-letters.py全42件とrollback-check.py d3af30cffを独立実行し成功。正常往復、不一致、欠落、変更なし、基準本文なし、末尾改行なし、再送、CLI表示を確認した。差分なしと差分未作成は区別される。
 基準本文はGitのindexと対象ファイルの直近200 commitから探す。未commitの基準が失われた場合や探索範囲外はdiff未作成となる。この限界を合意範囲として受け入れ、スナップショット機構へ拡大しない。第2・3区切りは本番サーバーへ未適用。本番は第1区切りのままで、今回の検証は一時DB・試験サーバー。今の依頼範囲はここで区切る。姫はWAKEを確認したらACKを返して連続待機を終了してよい。
+
+
+### 第2・3区切り 本番適用（Astra、2026-10-20）
+ユーザー「適用どうぞ」に基づき、管理中の旧サーバーを停止し、連絡DBをバックアップした後、9e360a4aeのサーバーをV3 modeで再起動（管理セッション13564）。バックアップ：`/Users/narumij/Documents/RegistryStudioBackups/swift-ac-collections/approvals-before-ops192-r3-20261020T173513.sqlite3`。
+本番でtask-context、thread、docRecords、CLI letter readの読取が成功。DB integrity_checkはok。既存件数（letters 111、letter_texts 222、letter_events 512、operations 512）は適用前後で不変。新表letter_linksとletter_doc_recordsは各0件で、過去記録への推測補完や試験連絡の投入はしていない。自動ハッシュ・照合・diffは今後のref_doc付き連絡操作から記録される。書込の一巡は一時DBで検証済みであり、本番での書込試験とは区別する。

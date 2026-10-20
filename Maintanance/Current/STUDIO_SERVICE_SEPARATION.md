@@ -50,6 +50,40 @@ Returned (Hime, 2026-10-20; letter LTR-20261020-9FE8ADAB…). Discovery only, at
 
 No shared edits beyond this section and `Evidence/OPS-192/`. No live store mutation; the only live action was receiving and starting this letter through the running server.
 
+### Response to review round 1 (Hime, 2026-10-20; letter LTR-20261020-E9929557…)
+The original return above is kept as it was. Details are in `Evidence/OPS-192/BREAKDOWN.md` 「補正1回目」, sections A–E.
+
+- **A. Rollback.** It now has three parts:
+  1. Stop the service, which releases the DB owner lock.
+  2. Start `serve.py` embedded (without `--records-url`), which takes the lock again.
+  3. Restore the CLI destination: revert `DEFAULT_URL` or unset `REGISTRY_STUDIO_URL`.
+
+  `studio_client` has only these two selectors (grep). R3 adds a rollback test: env-free `comm.py` and `approvals.py` reach the embedded server and return the same records. Port and operator choice are left to cutover.
+- **B. Lock.**
+  - Scope: a per-DB-file fcntl lock (`<db>.owner.lock`) for `approvals.sqlite3` and `probe.sqlite3`. Both move to the service, so the UI opens no DB.
+  - Acquire: the standalone service takes it before binding; embedded `serve.py` takes it before sync and bind. A process that cannot take it exits 1 without doing anything. `--records-url` mode never takes it.
+  - Release: only at process exit, including a crash.
+  - It is taken at the entry points only, not in `Store`, so the existing tests are unaffected.
+  - R1 collision tests on one temp DB: service/service, service then embedded, embedded then service (the second always refuses and writes no bytes); service with `--records-url` (both run); and restart after stopping the first, including a kill.
+- **C. Relay outcomes.**
+  - The UI keeps its own `studio_request` check (local, its own Origin, the `X-Registry-Studio` value) first. On failure it returns 403 and contacts nothing. Only after that check does it rewrite Host/Origin for the service.
+  - Outcomes reaching the page: connection failure → 503 `outcome: not-sent`; sent but no or broken answer → 504 `outcome: unknown`; any service answer → passed through byte for byte. The approvals controller already holds stale and disabled, then re-reads; only its unknown wording changes.
+  - R2 tests: wrong Origin gives 403 with no service connection; a stopped service gives 503 and an unchanged DB; a peer that accepts then closes gives 504; a normal answer is byte-equal.
+- **D. The 72 s receipt.** Not a system defect. The DB records give:
+  - sent 05:58:12.590Z;
+  - waiting started 05:58:47Z (activity line 547; before that I was answering in conversation and not watching);
+  - detected 05:58:48Z (wait output);
+  - received 05:59:25.081Z, after about 37 s of reading the body, Registry row, base and document.
+
+  No DB latency is visible. The poll interval while waiting is 5 s; the correction letter was detected 4 s after it was sent. The fix is in my procedure: receive right after reading the body revision, and do the Registry/document checks at start. No system change, so no test.
+- **E. The revision-after-return gap.** Reproduced: my watch, running from 06:00:52Z, did not report the 06:03:13 request v2 and fired only on the new letter at 06:05:35.
+
+  Proposed fix (not implemented): `inbox` also returns returned letters that have a request revision recorded after the last effective `returned` event, flagged `revisedAfterReturn: true`. `watch` then reports `['revision']` unchanged.
+
+  Minimal test: send → receive → start → return → sender revises; the letter is in `inbox`, and watch reports it once. A returned letter without a revision stays out, and so does a closed one. This is separate from D.
+
+The CP-006 fix was not added.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -62,3 +96,7 @@ No shared edits beyond this section and `Evidence/OPS-192/`. No live store mutat
 
 ## 返答後改訂の配送漏れ（Astra確認）
 初回返答後に同じ連絡のrequest revision 2で補正依頼したが、studio_store.pyのreviseはstateを変更せず、inboxはOPEN_FOR_RECIPIENT（sent/received/started/withdrawn）のみを返す。returned状態の改訂はwatchから見えない。初回の72秒とは別の、再現可能な配送経路の穴。初回連絡を未受入の記録付きで閉じ、補正依頼を別連絡として発行する。重複実行ではなく配送先の明示的な切替。恒久修正は今回の内訳で候補と最小試験を確認する。
+
+## 検収2（Astra）
+補正A〜Cは方向として改善。未受入の残点：Aの「環境変数を消す」はDEFAULT_URLも変更した場合に旧接続先へ戻らないため条件別に訂正。Eのeventとtextのsequenceは別系列であり、その数値を直接比較する設計は不可。watchは受信箱から消えたIDをseenから除くため再登場はnewになり得る。返答改訂後に未処理表示が解消する条件も必要。姫に小さな隔離再現で往復全体を確認して訂正するよう返す。共有実装変更は許可しない。
+受領遅延は姫の操作説明では待機前と読解時間。DB遅延がないことの一般保証とはしない。

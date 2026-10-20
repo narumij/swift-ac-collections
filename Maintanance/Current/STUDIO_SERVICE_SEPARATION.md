@@ -258,6 +258,27 @@ At base `f13cadc8c`. Plan only. `Evidence/OPS-192/EXECUTION_PLAN.md` §1–5 is 
 
 No code, live change or commit.
 
+### Response: goal-fixed restoration plan (Hime, 2026-10-20; letter LTR-20261020-187EC132…)
+Plan only. `Evidence/OPS-192/EXECUTION_PLAN.md` §1–6 is revised; the earlier G1–G4 head is in git. The goal is met in DB, CLI and Studio, with no copying of letters into Markdown.
+
+- **Existing relations reused** (checked):
+  - `letter_events.sequence` is one counter across all letters, so a thread's events order without timestamps.
+  - Events link to their texts through `text_sequence`.
+  - All text revisions are UNIQUE and append-only.
+  - Only the letter-to-letter link is missing (no relation in `letters`), so T1's `letter_links` is the one new table, and it is needed for that reason.
+- **Minimum.**
+  - T1: `send --follows`, written in the send transaction. Unknown targets and non-participants are refused. No post-hoc or inferred links.
+  - D1: `GET /letters/<id>/thread` and `comm.py letter read <id> [--full]`.
+    - Full: the whole thread's events in sequence order, each with its exact text version (id, part, revision, recorder, time).
+    - Delta has two kinds, both shown: (a) a follow-up letter's own body is the new message relative to its predecessor; (b) a revision gives a line diff from the version the reader received to the current one, built at read time with both originals kept. Actual changed text, never a one-line pointer.
+  - T2: the Studio letter detail gets 「今回」 (a+b) and 「スレッドの流れ」 (event rows open originals), GET only.
+- **Correspondence.** A reply answers its letter's request. A correction is a `follows` letter. The reply it reviewed is fixed by event order: the predecessor's last reply before the correction's `sent`.
+- **Example and scenarios.** Both reading modes are in §3; S1–S8 with tests are in §4. They are store, HTTP and CLI tests in `test-studio-letters.py`, and WebKit tests via the extended `letters_e2e`. Reading records nothing.
+- **Order.** T1 → D1 → T2 on the current `serve.py`. Service separation (R1/R2) is not required for this goal; it is an independent requirement done after, moving the one added route along. Exact source (P1) fits inside D1, and P2 is documentation. N1 stays open.
+- **One user choice.** Whether corrections after a return are normally sent as follow-up letters. They then read as delta (a) and reach the inbox. Revising a returned letter keeps the (b) diff but leaves the N1 inbox gap. Permissions are unchanged either way.
+
+No implementation, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -369,3 +390,12 @@ Allowed shared changes: revise Evidence/OPS-192/EXECUTION_PLAN.md and append Ret
 ユーザー：「今のゴールはテキストの正本機能の復元と差分読み機能とを成立させること」。これは連絡DB／Studioで以前の文脈・往復の機能を復元する要求。Markdown運用へ戻すことではない。レターからスレッドが辿れる要求も継続する。事情を知る人には今回の差分、知らない人には原文の全体を同じ起点から提示する。
 今回の返却G1〜G4は正本文書の並べ方に戻り、T1/T2を不要として先送りしているため、このゴールの実施要領として未受入。旧テキストの機能を比較対象とし、連絡記録を再び手でMarkdownに複写・並べ直す運用を主解にしない。範囲を拡大せずDB/CLI/Studioで満たす最小の実施要領へ修正する。
 判断抽出・判断一覧等のアイデアは次段階。サービス分離と出典の要求は消さないが、この復元に必須か独立かを区別して順序を整理する。実装開始ではなく検討ループ継続。
+
+
+## 正本単位のCLI読取と改築方針（ユーザー、2026-10-20）
+ユーザー：「いけるところまで改築でいこう」。旧DBを残して新しい器へ移る案はいったん置き、現行DBの改修として検討する。
+追加要求：「コマンドで正本単位で読めるようにする」。正本を指定して、そこに明示的に関連付いた連絡をまとめて読み、必要に応じて各本文・スレッドへ辿れること。連絡IDを先に知ることを前提にしない。差分／全文の読み方と併せて実施要領へ組み込む。これは検討依頼であり実装開始ではない。
+判断抽出・未回答補正の抽出・担当交代要約は今後の候補。問題があれば個別に凍結でき、原文と基本連絡を止めない方向で検討する。今回は実装範囲に含めない。
+
+## 実施要領の限定再検討（Astra、2026-10-20）
+DB/CLI/Studioで文脈と差分を読む方向は要求に合う。ただし、補正が参照した返答版を「送信前の最後の返答」から断定することは、実際に読んだ版の証明にならない。構造上の順序と参照版の証拠を区別すること。返却後改訂の通知漏れを、続きの連絡を使う運用のみで解決済みにしないこと。例の返却・改訂の順序の矛盾を直し、旧計画と現行手順の重複を整理する。正本単位の読取を含む実施要領を返却し、ユーザー相談前に実装へ進まない。

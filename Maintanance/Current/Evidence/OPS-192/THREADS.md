@@ -174,3 +174,67 @@ T2の試験（WebKit、実サーバー）：
 - 受け取った連絡から、前の連絡の行が見える。
 - 押すとその本文がそのまま出る。
 - サーバーにはGETしか届かず、受領は記録されない。
+
+## 判断の出典への備え（2026-10-20、LTR-20261020-0271EDF4…への回答）
+
+前の節の最小案（T1・T2、後からのlinkと通知の穴は別に決める）は、そのまま残す。ここで足すのは3つだけ。
+
+### 1. 変わらないスレッドの識別
+
+- `thread_id`は、根の連絡のID。
+- T1の`letter_links`に、送るときに`thread_id`も書く。値は、`follows`先の`thread_id`をそのまま写したもの。
+  - `follows`先にもつながりがなければ、`follows`先の連絡IDになる。
+  - つながりのない連絡の`thread_id`は、自分のID（保存しないで導く）。
+- 送ったあとに変わらない。理由は2つ：
+  - つながりは送るときに1回だけ書き、追記だけで変えない。
+  - 後からのlinkは範囲の外。
+  - 後からのlinkを入れるときは、根を差し替えないこと（根になっている連絡、つまり続きを持つ連絡は、つなげない）を、その決まりに足す。
+- `thread`の一覧と`/letters/<id>`は、`threadId`を返す。
+
+### 2. 出典を正確に指す：連絡ID・依頼か返答か・版
+
+確かめた事実：
+
+- 本文は`letter_texts`に、`(letter_id, part, revision)`ごとに1行ある。この組はUNIQUE（STUDIO_SCHEMA）。
+- 本文はUPDATEとDELETEがtriggerで止まる。だから、この3つで指した本文は、あとで改訂されても変わらない。改訂は別の版の行として足される。
+- 例：9FE8ADAB…の依頼には、v1（2,143字、Astra、05:58:12Z）とv2（3,487字、Astra、06:03:13Z）の両方が残っている。v2を足したあとも、v1はそのまま読める。
+
+決める表し方（判断DBの`source`／`locator`に入れる辞書）：
+
+```json
+{"kind": "letter-text", "letter": "LTR-20261020-9FE8ADABFD1044F8B562DCF1F54AD66A", "part": "request", "revision": 2,
+ "sha256": "de7b8fa9c42ed6415b42de8fba393e1a135f61000f120b7634418721e027409d",
+ "thread": "LTR-20261020-9FE8ADABFD1044F8B562DCF1F54AD66A", "speaker": "Astra"}
+```
+
+- `letter`・`part`・`revision`：本文を一意に決める。最新の版に読み替えない（版は必ず書く）。
+- `sha256`：本文（UTF-8）のhash。v2は上の値、v1は`86500c96dad2ec1fdfd735aac40fa5349b4bf17cdc3856e556564f2c6db0ae02`（いま読んで計算した）。指した本文が本当にそれかを、誰でも確かめられる。
+- `thread`：その本文が生まれた会話。文脈を示すだけで、判断の適用の範囲や権限を表すものではない。
+- `speaker`：本文を書いた人（`letter_texts.recorded_by`）。判断を記録した人（判断DBの`actor`）や、決めた人（`decided_by`）とは別。
+
+判断DBの側で確かめた事実：
+
+- `_locator`は、空でない辞書なら何でも受け付けて保存する（`decision_store.py` 121行）。
+- 返すときはそのまま返す（`decision()` 261行、`decision_cli.py query`）。
+- だから、この表し方は今のままで入れて、取り出せる。ただし、中身が正しいか、指した先があるか、版が合うかは、どこでも確かめていない（Astraの確認と同じ）。
+
+### 3. 判断DBの出典から、その本文へ戻る道
+
+- いまある道：`decision_cli.py query --id DEC-…`で`source`を取り出し、`comm.py letter show <letter>`の`texts`から、partとrevisionが合う1つを選ぶ。手でできるが、選ぶ作業とhashの確かめが手作業になる。
+- 足す最小のもの：
+  - `comm.py letter text <letter> --part request|reply --revision N [--sha256 H]`
+    - その1つの本文だけをそのまま出す。
+    - 版がなければexit 3。`--sha256`が合わなければexit 1で、本文を出さない。
+    - 読むだけで、受領にはならない。今の`/letters/<id>`を読んで選ぶので、新しい口は要らない。
+  - 判断DBの側の変更は、いまは要らない。表し方を`decisions/README.md`に書く。判断DBが連絡DBを呼ぶ道（店をまたぐつながり）は作らない。
+- 画面：要らない。判断を一覧で見せる画面は、範囲の外。
+
+### 変わるファイルと試験
+
+| 区切り | ファイル | 中身 | 試験 |
+|---|---|---|---|
+| T1（足す） | `approvals.py`・`studio_store.py`・`records_service.py`・`comm.py` | `letter_links.thread_id`と、`thread`と`letter()`が返す`threadId` | 根・続き・続きの続きが、同じ`threadId`を返す。つながりのない連絡は自分のID。送ったあと変わらない。 |
+| P1 | `comm.py`（`letter text`、約30行）、`test-studio-letters.py`（HttpTests） | 1つの本文を正確に出す | v1とv2を指してそれぞれの本文がbytesまで一致する（v2を足したあともv1が変わらない）。ない版はexit 3。合わないsha256はexit 1で本文を出さない。読んでも行数が変わらない。CLIがSQLiteを直接開かない（今のguard）。 |
+| P2 | `decisions/README.md` | `letter-text`の表し方と、戻る手順 | 文書だけ（試験なし） |
+
+前提：T1はR1のあと。P1は今のコードだけで作れる（R1の前でもよい）。P2はいつでもよい。

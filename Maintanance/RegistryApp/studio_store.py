@@ -422,20 +422,57 @@ class LetterMixin:
                 if len(out) >= limit:
                     has_more = True
                     break
-                revisions = dict(con.execute('SELECT part, MAX(revision) FROM letter_texts WHERE letter_id=? GROUP BY part', (row['id'],)).fetchall())
-                received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
-                seen = None
-                if received is not None and received['text_sequence'] is not None:
-                    seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
-                stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
-                out.append({'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
-                            **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
-                            'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
-                            'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
-                            'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
-                            'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None})
+                out.append(self._brief_row(con, row, events, current))
                 next_cursor = f'r{row["rowid"]}'
             return {'letters': out, 'brief': True, 'limit': limit, 'cursor': cursor, 'hasMore': has_more, 'nextCursor': next_cursor if has_more else None}
+
+    def _brief_row(self, con, row, events, current):
+        """One letter of the brief list: metadata, event kinds and revision numbers only (no body column is read)."""
+        revisions = dict(con.execute('SELECT part, MAX(revision) FROM letter_texts WHERE letter_id=? GROUP BY part', (row['id'],)).fetchall())
+        received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
+        seen = None
+        if received is not None and received['text_sequence'] is not None:
+            seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
+        stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
+        return {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+                **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
+                'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
+                'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
+                'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,
+                'proxyRecords': sum(1 for e in events if not e['effective']), 'lastEventAt': events[-1]['received_at'] if events else None}
+
+    def task_letters(self, task, docs):
+        """OPS-192: the letters explicitly associated with TASK, oldest first, without any text: the same taskId, or a text
+        revision (request or reply, any revision) whose ref_doc is one of DOCS (exact repository-relative paths, as
+        check_ref stored them). Each letter says why (`association`): taskId, and every referencing revision with its
+        section and whether it is still the latest revision of that part. Nothing is inferred from prose; reading records
+        nothing."""
+        approvals.text(task, 40)
+        if not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', task):
+            raise ValueError('Invalid task ID')
+        if not isinstance(docs, list) or not all(isinstance(d, str) and d for d in docs):
+            raise ValueError('Expected a list of document paths')
+        with self.transaction() as con:
+            by_task = {r[0] for r in con.execute('SELECT id FROM letters WHERE task_id=?', (task,))}
+            refs = {}
+            marks = ','.join('?' * len(docs))
+            for r in con.execute(f'SELECT letter_id, part, revision, ref_doc, ref_section FROM letter_texts WHERE ref_doc IN ({marks}) ORDER BY sequence', docs) if docs else []:
+                refs.setdefault(r['letter_id'], []).append(dict(part=r['part'], revision=r['revision'], doc=r['ref_doc'], section=r['ref_section']))
+            out = []
+            for row in con.execute('SELECT rowid, id, kind, sender, recipient, task_id, received_at FROM letters ORDER BY rowid').fetchall():
+                if row['id'] not in by_task and row['id'] not in refs:
+                    continue
+                events = con.execute('SELECT event, effective, note, text_sequence, received_at FROM letter_events WHERE letter_id=? ORDER BY sequence', (row['id'],)).fetchall()
+                current = None
+                for e in events:
+                    if e['effective'] and e['event'] != 'revised':
+                        current = e['event']
+                item = self._brief_row(con, row, events, current)
+                latest = {'request': item['requestRevision'], 'reply': item['replyRevision']}
+                item['association'] = {'taskId': row['id'] in by_task,
+                                       'refs': [dict(r, current=r['revision'] == latest[r['part']]) for r in refs.get(row['id'], [])]}
+                out.append(item)
+            return {'task': task, 'documents': docs, 'letters': out}
 
     def letters(self, task=None, member=None, state=None, limit=200):
         if state is not None and state not in STATES:

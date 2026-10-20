@@ -1,0 +1,1 @@
+PASS: OPS-156 letters (view model: rows/filters/flags/receipt diff/stop/proxy, detail only for the chosen letter, stale answers ignored, last good kept for the same letter; DOM: textContent only, keyed rows, intents; same revision; GET-only single-flight pollers drop old answers).

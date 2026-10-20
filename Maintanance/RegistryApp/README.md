@@ -491,5 +491,31 @@ python3 Maintanance/RegistryApp/comm.py letter watch --owner 姫 --state-file "$
 
 連絡欄は「古い連絡へ」「最新へ戻る」でページを切り替える。CLIは `--cursor` で続きを、`--all` で全ページを読む。担当/状態の絞り込みはサーバー側で行う。閲覧中に状態が変わるため、全ページの同時点snapshotは保証しない。更新または最新ページから再確認する。cursorは同じDBの閲覧継続用で、DB再構築を跨ぐ有効性は保証しない。判断や連絡の固定IDの代用にはしない。
 
+### タスクの正本と連絡を1コマンドで読む（OPS-192）
+
+```sh
+python3 Maintanance/RegistryApp/comm.py letter task OPS-192            # 正本の冒頭40行と、関連する連絡の一覧
+python3 Maintanance/RegistryApp/comm.py letter task OPS-192 --doc-lines 0 --full   # 正本の全文と、各連絡の本文の全版
+```
+
+- 正本：Registry（V3 modeではDBのexport、既定modeではregistry.json）の、そのtaskの詳細に書かれた`….md`のパスだけ。
+  - 対象はバッククォートで囲んだもの、または詳細の全体が1つのパスのとき。
+  - 文から推測しない。
+  - パスはリポジトリの中だけを読む。
+- 連絡：次のどちらかに当たるもの。閉じた連絡も含め、古い順に並べる。
+  - 同じtaskIdの連絡。
+  - 依頼か返答のどれかの版の`ref_doc`が、その正本の1つと同じ連絡。
+- 関連：各連絡に、なぜ関連しているかを出す。
+  - 同じtaskIdか。
+  - どの部分のどの版が、どの見出しを参照しているか（今の参照か、前の版の参照か）。
+- 読むだけ：受領や状態は変えない。CLIはサーバー（`GET /task-context?task=`と`/letters/<id>`）だけを通す。
+- 終了コード：
+  - 0：読めた
+  - 1：サーバーに届かない、または結果が不明
+  - 2：要求を拒否された
+  - 3：taskがない
+  - 4：読めたが、正本が見つからない、またはRegistryの詳細に正本のパスがない
+- `--json`で、機械向けの出力になる。
+
 ## 判断の補助DB
 2026-10-19からCLIで日常利用。[運用・照会手順](decisions/README.md)。文書の判断正本は維持し、Studio画面/サーバーには未接続。

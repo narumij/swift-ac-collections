@@ -415,7 +415,9 @@ class StoreTests(Base):
         self.assertEqual(len(set(sends)), 1)
 
 
-class HttpTests(Base):
+class Http(Base):
+    """A real server thread on port 0 and the comm.py command line (shared by the HTTP test classes)."""
+
     def setUp(self):
         super().setUp()
         p = patch.object(serve.studio_store, 'Store', lambda *a, **k: RealComm(self.db, self.root))
@@ -451,6 +453,8 @@ class HttpTests(Base):
             except SystemExit as exit_:
                 return exit_.code, out.getvalue()
 
+
+class HttpTests(Http):
     def test_full_exchange_through_comm_cli(self):
         body = self.root / 'req.md'
         body.write_text(BODY, encoding='utf-8')
@@ -624,6 +628,130 @@ class HttpTests(Base):
         self.assertEqual(self.raw('SELECT * FROM letters'), [])
         code, _ = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-156', '--body-file', str(self.root / 'missing.md'))
         self.assertEqual(code, 1, 'an unreadable body file sends nothing')
+
+
+class TaskReadingTests(Http):
+    """OPS-192 第1区切り: `comm.py letter task TASK-ID` reads a task's canonical documents (as the Registry names them) and the
+    letters explicitly associated with the task: the same taskId, or a text revision whose ref_doc is one of those documents.
+    Read only; nothing is inferred from prose."""
+
+    def setUp(self):
+        super().setUp()
+        (self.root / 'Spec.md').write_text('# Spec\n\n## S\n\n仕様の本文\n', encoding='utf-8')
+        out = self.root / 'out'
+        out.mkdir()
+        tasks = [dict(id='OPS-901', state='ACTIVE', owner='姫', item='読む', condition='', detail='`Doc.md` / `Spec.md`（補足）'),
+                 dict(id='OPS-902', state='ACTIVE', owner='姫', item='欠落', condition='', detail='`Missing.md`'),
+                 dict(id='OPS-903', state='ACTIVE', owner='姫', item='文だけ', condition='', detail='正本は会話で決める'),
+                 dict(id='OPS-904', state='PROPOSED', owner='姫', item='新しい', condition='', detail='`New.md`')]
+        (out / 'registry.json').write_text(json.dumps({'tasks': tasks}, ensure_ascii=False), encoding='utf-8')
+        (self.root / 'New.md').write_text('# New\n\n## A\n\nまだ連絡なし\n', encoding='utf-8')
+        p = patch.object(serve, 'OUTPUT', out)
+        p.start()
+        self.addCleanup(p.stop)
+
+    def read(self, task, *extra):
+        code, out = self.cli('letter', 'task', task, '--json', *extra)
+        return code, (json.loads(out) if out.strip() else None)
+
+    def test_documents_and_explicitly_associated_letters(self):
+        a = self.send(task_id='OPS-901')
+        b = self.send(task_id='OPS-777', ref_doc='Doc.md', ref_section='仕様')
+        c = self.send(task_id='OPS-777')  # neither the task nor a reference: never listed
+        d = self.send(task_id='OPS-901')
+        self.ev(d, 'received'); self.ev(d, 'started'); self.ev(d, 'returned', body='返答'); self.ev(d, 'closed', actor='Astra')
+        e = self.send(task_id='OPS-778', ref_doc='Spec.md', ref_section='S')
+        self.ev(e, 'received')
+        self.s.revise(op(), e['id'], 'request', 'Astra', '第2版', '参照先の変更', ref_doc='Doc.md', ref_section='空でない')
+        f = self.send(task_id='OPS-779')
+        self.ev(f, 'received'); self.ev(f, 'started'); self.ev(f, 'returned', body='参照つきの返答', ref_doc='Doc.md', ref_section='仕様')
+        count = lambda: (len(self.raw('SELECT * FROM letter_events')), len(self.raw('SELECT * FROM operations')))
+        before = count()
+        code, got = self.read('OPS-901')
+        self.assertEqual(code, 0)
+        self.assertEqual(count(), before, 'reading records nothing')
+        self.assertEqual((got['task']['id'], [x['path'] for x in got['documents']], [x['status'] for x in got['documents']]),
+                         ('OPS-901', ['Doc.md', 'Spec.md'], ['ok', 'ok']), 'only the paths the Registry names, in its order')
+        self.assertEqual(got['documents'][0]['text'], (self.root / 'Doc.md').read_text(encoding='utf-8'))
+        by = {x['id']: x for x in got['letters']}
+        self.assertEqual(set(by), {a['id'], b['id'], d['id'], e['id'], f['id']}, 'the unrelated letter is not listed')
+        self.assertNotIn(c['id'], by)
+        self.assertEqual((by[a['id']]['association']['taskId'], by[a['id']]['association']['refs']), (True, []))
+        self.assertEqual(by[b['id']]['association'], {'taskId': False, 'refs': [{'part': 'request', 'revision': 1, 'doc': 'Doc.md', 'section': '仕様', 'current': True}]})
+        self.assertEqual((by[d['id']]['state'], by[d['id']]['association']['taskId']), ('closed', True), 'closed letters are kept')
+        self.assertEqual(by[e['id']]['association']['refs'], [
+            {'part': 'request', 'revision': 1, 'doc': 'Spec.md', 'section': 'S', 'current': False},
+            {'part': 'request', 'revision': 2, 'doc': 'Doc.md', 'section': '空でない', 'current': True}], 'a reference changed by a revision')
+        self.assertEqual(by[f['id']]['association']['refs'], [{'part': 'reply', 'revision': 1, 'doc': 'Doc.md', 'section': '仕様', 'current': True}])
+        self.assertNotIn('body', json.dumps(got['letters'], ensure_ascii=False), 'the list reads no letter text')
+        self.assertEqual([x['id'] for x in got['letters']], [x for x in (a['id'], b['id'], d['id'], e['id'], f['id'])], 'oldest first')
+        # --full adds every text revision of every listed letter, exactly as stored
+        code, full = self.read('OPS-901', '--full')
+        texts = {x['id']: [(t['part'], t['revision'], t['body']) for t in x['texts']] for x in full['letters']}
+        self.assertEqual(texts[e['id']], [('request', 1, BODY), ('request', 2, '第2版')])
+        self.assertEqual(count(), before)
+
+    def test_text_output_marks_omissions_and_where_the_whole_is(self):
+        self.send(task_id='OPS-901')
+        code, out = self.cli('letter', 'task', 'OPS-901', '--doc-lines', '2')
+        self.assertEqual(code, 0)
+        self.assertIn('Doc.md', out)
+        self.assertIn('省略', out, 'a shortened document says so')
+        self.assertIn('--doc-lines 0', out, 'and how to read it whole')
+        code, whole = self.cli('letter', 'task', 'OPS-901', '--doc-lines', '0')
+        self.assertIn('x\n', whole)
+        self.assertNotIn('省略', whole.split('## 連絡')[0])
+
+    def test_missing_task_document_and_server_are_told_apart(self):
+        own = self.send(task_id='OPS-902')
+        (self.root / 'Missing.md').write_text('# M\n\n## X\n\n一時的にある\n', encoding='utf-8')
+        other = self.send(task_id='OPS-778', ref_doc='Missing.md', ref_section='X')  # another task referencing the document
+        (self.root / 'Missing.md').unlink()
+        code, got = self.read('OPS-902')
+        self.assertEqual((code, got['documents'][0]['status']), (4, 'missing'), 'a missing document: exit 4')
+        self.assertEqual({x['id'] for x in got['letters']}, {own['id'], other['id']}, 'a missing file keeps its explicit references associated')
+        self.assertEqual([x['association'] for x in got['letters'] if x['id'] == other['id']],
+                         [{'taskId': False, 'refs': [{'part': 'request', 'revision': 1, 'doc': 'Missing.md', 'section': 'X', 'current': True}]}])
+        code, got = self.read('OPS-903')
+        self.assertEqual((code, got['documents']), (4, []), 'no document path in the Registry detail: exit 4')
+        code, got = self.read('OPS-999')
+        self.assertEqual(code, 3, 'unknown task')
+        code, got = self.read('OPS-904')
+        self.assertEqual((code, got['letters'], got['documents'][0]['status']), (0, [], 'ok'), 'a new task with no letters')
+        with self.assertRaises(ValueError):
+            self.s.task_letters('bad id', [])
+        with socket.socket() as s:
+            s.bind(('127.0.0.1', 0))
+            dead = s.getsockname()[1]
+        with patch.dict(os.environ, {'REGISTRY_STUDIO_URL': f'http://127.0.0.1:{dead}'}):
+            code, _ = self.cli('letter', 'task', 'OPS-901')
+        self.assertEqual(code, 1, 'the server is not reachable')
+        with self.assertRaisesRegex(studio_client.StudioError, '400'):
+            studio_client.get('/task-context?task=../x')
+
+
+    def test_v3_mode_reads_the_db_export_not_the_old_json(self):
+        """In V3 mode (production) the task comes from the DB export; the generated registry.json is not read."""
+        sys.path.insert(0, str(Path(serve.__file__).resolve().parent / 'v3'))
+        import registry_v3_write as w3
+        fixture = json.loads((Path(serve.__file__).resolve().parent / 'v3' / 'fixtures' / 'base.json').read_text(encoding='utf-8'))
+        fixture['tasks'][2]['detail'] = '`Spec.md`'  # TASK-003 in the DB names Spec.md
+        db = self.root / 'v3.sqlite3'
+        w3.create(str(db), fixture)
+        saves = self.root / 'saves'
+        saves.mkdir()
+        (serve.OUTPUT / 'registry.json').write_text(json.dumps({'tasks': [dict(id='TASK-003', state='DONE', owner='古い', item='古いJSON', condition='', detail='`Doc.md`')]}, ensure_ascii=False), encoding='utf-8')
+        p = patch.object(serve, 'V3', serve.v3_mode(db, saves))
+        p.start()
+        self.addCleanup(p.stop)
+        ref = self.send(task_id='OPS-778', ref_doc='Spec.md', ref_section='S')
+        before = db.read_bytes()
+        code, got = self.read('TASK-003')
+        self.assertEqual(code, 0)
+        self.assertEqual((got['task']['item'], got['task']['owner'], [d['path'] for d in got['documents']]), (fixture['tasks'][2]['item'], fixture['tasks'][2]['owner'], ['Spec.md']),
+                         'the DB export, not the old JSON (which names Doc.md and another owner)')
+        self.assertEqual([x['id'] for x in got['letters']], [ref['id']])
+        self.assertEqual(db.read_bytes(), before, 'the V3 DB is only read')
 
 
 if __name__ == '__main__':

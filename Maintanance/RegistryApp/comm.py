@@ -89,6 +89,11 @@ def main():
     for name in ('sender', 'recipient', 'cursor'):
         lst.add_argument('--' + name)
     lst.add_argument('--all', action='store_true')
+    task = letter.add_parser('task')  # OPS-192: a task's canonical documents and its explicitly associated letters
+    task.add_argument('task_id')
+    task.add_argument('--full', action='store_true')
+    task.add_argument('--json', action='store_true')
+    task.add_argument('--doc-lines', type=int, default=40)
     watch = letter.add_parser('watch')
     watch.add_argument('--owner', required=True)
     watch.add_argument('--state-file', required=True)
@@ -98,6 +103,8 @@ def main():
     args = parser.parse_args()
     if args.command == 'letter' and args.letter == 'watch':
         sys.exit(watch_command(args))
+    if args.command == 'letter' and args.letter == 'task':
+        sys.exit(task_command(args))
     if args.command == 'letter':
         try:
             result = letter_command(args)
@@ -180,6 +187,48 @@ def letter_command(args):
             raise ValueError('--set needs --recorded-by')
         return studio_client.post('/letters-senders', 'letters-senders', {'names': args.set, 'recordedBy': args.recorded_by})
     return studio_client.get('/letters-senders')
+
+
+def task_command(args):
+    """OPS-192: read a task's canonical documents (the paths its Registry detail names) and the letters explicitly
+    associated with it (same taskId, or a text revision referencing one of those documents), through the server only.
+    Read only. Exit: 0 read; 1 server not reachable or result unknown; 2 refused request; 3 unknown task; 4 read, but a
+    document is missing or the detail names none."""
+    try:
+        got = studio_client.get('/task-context?' + urllib.parse.urlencode({'task': args.task_id}))
+        if args.full:
+            for letter in got['letters']:
+                letter['texts'] = studio_client.get('/letters/' + urllib.parse.quote(letter['id']))['texts']
+    except studio_client.StudioError as error:
+        print(str(error), file=sys.stderr)
+        return 3 if error.outcome == 'refused' and '(404)' in str(error) else 2 if error.outcome == 'refused' else 1
+    incomplete = not got['documents'] or any(d['status'] != 'ok' for d in got['documents'])
+    if args.json:
+        print(json.dumps(got, ensure_ascii=False, indent=1))
+        return 4 if incomplete else 0
+    t = got['task']
+    print(f"{t['id']} · {t['state']} · {t['owner']} · {t['item']}\n詳細（Registry）: {t['detail']}\n\n## 正本")
+    if not got['documents']:
+        print('（Registryの詳細に .md の正本パスがない）')
+    for d in got['documents']:
+        if d['status'] != 'ok':
+            print(f"- {d['path']}：{'見つからない' if d['status'] == 'missing' else 'リポジトリの外'}")
+            continue
+        lines = d['text'].splitlines()
+        shown = lines if args.doc_lines <= 0 else lines[:args.doc_lines]
+        print(f"- {d['path']}（{len(lines)}行）\n" + '\n'.join(shown))
+        if len(shown) < len(lines):
+            print(f"…（省略：全{len(lines)}行のうち{len(shown)}行。全文は --doc-lines 0）")
+    print(f"\n## 連絡（{len(got['letters'])}通、古い順。閉じた連絡も含む）")
+    for x in got['letters']:
+        why = (['同じtaskId'] if x['association']['taskId'] else []) + [
+            f"{r['part']} v{r['revision']} が {r['doc']} § {r['section']} を参照（{'今の参照' if r['current'] else '前の版の参照'}）" for r in x['association']['refs']]
+        print(f"- {x['id']} · {x['taskId']} · {x['sender']} → {x['recipient']} · {x['stateLabel']} · 送信 {x['sentAt']}\n  関連：{' / '.join(why)}")
+        for text in x.get('texts', []):
+            print(f"  ### {'依頼' if text['part'] == 'request' else '返答'} v{text['revision']}（記録 {text['recorded_by']} · {text['received_at']}）\n" + text['body'])
+    if not args.full:
+        print('\n本文は --full で全版を表示（各連絡は letter show <ID> でも読める）。')
+    return 4 if incomplete else 0
 
 
 def _signature(letter):

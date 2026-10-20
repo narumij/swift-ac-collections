@@ -561,3 +561,22 @@ answeredで対象版を記録する方向は確認。ただし判定が出来事
 1. 本番はV3だが追加試験はOUTPUT/registry.jsonのみ。隔離したV3 fixtureでDB export→task-context→CLIの一巡を確認すること。旧JSONが異なるtaskを持っていてもV3側を読むことを示す。実DB/8088は使わない。
 2. get_task_contextがstatus=okの文書だけをtask_lettersへ渡すため、正本ファイル欠落時に、別taskIdだがその正本をref_docで参照している連絡が一覧から消える。存在と関連の根拠は別なので、有効なリポジトリ内の明示パスなら欠落していても関連を維持し、欠落を表示すること。リポジトリ外は引き続き拒否。試験には異なるtaskIdの参照連絡を含める。
 同じ変更範囲で補正し、実行結果をこの下に返却してください。新しい機能は足さず、commit・本番操作なし。
+
+### 補正1 Return（姫、2026-10-20）
+- 1: `test_v3_mode_reads_the_db_export_not_the_old_json` を追加した。`v3/fixtures/base.json` の写しで、TASK-003 の詳細を `` `Spec.md` `` にする。これを `registry_v3_write.create` で一時DBに書き、`serve.V3` をそのDBへ向けた。旧JSONには、同じIDで別の内容（Doc.md・別の担当）を置いた。CLIの読み取りの結果、件名・担当・正本はV3側のもので、Spec.md を参照する別taskIdの連絡も出た。DBのバイト列は変わらない。実DB/8088は使っていない。
+- 2: `serve.py` は、`missing` の明示パスも関連の根拠として `task_letters` に渡す（`outside` は従来どおり拒否）。欠落パスは、リポジトリ相対に正規化して表示する。試験では、OPS-778 の連絡が `Missing.md` を参照する。ファイルを消しても、OPS-902 の一覧に「request v1 の参照」として残り、終了コードは4、状態は missing になる。
+- 結果:
+  - test-studio-letters 29 OK
+  - test-serve OK
+  - test-view-model-letters PASS
+  - startup-safety OK
+  - 否定対照: ok だけを渡すと、2のtestが落ちる。旧JSONを読むと、1のtestが落ちる。
+- 証拠: `Evidence/OPS-192/task-reading-test-*.txt` と `task-reading.diff`（基準 HEAD 2887cabff、sha256 aec3ceb2f6b6…）。commitなし。
+
+
+### 第1区切り 受入（Astra、2026-10-20）
+補正後のtest-studio-letters.py 29件を独立実行し成功。V3 fixtureと欠落正本への参照維持を確認。Astra管理のサーバーを再起動し、`comm.py letter task OPS-192 --json --full`を本番で読取実行。OPS-192の正本1件、連絡16通、本文35版を取得し、返った正本本文が実ファイル全文と一致することを確認。試験の読取副作用なしの確認と区別し、本番DBを更新する試験はしていない。
+利用例：`python3 Maintanance/RegistryApp/comm.py letter task OPS-192`。正本全文は`--doc-lines 0`、連絡の全本文は`--full`。今回の受入はこの入口のみ。スレッド・差分・会議・サービス分離は未実装。サーバー管理セッション59879。
+
+### 設計材料メモ（今回実装しない）
+ユーザーとの議論で、検討材料の由来・枝分かれ・合流を辿る「文脈相関図」と、各要素へ適用される判断を示す「付箋」の考え方が出た。決定の正本を置き換えず、判断の適用先や正本への未反映を照合する助けとする案。往復に正本diffを結び付ける案も含め、後段の検討材料として保持し、今回の最小読取実装へ混ぜない。

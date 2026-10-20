@@ -331,6 +331,61 @@ def get_letters(parsed):
         return 503, {'error': 'Studio records unavailable'}
 
 
+def registry_tasks():
+    """The tasks of the Registry the page is built from: the V3 export in V3 mode, else the generated registry.json."""
+    if V3 is not None:
+        _, sa = v3_modules()
+        conn = v3_open(V3['db'])
+        try:
+            return sa.export_doc(conn)['tasks']
+        finally:
+            conn.close()
+    return json.loads((OUTPUT / 'registry.json').read_text(encoding='utf-8'))['tasks']
+
+
+def task_documents(detail):
+    """OPS-192: the canonical documents a Registry detail names explicitly: every backticked `….md` path (an anchor is
+    dropped), or the whole detail when it is one bare .md path. Prose is never searched for document names."""
+    detail = (detail or '').strip()
+    named = re.findall(r'`([^`\s]+\.md)(?:#[^`]*)?`', detail)
+    if not named and re.fullmatch(r'[^\s`]+\.md', detail):
+        named = [detail]
+    out = []
+    root = activity.ROOT.resolve()
+    for raw in dict.fromkeys(named):
+        path = (root / raw).resolve()
+        if Path(raw).is_absolute() or not path.is_relative_to(root):
+            out.append({'path': raw, 'status': 'outside'})
+        elif not path.is_file():
+            out.append({'path': path.relative_to(root).as_posix(), 'status': 'missing'})
+        else:
+            out.append({'path': path.relative_to(root).as_posix(), 'status': 'ok', 'text': path.read_text(encoding='utf-8')})
+    return out
+
+
+def get_task_context(parsed):
+    """OPS-192: GET /task-context?task=ID — the task as the Registry has it, its canonical documents, and the letters
+    explicitly associated with it (studio_store.task_letters). Read only."""
+    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+    if set(query) != {'task'} or len(query['task']) != 1 or not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', query['task'][0]):
+        return 400, {'error': 'Expected task=<TASK-ID>'}
+    task = query['task'][0]
+    try:
+        row = next((t for t in registry_tasks() if t.get('id') == task), None)
+    except (OSError, ValueError, KeyError, sqlite3.Error):
+        return 503, {'error': 'Registry unavailable'}
+    if row is None:
+        return 404, {'error': f'unknown task {task}'}
+    documents = task_documents(row.get('detail'))
+    try:
+        # a missing file is still an explicit document of the task: letters that reference it stay associated
+        letters = studio_store.Store().task_letters(task, [d['path'] for d in documents if d['status'] in ('ok', 'missing')])['letters']
+    except (OSError, sqlite3.Error):
+        return 503, {'error': 'Studio records unavailable'}
+    keep = ('id', 'state', 'owner', 'item', 'condition', 'detail')
+    return 200, json_bytes({'task': {k: row.get(k) for k in keep}, 'documents': documents, 'letters': letters})
+
+
 LETTER_FIELDS = {
     'letters-send': ({'operationId', 'sender', 'recipient', 'taskId', 'body'}, {'recordedBy', 'refDoc', 'refSection'}),
     'letters-event': ({'operationId', 'letterId', 'event', 'actor'}, {'recordedBy', 'claimedAt', 'note', 'body', 'refDoc', 'refSection', 'revision'}),
@@ -379,6 +434,8 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
             return self.reply(*get_letters(parsed))
+        if parsed.path == '/task-context':
+            return self.reply(*get_task_context(parsed))
         route = GET_ROUTES.get(self.path)
         if route is None:
             return self.reply(404, {'error': 'Not found'})

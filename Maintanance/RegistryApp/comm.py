@@ -121,6 +121,7 @@ def main():
         t=turns.add_parser(name);t.add_argument('round_id')
         if name=='watch':
             t.add_argument('--context',required=True);t.add_argument('--wait',type=float,default=30)
+            t.add_argument('--owner');t.add_argument('--inbox-context')
         if name in ('speak','nop'):
             t.add_argument('--actor',required=True);t.add_argument('--turn',type=int,required=True);t.add_argument('--context',required=True);t.add_argument('--operation-id',required=True)
             if name=='speak':t.add_argument('--body-file',required=True)
@@ -190,7 +191,10 @@ def turns_command(args):
             timeout=15
             if action=='watch':
                 if not 0<=args.wait<=30:raise ValueError('wait must be 0..30')
-                q.update(after=args.context,wait=args.wait);timeout=args.wait+5
+                q.update(after=args.context,wait=args.wait)
+                if args.owner is not None:q['owner']=args.owner
+                if args.inbox_context is not None:q['inboxAfter']=args.inbox_context
+                timeout=args.wait+5
             result=studio_client._call('GET','/letter-turns?'+urllib.parse.urlencode(q),timeout=timeout)
         else:
             b={'action':'create' if action=='open' else action,'actor':args.actor,'operationId':args.operation_id}

@@ -76,6 +76,18 @@ class TaskRoundStore(Store):
             self.setup(c)
             return self.snapshot(c,rid)
 
+    def inbox_notice_context(self,owner):
+        """A read-only cursor for state changes to request letters addressed to OWNER (a self-reported name)."""
+        approvals.text(owner,80)
+        with self.transaction() as c:
+            sequence=c.execute("""SELECT COALESCE(MAX(e.sequence),0) FROM letters l
+                JOIN letter_events e ON e.letter_id=l.id
+                WHERE l.recipient=? AND l.kind='request' AND e.effective=1 AND e.event!='revision-received'
+                AND (e.event!='revised' OR EXISTS(SELECT 1 FROM letter_texts t
+                    WHERE t.sequence=e.text_sequence AND t.part='request'))""",(owner,)).fetchone()[0]
+            value=json.dumps([owner,sequence],ensure_ascii=False,separators=(',',':'))
+            return hashlib.sha256(value.encode()).hexdigest()
+
     def act(self,b):
         if not isinstance(b,dict): raise ValueError('Expected object')
         action=b.get('action'); actor=b.get('actor');op=b.get('operationId')

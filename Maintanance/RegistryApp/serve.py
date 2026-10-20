@@ -447,11 +447,21 @@ class Handler(BaseHTTPRequestHandler):
                 if 'letter' in q:return self.reply(200,json_bytes(store.rounds_for_letter(q['letter'][0])))
                 wait=float(q.get('wait',['0'])[0])
                 if not 0<=wait<=30:raise ValueError('wait must be 0..30')
+                if len(q.get('owner',[]))>1 or len(q.get('inboxAfter',[]))>1:raise ValueError('owner and inboxAfter may appear only once')
+                owner=q.get('owner',[None])[0]
+                inbox_after=q.get('inboxAfter',[None])[0]
+                if inbox_after is not None and owner is None:raise ValueError('inboxAfter requires owner')
+                if inbox_after is not None and not re.fullmatch(r'[0-9a-f]{64}',inbox_after):raise ValueError('Invalid inboxAfter context')
+                inbox_baseline=(inbox_after if inbox_after is not None else store.inbox_notice_context(owner)) if owner is not None else None
                 until=time.monotonic()+wait
                 while True:
                     out=store.show_round(q['round'][0])
-                    if out['context']!=q.get('after',[''])[0] or time.monotonic()>=until:break
+                    inbox_context=store.inbox_notice_context(owner) if owner is not None else None
+                    inbox_changed=owner is not None and inbox_context!=inbox_baseline
+                    if out['context']!=q.get('after',[''])[0] or inbox_changed or time.monotonic()>=until:break
                     time.sleep(.1)
+                if owner is not None:
+                    out=out|{'ownerInboxOwner':owner,'ownerInboxContext':inbox_context,'ownerInboxChanged':inbox_changed}
                 return self.reply(200,out)
             except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):

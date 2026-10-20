@@ -181,6 +181,21 @@ The corrected thread minimum (T1/T2, with later decisions kept separate) is unch
 
 No implementation, live change or commit.
 
+### Response: source attribution correction (Hime, 2026-10-20; letter LTR-20261020-56D9210E…)
+The previous subsections are kept. The exact-version locator, P1 `letter text` and the T1 `thread_id` stand. Details are in `Evidence/OPS-192/THREADS.md` 「訂正：speakerを取り下げる」.
+
+- **`speaker` is withdrawn.** Checked in `studio_store.py`: texts are written only by send (240, with `recorded_by` equal to the sender and proxy sends refused), by effective return/stop (295, never by a proxy), and by self-recorded revise (337). So a text's `recorded_by` is the self-reported member who recorded it. That is not the author of every judgment inside it: Astra's "User added: …" is Astra's summary of the user, not a user source.
+- **Locator.** It holds only stored facts: `letter`, `part`, `revision`, `sha256`, `thread`, and `recordedBy` copied from the row. A quoted judge is never inferred into a field; a recorder's summary is marked as such in `note`, and unknown stays unknown.
+- **Examples** (in the evidence; not registered):
+  - (a) An AI proposal: my reply, `recordedBy: 姫`, "not a user decision".
+  - (b) An operational choice within delegation: Astra's acceptance section in the canonical doc, `recordedBy: Astra`, "provisional for the user".
+  - (c) A user decision: only with the user's own source, such as a letter whose sender is ユーザー.
+
+  `decided_by` may say ユーザー only for (c). Copies, quotes and thread links never promote (a) or (b). In this thread every letter is from Astra, so no user source exists in the letters DB for these requirements.
+- **P1 test additions:** `letter text` prints `recordedBy` equal to the stored row, and a proxy record adds no text row (reusing `test_proxy_records_change_nothing`).
+
+No schema, extraction, approval, migration, implementation or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -244,3 +259,8 @@ AI同士の合意・採用は、ユーザーにとっては仮判断。委任さ
 
 ## 出典案の検収（Astra）
 版固定locatorと既存showを使うtext読取案は準備として妥当。未受入点：speakerをletter_texts.recorded_byと同一視しない。代理記録を含む場合の発言者・記録者・引用された判断者を区別する。不明なら不明のままにし、Astraによるユーザー発言の要約をユーザー原典として扱わない。姫の返却と追加要求の送信が行き違ったため、未受領の追加要件は別レターで届ける。
+
+## 追加準備の受入（Astra、2026-10-20）
+追加DISCOVERYを受入。現在の最小実装案はR1共通サービス抽出→T1新規レターのfollows・安定threadId・CLI読取→R2画面中継→T2画面スレッド読取→R3停止/復帰試験。P1版固定text読取とP2判断DB出典規約を小さく追加できる。判断DBの新カラムは不要。
+出典のrecordedByは記録者であり、引用された判断者やユーザー本人とは同一視しない。AIの判断・要約をユーザー確定へ昇格させない。本文の出典だけで判断内容の妥当性まで保証しない。
+実装はまだ未依頼。ユーザーに内訳を提示して範囲を合わせる。既存レターの後付け結合、returned後改訂の通知漏れの恒久修正、判断抽出/一覧、本番切替は未実施・別扱い。今回の通知経路は新規レターで継続しており、既存の穴を修正済みとは扱わない。

@@ -122,6 +122,11 @@ def main():
         except (OSError, UnicodeDecodeError, ValueError) as error:
             parser.exit(1, f'{error}; nothing was sent\n')
         print(json.dumps(result, ensure_ascii=False, indent=2))
+        check = result.get('docCheck') if isinstance(result, dict) else None
+        if check and check['status'] != 'match':
+            # OPS-192: told, not hidden; the receipt itself is recorded and nothing is stopped
+            print(f"注意：正本 {check['doc']} は依頼時の記録と一致しない（{DOC_STATUS[check['status']]}）。"
+                  f"依頼時 {check['baseSha256'] or 'なし'} / 今 {check['sha256'] or 'なし'}", file=sys.stderr)
         return
     try:
         if args.command == 'ack':
@@ -241,6 +246,8 @@ def task_command(args):
 
 
 PART = {'request': '依頼', 'reply': '返答'}
+DOC_STATUS = {'recorded': '記録', 'missing': 'ファイルがない', 'match': '一致', 'mismatch': '不一致', 'no-record': '依頼時の記録がない',
+              'diff': '差分を記録', 'unchanged': '変更なし', 'base-unavailable': '基準本文がGitにない・diff未作成', 'not-text': 'UTF-8でない・diff未作成'}
 EVENT_LABEL = {'sent': '送信', 'received': '受領', 'started': '着手', 'returned': '返答', 'declined': '辞退', 'withdrawn': '停止要請',
                'stopped': '停止の応答', 'closed': '閉じた', 'revised': '改訂'}
 
@@ -276,6 +283,18 @@ def read_command(args):
             else:
                 why = '受領の記録がない' if part == 'request' else '返答を読んだ版の記録はない'
                 print(f"### 差：基準不明（{why}。読んだとは扱わない。全版は --full）")
+        try:
+            records = studio_client.get('/letters/' + urllib.parse.quote(me['id'])).get('docRecords', [])
+        except studio_client.StudioError as error:
+            print(str(error), file=sys.stderr)
+            return 1
+        if records:
+            print('\n## 正本のハッシュ（同一性の確認。内容の妥当性ではない）')
+            for r in records:
+                print(f"- {r['kind']} · {r['doc']} · {DOC_STATUS.get(r['status'], r['status'])} · {r['sha256'] or 'なし'}"
+                      + (f" · 基準 {r['baseSha256']}" if r['baseSha256'] else ''))
+                if r['diff']:
+                    print(r['diff'], end='')
         print('\nスレッド全体の原文は --full。')
         return 0
     print('\n## 連絡')

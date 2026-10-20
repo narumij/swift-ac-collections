@@ -82,6 +82,11 @@ STUDIO_SCHEMA = (
     # transaction). thread_id is the root letter of the thread and never changes. Several letters may follow one (a branch).
     'CREATE TABLE IF NOT EXISTS letter_links (letter_id TEXT PRIMARY KEY REFERENCES letters(id), follows_id TEXT NOT NULL REFERENCES letters(id), '
     'thread_id TEXT NOT NULL REFERENCES letters(id), operation_id TEXT NOT NULL REFERENCES operations(id), received_at TEXT NOT NULL, CHECK (letter_id <> follows_id))',
+    # OPS-192 第3区切り: the sha256 of the whole file of a text revision's ref_doc — recorded with the request, checked at
+    # receipt, and with the reply the diff from that base (when Git has it). An identity check, not a review of content.
+    'CREATE TABLE IF NOT EXISTS letter_doc_records (sequence INTEGER PRIMARY KEY AUTOINCREMENT, letter_id TEXT NOT NULL REFERENCES letters(id), '
+    'kind TEXT NOT NULL, text_sequence INTEGER NOT NULL REFERENCES letter_texts(sequence), doc TEXT NOT NULL, sha256 TEXT, base_sha256 TEXT, '
+    'status TEXT NOT NULL, diff TEXT, operation_id TEXT NOT NULL REFERENCES operations(id), received_at TEXT NOT NULL)',
     "CREATE TRIGGER IF NOT EXISTS letter_links_thread BEFORE INSERT ON letter_links WHEN NEW.thread_id IS NOT "
     "COALESCE((SELECT thread_id FROM letter_links WHERE letter_id = NEW.follows_id), NEW.follows_id) BEGIN SELECT RAISE(ABORT, 'thread_id must be the thread of the followed letter'); END",
 )
@@ -116,7 +121,7 @@ class Store:
                 con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_history_{operation} BEFORE {operation} ON history BEGIN SELECT RAISE(ABORT, 'append-only history'); END")
             for statement in STUDIO_SCHEMA:
                 con.execute(statement)
-            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links'):
+            for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records'):
                 for operation in ('UPDATE', 'DELETE'):
                     con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT, 'append-only {table}'); END")
             yield con

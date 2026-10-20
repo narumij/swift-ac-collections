@@ -892,5 +892,137 @@ class ThreadTests(Http):
         self.assertEqual((self.counts(), self.db.read_bytes()), (before, data), 'reading records nothing')
 
 
+class DocHashTests(Base):
+    """OPS-192 第3区切り: a letter that names its canonical document (ref_doc) records, automatically, the sha256 of the whole
+    file when the request is sent, checks it against the file when the request is received, and records the diff from that
+    base and the new hash when the reply is written. The base text comes from Git only; when it cannot be found the diff is
+    said to be not made (never an empty diff). Bytes are hashed as they are; nothing is normalized."""
+
+    def setUp(self):
+        super().setUp()
+        self.git('init', '-q')
+        self.git('add', 'Doc.md')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'doc')
+
+    def git(self, *a):
+        import subprocess
+        return subprocess.run(['git', '-C', str(self.root), *a], check=True, capture_output=True, text=True).stdout.strip()
+
+    def sha(self, name='Doc.md'):
+        import hashlib
+        return hashlib.sha256((self.root / name).read_bytes()).hexdigest()
+
+    def records(self, letter):
+        return [(r['kind'], r['status']) for r in self.s.letter(letter['id'])['docRecords']]
+
+    def ref(self, **kw):
+        return self.send(ref_doc='Doc.md', ref_section='仕様', **kw)
+
+    def reply(self, a, body='返答'):
+        self.ev(a, 'started')
+        return self.ev(a, 'returned', body=body)
+
+    def test_round_trip_records_hash_check_and_diff(self):
+        base = self.sha()
+        a = self.ref()
+        self.assertEqual([(r['kind'], r['doc'], r['sha256'], r['status']) for r in a['docRecords']], [('request', 'Doc.md', base, 'recorded')])
+        got = self.ev(a, 'received')
+        self.assertEqual((got['docCheck']['status'], got['docCheck']['sha256'], got['docCheck']['baseSha256']), ('match', base, base))
+        with open(self.root / 'Doc.md', 'a', encoding='utf-8') as f:
+            f.write('追記した行\n')
+        r = self.reply(a)['docRecords'][-1]
+        self.assertEqual((r['kind'], r['status'], r['baseSha256'], r['sha256']), ('reply', 'diff', base, self.sha()))
+        self.assertIn('+追記した行\n', r['diff'])
+        self.assertTrue(r['diff'].startswith(f'--- Doc.md sha256:{base[:12]}'))
+
+    def test_mismatch_at_receipt_is_told_and_does_not_stop_the_receipt(self):
+        a = self.ref()
+        (self.root / 'Doc.md').write_bytes(b'# Doc\r\n\r\n## \xe4\xbb\x95\xe6\xa7\x98\r\n\r\nCRLF\r\n')  # same text in CRLF: a different file
+        got = self.ev(a, 'received')
+        self.assertEqual((got['state'], got['docCheck']['status']), ('received', 'mismatch'))
+        self.assertNotEqual(got['docCheck']['sha256'], got['docCheck']['baseSha256'])
+        self.assertEqual(self.records(a), [('request', 'recorded'), ('receipt', 'mismatch')])
+
+    def test_missing_file_unchanged_and_no_reference(self):
+        a, b = self.ref(), self.ref()
+        plain = self.send()
+        self.ev(plain, 'received')
+        self.reply(plain)
+        self.assertEqual(self.s.letter(plain['id'])['docRecords'], [], 'a letter without ref_doc records nothing')
+        self.ev(a, 'received')
+        r = self.reply(a)['docRecords'][-1]
+        self.assertEqual((r['status'], r['diff'], r['sha256'], r['baseSha256']), ('unchanged', '', self.sha(), self.sha()))
+        (self.root / 'Doc.md').unlink()
+        self.assertEqual(self.ev(b, 'received')['docCheck']['status'], 'missing')
+        r = self.reply(b)['docRecords'][-1]
+        self.assertEqual((r['status'], r['diff'], r['sha256']), ('missing', None, None))
+
+    def test_base_not_in_git_is_not_an_empty_diff(self):
+        (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
+        a = self.send(ref_doc='New.md', ref_section='A')
+        self.ev(a, 'received')
+        (self.root / 'New.md').write_text('# N\n\n## A\n\n変えた\n', encoding='utf-8')
+        r = self.reply(a)['docRecords'][-1]
+        self.assertEqual((r['status'], r['diff'], r['sha256']), ('base-unavailable', None, self.sha('New.md')))
+        # the same base, once it is in Git (the index here), gives the diff
+        (self.root / 'New.md').write_text('# N\n\n## A\n\n未commit\n', encoding='utf-8')
+        self.git('add', 'New.md')
+        b = self.send(ref_doc='New.md', ref_section='A')
+        self.ev(b, 'received')
+        (self.root / 'New.md').write_text('# N\n\n## A\n\n変えた', encoding='utf-8')  # and no final newline
+        r = self.reply(b)['docRecords'][-1]
+        self.assertEqual(r['status'], 'diff')
+        self.assertIn('-未commit\n+変えた\n\\ No newline at end of file\n', r['diff'])
+
+    def test_resend_keeps_the_first_hash_and_reply_revisions_diff_again(self):
+        o = op()
+        a = self.ref(operation_id=o)
+        first = a['docRecords'][0]['sha256']
+        with open(self.root / 'Doc.md', 'a', encoding='utf-8') as f:
+            f.write('後で変えた\n')
+        again = self.ref(operation_id=o)
+        self.assertTrue(again['replayed'])
+        self.assertEqual([r['sha256'] for r in again['docRecords']], [first], 'a resend is not rehashed')
+        e = op()
+        self.ev(a, 'received', operation_id=e)
+        self.assertEqual(self.ev(a, 'received', operation_id=e)['docCheck']['status'], 'mismatch', 'a replayed receipt returns the recorded check')
+        self.assertEqual(self.records(a), [('request', 'recorded'), ('receipt', 'mismatch')])
+        self.reply(a)
+        self.s.revise(op(), a['id'], 'reply', '姫', '返答2', '直した')
+        self.assertEqual(self.records(a), [('request', 'recorded'), ('receipt', 'mismatch'), ('reply', 'diff'), ('reply', 'diff')])
+
+    def test_records_are_append_only(self):
+        self.ref()
+        con = sqlite3.connect(self.db)
+        try:
+            for sql in ("UPDATE letter_doc_records SET sha256='x'", 'DELETE FROM letter_doc_records'):
+                with self.assertRaises(sqlite3.DatabaseError, msg=sql):
+                    con.execute(sql)
+        finally:
+            con.close()
+
+
+class DocHashCliTests(Http):
+    def test_receive_tells_a_mismatch_and_read_shows_the_records(self):
+        import subprocess
+        for a in (('init', '-q'), ('add', 'Doc.md'), ('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'doc')):
+            subprocess.run(['git', '-C', str(self.root), *a], check=True, capture_output=True)
+        (self.root / 'r.md').write_text('依頼\n', encoding='utf-8')
+        code, out = self.cli('letter', 'send', '--sender', 'Astra', '--recipient', '姫', '--task', 'OPS-192', '--body-file', str(self.root / 'r.md'), '--ref-doc', 'Doc.md', '--ref-section', '仕様')
+        a = json.loads(out)
+        with open(self.root / 'Doc.md', 'a', encoding='utf-8') as f:
+            f.write('受領前の変更\n')
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code, out = self.cli('letter', 'receive', a['id'], '--actor', '姫', '--revision', '1')
+        self.assertEqual((code, json.loads(out)['state'], json.loads(out)['docCheck']['status']), (0, 'received', 'mismatch'))
+        self.assertIn('一致しない（不一致）', err.getvalue())
+        self.ev(a, 'started'); self.ev(a, 'returned', body='返答')
+        code, out = self.cli('letter', 'read', a['id'])
+        self.assertEqual(code, 0, out)
+        for want in ('## 正本のハッシュ', 'receipt · Doc.md · 不一致', 'reply · Doc.md · 差分を記録', '+受領前の変更'):
+            self.assertIn(want, out)
+
+
 if __name__ == '__main__':
     unittest.main()

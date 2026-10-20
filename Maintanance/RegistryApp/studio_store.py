@@ -12,7 +12,9 @@ No ACK is "unanswered", never "stopped". Nothing here starts, wakes or resends a
 """
 import datetime
 import difflib
+import hashlib
 import json
+import subprocess
 import re
 import uuid
 
@@ -179,6 +181,47 @@ def _unified(old, new, old_name, new_name):
     return ''.join(out)
 
 
+def _doc_bytes(doc):
+    """The bytes of DOC (a path check_ref stored) as they are now, or None when the file is gone."""
+    import activity
+    try:
+        return (activity.ROOT.resolve() / doc).read_bytes()
+    except (FileNotFoundError, IsADirectoryError, NotADirectoryError):
+        return None
+
+
+def _git_base(doc, sha):
+    """The bytes of a version of DOC whose sha256 is SHA, from Git only: the index and the last 200 commits touching DOC.
+    None when Git has no such version (or this is not a Git checkout). Nothing is written."""
+    import activity
+    root = str(activity.ROOT.resolve())
+    run = lambda *a, **k: subprocess.run(['git', '-C', root, *a], capture_output=True, timeout=20, **k)
+    try:
+        blobs = [line.split()[1] for line in run('ls-files', '-s', '--', doc).stdout.decode().splitlines() if line.strip()]
+        for line in run('log', '-n', '200', '--format=', '--raw', '--no-abbrev', '--', doc).stdout.decode().splitlines():
+            if line.startswith(':'):
+                blobs += [b for b in line.split()[2:4] if set(b) != {'0'}]
+        blobs = list(dict.fromkeys(blobs))
+        if not blobs:
+            return None
+        out = run('cat-file', '--batch', input=''.join(b + '\n' for b in blobs).encode()).stdout
+    except (OSError, subprocess.SubprocessError, IndexError, UnicodeDecodeError):
+        return None
+    at = 0
+    while at < len(out):
+        end = out.index(b'\n', at)
+        head = out[at:end].split()
+        if len(head) != 3:
+            at = end + 1
+            continue
+        size = int(head[2])
+        data = out[end + 1:end + 1 + size]
+        at = end + 1 + size + 1
+        if hashlib.sha256(data).hexdigest() == sha:
+            return data
+    return None
+
+
 class LetterMixin:
     def _letter_state(self, con, letter_id):
         state = None
@@ -258,6 +301,7 @@ class LetterMixin:
             con.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)', (letter_id, 'request', sender, recipient, task_id, operation_id, at))
             text_id = self._insert_text(con, letter_id, 'request', body, '', ref, recorded_by, operation_id)
             self._insert_event(con, letter_id, 'sent', sender, recorded_by, None, text_id, '', True, operation_id, at)
+            self._record_request_doc(con, letter_id, text_id, ref[0], operation_id)
             if follows is not None:
                 thread = con.execute('SELECT thread_id FROM letter_links WHERE letter_id=?', (follows,)).fetchone()
                 con.execute('INSERT INTO letter_links VALUES (?,?,?,?,?)', (letter_id, follows, thread[0] if thread else follows, operation_id, at))
@@ -295,7 +339,7 @@ class LetterMixin:
         with self.transaction() as con:
             done = self._operation(con, operation_id, 'letter-event', payload)
             if done is not None:
-                return self._letter(con, letter_id) | {'replayed': True, 'effective': done['result']['effective']}
+                return self._letter(con, letter_id) | {'replayed': True, 'effective': done['result']['effective']} | self._doc_check(con, letter_id, event)
             letter = con.execute('SELECT * FROM letters WHERE id=?', (letter_id,)).fetchone()
             if letter is None:
                 raise LookupError('Unknown letter')
@@ -322,7 +366,11 @@ class LetterMixin:
                     raise ValueError('No such request revision')
                 text_id = row[0]
             self._insert_event(con, letter_id, event, actor, recorded_by, claimed_at, text_id, note, effective, operation_id)
-            return self._letter(con, letter_id) | {'replayed': False, 'effective': effective}
+            if effective and event == 'received':
+                self._record_receipt_doc(con, letter_id, text_id, operation_id)
+            elif effective and part == 'reply' and text_id is not None:
+                self._record_reply_doc(con, letter_id, text_id, operation_id)
+            return self._letter(con, letter_id) | {'replayed': False, 'effective': effective} | self._doc_check(con, letter_id, event)
 
     def revise(self, operation_id, letter_id, part, actor, body, reason, recorded_by=None, ref_doc=None, ref_section=None):
         """A new revision of the request (by the sender) or of the reply (by the recipient), with a reason. History is
@@ -358,6 +406,10 @@ class LetterMixin:
             self._record_operation(con, operation_id, 'letter-revise', payload, recorded_by, 'applied', {'letterId': letter_id, 'part': part})
             revision_id = self._insert_text(con, letter_id, part, body, reason, ref, recorded_by, operation_id)
             self._insert_event(con, letter_id, 'revised', actor, recorded_by, None, revision_id, reason, True, operation_id)
+            if part == 'request':
+                self._record_request_doc(con, letter_id, revision_id, ref[0], operation_id)
+            else:
+                self._record_reply_doc(con, letter_id, revision_id, operation_id)
             return self._letter(con, letter_id) | {'replayed': False}
 
     def _letter(self, con, letter_id, with_texts=True):
@@ -374,10 +426,81 @@ class LetterMixin:
                  **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
                  'request': latest['request'], 'reply': latest['reply'],
                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
-                 'events': events, 'follows': self._follows(con, letter_id)}
+                 'events': events, 'follows': self._follows(con, letter_id), 'docRecords': self._doc_records(con, letter_id)}
         if with_texts:
             value['texts'] = texts
         return value
+
+    # ---- OPS-192 第3区切り: hashes of the canonical document named by ref_doc -----------------------------------------
+    def _insert_doc(self, con, letter_id, kind, text_sequence, doc, sha, base, status, diff, operation_id):
+        con.execute('INSERT INTO letter_doc_records(letter_id,kind,text_sequence,doc,sha256,base_sha256,status,diff,operation_id,received_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
+                    (letter_id, kind, text_sequence, doc, sha, base, status, diff, operation_id, approvals.now()))
+
+    def _record_request_doc(self, con, letter_id, text_sequence, doc, operation_id):
+        if doc is None:
+            return  # no canonical document named: nothing to record (letters without ref_doc stay as they were)
+        data = _doc_bytes(doc)
+        self._insert_doc(con, letter_id, 'request', text_sequence, doc, None if data is None else hashlib.sha256(data).hexdigest(),
+                         None, 'recorded' if data is not None else 'missing', None, operation_id)
+
+    def _request_base(self, con, text_sequence):
+        """(doc, recorded sha256 or None) of a request revision, or None when it names no document."""
+        row = con.execute('SELECT ref_doc FROM letter_texts WHERE sequence=?', (text_sequence,)).fetchone()
+        if row is None or row[0] is None:
+            return None
+        rec = con.execute("SELECT sha256 FROM letter_doc_records WHERE text_sequence=? AND kind='request' ORDER BY sequence LIMIT 1", (text_sequence,)).fetchone()
+        return row[0], rec[0] if rec else None
+
+    def _record_receipt_doc(self, con, letter_id, request_sequence, operation_id):
+        base = self._request_base(con, request_sequence)
+        if base is None:
+            return
+        doc, recorded = base
+        data = _doc_bytes(doc)
+        sha = None if data is None else hashlib.sha256(data).hexdigest()
+        status = 'missing' if data is None else 'no-record' if recorded is None else 'match' if sha == recorded else 'mismatch'
+        self._insert_doc(con, letter_id, 'receipt', request_sequence, doc, sha, recorded, status, None, operation_id)
+
+    def _record_reply_doc(self, con, letter_id, reply_sequence, operation_id):
+        """The diff from the base (the hash recorded with the request revision the recipient received, else the latest
+        request) to the file as it is now, and the new hash, both from one read of the file."""
+        received = con.execute("SELECT text_sequence FROM letter_events WHERE letter_id=? AND event='received' AND effective=1 ORDER BY sequence LIMIT 1", (letter_id,)).fetchone()
+        request = received[0] if received and received[0] is not None else con.execute(
+            "SELECT MAX(sequence) FROM letter_texts WHERE letter_id=? AND part='request'", (letter_id,)).fetchone()[0]
+        base = self._request_base(con, request)
+        if base is None:
+            return
+        doc, recorded = base
+        data = _doc_bytes(doc)
+        sha = None if data is None else hashlib.sha256(data).hexdigest()
+        diff = None
+        if data is None:
+            status = 'missing'
+        elif recorded is None:
+            status = 'no-record'
+        elif sha == recorded:
+            status, diff = 'unchanged', ''
+        else:
+            old = _git_base(doc, recorded)
+            if old is None:
+                status = 'base-unavailable'
+            else:
+                try:
+                    diff, status = _unified(old.decode('utf-8'), data.decode('utf-8'), f'{doc} sha256:{recorded[:12]}', f'{doc} sha256:{sha[:12]}'), 'diff'
+                except UnicodeDecodeError:
+                    status = 'not-text'
+        self._insert_doc(con, letter_id, 'reply', reply_sequence, doc, sha, recorded, status, diff, operation_id)
+
+    def _doc_records(self, con, letter_id):
+        return [{'sequence': r['sequence'], 'kind': r['kind'], 'textSequence': r['text_sequence'], 'doc': r['doc'], 'sha256': r['sha256'],
+                 'baseSha256': r['base_sha256'], 'status': r['status'], 'diff': r['diff'], 'receivedAt': r['received_at']}
+                for r in con.execute('SELECT * FROM letter_doc_records WHERE letter_id=? ORDER BY sequence', (letter_id,))]
+
+    def _doc_check(self, con, letter_id, event):
+        """For a receipt: the recorded check of the received request against the file (None when no document is named)."""
+        if event != 'received':
+            return {}
+        return {'docCheck': next((r for r in reversed(self._doc_records(con, letter_id)) if r['kind'] == 'receipt'), None)}
 
     def _follows(self, con, letter_id):
         row = con.execute('SELECT follows_id FROM letter_links WHERE letter_id=?', (letter_id,)).fetchone()

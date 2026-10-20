@@ -28,10 +28,13 @@ s = studio_store.Store({str(db)!r}, {str(tmp)!r}); op = lambda: uuid.uuid4().hex
     run(APP, """
 s.set_senders(['Astra'], 'ユーザー')
 a = s.send(op(), 'Astra', '姫', 'OPS-192', '一'); s.event(op(), a['id'], 'received', '姫', revision=1)
-b = s.send(op(), 'Astra', '姫', 'OPS-192', '二', follows=a['id'])
+import activity, pathlib; activity.ROOT = pathlib.Path({doc!r}).parent  # the temporary root, never the repository
+open({doc!r}, 'w').write('# D\\n\\n## S\\n\\n本文\\n')
+b = s.send(op(), 'Astra', '姫', 'OPS-192', '二', follows=a['id'], ref_doc='Doc.md', ref_section='S')
+print('new: doc records', len(b.get('docRecords', [])))
 print('new: thread', [x['id'][-4:] for x in s.thread(b['id'])['letters']])
 open({0!r}, 'w').write(json.dumps([a['id'], b['id']]))
-""".replace('{0!r}', repr(str(tmp / 'ids.json'))))
+""".replace('{0!r}', repr(str(tmp / 'ids.json'))).replace('{doc!r}', repr(str(tmp / 'Doc.md'))))
     run(old, f"""
 a, b = json.load(open({str(tmp / 'ids.json')!r}))
 assert {{x['id'] for x in s.letters()['letters']}} == {{a, b}} and s.letter(b)['state'] == 'sent'

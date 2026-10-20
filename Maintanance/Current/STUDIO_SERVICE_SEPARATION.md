@@ -84,6 +84,34 @@ The original return above is kept as it was. Details are in `Evidence/OPS-192/BR
 
 The CP-006 fix was not added.
 
+### Response to review round 2 (Hime, 2026-10-20; letter LTR-20261020-FBDD4946…)
+Rounds 1 and 2 above are kept as written. Details are in `Evidence/OPS-192/BREAKDOWN.md` 「補正2回目」.
+
+The disposable prototype is `prototype.py`, with its output in `prototype-output.txt`. It runs the real `Store` on a temp DB and the real `comm.watch_command`, with only `studio_client.get` routed in-process.
+
+1. **Rollback, conditional.**
+   - If cutover changed `DEFAULT_URL`: revert it to 8088, and unset `REGISTRY_STUDIO_URL` wherever it was set.
+   - If it only set `REGISTRY_STUDIO_URL`: unset it in every environment that set it, including AI shells and wait scripts.
+   - If the service took 8088 and the UI moved: the CLI is unchanged.
+   - In every case, first stop the service and confirm the lock is free; the embedded `serve.py` must be able to take it. The rollback test is that env-free `comm.py` and `approvals.py` reach the embedded server.
+2. **Ordering.** `letter_events.sequence` and `letter_texts.sequence` are separate AUTOINCREMENT counters in two tables (schema checked). The round-1 comparison was wrong and is withdrawn. The new proposal compares no sequences.
+3. **Watch, actual behaviour.** `watch_command` replaces `seen` with the current inbox, so a letter that leaves is forgotten. Observed:
+   - Current inbox: a request revision after return gives exit 3, which is the gap.
+   - Proposed inbox with the current watch: re-entry is reported as `['new']`, not `revision`. My round-1 claim was wrong.
+   - Watch that keeps the signatures of letters that left: `['state','revision']`.
+
+   Proposal: keep those signatures.
+4. **Closing the cycle.** Every reply text (return or reply revision) names the request revision it answers, `answers_revision`.
+   - It is required, never defaulted to the latest, and must be between 1 and the current request revision. It is stored in a new `letter_texts` column; the append-only triggers are unchanged.
+   - Pending means: state returned, and the latest request revision is greater than every `answers_revision`. Legacy NULL counts as the revision read at receipt.
+   - `inbox` includes pending letters, flagged `revisedAfterReply`.
+   - An unrelated typo fix that answers v1 keeps the letter pending. Observed: pending True after the typo fix, False after answering v2.
+   - CLI: `--answers N` on return and on reply revise.
+   - The minimal tests are listed in the evidence (§4).
+
+Not implemented in shared code. No live changes and no commit.
+- 一時作業物: `/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-192.a0JlY2XbbO`・姫・2026-10-20・一時DBでwatchと通知の述語を再現する使い捨ての試作・状態「削除済み（2026-10-20、試作と出力をEvidence/OPS-192へ写したあと削除）」
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -100,3 +128,8 @@ The CP-006 fix was not added.
 ## 検収2（Astra）
 補正A〜Cは方向として改善。未受入の残点：Aの「環境変数を消す」はDEFAULT_URLも変更した場合に旧接続先へ戻らないため条件別に訂正。Eのeventとtextのsequenceは別系列であり、その数値を直接比較する設計は不可。watchは受信箱から消えたIDをseenから除くため再登場はnewになり得る。返答改訂後に未処理表示が解消する条件も必要。姫に小さな隔離再現で往復全体を確認して訂正するよう返す。共有実装変更は許可しない。
 受領遅延は姫の操作説明では待機前と読解時間。DB遅延がないことの一般保証とはしない。
+
+## 検収結論（Astra、2026-10-20）
+分離の作業内訳（R1共通サービス抽出・R2画面中継・R3停止/再起動/切戻し試験）をDISCOVERY成果として受入。実装や本番切替の受入ではない。ユーザーにこの3区切りを提示し、範囲確認までは実装を開始しない。
+通知漏れは実コードと隔離再現で確認。姫のprototypeをAstraも再実行し、現行watchの検知漏れと再登場newを確認した（[ログ](Evidence/OPS-192/astra-prototype.txt)）。提案部分はインプロセス模擬であり、answers_revisionのDB移行・既存返答の扱い・通知保持の採用や実装を保証しない。分離と別の修正候補に残す。初回受領72秒は担当の説明に基づく内訳で、通信遅延なしの一般保証ではない。
+一時作業物：Astraの再現用/tmp/astra-ops192-*、2026-10-20作成・ログ保存後削除済み。実サーバーへの変更なし。

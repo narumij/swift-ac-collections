@@ -153,3 +153,51 @@ R3で、実プロセス・一時の保存先・試験用portを使って確か�
   4. 改訂のない返した連絡は、inboxに出ない（今と同じ）。
   5. 送り手が閉じたら（closed）出ない。
 - 受け手がどう答えるか（返答の改訂か、新しい連絡か）は、今の遷移のままで足りる。returnedのあとでも、受け手は`revise reply`ができる。
+
+## 補正2回目（2026-10-20、LTR-20261020-FBDD4946…への回答）
+
+試作：`prototype.py`（`prototype-output.txt`）。本物の`studio_store.Store`を一時DBで動かし、本物の`comm.watch_command`を使った。`studio_client.get`だけを店へ直接つないだ。サーバーにも生きた保存先にも触れていない。
+
+### 1. 戻しの条件つき手順（Aの訂正）
+
+`REGISTRY_STUDIO_URL`を消しても、使われるのは`DEFAULT_URL`。切り替えのときに`DEFAULT_URL`を変えていたら、消すだけでは8088に戻らない（`studio_client.py` 33行）。切り替えのやり方ごとに、戻しを分ける。
+
+- `DEFAULT_URL`を共通サービスのportに変えた場合：`DEFAULT_URL`を8088へ戻す（コードの差し戻し）。そのうえで、`REGISTRY_STUDIO_URL`を付けた環境があれば消す。
+- `DEFAULT_URL`は8088のままで、CLIの環境に`REGISTRY_STUDIO_URL`を付けた場合：その環境変数を、付けたすべての環境（AIのshellや待機scriptを含む）から消す。
+- 共通サービスを8088に置き、画面を別のportに移した場合：CLIの宛先は変わらない。共通サービスを止めて、互換の`serve.py`を8088で起動するだけで戻る。
+- どれも、その前に共通サービスを止め、鍵が外れていることを確かめる（互換の`serve.py`が鍵を取れること）。
+- 戻しの試験：選んだやり方で切り替えて戻したあと、環境変数のない`comm.py letter inbox`と`approvals.py list`が、互換の`serve.py`に届く。
+
+### 2. 二つの番号を比べない（Eの訂正）
+
+- `letter_events.sequence`と`letter_texts.sequence`は、別の表の別々のAUTOINCREMENTで、同じ並びではない（`approvals.py`のSTUDIO_SCHEMA、上で確かめた）。前回の案は、この2つを比べていたので誤り。
+- 新しい案は、番号の前後を使わない。返答が、どの依頼の版に答えたかを明示して持つ（次の4）。
+
+### 3. watchの実際の振る舞い（Eの訂正）
+
+- `watch_command`は、そのときのinboxで`seen`を丸ごと置き換える（`comm.py`の`json.dump({... 'seen': now})`）。だから、inboxを出た連絡は`seen`から消える。
+- 試作で確かめた結果（`prototype-output.txt`）：
+  - 今のinbox：返したあとに改訂しても、watchはexit 3（何も出さない）。穴を再現した。
+  - 提案したinboxと今のwatch：改訂で連絡がinboxに戻ると、watchは`['new']`と出す。`revision`ではない。前回「`['revision']`を出す」と書いたのは誤り。
+  - 提案したinboxと、出た連絡の印を残すwatch：`['state', 'revision']`と出る。
+- 直す案：`watch`は、inboxを出た連絡の最後の印を`seen`に残す（今は捨てている）。戻ってきたときに、前の印と比べられる。
+
+### 4. 通知を閉じる：返答がどの依頼の版に答えたか
+
+- 返答の本文（返す・返答の改訂）に、答えた依頼の版`answers_revision`を必ず付ける。
+  - 受領で読んだ版を名指すのと同じ形で、「最新」を既定にしない。
+  - 置き場所は`letter_texts`の新しい列（`ALTER TABLE ADD COLUMN`。UPDATEとDELETEのtriggerはそのまま）。
+  - 1以上、今の依頼の版以下でなければ拒否する。
+- 未回答の判定：状態がreturnedで、最新の依頼の版が、どの返答の`answers_revision`よりも新しいとき。
+  - 前からある返答（列がNULL）は、受領で読んだ版に答えたものとみなす。
+  - この判定が真の連絡を、inboxに`revisedAfterReply: true`付きで含める。
+- 関係のない直しを答えとみなさない：誤字だけを直した返答の改訂が古い版（v1）を名指せば、未回答のまま。v2を名指したときだけ閉じる。
+- 試作の結果：誤字の直し（v1に答える）のあとも「未回答: True」。v2に答えたあとは「False」で、inboxから出る。
+- 最小の試験：
+  1. 送る→受ける→着手→返す（v1に答える）→送り手がv2に改訂する。
+  2. inboxに出て、watchが`['state','revision']`を一度だけ出す。
+  3. 返答の改訂でv1に答える → 未回答のまま。v2に答える → inboxから出る。
+  4. 版の範囲の外と、名指しのない返す・返答の改訂 → 拒否する。
+  5. 改訂のない返した連絡、閉じた連絡 → inboxに出ない。
+  6. 列がNULLの前からある返答 → 受領の版として扱う。
+- CLI：`comm.py letter return`と`revise --part reply`に`--answers N`を足す（受領の`--revision`と同じ扱い）。

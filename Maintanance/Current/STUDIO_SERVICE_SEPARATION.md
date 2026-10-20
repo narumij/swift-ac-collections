@@ -264,3 +264,20 @@ AI同士の合意・採用は、ユーザーにとっては仮判断。委任さ
 追加DISCOVERYを受入。現在の最小実装案はR1共通サービス抽出→T1新規レターのfollows・安定threadId・CLI読取→R2画面中継→T2画面スレッド読取→R3停止/復帰試験。P1版固定text読取とP2判断DB出典規約を小さく追加できる。判断DBの新カラムは不要。
 出典のrecordedByは記録者であり、引用された判断者やユーザー本人とは同一視しない。AIの判断・要約をユーザー確定へ昇格させない。本文の出典だけで判断内容の妥当性まで保証しない。
 実装はまだ未依頼。ユーザーに内訳を提示して範囲を合わせる。既存レターの後付け結合、returned後改訂の通知漏れの恒久修正、判断抽出/一覧、本番切替は未実施・別扱い。今回の通知経路は新規レターで継続しており、既存の穴を修正済みとは扱わない。
+
+## 実施要領の作成依頼（ユーザー、2026-10-20）
+今回の終了地点は実施要領の検収とユーザーへの提示。そこまでで止めて相談し、実装に進まない。
+対象は、共通サービス分離、スレッド追跡と補正通知漏れ修正、版固定の判断出典読取、依頼→返答→補正→再返答と画面停止/復帰の試験。前の「通知漏れは別扱い」を更新し、今回の実施要領に含める。既存操作の禁止や未決設計案を承認済みにはしない。
+
+## Assignment: execution procedure only
+User requests a concrete execution procedure, then STOP for discussion. No implementation is authorized. Continue from the accepted discovery and corrected THREADS.md; do not restart a broad investigation.
+
+Write Evidence/OPS-192/EXECUTION_PLAN.md, with a short Japanese summary, and append a concise Return here. Cover four work packages: (1) shared records service, (2) thread traversal AND the returned-request revision notification gap, (3) exact-version source reading and locator convention, (4) integrated request→reply→correction→reply tests including UI stop/restart. Order dependent substeps sensibly; reuse the existing R/T/P breakdown rather than duplicating it.
+
+For each package specify concrete files, changes, prerequisites, test setup/observable expected results, acceptance evidence, patch/return boundary and rollback. Keep production cutover separate. Tests must use disposable DBs and test ports, not the user's server or stores. A plan is not evidence that implementation passes.
+
+For notification, propose one coherent minimum covering detection, revision identity, re-answer completion, races/retry and existing records. Neither banning returned revisions nor answers_revision has been adopted. State any genuine unresolved behavior choice plainly; do not silently change permissions or make a false binary. Explain how existing operations remain supported, or identify an explicit proposed change for user discussion. Do not resurrect deferred automatic historical linking or decision extraction/UI.
+
+Acceptance: requirements map to tests; the full conversation loop is covered, not only isolated API calls. Preserve one writer ownership across embedded/standalone modes and correct CLI rollback. Source references distinguish recorder from decision maker, AI provisional choices from actual user decisions. Avoid redundant essays, arbitrary line-count quotas or asking the user to resolve checkable facts. If required facts are missing, check them or mark a concrete blocker, rather than passing the research to Astra.
+
+Editable shared scope: append Return in this document and Evidence/OPS-192/EXECUTION_PLAN.md only. Read-only inspection allowed. No code edits, live mutations, server control or commits. Return on this letter, then wait. Astra will review the procedure and stop to discuss it with the user; no automatic implementation launch.

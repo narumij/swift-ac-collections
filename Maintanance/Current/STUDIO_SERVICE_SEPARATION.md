@@ -152,6 +152,35 @@ The previous subsection is kept. Where they conflict, this one replaces it. Deta
 
 The tests for T1 and T2 are in the evidence. No implementation, live change or commit.
 
+### Response: decision provenance preparation (Hime, 2026-10-20; letter LTR-20261020-0271EDF4…)
+The corrected thread minimum (T1/T2, with later decisions kept separate) is unchanged. Details are in `Evidence/OPS-192/THREADS.md` 「判断の出典への備え」.
+
+1. **Stable thread identity.** `thread_id` is the root letter's ID, written into `letter_links` at send by copying the followed letter's `thread_id`. An unlinked letter's `thread_id` is its own ID. It never changes: links are send-time and append-only, and post-hoc link stays deferred. If that link is ever added, it must not re-root a letter that has continuations. `thread` and `/letters/<id>` return `threadId`.
+2. **Exact source.** `(letter_id, part, revision)` is UNIQUE in `letter_texts`, and texts are append-only (schema checked), so a revision's text never changes when later revisions are added. Example: 9FE8ADAB's request v1 (2,143 chars) and v2 (3,487 chars) both exist.
+
+   Locator convention:
+   ```json
+   {"kind": "letter-text", "letter": "LTR-20261020-9FE8ADABFD1044F8B562DCF1F54AD66A", "part": "request", "revision": 2,
+    "sha256": "de7b8fa9c42ed6415b42de8fba393e1a135f61000f120b7634418721e027409d",
+    "thread": "LTR-20261020-9FE8ADABFD1044F8B562DCF1F54AD66A", "speaker": "Astra"}
+   ```
+   - The v1 hash is `86500c96…`; both were computed now from the stored bodies.
+   - `thread` is context only, never scope or authority.
+   - `speaker` is the text's `recorded_by`, separate from the decision DB's `actor` and `decided_by`.
+   - `_locator` (`decision_store.py` 121) stores this as is, and `decision_cli.py query` returns it. It does not validate or resolve it.
+3. **Path back.**
+   - Today: `decision_cli.py query`, then `comm.py letter show`, then pick part and revision by hand.
+   - Minimal addition, P1: `comm.py letter text <letter> --part … --revision N [--sha256 H]`. It prints exactly one text; a missing revision exits 3, and a hash mismatch exits 1 without printing. It reads the existing `/letters/<id>`, so there is no new route, and it records nothing.
+   - P2: document the convention in `decisions/README.md`.
+   - No decision-DB code change, no store-crossing call, no UI, and no decision listing or extraction.
+- **Files and tests:**
+  - T1 adds `thread_id`: root, continuation and continuation-of-continuation share it, and it is unchanged after send.
+  - P1 changes `comm.py` (about 30 lines) and `test-studio-letters.py`: v1 and v2 are byte-exact after v2 exists, a missing revision exits 3, a bad hash exits 1 with no output, and there are no row changes and no direct SQLite.
+  - P2 is a README change only.
+  - Order: T1 after R1. P1 and P2 are independent.
+
+No implementation, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -207,3 +236,8 @@ Astraの事実確認：`decisions/decision_store.py`の`_locator`はsource/locat
 ## Assignment: decision provenance preparation
 Continue OPS-192 discovery from the corrected minimal thread proposal. Add only: stable thread identity; exact source identity (letter ID, request/reply, revision); and a minimal path from the decision DB's existing source/locator object to that exact original text. Inspect the existing decision CLI/export/read paths. Astra confirmed _locator currently accepts a nonempty dict and stores it; that does not establish validation or resolution. Prefer a documented locator convention and existing reads where sufficient; identify any minimal missing API/CLI/UI work. Do not add decision extraction, decision lists, automatic adoption, scope inference, live data migration, or a general graph redesign.
 Return a small example locator using this conversation's letters, explain how it resolves to the exact version even after later edits, and give the changed file/test breakdown. Thread association is provenance/context, never scope or authorization. Retain the original thread minimum and keep deferred legacy-link/notification policy separate. Same shared edit limits: append Return here and Evidence/OPS-192 only; no implementation/live changes/commits.
+
+## 判断の由来を維持する要求（ユーザー、2026-10-20）
+AI同士の合意・採用は、ユーザーにとっては仮判断。委任された範囲で作業に用いることと、ユーザーが確定した判断であることを区別する。引用・コピー・再掲・スレッドへの関連付けを繰り返しても、AI判断をユーザー判断へ昇格させない。
+出典は誰のどの発言かを保持し、記録者を決定者と同一視しない。「ユーザー確定」とするにはそれを支えるユーザーの原典が必要。ユーザーがAIに方法を任せたことだけでは、その方法の個々の選択をユーザーが決めたことにしない。
+今回の出典準備ではこの区別を説明と試験例に含める。判断抽出・承認機構・既存判断の一括再分類は追加しない。

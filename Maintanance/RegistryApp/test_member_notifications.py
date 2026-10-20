@@ -14,6 +14,7 @@ class MemberStateNotificationsTest(unittest.TestCase):
             (notifications.waiting_started, self.state.on_waiting_started),
             (notifications.waiting_ended, self.state.on_waiting_ended),
             (notifications.letter_received, self.state.on_letter_received),
+            (notifications.communication_activity, self.state.on_communication_activity),
         ):
             self.addCleanup(signal.disconnect, listener)
         self.addCleanup(self.state.clear)
@@ -54,6 +55,15 @@ class MemberStateNotificationsTest(unittest.TestCase):
         expire()
         self.assertEqual(len(self.state.snapshot()['actualMembers']), 1)
         self.assertEqual(self.state.snapshot()['memberInfo']['A'], '受領 01:23')
+
+    def test_activity_cancels_departure_and_updates_information(self):
+        notifications.waiting_started.send(owner='A')
+        notifications.waiting_ended.send(owner='A')
+        expire = self.timer.call_args.args[1]
+        notifications.communication_activity.send(owner='A', label='発言')
+        expire()
+        self.assertEqual(len(self.state.snapshot()['actualMembers']), 1)
+        self.assertEqual(self.state.snapshot()['memberInfo']['A'], '発言 01:23')
 
     def test_unplanned_attendance_gets_information_then_departure_removes_it(self):
         notifications.waiting_started.send(owner=' B ')

@@ -432,7 +432,7 @@ def watch_once(args):
             print(json.dumps({'error': 'state file belongs to another owner or server', 'stateFile': {'owner': previous['owner'], 'server': previous['server']}}, ensure_ascii=False))
             return 2
     try:
-        inbox = studio_client.get('/letters-inbox?' + urllib.parse.urlencode({'owner': args.owner}))
+        inbox = studio_client.get('/letters-inbox?' + urllib.parse.urlencode({'owner': args.owner, 'watch': '1'}))
         returned = studio_client.get('/letters?' + urllib.parse.urlencode({'brief': '1', 'recipient': args.owner, 'state': 'returned', 'limit': 1000}))
         while returned.get('hasMore'):
             page = studio_client.get('/letters?' + urllib.parse.urlencode({'brief': '1', 'recipient': args.owner, 'state': 'returned', 'limit': 1000, 'cursor': returned['nextCursor']}))

@@ -33,3 +33,5 @@ class Signal:
 waiting_started = Signal()
 waiting_ended = Signal()
 letter_received = Signal()
+
+communication_activity = Signal()

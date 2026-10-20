@@ -1,4 +1,5 @@
 """In-memory member model; changes wake subscribed SSE connections."""
+import logging
 from copy import deepcopy
 from threading import Condition, Timer
 from zoneinfo import ZoneInfo
@@ -20,21 +21,30 @@ class MemberState:
         notifications.waiting_started.connect(self.on_waiting_started)
         notifications.waiting_ended.connect(self.on_waiting_ended)
         notifications.letter_received.connect(self.on_letter_received)
+        notifications.communication_activity.connect(self.on_communication_activity)
 
     def on_waiting_started(self, **event):
+        logging.warning('member-presence waiting_started owner=%r connection=%r', event.get('owner'), event.get('connection_id'))
         if event.get('owner'):
             self.attend(event['owner'])
             self._update_info(event, '待機開始')
 
     def on_waiting_ended(self, **event):
+        logging.warning('member-presence waiting_ended owner=%r connection=%r', event.get('owner'), event.get('connection_id'))
         if event.get('owner'):
             self.disconnected(event['owner'])
             self._update_info(event, '待機終了')
 
     def on_letter_received(self, **event):
+        logging.warning('member-presence letter_received owner=%r', event.get('owner'))
         if event.get('owner'):
             self.attend(event['owner'])
             self._update_info(event, '受領')
+
+    def on_communication_activity(self, **event):
+        if event.get("owner"):
+            self.attend(event["owner"])
+            self._update_info(event, event.get("label", "通信"))
 
     def _update_info(self, event, label):
         time = event['at'].astimezone(ZoneInfo('Asia/Tokyo')).strftime('%H:%M')
@@ -44,6 +54,7 @@ class MemberState:
         timer = self._pending.pop(owner, None)
         if timer is not None:
             timer.cancel()
+            logging.warning('member-presence departure_cancelled owner=%r', owner)
 
     def disconnected(self, owner):
         owner = self._name(owner)
@@ -57,6 +68,7 @@ class MemberState:
                         self._pending.pop(owner)
                         self.leave(owner)
 
+            logging.warning('member-presence departure_scheduled owner=%r grace=%s', owner, self.grace_seconds)
             timer = Timer(self.grace_seconds, expire)
             timer.daemon = True
             self._pending[owner] = timer
@@ -96,6 +108,7 @@ class MemberState:
         with self._condition:
             if self._members == members:
                 return
+            logging.warning('member-presence members_changed before=%r after=%r', self._members, members)
             self._members = deepcopy(members)
             self._sync_info()
             self._revision += 1

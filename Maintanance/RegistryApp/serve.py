@@ -452,11 +452,16 @@ def letter_action(store, action, body):
         raise ValueError('Expected ' + ', '.join(sorted(required)))
     g = body.get
     if action == 'letters-send':
-        return store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'), g('follows'))
+        result = store.send(g('operationId'), g('sender'), g('recipient'), g('taskId'), g('body'), g('recordedBy'), g('refDoc'), g('refSection'), g('follows'))
+        if not result.get('replayed') and g('recordedBy', g('sender')) == g('sender'):
+            notifications.communication_activity.send(owner=g('sender'), label='送信')
+        return result
     if action == 'letters-event':
         result = store.event(g('operationId'), g('letterId'), g('event'), g('actor'), g('recordedBy'), g('claimedAt'), g('note', ''), g('body'), g('refDoc'), g('refSection'), g('revision'))
         if g('event') in ('received', 'revision-received') and result.get('effective') and not result.get('replayed'):
             notifications.letter_received.send(owner=g('actor'), letter_id=g('letterId'), revision=g('revision'))
+        elif result.get('effective') and not result.get('replayed') and g('recordedBy', g('actor')) == g('actor'):
+            notifications.communication_activity.send(owner=g('actor'), label='連絡更新')
         return result
     if action == 'letters-revise':
         return store.revise(g('operationId'), g('letterId'), g('part'), g('actor'), g('body'), g('reason'), g('recordedBy'), g('refDoc'), g('refSection'))
@@ -610,7 +615,11 @@ class Handler(BaseHTTPRequestHandler):
             except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
             except (OSError,sqlite3.Error):return self.reply(503,{'error':'Watch records unavailable'})
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
-            return self.reply(*get_letters(parsed))
+            result = get_letters(parsed)
+            q = urllib.parse.parse_qs(parsed.query)
+            if parsed.path == '/letters-inbox' and q.get('watch') == ['1'] and result[0] == 200:
+                notifications.communication_activity.send(owner=q.get('owner', [None])[0], label='待機確認')
+            return self.reply(*result)
         if parsed.path == '/task-context':
             return self.reply(*get_task_context(parsed))
         route = GET_ROUTES.get(self.path)
@@ -643,7 +652,11 @@ class Handler(BaseHTTPRequestHandler):
                 token=os.environ.get('ROUND_USER_APPROVAL_TOKEN')
                 if not token or not secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+token):
                     return self.reply(403,{'error':'User approval channel required'})
-            try:return self.reply(200,task_rounds.TaskRoundStore().act(body))
+            try:
+                result = task_rounds.TaskRoundStore().act(body)
+                if body.get('action') in ('speak', 'nop') and not result.get('replayed'):
+                    notifications.communication_activity.send(owner=body.get('actor'), label='発言' if body['action'] == 'speak' else 'パス')
+                return self.reply(200, result)
             except approvals.Conflict as e:return self.reply(409,{'error':str(e)})
             except (ValueError,KeyError,TypeError,LookupError) as e:return self.reply(400,{'error':str(e)})
         if action == 'sync':

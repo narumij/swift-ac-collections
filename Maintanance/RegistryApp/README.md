@@ -569,3 +569,18 @@ python3 Maintanance/RegistryApp/comm.py letter read LTR-... --full           # �
 自分の番には`nop`または`speak`を使い、`--actor`、`--turn`、`--context`、`--operation-id`を明示。発言は`--body-file`も渡す。応答不明時は状態を読み、保存してある同じ操作IDと同じ本文/引数で再送する。409なら古い状態を押し通さず再読する。
 `add-member <輪番ID> --actor <元依頼の送り手> --turn <現在の番> --member <追加名> --operation-id <保存したUUID>`は末尾追加で、現在の担当を変えない。
 actorは本人認証ではない。他人の名義でNOPしない。SKIPはユーザー承認専用チャネルが必要で、未設定時は利用不可。承認UI/CLIは今回未提供。運用範囲と結果は[正本](../Current/TASK_THREAD_ROUNDS.md)を参照。
+
+### 作業ページの表示状態
+
+作業ページは `member_state.py` と `work_state.py` の保持する表示状態を購読する。
+`work_state_binding.py` が活動ファイルの変更と承認DBの確定通知を入力し、`/work-state/events` が表示状態全体を配信する。
+ブラウザーの `WorkPageViewModel` は選択中の担当・送信中・結果表示など、その画面だけの操作状態を保持して通知する。
+タスクページはこの変更の対象外。旧 `index.work.shared.js` と continuity の集約処理は作業ページでは読み込まない。
+
+### コミット依頼の下書きと登録
+
+新しい依頼は `approvals.py draft` → `approvals.py submit` を使う。
+`draft --repo <コミット先checkout> --task-id <ID> --title <題名> --scope <目的と範囲> --condition <受入条件> --output <新規JSONファイル>` は、ステージ済み差分の対象パスと現在のbranchを採取する。ステージ操作や送信はしない。空の差分・detached HEAD・既存出力ファイルにはエラーを返す。
+保存内容を確認して `submit --file <同じJSONファイル>` で登録する。サーバーのcheckoutとbranchが一致することを確認し、DB登録後はWorkState経由で画面へ通知する。
+応答不明の場合も、下書きを作り直さず同じファイルを再送する。同じoperation_idと内容なら登録済みの結果を返し、同じIDで内容が違えば拒否する。内容を変える場合は新しい下書きとして扱う。
+従来の `add` は互換用に残すが、再送の重複防止はない。承認後の `claim` → commit → `finish` は変更しない。

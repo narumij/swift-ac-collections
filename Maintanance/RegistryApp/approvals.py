@@ -16,6 +16,7 @@ import secrets
 import sqlite3
 import subprocess
 import uuid
+import work_notifications
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
 
@@ -127,8 +128,16 @@ class Store:
             for table in ('operations', 'messages', 'acks', 'meta', 'letters', 'letter_texts', 'letter_events', 'letter_links', 'letter_doc_records', 'letter_doc_snapshots'):
                 for operation in ('UPDATE', 'DELETE'):
                     con.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT, 'append-only {table}'); END")
+            before_history = con.execute('SELECT COALESCE(MAX(sequence), 0) FROM history').fetchone()[0]
+            before_letters = con.execute("SELECT COALESCE(MAX(sequence), 0) FROM letter_events").fetchone()[0]
             yield con
+            changed = con.execute('SELECT COALESCE(MAX(sequence), 0) FROM history').fetchone()[0] != before_history
+            letters_changed = con.execute('SELECT COALESCE(MAX(sequence), 0) FROM letter_events').fetchone()[0] != before_letters
             con.execute('COMMIT')
+            if changed:
+                work_notifications.approval_changes.changed()
+            if letters_changed:
+                work_notifications.letter_changes.changed()
         except BaseException:
             if con.in_transaction:
                 con.execute('ROLLBACK')
@@ -162,8 +171,10 @@ class Store:
         con.execute('UPDATE requests SET state=?,token_hash=? WHERE id=?', (json.dumps(state), token_hash, identity))
         con.execute('INSERT INTO history(request_id,event) VALUES (?,?)', (identity, json.dumps(event)))
 
-    def add(self, card):
+    def add(self, card, operation_id=None, repo=None):
         validate_card(card)
+        if operation_id is not None and (not isinstance(operation_id, str) or not OPERATION_ID.fullmatch(operation_id)):
+            raise ValueError('Expected a persistent 32-hex operation ID')
         for path in card['paths']:
             target = self.root / path
             if any(part.is_symlink() for part in (target, *target.parents)):
@@ -171,9 +182,19 @@ class Store:
         identity, at = uuid.uuid4().hex, now()
         state = {'revision': 1, 'status': 'pending', 'createdAt': at, 'updatedAt': at, 'approvedAt': None, 'commitSha': None}
         with self.transaction() as con:
+            payload = {'card': card, 'repo': repo}
+            if operation_id is not None:
+                previous = self._operation(con, operation_id, 'approval-add', payload)
+                if previous is not None:
+                    return previous['result']
+            if repo is not None:
+                self._context(repo, card['branch'])
             con.execute('INSERT INTO requests VALUES (?,?,?,NULL)', (identity, json.dumps(card), json.dumps(state)))
             con.execute('INSERT INTO history(request_id,event) VALUES (?,?)', (identity, json.dumps({'action': 'add', 'at': at, 'revision': 1, 'content': card})))
-        return {'id': identity} | card | state
+            result = {'id': identity} | card | state
+            if operation_id is not None:
+                self._record_operation(con, operation_id, 'approval-add', payload, 'Astra', 'applied', result)
+        return result
 
     def _operation(self, con, operation_id, kind, payload):
         """An existing operation with this ID: its stored result for the same content, Conflict for different content."""
@@ -305,12 +326,34 @@ class Store:
             return {'id': identity, 'status': state['status']}
 
 
+def make_draft(repo, task_id, title, scope, condition):
+    """Draft only the staged diff: no staging, commit, server call or DB access."""
+    def git(*args):
+        return subprocess.run(['git', '-C', str(repo), *args], check=True, capture_output=True, text=True).stdout
+    root = git('rev-parse', '--show-toplevel').strip()
+    try:
+        branch = git('symbolic-ref', '--quiet', '--short', 'HEAD').strip()
+    except subprocess.CalledProcessError:
+        raise ValueError('Detached HEAD: prepare the draft in the checkout where the commit will run') from None
+    paths = git('diff', '--cached', '--name-only', '--no-renames', '-z', '--').split('\0')[:-1]
+    if not paths:
+        raise ValueError('No staged changes; stage the intended commit files first')
+    card = dict(taskId=task_id, title=title, scope=scope, condition=condition, branch=branch, paths=paths)
+    validate_card(card)
+    return {'operation_id': uuid.uuid4().hex, 'repo': root, 'card': card}
+
+
 def main():
     """The command line goes through the Studio server (OPS-156): the same arguments and printed JSON as before, but no
     direct database access. Errors are printed and exit 1, saying whether nothing was sent or the result is unknown."""
     import studio_client
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
+    draft = commands.add_parser('draft')
+    for name in ('repo', 'task-id', 'title', 'scope', 'condition', 'output'):
+        draft.add_argument('--' + name, required=True)
+    submit = commands.add_parser('submit')
+    submit.add_argument('--file', required=True)
     add = commands.add_parser('add')
     for name in ('task-id', 'title', 'scope', 'condition', 'branch'):
         add.add_argument('--' + name, required=True)
@@ -323,7 +366,21 @@ def main():
             cmd.add_argument('--' + option, required=True)
     args = vars(parser.parse_args())
     command = args.pop('command')
-    if command == 'add':
+    if command == 'draft':
+        try:
+            result = make_draft(args['repo'], args['task_id'], args['title'], args['scope'], args['condition'])
+            with Path(args['output']).open('x', encoding='utf-8') as out:
+                out.write(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+        except (OSError, ValueError, subprocess.CalledProcessError) as error:
+            parser.exit(1, f'{error}\n')
+        print(args['output'])
+        return
+    if command == 'submit':
+        try:
+            args = json.loads(Path(args['file']).read_text(encoding='utf-8'))
+        except (OSError, ValueError) as error:
+            parser.exit(1, f'{error}\n')
+    elif command == 'add':
         args['taskId'] = args.pop('task_id')
     elif command != 'list':
         args['identity'] = args.pop('id')
@@ -335,7 +392,7 @@ def main():
 
 
 # Server side of the command line: the commands and argument names it accepts, mapped to Store methods.
-CLI_COMMANDS = {'add': set(FIELDS), 'list': set(), 'claim': {'identity', 'repo', 'branch', 'acceptance_ref'},
+CLI_COMMANDS = {'submit': {'card', 'repo', 'operation_id'}, 'add': set(FIELDS), 'list': set(), 'claim': {'identity', 'repo', 'branch', 'acceptance_ref'},
                 'finish': {'identity', 'token', 'sha'}, 'abandon': {'identity', 'token', 'reason'}}
 
 
@@ -345,6 +402,10 @@ def run_cli_command(store, body):
     command, args = body['command'], body['args']
     if set(args) != CLI_COMMANDS[command]:
         raise ValueError('Unexpected arguments')
+    if command == 'submit':
+        if not isinstance(args['repo'], str) or not isinstance(args['operation_id'], str):
+            raise ValueError('Expected repo and persistent operation ID')
+        return store.add(args['card'], args['operation_id'], args['repo'])
     if command == 'add':
         return store.add(args)
     if command == 'list':

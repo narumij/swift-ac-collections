@@ -94,6 +94,6 @@ const laneHtml=slice('<section class="approval-lane work-lane"','<div id="worksp
 const memberHtml=slice('<section class="member-area"','<section class="approval-lane work-lane"');assert(memberHtml.includes('id="presence-lamps"')&&!laneHtml.includes('id="presence-lamps"'),'member status is its own section, not in Recent work');
 {const r=rows([ev('OPS-1','request','Astra','依頼',{next:'姫'}),ev('OPS-2','request','Astra','依頼'),ev('OPS-3','request','Astra','依頼',{next:'none'}),ev('OPS-4','return','姫','返却',{next:'Astra'})]);
  assert.equal(r[0].heading,'OPS-1 · Astra → 姫 · 依頼');assert.equal(r[1].heading,'OPS-2 · Astra · 依頼','missing recipient: sender only');assert.equal(r[2].heading,'OPS-3 · Astra · 依頼');assert.equal(r[3].heading,'OPS-4 · 姫 · 返却','only requests show the direction');}  // OPS-136: the lane now sits in the work area
-assert(laneHtml.includes('id="probe-panel"'),'probe panel inside the work lane');
+assert(!laneHtml.includes('id="probe-panel"'),'removed probe panel stays absent');
 assert(html.includes("rows.filter(row=>!isProbeEvent(row.raw?.reason)&&!isStateNotice(row,starts)).at(-1)"),'the current band skips state-only work records (OPS-151: a confirmed start is not one)');
 console.log('PASS: OPS-127/141 handoff/next, member states (declared state kept, legacy ACK labelled, working->return+waiting->ended, return stays in lane, continuity text, flash/failure/recovery), probe panel folded.');

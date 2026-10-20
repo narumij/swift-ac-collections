@@ -993,13 +993,6 @@ header .header-note {
    overflow: auto
 }
 
-.approval-history {
-   display: flex;
-   gap: 8px;
-   overflow: auto;
-   margin-top: 8px
-}
-
 #approval-status[data-stale="true"],
 #work-lane-status[data-stale="true"] {
    color: #a44e1d
@@ -1491,101 +1484,6 @@ header h1 {
    }
 }
 
-.letters-area {
-   margin: 12px 0 0;
-   padding: 12px 14px;
-   border: 1px solid var(--line);
-   border-radius: 8px;
-   background: #fff
-}
-
-.letters-heading {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 8px 14px;
-   align-items: center
-}
-
-.letters-heading h2 {
-   font-size: 14px;
-   margin: 0
-}
-
-.letters-note {
-   font-size: 12px;
-   color: var(--muted);
-   margin: 6px 0 8px
-}
-
-.letters-body {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 12px
-}
-
-.letters-list {
-   flex: 1 1 320px;
-   max-width: 460px;
-   display: flex;
-   flex-direction: column;
-   gap: 6px;
-   max-height: 60vh;
-   overflow: auto
-}
-
-.letters-list button {
-   text-align: left;
-   font-size: 13px;
-   line-height: 1.5;
-   padding: 6px 10px;
-   border: 1px solid var(--line);
-   border-radius: 6px;
-   background: #fbfcfb;
-   white-space: pre-line
-}
-
-.letters-list button[aria-pressed="true"] {
-   border-color: #126c58;
-   background: #edf6ef
-}
-
-.letters-list button[data-state="withdrawn"] {
-   border-left: 4px solid #a44e1d
-}
-
-.letters-list button[data-state="stopped"] {
-   border-left: 4px solid #6b7672
-}
-
-.letters-detail {
-   flex: 2 1 420px;
-   font-size: 13px;
-   min-width: 0
-}
-
-.letters-detail h3 {
-   font-size: 13px;
-   margin: 10px 0 4px
-}
-
-.letters-detail pre {
-   white-space: pre-wrap;
-   overflow-wrap: anywhere;
-   background: #f7f8f7;
-   border: 1px solid var(--line);
-   border-radius: 6px;
-   padding: 8px;
-   margin: 4px 0;
-   font-size: 12.5px
-}
-
-.letters-detail .letter-proxy {
-   color: var(--muted)
-}
-
-.letters-detail .letter-flag {
-   color: #a44e1d
-}
 .member-list .presence-lamp[data-border="solid"] { border-style: solid; }
 .member-list .presence-lamp[data-border="dotted"] { border-style: dotted; }
 .member-list .presence-lamp[data-border="red"] { border-style: solid; border-color: #c0392b; }

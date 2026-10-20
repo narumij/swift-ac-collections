@@ -18,7 +18,7 @@
     </section>
     <section class="approval-lane work-lane" aria-label="最近の作業とコミット事前承認">
         <div class="approval-heading">
-            <h2>最近の作業</h2><span id="work-lane-status" role="status">読み込み待ち</span><span class="wake-control"><select
+            <h2>最近の作業（ここです）</h2><span id="work-lane-status" role="status">読み込み待ち</span><span class="wake-control"><select
                     id="wake-owner" aria-label="待機完了を依頼する担当"></select><button type="button" id="wake-send"
                     disabled>待機完了</button><small>選んだ担当に待機終了を依頼</small><span id="wake-status"
                     role="status"></span></span><span class="work-lane-approval">コミット事前承認：<span id="approval-status"
@@ -33,42 +33,11 @@
             <h3>コミット事前承認の詳細（個別の承認・取消・履歴）</h3>
             <p id="approval-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p>
             <div id="approval-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div>
-            <div>
-                <h3 id="approval-history-summary">使用・取消の履歴（0件）</h3>
-                <div id="approval-history" class="approval-history"></div>
-            </div>
         </div>
         <details id="work-lane-help">
             <summary>作業カードの色の説明</summary>
             <p class="approval-policy work-lane-legend">カードの左の線：赤＝承認待ち（最優先。上の承認信号の🔴と同じ意味）・青＝次の担当あり・灰＝この仕事は終了・薄い線＝次は不明
             </p>
         </details>
-        <details class="approval-lane" id="probe-panel">
-            <summary>疎通確認（動作確認専用）</summary>
-            <div class="approval-heading">
-                <h2>疎通確認</h2><strong id="probe-result" aria-live="polite">まだ処理されていません</strong><span id="probe-status"
-                    role="status">読み込み待ち</span><button type="button" id="probe-all" disabled>表示中の未承認0件を承認</button>
-            </div>
-            <p id="probe-policy" class="approval-policy">限定した目的・対象範囲の承認です。実行・push・merge・task受入は行いません。</p>
-            <div id="probe-track" class="approval-track" aria-label="承認待ち・承認済み・確保済みの依頼" tabindex="0"></div>
-            <details>
-                <summary id="probe-history-summary">使用・取消の履歴（0件）</summary>
-                <div id="probe-history" class="approval-history"></div>
-            </details>
-        </details>
-    </section>
-    <section class="letters-area" aria-labelledby="letters-title">
-        <div class="letters-heading">
-            <h2 id="letters-title">連絡（閲覧だけ）</h2><label>担当 <select id="letters-member"
-                    aria-label="連絡を担当で絞る"></select></label><label>状態 <select id="letters-state"
-                    aria-label="連絡を状態で絞る"></select></label><span id="letters-status" role="status">読み込み待ち</span><button
-                type="button" id="letters-older" disabled>古い連絡へ</button><button type="button" id="letters-latest"
-                disabled>最新へ戻る</button>
-        </div>
-        <p class="letters-note">連絡の原文と出来事の記録です。ここで見ても受領にはなりません。受領・着手・返答は、宛先の本人がCLIで記録します。名前は本人申告で、認証ではありません。</p>
-        <div class="letters-body">
-            <div id="letters-list" class="letters-list" aria-label="連絡の一覧（新しい順）"></div>
-            <div id="letters-detail" class="letters-detail" aria-live="polite"></div>
-        </div>
     </section>
 </section>

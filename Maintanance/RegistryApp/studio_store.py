@@ -734,4 +734,15 @@ class LetterMixin:
 
 
 class Store(PingMixin, LetterMixin, approvals.Store):
+    def work_events(self):
+        """Recipient-confirmed starts/returns for the recent-work view; never writes activity logs."""
+        with self.transaction() as con:
+            rows = con.execute("""SELECT e.sequence, e.letter_id, e.event, e.actor, e.received_at,
+                                  l.task_id, l.sender, l.recipient
+                FROM letter_events e JOIN letters l ON l.id=e.letter_id
+                WHERE e.effective=1 AND e.actor=l.recipient AND e.recorded_by=e.actor
+                  AND e.event IN ('started','returned')
+                ORDER BY e.sequence DESC LIMIT 200""").fetchall()
+            return [dict(row) for row in reversed(rows)]
+
     """Server-side store of PING / ACK and letters, in the approvals database (案A)."""

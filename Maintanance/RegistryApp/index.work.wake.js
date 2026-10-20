@@ -56,7 +56,7 @@ async function sendWake(owner) {
   catch (e) { if (e && e.name === 'AbortError') { const unknown = Error('timeout'); unknown.unknown = true; throw unknown; } throw e; }
   finally { clearTimeout(timer); }
 }
-startActivityTimelines();
+
 
 
 // @endsection

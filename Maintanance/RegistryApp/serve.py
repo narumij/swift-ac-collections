@@ -24,6 +24,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import activity
+import work_notifications
+from work_state_binding import WorkStateBinding
 import member_state
 import communication_notifications as notifications
 import approvals
@@ -56,10 +58,26 @@ V3 = None  # OPS-181: the explicit V3 mode, {'db': Path, 'saves': Path} (v3_mode
 V3_MODULES = ('v3/registry_v3_read.py', 'v3/registry_v3_write.py', 'v3/studio_adapter.py')  # retained in V3 mode
 
 
+_WORK_VIEW = None
+_WORK_VIEW_LOCK = threading.Lock()
+
+
+def work_view():
+    global _WORK_VIEW
+    with _WORK_VIEW_LOCK:
+        if _WORK_VIEW is None:
+            states = {row['id']: row.get('state', '') for row in registry_tasks()}
+            _WORK_VIEW = WorkStateBinding(
+                work_notifications.observe_activity(activity.EVENTS), work_notifications.approval_changes,
+                activity.read_events, lambda: approvals.Store().list(), states.get,
+                work_notifications.letter_changes, lambda: studio_store.Store().work_events())
+        return _WORK_VIEW.model
+
+
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -483,10 +501,55 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError, OSError):
             pass
 
+    def stream_work(self):
+        model = work_view()
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        self.close_connection = True
+        revision = None
+        try:
+            while True:
+                snapshot = model.wait(revision, timeout=15)
+                if snapshot['revision'] != revision:
+                    self.wfile.write(('data: ' + json.dumps(snapshot, ensure_ascii=False) + '\n\n').encode())
+                    revision = snapshot['revision']
+                else:
+                    self.wfile.write(b': keepalive\n\n')
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass
+
+    def stream_changes(self, changes):
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        self.close_connection = True
+        revision = None
+        try:
+            while True:
+                current = changes.wait(revision)
+                data = f'data: {current}\n\n' if current != revision else ': keepalive\n\n'
+                revision = current
+                self.wfile.write(data.encode())
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass
+
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if self.path == '/work-state/events':
+            return self.stream_work()
+        if self.path == '/work-state':
+            return self.reply(200, work_view().snapshot())
+        if self.path == '/activity-events/changes':
+            return self.stream_changes(work_notifications.observe_activity(activity.EVENTS))
+        if self.path == '/commit-approvals/changes':
+            return self.stream_changes(work_notifications.approval_changes)
         if self.path == '/members/events':
             return self.stream_members()
         if parsed.path == '/letter-turns':

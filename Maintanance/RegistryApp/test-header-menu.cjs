@@ -63,7 +63,7 @@ assert(html.includes("const MAP_TABS=['dependency','permanent','protection','car
 assert(html.includes("const AREA_TABS=[['work','workArea'],['task','workspace']];"));
 const workArea=html.slice(html.indexOf('<section id="workArea"'),html.indexOf('<div id="workspace"'));
 assert(workArea.startsWith('<section id="workArea" class="work-area" role="tabpanel" aria-labelledby="workAreaTab" aria-label="作業">'),'work area shown at load, before the task area');
-for(const id of ['activity-current-heading','activity-events','work-lane-track','presence-lamps','approval-track','probe-panel'])assert(workArea.includes('id="'+id+'"'),id+' in the work area');
+for(const id of ['activity-current-heading','activity-events','work-lane-track','presence-lamps','approval-track'])assert(workArea.includes('id="'+id+'"'),id+' in the work area');
 for(const id of ['status','serverRestartNotice','canonicalNotice','header-approval-status','dependencyTab'])assert(!workArea.includes('id="'+id+'"'),id+' not in the work area');
 assert(html.includes('<div id="workspace" class="layout sidebar-hidden" role="tabpanel" aria-labelledby="taskAreaTab" hidden>'),'task area hidden at load');
 assert(html.includes('#workspace[hidden],#workArea[hidden]{display:none}'),'hidden wins over .layout display:grid');

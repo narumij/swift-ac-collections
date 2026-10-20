@@ -42,15 +42,16 @@ function confirmedStarts(rows) {
   return starts;
 }
 function isStateNotice(row, starts) { return !!(row.raw?.presence && row.event === 'work' && !starts.has(row.id)); }
-function createActivityPoller({ kind, fetchRecord, view, isHidden, schedule, cancel, makeController }) {
-  let inFlight = false, timer = null, controller = null;
+function createActivityPoller({ kind, fetchRecord, view, isHidden, schedule, cancel, makeController, autoPoll = true }) {
+  let inFlight = false, timer = null, controller = null, pending = false, retries = 0;
   async function poll() {
-    if (isHidden() || inFlight) return;
+    if (isHidden()) return; if (inFlight) { pending = true; return; }
+    pending = false;
     inFlight = true; controller = makeController(); const active = controller;
     const timeout = schedule(() => active.abort(), 5000);
-    try { const response = await fetchRecord('/activity-' + kind, { cache: 'no-store', signal: active.signal }); if (!response.ok) throw Error('Unavailable'); const rows = validateActivityRows(await response.json(), kind); if (!isHidden()) view.update(rows); }
-    catch (e) { if (!isHidden()) view.failure(); }
-    finally { cancel(timeout); controller = null; inFlight = false; if (!isHidden()) timer = schedule(poll, 3000); }
+    try { const response = await fetchRecord('/activity-' + kind, { cache: 'no-store', signal: active.signal }); if (!response.ok) throw Error('Unavailable'); const rows = validateActivityRows(await response.json(), kind); retries = 0; if (!isHidden()) view.update(rows); }
+    catch (e) { if (!isHidden()) { view.failure(); if (retries++ < 2) pending = true; } }
+    finally { cancel(timeout); controller = null; inFlight = false; if (!isHidden() && (autoPoll || pending)) timer = schedule(poll, pending && !retries ? 0 : 3000); }
   }
   function visibility() { if (timer !== null) { cancel(timer); timer = null; } if (isHidden()) { if (controller) controller.abort(); } else poll(); }
   return { poll, visibility };
@@ -98,15 +99,19 @@ function createActivityView(track, status, makeNode, getActive = () => null, cur
 
 // @endsection
 // @section events-start
-function startActivityTimelines() {
-  for (const kind of ['events']) {
-    const status = $('activity-' + kind + '-status');
-    if (location.protocol === 'file:' || typeof fetch !== 'function') { status.textContent = 'ローカルサーバーで表示できます'; continue; }
-    // OPS-153: the activity poller feeds the one shared studio; the timeline, cards, members and WAKE are its views.
-    const view = { update(rows) { workLaneInstance().activity(rows); }, failure() { workLaneInstance().activityFailure(); } };
-    const poller = createActivityPoller({ kind, fetchRecord: fetch, view, isHidden: () => document.hidden, schedule: setTimeout, cancel: clearTimeout, makeController: () => new AbortController() });
-    document.addEventListener('visibilitychange', poller.visibility); poller.poll();
+function subscribeWorkChanges(path, changed, failed) {
+  let stream = null;
+  function close() { if (stream) stream.close(); stream = null; }
+  function open() {
+    close();
+    if (document.hidden) return;
+    stream = new EventSource(path);
+    stream.onmessage = changed;
+    stream.onerror = failed;
   }
+  document.addEventListener('visibilitychange', open);
+  window.addEventListener('pagehide', close);
+  window.addEventListener('pageshow', event => { if (event.persisted) open(); });
+  open();
 }
-
 // @endsection

@@ -279,6 +279,24 @@ Plan only. `Evidence/OPS-192/EXECUTION_PLAN.md` §1–6 is revised; the earlier 
 
 No implementation, live change or commit.
 
+### Response: document-based reading and consolidated procedure (Hime, 2026-10-20; letter LTR-20261020-79B258C4…)
+`Evidence/OPS-192/EXECUTION_PLAN.md` is rewritten as one current procedure; old WP and G material is only in git. Plan only.
+
+- **B1, read by canonical document.** `comm.py letter doc <path> [--section H] [--full]`, through `GET /letters?brief=1&doc=&section=`.
+  - Matching: the exact normalized path (the `check_ref` form) and an exact heading. A letter matches if any request or reply revision carries that ref. Closed letters are included. Never from prose.
+  - Each letter shows which part and revision carry the ref, and whether the latest revision of that part still does (current or former).
+  - Unmatched letters in the same thread are not listed. They appear only as "does not reference this document" context in `read --full`.
+  - Default output is the latest referencing text plus its diff from the previous revision; `--full` gives all versions in event order.
+  - Read-only data: 123 text rows with refs over 104 of 107 letters, 12 letters on this document, and 3 letter/part pairs whose ref changes between revisions. These are the fixture shapes for A5.
+- **Corrections.**
+  - The latest reply before a follow-up is shown only as labelled ordered context, never as "reviewed". An explicit read-version field is a later option.
+  - The N1 defect stays visible and gets a bounded fix that keeps permissions and the default workflow. A returned letter is pending when an effective request `revised` follows the last `returned` with no later recipient reply `revised`. All of these are `letter_events`, one sequence, so no schema is needed. A later reply revision clears it. Limit, stated plainly: order does not prove the reply answers that revision, so a typo fix clears it. Watch keeps the signatures of letters that left; the label tests use two fixed histories.
+  - The example now has L2 revised before L2 is returned.
+- **Order.** T1 → D1 (thread, delta (a)+(b), `--full`, `letter text`) → B1 → N1 → T2. Service separation R1/R2 and P2 are independent, after, and not dropped. The current DB is remodelled, not a new vessel. Extraction, decisions and handoff summaries stay deferred and independently freezable.
+- **Acceptance.** A1–A10, plus an expanded-DB rollback with old code.
+
+No implementation, live change or commit.
+
 ## Acceptance（Astra記入）
 2026-10-20 初回は未受入。3区切りの構成とHTTP経路の説明は採用候補。次の不足を姫に返し、実装は未許可。
 1. 切戻しは旗を外すだけでは閉じない。共通サービスの停止・同一DB所有権の解放とCLI接続先の復元を含む必要がある。現在のstudio_client.pyはREGISTRY_STUDIO_URL/DEFAULT_URLで接続先を選ぶ。
@@ -409,3 +427,9 @@ DB/CLI/Studioで文脈と差分を読む方向は要求に合う。ただし、�
 直前の2者限定は撤回。ユーザー：「3者4者の場合は、順番に回す方式にしようかな」。発言担当を1人とし、話し終えたら次へ渡す方式との確認後、「おねがい」と検討依頼を受けた。スレッドの参加者数を2人に制限せず、参加者・現在の発言担当・発言権の受渡しを区別する。担当者そのものの交代と発言順も区別し、過去の発言者を変更しない。具体的な順序の決め方や例外はまだ採用されていないため、最小の実施案を検討する。実装開始ではない。
 
 補足（ユーザー）：発言がなければ `NOP` で順送りする。発言内容を無理に作らず次へ渡せること。NOPを承認・賛成・作業完了と同一視しない。
+
+
+## ユーザーの途中参加（ユーザー確認、2026-10-20）
+ユーザーも同じ議論へ参加できる。普段は閲覧のみで自動NOPとし、「参加する」に切り替えると次に回ってきた自分の番で発言する。「閲覧に戻る」で自動NOPへ戻れる。この形を盛り込むようユーザーから依頼された。自動NOPは承認・賛成・判断の放棄ではなく、別に必要なユーザー判断待ちを解消しない。発言順への参加と判断権限を区別して実施要領に含める。実装開始の指示ではない。
+
+補足：ユーザーは「ユーザー判断はスレッドではしないな」、続けて「しちゃうばあいもあるかもしれないがｗ」と述べた。したがってスレッド内判断の禁止規則にはしない。通常の議論参加と正式判断は分け、スレッドで明示的に判断した場合も、その発言・対象・範囲を根拠として扱う。通常発言や自動NOPを確定判断へ昇格させない。判断抽出の自動化は今回の範囲外のまま。

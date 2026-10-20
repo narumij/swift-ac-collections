@@ -1,0 +1,27 @@
+ Maintanance/RegistryApp/approvals.py | 6 ++++++
+ 1 file changed, 6 insertions(+)
+F
+======================================================================
+FAIL: test_individual_and_bulk_approval (__main__.ApprovalsRoundTrip.test_individual_and_bulk_approval)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-188.fChl4qn4iQ/repo/Maintanance/RegistryApp/test-approvals-e2e.py", line 105, in test_individual_and_bulk_approval
+    self.assertEqual((s[a['id']]['status'], s[b['id']]['status']), ('approved', 'pending'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('approved', 'approved') != ('approved', 'pending')
+
+First differing element 1:
+'approved'
+'pending'
+
+- ('approved', 'approved')
+?               - ----
+
++ ('approved', 'pending')
+?                 + +++
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.124s
+
+FAILED (failures=1)

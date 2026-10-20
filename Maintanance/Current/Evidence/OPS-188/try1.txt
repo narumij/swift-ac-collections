@@ -1,0 +1,6 @@
+test_individual_and_bulk_approval (__main__.ApprovalsRoundTrip.test_individual_and_bulk_approval) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 12.665s
+
+OK

@@ -1,0 +1,3 @@
+PASS: header approval mirrors count, signal, failure, busy state and shared action; new requests enable both buttons.
+PASS: actual approval view + controller; safe complete detail, retained DOM/scroll; individual and all click snapshots; empty/stale/duplicate rejection; claimed cancellation guard; conflict/offline/timeout/recovery; late GET cannot rewind POST; no duplicate/hidden polling.
+cjs exit 0

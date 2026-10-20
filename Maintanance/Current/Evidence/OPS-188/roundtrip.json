@@ -1,0 +1,319 @@
+{
+ "driver": {
+  "requests": [
+   "GET /",
+   "GET /registry.json",
+   "GET /server-status",
+   "GET /commit-approvals",
+   "GET /workspace",
+   "GET /letters",
+   "POST /commit-approvals",
+   "GET /commit-approvals",
+   "GET /letters",
+   "GET /commit-approvals",
+   "POST /commit-approvals",
+   "GET /commit-approvals"
+  ],
+  "posts": [
+   {
+    "action": "approve",
+    "targets": [
+     {
+      "id": "ccabded0327d4766a3658aaa48990cdd",
+      "revision": 1
+     }
+    ]
+   },
+   {
+    "action": "approve",
+    "targets": [
+     {
+      "id": "54c412762b7e497d99e2c5fb9bfb99f4",
+      "revision": 1
+     },
+     {
+      "id": "fc2e9b52096f4ffc9b4d9a02f9c66710",
+      "revision": 1
+     }
+    ]
+   }
+  ],
+  "blocked": [],
+  "blockedSameOrigin": [
+   "/activity-events",
+   "/approval-probe",
+   "/continuity",
+   "/activity-events",
+   "/approval-probe",
+   "/continuity",
+   "/activity-events",
+   "/approval-probe",
+   "/activity-events",
+   "/approval-probe"
+  ],
+  "held": 1,
+  "pageErrors": [],
+  "detailA": "依頼：ccabded0327d4766a3658aaa48990cdd / revision 1\n\nタスク：OPS-188 · 承認試験 A 7430f226\n\n状態：承認待ち\n\n目的・範囲：\n範囲 承認試験 A 7430f226：<b>そのまま</b>\n\n対象ファイル：\nMaintanance/RegistryApp/x.txt\n\n受入条件：\n試験が通る\n\nbranch：ops188-test\n\n登録：2026-10-20T04:58:01.622834Z\n\n更新：2026-10-20T04:58:01.622834Z\n\n承認：未承認\n\n実コミット：未記録",
+  "A": [
+   {
+    "title": "OPS-188 · 承認試験 A 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 B 7430f226",
+    "state": "承認待ち",
+    "status": "pending"
+   }
+  ],
+  "shownBeforeClick": [
+   {
+    "title": "OPS-188 · 承認試験 A 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 B 7430f226",
+    "state": "承認待ち",
+    "status": "pending"
+   },
+   {
+    "title": "OPS-188 · 承認試験 C 7430f226",
+    "state": "承認待ち",
+    "status": "pending"
+   }
+  ],
+  "allLabel": "表示中の未承認2件を承認",
+  "afterClick": [
+   {
+    "title": "OPS-188 · 承認試験 A 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 B 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 C 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 D 7430f226",
+    "state": "承認待ち",
+    "status": "pending"
+   }
+  ],
+  "B": [
+   {
+    "title": "OPS-188 · 承認試験 A 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 B 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 C 7430f226",
+    "state": "承認済み",
+    "status": "approved"
+   },
+   {
+    "title": "OPS-188 · 承認試験 D 7430f226",
+    "state": "承認待ち",
+    "status": "pending"
+   }
+  ],
+  "ok": true
+ },
+ "server": {
+  "ccabded0327d4766a3658aaa48990cdd": {
+   "title": "承認試験 A 7430f226",
+   "scope": "範囲 承認試験 A 7430f226：<b>そのまま</b>",
+   "condition": "試験が通る",
+   "branch": "ops188-test",
+   "paths": [
+    "Maintanance/RegistryApp/x.txt"
+   ],
+   "taskId": "OPS-188",
+   "revision": 2,
+   "status": "approved",
+   "createdAt": "2026-10-20T04:58:01.622834Z",
+   "updatedAt": "2026-10-20T04:58:02.680241Z",
+   "approvedAt": "2026-10-20T04:58:02.680223Z",
+   "commitSha": null,
+   "id": "ccabded0327d4766a3658aaa48990cdd",
+   "history": [
+    {
+     "action": "add",
+     "at": "2026-10-20T04:58:01.622834Z",
+     "revision": 1,
+     "content": {
+      "title": "承認試験 A 7430f226",
+      "scope": "範囲 承認試験 A 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    },
+    {
+     "action": "approve",
+     "at": "2026-10-20T04:58:02.680241Z",
+     "revision": 2,
+     "operationId": "fa1442572d6b4a3a8d56faeb09665fd8",
+     "content": {
+      "title": "承認試験 A 7430f226",
+      "scope": "範囲 承認試験 A 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    }
+   ]
+  },
+  "54c412762b7e497d99e2c5fb9bfb99f4": {
+   "title": "承認試験 B 7430f226",
+   "scope": "範囲 承認試験 B 7430f226：<b>そのまま</b>",
+   "condition": "試験が通る",
+   "branch": "ops188-test",
+   "paths": [
+    "Maintanance/RegistryApp/x.txt"
+   ],
+   "taskId": "OPS-188",
+   "revision": 2,
+   "status": "approved",
+   "createdAt": "2026-10-20T04:58:01.702602Z",
+   "updatedAt": "2026-10-20T04:58:08.889271Z",
+   "approvedAt": "2026-10-20T04:58:08.889257Z",
+   "commitSha": null,
+   "id": "54c412762b7e497d99e2c5fb9bfb99f4",
+   "history": [
+    {
+     "action": "add",
+     "at": "2026-10-20T04:58:01.702602Z",
+     "revision": 1,
+     "content": {
+      "title": "承認試験 B 7430f226",
+      "scope": "範囲 承認試験 B 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    },
+    {
+     "action": "approve",
+     "at": "2026-10-20T04:58:08.889271Z",
+     "revision": 2,
+     "operationId": "fffe78a6b1044f74bdc8a0a6c0a727d6",
+     "content": {
+      "title": "承認試験 B 7430f226",
+      "scope": "範囲 承認試験 B 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    }
+   ]
+  },
+  "fc2e9b52096f4ffc9b4d9a02f9c66710": {
+   "title": "承認試験 C 7430f226",
+   "scope": "範囲 承認試験 C 7430f226：<b>そのまま</b>",
+   "condition": "試験が通る",
+   "branch": "ops188-test",
+   "paths": [
+    "Maintanance/RegistryApp/x.txt"
+   ],
+   "taskId": "OPS-188",
+   "revision": 2,
+   "status": "approved",
+   "createdAt": "2026-10-20T04:58:02.836933Z",
+   "updatedAt": "2026-10-20T04:58:08.889538Z",
+   "approvedAt": "2026-10-20T04:58:08.889533Z",
+   "commitSha": null,
+   "id": "fc2e9b52096f4ffc9b4d9a02f9c66710",
+   "history": [
+    {
+     "action": "add",
+     "at": "2026-10-20T04:58:02.836933Z",
+     "revision": 1,
+     "content": {
+      "title": "承認試験 C 7430f226",
+      "scope": "範囲 承認試験 C 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    },
+    {
+     "action": "approve",
+     "at": "2026-10-20T04:58:08.889538Z",
+     "revision": 2,
+     "operationId": "fffe78a6b1044f74bdc8a0a6c0a727d6",
+     "content": {
+      "title": "承認試験 C 7430f226",
+      "scope": "範囲 承認試験 C 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    }
+   ]
+  },
+  "13cb53353c74413490911d4abaff3e53": {
+   "title": "承認試験 D 7430f226",
+   "scope": "範囲 承認試験 D 7430f226：<b>そのまま</b>",
+   "condition": "試験が通る",
+   "branch": "ops188-test",
+   "paths": [
+    "Maintanance/RegistryApp/x.txt"
+   ],
+   "taskId": "OPS-188",
+   "revision": 1,
+   "status": "pending",
+   "createdAt": "2026-10-20T04:58:08.869924Z",
+   "updatedAt": "2026-10-20T04:58:08.869924Z",
+   "approvedAt": null,
+   "commitSha": null,
+   "id": "13cb53353c74413490911d4abaff3e53",
+   "history": [
+    {
+     "action": "add",
+     "at": "2026-10-20T04:58:08.869924Z",
+     "revision": 1,
+     "content": {
+      "title": "承認試験 D 7430f226",
+      "scope": "範囲 承認試験 D 7430f226：<b>そのまま</b>",
+      "condition": "試験が通る",
+      "branch": "ops188-test",
+      "paths": [
+       "Maintanance/RegistryApp/x.txt"
+      ],
+      "taskId": "OPS-188"
+     }
+    }
+   ]
+  }
+ }
+}

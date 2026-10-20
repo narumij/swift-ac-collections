@@ -1,0 +1,29 @@
+ Maintanance/RegistryApp/index.template.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+F
+======================================================================
+FAIL: test_individual_and_bulk_approval (__main__.ApprovalsRoundTrip.test_individual_and_bulk_approval)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-188.fChl4qn4iQ/repo/Maintanance/RegistryApp/test-approvals-e2e.py", line 103, in test_individual_and_bulk_approval
+    self.assertEqual(one['posts'], [{'action': 'approve', 'targets': [{'id': a['id'], 'revision': 1}]}], 'the click sent A alone')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'ac[82 chars]': 1}, {'id': '298ca734d4444c5896a8120dfd0ab83[16 chars]1}]}] != [{'ac[82 chars]': 1}]}]
+
+First differing element 0:
+{'act[81 chars]': 1}, {'id': '298ca734d4444c5896a8120dfd0ab83[15 chars] 1}]}
+{'act[81 chars]': 1}]}
+
+  [{'action': 'approve',
+-   'targets': [{'id': 'c7e19f3468294ae694d6e02ae39c10d3', 'revision': 1},
+?                                                                        ^
+
++   'targets': [{'id': 'c7e19f3468294ae694d6e02ae39c10d3', 'revision': 1}]}]
+?                                                                        ^^^
+
+-               {'id': '298ca734d4444c5896a8120dfd0ab837', 'revision': 1}]}] : the click sent A alone
+
+----------------------------------------------------------------------
+Ran 1 test in 2.688s
+
+FAILED (failures=1)

@@ -54,7 +54,7 @@ V3_MODULES = ('v3/registry_v3_read.py', 'v3/registry_v3_write.py', 'v3/studio_ad
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'studio_store.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -606,8 +606,18 @@ def main():
         except ValueError as error:
             parser.error(str(error))
         STARTUP_FINGERPRINTS = runtime_fingerprints()
-    subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
+    # OPS-189: take the port first. A port in use (for example a running server) fails here, before sync.py could
+    # rewrite the output that server is serving. The socket only listens until serve_forever, so a failed generation
+    # closes it again and nothing incomplete is ever answered.
+    try:
+        server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
+    except OSError as error:
+        parser.exit(1, f'Port {args.port} cannot be used ({error}); nothing was generated\n')
+    try:
+        subprocess.run([sys.executable, str(APP / 'sync.py'), *sync_args()], cwd=ROOT, check=True, **({'env': SYNC_ENV} if SYNC_ENV else {}))
+    except BaseException:
+        server.server_close()
+        raise
     print(f'Registry Studio: http://127.0.0.1:{server.server_port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:
         server.serve_forever()

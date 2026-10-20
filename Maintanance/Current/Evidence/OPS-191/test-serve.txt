@@ -1,0 +1,11 @@
+test_activity_wake (__main__.ServeTests.test_activity_wake) ... ok
+test_approvals (__main__.ServeTests.test_approvals) ... ok
+test_get_routes (__main__.ServeTests.test_get_routes) ... ok
+test_post_guards (__main__.ServeTests.test_post_guards) ... ok
+test_save (__main__.ServeTests.test_save) ... ok
+test_sync (__main__.ServeTests.test_sync) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.283s
+
+OK

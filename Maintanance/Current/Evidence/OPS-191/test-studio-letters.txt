@@ -1,0 +1,44 @@
+test_full_exchange_through_comm_cli (__main__.HttpTests.test_full_exchange_through_comm_cli) ... usage: comm.py letter receive [-h] --actor ACTOR [--recorded-by RECORDED_BY]
+                              [--claimed-at CLAIMED_AT] [--note NOTE]
+                              [--operation-id OPERATION_ID]
+                              [--ref-doc REF_DOC] [--ref-section REF_SECTION]
+                              [--body-file BODY_FILE] --revision REVISION
+                              letter_id
+comm.py letter receive: error: the following arguments are required: --revision
+Studio server refused (409): Only the sender records this event
+--set needs --recorded-by; nothing was sent
+ok
+test_http_guards_and_queries (__main__.HttpTests.test_http_guards_and_queries) ... ok
+test_line_endings_are_kept_from_files_and_standard_input (__main__.HttpTests.test_line_endings_are_kept_from_files_and_standard_input) ... ok
+test_list_pages_through_comm_cli (__main__.HttpTests.test_list_pages_through_comm_cli) ... --sender, --recipient, --cursor and --all need --brief; nothing was sent
+ok
+test_stop_request_and_answer_through_comm_cli (__main__.HttpTests.test_stop_request_and_answer_through_comm_cli) ... Studio server refused (400): withdrawn needs a reason or note
+ok
+test_unreachable_server_sends_nothing (__main__.HttpTests.test_unreachable_server_sends_nothing) ... Studio server not reachable at http://127.0.0.1:62895; nothing was sent or recorded ([Errno 61] Connection refused)
+[Errno 2] No such file or directory: '/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/OPS-191.ChRKgTrqRk/tmpuue3lote/missing.md'; nothing was sent
+ok
+test_watch_reports_changes_once_and_never_loses_them (__main__.HttpTests.test_watch_reports_changes_once_and_never_loses_them) ... ok
+test_watch_save_failure_is_explicit_and_keeps_the_old_file (__main__.HttpTests.test_watch_save_failure_is_explicit_and_keeps_the_old_file) ... ok
+test_append_only_tables (__main__.StoreTests.test_append_only_tables) ... ok
+test_body_limits_and_optional_references (__main__.StoreTests.test_body_limits_and_optional_references) ... ok
+test_brief_list_reads_no_text (__main__.StoreTests.test_brief_list_reads_no_text) ... ok
+test_brief_pages_are_stable_complete_and_filtered_on_the_server (__main__.StoreTests.test_brief_pages_are_stable_complete_and_filtered_on_the_server) ... ok
+test_concurrent_events_one_winner (__main__.StoreTests.test_concurrent_events_one_winner) ... ok
+test_failure_rolls_back_text_event_and_operation (__main__.StoreTests.test_failure_rolls_back_text_event_and_operation) ... ok
+test_idempotent_operations_and_reused_ids (__main__.StoreTests.test_idempotent_operations_and_reused_ids) ... ok
+test_older_withdrawals_still_derive (__main__.StoreTests.test_older_withdrawals_still_derive) ... ok
+test_original_text_and_state_machine (__main__.StoreTests.test_original_text_and_state_machine) ... ok
+test_proxy_records_change_nothing (__main__.StoreTests.test_proxy_records_change_nothing) ... ok
+test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me (__main__.StoreTests.test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me) ... ok
+test_receipt_names_the_revision_that_was_read (__main__.StoreTests.test_receipt_names_the_revision_that_was_read) ... ok
+test_refused_transitions_and_who_may_act (__main__.StoreTests.test_refused_transitions_and_who_may_act) ... ok
+test_revisions_keep_history_and_mark_after_receipt (__main__.StoreTests.test_revisions_keep_history_and_mark_after_receipt) ... ok
+test_send_and_receipt_times_are_the_server_times_of_those_events (__main__.StoreTests.test_send_and_receipt_times_are_the_server_times_of_those_events)
+CP-20261020-002: the send time is the time of the `sent` event (one clock reading, also in letters), the receipt ... ok
+test_senders_and_no_proxy_send (__main__.StoreTests.test_senders_and_no_proxy_send) ... ok
+test_stop_request_and_answers (__main__.StoreTests.test_stop_request_and_answers) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 4.944s
+
+OK

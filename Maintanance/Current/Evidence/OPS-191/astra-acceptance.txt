@@ -1,0 +1,117 @@
+Independent verification: clean clone at 01e8254a490dbe3faaeb4eb74ded4ff5f6d183f0 plus exact returned patch. All eight commands exit 0.
+## test-approvals-e2e.py.log
+test_individual_and_bulk_approval (__main__.ApprovalsRoundTrip.test_individual_and_bulk_approval) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 11.618s
+
+OK
+
+
+## test-approvals.cjs.log
+PASS: header approval mirrors count, signal, failure, busy state and shared action; new requests enable both buttons.
+PASS: actual approval view + controller; safe complete detail, retained DOM/scroll; individual and all click snapshots; empty/stale/duplicate rejection; claimed cancellation guard; conflict/offline/timeout/recovery; late GET cannot rewind POST; no duplicate/hidden polling.
+
+
+## test-approvals.py.log
+test_atomic_snapshot_revision_and_durability (__main__.ApprovalTests.test_atomic_snapshot_revision_and_durability) ... ok
+test_claim_finish_token_and_real_commit (__main__.ApprovalTests.test_claim_finish_token_and_real_commit) ... ok
+test_concurrent_approval_one_winner (__main__.ApprovalTests.test_concurrent_approval_one_winner) ... ok
+test_database_history_and_content_retained (__main__.ApprovalTests.test_database_history_and_content_retained) ... ok
+test_filename_whitespace_is_not_normalized (__main__.ApprovalTests.test_filename_whitespace_is_not_normalized) ... ok
+test_finish_rejects_outside_paths_and_branch_change (__main__.ApprovalTests.test_finish_rejects_outside_paths_and_branch_change) ... ok
+test_http_guards_validation_conflict_and_no_git_endpoint (__main__.ApprovalTests.test_http_guards_validation_conflict_and_no_git_endpoint) ... ok
+test_malformed_inputs (__main__.ApprovalTests.test_malformed_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.637s
+
+OK
+
+
+## test-letters-e2e.py.log
+test_send_view_receive_round_trip (__main__.LettersRoundTrip.test_send_view_receive_round_trip) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 7.843s
+
+OK
+
+
+## test-serve.py.log
+test_activity_wake (__main__.ServeTests.test_activity_wake) ... ok
+test_approvals (__main__.ServeTests.test_approvals) ... ok
+test_get_routes (__main__.ServeTests.test_get_routes) ... ok
+test_post_guards (__main__.ServeTests.test_post_guards) ... ok
+test_save (__main__.ServeTests.test_save) ... ok
+test_sync (__main__.ServeTests.test_sync) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.234s
+
+OK
+
+
+## test-startup-safety.py.log
+test_editing_studio_store_recommends_a_restart (__main__.Startup.test_editing_studio_store_recommends_a_restart) ... ok
+test_every_retained_studio_module_is_watched (__main__.Startup.test_every_retained_studio_module_is_watched)
+Every module of this directory that serve.py retains at import is in the restart fingerprints. ... ok
+test_failed_generation_exits_and_releases_the_port (__main__.Startup.test_failed_generation_exits_and_releases_the_port) ... ok
+test_normal_startup_serves_a_valid_page (__main__.Startup.test_normal_startup_serves_a_valid_page) ... ok
+test_occupied_port_changes_nothing (__main__.Startup.test_occupied_port_changes_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.254s
+
+OK
+
+
+## test-studio-letters.py.log
+test_full_exchange_through_comm_cli (__main__.HttpTests.test_full_exchange_through_comm_cli) ... usage: comm.py letter receive [-h] --actor ACTOR [--recorded-by RECORDED_BY]
+                              [--claimed-at CLAIMED_AT] [--note NOTE]
+                              [--operation-id OPERATION_ID]
+                              [--ref-doc REF_DOC] [--ref-section REF_SECTION]
+                              [--body-file BODY_FILE] --revision REVISION
+                              letter_id
+comm.py letter receive: error: the following arguments are required: --revision
+Studio server refused (409): Only the sender records this event
+--set needs --recorded-by; nothing was sent
+ok
+test_http_guards_and_queries (__main__.HttpTests.test_http_guards_and_queries) ... ok
+test_line_endings_are_kept_from_files_and_standard_input (__main__.HttpTests.test_line_endings_are_kept_from_files_and_standard_input) ... ok
+test_list_pages_through_comm_cli (__main__.HttpTests.test_list_pages_through_comm_cli) ... --sender, --recipient, --cursor and --all need --brief; nothing was sent
+ok
+test_stop_request_and_answer_through_comm_cli (__main__.HttpTests.test_stop_request_and_answer_through_comm_cli) ... Studio server refused (400): withdrawn needs a reason or note
+ok
+test_unreachable_server_sends_nothing (__main__.HttpTests.test_unreachable_server_sends_nothing) ... Studio server not reachable at http://127.0.0.1:64038; nothing was sent or recorded ([Errno 61] Connection refused)
+[Errno 2] No such file or directory: '/var/folders/x9/2p70phpx3_xdvwx9s6gp35rm0000gn/T/tmpjkak1d8a/missing.md'; nothing was sent
+ok
+test_watch_reports_changes_once_and_never_loses_them (__main__.HttpTests.test_watch_reports_changes_once_and_never_loses_them) ... ok
+test_watch_save_failure_is_explicit_and_keeps_the_old_file (__main__.HttpTests.test_watch_save_failure_is_explicit_and_keeps_the_old_file) ... ok
+test_append_only_tables (__main__.StoreTests.test_append_only_tables) ... ok
+test_body_limits_and_optional_references (__main__.StoreTests.test_body_limits_and_optional_references) ... ok
+test_brief_list_reads_no_text (__main__.StoreTests.test_brief_list_reads_no_text) ... ok
+test_brief_pages_are_stable_complete_and_filtered_on_the_server (__main__.StoreTests.test_brief_pages_are_stable_complete_and_filtered_on_the_server) ... ok
+test_concurrent_events_one_winner (__main__.StoreTests.test_concurrent_events_one_winner) ... ok
+test_failure_rolls_back_text_event_and_operation (__main__.StoreTests.test_failure_rolls_back_text_event_and_operation) ... ok
+test_idempotent_operations_and_reused_ids (__main__.StoreTests.test_idempotent_operations_and_reused_ids) ... ok
+test_older_withdrawals_still_derive (__main__.StoreTests.test_older_withdrawals_still_derive) ... ok
+test_original_text_and_state_machine (__main__.StoreTests.test_original_text_and_state_machine) ... ok
+test_proxy_records_change_nothing (__main__.StoreTests.test_proxy_records_change_nothing) ... ok
+test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me (__main__.StoreTests.test_reading_records_nothing_and_inbox_lists_only_open_letters_to_me) ... ok
+test_receipt_names_the_revision_that_was_read (__main__.StoreTests.test_receipt_names_the_revision_that_was_read) ... ok
+test_refused_transitions_and_who_may_act (__main__.StoreTests.test_refused_transitions_and_who_may_act) ... ok
+test_revisions_keep_history_and_mark_after_receipt (__main__.StoreTests.test_revisions_keep_history_and_mark_after_receipt) ... ok
+test_send_and_receipt_times_are_the_server_times_of_those_events (__main__.StoreTests.test_send_and_receipt_times_are_the_server_times_of_those_events)
+CP-20261020-002: the send time is the time of the `sent` event (one clock reading, also in letters), the receipt ... ok
+test_senders_and_no_proxy_send (__main__.StoreTests.test_senders_and_no_proxy_send) ... ok
+test_stop_request_and_answers (__main__.StoreTests.test_stop_request_and_answers) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 4.977s
+
+OK
+
+
+## test-view-model-letters.cjs.log
+PASS: OPS-156 letters (view model: rows/filters/flags/receipt diff/stop/proxy, detail only for the chosen letter, stale answers ignored, last good kept for the same letter; DOM: textContent only, keyed rows, intents; same revision; GET-only single-flight pollers drop old answers).

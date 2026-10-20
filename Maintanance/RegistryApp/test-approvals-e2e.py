@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""OPS-188: individual and bulk approval through the real Studio server and the real page in headless WebKit.
+
+A real serve.py process on port 0 with disposable stores only (approvals DB, Inbox, output/cache and tools record in a
+temporary directory). Requests are added through the supported route (approvals.py add → HTTP → server). The page's
+real buttons are clicked; the server's answers are never replaced. The oracle is the server's own record read back
+over HTTP (state and history), compared with what the page shows after its own next poll.
+
+- Individual: approving A changes A alone; B stays pending.
+- Bulk on a displayed snapshot: with B and C displayed, the page's next GET is held (delayed, never answered by the
+  test) while D is added on the server; then 表示中の未承認2件を承認 is clicked. Only B and C are approved; D stays
+  pending, and the POST names exactly B and C with their displayed revisions.
+- Approval alone neither claims nor consumes a request and records no commit; the checkout's HEAD is unchanged.
+The server runs in the default (Markdown) mode: V3 mode cannot start from a clean checkout (the Registry names an
+untracked cache document, see OPS-187). Live paths without an override are never requested (blockPaths).
+
+Run from the repository root: python3 -B Maintanance/RegistryApp/test-approvals-e2e.py -v
+Needs: node, the global Playwright with WebKit (/opt/homebrew/lib/node_modules/playwright), and node/marked for the
+startup sync (a live local-tools.json is copied read-only into the temporary output; or set REGISTRY_STUDIO_MARKED).
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+import urllib.request
+import uuid
+from pathlib import Path
+
+APP = Path(__file__).resolve().parent
+ROOT = APP.parent.parent
+BLOCK = ['/activity-events', '/activity-commits', '/continuity', '/approval-probe', '/work-progress']
+
+
+class ApprovalsRoundTrip(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory(prefix='ops188-')
+        self.addCleanup(tmp.cleanup)
+        self.d = d = Path(tmp.name)
+        for name in ('out', 'inbox', 'driver'):
+            (d / name).mkdir()
+        self.env = dict(os.environ, REGISTRY_STUDIO_APPROVALS_DB=str(d / 'approvals.sqlite3'), REGISTRY_STUDIO_INBOX=str(d / 'inbox'),
+                        REGISTRY_STUDIO_APP=str(d / 'out'), REGISTRY_STUDIO_TOOLS=str(d / 'out' / 'local-tools.json'))
+        live_tools = APP / 'local-tools.json'
+        if live_tools.exists():
+            (d / 'out' / 'local-tools.json').write_bytes(live_tools.read_bytes())  # read-only copy so sync.py finds node/marked
+        self.proc = subprocess.Popen([sys.executable, '-B', str(APP / 'serve.py'), '--port', '0', '--output', str(d / 'out')],
+                                     cwd=ROOT, env=self.env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        self.addCleanup(self.proc.stdout.close)
+        self.addCleanup(lambda: self.proc.poll() is None and (self.proc.terminate(), self.proc.wait(10)))
+        lines = []
+        for line in self.proc.stdout:
+            lines.append(line)
+            if line.startswith('Registry Studio: http://127.0.0.1:'):
+                break
+        self.assertIsNone(self.proc.poll(), ''.join(lines)[-3000:])
+        port = int(re.search(r'127\.0\.0\.1:(\d+)/', lines[-1]).group(1))
+        self.assertNotEqual(port, 8088)
+        self.origin = f'http://127.0.0.1:{port}'
+        self.env['REGISTRY_STUDIO_URL'] = self.origin
+
+    def add(self, title):
+        run = subprocess.run([sys.executable, '-B', str(APP / 'approvals.py'), 'add', '--task-id', 'OPS-188', '--title', title,
+                              '--scope', f'範囲 {title}：<b>そのまま</b>', '--condition', '試験が通る', '--branch', 'ops188-test', '--path', 'Maintanance/RegistryApp/x.txt'],
+                             cwd=ROOT, env=self.env, capture_output=True, text=True, timeout=60)
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        return json.loads(run.stdout)
+
+    def stored(self):
+        with urllib.request.urlopen(self.origin + '/commit-approvals', timeout=30) as r:
+            return {x['id']: x for x in json.loads(r.read())['requests']}
+
+    def wait_file(self, driver, name, seconds=60):
+        path, end = self.d / 'driver' / name, time.time() + seconds
+        while not path.exists() and driver.poll() is None and time.time() < end:
+            time.sleep(0.05)
+        if not path.exists():  # read the report only on failure: reading the driver's output waits for it to end
+            driver.wait(60)
+            report = self.d / 'driver' / 'result.json'
+            self.fail(report.read_text(encoding='utf-8') if report.exists() else driver.stdout.read())
+        return json.loads(path.read_text(encoding='utf-8'))
+
+    def test_individual_and_bulk_approval(self):
+        head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        tag = uuid.uuid4().hex[:8]
+        titles = {k: f'承認試験 {k} {tag}' for k in 'ABCD'}
+        label = lambda k: 'OPS-188 · ' + titles[k]
+        a, b = self.add(titles['A']), self.add(titles['B'])
+        params = self.d / 'driver' / 'params.json'
+        params.write_text(json.dumps({'a': label('A'), 'b': label('B'), 'c': label('C'), 'd': label('D'), 'blockPaths': BLOCK, 'timeoutMs': 30000}), encoding='utf-8')
+        driver = subprocess.Popen(['node', str(APP / 'approvals_e2e.cjs'), self.origin, str(params), str(self.d / 'driver')],
+                                  cwd=APP, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        self.addCleanup(lambda: driver.poll() is None and (driver.kill(), driver.wait(10)))
+        self.addCleanup(driver.stdout.close)
+
+        # individual: A alone
+        one = self.wait_file(driver, 'A.json')
+        self.assertIn('依頼：' + a['id'] + ' / revision 1', one['detailA'], 'the details name the request')
+        self.assertIn(f"範囲 {titles['A']}：<b>そのまま</b>", one['detailA'], 'and its scope, as text')
+        self.assertEqual(one['posts'], [{'action': 'approve', 'targets': [{'id': a['id'], 'revision': 1}]}], 'the click sent A alone')
+        s = self.stored()
+        self.assertEqual((s[a['id']]['status'], s[b['id']]['status']), ('approved', 'pending'))
+        self.assertEqual({x['title']: x['status'] for x in one['A']}, {label('A'): 'approved', label('B'): 'pending'}, 'the page says the same')
+
+        # bulk on the displayed snapshot; D is added while the page's next read is held
+        c = self.add(titles['C'])
+        (self.d / 'driver' / 'c-added').write_text('1', encoding='utf-8')
+        self.wait_file(driver, 'held.json')
+        d = self.add(titles['D'])
+        (self.d / 'driver' / 'd-added').write_text('1', encoding='utf-8')
+        driver.wait(90)
+        result = json.loads((self.d / 'driver' / 'result.json').read_text(encoding='utf-8'))
+        self.assertTrue(result['ok'], result.get('error'))
+        self.assertEqual(result['allLabel'], '表示中の未承認2件を承認')
+        self.assertEqual({x['title'] for x in result['shownBeforeClick']}, {label('A'), label('B'), label('C')}, 'D was not displayed at the click')
+        self.assertEqual(result['posts'][1], {'action': 'approve', 'targets': [{'id': b['id'], 'revision': 1}, {'id': c['id'], 'revision': 1}]},
+                         'the bulk click names the displayed pending requests and revisions only')
+        self.assertEqual(len(result['posts']), 2)
+        s = self.stored()
+        self.assertEqual({k: s[x['id']]['status'] for k, x in zip('ABCD', (a, b, c, d))}, {'A': 'approved', 'B': 'approved', 'C': 'approved', 'D': 'pending'})
+        self.assertEqual({x['title']: x['status'] for x in result['B']}, {label(k): s[x['id']]['status'] for k, x in zip('ABCD', (a, b, c, d))},
+                         'after its own next poll the page agrees with the store')
+
+        # approval alone neither claims nor consumes, and records no commit
+        for k, x in zip('ABC', (a, b, c)):
+            rec = s[x['id']]
+            self.assertEqual(([h['action'] for h in rec['history']], rec['commitSha'], rec.get('claimHead')), (['add', 'approve'], None, None), k)
+        self.assertEqual([h['action'] for h in s[d['id']]['history']], ['add'])
+        self.assertEqual(subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True).stdout.strip(), head)
+        # nothing left the isolated origin; the live-store paths were never sent; no page errors
+        self.assertEqual(result['blocked'], [])
+        self.assertFalse([r for r in result['requests'] if any(r.split(' ')[1].startswith(p) for p in BLOCK)])
+        self.assertEqual(result['pageErrors'], [])
+        if os.environ.get('OPS188_EVIDENCE'):
+            Path(os.environ['OPS188_EVIDENCE'], 'roundtrip.json').write_text(json.dumps({'driver': result, 'server': s}, ensure_ascii=False, indent=1), encoding='utf-8')
+
+
+if __name__ == '__main__':
+    unittest.main()

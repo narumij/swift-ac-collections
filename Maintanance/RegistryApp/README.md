@@ -71,6 +71,32 @@ Safari UIは未検証。操作権限がなく実機試験できず、自動試�
 
 試作データは生成時点の写し。受入・状態更新で正本が進んでも自動更新しない。
 
+### 実サーバー・実ブラウザの試験（OPS-187〜189）
+
+どれも、本物の`serve.py`を試験用のportで起動して、headless WebKitで本物のページを動かす。サーバーの答えを手書きで作らない。期待値は、サーバーが記録した値をHTTPで読み直したもの。リポジトリ直下で実行する。
+
+```sh
+python3 -B Maintanance/RegistryApp/test-letters-e2e.py -v      # 連絡：送る→一覧と本文の表示→見ても受領にならない→本人の受領が表示に反映
+python3 -B Maintanance/RegistryApp/test-approvals-e2e.py -v    # 承認：個別はその1件だけ、一括は表示中の分だけ（あとから足した依頼は含めない）
+python3 -B Maintanance/RegistryApp/test-startup-safety.py -v   # 起動：使用中のportでは出力を変えない、生成に失敗したら何も配信しない、studio_store.pyの変更で再起動を勧める
+```
+
+- 実行に要るもの：
+  - node と、globalのPlaywright（`/opt/homebrew/lib/node_modules/playwright`のWebKit）。
+  - 起動時のsyncが使うnodeとmarked。生きた`local-tools.json`があれば、読み取りだけで一時の出力先に写す。ないcloneでは`REGISTRY_STUDIO_MARKED`を与える。
+  - 起動の試験は、Maintanance以下のファイルをgitで列挙して写すので、gitも要る。
+- 隔離：
+  - 連絡・承認のDB、Inbox、出力、tools記録は、すべて一時ディレクトリに置く。
+  - 起動の試験は、Maintanance以下の写しからサーバーを動かす。`studio_store.py`を書き換えるのはその写しだけ。
+  - port 8088は使わない。
+  - 生きた保存先のうち場所を変えられないもの（`/activity-*`・`/continuity`・`/approval-probe`・`/work-progress`）は、送る前にブラウザ側で止める。
+- 分かっている限界：
+  - サーバーは既定（Markdown）modeで起動する。V3 modeは、Registryが参照する`Maintanance/Cache/Astra/AI_GATE.md`がgit管理外のため、新しいcheckoutからは起動しない。
+  - WebKitだけ。
+  - ボタンはDOMの`click()`で押す。ポインターが届くか、重なりや見た目の使いやすさは確かめない。
+  - 承認の取消・確保・完了は対象外。
+  - 一括承認の競合は、GETを1回止めて作っている。
+
 ## 起動スニペット
 
 Safariで開く場合は起動スニペットを渡し、ユーザーが実行する。通常の現状提示では上の手順に従い、更新済みHTMLへのリンクを提示する。

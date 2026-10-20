@@ -1,0 +1,445 @@
+--- /dev/null
++++ b/Maintanance/RegistryApp/task_rounds.py
+@@ -0,0 +1,183 @@
++"""OPS-195 isolated prototype: appendable participants, atomic speak/NOP, durable letters.
++No approval/decision meaning is assigned to speech or NOP. No live deployment.
++"""
++import json, uuid, argparse, hashlib, time, secrets, os
++from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++from pathlib import Path
++from urllib.parse import urlparse, parse_qs
++import approvals
++from studio_store import Store
++
++class TaskRoundStore(Store):
++    def setup(self, c):
++        c.execute('CREATE TABLE IF NOT EXISTS trial_anchors(round_id TEXT PRIMARY KEY, letter_id TEXT NOT NULL UNIQUE REFERENCES letters(id))')
++        c.execute('CREATE TABLE IF NOT EXISTS trial_rounds(id TEXT PRIMARY KEY, task TEXT NOT NULL, members TEXT NOT NULL)')
++        c.execute('CREATE TABLE IF NOT EXISTS trial_turns(round_id TEXT NOT NULL REFERENCES trial_rounds(id), turn INTEGER NOT NULL, actor TEXT NOT NULL, kind TEXT NOT NULL, letter_id TEXT REFERENCES letters(id), at TEXT NOT NULL, PRIMARY KEY(round_id,turn))')
++        c.execute('CREATE TABLE IF NOT EXISTS trial_members(sequence INTEGER PRIMARY KEY AUTOINCREMENT, round_id TEXT NOT NULL REFERENCES trial_rounds(id), member TEXT NOT NULL, operation_id TEXT NOT NULL REFERENCES operations(id), at TEXT NOT NULL, UNIQUE(round_id,member))')
++        c.execute('CREATE TABLE IF NOT EXISTS trial_next(round_id TEXT NOT NULL REFERENCES trial_rounds(id), turn INTEGER NOT NULL, speaker TEXT NOT NULL, PRIMARY KEY(round_id,turn))')
++        c.execute('CREATE TABLE IF NOT EXISTS trial_skip_policy(sequence INTEGER PRIMARY KEY AUTOINCREMENT, round_id TEXT NOT NULL, member TEXT NOT NULL, enabled INTEGER NOT NULL, reason TEXT NOT NULL, operation_id TEXT NOT NULL, at TEXT NOT NULL)')
++        for table in ('trial_anchors','trial_skip_policy','trial_rounds','trial_turns','trial_members','trial_next'):
++            for op in ('UPDATE','DELETE'):
++                c.execute(f"CREATE TRIGGER IF NOT EXISTS retain_{table}_{op} BEFORE {op} ON {table} BEGIN SELECT RAISE(ABORT,'append only'); END")
++
++    def snapshot(self,c,rid):
++        r=c.execute('SELECT * FROM trial_rounds WHERE id=?',(rid,)).fetchone()
++        if not r: raise LookupError('Unknown round')
++        original=json.loads(r['members'])
++        members=original+[x[0] for x in c.execute('SELECT member FROM trial_members WHERE round_id=? ORDER BY sequence',(rid,))]
++        turns=[dict(x) for x in c.execute('SELECT * FROM trial_turns WHERE round_id=? ORDER BY turn',(rid,))]
++        for t in turns:
++            if t['kind']=='skip':
++                row=c.execute("SELECT result FROM operations WHERE kind='round-trial' AND json_extract(result,'$.round')=? AND json_extract(result,'$.completedTurn')=?",(rid,t['turn'])).fetchone()
++                if row:t.update({k:v for k,v in json.loads(row[0]).items() if k in ('skipped','skippedBy','reason','approval')})
++        current=c.execute('SELECT speaker FROM trial_next WHERE round_id=? AND turn=?',(rid,len(turns))).fetchone()
++        speaker=current[0] if current else original[len(turns)%len(original)]
++        policies={}
++        for x in c.execute('SELECT * FROM trial_skip_policy WHERE round_id=? ORDER BY sequence',(rid,)):policies[x['member']]=dict(x)
++        active={k:v for k,v in policies.items() if v['enabled']}
++        out={'continuousSkips':active,'policyRevision':max([x['sequence'] for x in policies.values()],default=0),'paused':all(x in active for x in members),'id':rid,'task':r['task'],'members':members,'turn':len(turns),'speaker':speaker,'history':turns}
++        # Immutable letter text is part of the read boundary, not just turn count.
++        out['texts']=[{'id':t['letter_id'],'text':self._letter(c,t['letter_id'])} for t in turns if t['letter_id']]
++        anchor=c.execute('SELECT letter_id FROM trial_anchors WHERE round_id=?',(rid,)).fetchone()
++        out['anchor']=self._letter(c,anchor[0])
++        link=c.execute('SELECT thread_id FROM letter_links WHERE letter_id=?',(anchor[0],)).fetchone()
++        out['threadId']=link[0] if link else anchor[0]
++        out['blocked']=out['anchor']['state'] in ('withdrawn','stopped','closed','declined','returned')
++        out['canonical']={'doc':out['anchor']['request']['ref_doc'],'section':out['anchor']['request']['ref_section']}
++        out['context']=hashlib.sha256(json.dumps(out,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
++        return out
++
++    def advance_skipped(self,c,rid):
++        # At most one circuit. All suspended: retain position and wait for release.
++        snap=self.snapshot(c,rid)
++        for _ in snap['members']:
++            if snap['paused'] or snap['speaker'] not in snap['continuousSkips']:break
++            policy=snap['continuousSkips'][snap['speaker']]
++            op=uuid.uuid4().hex
++            result={'round':rid,'completedTurn':snap['turn'],'skipped':snap['speaker'],'skippedBy':'Server','reason':policy['reason'],'approval':policy['operation_id']}
++            self._record_operation(c,op,'round-trial',{'automaticSkip':result},'Server','applied',result)
++            c.execute('INSERT INTO trial_turns VALUES (?,?,?,?,?,?)',(rid,snap['turn'],'Server','skip',None,approvals.now()))
++            nxt=snap['members'][(snap['members'].index(snap['speaker'])+1)%len(snap['members'])]
++            c.execute('INSERT INTO trial_next VALUES (?,?,?)',(rid,snap['turn']+1,nxt))
++            snap=self.snapshot(c,rid)
++        return snap
++
++    def rounds_for_letter(self,letter_id):
++        with self.transaction() as c:
++            self.setup(c)
++            self._letter(c,letter_id)
++            row=c.execute('SELECT thread_id FROM letter_links WHERE letter_id=?',(letter_id,)).fetchone()
++            root=row[0] if row else letter_id
++            anchors=c.execute('SELECT a.round_id FROM trial_anchors a LEFT JOIN letter_links l ON l.letter_id=a.letter_id WHERE COALESCE(l.thread_id,a.letter_id)=?',(root,)).fetchall()
++            return [self.snapshot(c,a[0]) for a in anchors]
++
++    def show_round(self,rid):
++        with self.transaction() as c:
++            self.setup(c)
++            return self.snapshot(c,rid)
++
++    def act(self,b):
++        if not isinstance(b,dict): raise ValueError('Expected object')
++        action=b.get('action'); actor=b.get('actor');op=b.get('operationId')
++        approvals.text(actor,80)
++        if not isinstance(op,str) or not approvals.OPERATION_ID.fullmatch(op): raise ValueError('operationId required')
++        if action=='create':
++            if set(b)!={'action','actor','operationId','members','letter'}:raise ValueError('Unexpected fields')
++            m=b['members']
++            if not isinstance(m,list) or not 2<=len(m)<=8 or len(set(m))!=len(m):raise ValueError('2..8 unique members')
++            for x in m:approvals.text(x,80)
++            approvals.text(b['letter'],80)
++        elif action=='add-member':
++            if set(b)!={'action','actor','operationId','round','turn','member'}:raise ValueError('Unexpected fields')
++            approvals.text(b['member'],80)
++            if type(b['turn']) is not int or b['turn']<0:raise ValueError('Expected turn number')
++            # Checked against the request sender inside the transaction.
++        elif action=='continuous-skip':
++            if set(b)!={'action','actor','operationId','round','context','target','enabled','reason'}:raise ValueError('Unexpected fields')
++            if actor!='User':raise approvals.Conflict('User approval required')
++            if type(b['enabled']) is not bool:raise ValueError('enabled must be boolean')
++            approvals.text(b['reason']);approvals.text(b['target'],80)
++        elif action=='approve-skip':
++            if set(b)!={'action','actor','operationId','round','turn','target','reason'}:raise ValueError('Unexpected fields')
++            if actor!='User':raise approvals.Conflict('User approval required')
++            approvals.text(b['reason']);approvals.text(b['target'],80)
++        elif action=='skip':
++            if set(b)!={'action','actor','operationId','round','turn','reason','approval'}:raise ValueError('Unexpected fields')
++            approvals.text(b['reason'])
++            if type(b['turn']) is not int or b['turn']<0:raise ValueError('Expected turn number')
++            # Checked against the request sender inside the transaction.
++        elif action in ('speak','nop'):
++            required={'action','actor','operationId','round','turn','context'}|({'body'} if action=='speak' else set())
++            if set(b)!=required:raise ValueError('Unexpected fields')
++            if type(b['turn']) is not int or b['turn']<0:raise ValueError('Expected turn number')
++            if action=='speak':approvals.text(b['body'])
++        else:raise ValueError('Unknown action')
++        with self.transaction() as c:
++            self.setup(c)
++            previous=self._operation(c,op,'round-trial',b)
++            if previous:return previous['result']|{'replayed':True}
++            if action=='create':
++                anchor=self._letter(c,b['letter'])
++                if actor!=anchor['sender']:raise approvals.Conflict('Only request sender enables turns')
++                if anchor['sender'] not in m or anchor['recipient'] not in m:raise ValueError('Include request sender and recipient')
++                if anchor['kind']!='request' or anchor['state'] not in ('sent','received','started'):raise approvals.Conflict('Request is not open')
++                if not anchor['request']['ref_doc']:raise ValueError('Request must reference its canonical document')
++                if c.execute('SELECT 1 FROM trial_anchors WHERE letter_id=?',(b['letter'],)).fetchone():raise approvals.Conflict('Already has turns')
++                rid='RND-'+uuid.uuid4().hex.upper()
++                c.execute('INSERT INTO trial_rounds VALUES (?,?,?)',(rid,anchor['taskId'],json.dumps(m)))
++                c.execute('INSERT INTO trial_anchors VALUES (?,?)',(rid,b['letter']))
++                result=self.snapshot(c,rid)
++                self._record_operation(c,op,'round-trial',b,actor,'applied',result)
++                return result
++            snap=self.snapshot(c,b['round'])
++            if snap['blocked']:raise approvals.Conflict('Request is returned, closed or stopped; do not continue turns')
++            if action in ('add-member','skip') and actor!=snap['anchor']['sender']:raise approvals.Conflict('Only request sender controls turns')
++            if action=='continuous-skip':
++                if b['context']!=snap['context']:raise approvals.Conflict('Stale approval context')
++                if b['target'] not in snap['members']:raise approvals.Conflict('Unknown member')
++                if (b['target'] in snap['continuousSkips'])==b['enabled']:raise approvals.Conflict('Already in requested state')
++                c.execute('INSERT INTO trial_skip_policy(round_id,member,enabled,reason,operation_id,at) VALUES (?,?,?,?,?,?)',(b['round'],b['target'],int(b['enabled']),b['reason'],op,approvals.now()))
++                result=self.advance_skipped(c,b['round'])
++                self._record_operation(c,op,'round-trial',b,actor,'applied',result)
++                return result
++            if action in ('speak','nop','skip') and snap['paused']:raise approvals.Conflict('All participants suspended')
++            if action=='approve-skip':
++                if type(b['turn']) is not int or b['turn']!=snap['turn'] or b['target']!=snap['speaker']:raise approvals.Conflict('Stale approval target')
++                result={'approval':op,'round':b['round'],'turn':b['turn'],'target':b['target'],'reason':b['reason'],'approvedBy':'User'}
++                self._record_operation(c,op,'round-trial',b,actor,'applied',result)
++                return result
++            if action in ('speak','nop') and b['context']!=snap['context']:raise approvals.Conflict('Read current context before responding')
++            if action=='skip':
++                row=c.execute("SELECT result FROM operations WHERE id=? AND actor='User' AND kind='round-trial'",(b['approval'],)).fetchone()
++                approved=json.loads(row[0]) if row else {}
++                if any(approved.get(k)!=v for k,v in {'round':b['round'],'turn':b['turn'],'target':snap['speaker'],'reason':b['reason'],'approvedBy':'User'}.items()):raise approvals.Conflict('Matching user approval required')
++            if action=='add-member':
++                if b['turn']!=snap['turn']:raise approvals.Conflict('Stale turn')
++                if b['member'] in snap['members']:raise approvals.Conflict('Already a member')
++                if len(snap['members'])>=8:raise approvals.Conflict('Trial member limit')
++                result={'round':b['round'],'members':snap['members']+[b['member']],'turn':snap['turn'],'speaker':snap['speaker']}
++                self._record_operation(c,op,'round-trial',b,actor,'applied',result)
++                c.execute('INSERT INTO trial_members(round_id,member,operation_id,at) VALUES (?,?,?,?)',(b['round'],b['member'],op,approvals.now()))
++                self.advance_skipped(c,b['round'])
++                return result
++            if b['turn']!=snap['turn'] or (action!='skip' and actor!=snap['speaker']):raise approvals.Conflict('Not this turn or speaker')
++            lid='LTR-'+__import__('datetime').datetime.now().strftime('%Y%m%d')+'-'+uuid.uuid4().hex.upper() if action=='speak' else None
++            result={'round':b['round'],'completedTurn':b['turn'],'nextTurn':b['turn']+1,'speaker':snap['members'][(snap['members'].index(snap['speaker'])+1)%len(snap['members'])],'letterId':lid}
++            if action=='skip':result.update(skipped=snap['speaker'],skippedBy=actor,reason=b['reason'],approval=b['approval'])
++            self._record_operation(c,op,'round-trial',b,actor,'applied',result)
++            at=approvals.now()
++            if lid:
++                recipient=result['speaker']
++                c.execute('INSERT INTO letters VALUES (?,?,?,?,?,?,?)',(lid,'discussion',actor,recipient,snap['task'],op,at))
++                tid=self._insert_text(c,lid,'request',b['body'],'',(snap['canonical']['doc'],snap['canonical']['section']),actor,op)
++                self._record_request_doc(c,lid,tid,snap['canonical']['doc'],op)
++                self._insert_event(c,lid,'sent',actor,actor,None,tid,'',True,op,at)
++                prev=next((x['letter_id'] for x in reversed(snap['history']) if x['letter_id']),snap['anchor']['id'])
++                if prev:
++                    root=snap['threadId']
++                    c.execute('INSERT INTO letter_links VALUES (?,?,?,?,?)',(lid,prev,root,op,at))
++            c.execute('INSERT INTO trial_turns VALUES (?,?,?,?,?,?)',(b['round'],b['turn'],actor,action,lid,at))
++            c.execute('INSERT INTO trial_next VALUES (?,?,?)',(b['round'],b['turn']+1,result['speaker']))
++            final=self.advance_skipped(c,b['round'])
++            return result
++
+--- /dev/null
++++ b/Maintanance/RegistryApp/test_task_rounds.py
+@@ -0,0 +1,96 @@
++import unittest,tempfile,uuid
++from pathlib import Path
++from task_rounds import TaskRoundStore
++import approvals
++
++class Tests(unittest.TestCase):
++ def setUp(self):
++  self.tmp=tempfile.TemporaryDirectory();self.s=TaskRoundStore(Path(self.tmp.name)/'db')
++  self.s.set_senders(['Astra','User'],'User')
++  self.anchor=self.s.send(uuid.uuid4().hex,'Astra','Luna','OPS-197','Please check task turns',ref_doc='Maintanance/Current/THREAD_ROUND_FIXTURE.md',ref_section='依頼')['id']
++  self.r=self.s.act(dict(action='create',actor='Astra',operationId=uuid.uuid4().hex,letter=self.anchor,members=['Astra','Luna']))['id']
++ def tearDown(self):self.tmp.cleanup()
++ def speak(self,actor='Astra',action='speak'):
++  s=self.s.show_round(self.r)
++  return dict(action=action,actor=actor,operationId=uuid.uuid4().hex,round=self.r,turn=s['turn'],context=s['context'],**({'body':'checked'} if action=='speak' else {}))
++ def test_inherits_task_document_thread_without_return(self):
++  out=self.s.act(self.speak());lid=out['letterId'];letter=self.s.letter(lid)
++  self.assertEqual(letter['taskId'],'OPS-197');self.assertEqual(letter['follows'],self.anchor)
++  self.assertEqual(letter['request']['ref_doc'],'Maintanance/Current/THREAD_ROUND_FIXTURE.md')
++  self.assertTrue(letter['docRecords']);self.assertEqual(self.s.letter(self.anchor)['state'],'sent')
++  self.assertEqual(self.s.rounds_for_letter(lid)[0]['id'],self.r)
++  self.assertEqual(len(self.s.thread(lid)['letters']),2)
++  self.assertIn(lid,[x['id'] for x in self.s.task_letters('OPS-197',[])['letters']])
++ def test_discussion_is_visible_but_not_a_work_request(self):
++  lid=self.s.act(self.speak())['letterId']
++  self.assertEqual(self.s.letter(lid)['kind'],'discussion')
++  self.assertNotIn(lid,[x['id'] for x in self.s.inbox('Luna')['letters']])
++  self.assertIn(lid,[x['id'] for x in self.s.task_letters('OPS-197',[])['letters']])
++  with self.assertRaises(approvals.Conflict):self.s.event(uuid.uuid4().hex,lid,'received','Luna',revision=1)
++ def test_formal_return_and_stop_block_round(self):
++  self.s.event(uuid.uuid4().hex,self.anchor,'received','Luna',revision=1)
++  self.s.event(uuid.uuid4().hex,self.anchor,'started','Luna')
++  self.s.act(self.speak());self.s.act(self.speak('Luna'))
++  self.s.event(uuid.uuid4().hex,self.anchor,'returned','Luna',body='Done')
++  self.assertTrue(self.s.show_round(self.r)['blocked'])
++  with self.assertRaises(approvals.Conflict):self.s.act(self.speak())
++ def test_withdraw_blocks_without_inventing_receipt(self):
++  self.s.event(uuid.uuid4().hex,self.anchor,'withdrawn','Astra',note='stop')
++  with self.assertRaises(approvals.Conflict):self.s.act(self.speak())
++  self.assertIsNone(self.s.letter(self.anchor)['receivedAt'])
++ def test_revision_requires_reread(self):
++  old=self.speak()
++  self.s.revise(uuid.uuid4().hex,self.anchor,'request','Astra','Updated request','correction',ref_doc='Maintanance/Current/THREAD_ROUND_FIXTURE.md',ref_section='依頼')
++  with self.assertRaises(approvals.Conflict):self.s.act(old)
++  self.s.act(self.speak())
++ def test_worker_cannot_start_unrelated_round(self):
++  other=self.s.send(uuid.uuid4().hex,'Astra','Luna','OPS-197','other',ref_doc='Maintanance/Current/THREAD_ROUND_FIXTURE.md',ref_section='依頼')['id']
++  with self.assertRaises(approvals.Conflict):self.s.act(dict(action='create',actor='Luna',operationId=uuid.uuid4().hex,letter=other,members=['Luna','Astra']))
++ def test_replay_and_rollback(self):
++  q=self.speak();a=self.s.act(q);self.assertEqual(self.s.act(q),a|{'replayed':True})
++  with self.s.transaction() as c:c.execute("CREATE TRIGGER fail BEFORE INSERT ON trial_turns BEGIN SELECT RAISE(ABORT,'test'); END")
++  with self.assertRaises(Exception):self.s.act(self.speak('Luna'))
++  self.assertEqual(len(self.s.thread(self.anchor)['letters']),2)
++ def test_http_cli_round_discovery_and_inbox(self):
++  import threading,os,subprocess,json
++  from unittest.mock import patch
++  from http.server import ThreadingHTTPServer
++  import serve,task_rounds,studio_store
++  server=ThreadingHTTPServer(('127.0.0.1',0),serve.Handler)
++  t=threading.Thread(target=server.serve_forever,daemon=True);t.start()
++  env=dict(os.environ,REGISTRY_STUDIO_URL='http://127.0.0.1:'+str(server.server_port))
++  def cli(*args):
++   p=subprocess.run(['python3','-B',str(Path(__file__).with_name('comm.py')),*args],env=env,capture_output=True,text=True)
++   self.assertEqual(p.returncode,0,p.stderr);return json.loads(p.stdout)
++  try:
++   with patch.object(task_rounds,'TaskRoundStore',return_value=self.s),patch.object(studio_store,'Store',return_value=self.s):
++    out=self.s.act(self.speak());lid=out['letterId']
++    self.assertEqual(cli('letter','turns','for-letter',lid)[0]['id'],self.r)
++    self.assertNotIn(lid,[x['id'] for x in cli('letter','inbox','--owner','Luna')['letters']])
++    self.assertEqual(cli('letter','turns','show',self.r)['turn'],1)
++  finally:server.shutdown();server.server_close();t.join()
++ def test_user_skip_stale_target_and_continuous(self):
++  x=self.s.show_round(self.r)
++  q=dict(action='continuous-skip',actor='User',operationId=uuid.uuid4().hex,round=self.r,context=x['context'],target='Luna',enabled=True,reason='fixture only')
++  self.s.act(q);self.s.act(self.speak());x=self.s.show_round(self.r)
++  self.assertEqual(x['turn'],2);self.assertEqual(x['speaker'],'Astra')
++  self.assertEqual(x['history'][-1]['approval'],q['operationId'])
++  self.s.act(q|{'operationId':uuid.uuid4().hex,'enabled':False,'context':x['context']})
++  x=self.s.show_round(self.r)
++  a=self.s.act(dict(action='approve-skip',actor='User',operationId=uuid.uuid4().hex,round=self.r,turn=x['turn'],target=x['speaker'],reason='fixture'))
++  self.s.act(self.speak())
++  with self.assertRaises(approvals.Conflict):self.s.act(dict(action='skip',actor='Astra',operationId=uuid.uuid4().hex,round=self.r,turn=3,reason='fixture',approval=a['approval']))
++ def test_concurrent_speech_only_one_and_restart(self):
++  import concurrent.futures
++  q=self.speak()
++  def run(_):
++   try:self.s.act(q|{'operationId':uuid.uuid4().hex});return 1
++   except approvals.Conflict:return 0
++  with concurrent.futures.ThreadPoolExecutor(2) as ex:self.assertEqual(sum(ex.map(run,range(2))),1)
++  self.s=TaskRoundStore(Path(self.tmp.name)/'db');self.assertEqual(self.s.show_round(self.r)['turn'],1)
++ def test_context_changes_when_normal_thread_is_revised(self):
++  self.s.act(self.speak());q=self.speak('Luna')
++  first=self.s.show_round(self.r)['history'][0]['letter_id']
++  self.s.revise(uuid.uuid4().hex,first,'request','Astra','Correction','typo',ref_doc='Maintanance/Current/THREAD_ROUND_FIXTURE.md',ref_section='依頼')
++  with self.assertRaises(approvals.Conflict):self.s.act(q)
++if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/Maintanance/Current/THREAD_ROUND_FIXTURE.md
+@@ -0,0 +1,4 @@
++# 輪番タスク確認用正本
++
++## 依頼
++Lunaとタスクの連絡経路を確認する。結論は確認結果だけ。
+--- a/Maintanance/RegistryApp/serve.py
++++ b/Maintanance/RegistryApp/serve.py
+@@ -25,6 +25,9 @@
+ 
+ import activity
+ import approvals
++import task_rounds
++import time
++import secrets
+ import continuity
+ import probe
+ import sqlite3
+@@ -288,7 +291,7 @@
+     '/': get_page, '/index.html': get_page, '/registry.json': get_page,
+ }
+ # POST path -> the X-Registry-Studio value it requires
+-POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
++POST_ACTIONS = {'/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+                 '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
+                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
+                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
+@@ -437,6 +440,20 @@
+         if not self.local_request():
+             return self.reply(403, {'error': 'Local host required'})
+         parsed = urllib.parse.urlsplit(self.path)
++        if parsed.path == '/letter-turns':
++            try:
++                q=urllib.parse.parse_qs(parsed.query)
++                store=task_rounds.TaskRoundStore()
++                if 'letter' in q:return self.reply(200,json_bytes(store.rounds_for_letter(q['letter'][0])))
++                wait=float(q.get('wait',['0'])[0])
++                if not 0<=wait<=30:raise ValueError('wait must be 0..30')
++                until=time.monotonic()+wait
++                while True:
++                    out=store.show_round(q['round'][0])
++                    if out['context']!=q.get('after',[''])[0] or time.monotonic()>=until:break
++                    time.sleep(.1)
++                return self.reply(200,out)
++            except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
+         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
+             return self.reply(*get_letters(parsed))
+         if parsed.path == '/task-context':
+@@ -452,6 +469,16 @@
+             return self.reply(404, {'error': 'Not found'})
+         if not self.studio_request(action):
+             return self.reply(403, {'error': 'Same-origin Studio request required'})
++        if action == 'letter-turns':
++            body=self.json_body(128*1024)
++            if body is None:return
++            if body.get('action') in ('approve-skip','continuous-skip'):
++                token=os.environ.get('ROUND_USER_APPROVAL_TOKEN')
++                if not token or not secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+token):
++                    return self.reply(403,{'error':'User approval channel required'})
++            try:return self.reply(200,task_rounds.TaskRoundStore().act(body))
++            except approvals.Conflict as e:return self.reply(409,{'error':str(e)})
++            except (ValueError,KeyError,TypeError,LookupError) as e:return self.reply(400,{'error':str(e)})
+         if action == 'sync':
+             return self.sync()
+         if action == 'save':
+--- a/Maintanance/RegistryApp/comm.py
++++ b/Maintanance/RegistryApp/comm.py
+@@ -113,7 +113,19 @@
+     senders = letter.add_parser('senders')
+     senders.add_argument('--set', nargs='+')
+     senders.add_argument('--recorded-by')
++    turns=letter.add_parser('turns').add_subparsers(dest='turn_action',required=True)
++    t=turns.add_parser('open');t.add_argument('letter_id');t.add_argument('--actor',required=True);t.add_argument('--members',nargs='+',required=True);t.add_argument('--operation-id',required=True)
++    t=turns.add_parser('for-letter');t.add_argument('letter_id')
++    for name in ('show','watch','speak','nop'):
++        t=turns.add_parser(name);t.add_argument('round_id')
++        if name=='watch':
++            t.add_argument('--context',required=True);t.add_argument('--wait',type=float,default=30)
++        if name in ('speak','nop'):
++            t.add_argument('--actor',required=True);t.add_argument('--turn',type=int,required=True);t.add_argument('--context',required=True);t.add_argument('--operation-id',required=True)
++            if name=='speak':t.add_argument('--body-file',required=True)
+     args = parser.parse_args()
++    if args.command == 'letter' and args.letter == 'turns':
++        sys.exit(turns_command(args))
+     if args.command == 'letter' and args.letter == 'watch':
+         sys.exit(watch_command(args))
+     if args.command == 'letter' and args.letter == 'read':
+@@ -164,6 +176,33 @@
+ 
+ def optional(base, **values):
+     return base | {k: v for k, v in values.items() if v is not None}
++
++
++def turns_command(args):
++    """Turns belong to an existing request; never infer receipt, return or approval."""
++    try:
++        action=args.turn_action
++        if action=='for-letter':
++            result=studio_client.get('/letter-turns?'+urllib.parse.urlencode({'letter':args.letter_id}))
++        elif action in ('show','watch'):
++            q={'round':args.round_id}
++            timeout=15
++            if action=='watch':
++                if not 0<=args.wait<=30:raise ValueError('wait must be 0..30')
++                q.update(after=args.context,wait=args.wait);timeout=args.wait+5
++            result=studio_client._call('GET','/letter-turns?'+urllib.parse.urlencode(q),timeout=timeout)
++        else:
++            b={'action':'create' if action=='open' else action,'actor':args.actor,'operationId':args.operation_id}
++            if action=='open':b.update(letter=args.letter_id,members=args.members)
++            else:
++                b.update(round=args.round_id,turn=args.turn,context=args.context)
++                if action=='speak':
++                    from pathlib import Path
++                    b['body']=sys.stdin.read() if args.body_file=='-' else Path(args.body_file).read_text()
++            result=studio_client.post('/letter-turns','letter-turns',b)
++        print(json.dumps(result,ensure_ascii=False,indent=2));return 0
++    except (studio_client.StudioError,ValueError,OSError) as e:
++        print(str(e),file=sys.stderr);return 1
+ 
+ 
+ def letter_command(args):
+--- a/Maintanance/RegistryApp/studio_store.py
++++ b/Maintanance/RegistryApp/studio_store.py
+@@ -344,6 +344,8 @@
+             letter = con.execute('SELECT * FROM letters WHERE id=?', (letter_id,)).fetchone()
+             if letter is None:
+                 raise LookupError('Unknown letter')
++            if letter['kind']=='discussion':
++                raise approvals.Conflict('A discussion turn is not a work request; return the original request')
+             if actor != letter[who]:
+                 raise approvals.Conflict(f'Only the {who} records this event')
+             effective = recorded_by == actor
+@@ -432,7 +434,7 @@
+         received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
+         seen = next((t['revision'] for t in texts if received and t['sequence'] == received['text_sequence']), None)
+         value = {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+-                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
++                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': '議論の発言' if row['kind']=='discussion' else STATES.get(state, state),
+                  'request': latest['request'], 'reply': latest['reply'],
+                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
+                  'events': events, 'follows': self._follows(con, letter_id), 'docRecords': self._doc_records(con, letter_id)}
+@@ -606,7 +608,7 @@
+         nothing. OWNER is a self-report."""
+         approvals.text(owner, 80)
+         with self.transaction() as con:
+-            ids = [r[0] for r in con.execute('SELECT id FROM letters WHERE recipient=? ORDER BY rowid', (owner,))]
++            ids = [r[0] for r in con.execute("SELECT id FROM letters WHERE recipient=? AND kind='request' ORDER BY rowid", (owner,))]
+             letters = [self._letter(con, i, with_texts=False) for i in ids]
+             open_ = [x for x in letters if x['state'] in OPEN_FOR_RECIPIENT]
+             for x in open_:
+@@ -673,7 +675,7 @@
+             seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
+         stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
+         return {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
+-                **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
++                **_event_times(events, row['received_at']), 'state': current, 'stateLabel': '議論の発言' if row['kind']=='discussion' else STATES.get(current, current),
+                 'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
+                 'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
+                 'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,

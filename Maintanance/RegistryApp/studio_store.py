@@ -344,6 +344,8 @@ class LetterMixin:
             letter = con.execute('SELECT * FROM letters WHERE id=?', (letter_id,)).fetchone()
             if letter is None:
                 raise LookupError('Unknown letter')
+            if letter['kind']=='discussion':
+                raise approvals.Conflict('A discussion turn is not a work request; return the original request')
             if actor != letter[who]:
                 raise approvals.Conflict(f'Only the {who} records this event')
             effective = recorded_by == actor
@@ -432,7 +434,7 @@ class LetterMixin:
         received = next((e for e in events if e['event'] == 'received' and e['effective']), None)
         seen = next((t['revision'] for t in texts if received and t['sequence'] == received['text_sequence']), None)
         value = {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
-                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': STATES.get(state, state),
+                 **_event_times(events, row['received_at']), 'state': state, 'stateLabel': '議論の発言' if row['kind']=='discussion' else STATES.get(state, state),
                  'request': latest['request'], 'reply': latest['reply'],
                  'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and latest['request']['revision'] > seen,
                  'events': events, 'follows': self._follows(con, letter_id), 'docRecords': self._doc_records(con, letter_id)}
@@ -606,7 +608,7 @@ class LetterMixin:
         nothing. OWNER is a self-report."""
         approvals.text(owner, 80)
         with self.transaction() as con:
-            ids = [r[0] for r in con.execute('SELECT id FROM letters WHERE recipient=? ORDER BY rowid', (owner,))]
+            ids = [r[0] for r in con.execute("SELECT id FROM letters WHERE recipient=? AND kind='request' ORDER BY rowid", (owner,))]
             letters = [self._letter(con, i, with_texts=False) for i in ids]
             open_ = [x for x in letters if x['state'] in OPEN_FOR_RECIPIENT]
             for x in open_:
@@ -673,7 +675,7 @@ class LetterMixin:
             seen = con.execute('SELECT revision FROM letter_texts WHERE sequence=?', (received['text_sequence'],)).fetchone()[0]
         stop = next((e for e in reversed(events) if e['event'] == 'withdrawn' and e['effective']), None) if current == 'withdrawn' else None
         return {'id': row['id'], 'kind': row['kind'], 'sender': row['sender'], 'recipient': row['recipient'], 'taskId': row['task_id'],
-                **_event_times(events, row['received_at']), 'state': current, 'stateLabel': STATES.get(current, current),
+                **_event_times(events, row['received_at']), 'state': current, 'stateLabel': '議論の発言' if row['kind']=='discussion' else STATES.get(current, current),
                 'requestRevision': revisions.get('request'), 'replyRevision': revisions.get('reply'),
                 'requestRevisionAtReceipt': seen, 'revisedAfterReceipt': seen is not None and revisions.get('request', 0) > seen,
                 'stopRequested': stop is not None, 'stopReason': stop['note'] if stop else None,

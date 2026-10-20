@@ -25,6 +25,9 @@ from pathlib import Path
 
 import activity
 import approvals
+import task_rounds
+import time
+import secrets
 import continuity
 import probe
 import sqlite3
@@ -54,7 +57,7 @@ V3_MODULES = ('v3/registry_v3_read.py', 'v3/registry_v3_write.py', 'v3/studio_ad
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'studio_store.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'approvals.py', 'probe.py', 'continuity.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -288,7 +291,7 @@ GET_ROUTES = {
     '/': get_page, '/index.html': get_page, '/registry.json': get_page,
 }
 # POST path -> the X-Registry-Studio value it requires
-POST_ACTIONS = {'/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+POST_ACTIONS = {'/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
                 '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
@@ -437,6 +440,20 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if parsed.path == '/letter-turns':
+            try:
+                q=urllib.parse.parse_qs(parsed.query)
+                store=task_rounds.TaskRoundStore()
+                if 'letter' in q:return self.reply(200,json_bytes(store.rounds_for_letter(q['letter'][0])))
+                wait=float(q.get('wait',['0'])[0])
+                if not 0<=wait<=30:raise ValueError('wait must be 0..30')
+                until=time.monotonic()+wait
+                while True:
+                    out=store.show_round(q['round'][0])
+                    if out['context']!=q.get('after',[''])[0] or time.monotonic()>=until:break
+                    time.sleep(.1)
+                return self.reply(200,out)
+            except (ValueError,KeyError,LookupError) as e:return self.reply(400,{'error':str(e)})
         if parsed.path in ('/letters', '/letters-inbox', '/letters-senders') or parsed.path.startswith('/letters/'):
             return self.reply(*get_letters(parsed))
         if parsed.path == '/task-context':
@@ -452,6 +469,16 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, {'error': 'Not found'})
         if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
+        if action == 'letter-turns':
+            body=self.json_body(128*1024)
+            if body is None:return
+            if body.get('action') in ('approve-skip','continuous-skip'):
+                token=os.environ.get('ROUND_USER_APPROVAL_TOKEN')
+                if not token or not secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+token):
+                    return self.reply(403,{'error':'User approval channel required'})
+            try:return self.reply(200,task_rounds.TaskRoundStore().act(body))
+            except approvals.Conflict as e:return self.reply(409,{'error':str(e)})
+            except (ValueError,KeyError,TypeError,LookupError) as e:return self.reply(400,{'error':str(e)})
         if action == 'sync':
             return self.sync()
         if action == 'save':

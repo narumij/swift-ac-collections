@@ -113,7 +113,20 @@ def main():
     senders = letter.add_parser('senders')
     senders.add_argument('--set', nargs='+')
     senders.add_argument('--recorded-by')
+    turns=letter.add_parser('turns').add_subparsers(dest='turn_action',required=True)
+    t=turns.add_parser('open');t.add_argument('letter_id');t.add_argument('--actor',required=True);t.add_argument('--members',nargs='+',required=True);t.add_argument('--operation-id',required=True)
+    t=turns.add_parser('for-letter');t.add_argument('letter_id')
+    t=turns.add_parser('add-member');t.add_argument('round_id');t.add_argument('--actor',required=True);t.add_argument('--turn',type=int,required=True);t.add_argument('--member',required=True);t.add_argument('--operation-id',required=True)
+    for name in ('show','watch','speak','nop'):
+        t=turns.add_parser(name);t.add_argument('round_id')
+        if name=='watch':
+            t.add_argument('--context',required=True);t.add_argument('--wait',type=float,default=30)
+        if name in ('speak','nop'):
+            t.add_argument('--actor',required=True);t.add_argument('--turn',type=int,required=True);t.add_argument('--context',required=True);t.add_argument('--operation-id',required=True)
+            if name=='speak':t.add_argument('--body-file',required=True)
     args = parser.parse_args()
+    if args.command == 'letter' and args.letter == 'turns':
+        sys.exit(turns_command(args))
     if args.command == 'letter' and args.letter == 'watch':
         sys.exit(watch_command(args))
     if args.command == 'letter' and args.letter == 'read':
@@ -164,6 +177,34 @@ def read_body(path):
 
 def optional(base, **values):
     return base | {k: v for k, v in values.items() if v is not None}
+
+
+def turns_command(args):
+    """Turns belong to an existing request; never infer receipt, return or approval."""
+    try:
+        action=args.turn_action
+        if action=='for-letter':
+            result=studio_client.get('/letter-turns?'+urllib.parse.urlencode({'letter':args.letter_id}))
+        elif action in ('show','watch'):
+            q={'round':args.round_id}
+            timeout=15
+            if action=='watch':
+                if not 0<=args.wait<=30:raise ValueError('wait must be 0..30')
+                q.update(after=args.context,wait=args.wait);timeout=args.wait+5
+            result=studio_client._call('GET','/letter-turns?'+urllib.parse.urlencode(q),timeout=timeout)
+        else:
+            b={'action':'create' if action=='open' else action,'actor':args.actor,'operationId':args.operation_id}
+            if action=='open':b.update(letter=args.letter_id,members=args.members)
+            elif action=='add-member':b.update(round=args.round_id,turn=args.turn,member=args.member)
+            else:
+                b.update(round=args.round_id,turn=args.turn,context=args.context)
+                if action=='speak':
+                    from pathlib import Path
+                    b['body']=sys.stdin.read() if args.body_file=='-' else Path(args.body_file).read_text()
+            result=studio_client.post('/letter-turns','letter-turns',b)
+        print(json.dumps(result,ensure_ascii=False,indent=2));return 0
+    except (studio_client.StudioError,ValueError,OSError) as e:
+        print(str(e),file=sys.stderr);return 1
 
 
 def letter_command(args):

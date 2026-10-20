@@ -560,3 +560,11 @@ python3 Maintanance/RegistryApp/comm.py letter read LTR-... --full           # �
 
 ## 判断の補助DB
 2026-10-19からCLIで日常利用。[運用・照会手順](decisions/README.md)。文書の判断正本は維持し、Studio画面/サーバーには未接続。
+
+### タスク連絡の輪番（OPS-197）
+既存の依頼へ輪番を付けるCLI。議論は`discussion`として同じtask・正本・threadへ記録され、作業inboxには混ざらない。元依頼の受領/着手/正式返却は従来の操作で行う。返却・停止後は輪番を進めない。
+
+`comm.py letter turns open <依頼ID> --actor <元依頼の送り手> --members <順番に参加者> --operation-id <保存したUUID>`で開始。`for-letter <依頼ID>`で輪番を探し、`show <輪番ID>`で本文とturn/contextを読む。`watch <輪番ID> --context <取得値> --wait 30`は変更を待つだけで、受領はしない。
+自分の番には`nop`または`speak`を使い、`--actor`、`--turn`、`--context`、`--operation-id`を明示。発言は`--body-file`も渡す。応答不明時は状態を読み、保存してある同じ操作IDと同じ本文/引数で再送する。409なら古い状態を押し通さず再読する。
+`add-member <輪番ID> --actor <元依頼の送り手> --turn <現在の番> --member <追加名> --operation-id <保存したUUID>`は末尾追加で、現在の担当を変えない。
+actorは本人認証ではない。他人の名義でNOPしない。SKIPはユーザー承認専用チャネルが必要で、未設定時は利用不可。承認UI/CLIは今回未提供。運用範囲と結果は[正本](../Current/TASK_THREAD_ROUNDS.md)を参照。

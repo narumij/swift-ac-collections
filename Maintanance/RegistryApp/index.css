@@ -1261,7 +1261,7 @@ header .header-row>h1 {
 header .header-area-tabs {
    margin: 0;
    display: grid;
-   grid-template-columns: 1fr 1fr;
+   grid-template-columns: repeat(3, 1fr);
    gap: 4px
 }
 
@@ -1510,3 +1510,58 @@ header h1 {
 
 .team-notice-controls { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .team-notice-controls input { width: 16em; max-width: 100%; margin: 0; padding: 4px 8px; font-size: 11px; }
+
+.notification-timeline {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid #d2dfda;
+  border-radius: 10px;
+  background: white;
+}
+.notification-timeline-heading { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.notification-timeline-heading h2 { margin: 0; }
+.notification-timeline-heading small { color: #617374; }
+#notification-timeline-text {
+  margin: 8px 0 0;
+  height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.5 ui-monospace, monospace;
+}
+
+.member-list .presence-lamp { position: relative; padding-right: 28px; }
+.member-remove-planned {
+  position: absolute; top: 3px; right: 4px;
+  padding: 0 4px; border: 0; background: transparent;
+  color: #617374; font-size: 18px; line-height: 24px; cursor: pointer;
+}
+.member-remove-planned:hover { color: #c0392b; }
+.member-remove-planned:disabled { opacity: .4; cursor: default; }
+
+#documentArea[hidden] { display: none; }
+.document-area { padding: 18px 28px; }
+#canonical-document-title { overflow-wrap: anywhere; }
+#canonical-document-body { max-height: 70vh; overflow: auto; overflow-wrap: anywhere; }
+#canonical-document-body pre { overflow: auto; }
+@media(max-width:900px) { .document-area { padding: 12px; } }
+
+body[data-area="document"] .header-info,
+body[data-area="document"] footer,
+body[data-area="document"] #canonicalNotice,
+body[data-area="document"] #canonicalRestartNotice,
+body[data-area="document"] #status { display: none; }
+.canonical-reader { min-width: 0; }
+.canonical-reader h2 { margin: 0 0 6px; }
+#canonical-document-path { margin: 0; font-size: 11px; overflow-wrap: anywhere; }
+#canonical-document-stamp { margin: 4px 0 14px; font-size: 11px; }
+#canonical-document-body { max-height: 70vh; line-height: 1.8; }
+#canonical-document-body table { border-collapse: collapse; display: block; overflow: auto; }
+#canonical-document-body td, #canonical-document-body th { border: 1px solid var(--line); padding: 8px; }
+#canonical-document-body blockquote { border-left: 3px solid var(--line); margin-left: 0; padding-left: 16px; }
+#canonical-document-select { max-width: 100%; margin: 0 0 16px 8px; }
+
+.canonical-part + .canonical-part { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 18px; }
+.canonical-part > h3 { font-size: 13px; color: #315b51; margin-bottom: 4px; }
+.canonical-part > .muted { font-size: 11px; overflow-wrap: anywhere; }
+#canonical-task-letter-list { font-size: 12px; overflow-wrap: anywhere; }

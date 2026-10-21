@@ -44,12 +44,12 @@ class CanonicalDocumentViewModel {
   }
 }
 
-function renderCanonicalDocument(state) {
+function renderCanonicalDocument(state, target = null) {
   const { path, html, stamp, status, message } = state;
-  const dialog = $('documentDialog'), body = $('documentBody');
-  const scroll = dialog.open && body.dataset.path === path ? body.scrollTop : 0;
-  body.dataset.path = path; body.replaceChildren(); $('documentTitle').textContent = path;
-  $('documentStamp').textContent = stamp;
+  const dialog = target ? null : $('documentDialog'), body = target ? target.body : $('documentBody');
+  const scroll = body.dataset.path === path ? body.scrollTop : 0;
+  body.dataset.path = path; body.replaceChildren(); (target ? target.title : $('documentTitle')).textContent = path;
+  (target ? target.stamp : $('documentStamp')).textContent = stamp;
   if (status !== 'ready') body.append(el('p', message));
   else {
     const parsed = new DOMParser().parseFromString(html, 'text/html');
@@ -59,13 +59,13 @@ function renderCanonicalDocument(state) {
         if (n.nodeType === 3) { parent.append(document.createTextNode(n.textContent)); continue; } if (n.nodeType !== 1) continue; if (!allowed.has(n.tagName)) { if (!['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT'].includes(n.tagName)) clean(n, parent); continue; } const dst = document.createElement(n.tagName); if (n.tagName === 'INPUT') { dst.type = 'checkbox'; dst.disabled = true; dst.checked = n.hasAttribute('checked'); } if (n.tagName === 'A') {
           const href = n.getAttribute('href') || '';
           if (/^https?:\/\//i.test(href)) { dst.href = href; dst.target = '_blank'; dst.rel = 'noopener noreferrer'; }
-          else if (!/^[a-z][a-z0-9+.-]*:/i.test(href) && !href.startsWith('//')) { dst.href = '#document'; dst.onclick = e => { e.preventDefault(); const base = new URL(path, 'https://repository.invalid/'); const target = new URL(href, base); openDocument(decodeURIComponent(target.pathname.slice(1))); }; }
+          else if (!/^[a-z][a-z0-9+.-]*:/i.test(href) && !href.startsWith('//')) { dst.href = '#document'; dst.onclick = e => { e.preventDefault(); const base = new URL(path, 'https://repository.invalid/'); const destination = new URL(href, base); const navigate = target?.openDocument || openDocument; navigate(decodeURIComponent(destination.pathname.slice(1))); }; }
         } clean(n, dst); parent.append(dst);
       }
     }
     clean(parsed.body, body);
   }
-  if (!dialog.open) dialog.showModal(); body.scrollTop = scroll;
+  if (dialog && !dialog.open) dialog.showModal(); body.scrollTop = scroll;
 }
 
 if (typeof module !== 'undefined') module.exports = { CanonicalDocumentViewModel, renderCanonicalDocument };

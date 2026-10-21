@@ -9,7 +9,7 @@ const data=JSON.parse(fs.readFileSync(path.join(output,'registry.json'),'utf8'))
 const refs=new Set([data.source.path,...(data.extraDocuments||[])].filter(r=>/\.md$/.test(r)));  // V3 (OPS-167 B4): source.path is v3-db; extraDocuments names the Registry view
 for(const t of [...data.tasks,...(data.milestones||[])])for(const m of t.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g))refs.add(m[0]);
 const files={},missing=[];
-for(const ref of refs){const full=path.resolve(root,ref);if(!fs.existsSync(full)){missing.push(ref);continue;}if(!fs.realpathSync(full).startsWith(root+path.sep))throw Error('Path outside repository');const md=fs.readFileSync(full,'utf8');files[ref]={html:marked.parse(md),sha256:crypto.createHash('sha256').update(md).digest('hex')};}
+for(const ref of refs){const full=path.resolve(root,ref);if(!fs.existsSync(full)){missing.push(ref);continue;}if(!fs.realpathSync(full).startsWith(root+path.sep))throw Error('Path outside repository');const md=fs.readFileSync(full,'utf8');files[ref]={title:marked.lexer(md).find(token=>token.type==='heading')?.text || path.basename(ref,'.md'),html:marked.parse(md),sha256:crypto.createHash('sha256').update(md).digest('hex')};}
 const bundle={generatedAt:new Date().toISOString(),files,missing};
 const tag='<script id="documents" type="application/json">'+JSON.stringify(bundle).replaceAll('<','\\u003c')+'</script>';
 const target=path.join(output,'index.html');let html=fs.readFileSync(target,'utf8');html=html.includes('<script id="documents"')?html.replace(/<script id="documents"[\s\S]*?<\/script>/,()=>tag):html.replace('<script>\n',tag+'\n<script>\n');const pendingMatch=html.match(/<script id="pendingSeed" type="application\/json">([\s\S]*?)<\/script>/);

@@ -391,6 +391,7 @@ function receiveTaskState(snapshot) {
     || $('save').disabled || $('refresh').disabled || $('restart').disabled;
   canonical = copy(latest.source);
   canonicalSnapshot = copy(latest);
+  if (changed) document.dispatchEvent(new CustomEvent('studio-task-source-change'));
   if (changed && !protectedEdit) {
     doc = copy(latest);
     initializeRelationBaseline(doc);

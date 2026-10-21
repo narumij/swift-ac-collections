@@ -4,6 +4,7 @@
 // include-work:wake#wake
 // include-work:recent#recent
 // include-work:members#members
+// include-work:timeline#timeline
 // include-work:connect#connect
 // include-work:approvals#approvals
 startWorkPage();

@@ -585,6 +585,40 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError, OSError):
             pass
 
+    def stream_timeline(self):
+        import notification_log
+        pending = queue.Queue(maxsize=1024)
+        overflow = threading.Event()
+        def receive(cursor, text):
+            try:
+                pending.put_nowait({'reset': False, 'entries': [text], 'cursor': cursor})
+            except queue.Full:
+                overflow.set()
+        log = notification_log.start(OUTPUT / 'notifications.log')
+        snapshot = log.follow(receive, self.headers.get('Last-Event-ID', ''))
+        self.close_connection = True
+        try:
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            def send(value):
+                frame = 'id: ' + value['cursor'] + '\ndata: ' + json.dumps(value, ensure_ascii=False) + '\n\n'
+                self.wfile.write(frame.encode('utf-8'))
+                self.wfile.flush()
+            send(snapshot)
+            while not overflow.is_set():
+                try:
+                    send(pending.get(timeout=1))
+                except queue.Empty:
+                    self.wfile.write(b': keepalive\n\n')
+                    self.wfile.flush()
+            # Closing prompts EventSource to resume from the last delivered cursor.
+        except OSError:
+            pass
+        finally:
+            log.unfollow(receive)
+
     def stream_notifications(self):
         pending = queue.Queue(maxsize=1024)
         overflow = threading.Event()
@@ -645,6 +679,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(200, binding.model.snapshot())
             finally:
                 binding.close()
+        if self.path == '/notifications/timeline':
+            return self.stream_timeline()
         if self.path == '/notifications/events':
             return self.stream_notifications()
         if self.path == '/task-state/events':

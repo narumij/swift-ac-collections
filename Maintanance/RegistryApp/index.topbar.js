@@ -1,8 +1,8 @@
 // @section tabs
 // User (2026-10-19, OPS-136): the header switches between the work area (left, shown first) and the task area (#workspace). Both stay
 // in the DOM, so selections and inputs survive the round trip and polling keeps both up to date.
-const AREA_TABS = [['work', 'workArea'], ['task', 'workspace']];
-function switchArea(name) { for (const [n, id] of AREA_TABS) { const on = n === name; $(id).hidden = !on; const tab = $(n + 'AreaTab'); tab.setAttribute('aria-selected', String(on)); tab.tabIndex = on ? 0 : -1; } }
+const AREA_TABS = [['work', 'workArea'], ['task', 'workspace'], ['document', 'documentArea']];
+function switchArea(name) { document.body.dataset.area = name; for (const [n, id] of AREA_TABS) { const on = n === name; $(id).hidden = !on; const tab = $(n + 'AreaTab'); tab.setAttribute('aria-selected', String(on)); tab.tabIndex = on ? 0 : -1; } document.dispatchEvent(new CustomEvent('studio-area-change', { detail: name })); }
 for (const [name] of AREA_TABS) { const tab = $(name + 'AreaTab'), names = AREA_TABS.map(a => a[0]); tab.onclick = () => switchArea(name); tab.onkeydown = e => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) { e.preventDefault(); let i = names.indexOf(name); i = e.key === 'Home' ? 0 : e.key === 'End' ? names.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : names.length - 1)) % names.length; switchArea(names[i]); $(names[i] + 'AreaTab').focus(); } }; }
 
 // @endsection

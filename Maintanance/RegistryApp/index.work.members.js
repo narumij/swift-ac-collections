@@ -48,7 +48,7 @@ function memberTime(at) { const d = new Date(at); return Number.isFinite(d.getTi
 // Planned members stay visible; actual members outside the plan are marked red.
 function memberViewModels(model) {
   return model.members.map(({ owner, attendance, planned }) => ({
-    owner, attendance, state: 'unknown', pending: false,
+    owner, attendance, planned, state: 'unknown', pending: false,
     border: !planned ? 'red' : attendance === 'present' ? 'solid' : 'dotted',
     head: owner,
     body: '\n' + (attendance === 'present' ? '出勤中' : '未出勤') + '\n' + (model.memberInfo?.[owner] || '通信記録なし')
@@ -64,18 +64,30 @@ function memberFailureText(owner, continuityText) { return owner + '：取得不
 // Owners with a record not seen before (they flash). Pure: returns the owners and the new seen set.
 function newRecordOwners(seen, rows) { const ids = new Set(rows.map(r => r.id)); return { owners: new Set(seen ? rows.filter(r => !seen.has(r.id)).map(r => r.raw?.owner) : []), seen: seen ? new Set([...seen, ...ids]) : ids }; }
 // The lamp view: DOM only. It draws the entries it is given, keeps lamp order, runs the flash, and shows a failure text.
-function createMemberLampView({ box, makeNode, schedule = (fn, ms) => setTimeout(fn, ms) }) {
+function createMemberLampView({ box, makeNode, schedule = (fn, ms) => setTimeout(fn, ms), removePlanned = null }) {
   const lamps = new Map(); let shown = new Map();
   const set = (node, text) => { if (node.textContent !== text) node.textContent = text; };
   function paint(vm, fresh) {
-    const owner = vm.owner; let lamp = lamps.get(owner); if (!lamp) { lamp = { node: makeNode('span'), fresh: 0 }; lamp.node.className = 'presence-lamp'; lamps.set(owner, lamp); }
+    const owner = vm.owner; let lamp = lamps.get(owner); if (!lamp) { lamp = { node: makeNode('span'), text: makeNode('span'), fresh: 0 }; lamp.node.appendChild(lamp.text); lamp.node.className = 'presence-lamp'; lamps.set(owner, lamp); }
     lamp.node.dataset.border = vm.border; lamp.node.dataset.state = vm.state; if (vm.pending) lamp.node.dataset.pending = 'true'; else delete lamp.node.dataset.pending; if (fresh) {
       lamp.fresh++; const mine = lamp.fresh; lamp.node.dataset.fresh = 'true'; schedule(() => {
         // Only the latest flash of a lamp that is still shown clears; a fetch failure keeps its text until recovery.
         if (lamps.get(owner) !== lamp || lamp.fresh !== mine) return; delete lamp.node.dataset.fresh; if (box.dataset.stale === 'true') return; paint(shown.get(owner) || vm, false);
       }, 3000);
     }
-    set(lamp.node, vm.head + (lamp.node.dataset.fresh ? '・新着' : '') + vm.body);
+    set(lamp.text, vm.head + (lamp.node.dataset.fresh ? '・新着' : '') + vm.body);
+    if (lamp.remove) lamp.remove.disabled = box.dataset.stale === 'true';
+    if (vm.planned && removePlanned && !lamp.remove) {
+      const button = makeNode('button'); button.type = 'button'; button.className = 'member-remove-planned';
+      button.textContent = '×'; button.setAttribute('aria-label', owner + 'を出勤予定から外す'); button.title = owner + 'を出勤予定から外す';
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        try { await removePlanned(owner); }
+        catch (error) { button.title = '予定を削除できませんでした：' + error.message; set(lamp.text, vm.head + vm.body + '\n予定を削除できませんでした'); }
+        finally { button.disabled = false; }
+      });
+      lamp.remove = button; lamp.node.appendChild(button);
+    } else if (!vm.planned && lamp.remove) { lamp.remove.remove(); lamp.remove = null; }
   }
   return {
     show(vms, freshOwners = new Set()) {
@@ -83,7 +95,7 @@ function createMemberLampView({ box, makeNode, schedule = (fn, ms) => setTimeout
       // The DOM follows the given order exactly; when it differs, the lamps are re-appended in that order.
       const nodes = vms.map(v => lamps.get(v.owner).node); if (nodes.some((n, i) => box.children[i] !== n)) for (const n of nodes) box.appendChild(n);
     },
-    showFailure(textOf) { box.dataset.stale = 'true'; for (const [owner, lamp] of lamps) { lamp.node.dataset.state = 'unknown'; set(lamp.node, textOf(owner)); } },
+    showFailure(textOf) { box.dataset.stale = 'true'; for (const [owner, lamp] of lamps) { lamp.node.dataset.state = 'unknown'; set(lamp.text, textOf(owner)); if (lamp.remove) lamp.remove.disabled = true; } },
     recovered() { delete box.dataset.stale; },
     stale() { return box.dataset.stale === 'true'; }
   };
@@ -94,4 +106,11 @@ function createPresenceLamps({ box, makeNode, schedule = (fn, ms) => setTimeout(
   return { update(rows) { studio.activity(rows); }, continuity(fn, owners) { studio.continuity({ labelOf: fn, owners: owners || [] }); }, failure() { studio.activityFailure(); } };
 }
 
+async function removePlannedMember(owner) {
+  const response = await fetch('/members/planned/remove', {
+    method: 'POST', headers: { 'X-Registry-Studio': 'members-planned-remove', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ owner }), signal: AbortSignal.timeout(5000)
+  });
+  if (!response.ok) { const value = await response.json().catch(() => ({})); throw Error(value.error || '通信エラー'); }
+}
 // @endsection

@@ -35,6 +35,7 @@ class WorkPageViewModel {
 function startWorkPage() {
   if (location.protocol === 'file:') return;
   const make = tag => document.createElement(tag), model = new WorkPageViewModel();
+  startNotificationTimeline($('notification-timeline-text'), $('notification-timeline-status'));
   createTeamNoticeControl({ buttons: document.querySelectorAll('[data-team-kind]'), reason: $('team-notice-reason'), status: $('team-notice-status'), send: sendTeamNotice });
   const timeline = createActivityTimelineView($('activity-events'), $('activity-events-status'), make, () => document.activeElement, { heading: $('activity-current-heading'), detail: $('activity-current-detail') });
   const cards = createWorkLaneView({ track: $('work-lane-track'), status: $('work-lane-status'), makeNode: make, getActive: () => document.activeElement });
@@ -60,11 +61,11 @@ function startWorkPage() {
   window.addEventListener('pagehide', () => { if (stream) stream.close(); });
   window.addEventListener('pageshow', event => { if (event.persisted) connect(); });
   connect();
-  const memberView = createMemberLampView({ box: $('presence-lamps'), makeNode: make });
-  let order = [], seen = null, memberEntries = [];
+  const memberView = createMemberLampView({ box: $('presence-lamps'), makeNode: make, removePlanned: removePlannedMember });
+  let seen = null, memberEntries = [];
   const memberEvents = new EventSource('/members/events');
   memberEvents.onmessage = event => {
-    try { const value = JSON.parse(event.data), entries = stableMemberOrder(order, memberViewModels(value)); order = entries.map(e => e.owner); memberEntries = entries; memberView.show(entries); memberView.recovered(); }
+    try { const value = JSON.parse(event.data), entries = memberViewModels(value); memberEntries = entries; memberView.show(entries); memberView.recovered(); }
     catch (_) { memberView.showFailure(owner => owner + '：取得不調'); }
   };
   memberEvents.onerror = () => memberView.showFailure(owner => owner + '：取得不調');

@@ -80,7 +80,7 @@ prefixごとの使用済み番号の境界（highwater）と発行記録の正�
 初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
 
-<!-- V3-GENERATED rows: table=Task ID採番状態; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=86; rows=18; sha256=75646c633f49641f54a187b8f545c21f60a676cf0aec1d53ad8978105776801e -->
+<!-- V3-GENERATED rows: table=Task ID採番状態; generation=gen-1d0b9780ab114593931e911eb83e1ae2; revision=87; rows=18; sha256=2f70f1086ade398304e78d76af3601009b9a1c17e5ddc02fec0cf4dc7fcc104e -->
 | Prefix | 最後に使用した番号 |
 | --- | ---: |
 | `API` | `010` |
@@ -93,7 +93,7 @@ prefixごとの使用済み番号の境界（highwater）と発行記録の正�
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `003` |
-| `OPS` | `208` |
+| `OPS` | `209` |
 | `OPT` | `074` |
 | `PERF` | `005` |
 | `PERM` | `081` |

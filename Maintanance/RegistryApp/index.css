@@ -1542,7 +1542,7 @@ header h1 {
 #documentArea[hidden] { display: none; }
 .document-area { padding: 18px 28px; }
 #canonical-document-title { overflow-wrap: anywhere; }
-#canonical-document-body { max-height: 70vh; overflow: auto; overflow-wrap: anywhere; }
+#canonical-document-body { overflow-wrap: anywhere; line-height: 1.8; }
 #canonical-document-body pre { overflow: auto; }
 @media(max-width:900px) { .document-area { padding: 12px; } }
 
@@ -1555,7 +1555,6 @@ body[data-area="document"] #status { display: none; }
 .canonical-reader h2 { margin: 0 0 6px; }
 #canonical-document-path { margin: 0; font-size: 11px; overflow-wrap: anywhere; }
 #canonical-document-stamp { margin: 4px 0 14px; font-size: 11px; }
-#canonical-document-body { max-height: 70vh; line-height: 1.8; }
 #canonical-document-body table { border-collapse: collapse; display: block; overflow: auto; }
 #canonical-document-body td, #canonical-document-body th { border: 1px solid var(--line); padding: 8px; }
 #canonical-document-body blockquote { border-left: 3px solid var(--line); margin-left: 0; padding-left: 16px; }

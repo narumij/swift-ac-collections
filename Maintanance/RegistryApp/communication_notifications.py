@@ -1,11 +1,13 @@
 """Process-local communication notifications, independent of member state."""
 import logging
+from event_notifications import events
 from datetime import datetime, timezone
 from threading import RLock
 
 
 class Signal:
-    def __init__(self):
+    def __init__(self, name=""):
+        self.name = name
         self._listeners = []
         self._lock = RLock()
 
@@ -21,6 +23,8 @@ class Signal:
 
     def send(self, **event):
         event['at'] = datetime.now(timezone.utc)
+        if self.name:
+            events.send(self.name + ': ' + ', '.join(f'{key}={value}' for key, value in event.items()))
         with self._lock:
             listeners = tuple(self._listeners)
         for listener in listeners:
@@ -30,8 +34,8 @@ class Signal:
                 logging.exception("Communication notification failed")
 
 
-waiting_started = Signal()
-waiting_ended = Signal()
-letter_received = Signal()
+waiting_started = Signal("waiting_started")
+waiting_ended = Signal("waiting_ended")
+letter_received = Signal("letter_received")
 
-communication_activity = Signal()
+communication_activity = Signal("communication_activity")

@@ -1,4 +1,6 @@
 """Revision notifications for work views; no periodic data reads."""
+from event_notifications import events
+
 import os
 import select
 import socket
@@ -7,7 +9,8 @@ from pathlib import Path
 
 
 class Changes:
-    def __init__(self):
+    def __init__(self, name=""):
+        self.name = name
         self._condition = threading.Condition()
         self._revision = 0
 
@@ -15,6 +18,8 @@ class Changes:
         with self._condition:
             self._revision += 1
             self._condition.notify_all()
+        if self.name:
+            events.send(self.name)
 
     def wait(self, after, timeout=15):
         with self._condition:
@@ -79,9 +84,9 @@ class FileObserver:
         self._stop_write.close()
 
 
-activity_changes = Changes()
-approval_changes = Changes()
-letter_changes = Changes()
+activity_changes = Changes("activity_changes")
+approval_changes = Changes("approval_changes")
+letter_changes = Changes("letter_changes")
 _activity_observer = None
 _observer_lock = threading.Lock()
 
@@ -94,7 +99,7 @@ def observe_activity(path):
     return activity_changes
 
 
-registry_changes = Changes()
+registry_changes = Changes("registry_changes")
 _registry_observer = None
 
 

@@ -11,6 +11,8 @@ nothing of V3 is imported or opened.
 --output DIR (OPS-167 K9), for isolated runs: an existing directory used instead of Cache/RegistryStudio; sync.py (at
 start and on POST /sync) writes its page, registry.json and tools record there, never into Cache or local-tools.json."""
 import argparse
+import queue
+from event_notifications import events
 import datetime
 import re
 import hashlib
@@ -545,10 +547,48 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError, OSError):
             pass
 
+    def stream_notifications(self):
+        pending = queue.Queue(maxsize=1024)
+        overflow = threading.Event()
+
+        def receive(text):
+            try:
+                pending.put_nowait(text)
+            except queue.Full:
+                overflow.set()
+
+        events.connect(receive)
+        self.close_connection = True
+        try:
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            self.wfile.write(b': connected\n\n')
+            self.wfile.flush()
+            while True:
+                if overflow.is_set():
+                    self.wfile.write(b'event: overflow\ndata: notification consumer is too slow; reconnect\n\n')
+                    self.wfile.flush()
+                    return
+                try:
+                    text = pending.get(timeout=1)
+                    frame = ''.join('data: ' + line + '\n' for line in text.split('\n')) + '\n'
+                except queue.Empty:
+                    frame = ': keepalive\n\n'
+                self.wfile.write(frame.encode('utf-8'))
+                self.wfile.flush()
+        except OSError:
+            pass
+        finally:
+            events.disconnect(receive)
+
     def do_GET(self):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if self.path == '/notifications/events':
+            return self.stream_notifications()
         if self.path == '/work-state/events':
             return self.stream_work()
         if self.path == '/work-state':

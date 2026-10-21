@@ -128,11 +128,13 @@ def runtime_fingerprints():
 STARTUP_FINGERPRINTS = runtime_fingerprints()
 
 
+SERVER_IDENTITY = {}  # Self-reported launcher, not authentication.
+
 def runtime_status():
     current = runtime_fingerprints()
     changed = [name for name, digest in STARTUP_FINGERPRINTS.items()
                if current[name] is None or current[name] != digest]
-    return {'restartRecommended': bool(changed), 'changedFiles': changed}
+    return {'restartRecommended': bool(changed), 'changedFiles': changed, 'server': dict(SERVER_IDENTITY)}
 
 
 
@@ -633,6 +635,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             import record_notifications
             record_notifications.start(approvals.DATABASE, activity.EVENTS, V3['db'] if V3 else None)
+
         except Exception:
             events.disconnect(receive)
             return self.reply(503, {'error': 'Notification sources unavailable'})
@@ -1021,12 +1024,14 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=8088)
+    parser.add_argument('--started-by', default='unknown', help='Self-reported launcher name (not authentication)')
+    parser.add_argument('--thread-id', default='', help='Launcher chat ID for follow-up')
     parser.add_argument('--v3-db', help='V3 mode (with --v3-saves): an existing V3 DB, opened read-only for the page')
     parser.add_argument('--v3-saves', help='V3 mode (with --v3-db): an existing directory for V3 saves')
     parser.add_argument('--output', help='an existing directory for the generated page and data instead of Cache/RegistryStudio '
                                          '(sync.py writes there, its tools record included); for isolated runs')
     args = parser.parse_args()
-    global V3, STARTUP_FINGERPRINTS, OUTPUT, WORK_PROGRESS, SYNC_ENV
+    global V3, STARTUP_FINGERPRINTS, OUTPUT, WORK_PROGRESS, SYNC_ENV, SERVER_IDENTITY
     if args.output is not None:
         output = Path(args.output)
         if not output.is_dir():
@@ -1057,6 +1062,12 @@ def main():
     import record_notifications
     notification_log.start(OUTPUT / 'notifications.log')
     record_notifications.start(approvals.DATABASE, activity.EVENTS, V3['db'] if V3 else None)
+    SERVER_IDENTITY = {'startedBy': args.started_by, 'threadId': args.thread_id,
+                       'pid': os.getpid(), 'port': server.server_port,
+                       'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                       'root': str(ROOT), 'db': str(V3['db']) if V3 else None,
+                       'identityKind': 'self-reported'}
+    events.send('server_started: ' + json.dumps(SERVER_IDENTITY, ensure_ascii=False))
     print(f'Registry Studio: http://127.0.0.1:{server.server_port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:
         server.serve_forever()

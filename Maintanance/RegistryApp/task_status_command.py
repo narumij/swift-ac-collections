@@ -7,6 +7,7 @@ import sys
 import threading
 import uuid
 from pathlib import Path
+from event_notifications import events
 
 LOCK = threading.Lock()
 STATES = {'ACTIVE', 'WAITING_USER', 'WAITING_EXTERNAL', 'FROZEN', 'USER_ONLY', 'PROPOSED', 'DONE', 'EXCLUDED', 'ARCHIVED'}
@@ -42,6 +43,8 @@ def change(db, root, backups, body):
             reply = json.loads(result.stdout)
             if result.returncode:
                 return 409, {'error': reply.get('message') or reply.get('error') or '状態が更新されています。再選択してください。', 'detail': reply}
+            if not reply.get('replayed') and 'state' in reply.get('result', {}).get('applied', []):
+                events.send(f"task_status_changed: {body['taskId']} · {body['baseState']} → {body['state']} · ユーザー · 正本タブ · operationId={body['operationId']}")
             # The DB is already committed. Distinguish a failed generated view from a failed write.
             warning = ''
             try:

@@ -605,3 +605,7 @@ actorは本人認証ではない。他人の名義でNOPしない。SKIPはユ�
 「おつかれさま」は全体の作業・待機の区切り、「一時中断」は追加作業を止めて状態保持、「中止」は今回依頼の終了（削除・巻戻しなし）、「差し戻し」は受入不可・再確認要求です。再実装範囲は理由に従います。
 
 `comm.py letter inbox --owner 名前` の `notifications` に未受領通知の種別・本文・理由が出ます。`comm.py letter turns watch ROUND --context CONTEXT --owner 名前` は新着または未受領通知でも待機を終え、同じ欄で本文を返します。`comm.py letter watch --owner 名前 --state-file FILE` も通知の新着を返します。受領した本人は `comm.py ack NOTICE-... --owner 名前` で確認を記録します。ACKは受領確認だけで、実際の対応完了とは別です。待機していない会話を自動起動する機能ではありません。
+
+### サーバーを起動した担当の確認
+
+起動時に `--started-by Astra --thread-id <チャットID>` を指定する。`GET /server-status` の `server` に担当、チャットID、PID、実際のポート、起動日時（UTC）、作業root、DBを返す。省略時はunknownとして推測しない。担当名は自己申告であり認証ではない。起動情報は `server_started` として既存通知ログにも残す。停止後はそのログで最後の起動情報を参照できるが、稼働の証拠としては使わない。

@@ -54,7 +54,7 @@ function startWorkPage() {
     if (stream) stream.close();
     commands.disconnected();
     if (document.hidden) return;
-    stream = new EventSource('/work-state/events');
+    stream = studioEventSource('/work-state/events', ['work']);
     stream.onmessage = event => { try { const value = JSON.parse(event.data); model.receive(value); } catch (_) { model.disconnected(); commands.disconnected(); } };
     stream.onerror = () => { model.disconnected(); commands.disconnected(); };
   }
@@ -64,7 +64,7 @@ function startWorkPage() {
   connect();
   const memberView = createMemberLampView({ box: $('presence-lamps'), makeNode: make, removePlanned: removePlannedMember });
   let seen = null, memberEntries = [];
-  const memberEvents = new EventSource('/members/events');
+  const memberEvents = studioEventSource('/members/events', ['work']);
   memberEvents.onmessage = event => {
     try { const value = JSON.parse(event.data), entries = memberViewModels(value); memberEntries = entries; memberView.show(entries); memberView.recovered(); }
     catch (_) { memberView.showFailure(owner => owner + '：取得不調'); }

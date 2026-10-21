@@ -1,4 +1,25 @@
 // @section tabs
+// Keep hidden panels from occupying HTTP connections needed by commands.
+function studioEventSource(path, areas) {
+  const target = new EventTarget();
+  let source = null, closed = false;
+  function refresh() {
+    const active = !closed && !document.hidden && areas.includes(document.body.dataset.area || 'work');
+    if (!active) { if (source) source.close(); source = null; return; }
+    if (source) return;
+    source = new EventSource(path);
+    for (const type of ['open', 'message', 'error', 'overflow']) source.addEventListener(type, event => {
+      const forwarded = type === 'message' || type === 'overflow' ? new MessageEvent(type, {data:event.data}) : new Event(type);
+      target['on' + type]?.(forwarded);
+      target.dispatchEvent(forwarded);
+    });
+  }
+  target.close = () => { closed = true; refresh(); document.removeEventListener('studio-area-change', refresh); document.removeEventListener('visibilitychange', refresh); };
+  document.addEventListener('studio-area-change', refresh);
+  document.addEventListener('visibilitychange', refresh);
+  queueMicrotask(refresh);
+  return target;
+}
 // User (2026-10-19, OPS-136): the header switches between the work area (left, shown first) and the task area (#workspace). Both stay
 // in the DOM, so selections and inputs survive the round trip and polling keeps both up to date.
 const AREA_TABS = [['work', 'workArea'], ['task', 'workspace'], ['document', 'documentArea'], ['whiteboard', 'whiteboardArea']];

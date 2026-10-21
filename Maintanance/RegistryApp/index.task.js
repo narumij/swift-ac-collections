@@ -129,7 +129,7 @@ function documentLinks(detail) {
   for (const path of [...new Set(paths)]) { const a = el('a', path); a.href = '#document'; a.style.display = 'block'; a.onclick = e => { e.preventDefault(); openDocument(path); }; wrap.append(a); } return wrap;
 }
 function subscribeCanonicalDocument(path, receive) {
-  const source = new EventSource('/document-state/events?path=' + encodeURIComponent(path));
+  const source = studioEventSource('/document-state/events?path=' + encodeURIComponent(path), ['task','document']);
   source.onmessage = event => {
     try { receive(JSON.parse(event.data)); }
     catch (_) { receive({ error: 'Invalid document state' }); }
@@ -403,7 +403,7 @@ function receiveTaskState(snapshot) {
 }
 function observeTaskState() {
   if (location.protocol === 'file:' || typeof EventSource !== 'function') return;
-  const source = new EventSource('/task-state/events');
+  const source = studioEventSource('/task-state/events', ['work','task','document']);
   source.onmessage = event => {
     try { receiveTaskState(JSON.parse(event.data)); }
     catch (error) { report('タスクの更新を表示できません：' + error.message, true); }

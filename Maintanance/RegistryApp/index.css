@@ -1575,3 +1575,5 @@ body[data-area="document"] #status { display: none; }
 #board-text-input {width:320px;max-width:100%;}
 #whiteboard-canvas {display:block;width:100%;height:auto;background:white;border:1px solid #bed1ca;touch-action:none;user-select:none;cursor:crosshair;}
 body[data-area="whiteboard"] footer, body[data-area="whiteboard"] .header-info, body[data-area="whiteboard"] #status {display:none;}
+
+.whiteboard-tools button[aria-pressed="true"] {background:#d5ebe3;border-color:#207963;box-shadow:inset 0 0 0 1px #207963;}

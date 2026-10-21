@@ -1,7 +1,7 @@
 // @section timeline
 function startNotificationTimeline(box, status) {
   if (!box || !status) return;
-  const stream = new EventSource('/notifications/timeline');
+  const stream = studioEventSource('/notifications/timeline', ['work']);
   let entries = [];
   stream.onopen = () => { status.textContent = '受信中 · 直近100行＋新着（最大500件）'; };
   stream.onmessage = event => {

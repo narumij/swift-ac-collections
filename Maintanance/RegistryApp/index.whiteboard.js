@@ -13,6 +13,7 @@
   function receive(snapshot) {if(snapshot.revision < revision)return;revision=snapshot.revision;current=snapshot.document.items;draw();}
   function setMode(next) {mode=next;$('board-pen').setAttribute('aria-pressed',String(next==='stroke'));$('board-text').setAttribute('aria-pressed',String(next==='text'));}
   $('board-pen').onclick=()=>setMode('stroke');$('board-text').onclick=()=>{setMode('text');$('board-text-input').focus();};
+  $('board-text-input').onfocus=()=>setMode('text');
   function point(e) {const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(board.getScreenCTM().inverse());return [Math.max(0,Math.min(1200,p.x)),Math.max(0,Math.min(700,p.y))];}
   async function send(item) {
     status.textContent='共有中…';
@@ -28,7 +29,7 @@
   board.onpointerup=e=>{if(!drawing)return;const item=drawing;drawing=null;if(item.points.length===1)item.points.push([Math.min(1200,item.points[0][0]+0.1),item.points[0][1]]);draw();send(item);};
   board.onpointercancel=()=>{drawing=null;draw();};
   let source;
-  function connect(){source=new EventSource('/whiteboard/events');source.onmessage=e=>{const data=JSON.parse(e.data);if(!online)revision=-1;online=true;receive(data);status.textContent='共有中';};source.onerror=()=>{online=false;status.textContent='未接続 · 再接続中';};}
+  function connect(){source=studioEventSource('/whiteboard/events', ['whiteboard']);source.onmessage=e=>{const data=JSON.parse(e.data);if(!online)revision=-1;online=true;receive(data);status.textContent='共有中';};source.onerror=()=>{online=false;status.textContent='未接続 · 再接続中';};}
   connect();window.addEventListener('pagehide',()=>source.close());window.addEventListener('pageshow',e=>{if(e.persisted)connect();});
 })();
 // @endsection

@@ -14,7 +14,7 @@ const script = html.split('<script>')[1].split('</script>')[0];
 new vm.Script(script);
 assert.equal(data.source.kind, 'v3-export', 'registry.json is not a V3 export');
 const ctx = {}; vm.createContext(ctx);
-vm.runInContext(script.slice(script.indexOf('function check('), script.indexOf('function el(')), ctx);
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../index.task.logic.js'), 'utf8'), ctx);
 const { extraDocuments = [], ...seed } = data;
 ctx.check(JSON.parse(JSON.stringify(seed)));
 assert.deepEqual(block('seed'), seed, 'the HTML seed is not the export');

@@ -52,6 +52,7 @@ def assemble_template():
             return selected[0]
         return re.sub(r'// include-work:([a-z-]+)#([a-z-]+)\n?', include_work, body)
     text = re.sub(r'(?m)^[ \t]*// include:index\.(topbar|work|task)\.js#(\w+)\n', include_script, text)
+    text = re.sub(r"(?m)^[ \t]*// include-js:(index\.task\.(?:logic|zoom)\.js)\n", lambda m: (CODE / m[1]).read_text(encoding="utf-8") + "\n", text)
     return text
 
 

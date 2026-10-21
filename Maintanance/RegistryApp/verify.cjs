@@ -1,7 +1,7 @@
 const output=process.env.REGISTRY_STUDIO_APP||require('path').resolve(__dirname,'../Cache/RegistryStudio');
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const html=fs.readFileSync(require('path').join(output,'index.html'),'utf8');const script=html.split('<script>')[1].split('</script>')[0];new vm.Script(script);const d=JSON.parse(fs.readFileSync(require('path').join(output,'registry.json'),'utf8'));
-const checkSource=script.slice(script.indexOf('function check('),script.indexOf('function el('));const deltaSource=script.slice(script.indexOf('function delta('),script.indexOf('function banner('));const ctx={doc:d};vm.createContext(ctx);vm.runInContext(checkSource+'\n'+deltaSource,ctx);ctx.check(d);const regRows=(()=>{const md=require('fs').readFileSync(require('path').resolve(__dirname,'../..',d.source.path),'utf8').split('\n');let sec='',grp=null,t=0,e=0;for(const l of md){if(l.startsWith('## ')){sec=l.slice(3).trim();grp=null;}else if(l.startsWith('### '))grp=l.slice(4).trim();if(!l.startsWith('| `'))continue;if(sec==='Task Registry')t++;else if(sec==='Task precedence'&&grp===null)e++;}return {t,e};})();assert.equal(d.tasks.length,regRows.t);assert.equal(d.edges.length,regRows.e);assert.equal(ctx.delta().length,0);
+const logicSource=fs.readFileSync(__dirname+'/index.task.logic.js','utf8'),zoomSource=fs.readFileSync(__dirname+'/index.task.zoom.js','utf8');const ctx={doc:d};vm.createContext(ctx);vm.runInContext(logicSource,ctx);ctx.check(d);const regRows=(()=>{const md=require('fs').readFileSync(require('path').resolve(__dirname,'../..',d.source.path),'utf8').split('\n');let sec='',grp=null,t=0,e=0;for(const l of md){if(l.startsWith('## ')){sec=l.slice(3).trim();grp=null;}else if(l.startsWith('### '))grp=l.slice(4).trim();if(!l.startsWith('| `'))continue;if(sec==='Task Registry')t++;else if(sec==='Task precedence'&&grp===null)e++;}return {t,e};})();assert.equal(d.tasks.length,regRows.t);assert.equal(d.edges.length,regRows.e);assert.equal(ctx.delta().length,0);
 const copy=x=>JSON.parse(JSON.stringify(x));const original=copy(d);d.tasks.find(t=>t.id==='OPS-059').condition='編集確認';assert.equal(ctx.delta()[0].old,original.tasks.find(t=>t.id==='OPS-059').condition);assert.equal(ctx.delta()[0].new,'編集確認');assert.deepEqual(d.baseline,original.baseline);
 d.edges.push({successor:'OPS-059',prerequisite:'PERM-060',flow:'SEQUENCE',constraint:'確認'});ctx.check(d);assert.equal(ctx.delta().length,2);const reloaded=JSON.parse(JSON.stringify(d));ctx.check(reloaded);assert.deepEqual(reloaded,d);
 function rejects(mutator){let x=copy(original);mutator(x);assert.throws(()=>ctx.check(x));}
@@ -55,13 +55,13 @@ assert.deepEqual(milestoneFileErrors(original,milestoneListing()),[]);
 rejects(x=>x.edges.push(copy(x.edges[0])));rejects(x=>x.edges.push({successor:'OPS-048',prerequisite:'OPS-048',flow:'SEQUENCE',constraint:''}));rejects(x=>x.edges.push({successor:'OPS-048',prerequisite:'MISSING',flow:'SEQUENCE',constraint:''}));rejects(x=>x.edges.push({successor:'OPS-048',prerequisite:'PERM-060',flow:'bad',constraint:''}));rejects(x=>x.edges.push({successor:'OPS-048',prerequisite:'PERM-060',flow:'SEQUENCE',constraint:''},{successor:'PERM-060',prerequisite:'OPS-048',flow:'SEQUENCE',constraint:''}));rejects(x=>x.tasks.push(copy(x.tasks[0])));rejects(x=>x.tasks.pop());rejects(x=>x.schemaVersion=2);
 let unknown=copy(original);unknown.tasks[0].state='FUTURE_STATE';unknown.extra='retain me';ctx.check(unknown);assert.equal(JSON.parse(JSON.stringify(unknown)).extra,'retain me');console.log('PASS: JS syntax; '+d.tasks.length+' tasks / '+d.edges.length+' edges (= Registry rows); edit deltas; unchanged baseline; JSON roundtrip; duplicate/self/dangling/invalid-flow/cycle checks; duplicate/deleted task rejection; version rejection; unknown state and extra-field retention.');console.log('Not tested: DOM rendering, actual file download, Safari UI.');
 
-const layoutSource=script.slice(script.indexOf('function graphLayout('),script.indexOf('function independentGroups('));vm.runInContext(layoutSource,ctx);
+
 const fixture=['A','B','C','D','E','F'].map(id=>({id})),links=['A','B','C'].map(prerequisite=>({prerequisite,successor:'F'}));
 const layout=ctx.graphLayout(fixture,links);assert(!layout.pos.has('D'));assert(!layout.pos.has('E'));for(const id of ['A','B','C'])assert(layout.pos.get(id)[0]<layout.pos.get('F')[0]);
 const actual=ctx.graphLayout(original.tasks,original.edges);const connected=new Set(original.edges.flatMap(e=>[e.prerequisite,e.successor]));assert.equal(actual.pos.size,connected.size);for(const edge of original.edges)assert(actual.pos.get(edge.prerequisite)[0]<actual.pos.get(edge.successor)[0]);assert.equal(new Set([...actual.pos.values()].map(p=>p.join(','))).size,connected.size);assert.equal(ctx.graphLayout(fixture,[]).pos.size,0);console.log('PASS: independent nodes excluded from graph; all connected nodes retained; all edges left-to-right; no overlap; empty-edge graph.');
-vm.runInContext(script.slice(script.indexOf('function graphData('),script.indexOf('function graphLayout(')),ctx);ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert(original.milestones.length>0);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['GATE-0.6.0','GATE-0.7.0','MS-SPI','MS-HUMAN','MS-QUALITY'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite.startsWith('START-')&&e.successor==='PERM-079'&&/^開始側。/.test(e.constraint)));assert.deepEqual(milestoneChainErrors(original),[]);assert(expectedMilestoneChains(original).length>0);rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
+ctx.doc=original;let visual=ctx.graphData(),placed=ctx.graphLayout(visual.nodes,visual.edges);assert(original.milestones.length>0);for(const e of visual.edges)assert((placed.pos.get(e.prerequisite)[0]<placed.pos.get(e.successor)[0]||(placed.pos.get(e.prerequisite)[0]===placed.pos.get(e.successor)[0]&&placed.pos.get(e.prerequisite)[1]<placed.pos.get(e.successor)[1])));for(const id of ['GATE-0.6.0','GATE-0.7.0','MS-SPI','MS-HUMAN','MS-QUALITY'])assert(placed.pos.has(id));assert.equal(new Set([...placed.pos.values()].map(p=>p.join(','))).size,placed.pos.size);assert(original.milestoneRelations.some(e=>e.prerequisite.startsWith('START-')&&e.successor==='PERM-079'&&/^開始側。/.test(e.constraint)));assert.deepEqual(milestoneChainErrors(original),[]);assert(expectedMilestoneChains(original).length>0);rejects(x=>x.milestoneRelations[0].successor='MISSING');rejects(x=>x.milestoneRelations[0].relation='unknown');console.log('PASS: milestone backbone, 17 sourced relations, release-after decision, Validation gate, combined DAG, no overlap, invalid relation rejection.');
 
-vm.runInContext(script.slice(script.indexOf('function independentGroups('),script.indexOf('function independent(){')),ctx);const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,groups.regular.length+groups.permanent.length);
+const groups=ctx.independentGroups(original);assert(groups.permanent.every(t=>t.permanent));assert(groups.regular.every(t=>!t.permanent));assert.equal(new Set([...groups.regular,...groups.permanent].map(t=>t.id)).size,groups.regular.length+groups.permanent.length);
 const discoveryFixture={tasks:[{id:'ROOT',permanent:true},{id:'POLICY',parentTask:'ROOT'},{id:'NESTED',parentTask:'POLICY'},{id:'WORK'},{id:'LINKED'}],edges:[{prerequisite:'POLICY',successor:'WORK'}],milestones:[{id:'END-test'}],milestoneRelations:[{prerequisite:'LINKED',successor:'END-test'}]};
 // NESTED is a sub-task of a sub-task: it is drawn in the permanent map, not the regular list (2026-10-17).
 // WORK depends on POLICY: since OPS-095 a task with any line belongs on the dependency map, so the strip is empty here
@@ -87,8 +87,8 @@ assert(placed.pos.get("PERM-079")[1]<placed.pos.get("MS-060")[1]);assert(placed.
 for(const [a,b] of [["MS-VALIDATION","RELEASE-075"],["RELEASE-075","RELEASE-076"],["RELEASE-076","RELEASE-072"]]){if(a!=='MS-VALIDATION')assert.equal(placed.pos.get(a)[0],placed.pos.get(b)[0]);assert(placed.pos.get(a)[1]<placed.pos.get(b)[1]);}console.log("PASS: Validation / 075 / 076 / 072 vertical stack.");
 
 ctx.copy=copy;ctx.doc=copy(original);ctx.formDirty=false;ctx.dirty=false;ctx.render=()=>{};ctx.report=()=>{};ctx.confirm=()=>false;
-vm.runInContext(script.slice(script.indexOf('function initializeRelationBaseline('),script.indexOf('initializeRelationBaseline(doc);')),ctx);
-vm.runInContext(script.slice(script.indexOf('function removeRelation('),script.indexOf('function graph(){')),ctx);
+
+
 ctx.initializeRelationBaseline(ctx.doc);const before=copy(ctx.doc);ctx.removeRelation(ctx.doc.edges[0]);assert.deepEqual(ctx.doc,before);ctx.confirm=()=>true;
 ctx.removeRelation(ctx.doc.edges[0]);assert.equal(ctx.doc.edges.length,before.edges.length-1);
 ctx.removeRelation({...ctx.doc.milestoneRelations[0],flow:'PARALLEL_JOIN'});assert.equal(ctx.doc.milestoneRelations.length,before.milestoneRelations.length-1);assert.deepEqual(ctx.doc.baseline,before.baseline);
@@ -182,10 +182,10 @@ const reversed=visual.edges.filter(e=>!(e.prerequisite==='MS-060'&&e.successor==
 assert.deepEqual(ctx.graphLayout(visual.nodes,visual.edges).pos,placed.pos);
 console.log('PASS: rectangle collision checks, each-edge removal, new-node and rewired-edge regrouping, deterministic placement.');
 
-vm.runInContext(script.slice(script.indexOf('function taskDocumentPaths('),script.indexOf('function cardWithDocuments(')),ctx);
-vm.runInContext(script.slice(script.indexOf('function permanentMapData('),script.indexOf('function permanentMap(){')),ctx);
+
+
 const permanent=ctx.permanentMapData(original);assert.equal(permanent.length,original.tasks.filter(t=>t.permanent).length);assert(permanent.length>=10);assert(permanent.every(g=>g.documents.length));for(const g of permanent)for(const c of g.children){assert(Array.isArray(c.documents));assert.deepEqual(c.documents,[...new Set([...c.detail.matchAll(/(?:Maintanance|Sources|Tests)\/[^`\s|]+?\.md/g)].map(m=>m[0]))]);}assert(permanent.some(g=>g.children.some(c=>c.id==='OPS-063'&&c.documents.length>=3)),'OPS-063 sub-task should expose its interview documents');assert.deepEqual(permanent.map(g=>g.task.id),original.tasks.filter(t=>t.permanent).map(t=>t.id));
-const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab','cardsView','cardsTab','neighborView','neighborTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];vm.runInContext(script.slice(script.indexOf('const MAP_TABS='),script.indexOf('for(const name of MAP_TABS){const tab')),ctx);ctx.switchMap('cards');assert(!controls.cardsView.hidden&&controls.dependencyView.hidden&&controls.permanentView.hidden&&controls.protectionView.hidden);assert.equal(controls.cardsTab['aria-selected'],'true');ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
+const controls=Object.fromEntries(['dependencyView','permanentView','dependencyTab','permanentTab','protectionView','protectionTab','cardsView','cardsTab','neighborView','neighborTab'].map(id=>[id,{setAttribute(k,v){this[k]=v;}}]));ctx.$=id=>controls[id];ctx.switchMap('cards');assert(!controls.cardsView.hidden&&controls.dependencyView.hidden&&controls.permanentView.hidden&&controls.protectionView.hidden);assert.equal(controls.cardsTab['aria-selected'],'true');ctx.switchMap(true);assert(controls.dependencyView.hidden);assert(!controls.permanentView.hidden);assert.equal(controls.permanentTab['aria-selected'],'true');ctx.switchMap(false);assert(!controls.dependencyView.hidden);assert(controls.permanentView.hidden);assert(!html.includes('id="taskPane"'));assert(!html.includes('id="toggleTasks"'));
 console.log('PASS: permanent map coverage, tab switching, removed sidebar.');
 
 const reference=JSON.parse(fs.readFileSync(require('path').join(__dirname,'layout-reference.json'),'utf8'));for(const [id,position] of Object.entries(reference))if(placed.pos.has(id))assert.deepEqual(placed.pos.get(id),position);
@@ -196,7 +196,8 @@ assert(placed.branches.some(b=>b.kind==='feeder'&&b.ids.includes('RELEASE-075'))
 const rename=new Map(visual.nodes.map((n,i)=>[n.id,'node-'+i]));const renamed=ctx.graphLayout(visual.nodes.map(n=>({...n,id:rename.get(n.id)})),visual.edges.map(e=>({...e,prerequisite:rename.get(e.prerequisite),successor:rename.get(e.successor)})));for(const [id,p] of placed.pos)assert.deepEqual(renamed.pos.get(rename.get(id)),p);assert(!renamed.fallback);
 console.log('PASS: exact pre-advice geometry, automatic backbone/branch classification, ID-independent layout.');
 
-assert(groups.regular.every((t,i,a)=>t.state==='DONE'||!a.slice(0,i).some(x=>x.state==='DONE')));
+const stateOrder=['ACTIVE','WAITING_USER','WAITING_EXTERNAL','FROZEN','USER_ONLY','PROPOSED','DONE','EXCLUDED','ARCHIVED'];
+{const fixture={tasks:stateOrder.slice().reverse().map((state,i)=>({id:'state-'+i,state})),edges:[],milestoneRelations:[]};assert.deepEqual(Array.from(ctx.independentGroups(fixture).regular,t=>t.state),stateOrder);}
 assert.equal(permanent.find(g=>g.task.id==='OPS-048').children.length,original.tasks.filter(t=>t.parentTask==='OPS-048').length);
 assert(permanent.some(g=>g.task.id==='HIST-003'&&g.task.state==='ACTIVE'));
 
@@ -207,7 +208,7 @@ for(const g of permanent){assert.equal(new Set(g.descendants.map(d=>d.id)).size,
 {const ops044=permanent.find(g=>g.task.id==='OPS-044');if(ops044&&original.tasks.some(t=>t.id==='OPS-071'&&t.parentTask==='OPS-070')){assert(ops044.descendants.some(d=>d.id==='OPS-071'&&d.depth===1));assert(!groups.regular.some(t=>t.id==='OPS-071'||t.id==='OPS-072'));}}
 {const nested=ctx.permanentMapData({tasks:discoveryFixture.tasks.map(t=>({detail:'',...t}))}).find(g=>g.task.id==='ROOT');assert.deepEqual(nested.descendants.map(d=>[d.id,d.depth]),[['POLICY',0],['NESTED',1]]);}
 
-vm.runInContext(script.slice(script.indexOf('function protectionRecords('),script.indexOf('function renderProtection(')),ctx);
+
 assert.equal(ctx.protectionRecords(original).length,18);
 assert.equal(ctx.protectionDays('2026-10-16','2026-10-16'),'1日目');
 assert.equal(ctx.protectionDays('2026-10-15','2026-10-16'),'2日目');
@@ -219,7 +220,9 @@ const protections=ctx.protectionRecords(protectionFixture);
 assert.equal(protections.length,2);assert.equal(protections[0].path,'Maintanance/RegistryApp/index.html');assert.equal(protections[0]['理由'],'誤読（旧名）を防ぐ; A; B');assert.equal(protections[0]['記録日'],'2026-10-16');assert.equal(protections[1].path,'README.md');
 for(const date of ['2026-1-5','2026-02-30','2026-13-01','2026-10-17'])assert.equal(ctx.protectionDays(date,'2026-10-16'),'日付要確認');
 assert.equal(ctx.protectionDays('2024-02-29','2024-03-01'),'2日目');
-assert(html.includes("'経過','記録日','記録者'"));
+{const node=(tag,text)=>({tag,text,children:[],append(...children){this.children.push(...children);},replaceChildren(...children){this.children=children;}});
+ const box=node('div');const c={doc:protectionFixture,el:node,$:()=>box};vm.createContext(c);vm.runInContext(logicSource,c);c.renderProtection();
+ assert.deepEqual(box.children[0].children[0].children.map(n=>n.text),['文書','タスク','区分','付与日','経過','記録日','記録者','理由']);}
 console.log('PASS: protection paths, parentheses and semicolons, multiple marks, invalid dates, leap day and recording date column.');
 
 assertGeometry(expandedPlaced,expandedVisual.nodes,expandedVisual.edges);
@@ -327,7 +330,7 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  const placed=ctx.graphLayout(g.nodes,g.edges);assertGeometry(placed,g.nodes,g.edges);assert(placed.pos.get(card)[0]<placed.pos.get(r.id)[0],'proposal right of its card');ctx.doc=copy(original);
  console.log('PASS: milestone → task/proposal and task → milestone with explicit direction, END/gate/duplicate/cycle/unknown refused unchanged, save round-trip, drawn and laid out.');}
 // Card list (OPS-085): every formal task, milestone and proposal once, regardless of lines; only bundled documents are linked.
-{vm.runInContext(script.slice(script.indexOf('function cardListGroups('),script.indexOf('function renderCards(')),ctx);
+{
  const r=ctx.addProposal(copy(original),'一覧の案','');const groups=ctx.cardListGroups(r.data),ids=groups.flatMap(g=>g.cards.map(c=>c.id));
  assert.equal(ids.length,new Set(ids).size,'no card listed twice');
  const saved=JSON.stringify(r.data),flat=ctx.cardListGroups(r.data,'id');assert.deepEqual(Array.from(flat,g=>g.title),Array.from(new Set(Array.from(ids,id=>id.split('-')[0]))).sort());assert.deepEqual(Array.from(flat).flatMap(g=>Array.from(g.cards,c=>c.id)),Array.from(ids).sort());for(const g of flat)assert(g.cards.every(c=>c.id.split('-')[0]===g.title));assert.equal(JSON.stringify(r.data),saved,'sorting does not edit the document');
@@ -371,7 +374,7 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
 
 // Canonical drift stays separate from user edits; overlap is field-specific.
 {
- const source=script.slice(script.indexOf('function canonicalDifferences('),script.indexOf('function renderCanonicalNotice('));
+ const source=logicSource;
  const c={};vm.createContext(c);vm.runInContext(source,c);
  const data={tasks:[{id:'T-1',item:'one',state:'ACTIVE',owner:'A'}],milestones:[],edges:[],milestoneRelations:[]};
  const clone=x=>JSON.parse(JSON.stringify(x));
@@ -400,7 +403,7 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  console.log('PASS: version view retains SPI downstream tasks and their prerequisite chain.');
 }
 // Neighborhood view (OPS-091): one step around a node from the whole edit version, manual expansion, no data change.
-{vm.runInContext(script.slice(script.indexOf('function neighborhood('),script.indexOf('let neighborCenter=')),ctx);
+{
  const d=copy(original),before=JSON.stringify(d),ids=v=>v.nodes.map(n=>n.id).sort(),pairs=v=>v.edges.map(e=>e.prerequisite+'>'+e.successor).sort();
  let v=ctx.neighborhood(d,'DOC-027',new Set());
  assert(pairs(v).includes('DOC-026>DOC-027')&&pairs(v).includes('MS-SPI>DOC-027'),'DOC-027: task and milestone prerequisites');
@@ -436,14 +439,14 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
  console.log('PASS: local map layout (center fixed in the middle, prerequisites left / successors right, lines left to right with real ends, expanded shared successor, one-sided and isolated cases, no overlapping cells).');}
 // Recommendation must not mistake a partial import for a completed import.
 {
- const c={};vm.createContext(c);vm.runInContext(script.slice(script.indexOf('function editsReflected('),script.indexOf('function renderCanonicalRestartSuggestion(')),c);
+ const c={};vm.createContext(c);vm.runInContext(logicSource,c);
  const base={tasks:[{id:'T',state:'ACTIVE',owner:'User'}],edges:[],milestoneRelations:[{prerequisite:'T',successor:'END-A',constraint:'old'}],milestones:[]};
  const edit=copy(base);edit.tasks[0].state='DONE';edit.milestoneRelations[0].successor='END-B';
  assert(!c.editsReflected(base,edit,base));const partial=copy(base);partial.tasks[0].state='DONE';assert(!c.editsReflected(base,edit,partial));
  const latest=copy(edit);latest.milestoneRelations[0].constraint='reviewed prose';assert(c.editsReflected(base,edit,latest));
  assert(!c.editsReflected(base,base,base));assert(!c.editsReflected({},edit,latest));assert(!c.editsReflected(base,{...edit,proposals:[{id:'draft-1'}]},latest));
  const notice={hidden:true};Object.assign(c,{$:()=>notice,workspace:{saveId:'saved'},dirty:false,formDirty:false,planDraftPending:()=>false,doc:{...edit,baseline:base},suggestionSnapshot:latest});
- vm.runInContext(script.slice(script.indexOf('function renderCanonicalRestartSuggestion('),script.indexOf('async function checkCanonicalRestartSuggestion(')),c);
+
  c.renderCanonicalRestartSuggestion();assert(!notice.hidden);
  for(const flag of ['dirty','formDirty']){c[flag]=true;c.renderCanonicalRestartSuggestion();assert(notice.hidden);c[flag]=false;}
  c.planDraftPending=()=>true;c.renderCanonicalRestartSuggestion();assert(notice.hidden);c.planDraftPending=()=>false;c.workspace=null;c.renderCanonicalRestartSuggestion();assert(notice.hidden);
@@ -454,11 +457,13 @@ assert(historical.edges.some(e=>e.prerequisite==='DOC-034'&&e.successor==='DOC-0
 {const attrs={viewBox:'0 0 1200 600'},svg={getAttribute:k=>attrs[k],setAttribute:(k,v)=>attrs[k]=v};
  const controls={graph:{querySelector:()=>svg,scrollLeft:300,scrollTop:0,clientWidth:400,clientHeight:200},graphZoomOut:{},graphZoomIn:{},graphZoomReset:{},graphHoverEnabled:{checked:true},graphTip:{hidden:false}};
  const z={$:id=>controls[id],doc:copy(original)};vm.createContext(z);const before=JSON.stringify(z.doc);
- vm.runInContext(script.slice(script.indexOf('let graphZoom=100;'),script.indexOf('function field(')),z);
+ vm.runInContext(zoomSource,z);
  z.applyGraphZoom();assert.equal(attrs.width,1200);controls.graphZoomOut.onclick();assert.equal(attrs.width,900);assert.equal(attrs.height,450);assert.equal(controls.graph.scrollLeft,175);assert.equal(controls.graphZoomReset.textContent,'75%');
  controls.graphZoomIn.onclick();assert.equal(attrs.width,1200);assert.equal(controls.graph.scrollLeft,300);
  z.setGraphZoom(-100);assert.equal(attrs.width,300);assert(controls.graphZoomOut.disabled);z.setGraphZoom(999);assert.equal(attrs.width,2400);assert(controls.graphZoomIn.disabled);
  controls.graphZoomReset.onclick();assert.equal(attrs.width,1200);assert.equal(controls.graphZoomReset.textContent,'100%');assert(!controls.graphZoomOut.disabled&&!controls.graphZoomIn.disabled);
  z.setGraphZoom(50);z.applyGraphZoom();assert.equal(attrs.width,600);assert.equal(attrs.viewBox,'0 0 1200 600');assert.equal(JSON.stringify(z.doc),before);assert(controls.graphTip.hidden);
- assert(script.includes("replaceChildren(s);applyGraphZoom();"),'redraw preserves zoom');
+ vm.runInContext(logicSource,z);
+ Object.assign(z,{selected:null,versionFolders:()=>[],document:{createElement:()=>({getContext:()=>({measureText:()=>({width:0})})})},graphData:()=>({}),graphViewModel:()=>({}),drawSvgSpec:()=>svg});
+ controls.graph.replaceChildren=()=>{};z.graph();assert.equal(attrs.width,600,'redraw preserves zoom');
  console.log('PASS: display zoom bounds, reset, dimensions, scroll anchor and unchanged document.');}

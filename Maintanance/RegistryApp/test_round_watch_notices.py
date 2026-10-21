@@ -79,6 +79,43 @@ class RoundWatchNoticeTests(unittest.TestCase):
         self.assertEqual(result['turn'], 0)
         self.assertEqual(self.counts(), counts_after_send)
 
+    def test_different_task_wakes_waiter_and_its_request_body_can_be_read(self):
+        inbox_before = self.store.inbox_notice_context('Luna')
+        round_context = self.store.show_round(self.round)['context']
+        result = {}
+        waiter = threading.Thread(target=lambda: result.setdefault(
+            'watch', self.watch(owner='Luna', inbox_context=inbox_before, after=round_context, wait=2)))
+        waiter.start()
+        time.sleep(0.15)
+        self.store.send(uuid.uuid4().hex, 'Astra', 'Luna', 'OPS-198', 'Task B request body')
+        counts_after_send = self.counts()
+        waiter.join(3)
+        self.assertFalse(waiter.is_alive())
+        changed = result['watch']
+        self.assertTrue(changed['ownerInboxChanged'])
+        self.assertNotEqual(changed['ownerInboxContext'], inbox_before)
+        self.assertEqual(changed['context'], round_context)
+        self.assertEqual(changed['turn'], 0)
+
+        # Keep the CLI's letter inbox/show reads on the same isolated DB as the waiter.
+        real_store = serve.studio_store.Store
+        with patch.object(serve.studio_store, 'Store',
+                          lambda: real_store(database=Path(self.tmp.name) / 'db')):
+            comm = str(Path(__file__).with_name('comm.py'))
+            inbox = subprocess.run(['python3', '-B', comm, 'letter', 'inbox', '--owner', 'Luna'],
+                                   env=self.env, capture_output=True, text=True)
+            self.assertEqual(inbox.returncode, 0, inbox.stderr)
+            letters = json.loads(inbox.stdout)['letters']
+            task_b = next(letter for letter in letters if letter['taskId'] == 'OPS-198')
+            self.assertEqual(task_b['state'], 'sent')
+            shown = subprocess.run(['python3', '-B', comm, 'letter', 'show', task_b['id']],
+                                   env=self.env, capture_output=True, text=True)
+            self.assertEqual(shown.returncode, 0, shown.stderr)
+            texts = json.loads(shown.stdout)['texts']
+            request = next(text for text in texts if text['part'] == 'request')
+            self.assertEqual(request['body'], 'Task B request body')
+        self.assertEqual(self.counts(), counts_after_send)
+
     def test_withdrawal_and_request_revision_change_owner_context(self):
         pause = self.store.send(uuid.uuid4().hex, 'Astra', 'Luna', 'OPS-197', 'separate pause request')['id']
         before = self.store.inbox_notice_context('Luna')

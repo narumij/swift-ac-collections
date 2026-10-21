@@ -46,6 +46,24 @@ class MemberOperationsTest(unittest.TestCase):
             self.assertEqual(cleared['plannedMembers'], [])
             self.assertEqual(cleared['members'][0]['owner'], 'A')
             self.assertEqual(post('planned/clear', {}), cleared)
+
+            for bad_header in ('Origin', 'X-Registry-Studio'):
+                with self.subTest(bad_header=bad_header):
+                    headers = {'Origin': base, 'Content-Type': 'application/json',
+                               'X-Registry-Studio': 'members-attendance'}
+                    headers[bad_header] = 'http://other.invalid' if bad_header == 'Origin' else 'members-departure'
+                    request = urllib.request.Request(base + '/members/attendance',
+                        data=json.dumps({'owner': 'A'}).encode(), headers=headers)
+                    before = member_state.members.snapshot()
+                    with self.assertRaises(urllib.error.HTTPError) as error:
+                        urllib.request.urlopen(request, timeout=3)
+                    try:
+                        self.assertEqual(error.exception.code, 403)
+                        self.assertEqual(json.load(error.exception),
+                                         {'error': 'Same-origin Studio request required'})
+                    finally:
+                        error.exception.close()
+                    self.assertEqual(member_state.members.snapshot(), before)
         finally:
             server.shutdown(); server.server_close()
             member_state.members = original

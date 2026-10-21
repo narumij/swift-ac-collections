@@ -7,6 +7,10 @@
 現行のサーバー保存の約束は[試行保存契約 v1](../Current/REGISTRY_STUDIO_SAVE_CONTRACT.md)を正本とする。下記の旧ダウンロード手順・実装経緯は、サーバー保存へ一律適用しない。具体的操作は「サーバー保存」以降の節を参照する。
 
 
+## 通知をテキストで見る
+
+稼働中のStudioから通知を流し続けるCLIは `python3 Maintanance/RegistryApp/watch_events.py`。保存済みの未読を表示し、一定時間で終了する姫用CLIは `python3 Maintanance/RegistryApp/hime_watch.py --seconds 30`。どちらもサーバーを起動するコマンドではない。保存範囲・既読位置・再開時の扱いは[タイムラインの正本](../Current/TIMELINE_TEXT_LOGGER.md)を参照する。
+
 ## 現状確認とAIへの受渡し
 
 2026-10-16、ユーザー指定。今後の現状確認はレジストリスタジオを共通の画面として使う。本書は提示・操作・JSON受渡しの手順の正本。task状態・依存はTask Registry、到達条件は各マイルストーン正本、制度はRulesを引き続き正本とし、HTMLを第二の正本にしない。

@@ -30,6 +30,7 @@ import work_notifications
 from work_state_binding import WorkStateBinding
 from task_state import TaskStateBinding
 from document_state import DocumentStateBinding
+import whiteboard
 import member_state
 import communication_notifications as notifications
 import approvals
@@ -117,7 +118,7 @@ def render_document_markdown(text):
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'document_state.py', 'task_status_command.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'document_state.py', 'task_status_command.py', 'whiteboard.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -368,7 +369,7 @@ MEMBER_OPERATIONS = {
 }
 
 # POST path -> the X-Registry-Studio value it requires
-POST_ACTIONS = {'/task-status': 'task-status', '/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+POST_ACTIONS = {'/whiteboard': 'whiteboard', '/task-status': 'task-status', '/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
                 '/team-notice': 'team-notice', '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
@@ -668,6 +669,10 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if parsed.path == '/whiteboard':
+            return self.reply(200, whiteboard.board.snapshot())
+        if parsed.path == '/whiteboard/events':
+            return self.stream_state(whiteboard.board)
         if parsed.path in ('/document-state', '/document-state/events'):
             query = urllib.parse.parse_qs(parsed.query)
             if set(query) != {'path'} or len(query['path']) != 1:
@@ -774,6 +779,13 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, {'error': 'Not found'})
         if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
+        if action == 'whiteboard':
+            body = self.json_body(512 * 1024)
+            if body is None: return
+            try:
+                return self.reply(200, whiteboard.board.add(body))
+            except (ValueError, TypeError) as error:
+                return self.reply(400, {'error': str(error)})
         if action == 'task-status':
             if not V3:
                 return self.reply(409, {'error': 'Registry V3 is required'})

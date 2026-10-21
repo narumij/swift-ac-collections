@@ -29,7 +29,7 @@ JST = datetime.timezone(datetime.timedelta(hours=9))
 def assemble_template():
     text = (CODE / 'index.template.html').read_text(encoding='utf-8')
     text = text.replace('/* include:index.css */', (CODE / 'index.css').read_text(encoding='utf-8'))
-    for name in ('topbar', 'work', 'task', 'document'):
+    for name in ('topbar', 'work', 'task', 'document', 'whiteboard'):
         marker = f'<!-- include:index.{name}.html -->'
         if text.count(marker) != 1:
             raise ValueError(f'Expected one template include: {marker}')
@@ -51,7 +51,7 @@ def assemble_template():
                 raise ValueError(f'Expected one work section: {region}#{part}')
             return selected[0]
         return re.sub(r'// include-work:([a-z-]+)#([a-z-]+)\n?', include_work, body)
-    text = re.sub(r'(?m)^[ \t]*// include:index\.(topbar|work|task|document)\.js#(\w+)\n', include_script, text)
+    text = re.sub(r'(?m)^[ \t]*// include:index\.(topbar|work|task|document|whiteboard)\.js#(\w+)\n', include_script, text)
     text = re.sub(r"(?m)^[ \t]*// include-js:((?:index\.task\.(?:logic|zoom|document)|index\.document\.model)\.js)\n", lambda m: (CODE / m[1]).read_text(encoding="utf-8") + "\n", text)
     return text
 

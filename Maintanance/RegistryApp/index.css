@@ -1261,7 +1261,7 @@ header .header-row>h1 {
 header .header-area-tabs {
    margin: 0;
    display: grid;
-   grid-template-columns: repeat(3, 1fr);
+   grid-template-columns: repeat(4, auto);
    gap: 4px
 }
 
@@ -1568,3 +1568,10 @@ body[data-area="document"] #status { display: none; }
 .canonical-recent { margin-bottom: 20px; }
 .canonical-recent h2 { margin: 0; }
 .canonical-recent > p { margin: 4px 0 8px; font-size: 11px; }
+
+#whiteboardArea {padding:16px;}
+#whiteboardArea[hidden] {display:none;}
+.whiteboard-tools {display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+#board-text-input {width:320px;max-width:100%;}
+#whiteboard-canvas {display:block;width:100%;height:auto;background:white;border:1px solid #bed1ca;touch-action:none;user-select:none;cursor:crosshair;}
+body[data-area="whiteboard"] footer, body[data-area="whiteboard"] .header-info, body[data-area="whiteboard"] #status {display:none;}

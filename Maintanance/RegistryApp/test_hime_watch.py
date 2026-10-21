@@ -45,6 +45,63 @@ class HimeWatchTests(unittest.TestCase):
         self.assertEqual(self.watch(), 'already read\n')
         self.assertEqual(self.watch(), '')
 
+    def test_interruption_resumes_after_last_flushed_line(self):
+        self.log.write_text('line one\nline two\nline three\n', encoding='utf-8')
+
+        class InterruptAfterFirstLine(io.StringIO):
+            def write(inner, value):
+                if inner.getvalue():
+                    raise KeyboardInterrupt
+                return super(InterruptAfterFirstLine, inner).write(value)
+
+        output = InterruptAfterFirstLine()
+        with self.assertRaises(KeyboardInterrupt):
+            hime_watch.watch(self.log, self.cursor, .03, output)
+        self.assertEqual(output.getvalue(), 'line one\n')
+        self.assertEqual(self.watch(), 'line two\nline three\n')
+
+    def test_log_replacement_restarts_at_new_file_beginning(self):
+        self.log.write_text('old file line\n', encoding='utf-8')
+        self.assertEqual(self.watch(), 'old file line\n')
+        replacement = self.root / 'replacement.log'
+        replacement.write_text('replacement one\nreplacement two\n', encoding='utf-8')
+        replacement.replace(self.log)
+        self.assertNotEqual(self.cursor.read_text().split()[0], f'{self.log.stat().st_dev}:{self.log.stat().st_ino}')
+        self.assertEqual(self.watch(), 'replacement one\nreplacement two\n')
+
+    def test_truncation_below_saved_offset_restarts_at_beginning(self):
+        self.log.write_text('a much longer old entry for offset tracking\n', encoding='utf-8')
+        self.assertEqual(self.watch(), 'a much longer old entry for offset tracking\n')
+        old_stat = self.log.stat()
+        with self.log.open('wb') as stream:
+            stream.write(b'new\n')
+        self.assertEqual(self.log.stat().st_ino, old_stat.st_ino)
+        self.assertLess(self.log.stat().st_size, int(self.cursor.read_text().split()[1]))
+        self.assertEqual(self.watch(), 'new\n')
+
+    def test_truncate_then_regrow_past_saved_offset_restarts(self):
+        self.log.write_text('original row one\noriginal row two\noriginal row three\n', encoding='utf-8')
+        self.assertEqual(self.watch(), 'original row one\noriginal row two\noriginal row three\n')
+        saved_offset = int(self.cursor.read_text().split()[1])
+        replacement_content = 'new row one\nnew row two\nnew row three\nnew row four\nnew row five\n'
+        self.assertGreaterEqual(len(replacement_content.encode()), saved_offset)
+        old_stat = self.log.stat()
+        with self.log.open('wb') as stream:
+            stream.write(replacement_content.encode())
+        self.assertEqual(self.log.stat().st_ino, old_stat.st_ino)
+        self.assertEqual(self.watch(), replacement_content)
+
+    def test_legacy_two_field_cursor_resumes_at_saved_offset(self):
+        self.log.write_text('already read\nnew unread\n', encoding='utf-8')
+        identity = f'{self.log.stat().st_dev}:{self.log.stat().st_ino}'
+        offset = len('already read\n'.encode('utf-8'))
+        self.cursor.write_text(f'{identity} {offset}\n')
+        self.assertEqual(self.watch(), 'new unread\n')
+        self.assertEqual(self.watch(), '')
+        with self.log.open('a', encoding='utf-8') as stream:
+            stream.write('appended later\n')
+        self.assertEqual(self.watch(), 'appended later\n')
+
     def test_partial_line_waits_for_newline_and_multiple_lines_drain(self):
         self.log.write_bytes(b'complete first\npartial')
         def finish_line():

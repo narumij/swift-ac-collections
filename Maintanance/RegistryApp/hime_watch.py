@@ -4,6 +4,7 @@ Does not start a server. The running Studio server owns the text log.
 """
 import argparse
 import fcntl
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -29,14 +30,32 @@ def watch(path, cursor, seconds, output=sys.stdout):
             stat = os.fstat(stream.fileno())
             identity = f'{stat.st_dev}:{stat.st_ino}'
             offset = 0
+            prefix_hash = hashlib.sha256()
             if cursor.exists():
-                previous, number = cursor.read_text().strip().split()
+                fields = cursor.read_text().strip().split()
+                if len(fields) not in (2, 3):
+                    raise ValueError('既読位置が不正です。')
+                previous, number = fields[:2]
                 if previous == identity:
                     offset = int(number)
                     if offset < 0:
                         raise ValueError('既読位置が不正です。')
                     if offset > stat.st_size:
                         offset = 0
+                    else:
+                        expected_hash = fields[2] if len(fields) == 3 else None
+                        remaining = offset
+                        while remaining:
+                            chunk = stream.read(min(64 * 1024, remaining))
+                            if not chunk:
+                                offset = 0
+                                prefix_hash = hashlib.sha256()
+                                break
+                            prefix_hash.update(chunk)
+                            remaining -= len(chunk)
+                        if offset and expected_hash is not None and prefix_hash.hexdigest() != expected_hash:
+                            offset = 0
+                            prefix_hash = hashlib.sha256()
             stream.seek(offset)
 
             def drain(limit=None, deadline=None):
@@ -50,8 +69,9 @@ def watch(path, cursor, seconds, output=sys.stdout):
                         return
                     output.write(line.decode('utf-8'))
                     output.flush()
+                    prefix_hash.update(line)
                     temporary = Path(str(cursor) + '.tmp')
-                    temporary.write_text(f'{identity} {stream.tell()}\n')
+                    temporary.write_text(f'{identity} {stream.tell()} {prefix_hash.hexdigest()}\n')
                     temporary.replace(cursor)
 
             # All unread text present at entry is shown before the observation timer.

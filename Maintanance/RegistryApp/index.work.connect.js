@@ -44,6 +44,7 @@ function startWorkPage() {
   const commands = createApprovalController({ fetchRecord: fetch, view: { update() {}, availability: approval.availability, failure: approval.failure }, isHidden: () => document.hidden, schedule: setTimeout, cancel: clearTimeout, makeController: () => new AbortController(), autoPoll: false });
   approval.bind(commands.act);
   model.subscribe(value => {
+    document.dispatchEvent(new CustomEvent('studio-work-state-change', { detail: value }));
     timeline.show(value.timeline); if (!value.connected || value.failed.activity || value.failed.letters) timeline.showFailure(ACTIVITY_FAILURE_TEXT);
     cards.update(value.cards); wake.show(value.wake); approval.update(value.approvals);
     if (!value.connected || value.failed.approvals) commands.disconnected(); else commands.receive(value.approvals);

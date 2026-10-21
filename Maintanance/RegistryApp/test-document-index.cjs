@@ -31,3 +31,11 @@ assert.equal(canonicalTaskChoices({tasks:[first]})[0].title,'正本タブ');
   assert.equal(model.state.taskId,second.id);assert.equal(model.state.documents.length,0);assert.match(model.state.message,/指定がありません/);
   model.close();console.log('PASS: task-ID entry, ordered multipart, missing part, independent updates, separate letters, stale-task and stale-response rejection');
 })().catch(error=>{console.error(error);process.exit(1)});
+{
+  const { recentCanonicalTasks } = require('./index.document.model.js');
+  const registry={tasks:[{id:'OPS-1',item:'one'},{id:'OPS-2',item:'two'},{id:'OPS-3',item:'no work date'}]};
+  const tasks=recentCanonicalTasks(registry,[{taskId:'OPS-1',workedAt:'2026-10-21T10:00:00Z'},{taskId:'OPS-2',workedAt:'2026-10-21T11:00:00Z'},{taskId:'OPS-1',workedAt:'2026-10-21T12:00:00Z'},{taskId:'OPS-999',workedAt:'2026-10-21T13:00:00Z'}]);
+  assert.deepEqual(tasks.map(t=>t.id),['OPS-1','OPS-2']);
+  assert.equal(tasks[0].workedAt,'2026-10-21T12:00:00Z');
+  console.log('PASS: recent task cards use latest recorded work, deduplicate and exclude unknown/unrecorded tasks');
+}

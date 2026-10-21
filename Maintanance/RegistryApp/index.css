@@ -1564,3 +1564,7 @@ body[data-area="document"] #status { display: none; }
 .canonical-part > h3 { font-size: 13px; color: #315b51; margin-bottom: 4px; }
 .canonical-part > .muted { font-size: 11px; overflow-wrap: anywhere; }
 #canonical-task-letter-list { font-size: 12px; overflow-wrap: anywhere; }
+
+.canonical-recent { margin-bottom: 20px; }
+.canonical-recent h2 { margin: 0; }
+.canonical-recent > p { margin: 4px 0 8px; font-size: 11px; }

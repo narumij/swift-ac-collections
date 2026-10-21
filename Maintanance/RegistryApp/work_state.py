@@ -226,6 +226,20 @@ def _wake(rows):
     return {'owners': owners, 'statuses': statuses}
 
 
+def recent_task_work(events):
+    """Recipient-confirmed starts/returns supplied by the communication DB only."""
+    latest = {}
+    for event in events:
+        task = event['task_id'] or ''
+        if event['event'] not in ('started', 'returned') or not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', task):
+            continue
+        value = {'taskId': task, 'workedAt': event['received_at'], 'owner': event['actor'],
+                 'eventId': 'letter-event:' + str(event['sequence']), 'letterId': event['letter_id']}
+        if task not in latest or _date(value['workedAt']) > _date(latest[task]['workedAt']):
+            latest[task] = value
+    return sorted(latest.values(), key=lambda value: (-_date(value['workedAt']).timestamp(), value['taskId']))
+
+
 class WorkState:
     """Atomic revisions of activity, approval, timeline, and recent-work views."""
 
@@ -235,6 +249,7 @@ class WorkState:
         self._registry_state = registry_state or {}
         self._activity = []
         self._letters = []
+        self._recent_tasks = []
         self._first_starts = {}
         self._approvals = {'requests': [], 'policyNotice': policy_notice}
         self._failed = {'activity': False, 'approvals': False, 'letters': False, 'registry': False}
@@ -248,6 +263,7 @@ class WorkState:
         trouble = ' · '.join(label for key, label in (('activity', '活動の取得不調'), ('approvals', '承認の取得不調'), ('letters', '連絡の取得不調'), ('registry', 'Registryの取得不調')) if self._failed[key])
         return {'revision': self._revision, 'activity': rows,
                 'timeline': _timeline(recent),
+                'recentTasks': deepcopy(self._recent_tasks),
                 'wake': _wake(rows),
                 'cards': {'cards': cards, 'status': (str(len(cards)) + '件' if cards else '記録なし') +
                           (' · ' + trouble + ' · 最終情報を保持' if trouble else ''), 'stale': bool(trouble)},
@@ -284,6 +300,9 @@ class WorkState:
             return self._publish()
 
     def update_letters(self, events):
+        latest_work = events.get('latestWork', []) if isinstance(events, dict) else events
+        events = events['events'] if isinstance(events, dict) else events
+        recent_tasks = recent_task_work(latest_work)
         rows = []
         for event in events:
             if not re.fullmatch(r'[A-Z][A-Z0-9]*-[0-9]+', event['task_id'] or ''):
@@ -298,9 +317,10 @@ class WorkState:
         for row in rows:
             _row(row)
         with self._condition:
-            if rows == self._letters and not self._failed['letters']:
+            if rows == self._letters and recent_tasks == self._recent_tasks and not self._failed['letters']:
                 return deepcopy(self._model)
             self._letters = rows
+            self._recent_tasks = recent_tasks
             self._failed['letters'] = False
             return self._publish()
 

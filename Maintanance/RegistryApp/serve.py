@@ -5,7 +5,7 @@ V3 mode (OPS-181), off by default: --v3-db PATH --v3-saves DIR, always together.
 created or migrated) and the DB must be a V3 DB. Then GET / is the page sync.py built with only its Registry seed
 replaced by a fresh read-only DB export, GET /registry.json is that export, GET /workspace resumes only V3 saves from
 DIR, and POST /save stores only V3 saves there. POST /sync still runs sync.py (documents and the pending queue); it
-never writes the DB. There is no apply route: the DB is written only through v3/registry_v3_cli.py. Without the flags
+never writes the DB. The narrow /task-status command also writes through v3/registry_v3_cli.py. Without the flags
 nothing of V3 is imported or opened.
 
 --output DIR (OPS-167 K9), for isolated runs: an existing directory used instead of Cache/RegistryStudio; sync.py (at
@@ -74,7 +74,7 @@ def work_view():
             _WORK_VIEW = WorkStateBinding(
                 work_notifications.observe_activity(activity.EVENTS), work_notifications.approval_changes,
                 activity.read_events, lambda: approvals.Store().list(), {},
-                work_notifications.letter_changes, lambda: studio_store.Store().work_events(),
+                work_notifications.letter_changes, lambda: studio_store.Store().work_snapshot(),
                 work_notifications.observe_registry(registry_path),
                 lambda: {row['id']: row.get('state', '') for row in registry_tasks()})
         return _WORK_VIEW.model
@@ -117,7 +117,7 @@ def render_document_markdown(text):
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'document_state.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'document_state.py', 'task_status_command.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -366,7 +366,7 @@ MEMBER_OPERATIONS = {
 }
 
 # POST path -> the X-Registry-Studio value it requires
-POST_ACTIONS = {'/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
+POST_ACTIONS = {'/task-status': 'task-status', '/members/departure': 'members-departure', '/members/attendance': 'members-attendance', '/letter-turns': 'letter-turns', '/sync': 'sync', '/save': 'save', '/commit-approvals': 'commit-approvals', '/approval-probe': 'approval-probe',
                 '/team-notice': 'team-notice', '/activity-wake': 'activity-wake', '/approvals-cli': 'approvals-cli', '/comm-ping': 'comm-ping', '/comm-ack': 'comm-ack',
                 '/comm-cutover': 'comm-cutover', '/letters-send': 'letters-send', '/letters-event': 'letters-event',
                 '/letters-revise': 'letters-revise', '/letters-senders': 'letters-senders'}
@@ -771,6 +771,23 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(404, {'error': 'Not found'})
         if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
+        if action == 'task-status':
+            if not V3:
+                return self.reply(409, {'error': 'Registry V3 is required'})
+            body = self.json_body(4096)
+            if body is None:
+                return
+            try:
+                import task_status_command
+                status, result = task_status_command.change(V3['db'], ROOT,
+                    Path.home() / 'Documents/RegistryStudioBackups' / ROOT.name, body)
+                if status == 200:
+                    work_notifications.registry_changes.changed()
+                return self.reply(status, result)
+            except (ValueError, TypeError, KeyError) as error:
+                return self.reply(400, {'error': str(error)})
+            except (OSError, sqlite3.Error) as error:
+                return self.reply(503, {'error': str(error)})
         if action in MEMBER_OPERATIONS:
             body = self.json_body(4096)
             if body is None:

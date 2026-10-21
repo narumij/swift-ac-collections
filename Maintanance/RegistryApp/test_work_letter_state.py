@@ -93,14 +93,14 @@ class WorkSourceUpdatesTests(unittest.TestCase):
             operation = uuid.uuid4().hex
             sent = store.send(operation, 'Astra', 'そる', 'T-1', '限定依頼')
             model = WorkState()
-            value = model.update_letters(store.work_events())
+            value = model.update_letters(store.work_snapshot())
             self.assertEqual(value['cards']['cards'][0]['stage'], '依頼済み')
             self.assertIn('次：そる', value['cards']['cards'][0]['lines'][1])
             self.assertEqual(value['cards']['cards'][0]['startSource'], 'request')
             self.assertEqual(len(value['timeline']['cards']), 1, 'sent requests also reach the latest-activity band')
             store.event(uuid.uuid4().hex, sent['id'], 'received', 'そる', revision=1)
             store.event(uuid.uuid4().hex, sent['id'], 'started', 'そる')
-            value = model.update_letters(store.work_events())
+            value = model.update_letters(store.work_snapshot())
             self.assertEqual(value['cards']['cards'][0]['startSource'], 'started')
             start = value['cards']['cards'][0]['startAt']
             store.event(uuid.uuid4().hex, sent['id'], 'returned', 'そる', body='返却')
@@ -109,12 +109,15 @@ class WorkSourceUpdatesTests(unittest.TestCase):
                 con.execute("INSERT INTO letters VALUES (?,?,?,?,?,?,?)", ('DISCUSSION-FIXTURE', 'discussion', 'Astra', 'そる', 'T-2', operation, '2026-10-22T00:00:00Z'))
                 for identity, actor, recorder, effective in [(sent['id'], 'そる', 'Astra', 1), (sent['id'], 'そる', 'そる', 0), ('DISCUSSION-FIXTURE', 'そる', 'そる', 1)]:
                     store._insert_event(con, identity, 'returned', actor, recorder, None, None, '', effective, operation, at='2026-10-22T00:00:00Z')
-            self.assertEqual(len(store.work_events()), 3)
-            value = model.update_letters(store.work_events())
+            self.assertEqual(len(store.work_snapshot()['events']), 3)
+            value = model.update_letters(store.work_snapshot())
             card = value['cards']['cards'][0]
             self.assertEqual(card['stage'], '返却・受入待ち')
             self.assertEqual(card['startAt'], start)
             self.assertEqual(len(value['cards']['cards']), 1)
+            self.assertEqual(len(value['recentTasks']), 1)
+            self.assertEqual(value['recentTasks'][0]['taskId'], 'T-1')
+            self.assertEqual(value['recentTasks'][0]['owner'], 'そる')
 
 if __name__ == '__main__':
     unittest.main()

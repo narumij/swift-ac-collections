@@ -36,4 +36,15 @@ class TaskCanonicalViewModel {
     }
   }
 }
-if (typeof module !== 'undefined') module.exports = { canonicalTaskChoices, TaskCanonicalViewModel };
+function recentCanonicalTasks(registry, records) {
+  const tasks = new Map((registry.tasks || []).map(task => [task.id, task]));
+  const latest = new Map();
+  for (const record of records) {
+    const at = Date.parse(record.workedAt);
+    if (!tasks.has(record.taskId) || !Number.isFinite(at)) continue;
+    if (!latest.has(record.taskId) || at > Date.parse(latest.get(record.taskId).workedAt)) latest.set(record.taskId, record);
+  }
+  return [...latest.values()].sort((a, b) => Date.parse(b.workedAt) - Date.parse(a.workedAt) || a.taskId.localeCompare(b.taskId))
+    .map(record => ({ ...tasks.get(record.taskId), workedAt: record.workedAt, workedBy: record.owner }));
+}
+if (typeof module !== 'undefined') module.exports = { canonicalTaskChoices, TaskCanonicalViewModel, recentCanonicalTasks };

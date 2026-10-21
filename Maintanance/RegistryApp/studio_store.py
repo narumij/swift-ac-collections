@@ -784,8 +784,8 @@ class LetterMixin:
 
 
 class Store(PingMixin, LetterMixin, approvals.Store):
-    def work_events(self):
-        """Request sends and recipient-confirmed starts/returns; discussion and proxy records stay out."""
+    def work_snapshot(self):
+        """One DB snapshot: bounded timeline and latest actual work per task over all history."""
         with self.transaction() as con:
             rows = con.execute("""SELECT e.sequence, e.letter_id, e.event, e.actor, e.received_at,
                                   l.task_id, l.sender, l.recipient
@@ -794,6 +794,14 @@ class Store(PingMixin, LetterMixin, approvals.Store):
                   AND ((e.event='sent' AND e.actor=l.sender)
                        OR (e.event IN ('started','returned') AND e.actor=l.recipient))
                 ORDER BY e.sequence DESC LIMIT 200""").fetchall()
-            return [dict(row) for row in reversed(rows)]
-
-    """Server-side store of PING / ACK and letters, in the approvals database (案A)."""
+            latest = con.execute("""SELECT sequence, letter_id, event, actor, received_at, task_id, sender, recipient
+                FROM (SELECT e.sequence, e.letter_id, e.event, e.actor, e.received_at,
+                             l.task_id, l.sender, l.recipient,
+                             ROW_NUMBER() OVER (PARTITION BY l.task_id
+                                 ORDER BY julianday(e.received_at) DESC, e.sequence DESC) AS position
+                      FROM letter_events e JOIN letters l ON l.id=e.letter_id
+                      WHERE l.kind='request' AND e.effective=1 AND e.recorded_by=e.actor
+                        AND e.event IN ('started','returned') AND e.actor=l.recipient)
+                WHERE position=1""").fetchall()
+            return {'events': [dict(row) for row in reversed(rows)],
+                    'latestWork': [dict(row) for row in latest]}

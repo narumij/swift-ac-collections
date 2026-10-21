@@ -4,8 +4,9 @@
   const ns = 'http://www.w3.org/2000/svg';
   let mode = 'stroke', online = false, drawing = null, current = [], revision = -1;
   function shape(item) {
-    const node = document.createElementNS(ns, item.kind === 'text' ? 'text' : 'polyline');
-    if (item.kind === 'text') { node.setAttribute('x',item.x);node.setAttribute('y',item.y);node.setAttribute('font-size','22');node.setAttribute('dominant-baseline','hanging');node.textContent=item.text; }
+    const node = document.createElementNS(ns, item.kind === 'image' ? 'image' : item.kind === 'text' ? 'text' : 'polyline');
+    if(item.kind==='image'){for(const key of ['x','y','width','height'])node.setAttribute(key,item[key]);node.setAttribute('href',item.src);}
+    else if (item.kind === 'text') { node.setAttribute('x',item.x);node.setAttribute('y',item.y);node.setAttribute('font-size','22');node.setAttribute('dominant-baseline','hanging');node.textContent=item.text; }
     else {node.setAttribute('points',item.points.map(p=>p.join(',')).join(' '));node.setAttribute('fill','none');node.setAttribute('stroke','#000');node.setAttribute('stroke-width','3');node.setAttribute('stroke-linecap','round');node.setAttribute('stroke-linejoin','round');}
     return node;
   }
@@ -21,6 +22,18 @@
       const data=await response.json();if(!response.ok)throw Error(data.error || '送信失敗');receive(data);status.textContent='共有中';
     } catch(error) {status.textContent='共有できませんでした：'+error.message;}
   }
+  $('board-image').onchange=async event=>{
+    const file=event.target.files[0];if(!file)return;
+    const url=URL.createObjectURL(file);
+    try {
+      const image=new Image();image.src=url;await image.decode();
+      const scale=Math.min(1,1200/image.naturalWidth,700/image.naturalHeight);
+      const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      await send({id:crypto.randomUUID(),kind:'image',x:(1200-canvas.width)/2,y:(700-canvas.height)/2,width:canvas.width,height:canvas.height,src:canvas.toDataURL('image/png')});setMode('stroke');
+    } catch(error){status.textContent='画像を読み込めません：'+error.message;}
+    finally{URL.revokeObjectURL(url);event.target.value='';}
+  };
   $('board-clear').onclick=()=>{drawing=null;setMode('stroke');draw();send({action:'clear'});};
   board.onpointerdown=e=>{if(!online||e.button!==0)return;e.preventDefault();const p=point(e);
     if(mode==='text'){const text=$('board-text-input').value;if(text.trim())send({id:crypto.randomUUID(),kind:'text',x:p[0],y:p[1],text});else status.textContent='配置する文字を入力してください';return;}

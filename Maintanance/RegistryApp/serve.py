@@ -780,7 +780,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self.studio_request(action):
             return self.reply(403, {'error': 'Same-origin Studio request required'})
         if action == 'whiteboard':
-            body = self.json_body(512 * 1024)
+            body = self.json_body(7 * 1024 * 1024)
             if body is None: return
             try:
                 return self.reply(200, whiteboard.board.clear() if body == {'action': 'clear'} else whiteboard.board.add(body))

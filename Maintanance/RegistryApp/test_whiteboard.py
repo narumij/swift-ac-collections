@@ -26,6 +26,16 @@ class BoardTests(unittest.TestCase):
         self.assertEqual(b.wait(before['revision'],0),cleared)
         self.assertEqual(b.add(item)['document']['items'],[item])
 
+    def test_one_image_replacement_and_clear(self):
+        b=Whiteboard()
+        import base64
+        image={'id':'i','kind':'image','x':0,'y':0,'width':100,'height':100,'src':'data:image/png;base64,'+base64.b64encode(b'\x89PNG\r\n\x1a\n').decode()}
+        b.add(image);b.add({'id':'t','kind':'text','x':0,'y':0,'text':'note'})
+        replacement=dict(image,id='j');b.add(replacement)
+        self.assertEqual([i['id'] for i in b.snapshot()['document']['items']],['j','t'])
+        with self.assertRaises(ValueError):b.add(dict(image,id='bad',src='https://example.com/image'))
+        self.assertEqual(b.clear()['document']['items'],[])
+
     def test_invalid_input(self):
         b=Whiteboard()
         for value in [None,{}, {'id':'s','kind':'stroke','points':[[float('nan'),0]]}, {'id':'t','kind':'text','text':'','x':0,'y':0}]:

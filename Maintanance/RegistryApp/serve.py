@@ -81,7 +81,7 @@ def work_view():
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -354,7 +354,7 @@ def get_letters(parsed):
     store = studio_store.Store()
     try:
         if parsed.path == '/letters-inbox':
-            if set(q) != {'owner'}:
+            if 'owner' not in q or set(q) - {'owner', 'watch'} or q.get('watch', '1') != '1':
                 raise ValueError('Expected owner')
             return 200, json_bytes(store.inbox(q['owner']))
         if parsed.path == '/letters-senders':
@@ -558,6 +558,12 @@ class Handler(BaseHTTPRequestHandler):
                 overflow.set()
 
         events.connect(receive)
+        try:
+            import record_notifications
+            record_notifications.start(approvals.DATABASE, activity.EVENTS, V3['db'] if V3 else None)
+        except Exception:
+            events.disconnect(receive)
+            return self.reply(503, {'error': 'Notification sources unavailable'})
         self.close_connection = True
         try:
             self.send_response(200)

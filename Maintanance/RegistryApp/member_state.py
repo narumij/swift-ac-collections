@@ -1,5 +1,6 @@
 """In-memory member model; changes wake subscribed SSE connections."""
 import logging
+from event_notifications import events
 from copy import deepcopy
 from threading import Condition, Timer
 from zoneinfo import ZoneInfo
@@ -109,10 +110,13 @@ class MemberState:
             if self._members == members:
                 return
             logging.warning('member-presence members_changed before=%r after=%r', self._members, members)
+            before = deepcopy(self._members)
             self._members = deepcopy(members)
             self._sync_info()
             self._revision += 1
             self._condition.notify_all()
+
+            events.send(f'members: before={before!r}, after={self._members!r}')
 
     def attend(self, owner):
         if not isinstance(owner, str) or not owner.strip() or len(owner) > 100:
@@ -170,10 +174,12 @@ class MemberState:
         with self._condition:
             if self._planned_members == planned:
                 return self.snapshot()
+            before = self._planned_members
             self._planned_members = planned
             self._sync_info()
             self._revision += 1
             self._condition.notify_all()
+            events.send(f'planned_members: before={before!r}, after={planned!r}')
             return self.snapshot()
 
     def wait(self, after, timeout=15):

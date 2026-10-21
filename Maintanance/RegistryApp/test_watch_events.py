@@ -5,11 +5,20 @@ import urllib.request
 from http.server import ThreadingHTTPServer
 
 from event_notifications import events
-from serve import Handler
+from serve import Handler, get_letters
+from unittest.mock import patch
+from urllib.parse import urlsplit
 from watch_events import display
 
 
 class WatchEventsTests(unittest.TestCase):
+    def test_inbox_watch_parameter_is_accepted_but_unknown_options_are_not(self):
+        with patch('serve.studio_store.Store') as store:
+            store.return_value.inbox.return_value = {'letters': []}
+            self.assertEqual(get_letters(urlsplit('/letters-inbox?owner=Luna&watch=1'))[0], 200)
+            self.assertEqual(get_letters(urlsplit('/letters-inbox?owner=Luna&watch=0'))[0], 400)
+            self.assertEqual(get_letters(urlsplit('/letters-inbox?owner=Luna&extra=1'))[0], 400)
+
     def test_text_multiline_and_keepalive(self):
         output = io.StringIO()
         display(io.BytesIO(': connected\n\ndata: 待機開始\ndata: A\n\n: keepalive\n\n'.encode()), output)

@@ -1,5 +1,6 @@
 // @section main
 // include-js:index.task.logic.js
+// include-js:index.task.document.js
 'use strict';
 const $ = id => document.getElementById(id), copy = x => JSON.parse(JSON.stringify(x));
 const STATES = ['ACTIVE', 'WAITING_USER', 'WAITING_EXTERNAL', 'FROZEN', 'USER_ONLY', 'PROPOSED', 'DONE', 'EXCLUDED', 'ARCHIVED'];
@@ -126,25 +127,10 @@ function documentLinks(detail) {
   if (!paths.length) return el('pre', detail);
   for (const path of [...new Set(paths)]) { const a = el('a', path); a.href = '#document'; a.style.display = 'block'; a.onclick = e => { e.preventDefault(); openDocument(path); }; wrap.append(a); } return wrap;
 }
+const canonicalDocument = new CanonicalDocumentViewModel(documentBundle);
+canonicalDocument.subscribe(renderCanonicalDocument);
 function openDocument(path, overrideRecord) {
-  const dialog = $('documentDialog'), body = $('documentBody'), record = overrideRecord || documentBundle.files[path]; body.replaceChildren(); $('documentTitle').textContent = path;
-  $('documentStamp').textContent = '表示用コピー：' + new Date(documentBundle.generatedAt).toLocaleString() + '（正本の更新は自動反映しません）';
-  if (!record) body.append(el('p', 'この文書は同梱されていません。表示用データを更新してください。'));
-  else {
-    const parsed = new DOMParser().parseFromString(record.html, 'text/html');
-    const allowed = new Set('P H1 H2 H3 H4 H5 H6 UL OL LI BLOCKQUOTE PRE CODE STRONG EM DEL A TABLE THEAD TBODY TR TH TD HR BR INPUT'.split(' '));
-    function clean(source, parent) {
-      for (const n of source.childNodes) {
-        if (n.nodeType === 3) { parent.append(document.createTextNode(n.textContent)); continue; } if (n.nodeType !== 1) continue; if (!allowed.has(n.tagName)) { if (!['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT'].includes(n.tagName)) clean(n, parent); continue; } const dst = document.createElement(n.tagName); if (n.tagName === 'INPUT') { dst.type = 'checkbox'; dst.disabled = true; dst.checked = n.hasAttribute('checked'); } if (n.tagName === 'A') {
-          const href = n.getAttribute('href') || '';
-          if (/^https?:\/\//i.test(href)) { dst.href = href; dst.target = '_blank'; dst.rel = 'noopener noreferrer'; }
-          else if (!/^[a-z][a-z0-9+.-]*:/i.test(href) && !href.startsWith('//')) { dst.href = '#document'; dst.onclick = e => { e.preventDefault(); const base = new URL(path, 'https://repository.invalid/'); const target = new URL(href, base); openDocument(decodeURIComponent(target.pathname.slice(1))); }; }
-        } clean(n, dst); parent.append(dst);
-      }
-    }
-    clean(parsed.body, body);
-  }
-  if (!dialog.open) dialog.showModal(); body.scrollTop = 0;
+  canonicalDocument.select(path, overrideRecord);
 }
 $('closeDocument').onclick = () => $('documentDialog').close();
 {

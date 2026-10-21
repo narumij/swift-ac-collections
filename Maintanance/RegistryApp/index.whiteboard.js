@@ -20,6 +20,7 @@
       const data=await response.json();if(!response.ok)throw Error(data.error || '送信失敗');receive(data);status.textContent='共有中';
     } catch(error) {status.textContent='共有できませんでした：'+error.message;}
   }
+  $('board-clear').onclick=()=>{drawing=null;draw();send({action:'clear'});};
   board.onpointerdown=e=>{if(!online||e.button!==0)return;e.preventDefault();const p=point(e);
     if(mode==='text'){const text=$('board-text-input').value;if(text.trim())send({id:crypto.randomUUID(),kind:'text',x:p[0],y:p[1],text});else status.textContent='配置する文字を入力してください';return;}
     drawing={id:crypto.randomUUID(),kind:'stroke',points:[p]};board.setPointerCapture(e.pointerId);draw();};

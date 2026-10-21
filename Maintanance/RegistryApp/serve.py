@@ -783,7 +783,7 @@ class Handler(BaseHTTPRequestHandler):
             body = self.json_body(512 * 1024)
             if body is None: return
             try:
-                return self.reply(200, whiteboard.board.add(body))
+                return self.reply(200, whiteboard.board.clear() if body == {'action': 'clear'} else whiteboard.board.add(body))
             except (ValueError, TypeError) as error:
                 return self.reply(400, {'error': str(error)})
         if action == 'task-status':

@@ -10,6 +10,11 @@ class Whiteboard(TaskState):
         self._edit = RLock()
         self.update({'width':1200, 'height':700, 'items':[]})
 
+    def clear(self):
+        with self._edit:
+            state = self.snapshot()
+            return self.update({**state['document'], 'items': []})
+
     def add(self, item):
         item = deepcopy(item)
         if not isinstance(item, dict) or not isinstance(item.get('id'),str) or not 1 <= len(item['id']) <= 100:

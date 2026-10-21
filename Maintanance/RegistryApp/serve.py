@@ -29,6 +29,7 @@ import activity
 import work_notifications
 from work_state_binding import WorkStateBinding
 from task_state import TaskStateBinding
+from document_state import DocumentStateBinding
 import member_state
 import communication_notifications as notifications
 import approvals
@@ -103,10 +104,20 @@ def task_view():
         return _TASK_VIEW.model
 
 
+def render_document_markdown(text):
+    import sync
+    node, marked, _ = sync.resolve_tools()
+    command = [node, str(APP / 'render-document.mjs')]
+    if marked:
+        command.append(marked)
+    return subprocess.run(command, input=text, text=True, capture_output=True,
+                          check=True, timeout=15).stdout
+
+
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'document_state.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -538,7 +549,7 @@ class Handler(BaseHTTPRequestHandler):
     def stream_work(self):
         return self.stream_state(work_view())
 
-    def stream_state(self, model):
+    def stream_state(self, model, timeout=15):
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
         self.send_header('Cache-Control', 'no-cache')
@@ -547,7 +558,7 @@ class Handler(BaseHTTPRequestHandler):
         revision = None
         try:
             while True:
-                snapshot = model.wait(revision, timeout=15)
+                snapshot = model.wait(revision, timeout=timeout)
                 if snapshot['revision'] != revision:
                     self.wfile.write(('data: ' + json.dumps(snapshot, ensure_ascii=False) + '\n\n').encode())
                     revision = snapshot['revision']
@@ -620,6 +631,20 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_request():
             return self.reply(403, {'error': 'Local host required'})
         parsed = urllib.parse.urlsplit(self.path)
+        if parsed.path in ('/document-state', '/document-state/events'):
+            query = urllib.parse.parse_qs(parsed.query)
+            if set(query) != {'path'} or len(query['path']) != 1:
+                return self.reply(400, {'error': 'One document path required'})
+            try:
+                binding = DocumentStateBinding(ROOT, query['path'][0], render_document_markdown)
+            except ValueError as error:
+                return self.reply(400, {'error': str(error)})
+            try:
+                if parsed.path.endswith('/events'):
+                    return self.stream_state(binding.model, timeout=1)
+                return self.reply(200, binding.model.snapshot())
+            finally:
+                binding.close()
         if self.path == '/notifications/events':
             return self.stream_notifications()
         if self.path == '/task-state/events':

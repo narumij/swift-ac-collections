@@ -38,7 +38,7 @@ function renderStateLegend() {
 }
 function renderPending() {
   const data = JSON.parse($('pendingSeed').textContent), box = $('pendingList'); box.replaceChildren(); $('pendingCount').textContent = data.entries.length + '件'; $('pendingStamp').textContent = (data.sources || [{ path: data.source }]).map(s => (s.owner ? s.owner + '：' : '') + s.path).join(' · ') + ' · 取得 ' + data.generatedAt;
-  for (const entry of data.entries) { const card = el('button', undefined, 'pending-card'); const source = entry.source || data.source; card.append(el('strong', entry.id), el('span', entry.title.replaceAll('`', '')), el('small', entry.state + (entry.owner ? ' · ' + entry.owner : ''))); card.onclick = () => { const dialog = $('documentDialog'); $('documentTitle').textContent = entry.id + ' · 採番待ち'; $('documentStamp').textContent = source + ' · 取得 ' + data.generatedAt; if (entry.html) { openDocument(source, { html: entry.html }); $('documentTitle').textContent = entry.id + ' · 採番待ち'; $('documentStamp').textContent = source + ' · 取得 ' + data.generatedAt; } else { $('documentBody').replaceChildren(el('pre', entry.raw)); if (!dialog.open) dialog.showModal(); } }; box.append(card); }
+  for (const entry of data.entries) { const card = el('button', undefined, 'pending-card'); const source = entry.source || data.source; card.append(el('strong', entry.id), el('span', entry.title.replaceAll('`', '')), el('small', entry.state + (entry.owner ? ' · ' + entry.owner : ''))); card.onclick = () => { canonicalDocument.close(); const dialog = $('documentDialog'); $('documentTitle').textContent = entry.id + ' · 採番待ち'; $('documentStamp').textContent = source + ' · 取得 ' + data.generatedAt; if (entry.html) { openDocument(source, { html: entry.html }); $('documentTitle').textContent = entry.id + ' · 採番待ち'; $('documentStamp').textContent = source + ' · 取得 ' + data.generatedAt; } else { $('documentBody').replaceChildren(el('pre', entry.raw)); if (!dialog.open) dialog.showModal(); } }; box.append(card); }
   if (!data.entries.length) box.append(el('p', '採番待ちはありません。', 'muted'));
 }
 function render() { renderProtection(); renderCards(); renderPlanTools(); renderNeighborhood(); renderPending(); renderStateLegend(); graph(); independent(); permanentMap(); editor(); banner(); if (!$('diffPanel').hidden) showDiff(); }
@@ -46,7 +46,7 @@ function render() { renderProtection(); renderCards(); renderPlanTools(); render
 // existing input guard, so a cancelled move keeps both the selection and the center.
 function select(id) { if (formDirty && !confirm('編集中の入力を破棄して移動しますか？')) return; formDirty = false; selected = id; neighborCenter = id; neighborExpanded.clear(); render(); }
 function cardWithDocuments(card, t) { const shell = el('div', undefined, 'task-shell'); shell.append(card); if (!t.proposal && taskDocumentPaths(t).length) { const a = el('a', '正本', 'card-document'); a.href = '#document'; a.setAttribute('aria-label', t.id + ' の正本を読む'); a.onclick = e => { e.preventDefault(); e.stopPropagation(); openTaskDocuments(t); }; shell.append(a); } return shell; }
-function openTaskDocuments(t) { const paths = taskDocumentPaths(t); if (paths.length === 1) { openDocument(paths[0]); return; } const dialog = $('documentDialog'); $('documentTitle').textContent = t.id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(t.detail)); if (!dialog.open) dialog.showModal(); }
+function openTaskDocuments(t) { const paths = taskDocumentPaths(t); if (paths.length === 1) { openDocument(paths[0]); return; } canonicalDocument.close(); const dialog = $('documentDialog'); $('documentTitle').textContent = t.id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(t.detail)); if (!dialog.open) dialog.showModal(); }
 
 function svg(tag, attrs, text) { let n = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); if (text !== undefined) n.textContent = text; return n; }
 // OPS-154 区切り1: the maps are derived as data (view models) and drawn by small views. An SVG view model is a tree of
@@ -128,7 +128,18 @@ function documentLinks(detail) {
   if (!paths.length) return el('pre', detail);
   for (const path of [...new Set(paths)]) { const a = el('a', path); a.href = '#document'; a.style.display = 'block'; a.onclick = e => { e.preventDefault(); openDocument(path); }; wrap.append(a); } return wrap;
 }
-const canonicalDocument = new CanonicalDocumentViewModel(documentBundle);
+function subscribeCanonicalDocument(path, receive) {
+  const source = new EventSource('/document-state/events?path=' + encodeURIComponent(path));
+  source.onmessage = event => {
+    try { receive(JSON.parse(event.data)); }
+    catch (_) { receive({ error: 'Invalid document state' }); }
+  };
+  source.onerror = () => receive({ error: 'Document connection lost' });
+  return () => source.close();
+}
+const canonicalDocument = new CanonicalDocumentViewModel(documentBundle,
+  location.protocol !== 'file:' && typeof EventSource === 'function' ? subscribeCanonicalDocument : null);
+window.addEventListener('pagehide', () => canonicalDocument.close());
 canonicalDocument.subscribe(renderCanonicalDocument);
 function openDocument(path, overrideRecord) {
   canonicalDocument.select(path, overrideRecord);
@@ -140,7 +151,7 @@ $('closeDocument').onclick = () => $('documentDialog').close();
   dialog.addEventListener('pointerdown', e => { backdropPress = outside(e); });
   dialog.addEventListener('pointercancel', () => { backdropPress = false; });
   dialog.addEventListener('click', e => { if (backdropPress && outside(e)) dialog.close(); backdropPress = false; });
-  dialog.addEventListener('close', () => { backdropPress = false; });
+  dialog.addEventListener('close', () => { backdropPress = false; canonicalDocument.close(); });
 }
 
 

@@ -1,7 +1,10 @@
 // Display state for one specified canonical document. Task selection stays outside.
 class CanonicalDocumentViewModel {
-  constructor(bundle) {
+  constructor(bundle, subscribeLive = null) {
     this.bundle = bundle;
+    this.subscribeLive = subscribeLive;
+    this.disconnect = null;
+    this.generation = 0;
     this.listeners = new Set();
     this.state = Object.freeze({ path: '', html: '', stamp: '', status: 'empty', message: '' });
   }
@@ -9,21 +12,43 @@ class CanonicalDocumentViewModel {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
+  close() {
+    this.generation++;
+    if (this.disconnect) this.disconnect();
+    this.disconnect = null;
+  }
   select(path, overrideRecord) {
+    this.close();
+    const generation = this.generation;
     const record = overrideRecord || this.bundle.files[path];
     this.state = Object.freeze({
       path, html: record?.html || '',
-      stamp: '表示用コピー：' + new Date(this.bundle.generatedAt).toLocaleString() + '（正本の更新は自動反映しません）',
+      stamp: !overrideRecord && this.subscribeLive ? '最新の正本を取得中…' : '表示用コピー：' + new Date(this.bundle.generatedAt).toLocaleString() + '（正本の更新は自動反映しません）',
       status: record ? 'ready' : 'missing',
       message: record ? '' : 'この文書は同梱されていません。表示用データを更新してください。'
     });
     for (const listener of this.listeners) listener(this.state);
+    if (!overrideRecord && this.subscribeLive) {
+      this.disconnect = this.subscribeLive(path, snapshot => {
+        if (generation !== this.generation) return;
+        const record = snapshot.document;
+        if (record && record.path !== path) return;
+        if (snapshot.error) {
+          this.state = Object.freeze({ path, html: '', stamp: '', status: 'error', message: '正本を取得できません。接続が回復すると再取得します。' });
+        } else if (record) {
+          this.state = Object.freeze({ ...record, stamp: record.status === 'ready' ? '正本を自動更新 · SHA-256 ' + String(record.stamp || '').slice(0, 12) : '' });
+        } else return;
+        for (const listener of this.listeners) listener(this.state);
+      });
+    }
   }
 }
 
 function renderCanonicalDocument(state) {
   const { path, html, stamp, status, message } = state;
-  const dialog = $('documentDialog'), body = $('documentBody'); body.replaceChildren(); $('documentTitle').textContent = path;
+  const dialog = $('documentDialog'), body = $('documentBody');
+  const scroll = dialog.open && body.dataset.path === path ? body.scrollTop : 0;
+  body.dataset.path = path; body.replaceChildren(); $('documentTitle').textContent = path;
   $('documentStamp').textContent = stamp;
   if (status !== 'ready') body.append(el('p', message));
   else {
@@ -40,7 +65,7 @@ function renderCanonicalDocument(state) {
     }
     clean(parsed.body, body);
   }
-  if (!dialog.open) dialog.showModal(); body.scrollTop = 0;
+  if (!dialog.open) dialog.showModal(); body.scrollTop = scroll;
 }
 
 if (typeof module !== 'undefined') module.exports = { CanonicalDocumentViewModel, renderCanonicalDocument };

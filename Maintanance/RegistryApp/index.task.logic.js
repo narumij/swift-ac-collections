@@ -393,7 +393,7 @@ function cardListViewModel(groups, selected, documentPaths) {
   };
 }
 function renderCards() {
-  drawCardList($('cardList'), $('cardsCount'), cardListViewModel(cardListGroups(doc, $('cardOrder').value), selected, t => cardDocumentPaths(t, documentBundle)), { select, openDocument, openDocuments: (id, paths) => { const dialog = $('documentDialog'); $('documentTitle').textContent = id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(paths.join('\n'))); if (!dialog.open) dialog.showModal(); } });
+  drawCardList($('cardList'), $('cardsCount'), cardListViewModel(cardListGroups(doc, $('cardOrder').value), selected, t => cardDocumentPaths(t, documentBundle)), { select, openDocument, openDocuments: (id, paths) => { canonicalDocument.close(); const dialog = $('documentDialog'); $('documentTitle').textContent = id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(paths.join('\n'))); if (!dialog.open) dialog.showModal(); } });
 }
 // The card-list view: draws the view model as given and reports intents (select, open one document, choose among several).
 function drawCardList(box, count, vm, intents) {
@@ -477,7 +477,7 @@ function renderNeighborhood() {
     reset: () => { neighborExpanded.clear(); renderNeighborhood(); },
     center: id => { neighborCenter = id; neighborExpanded.clear(); renderNeighborhood(); },
     expand: id => { neighborExpanded.add(id); renderNeighborhood(); },
-    documents: (id, paths) => { if (paths.length === 1) { openDocument(paths[0]); return; } const dialog = $('documentDialog'); $('documentTitle').textContent = id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(paths.join('\n'))); if (!dialog.open) dialog.showModal(); }
+    documents: (id, paths) => { if (paths.length === 1) { openDocument(paths[0]); return; } canonicalDocument.close(); const dialog = $('documentDialog'); $('documentTitle').textContent = id + ' の正本'; $('documentStamp').textContent = '読む文書を選択してください'; $('documentBody').replaceChildren(documentLinks(paths.join('\n'))); if (!dialog.open) dialog.showModal(); }
   });
 }
 // OPS-154 stage 2: the neighborhood (local map) as a pure view model. Inputs: the edit version, the center, the expanded

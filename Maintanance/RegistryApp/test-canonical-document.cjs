@@ -31,3 +31,29 @@ model.select('second.md');
 assert.equal(received.length, 4);
 console.log('canonical document model: PASS');
 module.exports = fixture;
+
+// Live updates obey selection lifetime; delayed messages cannot reopen old documents.
+{
+ const streams=[];
+ const live=new CanonicalDocumentViewModel(fixture,(path,receive)=>{
+   const stream={path,receive,closed:false};streams.push(stream);return ()=>{stream.closed=true};
+ });
+ live.select('first.md');
+ streams[0].receive({document:{path:'first.md',html:'new first',status:'ready',stamp:'live',message:''}});
+ assert.equal(live.state.html,'new first');
+ live.select('second.md');
+ assert.equal(streams[0].closed,true);
+ streams[0].receive({document:{path:'first.md',html:'late',status:'ready'}});
+ assert.equal(live.state.path,'second.md');
+ streams[1].receive({document:{path:'second.md',html:'',status:'missing',stamp:'',message:'deleted'}});
+ assert.equal(live.state.html,'');assert.equal(live.state.status,'missing');
+ streams[1].receive({error:'offline'});assert.equal(live.state.status,'error');
+ streams[1].receive({document:{path:'second.md',html:'recovered',status:'ready',stamp:'',message:''}});
+ assert.equal(live.state.html,'recovered');
+ live.close();assert.equal(streams[1].closed,true);
+ streams[1].receive({document:{path:'second.md',html:'after close',status:'ready'}});
+ assert.equal(live.state.html,'recovered');
+ live.select('first.md',{html:'override'});
+ assert.equal(streams.length,2);assert.equal(live.state.html,'override');
+ console.log('canonical document live selection: PASS');
+}

@@ -13,7 +13,7 @@ function startCanonicalDocumentTab() {
   const stateSelect = $('canonical-task-state'), saveState = $('canonical-task-state-save'), stateMessage = $('canonical-task-state-message');
   const stateNames = {ACTIVE:'有効', WAITING_USER:'ユーザー待ち', WAITING_EXTERNAL:'外部待ち', FROZEN:'凍結', USER_ONLY:'ユーザー専任', PROPOSED:'提案中', DONE:'完了', EXCLUDED:'対象外', ARCHIVED:'履歴化'};
   for (const [value, label] of Object.entries(stateNames)) { const option = el('option', label); option.value = value; stateSelect.append(option); }
-  let savingState = false, displayedStateKey = '';
+  let savingState = false, displayedStateKey = '', messageTaskId = '';
   saveState.addEventListener('click', async () => {
     const task = model.state.task;
     if (!task || savingState || stateSelect.value === task.state) return;
@@ -24,9 +24,9 @@ function startCanonicalDocumentTab() {
       const response = await fetch('/task-status', {method:'POST', headers:{'Content-Type':'application/json','X-Registry-Studio':'task-status'},
         body: JSON.stringify({taskId, baseState:task.state, state:next, generation:canonicalSnapshot.source.generation, operationId:crypto.randomUUID()})});
       const result = await response.json(); if (!response.ok) throw Error(result.error || '保存できませんでした');
-      stateMessage.textContent = result.warning || taskId + ' の状態を保存しました';
+      if (model.state.taskId === taskId) stateMessage.textContent = result.warning || taskId + ' の状態を保存しました';
       if (model.state.taskId === taskId) await model.select(taskId);
-    } catch (error) { stateMessage.textContent = taskId + '：' + error.message + '（通信失敗の場合は再選択して保存結果を確認してください）'; }
+    } catch (error) { if (model.state.taskId === taskId) stateMessage.textContent = taskId + '：' + error.message + '（通信失敗の場合は再選択して保存結果を確認してください）'; }
     finally { savingState = false; stateSelect.disabled = !model.state.task; saveState.disabled = !model.state.task; }
   });
   let shownTask = '', blocks = [], previousLetters = null, workRecords = [];
@@ -45,6 +45,7 @@ function startCanonicalDocumentTab() {
     drawRecent();
   }
   model.subscribe(state => {
+    if (messageTaskId !== state.taskId) { stateMessage.textContent = ''; messageTaskId = state.taskId; }
     select.value = state.taskId;
     const stateKey = state.task ? state.task.id + ':' + state.task.state : '';
     if (stateKey !== displayedStateKey) { stateSelect.value = state.task?.state || ''; displayedStateKey = stateKey; }

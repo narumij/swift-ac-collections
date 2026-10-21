@@ -283,3 +283,11 @@ RND-226411D40B2E4F18812B92E387F456E7とRND-4814C49B43584F069793AC5439BDB3B9は�
 中止指示前のV3 Registry状態は`OPS-204=ACTIVE`。中止は実施成功ではないため、`EXCLUDED`（残作業から除外、完了とはみなさない）へ反映した。V3 update operation `2bc785441b9b41d0824e0530cd556e72`でgeneration `gen-1d0b9780ab114593931e911eb83e1ae2`のrevision 74→75にstateだけを更新。反映前backup `registry-before-OPS-204-excluded-gen-1d0b9780ab114593931e911eb83e1ae2-r74-20261020T225346Z.sqlite3` と反映後backup `registry-after-OPS-204-excluded-gen-1d0b9780ab114593931e911eb83e1ae2-r75-20261020T225908Z.sqlite3` はいずれもvalidate済み。`TASK_REGISTRY_V2.md`、`TASK_RULES_V2.md`、`STRUCTURE.generated.md`を正式生成し、checkは全項目equal。
 
 ユーザーは「姫止めたから」と報告した。姫の最終実装依頼`LTR-20261021-FC457F4A27574265AB1CB31FB5FE2A58`は正式返却済みだが、停止の本人応答は記録されていない。ユーザーの停止確認を本人応答と混同せず、姫を再起動しないため新たな依頼・通知は送らず、再待機も依頼しない。コード・隔離成果は変更/削除/巻戻しせず保全し、本番反映・commitも行わない。
+
+## 2026-10-21 ユーザー再依頼：タスク表示のObservable化
+
+ユーザー「タスクのオブザーバブル化をやってみて」「輪番つかってな」により実装を開始する。過去の中止した試作を完了扱いせず、現在のHEADを対象とする。サーバーにTaskState（revision付き正本snapshot・変更通知・取得失敗時の正常値保持）を置き、既存Registry変更通知から更新、SSEでタスク画面へ渡す。見た目・保存契約は維持し、編集中・保存版・追加欄入力がある間は正本の自動適用を抑止する。モデル中心のテストと軽い画面確認。今回の追加実装のcommit・本番再起動はこの段階では行わない。AstraとLunaが連絡DB輪番で実装/検収する。
+
+実装結果：`task_state.py`にTaskState/TaskStateBindingを追加。`/task-state`と`/task-state/events`からRegistry正本を配信し、タスク画面の30秒ごとの正本取得をSSE購読へ置換した。無編集時は表示を更新、保存版・読込ファイル・入力中・操作中は自動上書きせず最新正本との差分案内のみ更新する。サーバー更新検知の30秒チェックは別目的のため維持。モデル7件、既存通知3件成功。隔離WebKitで実SSE反映・入力保持・取得失敗時の表示保持・回復・pageerrorなしを確認。連絡DB輪番RND-2188E7AF64164C589D2346BEC1118A6Dで受渡し・検収・正式返却を実施。本番再起動とこの実装のcommitは未実施。
+
+本番反映：ユーザー「本番いっちゃえ」により8088を同じV3 DB/Inboxで再起動。生成チェック（参照文書157件・欠落なし）成功。`/task-state`は120タスク・errorなし、SSE初回配信200、再起動推奨false。実WebKitで通知snapshot120件とpageerrorなしを確認。保存版95件は自動上書きされず維持された。予定/出勤メンバーは再起動前snapshotから復元（通信表示文字列は再起動で初期化）。実装のcommitは未実施。

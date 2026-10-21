@@ -28,6 +28,7 @@ from pathlib import Path
 import activity
 import work_notifications
 from work_state_binding import WorkStateBinding
+from task_state import TaskStateBinding
 import member_state
 import communication_notifications as notifications
 import approvals
@@ -78,10 +79,34 @@ def work_view():
         return _WORK_VIEW.model
 
 
+_TASK_VIEW = None
+_TASK_VIEW_LOCK = threading.Lock()
+
+
+def registry_document():
+    if V3 is not None:
+        _, adapter = v3_modules()
+        conn = v3_open(V3['db'])
+        try:
+            return adapter.export_doc(conn)
+        finally:
+            conn.close()
+    return json.loads((OUTPUT / 'registry.json').read_text(encoding='utf-8'))
+
+
+def task_view():
+    global _TASK_VIEW
+    with _TASK_VIEW_LOCK:
+        if _TASK_VIEW is None:
+            path = V3['db'] if V3 is not None else OUTPUT / 'registry.json'
+            _TASK_VIEW = TaskStateBinding(work_notifications.observe_registry(path), registry_document)
+        return _TASK_VIEW.model
+
+
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'task_state.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -511,7 +536,9 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
     def stream_work(self):
-        model = work_view()
+        return self.stream_state(work_view())
+
+    def stream_state(self, model):
         self.send_response(200)
         self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
         self.send_header('Cache-Control', 'no-cache')
@@ -595,6 +622,10 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         if self.path == '/notifications/events':
             return self.stream_notifications()
+        if self.path == '/task-state/events':
+            return self.stream_state(task_view())
+        if self.path == '/task-state':
+            return self.reply(200, task_view().snapshot())
         if self.path == '/work-state/events':
             return self.stream_work()
         if self.path == '/work-state':

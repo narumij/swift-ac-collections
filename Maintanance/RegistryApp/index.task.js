@@ -7,7 +7,8 @@ const STATES = ['ACTIVE', 'WAITING_USER', 'WAITING_EXTERNAL', 'FROZEN', 'USER_ON
 let doc = JSON.parse($('seed').textContent), selected = doc.tasks[0]?.id, dirty = false, formDirty = false;
 // Edit version (OPS-082 trial): `workspace` is the saved version being continued; `canonical` is the newest canonical source from sync.
 // The edit version keeps its own source/baseline (its base); a newer canonical is only reported, never merged in here.
-let workspace = null; const canonical = copy(doc.source); const canonicalSnapshot = copy(doc);
+let workspace = null, canonical = copy(doc.source), canonicalSnapshot = copy(doc);
+let taskFollowCanonical = true;
 // Card-list add forms (OPS-086 fix): their unapplied input lives here so selection, tab switches and re-renders keep it.
 // It is not edit data: never saved, but refresh/leaving are guarded while it is pending.
 let planDraft = { version: null, name: '', versionName: '' }; const planDraftPending = () => !!(planDraft.name.trim() || planDraft.versionName.trim());
@@ -314,7 +315,7 @@ $('refresh').onclick = async () => {
   finally { button.disabled = false; button.textContent = '更新'; }
 };
 $('changes').onclick = () => { showDiff(); $('diffPanel').scrollIntoView({ behavior: 'smooth' }); };
-$('open').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); check(d); if (((d.source || {}).kind || 'legacy') !== (canonical.kind || 'legacy')) throw Error('形式の違うJSON（' + ((d.source || {}).kind || '旧形式') + '）は、この画面では開けません。'); if ((dirty || formDirty) && !confirm('保存前の変更を破棄して読み込みますか？')) return; const meta = d.studioSave; delete d.studioSave; canonicalStartMode(false); initializeRelationBaseline(d); doc = d; workspace = meta && meta.saveId ? { saveId: meta.saveId, series: meta.series, heads: 1 } : null; selected = d.tasks[0]?.id; dirty = false; formDirty = false; render(); } catch (err) { report('読み込めません：' + err.message, true); } finally { e.target.value = ''; } };
+$('open').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); check(d); if (((d.source || {}).kind || 'legacy') !== (canonical.kind || 'legacy')) throw Error('形式の違うJSON（' + ((d.source || {}).kind || '旧形式') + '）は、この画面では開けません。'); if ((dirty || formDirty) && !confirm('保存前の変更を破棄して読み込みますか？')) return; const meta = d.studioSave; delete d.studioSave; canonicalStartMode(false); taskFollowCanonical = false; initializeRelationBaseline(d); doc = d; workspace = meta && meta.saveId ? { saveId: meta.saveId, series: meta.series, heads: 1 } : null; selected = d.tasks[0]?.id; dirty = false; formDirty = false; render(); } catch (err) { report('読み込めません：' + err.message, true); } finally { e.target.value = ''; } };
 // Served over http (serve.py): the edited JSON goes to the server's Inbox/ for the AI; no download or attachment (OPS-082).
 // Only a confirmed save clears the unsaved mark; a failure keeps the edits and is not turned into a download. file:// keeps the download.
 $('save').onclick = async () => {
@@ -332,7 +333,7 @@ $('save').onclick = async () => {
 window.addEventListener('beforeunload', e => { if (dirty || formDirty || planDraftPending()) { e.preventDefault(); e.returnValue = ''; } }); check(doc); render();
 // Resume the latest saved edit version when served (OPS-082). Skipped if the user already started editing.
 let workspaceGeneration = 0;
-async function resumeWorkspace() { const generation = workspaceGeneration; if (canonicalStartMode() || location.protocol === 'file:' || typeof fetch !== 'function') return; try { const response = await fetch('/workspace'); if (!response.ok) return; const result = await response.json(); const legacyLeft = result && Array.isArray(result.unresolvedLegacy) ? result.unresolvedLegacy.length : 0; const legacyNote = result && result.reconciliation === 'unknown' ? '取り込み記録が読めないため、旧形式の編集版の照合状態は不明です（この画面では再開しません・削除しません）。' : legacyLeft ? '旧形式の未照合の編集版が' + legacyLeft + '件あります（この画面では再開しません・削除しません）。' : ''; if (legacyNote) report(legacyNote); if (!result || !result.save || dirty || formDirty || generation !== workspaceGeneration) return; const d = result.save, meta = d.studioSave; if (((d.source || {}).kind || 'legacy') !== (canonical.kind || 'legacy')) { report('形式の違う編集版（' + ((d.source || {}).kind || '旧形式') + '）は再開しません。' + legacyNote, true); return; } delete d.studioSave; check(d); initializeRelationBaseline(d); doc = d; workspace = { saveId: meta.saveId, series: meta.series, heads: result.heads }; if (!graphData().nodes.some(n => n.id === selected)) selected = doc.tasks[0]?.id; render(); } catch (e) { report('保存した編集版を開けませんでした：' + e.message, true); } }
+async function resumeWorkspace() { const generation = workspaceGeneration; if (canonicalStartMode() || location.protocol === 'file:' || typeof fetch !== 'function') return; try { const response = await fetch('/workspace'); if (!response.ok) return; const result = await response.json(); const legacyLeft = result && Array.isArray(result.unresolvedLegacy) ? result.unresolvedLegacy.length : 0; const legacyNote = result && result.reconciliation === 'unknown' ? '取り込み記録が読めないため、旧形式の編集版の照合状態は不明です（この画面では再開しません・削除しません）。' : legacyLeft ? '旧形式の未照合の編集版が' + legacyLeft + '件あります（この画面では再開しません・削除しません）。' : ''; if (legacyNote) report(legacyNote); if (!result || !result.save || dirty || formDirty || generation !== workspaceGeneration) return; const d = result.save, meta = d.studioSave; if (((d.source || {}).kind || 'legacy') !== (canonical.kind || 'legacy')) { report('形式の違う編集版（' + ((d.source || {}).kind || '旧形式') + '）は再開しません。' + legacyNote, true); return; } delete d.studioSave; check(d); taskFollowCanonical = false; initializeRelationBaseline(d); doc = d; workspace = { saveId: meta.saveId, series: meta.series, heads: result.heads }; if (!graphData().nodes.some(n => n.id === selected)) selected = doc.tasks[0]?.id; render(); } catch (e) { report('保存した編集版を開けませんでした：' + e.message, true); } }
 let restartInputRevision = 0;
 document.addEventListener('input', () => { restartInputRevision++; });
 $('restart').onclick = async () => {
@@ -356,18 +357,52 @@ $('restart').onclick = async () => {
   finally { button.disabled = false; $('save').disabled = false; $('refresh').disabled = false; }
 };
 // Compare user-editable changes, not inherited source quotes or rewritten condition prose.
-let suggestionSnapshot = null;
-async function checkCanonicalRestartSuggestion() {
-  if (location.protocol === 'file:' || typeof fetch !== 'function') return;
-  try { const response = await fetch('/registry.json', { cache: 'no-store' }); if (!response.ok) throw Error('unavailable'); const latest = await response.json(); check(latest); suggestionSnapshot = latest; }
-  catch (e) { suggestionSnapshot = null; }
-  renderCanonicalRestartSuggestion();
+let suggestionSnapshot = null, taskSourceFailed = false;
+function receiveTaskState(snapshot) {
+  if (snapshot.error || !snapshot.document) {
+    taskSourceFailed = true;
+    report('タスクの正本を取得できません。表示と編集内容は保持しています。', true);
+    return;
+  }
+  const latest = snapshot.document;
+  check(latest);
+  if (taskSourceFailed) {
+    taskSourceFailed = false;
+    report('タスクの正本を再び取得できました。');
+  }
+  if (((latest.source || {}).kind || 'legacy') !== (canonical.kind || 'legacy')) {
+    report('正本の形式が変わりました。編集を保存してからページを開き直してください。', true);
+    return;
+  }
+  suggestionSnapshot = copy(latest);
+  const changed = JSON.stringify(latest) !== JSON.stringify(canonicalSnapshot);
+  const protectedEdit = !taskFollowCanonical || workspace || dirty || formDirty || planDraftPending()
+    || $('save').disabled || $('refresh').disabled || $('restart').disabled;
+  canonical = copy(latest.source);
+  canonicalSnapshot = copy(latest);
+  if (changed && !protectedEdit) {
+    doc = copy(latest);
+    initializeRelationBaseline(doc);
+    if (!graphData().nodes.some(n => n.id === selected)) selected = doc.tasks[0]?.id;
+    render();
+  } else {
+    banner();
+  }
+}
+function observeTaskState() {
+  if (location.protocol === 'file:' || typeof EventSource !== 'function') return;
+  const source = new EventSource('/task-state/events');
+  source.onmessage = event => {
+    try { receiveTaskState(JSON.parse(event.data)); }
+    catch (error) { report('タスクの更新を表示できません：' + error.message, true); }
+  };
+  // EventSource reconnects and receives the latest snapshot. Local edits stay untouched.
+  source.onerror = () => {};
+  window.addEventListener('pagehide', () => source.close(), { once: true });
+  window.addEventListener('pageshow', event => { if (event.persisted) observeTaskState(); }, { once: true });
 }
 $('canonicalRestartAction').onclick = () => { $('restart').click(); };
 document.addEventListener('input', () => { $('canonicalRestartNotice').hidden = true; });
-checkCanonicalRestartSuggestion();
-if (typeof setInterval === 'function') setInterval(checkCanonicalRestartSuggestion, 30000);
-window.addEventListener('focus', checkCanonicalRestartSuggestion);
 async function checkServerRestart() {
   if (location.protocol === 'file:' || typeof fetch !== 'function') return;
   const notice = $('serverRestartNotice');
@@ -388,5 +423,6 @@ window.addEventListener('focus', checkServerRestart);
 // @endsection
 // @section resume
 const resumed = resumeWorkspace();
+resumed.finally(observeTaskState);
 
 // @endsection

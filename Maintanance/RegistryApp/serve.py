@@ -81,7 +81,7 @@ def work_view():
 def runtime_fingerprints():
     # Only modules retained by this process. sync.py and HTML are read afresh.
     result = {}
-    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
+    for name in ('serve.py', 'inbox.py', 'activity.py', 'work_notifications.py', 'work_state.py', 'work_state_binding.py', 'approvals.py', 'probe.py', 'continuity.py', 'communication_notifications.py', 'event_notifications.py', 'record_notifications.py', 'notification_log.py', 'member_state.py', 'studio_store.py', 'task_rounds.py') + (V3_MODULES if V3 else ()):
         try:
             result[name] = hashlib.sha256((APP / name).read_bytes()).hexdigest()
         except OSError:
@@ -944,6 +944,10 @@ def main():
     except BaseException:
         server.server_close()
         raise
+    import notification_log
+    import record_notifications
+    notification_log.start(OUTPUT / 'notifications.log')
+    record_notifications.start(approvals.DATABASE, activity.EVENTS, V3['db'] if V3 else None)
     print(f'Registry Studio: http://127.0.0.1:{server.server_port}/  (Ctrl+C to stop)' + (f"  V3 mode: DB {V3['db']} (read-only), saves {V3['saves']}" if V3 else ''), flush=True)
     try:
         server.serve_forever()

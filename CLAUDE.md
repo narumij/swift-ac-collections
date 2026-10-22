@@ -1,3 +1,9 @@
+# 共通原則
+
+役割やモデルを問わず、[AGENTS.md](AGENTS.md)を協働・判断・権限・検証・報告の共通原則とする。本書はClaude系の起動・依頼受信・受渡しの入口だけを補う。同じ原則を別の固定手順で重複定義しない。
+
+このファイルを読んだことやモデル名だけでは、担当への任命、調整、Registry更新、受入、commitの権限を得ない。現在のユーザー指示と明示された委任から担当・範囲を確認する。旧担当「姫」の個別依頼・待機・常設委任は、新しい担当へ自動継承しない。Claude系を一律にレビュー専任とする規則でもない。
+
 # Session Startup
 
 Use [Progress V2](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md) as the entry point
@@ -98,60 +104,11 @@ to select work autonomously.
 
 # Communication
 
-着手の際には必ず返事をすること。
-動いてよいと決まっていないうちは、確かめるだけ。
-会話の途中を命令と短絡しないこと。確認以外の作業は禁止。
-感嘆を了承に短絡しないこと。確認以外の作業は禁止。
-イエスかノーかで答えられる質問には、最初にイエスかノーで答えること。確認以外の作業は禁止。
-2択3択の質問には、最初に選択して答えること。確認以外の作業は禁止。
-会話の中に未確定の選択肢が残っている場合は、確認以外の作業は禁止。
+ユーザーへの説明・質問・進捗・報告は日本語で行う。着手時には、何を進めるかを短く伝える。
 
-Communicate with the user in Japanese, including explanations, questions, progress
-updates, and final reports.
+会話全体の文脈から、実行依頼・訂正・相談・感想を区別する。感嘆や提案への賛同だけで実行権限を作らない。一方、既に任された範囲の仕事は進め、同じ許可を繰り返し求めない。不明な判断・権限だけを、確認できた事実と選択肢を添えて持ち主へ返す。
 
-To reduce usage, use English by default for internal instructions and coordinator-to-Claude
-requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
-
-Interpret each user message in the context of the ongoing exchange. Before responding,
-check it against at least the previous two conversational exchanges, including your
-own replies. Resolve omitted subjects, references, and corrections from that context
-rather than treating the message as a standalone request. Look further back only when
-needed; ask briefly if materially different interpretations remain.
-
-Distinguish requests to act from corrections, recollections, and requests to restate. Do not resolve ambiguity in favor of starting work.
-
-Do not disguise failures, omissions, or unmet requirements in reports.
-Do not redefine the requested outcome after the fact to claim success.
-Report the actual result against the user's request, plainly and without spin.
-
-## First response to a new request
-
-Start with the smallest useful response, about ten lines:
-the purpose in the user's words, the simplest working form, and what you actually checked.
-Make assumptions that materially affect the result explicit, especially dependencies
-on existing systems. Distinguish checked facts from assumptions.
-Do not add detailed design, option lists, or unnecessary decision requests.
-
-Before sending, review it as the receiver: do names match their meaning, does the
-proposal meet the stated purpose, and can it be assessed without further investigation?
-Resolve checkable uncertainties yourself. Do not leave the receiver to reconstruct
-or repair the proposal, or label settled matters and implementation choices as user decisions.
-
-Expand after the premise is established. If the conversation already establishes it,
-proceed within the authorized scope without asking for confirmation again.
-
-## When encountering a problem
-
-Before choosing a solution, briefly state the problem and distinguish three perspectives:
-- User: which stated goal or concern is affected. Cite the relevant request; say “unknown” if unclear.
-- Coordinator: effects on dependencies, handoffs, verification, or ongoing work.
-- Worker: effects on implementation, testing, effort, or available tools.
-
-Use “none identified” where appropriate. Do not invent concerns to fill every category, or present a worker preference or coordinator concern as a user requirement.
-
-List proposed solutions separately from the observed problem. For each proposal, identify whose concern it addresses and any change to the agreed scope or approach. Discovering a problem does not authorize expanding the work. Proceed within existing authorization; return the issue before taking action that exceeds it.
-
-Keep this report short. Agreement that a problem exists is not approval of a proposed solution.
+確認できることは自分で確認し、失敗・未達・未確認を明示する。受け手が調査や説明を組み立て直さずに済むよう、要求に対する結果・理由・証拠と残件を伝える。応答行数、選択式の回答、定型の観点数、一定回数の会話読直しを目的にしない。必要な調査・修復は既存の委任範囲で進め、範囲を超える判断だけを返す。
 
 ## Work Managed Through the Communication DB
 
@@ -165,14 +122,12 @@ Do not duplicate a DB assignment into a request file or the old notification rou
 For assignments through `Maintanance/CLAUDE_TASK.md`, record progress, startup summaries,
 and completion details in the assigned Return section.
 
-If a final chat response is required after successful completion, respond with exactly
-`完了` and nothing else. Explain directly when blocked, when a safety issue is found,
-or when a decision only the user can make is needed.
+必要な証拠は指定のReturnへ残し、会話では結果・残件・受入待ちなどを簡潔に伝える。返却を正式受入や仕事全体の終了と同一視しない。
 
 ## Direct User Work
 
 Provide the explanations, questions, and results needed for the request in normal Japanese.
-The request-file restriction to a one-word completion response does not apply.
+
 
 Do not leave information needed for formal reconciliation only in the conversation.
 Record it in the corresponding task record or queue entry.
@@ -202,6 +157,6 @@ Put intentionally retained fixtures, benchmark sources, and raw validation evide
 in their designated locations and identify them in the report. Do not scatter
 disposable experiments through source, test, or maintenance directories.
 
-# ユーザーによる追記
+# 適用範囲
 
-調整役を担当するClaude系エージェントAIは、AGENTS.mdを参照し、これに従うものとする。
+従来の調整役向けAGENTS.md参照を、今回のユーザー指示により全担当へ統一した。具体的な役割・操作権限は現在の委任に従う。

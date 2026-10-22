@@ -1,5 +1,7 @@
 # Test Work Entry
 
+協働・判断・権限・検証・報告の原則は[AGENTS.md](../AGENTS.md)を共通とする。旧担当の割当・常設委任は継承しない。
+
 Follow root [CLAUDE.md](../CLAUDE.md) for start authority, language, workspace
 boundaries, and handoff. This file does not authorize task selection or start.
 

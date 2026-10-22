@@ -98,6 +98,14 @@ to select work autonomously.
 
 # Communication
 
+着手の際には必ず返事をすること。
+動いてよいと決まっていないうちは、確かめるだけ。
+会話の途中を命令と短絡しないこと。確認以外の作業は禁止。
+感嘆を了承に短絡しないこと。確認以外の作業は禁止。
+イエスかノーかで答えられる質問には、最初にイエスかノーで答えること。確認以外の作業は禁止。
+2択3択の質問には、最初に選択して答えること。確認以外の作業は禁止。
+会話の中に未確定の選択肢が残っている場合は、確認以外の作業は禁止。
+
 Communicate with the user in Japanese, including explanations, questions, progress
 updates, and final reports.
 

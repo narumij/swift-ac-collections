@@ -1,6 +1,0 @@
-test_send_view_receive_round_trip (__main__.LettersRoundTrip.test_send_view_receive_round_trip) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 8.199s
-
-OK

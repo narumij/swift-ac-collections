@@ -1,9 +1,0 @@
-Base: 689ba68f9e1be76f09034f36c33af731deb25523
-Patch SHA-256 verified; git apply --check: PASS
-Command: python3 -B Maintanance/RegistryApp/test-letters-e2e.py -v
-test_send_view_receive_round_trip (__main__.LettersRoundTrip.test_send_view_receive_round_trip) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 8.057s
-
-OK

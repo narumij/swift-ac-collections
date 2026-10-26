@@ -1,8 +1,0 @@
-Base: e1d7f8f5efce656698878cddbcc5679f0953bbe5
-Patch hash verified; git apply --check PASS
-test_individual_and_bulk_approval (__main__.ApprovalsRoundTrip.test_individual_and_bulk_approval) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 12.269s
-
-OK

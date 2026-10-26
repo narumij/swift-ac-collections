@@ -1,7 +1,0 @@
-ui-card-target exit 1
-server-targets exit 1
-?? Maintanance/RegistryApp/approvals_e2e.cjs
-?? Maintanance/RegistryApp/test-approvals-e2e.py
-server-bulk exit 1
-?? Maintanance/RegistryApp/approvals_e2e.cjs
-?? Maintanance/RegistryApp/test-approvals-e2e.py

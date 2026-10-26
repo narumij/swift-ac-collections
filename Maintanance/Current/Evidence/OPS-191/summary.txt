@@ -1,9 +1,0 @@
-letters-e2e exit 0
-approvals-e2e exit 0
-startup-safety exit 0
-test-serve exit 0
-test-studio-letters exit 0
-test-view-model-letters exit 0
-test-approvals-py exit 0
-test-approvals-cjs exit 0
-done

@@ -1,4 +1,0 @@
-  throw new AssertionError(obj);
-AssertionError [ERR_ASSERTION]: Expected values to be loosely deep-equal:
-  'not generated: Maintanance/Milestones/0.6.0/EXTRA.md'
-old sync + new verify: (expected FAILED with not generated)

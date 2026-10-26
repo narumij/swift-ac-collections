@@ -1,2 +1,0 @@
-renamed (SPI after EXTRA): exit=0
-[('OPS-068', 'END-0.6.0'), ('RBT-026', 'END-0.6.0'), ('RBT-007', 'END-0.6.0'), ('PERM-064', 'END-0.6.0'), ('PERM-060', 'END-0.6.0'), ('RBT-048', 'END-0.6.0'), ('PERM-062', 'END-0.6.0'), ('PERM-080', 'END-0.6.0'), ('OPT-065', 'END-0.6.0'), ('START-0.6.0', 'PERM-079'), ('RELEASE-072', 'END-0.6.0'), ('RELEASE-075', 'END-0.6.0'), ('RELEASE-076', 'END-0.6.0'), ('START-0.6.0', 'MS-EXTRA'), ('MS-EXTRA', 'MS-SPI'), ('MS-SPI', 'END-0.6.0')]

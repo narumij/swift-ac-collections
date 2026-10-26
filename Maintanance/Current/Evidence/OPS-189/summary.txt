@@ -1,6 +1,0 @@
-base-before-fix exit 1
-base-before-fix2 exit 1
-base-before-fix3 exit 1
-fixed1 exit 0
-fixed2 exit 0
-fixed3 exit 0

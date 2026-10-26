@@ -1,5 +1,0 @@
-/tmp/astra-memoize-investigation/legacy.swift:2:23: error: cannot find type '_MemoizeCacheBase' in scope
-1 | import RedBlackTreeCollections
-2 | func probe() { let _: _MemoizeCacheBase<Int, Int> }
-  |                       `- error: cannot find type '_MemoizeCacheBase' in scope
-3 | 

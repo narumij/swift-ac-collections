@@ -1,2 +1,0 @@
-a) EXTRA.md with fix: exit=0
-[('START-0.6.0', 'MS-SPI'), ('MS-SPI', 'X-EXTRA'), ('X-EXTRA', 'END-0.6.0')]

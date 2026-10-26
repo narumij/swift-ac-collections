@@ -1,3 +1,0 @@
-try1 exit 0
-run2 exit 0
-run3 exit 0

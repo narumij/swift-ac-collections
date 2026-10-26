@@ -1,5 +1,14 @@
 # OptionalElementBuffer利用Validation scenario
 
+## TL;DR（人間向け）
+
+OptionalElementBufferが外部のSwift利用者に使えるかを確かめるシナリオと、限定した外部consumer試験の記録です。Scenario Aの確認済み範囲に限ります。
+
+人間の理解、競技利用、性能、他環境まで確認済みではありません。文書の利用理解はValidation計画、競技試行はOPT-065へ分かれています。
+
+<!-- OPS-133: 2026-10-19 / Astra。本文を読む入口。決定・状態の正本を置き換えない。本文の結論や境界を変えたときに一緒に見直す。 -->
+
+
 > **現在の扱い（2026-10-16）:** `OPT-064`は品質側への移行により独立taskから除外済み。文書の利用理解確認は[文書Validation計画](../../../UserDocuments/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)へ引き継ぐ。競技利用の試行は`OPT-065`として[Task Registry](../../../ProgressV2/TASK_REGISTRY_V2.md)で管理する。旧taskの凍結解除を着手条件にしない。
 > 本書のscenarioと実行記録は同じ場所に保持する。この整理は試行の実施・受入や、一般提供への変更を意味しない。Scenario Aの結果だけを現行opt-in提供の受入根拠にはしない。
 

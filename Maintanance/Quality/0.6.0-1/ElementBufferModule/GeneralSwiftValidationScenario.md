@@ -1,5 +1,10 @@
 # ElementBuffer利用Validation scenario
 
+## TL;DR（人間向け）
+ElementBufferの利用可能性を、repository外のconsumer検証、利用者の理解検証、競技利用検証の三つに分けて設計し、各方法の証拠範囲と非代替関係を定めた。Scenario Aは2026-10-13の固定環境で実行済みで、Scenario B・Cや一般品質の判定は未実施である。
+
+これはシナリオ設計と一つの実行結果を保存した記録であり、後続シナリオの実施指示や公開判断ではない。記録された成功は、固定環境でのconsumer操作だけを裏付ける。
+
 > **文書状態:** scenario設計とScenario Aの実行記録。Scenario B・C、製品品質判定、公開判断の実施記録ではない。
 >
 > 本書は`ElementBuffer`の利用可能性と理解可能性を、既存の実装・仕様testとは異なる経路で観測するための
@@ -7,157 +12,141 @@
 
 ## 1. 目的
 
-現行のTest as Specificationは、初期化、座標access、要素寿命、停止条件、借用寿命を直接検証している。
-一方、それだけでは次を確認できない。
+The existing Test as Specification directly checks initialization, coordinate access, element lifetime, bounds failures, and borrowed-reference lifetime. It does not by itself establish:
 
-- repository外のSwift Package利用者が対象moduleを導入し、公開APIだけで代表用途を構成できるか。
-- 利用者向け文書から、型の目的、座標順、`indices`、value access、借用参照、提供環境を理解できるか。
-- 競技プログラミングの実問題で、連続storageを持つ固定shape bufferとして役立つか。
+- Whether a Swift Package user outside the repository can add the module and build representative uses with only the public API.
+- Whether users can understand the type's purpose, coordinate order, `indices`, value access, borrowed references, and availability from user documentation.
+- Whether it is useful as a fixed-shape buffer with contiguous storage for real competitive-programming problems.
 
-これらを一つの「利用できた」にまとめず、再現可能なconsumer Verification、無誘導の利用理解Validation、
-競技利用Validationへ分ける。
+Do not collapse these into a single claim of successful use. Separate reproducible consumer Verification, unprompted comprehension Validation, and competitive-use Validation.
 
 ## 2. 共通境界
 
 ### 入力正本
 
-- 公開surfaceと実装: `Sources/ElementBufferModule/ElementBuffer.swift`
-- 観察可能な仕様: `Tests/ElementBufferModuleTests/`
-- 利用者への説明: `Maintanance/UserDocuments/ElementBufferModule/UserDocumentationDraft.md`
-- 品質と証拠の境界: `Maintanance/Quality/Profiles/ElementBufferModule.md`
-- 現在評価: `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`
+- Public surface and implementation: `Sources/ElementBufferModule/ElementBuffer.swift`
+- Observable specification: `Tests/ElementBufferModuleTests/`
+- User-facing explanation: `Maintanance/UserDocuments/ElementBufferModule/UserDocumentationDraft.md`
+- Quality and evidence boundaries: `Maintanance/Quality/Profiles/ElementBufferModule.md`
+- Current assessment: `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`
 
 ### 固定する情報
 
-各実行では、少なくともcandidate commit、Swift version、OS、architecture、build configuration、import経路、
-実行command、終了statusを残す。性能やメモリを扱う場合は、workload、入力規模、測定方法、比較対象も固定する。
+Record at least the candidate commit, Swift version, OS, architecture, build configuration, import path, exact command, and exit status. If performance or memory is evaluated, also fix the workload, input size, measurement method, and comparison target.
 
 ### 共通の非目標
 
-- Test as Specificationを再実装して件数を増やすこと。
-- 一回の成功から、全platform、全toolchain、全要素型、全入力規模の適合を主張すること。
-- `ElementBuffer`を標準`Array`または`Collection`の一般的な代替として評価すること。
-- `@unchecked Sendable`、無同期の並行access、`-Ounchecked`の保証を推定すること。
-- C++またはSwift代替構造との性能比を、このscenarioだけで受け入れること。
+- Reimplementing Test as Specification merely to increase the test count.
+- Claiming support for every platform, toolchain, element type, or input size from one successful run.
+- Evaluating `ElementBuffer` as a general replacement for standard `Array` or `Collection`.
+- Inferring guarantees for `@unchecked Sendable`, unsynchronized concurrent access, or `-Ounchecked`.
+- Accepting a performance ratio against C++ or alternative Swift structures based only on this scenario.
 
 ## 3. Scenario A — repository外consumer Verification
 
 ### 問い
 
-固定したcandidateを依存に持つ独立SwiftPM consumerが、repository内部のtest helperに依存せず、公開surfaceだけで
-build・実行できるか。
+Can an independent SwiftPM consumer that depends on a fixed candidate build and run using only the public surface, without relying on repository-internal test helpers?
 
 ### 実行単位
 
 #### A-1. module直接import
 
-`BareArrayModule`を直接importし、次を実行する。
+Import `BareArrayModule` directly and:
 
-1. 1D〜4Dの各型を代表的な非対称shapeで初期化する。
-2. `setElement`で一座標だけを書き換え、`element`で対象と隣接座標を確認する。
-3. 2Dまたは3Dで`indices`を最外軸として反復し、全slotのchecksumを得る。
-4. zero dimensionで要素生成closureが呼ばれず、空の最外軸になることを確認する。
+1. Initialize each one- through four-dimensional type with a representative asymmetric shape.
+2. Change one coordinate with `setElement`, then check that element and neighboring coordinates with `element`.
+3. In two or three dimensions, iterate `indices` as the outermost axis and compute a checksum over all slots.
+4. Check that a zero dimension does not call the element-generation closure and produces an empty outermost axis.
 
 #### A-2. facade import
 
-`AcCollections`だけをimportし、A-1のうち2Dの代表操作を再現する。直接module成功をfacade再公開の証拠へ
-読み替えない。
+Import only `AcCollections` and reproduce the representative two-dimensional operations from A-1. Do not treat success with a direct module import as evidence that the facade reexports it.
 
 #### A-3. package共存
 
-consumerから同一packageの別moduleもimportし、名前解決、dependency解決、buildに衝突がないことを確認する。
-別moduleの機能品質は評価しない。
+Import another module from the same package in the consumer and check for conflicts in name resolution, dependency resolution, or build. Do not assess the other module's functional quality.
 
 #### A-4. `MutableRef`提供経路
 
-Swift 6.4と対応するApple OS 27以降を満たす環境だけで、可変ownerから`reference(at:)`を取得し、同一scopeで
-`value`を複数回変更してowner storageへの反映を確認する。value accessのconsumer確認と別の実行単位にし、
-この環境を満たさない失敗を一般導入失敗へまとめない。
+Only in an environment meeting Swift 6.4 and Apple OS 27 or later, obtain `reference(at:)` from a mutable owner, change `value` several times in the same scope, and check that the owner storage reflects the changes. Keep this separate from value-access consumer checks; do not combine failure to meet this environment with general installation failure.
 
 ### 記録する結果
 
-- dependency resolution、build、runの成否と完全なcommand。
-- 実際に解決されたpackage revisionとtoolchain情報。
-- direct import、facade、共存、`MutableRef`の各結果。
-- warning、skip、環境不足、source修正の必要性。
-- repository内fixtureへ依存していないこと。
+- Dependency-resolution, build, and run outcomes with exact commands.
+- The resolved package revision and toolchain information.
+- Separate outcomes for direct import, facade, coexistence, and `MutableRef`.
+- Warnings, skips, missing environment requirements, and required source changes.
+- Confirmation that no repository-internal fixture was required.
 
 ### 判定境界
 
-全単位の成功は、固定した環境と操作について導入経路をVerificationできたことだけを示す。APIの理解容易性、
-競技用途の有用性、性能、並行利用の安全性は示さない。fixtureをrepositoryへ恒久化するかは実行結果と別に判断する。
+Success in every unit shows only that the installation paths were verified for the fixed environment and operations. It does not establish API comprehensibility, competitive usefulness, performance, or concurrent-use safety. Whether to retain the fixture in the repository is a separate decision from the run results.
 
 ## 4. Scenario B — 利用理解Validation
 
 ### 対象者
 
-`ElementBuffer`の設計と本文作成に参加していないSwift利用者を想定する。実際の参加者選定と接触はユーザーが行う。
-Swiftの基本的なgeneric、value semantics、SwiftPMを知ることは前提にできるが、raw pointer実装の読解は要求しない。
+Assume Swift users who did not participate in the design or writing of `ElementBuffer`. The user selects and contacts actual participants. Basic familiarity with generics, value semantics, and SwiftPM may be assumed, but reading a raw-pointer implementation is not required.
 
 ### 提示物
 
-- `Maintanance/UserDocuments/ElementBufferModule/UserDocumentationDraft.md`の利用者向け本文。
-- candidateの公開宣言、またはそれを生成したAPI reference。
+- The user-facing text in `Maintanance/UserDocuments/ElementBufferModule/UserDocumentationDraft.md`.
+- The candidate's public declarations or the API reference generated from them.
 
-品質評価、内部test、正解例、設計意図の追加説明は最初に渡さない。質問への追加説明を行った場合は、その内容を
-誘導として記録する。
+Do not initially provide the quality assessment, internal tests, worked solutions, or extra explanation of design intent. If additional explanations are given in response to questions, record them as prompting.
 
 ### 無誘導課題
 
-1. 3×2の整数表を作り、座標`(2, 1)`だけを書き換えて読み戻す。
-2. `indices`を使って3D bufferを反復するloopのうち、利用者が補う必要のある内側2軸を説明する。
-3. value accessと`MutableRef`のどちらを、一回の置換とscope内の反復変更へ使うか選び、理由を述べる。
-4. `MutableRef`をowner外へ保存する案が成立するか説明する。
-5. 旧toolchainまたはApple OS 27未満で利用できる範囲を説明する。
-6. `ElementBuffer`が標準`Array`、`Collection`、presence-tracked storageの代替になるか説明する。
-7. 「O(1)」から何が分かり、実時間について何がまだ分からないか説明する。
+1. Create a 3×2 integer table, change only coordinate `(2, 1)`, and read the value back.
+2. Explain which two inner axes the user must supply when iterating a 3D buffer using `indices`.
+3. Choose between value access and `MutableRef` for a one-time replacement and repeated changes within a scope, and explain why.
+4. Explain whether a `MutableRef` can be saved beyond the owner's scope.
+5. Explain what remains available on an older toolchain or Apple OS earlier than 27.
+6. Explain whether `ElementBuffer` can replace standard `Array`, `Collection`, or presence-tracked storage.
+7. Explain what “O(1)” tells them and what remains unknown about wall-clock time.
 
 ### 観測分類
 
-各課題を次へ分類する。
+Classify each task as:
 
-- 本文だけで正しく完了した。
-- 公開宣言の参照後に完了した。
-- 追加説明後に完了した。
-- 誤解したまま完了した、または完了できなかった。
-- 本文に必要情報がない、矛盾する、または情報へ到達できない。
+- Correctly completed from the documentation alone.
+- Completed after consulting public declarations.
+- Completed after additional explanation.
+- Completed with a misunderstanding, or not completed.
+- Required information is absent, contradictory, or inaccessible in the documentation.
 
-所要時間、質問箇所、読み戻した節、誤った仮説、自己訂正も記録する。利用者本人の能力評価には用いず、本文、API、
-課題設定のどこに摩擦があるかを分ける。
+Also record time spent, questions asked, sections revisited, incorrect hypotheses, and self-corrections. Do not use these observations to rate an individual user's ability; distinguish friction in the documentation, API, or task design.
 
 ### 判定境界
 
-一人の成功や失敗を一般利用者全体へ一般化しない。誤解が見つかった場合も、直ちにAPIまたは本文のどちらかを原因と
-確定しない。再現する摩擦を、文書修正、公開契約判断、API判断、環境説明、課題設計の問題へ分離する。
+Do not generalize one person's success or failure to all users. A discovered misunderstanding does not by itself establish whether the API or documentation caused it. Separate reproducible friction into documentation, public-contract, API, availability-explanation, or task-design issues.
 
 ## 5. Scenario C — 競技利用Validation
 
 ### 問い
 
-copy & paste可能なsourceまたは許可された導入経路を使い、固定shapeの多次元storageが必要な実問題を、正答、
-実行時間、メモリ使用量を含めて完了できるか。
+Using copy-and-pasteable source or an authorized installation path, can a real problem requiring fixed-shape multidimensional storage be completed with correctness, runtime, and memory use recorded?
 
 ### 実行候補
 
-1. 2Dまたは3Dの動的計画法で、非対称shapeと全slot走査を必要とする既知問題を一つ選ぶ。
-2. 問題、judge、language version、提出source、入力制約を固定する。
-3. `ElementBuffer`を使う理由と、標準の入れ子配列等を使う対照案を分離する。
-4. sampleだけでなくjudge結果を記録する。
-5. judgeが示す実行時間とメモリ使用量を保存するが、一回の値を一般性能保証にしない。
+1. Select one known two- or three-dimensional dynamic-programming problem that requires an asymmetric shape and a full-slot traversal.
+2. Fix the problem, judge, language version, submitted source, and input constraints.
+3. Separate the reason for using `ElementBuffer` from a control solution using standard nested arrays or another structure.
+4. Record judge results, not only sample results.
+5. Save judge-reported runtime and memory use, but do not treat a single measurement as a general performance guarantee.
 
 ### 判定境界
 
-正答はその問題と提出環境におけるValidation証拠であり、API全体の正確性やC++級性能の証明ではない。不正解、
-TLE、MLEの場合は、利用誤り、アルゴリズム、導入経路、実装、性能、環境を切り分ける前に製品不適合としない。
-問題選定と外部提出はユーザー判断を要するため、本scenario設計からは開始しない。
+A correct answer is Validation evidence for that problem and submission environment, not proof of the API's overall correctness or C++-level performance. For a wrong answer, TLE, or MLE, do not conclude product unsuitability until usage error, algorithm, installation path, implementation, performance, and environment have been distinguished. Problem selection and external submission require the user's decision and are not initiated by this scenario design.
 
 ## 6. Scenario間の非代替関係
 
-- consumerのbuild成功は、本文を初見で理解できることを示さない。
-- 利用理解課題の成功は、repository外でdependencyとavailabilityが成立することを示さない。
-- 競技提出の正答は、一般Swift Packageとして導入できることを示さない。
-- performance CIのgreenは、外部比較、実問題の有用性、絶対性能を示さない。
-- compilerによる借用escape拒否は、`@unchecked Sendable`を含む並行利用の意味的安全性を示さない。
+- A successful consumer build does not show that a new reader can understand the documentation.
+- A successful comprehension task does not show that dependencies and availability work outside the repository.
+- A correct competitive-programming submission does not show that the package can be installed as a general Swift Package.
+- Green performance CI does not show external comparison, usefulness on real problems, or absolute performance.
+- Compiler rejection of a borrowed escape does not show semantic safety for concurrent use, including `@unchecked Sendable`.
 
 ## 7. 後続実行候補
 
@@ -204,31 +193,19 @@ TLE、MLEの場合は、利用誤り、アルゴリズム、導入経路、実�
 - architecture: arm64
 - configuration: SwiftPM debug
 
-consumer packageはlocal path dependencyとしてcandidate worktreeを参照し、A-1〜A-4を別々のexecutable targetにした。
-現行packageが公開するlibrary productは`AcCollections`だけなので、全targetは同productへ依存した。
-A-1とA-3の直接module importは、独立productとしての提供ではなく、`AcCollections` productへの依存から
-transitive moduleが現在見えることの証拠である。
+The consumer package used the candidate worktree as a local-path dependency and placed A-1 through A-4 in separate executable targets. The current package exposes only the `AcCollections` library product, so every target depended on that product. The direct module imports in A-1 and A-3 therefore demonstrate that transitive modules are currently visible through the `AcCollections` product dependency; they do not demonstrate that those modules are offered as independent products.
 
 ### 実行結果
 
-- `swift run --disable-sandbox DirectConsumer`: 成功（`direct-ok`）
-- `swift run --disable-sandbox FacadeConsumer`: 成功（`facade-ok`）
-- `swift run --disable-sandbox CoexistConsumer`: 成功（`coexist-ok`）
-- `swift run --disable-sandbox MutableRefConsumer`: 成功（`mutable-ref-ok`）
+- `swift run --disable-sandbox DirectConsumer`: passed (`direct-ok`)
+- `swift run --disable-sandbox FacadeConsumer`: passed (`facade-ok`)
+- `swift run --disable-sandbox CoexistConsumer`: passed (`coexist-ok`)
+- `swift run --disable-sandbox MutableRefConsumer`: passed (`mutable-ref-ok`)
 
-A-1では1D〜4Dの非対称shape、座標value access、隣接位置、2D checksum、zero dimensionで生成closureが
-呼ばれないことを公開surfaceだけで確認した。A-2では`AcCollections`だけをimportして2Dの設定・取得を確認した。
-A-3では`BareArrayModule`と`PermutationModule`を同時にimportし、名前解決・dependency解決・buildの共存だけを
-確認した。A-4では可変ownerから標準`MutableRef`を取得し、同一scopeで`value`を2回変更してowner storageへ
-最終値`12`が反映されることを確認した。
+In A-1, the public surface alone was used to check asymmetric shapes in one through four dimensions, coordinate value access, neighboring positions, a two-dimensional checksum, and that a zero dimension does not invoke the generation closure. A-2 imported only `AcCollections` and checked two-dimensional setting and retrieval. A-3 imported `BareArrayModule` and `PermutationModule` together and checked only coexistence in name resolution, dependency resolution, and build. A-4 obtained the standard `MutableRef` from a mutable owner, changed `value` twice within the same scope, and confirmed that the final value `12` was reflected in owner storage.
 
-多次元型の`indices`は最外軸だけを表し、内側寸法propertyはpublicではないため、consumerは初期化時のshapeを
-保持して反復した。OptionalArrayのconsumer Verificationでも同じ摩擦を観測しており、Scenario Bで本文と
-公開surfaceの理解可能性を観測する対象とする。SwiftPM user cacheが書込み不可という環境warningは出たが、
-dependency resolution、build、runはいずれも成功した。
+For multidimensional types, `indices` represents only the outermost axis and the inner-dimension properties are not public, so the consumer retained the shape used during initialization to iterate. The same friction was observed in OptionalArray consumer Verification and is a candidate for Scenario B's assessment of documentation and public-surface comprehensibility. SwiftPM emitted an environment warning that the user cache was not writable, but dependency resolution, build, and run all succeeded.
 
 ### 判定
 
-固定した環境とcandidateについて、repository外consumerによるA-1〜A-4の導入・build・実行を確認した。
-一般利用者が無誘導で理解できること、独立module productとして提供されること、他platform・toolchain、性能、
-並行利用安全性、競技利用は確認していない。一時fixtureのrepositoryへの恒久化も決定しない。
+For the fixed environment and candidate, an external consumer successfully installed, built, and ran A-1 through A-4. This did not establish that general users can understand the API without prompting, that the modules are offered as independent products, or anything about other platforms or toolchains, performance, concurrent-use safety, or competitive use. It also did not decide whether to retain the temporary fixture in the repository.

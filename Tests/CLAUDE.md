@@ -1,5 +1,7 @@
 # Test Work Entry
 
+協働・判断・権限・検証・報告の原則は[AGENTS.md](../AGENTS.md)を共通とする。旧担当の割当・常設委任は継承しない。
+
 Follow root [CLAUDE.md](../CLAUDE.md) for start authority, language, workspace
 boundaries, and handoff. This file does not authorize task selection or start.
 
@@ -8,8 +10,10 @@ Before test work:
 1. Check the selected task's current state, scope, conditions, and detailed canonical
    document in [Task Registry](../Maintanance/ProgressV2/TASK_REGISTRY_V2.md), if registered.
 2. Identify the request route:
-   - Coordinator assignment: read the selected request, stable ID, and editing scope in
-     [CLAUDE_TASK.md](../Maintanance/CLAUDE_TASK.md).
+   - Coordinator assignment: follow the [current request route](../Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md#現在の依頼を受け取る).
+     Read the selected DB letter (or explicitly designated file request), stable ID,
+     editing scope and canonical document. The occupancy rules in
+     [CLAUDE_TASK.md](../Maintanance/CLAUDE_TASK.md) still apply.
    - Direct user request: follow the scope explicitly delegated in the conversation.
      No CLAUDE_TASK entry is required. For a concrete execution request before Registry
      registration, follow root CLAUDE.md's queue rules and record authorization,

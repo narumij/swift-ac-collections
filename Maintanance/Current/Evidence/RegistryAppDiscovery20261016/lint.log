@@ -1,9 +1,0 @@
-Command: sh Maintanance/Graph/TaskGraphLint/run.sh
-tasks  edges  warnings  errors
------  -----  --------  ------
-   36     11         0       0
-       result
----------------------
-TASK_GRAPH_LINT: PASS
-
-Exit: 0

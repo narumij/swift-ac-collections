@@ -1,425 +1,477 @@
 # RedBlackTree Test as Spec 仕様レビュー
 
-作成者：Astra。2026-10-15。ユーザー指定の「4型をざっと横断 → 型順 → 最後に再横断」を記録する詳細正本。
-状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断・4型の仕様レビュー・型別補完の受入を完了。2026-10-16の最終横断で追加の検査不足2件を記録した。レビューは完了。追加補完X1・X2も2026-10-16に独立受入済みで、ユーザーのcommit許可を受領し、RBT-046はDONE。
+## TL;DR（人間向け）
 
-## 目的と境界
+赤黒木4型（Set・MultiSet・Dictionary・MultiMap）のTest as Specを、初回横断→型順のレビューと補完→最終横断の順でAstraが確認した記録（RBT-036〜046、すべてDONE）。各型の不足（参照identity、throwの伝播、Bound公開動作のRelease検査、参照寿命など）をClaudeが補い、Astraが独立実行で受け入れた。途中で範囲eraseがpredicateのエラーをtrapにする製品不具合が見つかり、4型とも修正済み。製品品質全体の合格ではなく、Linux・Swift 6.2・ASan・互換構成の全面検査は範囲外。
 
-現行の公開契約に対し、既存のTest as Specが何を保証し、何を保証できていないかを確認する。テスト件数ではなく、仕様の不足、境界条件、誤った実装でも通る検査を重視する。
-担当はAstra。型順はSet → MultiSet → Dictionary → MultiMapとする。各段階を記録してから次へ進む。
-今回の委任はレビューであり、production・既存test・公開契約の修正、Claudeへの追加発注、凍結taskの再開は含めない。必要な修正は結果から切り出す。
+Written by Astra. 2026-10-15. The detailed canonical record of the user's 「4型をざっと横断 → 型順 → 最後に再横断」 (a quick pass across the 4 types → type by type → a final pass across them).
+The canonical source of states and dependencies is `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`. The first pass, the specification reviews of the 4 types and acceptance of the per-type supplements are complete. The final pass on 2026-10-16 recorded 2 additional verification gaps. The review is complete. The additional supplements X1 and X2 were also independently accepted on 2026-10-16, the user's commit permission was received, and RBT-046 is DONE.
 
-## 入力と確認方法
+<a id="目的と境界"></a>
+## Purpose and boundaries
 
-- `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`、`API-Matrix-View.md`、`Quality-Profile.md`と、関連するDesign文書・現行公開APIコメントを必要な範囲で読む。
-- `Sources/RedBlackTreeCollections/RedBlackTreeSet/`、`RedBlackTreeMultiSet/`、`RedBlackTreeDictionary/`、`RedBlackTreeMultiMap/`と`Tests/RedBlackTreeTests/`を起点に、実際の契約・test・共通実装へたどる。資料間の食い違いは仕様の新規決定で埋めない。
-- 順序・重複・検索境界・挿入削除・空状態・Index/Viewの有効範囲・CoWと値意味論・参照要素の寿命を、各型に実在する契約に応じて見る。全組合せの先行展開はしない。
-- 静的照合を基本とし、成立が不明な点は必要な対象だけ実行・compilerで確かめる。実行時は関連のテスト手順を確認し、実行と未実行、対象構成を区別する。
-- 各段階で基準commitと関係ファイルの未コミット差分を記録する。並行変更があれば影響する結論を再照合する。Permutationの作業範囲は編集しない。
+Check, against the current public contract, what the existing Test as Spec guarantees and what it does not. Emphasize missing specifications, boundary conditions and checks that a wrong implementation would also pass, rather than test counts.
+Owner: Astra. Type order: Set → MultiSet → Dictionary → MultiMap. Record each stage before moving to the next.
+This delegation is a review; it does not include fixing production, existing tests or the public contract, placing further orders with Claude, or resuming frozen tasks. Needed fixes are split out from the results.
 
-## 工程と受入条件
+<a id="入力と確認方法"></a>
+## Inputs and method
 
-| ID | 範囲 | 到達点 |
+- Read, as needed, `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`, `API-Matrix-View.md`, `Quality-Profile.md`, the related Design documents and current public API comments.
+- Starting from `Sources/RedBlackTreeCollections/RedBlackTreeSet/`, `RedBlackTreeMultiSet/`, `RedBlackTreeDictionary/`, `RedBlackTreeMultiMap/` and `Tests/RedBlackTreeTests/`, trace to the actual contracts, tests and shared implementation. Do not fill discrepancies between documents with new specification decisions.
+- Look at order, duplicates, search boundaries, insertion/removal, empty state, the valid range of Index/View, CoW and value semantics, and lifetimes of reference elements, according to the contracts each type actually has. Do not expand all combinations in advance.
+- Static comparison is the basis; where it is unclear whether something holds, confirm only the needed targets by running or with the compiler. When running, check the relevant test procedure and distinguish run from not run and the target configuration.
+- At each stage record the base commit and uncommitted diffs of the related files. If there are concurrent changes, re-check the affected conclusions. Do not edit Permutation's working scope.
+
+<a id="工程と受入条件"></a>
+## Stages and acceptance conditions
+
+| ID | Scope | Goal |
 | --- | --- | --- |
-| RBT-036 | 4型の初回横断 | 共通契約・型固有契約と既存testの配置を概観し、型別レビューの見取り図と未確認範囲を残す。初回だけで品質の合否を結論しない。 |
-| RBT-037 | RedBlackTreeSet | 初回横断を入力に、Setの公開契約とtestを照合し、不足・偽陽性・境界条件を根拠付きで記録する。 |
-| RBT-038 | RedBlackTreeMultiSet | Setレビューの共通論点を引き継ぎ、MultiSet固有の重複・順序・操作契約とtestを照合する。Setの結果をそのまま保証として転用しない。 |
-| RBT-039 | RedBlackTreeDictionary | 先行レビューを入力に、Dictionaryのkey/value・更新・Viewを含む現行公開契約とtestを照合する。 |
-| RBT-040 | RedBlackTreeMultiMap | 先行レビューを入力に、MultiMapの重複keyとvalue・更新・Viewを含む現行公開契約とtestを照合する。 |
-| RBT-041 | 4型の最終横断 | 4型の個別結果を再照合し、型間の不整合・共通実装の未検証・重複指摘・個別レビューの見落としを整理し、修正候補と判断待ちを分ける。 |
+| RBT-036 | First pass over the 4 types | Overview shared and type-specific contracts and the placement of existing tests, and leave a map for the per-type reviews and the unchecked scope. Do not conclude quality pass/fail from the first pass alone. |
+| RBT-037 | RedBlackTreeSet | Taking the first pass as input, compare Set's public contract and tests, and record gaps, false positives and boundary conditions with grounds. |
+| RBT-038 | RedBlackTreeMultiSet | Carry over the shared points of the Set review and compare MultiSet-specific duplicate, order and operation contracts with tests. Do not reuse Set's results as guarantees as-is. |
+| RBT-039 | RedBlackTreeDictionary | Taking the preceding reviews as input, compare Dictionary's current public contract, including key/value, updates and Views, with tests. |
+| RBT-040 | RedBlackTreeMultiMap | Taking the preceding reviews as input, compare MultiMap's current public contract, including duplicate keys and values, updates and Views, with tests. |
+| RBT-041 | Final pass over the 4 types | Re-check the 4 types' individual results, organize inconsistencies between types, unverified shared implementation, duplicate findings and oversights of individual reviews, and separate fix candidates from items awaiting judgment. |
 
-各段階の受入条件は、対象契約と確認したtestへの経路、保証範囲、未確認事項、根拠付きの指摘を残すこと。問題がなければ確認範囲を明記して指摘なしとする。実装反映の完了や品質全体の合格まで意味を広げない。
-新しい製品判断が必要なら、その論点を分離してユーザーへ返し、未決の答えをtest仕様として作らない。既存taskと重なる指摘は既存IDを示し、同じ仕事を重複登録しない。
-最終横断は、個別レビューを単に連結するのでなく、共通契約の扱いと型固有の差を改めて照合する。
+The acceptance condition of each stage is to leave the target contract, the path to the tests checked, the guaranteed scope, unchecked items, and findings with grounds. If there is no problem, state the checked scope and record no findings. Do not widen the meaning to completion of implementation or a pass of overall quality.
+If a new product judgment is needed, separate that point and return it to the user; do not make an undecided answer into a test specification. For findings overlapping existing tasks, give the existing ID and do not register the same work twice.
+The final pass does not merely concatenate the individual reviews; it re-compares the handling of shared contracts and type-specific differences.
 
-## レビュー結果
+<a id="レビュー結果"></a>
+## Review results
 
-### 初回横断（RBT-036、2026-10-15、Astra）
+<a id="初回横断rbt-0362026-10-15astra"></a>
+### First pass (RBT-036, 2026-10-15, Astra)
 
-基準HEAD：`c98a0908`。赤黒木source・testに未コミット変更はなかった。並行してClaudeがPermutationのtest・返却・Tests/TESTING.mdを変更しているが、今回それらは編集していない。静的な概観のみ。テスト実行・mutation検証・全API網羅レビューは未実施。
+Base HEAD: `c98a0908`. No uncommitted changes in the red-black tree source and tests. Claude is concurrently changing Permutation tests, returns and Tests/TESTING.md, but those were not edited this time. Static overview only. No test runs, mutation verification or exhaustive review of all APIs.
 
-4型とも番号付きの生成・走査・検索・挿入削除・範囲・protocol・値意味論と、内部CoW・Index・Death Test群が存在する。Viewには独立した共通test群がある。共通土台がない状況ではなく、検査の強さと構成別の保証範囲を次に詰める。
+All 4 types have numbered groups for creation, traversal, search, insertion/removal, ranges, protocols and value semantics, plus internal CoW, Index and Death Test groups. Views have an independent shared test group. It is not a situation without a shared foundation; next we narrow down the strength of checks and the guaranteed scope per configuration.
 
-#### 課題候補（修正・発注はまだ行わない）
+<a id="課題候補修正発注はまだ行わない"></a>
+#### Issue candidates (no fixes or orders yet)
 
-1. **Death Testの終了判定の強さ（4型、優先確認）**。各`*_99_DeathTests.swift`に正確なSwift trap signalを指定する例と、`.failure`を受けてSIGSEGV/SIGBUS/AddressSanitizerを除外する例が混在する。例はMultiSetの逆転範囲・削除済みIndex。後者は意図した契約検査以外の失敗も通し得る。個別レビューでは期待する停止契約とsetupを照合し、必要なものだけ判定強化・negative control候補にする。製品不具合や全Death Testの無効を意味しない。
-2. **Map系CoWテストのvalue観測（Dictionary/MultiMap）**。両型の`*_13_ValueSemanticsTests.swift`の`test_copyOnWrite_mutatingCopyPreservesOriginal`は最終結果をkey列だけで比較している。このケース自身はvalueの取り違え・変更を検出しない。型別レビューで既存`*_98_CopyOnWriteTests.swift`、MappedValues View testによる補完を確認し、不足する公開操作経路だけを候補化する。内部のcopy回数の検査と公開valueの独立性は別の証拠として扱う。
-3. **CoW・寿命の型間の対応（確認課題）**。Setの`*_15_ValueSemanticsTests.swift`には参照要素の共有・分岐・両コピー破棄後の解放を追うケースがある。他3型の`*_13_ValueSemanticsTests.swift`には同じケースはないが、各RemovalTestsには参照解放testがある。これだけで不足とは確定しない。型別レビューで共有中の保持、最後の所有者の解放、Mapのkey/value、重複要素を既存testがどこまで見ているか確認する。参照要素のdeep copyを要求しない。
-4. **空の旧テストと現行証拠の説明（確認済みの文書上の問題）**。Dictionaryの`*_0_InitializationTests.swift`の`testInitWithDuplicateKeysShouldCauseFatalError`は本文がコメントだけで「実テスト不可」と記載するが、`*_99_DeathTests.swift`に`duplicateKeysInUniqueKeysInitializer_terminateProcess`が存在する。検証不足として新規testを増やすのでなく、旧説明と実行件数の読み違いを整理する候補。Setの空のremoveFirst/Last testにはDeath Testへの説明があり、同じ扱いで不足認定しない。
+1. **Strength of Death Test exit judgments (4 types, check first)**. Each `*_99_DeathTests.swift` mixes examples that specify an exact Swift trap signal with examples that accept `.failure` and exclude SIGSEGV/SIGBUS/AddressSanitizer. Examples are MultiSet's reversed range and removed Index. The latter can also pass failures other than the intended contract check. In the per-type reviews, compare the expected stop contract and setup, and make only the needed ones candidates for stronger judgments or negative controls. This does not mean a product defect or that all Death Tests are invalid.
+2. **Value observation in Map-type CoW tests (Dictionary/MultiMap)**. `test_copyOnWrite_mutatingCopyPreservesOriginal` in both types' `*_13_ValueSemanticsTests.swift` compares the final result only by key sequence. This case alone does not detect values being mixed up or changed. In the per-type reviews, check the supplement by the existing `*_98_CopyOnWriteTests.swift` and the MappedValues View tests, and make only missing public operation paths candidates. Checks of internal copy counts and independence of public values are treated as separate evidence.
+3. **Correspondence of CoW and lifetimes between types (an item to check)**. Set's `*_15_ValueSemanticsTests.swift` has a case tracking sharing and divergence of reference elements and release after both copies are destroyed. The other 3 types' `*_13_ValueSemanticsTests.swift` lack the same case, but each RemovalTests has reference release tests. This alone does not establish a gap. In the per-type reviews, check how far existing tests look at holding while shared, release by the last owner, Map key/value and duplicate elements. No deep copy of reference elements is required.
+4. **Empty old tests and explanation of current evidence (a confirmed documentation problem)**. Dictionary's `*_0_InitializationTests.swift` `testInitWithDuplicateKeysShouldCauseFatalError` has only comments in its body and says 「実テスト不可」 (cannot actually be tested), but `duplicateKeysInUniqueKeysInitializer_terminateProcess` exists in `*_99_DeathTests.swift`. A candidate for sorting out the old explanation and misreading of run counts, not for adding new tests as a verification gap. Set's empty removeFirst/Last tests have explanations pointing to Death Tests and, treated the same way, are not counted as gaps.
 
-#### 次の型別レビューへ渡す見取り図
+<a id="次の型別レビューへ渡す見取り図"></a>
+#### Map handed to the per-type reviews
 
-- Set：共通Index/Bound/View境界とDeath Test、値意味論の観測を起点にする。
-- MultiSet：Setと共通する論点に加え、重複数・等価要素の更新と寿命を確認する。
-- Dictionary：上記2・4を起点に、value更新・default subscript・重複統合closureの正常/失敗経路を確認する。例外時に原状回復する等の未記載契約は作らない。
-- MultiMap：重複keyごとのvalue保持・更新・削除、MappedValues ViewとCoWを確認する。
-- 最終横断：共通testで本当に保証される範囲と型固有差、構成条件を再照合する。
+- Set: start from shared Index/Bound/View boundaries, Death Tests and observation of value semantics.
+- MultiSet: in addition to points shared with Set, check duplicate counts, updates of equivalent elements and lifetimes.
+- Dictionary: starting from 2 and 4 above, check value updates, the default subscript and the normal/failure paths of the duplicate-merging closure. Do not create unstated contracts such as restoring the original state on exceptions.
+- MultiMap: check holding, updating and removing values per duplicate key, the MappedValues View and CoW.
+- Final pass: re-compare the scope really guaranteed by shared tests, type-specific differences and configuration conditions.
 
-4型のclosure内CoW testは同じ変更を双方へ行うが、Set/Dictionaryでは戻り値の検査、Multi系では個数の変化も検出に寄与する。したがって「同じ最終結果だから独立性を検証できない」と一律に断定しない。途中の非変更側の観測を補う必要があるかを型別で確認する。
-MappedValuesの範囲所属検査はAPI-Matrix-Viewの現行事前条件と既存RBT-026を尊重し、今回の課題出しで契約変更・凍結解除しない。内部CoWは`AC_COLLECTIONS_INTERNAL_CHECKS`、Death Testは`DEATH_TEST && !COMPATIBLE_ATCODER_2025`等の条件があるため、testの存在と各構成での実行保証は区別する。
+The CoW tests inside closures for the 4 types make the same change to both sides, but in Set/Dictionary checking the return values, and in the Multi types also changes in counts, contribute to detection. So do not uniformly assert that "independence cannot be verified because the final results are the same". Check per type whether observation of the non-mutated side midway needs to be supplemented.
+The range-membership check of MappedValues respects API-Matrix-View's current precondition and the existing RBT-026; this issue listing does not change the contract or lift a freeze. Internal CoW has conditions such as `AC_COLLECTIONS_INTERNAL_CHECKS` and Death Tests `DEATH_TEST && !COMPATIBLE_ATCODER_2025`, so distinguish the existence of tests from guarantees of running in each configuration.
 
-初回横断の到達点である見取り図・課題候補・未確認範囲の記録は完了。型別詳細レビュー・修正は未着手。コミット許可待ちとしてRBT-036をWAITING_USERとする。
+The goal of the first pass — recording the map, issue candidates and the unchecked scope — is complete. Per-type detailed reviews and fixes have not started. RBT-036 is WAITING_USER, waiting for commit permission.
 
-2026-10-15、ユーザーがコミットを許可。初回横断の記録を保存し、RBT-036をDONEとする。型別レビューは未着手。
+On 2026-10-15 the user permitted the commit. The first-pass record is saved and RBT-036 is DONE. Per-type reviews have not started.
 
-### Set仕様レビュー（RBT-037、2026-10-15、Astra）
+<a id="set仕様レビューrbt-0372026-10-15astra"></a>
+### Set specification review (RBT-037, 2026-10-15, Astra)
 
-基準HEAD：`eb1d5d69`、開始時作業ツリーはclean。今回も課題出しのみで、production/test変更・test実行・mutation試験・Claudeへの発注はしていない。型別レビューは公開仕様と検査内容の静的照合であり、全構成の合格認定ではない。
+Base HEAD: `eb1d5d69`; the working tree was clean at the start. Again only issue listing: no production/test changes, test runs, mutation testing or orders to Claude. The per-type review is a static comparison of the public specification and check contents, not certification of passing in all configurations.
 
-確認範囲：Setの番号付きtest一覧を確認し、Insertion、Removal、Search、RangeView、ValueSemantics、SetAlgebra、Codable、DeathTests/AdditionalDeathTestsの本文、および内部SetAlgebraStress/Fuzzを照合した。公開Set本体・Combining・SetAlgebra・SequenceとAPI-Matrixを契約の根拠とした。Index/Bound/走査/protocol群はテスト配置・既存ケースの確認を中心とし、全assertionや全trait組合せの網羅検証はしていない。
+Checked scope: confirmed the list of Set's numbered tests and compared the bodies of Insertion, Removal, Search, RangeView, ValueSemantics, SetAlgebra, Codable and DeathTests/AdditionalDeathTests, and the internal SetAlgebraStress/Fuzz. The public Set body, Combining, SetAlgebra, Sequence and API-Matrix were the grounds for the contract. Index/Bound/traversal/protocol groups were checked mainly for test placement and existing cases; not an exhaustive verification of all assertions or all trait combinations.
 
-#### S1：ヒント付き挿入・置換を、等価だが別の参照で区別する（優先）
+<a id="s1ヒント付き挿入置換を等価だが別の参照で区別する優先"></a>
+#### S1: distinguish hinted insert/replace with equivalent but distinct references (priority)
 
-根拠：`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_5_InsertionTests.swift`の`test_insert_withHint`（202行目）、`test_update_withHint`（222行目）はIntだけを使用する。`Sources/RedBlackTreeCollections/RedBlackTreeSet/RedBlackTreeSet.swift`の268〜318行付近はinsertが既存要素を返し、updateが置換して旧要素を返す契約。ヒントなしにはComparableReferenceを用いたidentity検査がある。
+Grounds: `test_insert_withHint` (line 202) and `test_update_withHint` (line 222) in `Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_5_InsertionTests.swift` use only Int. Around lines 268–318 of `Sources/RedBlackTreeCollections/RedBlackTreeSet/RedBlackTreeSet.swift`, the contract is that insert returns the existing element and update replaces and returns the old element. The unhinted versions have identity checks using ComparableReference.
 
-不足：ヒント付きupdateが旧要素を返すだけで置換を省略しても、同じIntのままなので当該testは通る。insertが既存参照を同キーの新参照へ置き換えても当該testは区別しない。
+Gap: even if hinted update only returns the old element and skips replacing, the test passes because it is the same Int. The test also does not distinguish insert replacing an existing reference with a new reference of the same key.
 
-反映候補：既存ComparableReferenceを使い、insertの重複では既存参照保持、updateでは旧参照返却と格納参照の置換を`===`で確認する。有効だが位置の悪いhintとendIndexも扱い、共有コピーを残した場合に元の格納参照が変わらないことを確認する。新規fixture/APIや不正hint契約は作らない。
-受入：置換を省略する誤実装を検出できるassertion、要素数・順序・戻り値、Debug/Releaseの実行証拠。
+Candidate: using the existing ComparableReference, check with `===` that a duplicate insert keeps the existing reference, and that update returns the old reference and replaces the stored reference. Also handle a valid but badly placed hint and endIndex, and confirm that when a shared copy is kept, the original stored reference does not change. Do not create new fixtures/APIs or an invalid-hint contract.
+Acceptance: assertions that can detect a wrong implementation skipping replacement; counts, order and return values; run evidence for Debug/Release.
 
-#### S2：throwするpredicateの失敗経路（優先）
+<a id="s2throwするpredicateの失敗経路優先"></a>
+#### S2: the failure path of a throwing predicate (priority)
 
-根拠：Setの`filter`（`RedBlackTreeSet+Sequence.swift`）と`erase(where:)`、IndexRange/Bound範囲のeraseはthrowing closureを受ける。Set/View testをthrow・XCTAssertThrowsError等で検索した範囲では、実際に独自エラーを投げて伝播を検証するケースを確認できなかった（コメント化されたtrap検査とXCTSkipは別）。
+Grounds: Set's `filter` (`RedBlackTreeSet+Sequence.swift`), `erase(where:)` and erase over IndexRange/Bound ranges take throwing closures. Searching Set/View tests for throw, XCTAssertThrowsError and the like, no case was found that actually throws a custom error and verifies propagation (commented-out trap checks and XCTSkip are separate).
 
-反映候補：通常構成のSet.filterとSet.erase(where:)を最小対象に、固有エラーを投げ、そのエラーが呼出元へ届くこと、投げた後にpredicateを継続しないことを検査する。filterは元Set不変を確認し、一時生成された保持参照の解放も検査対象にする。eraseはコピーを残し、非変更側の内容保持を検査する。失敗した変更側に未規定の全巻戻しや特定の途中状態を要求しない。範囲版は同じ経路で担保されるかを反映時に確認し、異なる経路の必要分だけ補う。
-受入：正常controlとthrowケース、期待したエラー識別、適用できる寿命検査、Debug/Release。製品不具合や例外保証の判断が必要なら再現を残して止める。
+Candidate: with normal-configuration Set.filter and Set.erase(where:) as minimal targets, throw a specific error and check that the error reaches the caller and that the predicate is not continued after the throw. For filter, confirm the original Set is unchanged, and also check release of temporarily created held references. For erase, keep a copy and check that the non-mutated side's contents are kept. Do not require an unspecified full rollback or a particular intermediate state of the failed mutated side. For range versions, check during application whether they are covered by the same path, and supplement only what differs.
+Acceptance: a normal control and throwing cases, identification of the expected error, applicable lifetime checks, Debug/Release. If a product defect or an exception-guarantee judgment is needed, leave a reproduction and stop.
 
-#### S3：集合演算のCoWで非変更側のコピーを直接観測する（中）
+<a id="s3集合演算のcowで非変更側のコピーを直接観測する中"></a>
+#### S3: directly observe the non-mutated copy in set-operation CoW (medium)
 
-根拠：`RedBlackTreeSet_98_SetAlgebraStressTests.swift`の`testFormOperationsMutateReceiverOnly`（57行目）はlhsから各変更用コピーを作り、結果とrhsを照合するが、各操作直後の元lhsを参照モデルsLと直接比較していない。`assertEquiv(rhs, rhs)`は自己比較であり、その後のsR比較とは証拠として区別する。番号付き`_10_SetAlgebraTests.swift`には内容検査があるが、form系で共有元を明示的に保持した独立性のケースは見当たらなかった。
+Grounds: `testFormOperationsMutateReceiverOnly` (line 57) in `RedBlackTreeSet_98_SetAlgebraStressTests.swift` makes mutation copies from lhs and compares the results and rhs, but does not directly compare the original lhs right after each operation with the reference model sL. `assertEquiv(rhs, rhs)` is a self-comparison and is distinguished as evidence from the later sR comparison. The numbered `_10_SetAlgebraTests.swift` has content checks, but no case explicitly holding the shared original to check independence for the form operations was found.
 
-反映候補：formUnion/formIntersection/formSymmetricDifference/formDifferenceの各操作で変更用コピー・元の共有コピー・rhsを保持し、操作直後に三者の期待内容を比較する。各演算が実際に内容を変える入力を使う。既存stress全体の増量やcopy回数の新規契約は不要。
-受入：結果だけでなく元コピーとrhsの保持を直接検査、Debug/Release。既存の集合演算の参照モデル比較・代数法則testは残す。
+Candidate: for each of formUnion/formIntersection/formSymmetricDifference/formDifference, hold the mutation copy, the original shared copy and rhs, and compare the expected contents of all three right after the operation. Use inputs where each operation actually changes the contents. No need to enlarge the whole existing stress test or create a new copy-count contract.
+Acceptance: directly check holding of the original copy and rhs, not only the result; Debug/Release. Keep the existing reference-model comparisons and algebraic-law tests of set operations.
 
-#### S4：削除済みIndexのDeath Testでsetup失敗を分離する（中）
+<a id="s4削除済みindexのdeath-testでsetup失敗を分離する中"></a>
+#### S4: separate setup failure in the removed-Index Death Test (medium)
 
-根拠：`RedBlackTreeSet_99_AdditionalDeathTests.swift`の`removed index cannot be subscripted`（66行目）は子process内で`firstIndex(of: 2)!`を使う。検索がnilなら、目的の削除済みIndex参照に到達せずSwift trapとなり、`.failure`とメモリエラー除外を満たし得る。これは静的な検出経路の指摘で、negative controlは未実行。
+Grounds: `removed index cannot be subscripted` (line 66) in `RedBlackTreeSet_99_AdditionalDeathTests.swift` uses `firstIndex(of: 2)!` inside the child process. If the search returns nil, it becomes a Swift trap without reaching the intended reference of the removed Index, and can satisfy `.failure` and the memory-error exclusion. This is a finding about a static detection path; no negative control was run.
 
-反映候補：このケースのsetupを親側の正常controlなどで区別し、検索失敗・削除未成立を目的の停止の成功として数えない。`.failure`を維持するなら「exit(86)にするだけ」では同じく成功してしまうので不可。setupの特定終了codeを明示的に拒否する等、既存の広い停止契約を保った区別を行う。壊したsetupを使う一時negative controlが失敗することを確認し、復元する。
-受入：通常ケース成功、setup故障時の確実なtest失敗、既存SIGSEGV/SIGBUS/ASan除外を保持。実装側のsignal契約を変更しない。
+Candidate: distinguish this case's setup with, for example, a normal control on the parent side, and do not count search failure or failed removal as success of the intended stop. If `.failure` is kept, "just make it exit(86)" also succeeds and is not acceptable. Distinguish while keeping the existing broad stop contract, for example by explicitly rejecting the setup's specific exit code. Confirm that a temporary negative control using a broken setup fails, and restore it.
+Acceptance: the normal case succeeds, the test reliably fails when setup breaks, and the existing SIGSEGV/SIGBUS/ASan exclusions are kept. Do not change the implementation's signal contract.
 
-#### 今回追加課題にしないもの
+<a id="今回追加課題にしないもの"></a>
+#### Not made additional issues this time
 
-- 初回候補の「広いDeath Test終了判定」は意図された契約がある。Tests/CLAUDE.mdとAdditionalDeathTestsの説明に従い、全件を特定signalへ統一しない。SetのstaleIndexケースには理由文字列の検査もある。
-- Setの共有参照寿命は`_15_ValueSemanticsTests.swift`に具体的な検査がある。同じ内容を再追加しない。
-- closure内で双方に同じinsertを行うケースは戻り値insertedも検査し、単純な共有破壊なら後段がfalseとなる。これを無効な検査とはしない。
-- 集合演算は内容比較・固定seedの参照モデル・代数法則、基本変異はFuzzで補完されている。弱いsmoke testだけを根拠に「集合演算の検証がない」としない。
-- 空のremoveFirst/LastテストはDeath Testへの明示参照があり、不足を重複計上しない。
-- Indexの外部要件、MappedValues契約、性能再評価、凍結task、公開API変更は今回の反映候補に含めない。
+- The first-pass candidate about "broad Death Test exit judgments" has an intended contract. Following Tests/CLAUDE.md and AdditionalDeathTests' explanation, do not unify all cases to a specific signal. Set's staleIndex case also checks the reason string.
+- Set's shared reference lifetimes have concrete checks in `_15_ValueSemanticsTests.swift`. Do not add the same content again.
+- Cases doing the same insert on both sides inside a closure also check the returned inserted, and simple sharing breakage would make the later one false. Do not treat this as an invalid check.
+- Set operations are supplemented by content comparisons, fixed-seed reference models and algebraic laws, and basic mutations by Fuzz. Do not claim "no verification of set operations" based only on weak smoke tests.
+- The empty removeFirst/Last tests explicitly refer to Death Tests; do not double-count the gap.
+- Index's external requirements, the MappedValues contract, performance re-evaluation, frozen tasks and public API changes are not included in this round's candidates.
 
-S1〜S4はtest補完の依頼を具体化できる範囲として記録するが、まだ実装taskの採番・委任はしていない。担当者は現行差分と契約を再確認し、不具合ならproductionを修正せず返す。レビュー記録は完了し、RBT-037はコミット許可待ち。MultiSet以降は未実施。
+S1–S4 are recorded as a scope from which a test-supplement request can be made concrete, but no implementation task has yet been numbered or delegated. The assignee re-checks the current diff and contract, and if it is a defect, returns it without fixing production. The review record is complete, and RBT-037 is waiting for commit permission. MultiSet and later not done.
 
-2026-10-15、ユーザーがS1〜S4の発注後のコミットを許可。RBT-042を登録してCLAUDE_TASK.mdへ依頼を掲載した。RBT-037はDONEとして保存する。S1〜S4の依頼入力を固定し、今後の別型レビューは別節へ追記する。
+On 2026-10-15 the user permitted committing after ordering S1–S4. RBT-042 was registered and the request posted in CLAUDE_TASK.md. RBT-037 is saved as DONE. The request input for S1–S4 is fixed, and future reviews of other types are appended in separate sections.
 
 
-### MultiSet仕様レビュー（RBT-038、2026-10-15、Astra）
+<a id="multiset仕様レビューrbt-0382026-10-15astra"></a>
+### MultiSet specification review (RBT-038, 2026-10-15, Astra)
 
-基準HEAD：`2fc2dc66`。開始時と記録直前の作業ツリーはclean。公開MultiSet本体・Combining・SetAlgebra・Sequence・RangeExpression・BoundsExpressionと、MultiSetのInsertion、Removal、Search、Utility、SetAlgebra、ValueSemantics、RangeView、BoundExpression、Fuzz、Death Test、およびCppBehaviorReferenceTestsのMultiSet比較を静的に照合した。全assertion・全構成の網羅検証ではなく、テスト実行・mutation検証はしていない。以下はテスト補完候補であり、製品不具合の確認ではない。SetのS1〜S4とClaudeへの依頼入力は変更していない。
+Base HEAD: `2fc2dc66`. The working tree was clean at the start and just before recording. Statically compared the public MultiSet body, Combining, SetAlgebra, Sequence, RangeExpression and BoundsExpression with MultiSet's Insertion, Removal, Search, Utility, SetAlgebra, ValueSemantics, RangeView, BoundExpression, Fuzz and Death Tests, and the MultiSet comparisons in CppBehaviorReferenceTests. Not an exhaustive verification of all assertions and all configurations; no test runs or mutation verification. The following are test-supplement candidates, not confirmations of product defects. Set's S1–S4 and the request input to Claude were not changed.
 
-以下のtestファイル名は、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeMultiSet/`内の`RedBlackTreeMultiSet`に続くsuffixを示す。
+Unless otherwise noted, the test file names below are suffixes following `RedBlackTreeMultiSet` in `Tests/RedBlackTreeTests/RedBlackTreeMultiSet/`.
 
-#### M1：削除済みIndexへのupdateがnilを返す契約（優先）
+<a id="m1削除済みindexへのupdateがnilを返す契約優先"></a>
+#### M1: the contract that update on a removed Index returns nil (priority)
 
-根拠：`Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift`の`update(_:at:)`は、無効なIndexまたは非等価要素ならnilを返す。`_5_InsertionTests.swift`は等価な別参照への置換、endIndex・非等価要素の拒否、共有コピー保持を検査しているが、削除済みIndexへのupdateは確認できなかった。
+Grounds: `update(_:at:)` in `Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift` returns nil for an invalid Index or a non-equivalent element. `_5_InsertionTests.swift` checks replacement with an equivalent distinct reference, rejection of endIndex and non-equivalent elements, and holding of shared copies, but update on a removed Index was not found.
 
-反映候補：重複群の一要素を削除し、そのIndexが無効になったことを確認してから、等価な別参照でupdateする。nil返却と残存要素・個数の不変を確認する。他の木のIndexの扱いや、拒否時の内部コピー回数を新しい契約にしない。
+Candidate: remove one element of a duplicate group, confirm that its Index has become invalid, then update with an equivalent distinct reference. Confirm the nil return and that remaining elements and counts are unchanged. Do not make the handling of another tree's Index or internal copy counts on rejection into a new contract.
 
-#### M2：位置指定削除が、指定した等価要素そのものを取り除く（優先）
+<a id="m2位置指定削除が指定した等価要素そのものを取り除く優先"></a>
+#### M2: positional removal removes the specified equivalent element itself (priority)
 
-根拠：`_6_RemovalTests.swift`の`test_removeAt_removesOnlyTheSelectedDuplicate`と`test_erase_returnsTheFollowingIndex`はIntで内容・戻り値を検査する。`Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`にも位置指定削除の比較があるが、Int64の等価要素には個体の区別がない。`_5_InsertionTests.swift`には参照を用いた`erase(exactly:)`の検査があるものの、別APIかつ構成条件付きである。
+Grounds: `test_removeAt_removesOnlyTheSelectedDuplicate` and `test_erase_returnsTheFollowingIndex` in `_6_RemovalTests.swift` check contents and return values with Int. `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift` also compares positional removal, but equivalent Int64 elements have no individuality. `_5_InsertionTests.swift` has a check of `erase(exactly:)` using references, but it is a different API and conditional on configuration.
 
-反映候補：同値だが別個体の参照を三つ並べ、中央のIndexに対するremove(at:)で返る参照と残る参照を`===`で確認する。eraseでは削除対象と返却された後続の参照を区別する。キー指定のeraseUniqueがどの個体を選ぶかという未記載の保証は追加しない。
+Candidate: line up three references with equal values but distinct identities, and confirm with `===` the reference returned by remove(at:) on the middle Index and the remaining references. For erase, distinguish the removal target from the returned following reference. Do not add an unstated guarantee about which individual the key-based eraseUnique chooses.
 
-#### M3：Boundの公開動作をReleaseでも検査する（中）
+<a id="m3boundの公開動作をreleaseでも検査する中"></a>
+#### M3: check public Bound behavior in Release too (medium)
 
-根拠：`_16_BoundExpressionTests.swift`の主要部分は`DEBUG && !COMPATIBLE_ATCODER_2025`で囲まれ、未解決Boundのnil、逆転範囲の空結果・predicate非呼出し、重複範囲などの公開動作もDebugに限定されている。distanceの一部は別条件でReleaseでも対象になる。`_8_RangeViewTests.swift`にはIndex範囲・equalRangeの検査があり、範囲検査全体が欠けているわけではない。
+Grounds: the main part of `_16_BoundExpressionTests.swift` is enclosed in `DEBUG && !COMPATIBLE_ATCODER_2025`, and public behaviors such as nil for an unresolved Bound, the empty result and no predicate call for a reversed range, and duplicate ranges are limited to Debug. Part of distance is also targeted in Release under a different condition. `_8_RangeViewTests.swift` has Index-range and equalRange checks, so range checking as a whole is not missing.
 
-反映候補：公開結果だけで検査できるBoundケースをReleaseでもコンパイル・実行できる部分へ分ける。内部copy countやDebug専用の有効性検査は元の条件を維持し、DEBUGを一括削除しない。重複範囲、未解決Bound、逆転範囲でpredicateを呼ばないことを中心に、実際のRelease実行対象を確認する。
+Candidate: split Bound cases that can be checked from public results alone into a part that can compile and run in Release. Keep the original conditions for internal copy counts and Debug-only validity checks, and do not remove DEBUG wholesale. Focus on duplicate ranges, unresolved Bounds and not calling the predicate for reversed ranges, and confirm what actually runs in Release.
 
-#### M4：throwするpredicateの失敗経路（優先）
+<a id="m4throwするpredicateの失敗経路優先"></a>
+#### M4: the failure path of a throwing predicate (priority)
 
-根拠：MultiSetのfilterとerase(where:)、範囲eraseはthrowing closureを受けるが、調査したMultiSet testでは意図的に独自エラーを投げるケースを確認できなかった。SetのS2を補完しても、MultiSetの公開入口まで自動的に検証済みとはならない。
+Grounds: MultiSet's filter, erase(where:) and range erase take throwing closures, but no case intentionally throwing a custom error was found in the MultiSet tests examined. Supplementing Set's S2 does not automatically make MultiSet's public entry points verified.
 
-反映候補：固有エラーの伝播、throw後のpredicate非呼出し、filterの元コンテナ保持、変更操作の共有元保持を検査する。重複要素を含め、一時的な参照保持が残らないことも必要な範囲で確認する。throwした変更側の全巻戻しや特定の途中状態は要求しない。範囲版は実装経路を照合し、共通経路と異なる部分だけを補う。
+Candidate: check propagation of a specific error, no predicate call after the throw, holding of the original container for filter, and holding of the shared original for mutating operations. Including duplicate elements, also confirm as needed that no temporary reference holding remains. Do not require full rollback or a particular intermediate state of the mutated side that threw. For range versions, compare implementation paths and supplement only parts differing from the shared path.
 
-#### M5：重複を持つ共有コピーの保持と参照寿命（中）
+<a id="m5重複を持つ共有コピーの保持と参照寿命中"></a>
+#### M5: holding of shared copies with duplicates and reference lifetimes (medium)
 
-根拠：`_10_SetAlgebraTests.swift`にはunionの重複数a+b、intersectionのmin、differenceのmax(a-b,0)、symmetricDifferenceの絶対差について内容検査があるが、form系の操作直後に共有元を直接確認するケースは見当たらなかった。`_6_RemovalTests.swift`には別個体の参照の解放検査があるが、同一参照を複数回格納し、共有コピーを分岐させた場合の保持・最終解放は確認できなかった。
+Grounds: `_10_SetAlgebraTests.swift` has content checks for union's duplicate count a+b, intersection's min, difference's max(a-b,0) and symmetricDifference's absolute difference, but no case directly checking the shared original right after a form operation was found. `_6_RemovalTests.swift` has release checks for distinct references, but holding and final release when the same reference is stored multiple times and shared copies diverge were not found.
 
-反映候補：form系は変更用コピー・共有元・rhsを保持して三者の期待内容を確認する。寿命は同じ参照を複数回格納した小さなケースで、一部の出現を削除しても残る出現や共有コピーが保持すること、最後の保持がなくなれば解放されることを検査する。参照要素のdeep copyや内部コピー回数は要求しない。
+Candidate: for form operations, hold the mutation copy, the shared original and rhs and check the expected contents of all three. For lifetimes, in a small case storing the same reference multiple times, check that the remaining occurrences and shared copies keep it after some occurrences are removed, and that it is released when the last holder goes away. No deep copy of reference elements or internal copy counts are required.
 
-#### 追加課題にしないものと反映範囲
+<a id="追加課題にしないものと反映範囲"></a>
+#### Not made additional issues, and application scope
 
-- ヒント付き挿入の重複群内の位置と等価な別参照へのupdateは、既に具体的な検査がある。SetのS1をそのまま転記しない。
-- meld/meldingには共有元lhsの保持検査がある。M5で同じ検査を追加しない。
-- 位置指定削除、重複数、基本操作の参照モデルFuzzは既存の証拠として残す。「MultiSetの重複処理が未検証」とはしない。
-- SetのS4と同じsetup偽陽性をMultiSetで確認したわけではない。Death Testの広い失敗判定を一律変更しない。
+- Positions within a duplicate group for hinted insert and update to an equivalent distinct reference already have concrete checks. Do not copy Set's S1 as-is.
+- meld/melding have checks of holding the shared original lhs. Do not add the same check in M5.
+- Positional removal, duplicate counts and the reference-model Fuzz of basic operations remain as existing evidence. Do not say "MultiSet's duplicate handling is unverified".
+- The same setup false positive as Set's S4 was not confirmed for MultiSet. Do not uniformly change the broad failure judgment of Death Tests.
 
-M1〜M5の補完時は関連ケースのDebug/Release実行を確認し、構成限定の理由を残す。不具合や未決の仕様が現れた場合はproductionを変更せず根拠を返す。現段階ではtest修正・新規採番・Claudeへの発注は行っていない。レビュー記録は完了し、RBT-038はコミット許可待ちのWAITING_USERとする。
+When supplementing M1–M5, confirm Debug/Release runs of the related cases and leave the reasons for configuration limits. If defects or undecided specifications appear, return the grounds without changing production. At this stage no test fixes, new numbering or orders to Claude have been made. The review record is complete, and RBT-038 is WAITING_USER, waiting for commit permission.
 
-2026-10-15、ユーザーがレビュー記録のコミットを許可。RBT-038をDONEとして保存する。M1〜M5の補完作業は未発注。
+On 2026-10-15 the user permitted committing the review record. RBT-038 is saved as DONE. The supplement work for M1–M5 has not been ordered.
 
 
-### Dictionary仕様レビュー（RBT-039、2026-10-15、Astra）
+<a id="dictionary仕様レビューrbt-0392026-10-15astra"></a>
+### Dictionary specification review (RBT-039, 2026-10-15, Astra)
 
-基準HEAD：`926271e1`。Setの5つのtestファイルにはClaudeの作業中差分があり、変更していない。DictionaryのInitialize・Subscript・Combining・Sequenceの公開契約と、番号付きInitialization・Insertion・Removal・Utility・ValueSemantics・RangeView、内部CopyOnWrite・Fuzz、共通MappedValuesViewの本文を照合した。BoundExpressionの構成条件とケース、Death Testの重複初期化検査、Cpp比較の対象操作も確認した。静的レビューであり、test実行・mutation検証・全API/全構成の網羅確認は未実施。以下は検査の補完候補で、製品不具合を認定するものではない。
+Base HEAD: `926271e1`. Five Set test files have Claude's in-progress diffs and were not changed. Compared Dictionary's public contracts in Initialize, Subscript, Combining and Sequence with the bodies of the numbered Initialization, Insertion, Removal, Utility, ValueSemantics and RangeView, internal CopyOnWrite and Fuzz, and the shared MappedValuesView. Also checked BoundExpression's configuration conditions and cases, the Death Test for duplicate initialization and the operations covered by the Cpp comparison. A static review; no test runs, mutation verification or exhaustive check of all APIs/configurations. The following are candidates for supplementing checks and do not certify product defects.
 
-testのsuffixは、特記しない限り`Tests/RedBlackTreeTests/RedBlackTreeDictionary/RedBlackTreeDictionary`に続くファイル名を示す。
+Unless otherwise noted, test suffixes indicate file names following `Tests/RedBlackTreeTests/RedBlackTreeDictionary/RedBlackTreeDictionary`.
 
-#### D1：default付きsubscriptの遅延評価と共有元保持（優先）
+<a id="d1default付きsubscriptの遅延評価と共有元保持優先"></a>
+#### D1: lazy evaluation of the defaulted subscript and holding of the shared original (priority)
 
-`+Subscript.swift`は未登録キーの読み出しでdefaultを評価するが挿入せず、変更時には挿入する契約を持つ。`_5_InsertionTests.swift`には読み出し・append・左右の単回転/二重回転が既にある。一方、default生成の副作用による評価回数と、共有コピーを残した既存/未登録キーの変更は確認できなかった。Cpp比較にもdefault加算はあるが、この二点の代替にはならない。
+`+Subscript.swift` has the contract that reading an unregistered key evaluates the default without inserting it, and inserts on mutation. `_5_InsertionTests.swift` already has reading, append and left/right single and double rotations. On the other hand, the evaluation count via side effects of default generation, and mutation of existing/unregistered keys while keeping a shared copy, were not found. The Cpp comparison has default addition, but it does not substitute for these two points.
 
-補完候補：カウンタ付きdefaultで、既存キーでは不要な評価をしないこと、未登録キーの読み出しは評価しても登録しないこと、初回変更で一度生成することを検査する。値型Valueを使って共有元を残し、既存キーと未登録キーへの変更後に双方のkey/valueを確認する。内部コピー回数や参照型Valueのdeep copyは要求しない。既存の回転ケースは増やさない。
+Candidate: with a counting default, check that no unnecessary evaluation happens for existing keys, that reading an unregistered key evaluates but does not register, and that the first mutation generates it once. Using a value-type Value and keeping the shared original, check both sides' key/value after mutating existing and unregistered keys. Internal copy counts and deep copy of reference-type Values are not required. Do not add more of the existing rotation cases.
 
-#### D2：throwing closureの伝播と途中生成物の寿命（優先）
+<a id="d2throwing-closureの伝播と途中生成物の寿命優先"></a>
+#### D2: propagation of throwing closures and lifetimes of intermediate products (priority)
 
-`+Initialize.swift`の重複統合・grouping、`+Combining.swift`のmerge/merging、`+Sequence.swift`のmapValues/compactMapValues/filterはthrowを受ける。Dictionaryのtest検索では、これらへ独自エラーを投げるケースを確認できなかった。テスト関数のthrows指定やCpp実行器のエラーは、対象closureの伝播検査ではない。
+Duplicate merging and grouping in `+Initialize.swift`, merge/merging in `+Combining.swift`, and mapValues/compactMapValues/filter in `+Sequence.swift` accept throws. Searching Dictionary tests, no case throwing a custom error into these was found. A test function's throws specification and the Cpp runner's errors are not propagation checks of the target closure.
 
-補完候補：まずDictionary固有の重複統合と値変換を対象に、エラー識別とthrow後のclosure非呼出し、元入力のkey/value保持を確認する。途中で生成した参照値が解放されることも検査する。mergeでは共有元を保持するが、変更側の全巻戻しは要求しない。Sequence版とDictionary版のmerge、grouping、filter/eraseの共通・相違経路を確認して必要分を補う。全組合せを展開せず、Set/MultiSetのthrow検査で代替できる範囲とDictionary入口固有の範囲を分ける。
+Candidate: first target Dictionary-specific duplicate merging and value transformation, and check error identification, no closure call after the throw, and holding of the original input's key/value. Also check that reference values created midway are released. For merge, keep the shared original, but do not require full rollback of the mutated side. Check the shared and differing paths of the Sequence and Dictionary versions of merge, grouping and filter/erase and supplement what is needed. Do not expand all combinations; separate the scope that the Set/MultiSet throw checks can substitute from the scope specific to Dictionary's entry points.
 
-#### D3：Optional Valueのnilとキー不在を区別する（中）
+<a id="d3optional-valueのnilとキー不在を区別する中"></a>
+#### D3: distinguish a nil Optional Value from an absent key (medium)
 
-`subscript(key:)`はValue?を返し、外側のnil代入を削除とする。既存Insertion/Utility/Fuzzは主にInt・String・配列であり、Value自体がOptionalであるケースを検索した範囲では確認できなかった。
+`subscript(key:)` returns Value? and assigning an outer nil means removal. Existing Insertion/Utility/Fuzz mainly use Int, String and arrays, and no case where Value itself is Optional was found in the search.
 
-補完候補：`RedBlackTreeDictionary<Int, Int?>`で、未登録・登録済みnil・登録済み値ありを、外側Optionalのパターンとcount/キー存在で区別する。`.some(nil)`の代入で登録を保持し、外側nilで削除すること、default付き読み出しが登録済みnilを未登録と取り違えないことを確認する。曖昧なXCTAssertNilだけで三状態を同一視しない。
+Candidate: with `RedBlackTreeDictionary<Int, Int?>`, distinguish unregistered, registered nil and registered with a value by the outer Optional pattern and count/key presence. Confirm that assigning `.some(nil)` keeps the registration, that outer nil removes it, and that the defaulted read does not mistake a registered nil for unregistered. Do not treat the three states as the same with an ambiguous XCTAssertNil alone.
 
-#### D4：共有した参照Valueの置換・削除後の寿命（中）
+<a id="d4共有した参照valueの置換削除後の寿命中"></a>
+#### D4: lifetimes after replacing/removing shared reference Values (medium)
 
-`_6_RemovalTests.swift`にはpop/removeAll/nil代入/上書きの参照解放検査があり、単独所有の基本解放は既に確認されている。一方、共有コピーを残した参照Valueの置換・削除と、旧値を戻り値として保持する期間の寿命は確認できなかった。
+`_6_RemovalTests.swift` has reference release checks for pop/removeAll/nil assignment/overwrite, and basic release with sole ownership is already checked. On the other hand, replacing/removing reference Values while keeping a shared copy, and the lifetime while the old value is held as a return value, were not found.
 
-補完候補：小さな参照Valueの辞書を共有し、一方をupdateValueまたは削除して、他方の参照identityと内容を確認する。共有元や取り出した旧値が保持している間の生存と、最後の保持を解いた後の解放を分けて観測する。テスト自身のローカル変数による保持を制御し、deep copyを要求しない。
+Candidate: share a small dictionary of reference Values, updateValue or remove on one side, and check the reference identity and contents on the other. Observe separately survival while the shared original or the extracted old value holds it, and release after the last hold is released. Control holding by the test's own local variables; do not require deep copy.
 
-#### D5：Bound公開動作のRelease検査（中）
+<a id="d5bound公開動作のrelease検査中"></a>
+#### D5: Release checks of public Bound behavior (medium)
 
-`_16_BoundExpressionTests.swift`の主要部分がDEBUG条件内で、未解決Boundや逆転範囲のpredicate非呼出しなどもDebug限定になる。distanceとIndexRangeの別検査はReleaseでも存在するため、「範囲検査が全くない」とはしない。
+The main part of `_16_BoundExpressionTests.swift` is inside a DEBUG condition, so unresolved Bounds and no predicate calls for reversed ranges are Debug-only too. Separate checks of distance and IndexRange exist in Release, so do not say "no range checks at all".
 
-補完候補：MultiSetのM3と同じ方針で、公開結果だけの検査をDebug専用の内部観測から分離する。Dictionaryではkeyに加えて対応valueも確認する。共通化のための共有fixture変更はこのレビューだけでは発注しない。
+Candidate: with the same policy as MultiSet's M3, separate checks of public results only from Debug-only internal observation. For Dictionary, check the corresponding values in addition to keys. Changes to shared fixtures for commonization are not ordered by this review alone.
 
-#### D6：空の重複初期化testの説明整理（軽微）
+<a id="d6空の重複初期化testの説明整理軽微"></a>
+#### D6: tidying the explanation of the empty duplicate-initialization test (minor)
 
-`_0_InitializationTests.swift`の`testInitWithDuplicateKeysShouldCauseFatalError`はコメントだけで「実テスト不可」とするが、`_99_DeathTests.swift`の`duplicateKeysInUniqueKeysInitializer_terminateProcess`が実在する。空のtest関数を実行保証として数えず、実際のDeath Testと有効条件への参照に整理する。新しい重複初期化testを増やす必要はない。
+`testInitWithDuplicateKeysShouldCauseFatalError` in `_0_InitializationTests.swift` says 「実テスト不可」 with only comments, but `duplicateKeysInUniqueKeysInitializer_terminateProcess` in `_99_DeathTests.swift` exists. Do not count the empty test function as a run guarantee; tidy it into a reference to the actual Death Test and its enabling conditions. No need to add a new duplicate-initialization test.
 
-#### 初回懸念の解消と追加しない課題
+<a id="初回懸念の解消と追加しない課題"></a>
+#### Resolution of first-pass concerns and issues not added
 
-- `_13_ValueSemanticsTests.swift`単独ではkeyだけを見るが、`_7_UtilityTests.swift`に通常subscript更新後の元value/変更後valueの直接検査がある。初回横断の「DictionaryのCoWでvalue未観測」は一般的な不足としては解消する。
-- `RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift`はvaluesの置換・swap・範囲操作・共有元のvalue保持を検査している。同じ検査を再追加しない。範囲所属の契約変更や凍結課題の再開はしない。
-- mergingには非可換な文字列連結で旧値/新値の順序と双方入力保持を確かめるケースがある。統合順序の検査がないとはしない。
-- FuzzはSwift Dictionaryとkey/valueを比較する。通常の代入・merge・mapValues・削除の内容検査を重複して増量しない。
+- `_13_ValueSemanticsTests.swift` alone looks only at keys, but `_7_UtilityTests.swift` directly checks the original and changed values after ordinary subscript updates. The first pass's "Dictionary's CoW does not observe values" is resolved as a general gap.
+- `RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift` checks values' replacement, swap, range operations and holding of the shared original's values. Do not add the same checks again. Do not change the range-membership contract or resume the frozen item.
+- merging has a case using non-commutative string concatenation that checks the order of old/new values and holding of both inputs. Do not say there is no check of the merging order.
+- Fuzz compares key/value with Swift Dictionary. Do not duplicate and enlarge content checks for ordinary assignment, merge, mapValues and removal.
 
-反映時は必要なDebug/Releaseケースと構成条件を確認する。新たな仕様判断や不具合を見つけた場合はproductionを変更せず返す。今回はレビュー記録のみを更新し、test修正・採番・発注はしていない。RBT-039はコミット許可待ちのWAITING_USERとする。
+When applying, confirm the needed Debug/Release cases and configuration conditions. If new specification judgments or defects are found, return them without changing production. This time only the review record was updated; no test fixes, numbering or orders. RBT-039 is WAITING_USER, waiting for commit permission.
 
-2026-10-15、ユーザーがDictionaryレビュー記録のコミットと次段階への継続を許可。RBT-039をDONEとして保存する。補完作業は未発注。
+On 2026-10-15 the user permitted committing the Dictionary review record and continuing to the next stage. RBT-039 is saved as DONE. The supplement work has not been ordered.
 
 
-### MultiMap仕様レビュー（RBT-040、2026-10-15、Astra）
+<a id="multimap仕様レビューrbt-0402026-10-15astra"></a>
+### MultiMap specification review (RBT-040, 2026-10-15, Astra)
 
-基準HEAD：`7e9960d8`。ClaudeのSet作業中差分は編集していない。MultiMap本体のupdateValue、Combining・Sequenceの契約と、番号付きInsertion・Removal・Utility・RangeView・TransformingAndCombining・ValueSemantics・Fuzzの本文を照合した。BoundExpressionの構成条件と逆転範囲、Index検査・内部CoW・Cpp比較の関係箇所を補助確認した。静的レビューのみで、実行検証・mutation検証・全API/構成の網羅確認ではない。
+Base HEAD: `7e9960d8`. Claude's in-progress Set diffs were not edited. Compared the MultiMap body's updateValue and the Combining and Sequence contracts with the bodies of the numbered Insertion, Removal, Utility, RangeView, TransformingAndCombining, ValueSemantics and Fuzz. As auxiliary checks, looked at BoundExpression's configuration conditions and reversed ranges, Index checks, internal CoW and the relevant parts of the Cpp comparison. Static review only; not run verification, mutation verification or an exhaustive check of all APIs/configurations.
 
-以下のtest suffixは`Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap`に続くファイルを示す。製品不具合ではなくテスト補完候補として記録する。
+The test suffixes below indicate files following `Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap`. Recorded as test-supplement candidates, not product defects.
 
-#### MM1：削除済みIndexへのupdateValue（優先）
+<a id="mm1削除済みindexへのupdatevalue優先"></a>
+#### MM1: updateValue on a removed Index (priority)
 
-本体`updateValue(_:at:)`は無効Indexならnilを返す契約。`_5_InsertionTests.swift`には重複key群の中央の置換、endIndex拒否、共有元のvalue保持があるが、削除済みIndexによる更新は確認できなかった。Index自体の失効検査と、この公開操作のnil返却は別の観測である。
+The body's `updateValue(_:at:)` has the contract of returning nil for an invalid Index. `_5_InsertionTests.swift` has replacing the middle of a duplicate-key group, rejecting endIndex and holding the shared original's values, but updating via a removed Index was not found. Invalidation checks of the Index itself and the nil return of this public operation are separate observations.
 
-補完候補：同じkeyに異なるvalueを持つ群から中央を削除し、保存したIndexの失効を確認後、updateValueがnilを返し、残るkey/valueを変更しないことを検査する。別の木のIndexや互換モードに通常モードの契約を転用しない。
+Candidate: from a group with the same key and different values, remove the middle, confirm the saved Index is invalid, then check that updateValue returns nil and does not change the remaining key/values. Do not transfer the normal mode's contract to another tree's Index or compatibility mode.
 
-#### MM2：値変換・predicateがthrowする経路（優先）
+<a id="mm2値変換predicateがthrowする経路優先"></a>
+#### MM2: paths where value transformation or a predicate throws (priority)
 
-`+Sequence.swift`のmapValues/compactMapValues/filterと本体・範囲eraseはthrowing closureを受ける。MultiMap testでは意図的なthrowのケースを検索した範囲で確認できなかった。Cpp比較実行器のthrowは代替ではない。
+mapValues/compactMapValues/filter in `+Sequence.swift` and the body's and range erase take throwing closures. No intentional throw case was found in the MultiMap tests in the search. The Cpp comparison runner's throws are not a substitute.
 
-補完候補：重複keyの各valueを区別した入力で、固有エラーの伝播とthrow後のclosure非呼出しを確認する。非変更操作の元入力、変更操作の共有元のkey/value保持、一時生成した参照Valueの解放を必要な経路で検査する。変更側の全巻戻しは要求しない。D2/M4と実装経路を照合し、共通fixtureの複製や全組合せを増やさない。
+Candidate: with inputs that distinguish each value of duplicate keys, check propagation of a specific error and no closure call after the throw. Check, on the needed paths, the original input of non-mutating operations, holding of the shared original's key/values for mutating operations, and release of temporarily created reference Values. Full rollback of the mutated side is not required. Compare implementation paths with D2/M4, and do not duplicate shared fixtures or add all combinations.
 
-#### MM3：重複エントリと共有コピーによる参照Valueの保持（中）
+<a id="mm3重複エントリと共有コピーによる参照valueの保持中"></a>
+#### MM3: holding of reference Values via duplicate entries and shared copies (medium)
 
-`_6_RemovalTests.swift`は重複keyに別々の参照Valueを入れて削除時の解放を確かめるが、同じ参照を複数エントリに入れた場合や、共有元・返却旧値による保持の寿命は確認できなかった。
+`_6_RemovalTests.swift` puts distinct reference Values in duplicate keys and checks release on removal, but storing the same reference in several entries, and lifetimes held by the shared original or a returned old value, were not found.
 
-補完候補：同一参照を複数エントリに格納して共有コピーを残し、一部を削除・置換しても必要な参照が生存すること、最後の保持を解いた時に解放されることを検査する。updateValueの旧値を保持する期間も区別する。参照のdeep copyや内部copy回数を契約にしない。通常の文字列による位置指定削除は既に別valueを区別できており、その検査を無効扱いしない。
+Candidate: store the same reference in several entries and keep a shared copy; check that needed references survive removing or replacing some of them, and that they are released when the last hold is released. Also distinguish the period of holding updateValue's old value. Do not make deep copy of references or internal copy counts a contract. Ordinary positional removal with strings already distinguishes different values; do not treat that check as invalid.
 
-#### MM4：Boundの公開動作をReleaseでも観測（中）
+<a id="mm4boundの公開動作をreleaseでも観測中"></a>
+#### MM4: observe public Bound behavior in Release too (medium)
 
-`_16_BoundExpressionTests.swift`の主要部分はDEBUG条件内にあり、重複key群の逆転範囲で無変更・predicate非呼出しという公開契約もDebug限定になる。IndexRange・equalRange・distanceには別の検査があり、範囲全体が未検査ではない。
+The main part of `_16_BoundExpressionTests.swift` is inside a DEBUG condition, so the public contract of no change and no predicate call for a reversed range in a duplicate-key group is also Debug-only. IndexRange, equalRange and distance have separate checks, so ranges as a whole are not unchecked.
 
-補完候補：M3/D5と同様に公開結果の検査とDebug専用内部観測を分ける。重複keyのvalue列と個数を確認し、内部検査の条件を一括解除しない。
+Candidate: as with M3/D5, separate public-result checks from Debug-only internal observation. Check the value sequence and count of duplicate keys, and do not lift internal check conditions wholesale.
 
-#### 既存の検査で足りる点
+<a id="既存の検査で足りる点"></a>
+#### Points where existing checks suffice
 
-- 初回の「CoWでkeyしか見ていない」という懸念は、`_7_UtilityTests.swift`の挿入後value列保持、`_5_InsertionTests.swift`のupdateValue、`_8_RangeViewTests.swift`の同じkeyのvalues範囲swapによって一般的な不足としては解消する。
-- 通常挿入順、hintによる同値群内への挿入、中央のremove(at:)、eraseの後続valueは異なる文字列で検査されている。MultiSetのM2を機械的に追加しない。
-- `_11_TransformingAndCombiningTests.swift`は重複keyのmapValues/compactMapValues、inserting、meld/meldingのvalue保持を検査する。meldingは左右入力のvalueも直接確認している。
-- Fuzzはkeyの多重度に加えてvalue==keyを確認する。任意の異なるvalueの順序を保証するものではないが、番号付きの具体例と合わせて評価し、単純に無効としない。
-- 共有MappedValuesViewのDictionary検査に加え、MultiMap固有のkey指定範囲と重複valueのswap/CoW検査が存在する。範囲所属の契約変更は不要。
+- The first-pass concern that "CoW looks only at keys" is resolved as a general gap by `_7_UtilityTests.swift`'s holding of the value sequence after insertion, `_5_InsertionTests.swift`'s updateValue, and `_8_RangeViewTests.swift`'s swap of the values range of the same key.
+- Ordinary insertion order, hinted insertion into an equal group, remove(at:) of the middle and erase's following value are checked with distinct strings. Do not mechanically add MultiSet's M2.
+- `_11_TransformingAndCombiningTests.swift` checks mapValues/compactMapValues, inserting and meld/melding holding values for duplicate keys. melding also directly checks the values of the left and right inputs.
+- Fuzz checks value==key in addition to key multiplicity. It does not guarantee the order of arbitrary distinct values, but it is evaluated together with the numbered concrete examples and not simply treated as invalid.
+- In addition to the shared MappedValuesView Dictionary checks, MultiMap-specific key-based ranges and swap/CoW checks of duplicate values exist. No need to change the range-membership contract.
 
-反映時は関連Debug/Releaseケースを確認し、不具合や未決仕様はproductionを変更せず返す。今回test修正・採番・発注は行っていない。レビュー記録は完了し、RBT-040をコミット許可待ちのWAITING_USERとする。最終横断ではM/D/MMの共通課題を照合し、別型の証拠で代替できる範囲と固有入口の確認を整理する。
+When applying, confirm the related Debug/Release cases, and return defects or undecided specifications without changing production. No test fixes, numbering or orders this time. The review record is complete, and RBT-040 is WAITING_USER, waiting for commit permission. The final pass will compare the shared issues of M/D/MM and sort out the scope substitutable by other types' evidence and the checks of type-specific entry points.
 
-2026-10-15、ユーザーがMultiMapレビュー記録のコミットを許可。RBT-040をDONEとして保存する。MM1〜MM4の補完作業は未発注。
+On 2026-10-15 the user permitted committing the MultiMap review record. RBT-040 is saved as DONE. The supplement work for MM1–MM4 has not been ordered.
 
 
-### Set返却の独立確認と範囲eraseの問題（RBT-042、2026-10-15、Astra）
+<a id="set返却の独立確認と範囲eraseの問題rbt-0422026-10-15astra"></a>
+### Independent check of the Set return and the range-erase problem (RBT-042, 2026-10-15, Astra)
 
-基準HEAD `f029ab36`。ClaudeのReturnと明示的な占有返却を確認。返却原文・5つのSet test・Tests/TESTING.mdは書き換えていない。S1の参照identity、S2のfilter/全体erase、S3の共有元とrhs、S4のsetup終了code拒否と正常controlを差分で照合した。S4は`.failure`だけで86を成功にしない構成である。negative controlと互換構成はClaudeの報告であり、Astraによる再実行ではない。
+Base HEAD `f029ab36`. Confirmed Claude's Return and explicit return of occupancy. The original return text, the 5 Set tests and Tests/TESTING.md were not rewritten. Compared with the diff S1's reference identity, S2's filter/whole erase, S3's shared original and rhs, and S4's rejection of the setup exit code and the normal control. S4 is structured so that `.failure` alone does not make 86 a success. The negative control and compatibility configuration are Claude's reports, not re-runs by Astra.
 
-Astra独立実行：Apple Swift 6.4 (swiftlang-6.4.0.34.1)、macOS arm64。通常の寿命検査を有効のまま、`swift test --disable-sandbox --build-system native --filter '<4追加XCTest名>|removed index'`でXCTest 4件・Swift Testing 2件成功。続く`swift test --disable-sandbox --build-system native --filter RedBlackTreeTests`でXCTest 944件・Swift Testing 125件/13 suite成功。最初の通常実行はmanifest sandbox権限で失敗し、disable-sandboxのみの再試行も既定ビルド方式の作業directory権限で失敗したためnativeへ切り替えた。これはテスト失敗とは区別する。
+Astra's independent runs: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. With the normal lifetime checks enabled, `swift test --disable-sandbox --build-system native --filter '<4追加XCTest名>|removed index'` succeeded with 4 XCTests and 2 Swift Testing tests. The subsequent `swift test --disable-sandbox --build-system native --filter RedBlackTreeTests` succeeded with 944 XCTests and 125 Swift Testing tests / 13 suites. The first normal run failed with a manifest sandbox permission, and the retry with only disable-sandbox failed with a working-directory permission of the default build system, so it was switched to native. This is distinguished from test failures.
 
-**残る問題**：Claudeは有効なIndexRange/IndexRangeExpressionによるSet.eraseでpredicateの独自エラーがSIGTRAPになることを別コピーで再現した。Astraは4型の`+RangeExpression.swift`と内部`UnsafeTreeV2+Erase.swift`を読み、同じcatch-all経路を確認した。内部`___erase_validate_range_if`は範囲エラーを`Result<UnsafeIndexV3, SealError>`へ、predicateエラーをthrowへ分けるが、公開wrapperが呼出しと`.get()`を同じdo/catchへ入れて両方をfatalErrorにしている。他3型の実行再現、およびAstra自身のクラッシュ再現は未実施。
+**Remaining problem**: Claude reproduced in a separate copy that a custom predicate error in Set.erase with a valid IndexRange/IndexRangeExpression becomes SIGTRAP. Astra read the 4 types' `+RangeExpression.swift` and the internal `UnsafeTreeV2+Erase.swift` and confirmed the same catch-all path. The internal `___erase_validate_range_if` separates range errors into `Result<UnsafeIndexV3, SealError>` and predicate errors into throws, but the public wrapper puts the call and `.get()` in the same do/catch and makes both fatalError. Run reproduction for the other 3 types, and Astra's own crash reproduction, were not done.
 
-修正案：内部呼出しの`try`をcatch-allの外で行い、返されたResultのfailureだけを既存の範囲不正停止へ変換する。エラーの型名だけでcatchを振り分けず、発生経路を分ける。predicateのエラーはそのまま伝播させ、無効範囲の停止契約は維持する。4型の有効なIndexRangeとIndexRangeExpressionについて固有エラーの伝播を回帰検査し、既存の無効範囲Death Testも維持する。Bound版とView版を一律に書き換えない。
+Fix proposal: do the internal call's `try` outside the catch-all, and convert only the failure of the returned Result to the existing invalid-range stop. Do not sort catches by error type name alone; separate the paths of occurrence. Let predicate errors propagate as they are, and keep the stop contract for invalid ranges. Regression-check propagation of a specific error for valid IndexRange and IndexRangeExpression in the 4 types, and keep the existing invalid-range Death Tests. Do not rewrite the Bound and View versions uniformly.
 
-依頼のproduction変更禁止に従い、今回は製品コードを修正していない。完成部分をS1/S3/S4とS2のfilter/全体eraseへ限定し、範囲eraseは未完了として残す。RBT-042全体をDONEにせず、修正範囲の確認待ちとする。新規採番・追加発注・commitは行っていない。
+Following the request's prohibition on production changes, the product code was not fixed this time. The completed part is limited to S1/S3/S4 and S2's filter/whole erase, and range erase is left as unfinished. RBT-042 as a whole is not DONE; it awaits confirmation of the fix scope. No new numbering, additional orders or commit.
 
-Release独立確認：`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`はexit 0。XCTest 747件・Swift Testing 112件/7 suite成功。Debug情報を生成しない構成であり、Claudeの通常Release成功報告とは区別する。完成部分はこの範囲で受け入れるが、範囲erase問題が残るため全体完了とはしない。
+Independent Release check: `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests` exit 0. 747 XCTests and 112 Swift Testing tests / 7 suites succeeded. A configuration not generating debug information, distinguished from Claude's report of a normal Release success. The completed part is accepted within this scope, but because the range-erase problem remains, it is not treated as complete overall.
 
-2026-10-15、ユーザーの「修正前に一度コミット」指示により、Claudeのテスト追加・返却とAstraの部分受入・問題調査記録を保存する。範囲eraseの製品コードは未修正で、RBT-042全体のDONEを意味しない。
+On 2026-10-15, following the user's instruction 「修正前に一度コミット」 (commit once before the fix), Claude's test additions and return and Astra's partial acceptance and problem investigation record are saved. The range-erase product code is not yet fixed, and this does not mean RBT-042 as a whole is DONE.
 
 
-### 範囲eraseのpredicateエラー伝播修正（RBT-042、2026-10-15、Astra）
+<a id="範囲eraseのpredicateエラー伝播修正rbt-0422026-10-15astra"></a>
+### Fix of predicate error propagation in range erase (RBT-042, 2026-10-15, Astra)
 
-ユーザーが「バグの修正」を明示的に委任。基準HEAD `7ed1cc6b`。4型の`+RangeExpression.swift`で内部`___erase_validate_range_if`の呼出しをcatch-allから外し、返されたResultのfailureだけをfatalErrorへ変換した。predicateのthrowは呼出元へ伝播する。範囲検査・削除アルゴリズム・Bound/View経路・公開シグネチャは変更していない。
+The user explicitly delegated 「バグの修正」 (fixing the bug). Base HEAD `7ed1cc6b`. In the 4 types' `+RangeExpression.swift`, moved the call of the internal `___erase_validate_range_if` out of the catch-all and converted only the failure of the returned Result to fatalError. Predicate throws propagate to the caller. Range checks, the removal algorithm, the Bound/View paths and public signatures were not changed.
 
-各型の既存`_99_DeathTests.swift`へ`RangePredicatePropagationTests`を追加し、IndexRangeとIndexRangeExpressionの計8ケースを検査。子プロセスで一度削除した後に固有エラーを投げ、期待エラーをcatchし呼出回数と共有元の個数を確認した場合だけexit 0とする。エラーを握り潰す通常復帰や別のエラーは非ゼロで失敗する。子プロセスを使うのは修正前のtrapでテストランナーを終了させないため。全巻戻しは要求せず、子プロセスのexitを参照寿命の検証とは扱わない。
+Added `RangePredicatePropagationTests` to each type's existing `_99_DeathTests.swift`, checking 8 cases in total for IndexRange and IndexRangeExpression. In a child process, it throws a specific error after one removal, and exits 0 only if it catches the expected error and confirms the call count and the shared original's count. A normal return that swallows the error, or a different error, fails with nonzero. The child process is used so that the pre-fix trap does not terminate the test runner. Full rollback is not required, and the child process's exit is not treated as verification of reference lifetimes.
 
-独立実行（Apple Swift 6.4、macOS arm64）：修正前`swift test --disable-sandbox --build-system native --filter RangePredicatePropagationTests`は8件すべて期待exit 0に対しSIGTRAPで失敗。修正後は8件すべて成功。これにより他3型も静的疑いから実行再現済みへ更新する。続く同構成`--filter RedBlackTreeTests`も成功。通常の寿命検査を無効化するtraitは使用していない。既存の不正範囲停止検査を含めて検証した。
+Independent runs (Apple Swift 6.4, macOS arm64): before the fix, `swift test --disable-sandbox --build-system native --filter RangePredicatePropagationTests` failed all 8 with SIGTRAP against the expected exit 0. After the fix all 8 succeeded. This updates the other 3 types from static suspicion to run-reproduced. The subsequent `--filter RedBlackTreeTests` with the same configuration also succeeded. No trait disabling the normal lifetime checks was used. Verified including the existing invalid-range stop checks.
 
-S2のIndex範囲erase停止原因を修正した。M4/D2/MM2に挙げた他のthrowing API・参照寿命・全構成の補完まで完了したとは扱わない。互換モードでは変更した通常APIと新規testが条件付きで除外される。Linux・Swift 6.2・ASan・互換構成の実行は今回行っていない。Claudeの返却原文は保持し、今回の修正と検証の記録はこの節へ置く。
+The cause of the stop in S2's Index-range erase is fixed. The other throwing APIs, reference lifetimes and supplements across all configurations listed in M4/D2/MM2 are not treated as complete. In compatibility mode, the changed normal APIs and new tests are conditionally excluded. Linux, Swift 6.2, ASan and compatibility configuration were not run this time. Claude's original return text is kept, and the record of this fix and verification is placed in this section.
 
-最終検証：DebugはXCTest 944件＋Swift Testing 133件、Releaseは`swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`でXCTest 747件＋Swift Testing 120件、いずれもexit 0。既存の不正範囲Death Testを維持した。修正・検証完了、RBT-042はコミット許可待ちのWAITING_USER。
+Final verification: Debug 944 XCTests + 133 Swift Testing tests; Release, with `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`, 747 XCTests + 120 Swift Testing tests; both exit 0. The existing invalid-range Death Tests were kept. Fix and verification complete; RBT-042 is WAITING_USER, waiting for commit permission.
 
-2026-10-15、ユーザーのコミット許可により4型の範囲erase修正・回帰テスト・検証記録を保存し、RBT-042をDONEとする。
+On 2026-10-15, with the user's commit permission, the 4 types' range-erase fix, regression tests and verification record are saved and RBT-042 is DONE.
 
 
-### 型別補完の継続とMultiSet発注（2026-10-15、Astra）
+<a id="型別補完の継続とmultiset発注2026-10-15astra"></a>
+### Continuing per-type supplements and ordering MultiSet (2026-10-15, Astra)
 
-ユーザー確認により、型別のテスト補完・受入をSet → MultiSet → Dictionary → MultiMapの順で進め、その後に最終横断を行う。レビューの先行完了を型別補完完了と取り違えない。SetはRBT-042で受入済み。MultiSetのM1〜M5をRBT-043として登録しCLAUDE_TASK.mdへ発注した。Dictionary/MultiMap補完は未発注。
+By the user's confirmation, per-type test supplements and acceptance proceed in the order Set → MultiSet → Dictionary → MultiMap, followed by the final pass. Do not mistake the earlier completion of reviews for completion of per-type supplements. Set is accepted in RBT-042. MultiSet's M1–M5 were registered as RBT-043 and ordered in CLAUDE_TASK.md. Dictionary/MultiMap supplements not ordered.
 
-M4のうちIndexRange/IndexRangeExpressionのエラー伝播は31aa2f07の修正・回帰で確認済み。新依頼はこれを維持し、残るfilter/全体erase、参照保持などを補う。M1〜M5の原レビュー本文と新依頼を固定入力とする。今回コミット許可は受けていない。
+Of M4, error propagation for IndexRange/IndexRangeExpression is confirmed by the 31aa2f07 fix and regression. The new request keeps this and supplements the remaining filter/whole erase, reference holding and so on. The original review text of M1–M5 and the new request are fixed inputs. No commit permission received this time.
 
 
-### 型別補完の直列ゲート（2026-10-15、ユーザー指示）
+<a id="型別補完の直列ゲート2026-10-15ユーザー指示"></a>
+### Serial gates of the per-type supplements (2026-10-15, user instruction)
 
-Set補完RBT-042 → MultiSet補完RBT-043 → Dictionary補完RBT-044 → MultiMap補完RBT-045 → 最終横断RBT-041。
+Set supplement RBT-042 → MultiSet supplement RBT-043 → Dictionary supplement RBT-044 → MultiMap supplement RBT-045 → final pass RBT-041.
 
-各型のゲートは正式返却・占有返却・独立検証・受入記録で確認する。単なるレビュー完了や担当者の「終わった」という報告だけでは通過しない。未解決事項が完了条件に影響するなら、処置が確定するまで次型を発注しない。commitは別途ユーザー許可を要する操作として区別する。
+Each type's gate is confirmed by the formal return, the return of occupancy, independent verification and the acceptance record. Mere completion of a review or the assignee's report that "it's done" does not pass it. If unresolved items affect the completion conditions, do not order the next type until their handling is settled. Commit is distinguished as an operation requiring separate user permission.
 
-DictionaryはD1〜D6、MultiMapはMM1〜MM4を対象とし、前段受入後に現行差分と既存証拠へ照合して依頼を具体化する。範囲eraseの修正済み回帰を重複追加しない。production・公開契約の変更は各補完依頼に含めない。不具合は証拠を残して返す。Debug/Releaseの対象検証と構成差・未検証範囲を返却しAstraが独立確認する。登録時点では両型とも未発注。ACTIVEは有効な後続仕事を表し、ゲート通過や作業開始を意味しない。
+Dictionary covers D1–D6 and MultiMap MM1–MM4; after accepting the preceding stage, the requests are made concrete by comparing with the current diff and existing evidence. Do not add duplicates of the already-fixed range-erase regression. Production and public-contract changes are not included in any supplement request. Defects are returned with evidence. Return the target Debug/Release verification, configuration differences and the unverified scope, and Astra checks independently. At registration neither type has been ordered. ACTIVE indicates valid follow-up work, not passing the gate or starting work.
 
-最終横断の到達点は、補完後の4型を再照合し、解消済み・残課題・共通証拠の適用範囲を記録すること。今回の登録はMultiSetへの固定済み依頼を変更しない。
+The goal of the final pass is to re-compare the 4 types after supplementing and record what is resolved, remaining issues and the applicable scope of shared evidence. This registration does not change the fixed request to MultiSet.
 
 
-### 一括発注への変更（2026-10-15、ユーザー指示）
+<a id="一括発注への変更2026-10-15ユーザー指示"></a>
+### Change to a batch order (2026-10-15, user instruction)
 
-RBT-043〜045をCLAUDE_TASK.mdの一つの依頼セットへ準備・掲載した。Dictionary D1〜D6、MultiMap MM1〜MM4も具体的な範囲・検証・返却欄を用意済み。前節の「未発注」「次型を発注」はこれ以後、それぞれ「一括発注済み・着手ゲート待ち」「次型を開始」と読み替える。直列の受入ゲートは維持し、Astraが前型の正式返却・占有返却・独立検証・受入を確認してCLAUDE_TASKのゲートを開く。発注文を毎回作る必要はない。MultiSetのM1〜M5の作業内容は変えない。最終横断は引き続き4型の受入後。
+RBT-043–045 were prepared and posted as one request set in CLAUDE_TASK.md. Dictionary D1–D6 and MultiMap MM1–MM4 also have concrete scope, verification and return fields prepared. From here on, read the previous section's 「未発注」 (not ordered) and 「次型を発注」 (order the next type) as "ordered in a batch, waiting at the start gate" and "start the next type", respectively. The serial acceptance gates are kept; Astra confirms the preceding type's formal return, return of occupancy, independent verification and acceptance and opens the gate in CLAUDE_TASK. No need to write an order each time. The work content of MultiSet's M1–M5 is unchanged. The final pass is still after acceptance of the 4 types.
 
 
-### MultiSet補完の独立受入（RBT-043、2026-10-16、Astra）
+<a id="multiset補完の独立受入rbt-0432026-10-16astra"></a>
+### Independent acceptance of the MultiSet supplement (RBT-043, 2026-10-16, Astra)
 
-Claudeの正式Returnと占有返却を確認し、6試験ファイルの差分をM1〜M5と照合した。削除済みIndexのnil、等価な別個体の位置削除、Releaseでの公開Bound、throw伝播と共有元保持、form演算と同一参照の最終解放が依頼範囲に対応する。既存Debug内部検査を維持し、未決の巻戻し保証やdeep copy保証を追加していない。production変更なし。追加修正を要する点は見つからず受入。
+Confirmed Claude's formal Return and return of occupancy, and compared the diffs of 6 test files with M1–M5. nil for a removed Index, positional removal of equivalent distinct individuals, public Bound in Release, throw propagation and holding of the shared original, and form operations and final release of the same reference correspond to the requested scope. Existing Debug internal checks are kept, and no undecided rollback or deep-copy guarantees were added. No production changes. No points needing further fixes were found; accepted.
 
-Astra独立実行（Apple Swift 6.4、macOS arm64、通常寿命検査有効、ASanなし）:
+Astra's independent runs (Apple Swift 6.4, macOS arm64, normal lifetime checks enabled, no ASan):
 
-- `swift test --disable-sandbox --build-system native --filter RedBlackTreeMultiSet`: exit 0、178 XCTest＋30 Swift Testing成功。
-- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0、769 XCTest＋120 Swift Testing成功。MultiSet公開Bound 16件の実行を確認。
-- 両コマンドで`CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`を使用。ログは`/tmp/astra-multiset-accept-debug.log`、`/tmp/astra-multiset-accept-release.log`。
-- Claude報告のDebug全体954＋133と互換12件は返却証拠として扱い、Astraが同じ実行をしたとはしない。Linux、Swift 6.2、ASan、互換Release、mutation検査は今回未確認。
+- `swift test --disable-sandbox --build-system native --filter RedBlackTreeMultiSet`: exit 0, 178 XCTests + 30 Swift Testing tests succeeded.
+- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0, 769 XCTests + 120 Swift Testing tests succeeded. Confirmed that 16 MultiSet public Bound tests ran.
+- Both commands used `CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`. Logs are `/tmp/astra-multiset-accept-debug.log` and `/tmp/astra-multiset-accept-release.log`.
+- Claude's reported Debug total of 954 + 133 and 12 compatibility tests are treated as return evidence, not as Astra having made the same runs. Linux, Swift 6.2, ASan, compatibility Release and mutation testing not checked this time.
 
-RBT-043は受入済み・commit許可待ちのWAITING_USER。RBT-044の着手ゲートを開いた。RBT-045および最終横断のゲートは維持する。
+RBT-043 is accepted and WAITING_USER, waiting for commit permission. The start gate of RBT-044 was opened. The gates of RBT-045 and the final pass are kept.
 
-2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-043をDONEとして保存する。RBT-044は着手可能、RBT-045は引き続きゲート待ち。
+On 2026-10-16 the user's commit instruction was received. The accepted RBT-043 is saved as DONE. RBT-044 can start; RBT-045 still waits at its gate.
 
 
-### Dictionary補完の独立受入（RBT-044、2026-10-16、Astra）
+<a id="dictionary補完の独立受入rbt-0442026-10-16astra"></a>
+### Independent acceptance of the Dictionary supplement (RBT-044, 2026-10-16, Astra)
 
-Claudeの正式返却・占有返却を確認し、5試験ファイルの差分をD1〜D6へ照合した。default評価回数と値型CoW、throw伝播・途中生成物の寿命、Optionalの三状態、共有参照と返却値の寿命、Release Bound公開動作、空testの実Death Testへの参照化が依頼に対応する。Debug内部検査を保持し、未決の巻戻し保証を要求していない。追加修正を要する点は見つからず受入。
+Confirmed Claude's formal return and return of occupancy, and compared the diffs of 5 test files with D1–D6. Default evaluation counts and value-type CoW, throw propagation and lifetimes of intermediate products, the three Optional states, lifetimes of shared references and return values, public Bound behavior in Release, and turning the empty test into a reference to the actual Death Test correspond to the request. Debug internal checks are kept and no undecided rollback guarantee is required. No points needing further fixes were found; accepted.
 
-独立検証はApple Swift 6.4/macOS arm64、通常寿命検査有効、ASanなし。
+Independent verification on Apple Swift 6.4/macOS arm64, normal lifetime checks enabled, no ASan.
 
-- `swift test --disable-sandbox --build-system native --filter RedBlackTreeDictionary`: exit 0、179 XCTest＋29 Swift Testing成功。
-- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0、794 XCTest＋120 Swift Testing成功。Dictionary公開Bound 16件も実行。
-- 両方で`CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`を使用。ログは`/tmp/astra-dictionary-accept-debug.log`と`/tmp/astra-dictionary-accept-release.log`。
-- Claude報告のDebug全体968＋133、互換9新規ケース成功は返却証拠であり、Astraの再実行とは区別する。Linux、Swift 6.2、ASan、互換Release、mutation検査は今回未確認。
-- throw時のnode破棄についてClaudeが記した静的懸念は、今回の参照解放・寿命検査の成功範囲を超えて一般的な安全性証明にはしない。
+- `swift test --disable-sandbox --build-system native --filter RedBlackTreeDictionary`: exit 0, 179 XCTests + 29 Swift Testing tests succeeded.
+- `swift test --disable-sandbox --build-system native -c release -debug-info-format none --filter RedBlackTreeTests`: exit 0, 794 XCTests + 120 Swift Testing tests succeeded. The 16 Dictionary public Bound tests also ran.
+- Both used `CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache`. Logs are `/tmp/astra-dictionary-accept-debug.log` and `/tmp/astra-dictionary-accept-release.log`.
+- Claude's reported Debug total of 968 + 133 and the success of 9 new compatibility cases are return evidence, distinguished from Astra's re-runs. Linux, Swift 6.2, ASan, compatibility Release and mutation testing not checked this time.
+- The static concern Claude noted about node destruction on throw is not made into a general safety proof beyond the success scope of the reference release and lifetime checks here.
 
-RBT-044は受入済み・commit許可待ちのWAITING_USER。RBT-045の着手ゲートを開放。最終横断RBT-041はMultiMapの返却・独立受入まで開始しない。原Returnは変更していない。
+RBT-044 is accepted and WAITING_USER, waiting for commit permission. The start gate of RBT-045 was opened. The final pass RBT-041 does not start until MultiMap's return and independent acceptance. The original Return was not changed.
 
-2026-10-16、ユーザーのcommit指示を受領。受入済みRBT-044をDONEとして保存する。MultiMapの続行依頼はユーザー意向により3:00 JST以降まで待機し、自動起動はしない。
+On 2026-10-16 the user's commit instruction was received. The accepted RBT-044 is saved as DONE. By the user's wish, the request to continue with MultiMap waits until after 3:00 JST and is not started automatically.
 
 
-### MultiMap補完の独立受入（RBT-045、2026-10-16、Astra）
+<a id="multimap補完の独立受入rbt-0452026-10-16astra"></a>
+### Independent acceptance of the MultiMap supplement (RBT-045, 2026-10-16, Astra)
 
-基準HEADは`8053683a`、対象はClaudeが返却・占有返却したMultiMapの4テストファイルとhandoff。MM1〜MM4の差分を依頼と照合した。削除済みIndexのnil返却と生存要素、throw後の非呼出し・共有元不変・一時参照解放、重複エントリと返却旧値の寿命、ReleaseでのBound公開結果を確認。Debug専用内部観測と通常モードの条件は保持されている。production変更はない。
+Base HEAD is `8053683a`; the targets are MultiMap's 4 test files and the handoff that Claude returned along with occupancy. Compared the MM1–MM4 diffs with the request. Confirmed nil return and surviving elements for a removed Index, no calls after a throw, the shared original unchanged and release of temporary references, lifetimes of duplicate entries and returned old values, and public Bound results in Release. Debug-only internal observation and normal-mode conditions are kept. No production changes.
 
-Astra独立実行（Apple Swift 6.4、macOS arm64、通常の寿命検査有効）：
+Astra's independent runs (Apple Swift 6.4, macOS arm64, normal lifetime checks enabled):
 
-- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`：exit 0、XCTest 979件、Swift Testing 133件／17 suites成功。
-- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`：exit 0、XCTest 817件、Swift Testing 120件／11 suites成功。MultiMap Bound公開検査も実行。
-- 通常起動は環境のsandbox制約、次の既定build systemでの試行はbuild失敗となったため、native buildへ切り替えた。これらを製品不具合や成功した検証へ数えない。
-- 互換構成はClaude返却の実行報告と構成条件の静的照合を根拠とし、Astraは再実行していない。Linux・Swift 6.2・ASan・全target・mutation検証は今回の独立確認外。
+- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`: exit 0, 979 XCTests and 133 Swift Testing tests / 17 suites succeeded.
+- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`: exit 0, 817 XCTests and 120 Swift Testing tests / 11 suites succeeded. The MultiMap Bound public checks also ran.
+- The normal launch hit the environment's sandbox restriction, and the next attempt with the default build system failed to build, so it was switched to the native build. These are not counted as product defects or as successful verification.
+- The compatibility configuration rests on Claude's returned run report and static comparison of configuration conditions; Astra did not re-run it. Linux, Swift 6.2, ASan, all targets and mutation verification are outside this independent check.
 
-`.lessThanOrEqual(k)`について、DSL.mdの解決規則とUnsafeTreeV2+BoundsExpression.swiftはいずれもfind成功時の位置を使う。重複群の最後のvalueを契約として要求する根拠はなく、keyだけの検査は妥当。表現上の懸念は返却原文に保持するが、この受入の未決仕様・製品不具合とはしない。公開契約は変更していない。
+For `.lessThanOrEqual(k)`, both DSL.md's resolution rule and UnsafeTreeV2+BoundsExpression.swift use the position when find succeeds. There is no ground for requiring the last value of a duplicate group as a contract, and a key-only check is appropriate. The concern about wording is kept in the original return text, but it is not an undecided specification or product defect in this acceptance. The public contract was not changed.
 
-MM1〜MM4を受入。RBT-045はcommit確認待ちのWAITING_USER。4型の正式返却・独立受入が揃い、RBT-041最終横断の着手条件は充足した。最終横断自体はまだ実施していない。
+MM1–MM4 accepted. RBT-045 is WAITING_USER, waiting for commit confirmation. With the formal returns and independent acceptance of the 4 types in place, the start condition of the final pass RBT-041 is met. The final pass itself has not yet been done.
 
-2026-10-16、ユーザーが圧縮・アーカイブ後のcommitを指示。受入済みRBT-045をDONEとして履歴化した。最終横断RBT-041は着手可能・未実施。
+On 2026-10-16 the user instructed a commit after compression and archiving. The accepted RBT-045 was moved to history as DONE. The final pass RBT-041 can start and has not been done.
 
 
-### 4型の最終横断（RBT-041、2026-10-16、Astra）
+<a id="4型の最終横断rbt-0412026-10-16astra"></a>
+### Final pass over the 4 types (RBT-041, 2026-10-16, Astra)
 
-基準HEAD：`cfd6c137`。作業ツリーは開始時点でclean。直近`813b286b`からの差分はClaudeの振り返り2文書のみで、対象source/testへの変更なし。今回のレビューは静的照合であり、test・production・公開契約は変更せず、追加発注・採番も行っていない。
+Base HEAD: `cfd6c137`. The working tree was clean at the start. The only diff since the recent `813b286b` is Claude's 2 retrospective documents, with no changes to the target source/tests. This review is a static comparison; tests, production and public contracts were not changed, and no additional orders or numbering were made.
 
-#### 照合範囲と証拠
+<a id="照合範囲と証拠"></a>
+#### Compared scope and evidence
 
-四型の型別補完・受入記録を入力に、番号付きInsertion/Removal/Sequence・Transforming/ValueSemantics/BoundExpression/RangeViewと範囲predicateのsubprocess回帰を横断した。API-Matrix、API-Matrix-View、DSLの関連契約と、共通View三種のerase実装・UnsafeTreeV2のBound解決を照合した。ファイル名は以下の表と指摘から辿る。全API全構成の網羅監査ではない。
+Taking the 4 types' per-type supplement and acceptance records as input, went across the numbered Insertion/Removal/Sequence, Transforming/ValueSemantics/BoundExpression/RangeView and the subprocess regressions for range predicates. Compared the related contracts in API-Matrix, API-Matrix-View and DSL with the erase implementations of the 3 shared Views and UnsafeTreeV2's Bound resolution. File names can be traced from the table and findings below. Not an exhaustive audit of all APIs and all configurations.
 
-| 観点 | 確認結果と根拠 |
+| Aspect | Result and grounds |
 | --- | --- |
-| 固有の更新・削除契約 | Setのhint付き等価参照のinsert/update、MultiSetの同値個体・削除済みIndex、Dictionaryのdefault評価・Optional三状態、MultiMapの削除済みIndexと重複valueを、各型の`*_5_InsertionTests.swift`で区別している。固有APIを全型へ機械的に要求しない |
-| エラー伝播 | Set/MultiSetの`*_1_SequenceTests.swift`・四型の`*_6_RemovalTests.swift`、DictionaryのInsertion/Utility、MultiMapのTransformingAndCombiningに、エラー・呼出し停止・入力または共有元の保持の検査がある。四型`*_99_DeathTests.swift`の`predicateErrorPropagatesFromIndexRange`と`...IndexRangeExpression`は8経路を保護する。共通Viewの不足はX2へ分離 |
-| 参照寿命 | SetのValueSemantics、MultiSetの同一参照複数格納、Dictionary/MultiMapのRemovalに、共有コピー・返却旧値・最終所有者の解放を区別した証拠がある。deep copyや例外時の全巻戻しは追加契約にしていない |
-| Map系の値観測 | `_13_ValueSemanticsTests.swift`の基本ケースは依然key中心だが、追加されたRemovalの共有元value、共通`RedBlackTreeView_0_MappedValuesViewTests.swift`のsetter/swapの値比較、MultiMap `_8_RangeViewTests.swift`の重複値swapと共有元比較で補う。基本ケースの見た目だけを理由に同じ不足を再登録しない |
-| Bound構成差 | MultiSet/Dictionary/MultiMapは公開動作classをReleaseにも露出、内部観測はDebug側。SetのみX1が残る |
-| MappedValues境界 | 共通View testは有効Indexでのsetter/swapとCoW・非比較経路を確認。範囲所属を呼出し側事前条件とするAPI-Matrix-Viewを維持。範囲外の有効Indexを必ずtrapさせる要求は新設せず、既存RBT-026へ委ねる |
-| 重複Bound | `.lessThanOrEqual(k)`はDSLのfind成功時の位置を使う説明と共通実装が一致。MultiMapの特定valueを要求しない検査は妥当。重複群の最後という契約を追加しない |
+| Type-specific update/removal contracts | Each type's `*_5_InsertionTests.swift` distinguishes Set's hinted insert/update of equivalent references, MultiSet's equal-valued individuals and removed Index, Dictionary's default evaluation and the three Optional states, and MultiMap's removed Index and duplicate values. Type-specific APIs are not mechanically required of all types |
+| Error propagation | Set/MultiSet's `*_1_SequenceTests.swift`, the 4 types' `*_6_RemovalTests.swift`, Dictionary's Insertion/Utility and MultiMap's TransformingAndCombining have checks of the error, stopping calls, and holding of the input or shared original. `predicateErrorPropagatesFromIndexRange` and `...IndexRangeExpression` in the 4 types' `*_99_DeathTests.swift` protect 8 paths. The gap in the shared Views is split out into X2 |
+| Reference lifetimes | Set's ValueSemantics, MultiSet's multiple storage of the same reference and Dictionary/MultiMap's Removal have evidence distinguishing shared copies, returned old values and release by the last owner. Deep copy and full rollback on exceptions are not added contracts |
+| Value observation in Map types | The basic case in `_13_ValueSemanticsTests.swift` is still key-centred, but it is supplemented by the shared original values in the added Removal tests, value comparisons of setter/swap in the shared `RedBlackTreeView_0_MappedValuesViewTests.swift`, and the duplicate-value swap and shared-original comparison in MultiMap `_8_RangeViewTests.swift`. Do not re-register the same gap based only on the appearance of the basic case |
+| Bound configuration differences | MultiSet/Dictionary/MultiMap expose public behavior classes in Release too, with internal observation on the Debug side. Only Set remains as X1 |
+| MappedValues boundary | The shared View tests check setter/swap with valid Indexes, CoW and the non-comparison path. API-Matrix-View's treatment of range membership as a caller precondition is kept. No new requirement that a valid Index outside the range always traps; left to the existing RBT-026 |
+| Duplicate Bound | The explanation that `.lessThanOrEqual(k)` uses the position on successful find in DSL matches the shared implementation. MultiMap's check not requiring a specific value is appropriate. No contract of "the last of the duplicate group" is added |
 
-#### X1：SetのBound公開動作がDebug限定のまま（補完候補）
+<a id="x1setのbound公開動作がdebug限定のまま補完候補"></a>
+#### X1: Set's public Bound behavior remains Debug-only (supplement candidate)
 
-根拠：`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_16_BoundExpressionTests.swift:8`の`DEBUG && !COMPATIBLE_ATCODER_2025`が、公開結果だけの`testEraseBounds`、`testEraseBoundsWhere`、`testEraseReversedBoundsRemovesNothing`、`testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate`等も囲む。後段のRelease対象classはdistanceであり、この削除検査の代替ではない。
+Grounds: `DEBUG && !COMPATIBLE_ATCODER_2025` at `Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_16_BoundExpressionTests.swift:8` also encloses the public-result-only `testEraseBounds`, `testEraseBoundsWhere`, `testEraseReversedBoundsRemovesNothing`, `testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate` and others. The Release-target class later in the file is distance and does not substitute for these removal checks.
 
-Set `_4_SearchTests.swift`に通常lower/upperBound検索、`_17_RangeViewTests.swift`にIndex範囲・逆転Viewの既存検査はあるため、Setの範囲全体が未検査という指摘ではない。他三型で済んだ「公開Bound結果と内部観測の分離」がSetに未反映で、Releaseだけの不具合をこれらのケースでは検出できない。
+Set has existing checks of ordinary lower/upperBound search in `_4_SearchTests.swift` and of Index ranges and reversed Views in `_17_RangeViewTests.swift`, so this is not a finding that Set's ranges as a whole are unchecked. The "separation of public Bound results from internal observation" done in the other 3 types is not reflected in Set, and Release-only defects cannot be detected by these cases.
 
-補完案：他三型と同様、公開結果の検査をReleaseでも実行できるclassへ分離する。`isValid`・`_copyCount`など内部観測の条件を一括解除しない。新しいAPI契約や大量の重複ケースを追加せず、特に逆転範囲の無変更とpredicate非呼出しをReleaseで確認する。
+Proposed supplement: as in the other 3 types, split the public-result checks into a class that can also run in Release. Do not lift conditions of internal observation such as `isValid` and `_copyCount` wholesale. Without adding new API contracts or many duplicate cases, confirm in Release especially that reversed ranges are unchanged and the predicate is not called.
 
-#### X2：共通View三種のthrowing eraseに常設の例外経路テストがない（補完候補）
+<a id="x2共通view三種のthrowing-eraseに常設の例外経路テストがない補完候補"></a>
+#### X2: no permanent exception-path tests for throwing erase in the 3 shared Views (supplement candidate)
 
-根拠：`Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift:274`、`RedBlackTreeRangeView+KeyValue.swift:343`、`RedBlackTreeMappedValuesView.swift:308`はいずれも`rethrows`の`erase(where:)`を持つ。KeyValueはElement変換、MappedValuesはvalue抽出を挟む独自wrapperで、コンテナ本体の`erase(_safeRange:where:)`を経由しない。
+Grounds: `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift:274`, `RedBlackTreeRangeView+KeyValue.swift:343` and `RedBlackTreeMappedValuesView.swift:308` all have a `rethrows` `erase(where:)`. KeyValue inserts Element conversion and MappedValues inserts value extraction in their own wrappers, which do not go through the container body's `erase(_safeRange:where:)`.
 
-`Tests/RedBlackTreeTests/RedBlackTreeView/`の3つの通常testファイルには正常predicate・削除・寿命の検査があるが、意図的なthrowはない。四型のRangeViewTestsと関連呼出しの検索でも該当する常設例外検査を確認できなかった。先の調査で一時的にSet Viewのthrowを試した記録はあるが、保持された回帰テストや他の二つのwrapperの証拠ではない。
+The 3 normal test files in `Tests/RedBlackTreeTests/RedBlackTreeView/` have checks of normal predicates, removal and lifetimes, but no intentional throws. Searching the 4 types' RangeViewTests and related calls also found no corresponding permanent exception check. There is a record of temporarily trying a throw in the Set View during the earlier investigation, but it is not a kept regression test nor evidence for the other two wrappers.
 
-補完案：四型すべての全組合せではなく、KeyOnly / KeyValue / MappedValuesの入口を代表する小さなケースを用意する。非空の部分範囲で途中まで処理して固有エラーを投げ、エラーの同一性、後続predicate非呼出し、範囲外に触れないこと、共有元の内容不変を観測する。Map系はkeyだけでなくvalueを比較する。変更側の巻戻しや未記載の途中状態を固定しない。必要な参照寿命は既存fixture・寿命検査を利用し、製品不具合が出たら修正判断を分離する。
+Proposed supplement: rather than all combinations of the 4 types, prepare small cases representing the KeyOnly / KeyValue / MappedValues entry points. In a nonempty subrange, process partway and throw a specific error, and observe the error's identity, no subsequent predicate calls, not touching outside the range, and the shared original's contents unchanged. For Map types, compare values as well as keys. Do not fix rollback of the mutated side or unstated intermediate states. For needed reference lifetimes, use existing fixtures and lifetime checks, and if a product defect appears, separate the fix decision.
 
-#### 完了範囲と次へ渡すもの
+<a id="完了範囲と次へ渡すもの"></a>
+#### Completed scope and handover
 
-X1・X2はTest as Specの追加補完候補で、製品不具合を実証したものではない。公開契約の新規判断は不要と考えるが、補完中に未決契約や製品不具合が現れた場合は別に扱う。新規task・Claude依頼は未作成。
+X1 and X2 are additional Test as Spec supplement candidates and do not demonstrate product defects. No new judgment of the public contract is thought to be needed, but if undecided contracts or product defects appear during supplementing, they are handled separately. No new task or Claude request has been created.
 
-直近の受入時には同じ赤黒木source/testに対してDebug 979 XCTest＋133 Swift Testing、Release 817＋120が成功している。今回その実行をやり直してはいない。成功件数でX1・X2の不足を埋めた扱いにしない。Linux・Swift 6.2・ASan・互換構成の全面再検査・全APIのmutation検証・並行初期化保証は今回の確認外。
+At the most recent acceptance, Debug 979 XCTests + 133 Swift Testing tests and Release 817 + 120 succeeded on the same red-black tree source/tests. Those runs were not redone this time. Success counts are not treated as filling the X1/X2 gaps. Linux, Swift 6.2, a full re-check of ASan and compatibility configuration, mutation verification of all APIs and concurrent-initialization guarantees are outside this check.
 
-初回横断→四型順のレビューと補完→最終横断、という今回のレビュー工程は完了。RBT-041をWAITING_USER（commit確認待ち）とする。製品品質全体の合格や追加補完の完了ではない。
+This round's review process — first pass → per-type review and supplement in order → final pass — is complete. RBT-041 is WAITING_USER (waiting for commit confirmation). This is not a pass of overall product quality or completion of the additional supplements.
 
-2026-10-16、ユーザーがX1・X2の姫への依頼とcommitを指示。RBT-046を事前登録し、CLAUDE_TASK.mdへ限定依頼を掲載した。RBT-041はレビュー完了としてDONE。補完の実行・受入は未実施。
+On 2026-10-16 the user instructed requesting X1 and X2 from Hime and committing. RBT-046 was pre-registered and a limited request posted in CLAUDE_TASK.md. RBT-041 is DONE as a completed review. The supplement has not been executed or accepted.
 
 
-### 最終横断の追加補完の独立受入（RBT-046、2026-10-16、Astra）
+<a id="最終横断の追加補完の独立受入rbt-0462026-10-16astra"></a>
+### Independent acceptance of the additional supplements from the final pass (RBT-046, 2026-10-16, Astra)
 
-対象commitは`f2aa435e`（基準`48a71417`）。Claudeの返却と占有返却を確認し、4テストファイルの差分をX1・X2へ照合した。製品コードの変更はない。
+Target commit `f2aa435e` (base `48a71417`). Confirmed Claude's return and return of occupancy and compared the diffs of 4 test files with X1 and X2. No product code changes.
 
-- X1：SetのBound公開動作14件がReleaseでも実行される。既存公開アサーションを移し、逆転範囲の無変更・predicate非呼出しを保持。内部のisValid・copy count等はDebug条件内に残っている。
-- X2：KeyOnly・KeyValue・MappedValuesの部分範囲で固有エラーの伝播、throw後の非呼出し、範囲外の保持、共有元の内容不変を検査している。Map系はvalueも観測する。変更側の巻戻しや範囲内の特定の途中状態を契約に追加していない。
+- X1: 14 Set public Bound tests also run in Release. Existing public assertions were moved, keeping no change and no predicate calls for reversed ranges. Internal isValid, copy count and the like remain inside the Debug condition.
+- X2: in subranges of KeyOnly, KeyValue and MappedValues, checks propagation of a specific error, no calls after the throw, holding outside the range, and the shared original's contents unchanged. Map types also observe values. Rollback of the mutated side and particular intermediate states within the range are not added to the contract.
 
-Astra独立実行：Apple Swift 6.4（swiftlang-6.4.0.34.1）、macOS arm64。通常寿命検査・Death Tests有効。
+Astra's independent runs: Apple Swift 6.4 (swiftlang-6.4.0.34.1), macOS arm64. Normal lifetime checks and Death Tests enabled.
 
-- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`：exit 0、986 XCTest＋133 Swift Testing／17 suites成功。
-- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`：exit 0、834 XCTest＋120 Swift Testing／11 suites成功。Set公開Bound14件と追加View3件の実行・成功も確認。
-- ログ：`/tmp/astra-rbt046-debug.log`、`/tmp/astra-rbt046-release.log`。
-- 互換構成では変更対象が除外されるguardを静的確認した。互換build成功はClaudeの返却証拠であり、Astraは再実行していない。Linux、Swift 6.2、ASan、全target、mutation検証は今回の独立確認外。
+- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`: exit 0, 986 XCTests + 133 Swift Testing tests / 17 suites succeeded.
+- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`: exit 0, 834 XCTests + 120 Swift Testing tests / 11 suites succeeded. Also confirmed the 14 Set public Bound tests and the 3 added View tests ran and succeeded.
+- Logs: `/tmp/astra-rbt046-debug.log`, `/tmp/astra-rbt046-release.log`.
+- Statically confirmed the guards that exclude the changed targets in the compatibility configuration. The compatibility build success is Claude's return evidence; Astra did not re-run it. Linux, Swift 6.2, ASan, all targets and mutation verification are outside this independent check.
 
-X1・X2を受入。追加修正・未決契約・製品不具合は見つからなかった。今回の4型レビュー工程と、その最終横断の追加補完まで完了した。製品品質全体の合格とは区別する。実装はユーザーの直接指示によりClaudeがcommit済み。RBT-046は今回の受入記録のcommit確認待ちとしてWAITING_USERとする。
+X1 and X2 accepted. No further fixes, undecided contracts or product defects were found. This round's 4-type review process, through the additional supplements of its final pass, is complete. This is distinguished from a pass of overall product quality. The implementation was committed by Claude on the user's direct instruction. RBT-046 is WAITING_USER, waiting for commit confirmation of this acceptance record.
 
-2026-10-16、ユーザーのcommit指示を受領。受入記録と常設の感想追記許可を保存し、RBT-046をDONEとする。感想文書自体の編集・commitはユーザーが行う。
+On 2026-10-16 the user's commit instruction was received. The acceptance record and the standing permission for adding impressions are saved, and RBT-046 is DONE. Editing and committing the impressions document itself is done by the user.

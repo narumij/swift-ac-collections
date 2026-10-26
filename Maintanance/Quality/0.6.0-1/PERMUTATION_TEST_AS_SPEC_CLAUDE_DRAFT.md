@@ -1,5 +1,9 @@
 # Permutation Test as Spec — Claude request
 
+## TL;DR（人間向け）
+
+PermutationのTest as Specificationのレビュー指摘B〜Dを、Claudeへ渡した依頼（PERM-078）とClaudeの返却。終端nilの失効Death Testが設定の失敗を期待どおりのtrapと取り違えないようにし、借用版の未開始所有者の破棄と、構築後に元配列を変えても列挙が変わらないことのテストを足した。製品コードの不具合や未決の契約は見つからず、指摘Aは凍結中のPERM-051の範囲として対象外。
+
 Author: Astra / 2026-10-15. Task: PERM-078. Status: ACTIVE, issued through CLAUDE_TASK.md on 2026-10-15.
 
 The user authorized dispatch before closing OPT-074 acceptance records. Claude has returned OPT-074 and released its scope; the current Registry was checked before issuing this request. CLAUDE_TASK.md now assigns PERM-078 to Claude. ACTIVE records the issued assignment, not confirmation that execution has started.

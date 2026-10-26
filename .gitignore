@@ -1,29 +1,35 @@
+# macOS and local credentials
 .DS_Store
+.netrc
+
+# SwiftPM and Xcode
 /.build
 /Packages
+.swiftpm/
+Package.resolved
+.swift-version
 xcuserdata/
 DerivedData/
-.swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
-Package.resolved
-.swiftpm/
-Tests/Executables/MarriedSource/RedBlackTree.swift_
-Tests/Executables/MarriedSource/main.swift
-.swift-version
+
+# Generated benchmark and review files
 Benchmarks/.build/
 /Benchmarks/_Artifacts/
 /.task-graphs/
-/_ReleaseTask/
 /Reviews/
+
+# Local Studio runtime, data, and migration backup
+/Maintanance/Studio/
+/Maintanance.zip
+/.studio-trials/
+
+# Local history and private drafts
 /Maintanance/TaskHistoryIndex/
-# AI caches (2026-10-16 user decision). Keep only each area's README tracked.
+/Maintanance/User/Rights/
+
+# AI caches; keep each area's README tracked
 /Maintanance/Cache/**
 !/Maintanance/Cache/*/
 !/Maintanance/Cache/*/README.md
 
-# Registry Studio: environment-specific node/marked record (2026-10-17, OPS-065)
-/Maintanance/RegistryApp/local-tools.json
-
-# Private user drafts
-/Maintanance/User/Rights/
+# Python bytecode
+__pycache__/

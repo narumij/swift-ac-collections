@@ -1,3 +1,9 @@
+# 共通原則
+
+役割やモデルを問わず、[AGENTS.md](AGENTS.md)を協働・判断・権限・検証・報告の共通原則とする。本書はClaude系の起動・依頼受信・受渡しの入口だけを補う。同じ原則を別の固定手順で重複定義しない。
+
+このファイルを読んだことやモデル名だけでは、担当への任命、調整、Registry更新、受入、commitの権限を得ない。現在のユーザー指示と明示された委任から担当・範囲を確認する。旧担当「姫」の個別依頼・待機・常設委任は、新しい担当へ自動継承しない。Claude系を一律にレビュー専任とする規則でもない。
+
 # Session Startup
 
 Use [Progress V2](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md) as the entry point
@@ -24,6 +30,13 @@ the user's latest instructions or authorize resuming frozen work.
 
 ## Request routing for Claude and Fable
 
+For a direct user request to import a Studio Inbox save or refresh judgment caches,
+use the bounded [maintenance role](Maintanance/Current/MAINTENANCE_ROLE.md).
+It authorizes the requested canonical/Registry reconciliation without appointing
+a general coordinator or requiring a second coordinator to repeat the import.
+This user-authorized exception applies to the ordinary return/reconciliation rules
+below; ownership, protected documents, judgment boundaries and commit approval remain.
+
 For the user-authorized temporary Fable coordinator role, consult
 [the deputy delegation](Maintanance/Current/FABLE_COORDINATOR_DEPUTY.md). It explicitly
 includes Registry updates and cleanup, and defines runtime-model identification.
@@ -40,8 +53,11 @@ ownership or final acceptance authority.
 
 ## Coordinator Assignments
 
-Follow the selected request and the occupancy and handoff rules in
-[CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md).
+Follow the current request route in the [shared entry point](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md#現在の依頼を受け取る).
+For DB assignments, read the addressed inbox and selected letter, then its task and
+canonical document. Use a request-file assignment only when explicitly designated.
+The occupancy and handoff rules in [CLAUDE_TASK.md](Maintanance/CLAUDE_TASK.md)
+still apply; its historical requests do not restart work or continuous waiting.
 
 The coordinator must register the task in the Task Registry before issuing the request
 and include its stable ID in the request. Check the scope, editable files, return
@@ -88,25 +104,30 @@ to select work autonomously.
 
 # Communication
 
-Communicate with the user in Japanese, including explanations, questions, progress
-updates, and final reports.
+ユーザーへの説明・質問・進捗・報告は日本語で行う。着手時には、何を進めるかを短く伝える。
 
-To reduce usage, use English by default for internal instructions and coordinator-to-Claude
-requests. Preserve Japanese quotations and canonical terminology where needed for accuracy.
+会話全体の文脈から、実行依頼・訂正・相談・感想を区別する。感嘆や提案への賛同だけで実行権限を作らない。一方、既に任された範囲の仕事は進め、同じ許可を繰り返し求めない。不明な判断・権限だけを、確認できた事実と選択肢を添えて持ち主へ返す。
+
+確認できることは自分で確認し、失敗・未達・未確認を明示する。受け手が調査や説明を組み立て直さずに済むよう、要求に対する結果・理由・証拠と残件を伝える。応答行数、選択式の回答、定型の観点数、一定回数の会話読直しを目的にしない。必要な調査・修復は既存の委任範囲で進め、範囲を超える判断だけを返す。
+
+## Work Managed Through the Communication DB
+
+Use the selected letter for receipt and return, following the
+[communication procedure](Maintanance/RegistryApp/README.md#communication-db).
+Keep results, evidence, specifications and decisions in the referenced canonical document.
+Do not duplicate a DB assignment into a request file or the old notification route.
 
 ## Work Managed Through a Request File
 
 For assignments through `Maintanance/CLAUDE_TASK.md`, record progress, startup summaries,
 and completion details in the assigned Return section.
 
-If a final chat response is required after successful completion, respond with exactly
-`完了` and nothing else. Explain directly when blocked, when a safety issue is found,
-or when a decision only the user can make is needed.
+必要な証拠は指定のReturnへ残し、会話では結果・残件・受入待ちなどを簡潔に伝える。返却を正式受入や仕事全体の終了と同一視しない。
 
 ## Direct User Work
 
 Provide the explanations, questions, and results needed for the request in normal Japanese.
-The request-file restriction to a one-word completion response does not apply.
+
 
 Do not leave information needed for formal reconciliation only in the conversation.
 Record it in the corresponding task record or queue entry.
@@ -135,3 +156,7 @@ by all agents and are not mandatory startup reading.
 Put intentionally retained fixtures, benchmark sources, and raw validation evidence
 in their designated locations and identify them in the report. Do not scatter
 disposable experiments through source, test, or maintenance directories.
+
+# 適用範囲
+
+従来の調整役向けAGENTS.md参照を、今回のユーザー指示により全担当へ統一した。具体的な役割・操作権限は現在の委任に従う。

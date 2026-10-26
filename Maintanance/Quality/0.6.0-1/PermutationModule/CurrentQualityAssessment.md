@@ -1,5 +1,11 @@
 # NextPermutationModule Current Quality Assessment
 
+## TL;DR（人間向け）
+
+Permutationの品質評価を、旧COW版、runtime-check一時View版、borrowed版、互換modeの異なる証拠に分けて管理する記録です。通常版の仕様test再構成と受入を記録し、既存性能成果物は次回品質評価へ引き継いでいます。
+
+旧版の評価や比率候補を現行版の合格判定に流用しません。有限のVerificationと、一般利用・競技利用のValidation、borrowed版寿命fixture、正式性能判定は別です。過去の再開待ちを新しい追加ゲートにしません。
+
 ## 次回品質評価への性能引継ぎ 2026-10-16
 
 記録：Astra。ユーザーが既存の測定成果物を示し、PERM-043・044の整理を承認した。両taskは独立した残作業から除外し、性能再検査と必要な判定は次回品質評価で扱う。本文後段に残る旧taskの再開待ち・基準候補は過去の経緯であり、現在の追加ゲートにはしない。[除外前の行・依存辺・正本](../../../Archived/PERM-043_044_EXCLUDED_2026-10-16.md)を保存した。

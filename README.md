@@ -9,7 +9,7 @@ English | [日本語](README.ja.md)
 
 swift-ac-collections is a Swift library that provides a variety of data structures, centered on
 
-**sorted sets and dictionaries with performance comparable to C++ `std::set` / `std::map`**.
+**sorted sets and dictionaries that aim for performance comparable to C++ `std::set` / `std::map`**.
 
 These sorted sets and dictionaries are designed to
 **make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
@@ -21,7 +21,7 @@ These sorted sets and dictionaries are designed to
 
 ### Using Swift Package Manager
 
-Building the current package requires Swift 6.4 or later. Check the API documentation for OS availability of individual APIs.
+The current package requires Swift 6.4 or later. On macOS, it targets macOS 15 or later.
 
 Add the following to the `dependencies` section of your `Package.swift`:
 
@@ -74,19 +74,13 @@ After enabling the trait, import `AcCollections` normally to use the one- throug
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | Development version for general use, targeting the latest **somewhat** stable Swift |
+| `main` | ⭐ | Development version (Swift 6.4 or later) |
 | `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
 | `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
 
-### Which branch should I use?
+Use `main` for general use. The library is under development; APIs and implementations may change.
 
-In general, `main` is recommended.
-
-Use `compatible/AtCoder/2025` when compatibility with the AtCoder 2025 judge environment is required. This branch maintains compatibility with AtCoder 2025 while receiving maintenance such as documentation improvements, deprecation annotations, and additional warnings.
-
-The `release/AtCoder/2025` branch preserves the exact state deployed on AtCoder.
-
-The `main` branch targets the latest stable Swift and is under active development. Its core functionality and verification are largely in place, and it is already available for evaluation and use. However, stable API compatibility is not yet guaranteed, and APIs and implementations may change.
+Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
 
 ---
 
@@ -114,19 +108,6 @@ Current guides in this checkout:
 The generated API documentation is available on
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
 
-For generation, validation, and local preview instructions, see the [documentation maintenance guide](Maintanance/DOCUMENT.md#swift-doccの確認) (in Japanese).
-
-## Underscored Declarations
-
-An "underscored declaration" refers to any declaration whose fully qualified name contains a component that begins with an underscore (`_`). For example, the following names may technically be declared as `public`, but are not considered part of the public API:
-
-- `FooModule.Bar._someMember(value:)` (underscored member)
-- `FooModule._Bar.someMember` (underscored type)
-- `_FooModule.Bar` (underscored module)
-- `FooModule.Bar.init(_value:)` (initializer with an underscored parameter)
-
-Likewise, do not expect compatibility guarantees for the codebase in general. These declarations may change as needed, including through incompatible changes.
-
 ## AtCoder 2025
 
 If you need the exact version used by the AtCoder 2025 judge environment, specify the following:
@@ -142,8 +123,6 @@ dependencies: [
 ## License
 
 This library is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
-
-**Exception: `Maintanance/` and all its subdirectories are excluded from the repository-wide Apache grant.** Rights held by narumij in their contents are reserved and require prior permission for reuse to the extent permission is legally required; third-party portions (including copied or adapted code snippets) are excluded from this claim and retain their applicable terms. See [Maintanance rights notice](Maintanance/LICENSE.md), including the statement on AI memory-support methods and the exceptions for existing grants, third-party rights, and GitHub functionality.
 
 RedBlackTreeCollections' `__tree` is adapted from the LLVM implementation. For the original license, see  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt).

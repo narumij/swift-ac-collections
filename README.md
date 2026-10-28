@@ -15,6 +15,8 @@ These sorted sets and dictionaries are designed to
 **make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
 
 [![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
+[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/narumij/swift-ac-collections)
+[![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Usage
@@ -105,8 +107,10 @@ Current guides in this checkout:
 - [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
 - [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
-The generated API documentation is available on
-[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
+API documentation will be available through the documentation link on
+[Swift Package Index](https://swiftpackageindex.com/narumij/swift-ac-collections)
+once the initial generation and publication complete.
+Until then, use the [API documentation on GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
 
 ## AtCoder 2025
 

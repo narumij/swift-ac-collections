@@ -9,7 +9,7 @@
 
 swift-ac-collections は、
 
-**C++ の `std::set` / `std::map` に匹敵する性能を誇るソート済み集合・辞書**
+**C++ の `std::set` / `std::map` に匹敵する性能を目指すソート済み集合・辞書**
 を中心に、さまざまなデータ構造を提供する Swift ライブラリです。
 
 このソート済み集合・辞書は、**「C++ の `std::set` / `std::multiset` を前提とした
@@ -23,7 +23,7 @@ swift-ac-collections は、
 
 ### Swift Package Manager での利用
 
-現行パッケージのビルドにはSwift 6.4以降が必要です。個別APIのOS条件はAPIドキュメントを確認してください。
+現行パッケージはSwift 6.4以降が必要です。macOSでは15以降を対象とします。
 
 `Package.swift` の `dependencies` に以下を追加してください:
 
@@ -70,27 +70,19 @@ traitを有効にした後は、通常どおり`AcCollections`をimportすると
 `OptionalElementBuffer`を利用できます。SwiftPMのtrait設定については、
 [Swift Package Managerの案内](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
 
-@Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
-
 <!-- 英訳: Branch Strategy -->
 ## ブランチ運用方針
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | 通常利用。最新の**やや**安定版 Swift を対象とする開発版 |
+| `main` | ⭐ | 開発版（Swift 6.4以降） |
 | `compatible/AtCoder/2025` | | AtCoder 2025 互換版 |
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 
 <!-- 英訳: Which branch should I use? -->
-### どのブランチを使えばよいですか？
+通常は `main` を利用してください。現在は開発中で、APIや実装は変更される可能性があります。
 
-通常は `main` の利用をおすすめします。
-
-AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatible/AtCoder/2025` を利用してください。このブランチでは AtCoder 2025 との互換性を維持したまま、ドキュメント補強、deprecated 指定、注意喚起の追加などの保守を行っています。
-
-`release/AtCoder/2025` は AtCoder に搭載されている状態をそのまま保持するためのブランチです。
-
-`main` は最新の安定版 Swift を対象とする開発中のブランチです。基本的な機能と検証は揃いつつあり、現時点でも試用できます。ただし、安定版としての API 互換性はまだ保証しておらず、API や実装が変更される可能性があります。
+AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release/AtCoder/2025` です。
 
 ---
 
@@ -118,19 +110,6 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 生成済みのAPIドキュメントは
 [GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
 
-生成・検証・ローカルプレビューの方法は、[文書整備の手引き](Maintanance/DOCUMENT.md#swift-doccの確認)を参照してください。
-
-## アンダースコア付き宣言について
-
-「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：
-
-- `FooModule.Bar._someMember(value:)`（アンダースコア付きのメンバー）
-- `FooModule._Bar.someMember`（アンダースコア付きの型）
-- `_FooModule.Bar`（アンダースコア付きのモジュール）
-- `FooModule.Bar.init(_value:)`（アンダースコア付きの引数を持つイニシャライザ）
-
-さらに、コードベース全般についても同様に、互換性が保証されることは期待しないでください。これらの宣言は必要に応じて変更される可能性があり、非互換な修正が加えられる場合があります。
-
 ## AtCoder 2025
 
 AtCoder 2025 ジャッジと同一のものをご希望の場合は、以下を指定してください。
@@ -147,10 +126,10 @@ dependencies: [
 
 このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。
 
-**例外として、`Maintanance/` 以下の全内容は、リポジトリ共通のApache許諾の対象外です。** narumijが保有する権利を留保し、法的に許諾が必要な再利用には事前許諾を求めます。第三者由来の部分（転載・翻案したコード断片など）はこの権利主張から除外し、元の適用条件を維持します。AIの記憶補助手法についての意思表示、既存許諾・第三者の権利・GitHub機能に関する例外は、[Maintananceの権利表示](Maintanance/LICENSE.md)を参照してください。
-
 RedBlackTreeCollectionsの`__tree`は LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
-[https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。
+[LLVM libc++のライセンス](Licenses/LLVM-libcxx.txt) をご参照ください。
+
+Swift Collections・Swift Algorithmsなどの第三者由来コードのライセンスは、[Licenses](Licenses/README.md)に収録しています。
 
 ---
 

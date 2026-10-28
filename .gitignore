@@ -17,19 +17,13 @@ Benchmarks/.build/
 /.task-graphs/
 /Reviews/
 
-# Local Studio runtime, data, and migration backup
-/Maintanance/Studio/
+# Maintenance has its own local-only Git repository.
+/Maintanance/
 /Maintanance.zip
 /.studio-trials/
 
-# Local history and private drafts
-/Maintanance/TaskHistoryIndex/
-/Maintanance/User/Rights/
-
-# AI caches; keep each area's README tracked
-/Maintanance/Cache/**
-!/Maintanance/Cache/*/
-!/Maintanance/Cache/*/README.md
-
 # Python bytecode
 __pycache__/
+
+# Provisional local quality assessment data
+/Benchmarks/QualityAssessment/

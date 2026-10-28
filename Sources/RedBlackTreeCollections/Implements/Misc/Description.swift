@@ -1,5 +1,17 @@
-// from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
-// license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
+//===----------------------------------------------------------------------===//
+// Portions adapted from the Swift Collections open source project:
+// Sources/InternalCollectionsUtilities/Descriptions.swift
+// https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
+//
+// Copyright (c) 2022 - 2026 Apple Inc. and the Swift project authors
+// Licensed under Apache License v2.0 with Runtime Library Exception.
+// See Licenses/swift-collections.txt in the repository root for the full license.
+//
+// Adapted and modified by narumij for swift-ac-collections, including package
+// visibility and dictionary description formatting. Project modifications are
+// licensed under Apache License v2.0; see LICENSE in the repository root.
+//===----------------------------------------------------------------------===//
+
 @inlinable
 package func _arrayDescription<C: Sequence>(
   for elements: C
@@ -18,8 +30,6 @@ package func _arrayDescription<C: Sequence>(
   return result
 }
 
-// from https://github.com/apple/swift-collections/blob/main/Sources/InternalCollectionsUtilities/Descriptions.swift
-// license https://github.com/apple/swift-collections/blob/main/LICENSE.txt
 @inlinable
 package func _dictionaryDescription<Key, Value, C: Sequence>(
   for elements: C

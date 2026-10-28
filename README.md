@@ -125,7 +125,9 @@ dependencies: [
 This library is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 RedBlackTreeCollections' `__tree` is adapted from the LLVM implementation. For the original license, see  
-[https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt).
+[LLVM libc++ license](Licenses/LLVM-libcxx.txt).
+
+Licenses for third-party code, including Swift Collections and Swift Algorithms, are included in [Licenses](Licenses/README.md).
 
 ---
 

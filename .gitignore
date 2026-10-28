@@ -24,3 +24,6 @@ Benchmarks/.build/
 
 # Python bytecode
 __pycache__/
+
+# Provisional local quality assessment data
+/Benchmarks/QualityAssessment/

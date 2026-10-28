@@ -17,6 +17,8 @@ swift-ac-collections は、
 ことを目的として設計されています。
 
 [![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
+[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/narumij/swift-ac-collections)
+[![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## 利用方法
@@ -107,8 +109,9 @@ AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release
 - [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
 - [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
-生成済みのAPIドキュメントは
-[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
+APIドキュメントは[Swift Package Index](https://swiftpackageindex.com/narumij/swift-ac-collections)の
+ドキュメントリンクから閲覧できます（初回生成・公開待ち）。
+公開されるまでは、[GitHub PagesのAPIドキュメント](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)をご利用ください。
 
 ## AtCoder 2025
 

@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
   internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
     // 採用判断は保留。従来版を残し、並行アクセスと性能を比較できるようにする。
-    #if true
+    #if !RED_BLACK_TREE_TSAN_SAFE
       // 従来版：共有ヘッダにinoutアクセスを開始する。
       let tree = withMutableHeader { header in
         UnsafeTreeV2._create(
@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
   internal func copy() -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
     // 採用判断は保留。従来版を残し、並行アクセスと性能を比較できるようにする。
-    #if true
+    #if !RED_BLACK_TREE_TSAN_SAFE
       // 従来版：共有ヘッダにinoutアクセスを開始する。
       let tree = withMutableHeader { header in
         UnsafeTreeV2._create(

@@ -83,6 +83,9 @@ var _settings: [SwiftSetting] =
 
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
+    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定は無効。
+    .define("RED_BLACK_TREE_TSAN_SAFE", .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])),
+
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
     // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
@@ -125,6 +128,10 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
+    .trait(
+      name: "RED_BLACK_TREE_TSAN_SAFE",
+      description: "Use read-only source-header access for red-black tree CoW copies. Opt-in; this does not certify all operations as race-free."
+    ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:

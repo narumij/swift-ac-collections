@@ -83,7 +83,7 @@ var _settings: [SwiftSetting] =
 
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
-    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定は無効。
+    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
     .define("RED_BLACK_TREE_TSAN_SAFE", .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
@@ -128,9 +128,10 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
+    .default(enabledTraits: ["RED_BLACK_TREE_TSAN_SAFE"]),
     .trait(
       name: "RED_BLACK_TREE_TSAN_SAFE",
-      description: "Use read-only source-header access for red-black tree CoW copies. Opt-in; this does not certify all operations as race-free."
+      description: "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
     ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",

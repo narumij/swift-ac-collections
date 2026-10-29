@@ -49,13 +49,23 @@ extension UnsafeTreeV2 {
   @inlinable
   package var nullptr: _NodePtr {
     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
-    _read { yield withMutableHeader { $0.nullptr } }
+    _read {
+      #if RED_BLACK_TREE_TSAN_SAFE
+      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
+      #else
+      yield withMutableHeader { $0.nullptr }
+      #endif
+    }
   }
 
   @inlinable
   package var end: _NodePtr {
     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+    #if RED_BLACK_TREE_TSAN_SAFE
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
+    #else
     withMutableHeader { $0.end_ptr }
+    #endif
   }
 
   @inlinable
@@ -98,7 +108,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
-  var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
+  var initializedCount: Int {
+    #if RED_BLACK_TREE_TSAN_SAFE
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
+    #else
+    withMutableHeader { $0.freshPoolUsedCount }
+    #endif
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -109,7 +125,11 @@ extension UnsafeTreeV2 {
   @inlinable
   var freeCapacity: Int {
     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+    #if RED_BLACK_TREE_TSAN_SAFE
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity - $0.pointee.count }
+    #else
     withMutableHeader { $0.freshPoolCapacity - $0.count }
+    #endif
   }
 }
 
@@ -169,23 +189,41 @@ extension UnsafeTreeV2 {
     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
       #if USE_LAZY_DETACH
         // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+        #if RED_BLACK_TREE_TSAN_SAFE
+        _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
+          ? index.sealed.purified
+          : __retrieve_(index.sealed.purified.tag).deepPurified
+        #else
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
           ? index.sealed.purified
           : __retrieve_(index.sealed.purified.tag).deepPurified
+        #endif
       #else
         // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+        #if RED_BLACK_TREE_TSAN_SAFE
+        _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
+          ? index.sealed.purified
+          : __retrieve_(index.tag).deepPurified
+        #else
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
           ? index.sealed.purified
           : __retrieve_(index.tag).deepPurified
+        #endif
       #endif
     }
   #else
     @inlinable
     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
+        ? index.sealed.purified
+        : .failure(.crossTree)
+      #else
       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
         ? index.sealed.purified
         : .failure(.crossTree)
+      #endif
     }
   #endif
 

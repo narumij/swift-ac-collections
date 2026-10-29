@@ -35,14 +35,22 @@ extension UnsafeTreeV2 {
     @_transparent
     unsafeAddress {
       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      UnsafePointer(_buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr })
+      #else
       UnsafePointer(withMutableHeader { $0.begin_ptr })
+      #endif
     }
 
     @inline(__always)
     @_transparent
     nonmutating unsafeMutableAddress {
       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr }
+      #else
       withMutableHeader { $0.begin_ptr }
+      #endif
     }
   }
 }
@@ -55,7 +63,11 @@ extension UnsafeTreeV2 {
   package var __end_node: _NodePtr {
     //    origin.pointee.end_ptr
     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+    #if RED_BLACK_TREE_TSAN_SAFE
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
+    #else
     withMutableHeader { $0.end_ptr }
+    #endif
   }
 }
 
@@ -67,7 +79,11 @@ extension UnsafeTreeV2 {
   package var __root: _NodePtr {
     @inline(__always) _read {
       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }.pointee
+      #else
       yield withMutableHeader { $0.root_ptr }.pointee
+      #endif
     }
   }
 
@@ -76,7 +92,11 @@ extension UnsafeTreeV2 {
   @inlinable
   package func __root_ptr() -> _NodeRef {
     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+    #if RED_BLACK_TREE_TSAN_SAFE
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }
+    #else
     withMutableHeader { $0.root_ptr }
+    #endif
   }
 }
 
@@ -88,7 +108,11 @@ extension UnsafeTreeV2 {
   package var __size_: Int {
     get {
       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
+      #else
       withMutableHeader { $0.count }
+      #endif
     }
     nonmutating set {
       /* NOP */

@@ -47,6 +47,7 @@ extension UnsafeTreeV2 {
             header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
       }
     // MEMO: TSanで問題が検出されるが、コピー処理完了まではisUnique判定が維持されるので、今のところ問題では無いと考えている
+    // 微妙な性能影響と、検査とどちらをとるかで悩み
     #else
       // 試行版：コピー元は共有中なので、読取りだけ行う。
       let tree = _buffer.withUnsafeMutablePointerToHeader { header in
@@ -74,6 +75,7 @@ extension UnsafeTreeV2 {
             header.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
       }
     // MEMO: TSanで問題が検出されるが、コピー処理完了まではisUnique判定が維持されるので、今のところ問題では無いと考えている
+    // 微妙な性能影響と、検査とどちらをとるかで悩み
     #else
       // 試行版：コピー元は共有中なので、読取りだけ行う。
       let tree = _buffer.withUnsafeMutablePointerToHeader { header in

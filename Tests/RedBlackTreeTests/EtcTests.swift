@@ -164,3 +164,73 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   }
 #endif
+
+// 並行CoWの試行テスト。採用判断まで無効化して保存する。
+// 再実行するときはfalseを!DEBUGへ戻し、Releaseで実行する。
+#if false
+// Debugのprocess-globalな検査カウンタ自体が並行更新されるため、
+// 製品のCoWを検証するこの試験はReleaseで実行する。
+// 同じvarの同時変更ではなく、Sendableな値を各タスクへコピーして使う。
+final class EtcConcurrentCopyTests: XCTestCase {
+  func testSetConcurrentCopies() async {
+    let original = RedBlackTreeSet(0 ..< 256)
+    let results = await withTaskGroup(of: (Int, [Int]).self) { group in
+      for worker in 0 ..< 8 {
+        group.addTask { [original] in
+          var copy = original
+          for key in 0 ..< 128 {
+            copy.remove(key)
+            copy.insert(1000 + worker * 128 + key)
+          }
+          return (worker, Array(copy))
+        }
+      }
+      var values: [(Int, [Int])] = []
+      for await value in group { values.append(value) }
+      return values
+    }
+    XCTAssertEqual(Array(original), Array(0 ..< 256))
+    XCTAssertEqual(results.count, 8)
+    for (worker, values) in results {
+      XCTAssertEqual(
+        values,
+        Array(128 ..< 256)
+          + Array((1000 + worker * 128) ..< (1128 + worker * 128))
+      )
+    }
+  }
+
+  func testDictionaryConcurrentCopies() async {
+    var initial = RedBlackTreeDictionary<Int, Int>()
+    for key in 0 ..< 256 { initial[key] = key }
+    let original = initial
+    let results = await withTaskGroup(of: (Int, [Int], [Int]).self) { group in
+      for worker in 0 ..< 8 {
+        group.addTask { [original] in
+          var copy = original
+          for key in 0 ..< 128 {
+            copy.removeValue(forKey: key)
+            copy[key + 128] = worker
+            copy[1000 + key] = worker + 100
+          }
+          return (worker, copy.map { $0.key }, copy.map { $0.value })
+        }
+      }
+      var values: [(Int, [Int], [Int])] = []
+      for await value in group { values.append(value) }
+      return values
+    }
+    XCTAssertEqual(original.map { $0.key }, Array(0 ..< 256))
+    XCTAssertEqual(original.map { $0.value }, Array(0 ..< 256))
+    XCTAssertEqual(results.count, 8)
+    for (worker, keys, values) in results {
+      XCTAssertEqual(keys, Array(128 ..< 256) + Array(1000 ..< 1128))
+      XCTAssertEqual(
+        values,
+        Array(repeating: worker, count: 128)
+          + Array(repeating: worker + 100, count: 128)
+      )
+    }
+  }
+}
+#endif

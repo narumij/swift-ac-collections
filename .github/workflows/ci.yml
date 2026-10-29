@@ -391,3 +391,39 @@ jobs:
           name: address-sanitizer-diagnostics
           path: asan-logs
           if-no-files-found: warn
+
+  thread-sanitizer:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests with Thread Sanitizer
+        env:
+          TSAN_OPTIONS: halt_on_error=1:exitcode=66
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p tsan-logs
+          set -o pipefail
+          swift --version | tee tsan-logs/environment.log
+          uname -a | tee -a tsan-logs/environment.log
+          swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
+            --traits RED_BLACK_TREE_TSAN_SAFE 2>&1 | tee tsan-logs/full-console.log
+
+      - name: Upload Thread Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thread-sanitizer-${{ matrix.configuration }}-diagnostics
+          path: tsan-logs
+          if-no-files-found: warn

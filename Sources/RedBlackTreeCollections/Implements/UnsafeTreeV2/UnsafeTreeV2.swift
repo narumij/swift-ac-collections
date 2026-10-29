@@ -48,11 +48,13 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var nullptr: _NodePtr {
+    // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
     _read { yield withMutableHeader { $0.nullptr } }
   }
 
   @inlinable
   package var end: _NodePtr {
+    // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
     withMutableHeader { $0.end_ptr }
   }
 
@@ -95,6 +97,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
+  // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
   var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
 }
 
@@ -105,6 +108,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var freeCapacity: Int {
+    // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
     withMutableHeader { $0.freshPoolCapacity - $0.count }
   }
 }
@@ -164,10 +168,12 @@ extension UnsafeTreeV2 {
     @inlinable
     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
       #if USE_LAZY_DETACH
+        // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
           ? index.sealed.purified
           : __retrieve_(index.sealed.purified.tag).deepPurified
       #else
+        // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
           ? index.sealed.purified
           : __retrieve_(index.tag).deepPurified
@@ -176,6 +182,7 @@ extension UnsafeTreeV2 {
   #else
     @inlinable
     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
         ? index.sealed.purified
         : .failure(.crossTree)

@@ -94,9 +94,12 @@
     }
   }
 
+  // 旧定義を比較用に保存。同期化した計測はMisc/DebugCounter.swift。
+  #if false
   @usableFromInline nonisolated(unsafe) var nodeInitializedCount = 0
   @usableFromInline nonisolated(unsafe) var nodeDeinitializedCount = 0
 
   @usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
   @usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
+  #endif
 #endif

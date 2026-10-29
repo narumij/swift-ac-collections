@@ -34,12 +34,14 @@ extension UnsafeTreeV2 {
     @inline(__always)
     @_transparent
     unsafeAddress {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
       UnsafePointer(withMutableHeader { $0.begin_ptr })
     }
 
     @inline(__always)
     @_transparent
     nonmutating unsafeMutableAddress {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
       withMutableHeader { $0.begin_ptr }
     }
   }
@@ -52,6 +54,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __end_node: _NodePtr {
     //    origin.pointee.end_ptr
+    // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
     withMutableHeader { $0.end_ptr }
   }
 }
@@ -63,6 +66,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __root: _NodePtr {
     @inline(__always) _read {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
       yield withMutableHeader { $0.root_ptr }.pointee
     }
   }
@@ -71,6 +75,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package func __root_ptr() -> _NodeRef {
+    // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
     withMutableHeader { $0.root_ptr }
   }
 }
@@ -82,6 +87,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __size_: Int {
     get {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
       withMutableHeader { $0.count }
     }
     nonmutating set {

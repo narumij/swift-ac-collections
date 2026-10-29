@@ -68,6 +68,9 @@
 #endif
 
 #if DEBUG
+  // 旧定義を比較用に保存。同期化した計測はMisc/DebugCounter.swift。
+  #if false
 @usableFromInline nonisolated(unsafe) var deallocatedCount = 0
 @usableFromInline nonisolated(unsafe) var allocatedCount = 0
+  #endif
 #endif

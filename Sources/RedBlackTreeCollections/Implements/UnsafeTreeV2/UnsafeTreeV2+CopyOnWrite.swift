@@ -58,7 +58,12 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
 
     if !isUnique() {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow(to: minimumCapacity) }
+      #else
       self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
+      #endif
     } else {
       withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
     }
@@ -68,7 +73,12 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity() {
 
     if !isUnique() {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
+      #else
       self = withMutableHeader { $0._ensureUniqueSlow() }
+      #endif
     } else {
       withMutableHeader { $0._ensureCapacitySlow() }
     }
@@ -81,7 +91,12 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
+      // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+      #if RED_BLACK_TREE_TSAN_SAFE
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
+      #else
       self = withMutableHeader { $0._ensureUniqueSlow() }
+      #endif
     } else {
       withMutableHeader { $0._ensureCapacitySlow() }
     }

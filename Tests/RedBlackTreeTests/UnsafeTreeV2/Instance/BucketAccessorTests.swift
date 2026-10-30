@@ -19,7 +19,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
   }
 
   #if !DEBUG
-  #if ENABLE_PERFORMANCE_TESTING
+  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
   /// `_BucketAccessor`による要素アクセスの速度を測る性能テスト(仕様確認ではない)。
   func testPerformanceExample() throws {
     

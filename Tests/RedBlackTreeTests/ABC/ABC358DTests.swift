@@ -82,7 +82,7 @@ final class ABC358DTests: RedBlackTreeTestCase {
     }
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !COMPATIBLE_ATCODER_2025
+  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST && !COMPATIBLE_ATCODER_2025
     // Linux CIの互換モードでは、XCTestのmeasure実行中にテストプロセスが異常終了した。
     // 同じ処理を通常のループで100回実行しても再現しないため、メモリ管理の不具合とは
     // 断定できず、標準出力を伴う処理とLinux版XCTestの性能計測経路との組み合わせを

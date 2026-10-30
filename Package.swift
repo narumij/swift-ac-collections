@@ -83,6 +83,12 @@ var _settings: [SwiftSetting] =
 
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
+    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
+    .define("RED_BLACK_TREE_TSAN_SAFE", .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])),
+
+    // Sanitizer計測時は性能測定を省く。通常のReleaseやTSanSafe単独の測定は残す。
+    .define("SANITIZER_TEST", .when(traits: ["SANITIZER_TEST"])),
+
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
     // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
@@ -125,6 +131,15 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
+    .default(enabledTraits: ["RED_BLACK_TREE_TSAN_SAFE"]),
+    .trait(
+      name: "RED_BLACK_TREE_TSAN_SAFE",
+      description: "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
+    ),
+    .trait(
+      name: "SANITIZER_TEST",
+      description: "Skip performance measurements during sanitizer tests. Does not enable the sanitizer or change library behavior."
+    ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:

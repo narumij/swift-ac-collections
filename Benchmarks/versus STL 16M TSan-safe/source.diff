@@ -1,0 +1,238 @@
+diff --git a/Package.swift b/Package.swift
+index 86cc23ea7..23817b1e2 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -83,7 +83,7 @@ var _settings: [SwiftSetting] =
+ 
+     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
+ 
+-    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定は無効。
++    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
+     .define("RED_BLACK_TREE_TSAN_SAFE", .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])),
+ 
+     .define("DEATH_TEST", .when(platforms: [.macOS])),
+@@ -128,9 +128,10 @@ let package = Package(
+   ],
+   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
+   traits: [
++    .default(enabledTraits: ["RED_BLACK_TREE_TSAN_SAFE"]),
+     .trait(
+       name: "RED_BLACK_TREE_TSAN_SAFE",
+-      description: "Use read-only source-header access for red-black tree CoW copies. Opt-in; this does not certify all operations as race-free."
++      description: "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
+     ),
+     .trait(
+       name: "USE_COMPACT_NODE_METADATA",
+diff --git a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+CopyOnWrite.swift b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+CopyOnWrite.swift
+index 918220b7e..f398eb97b 100644
+--- a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+CopyOnWrite.swift
++++ b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+CopyOnWrite.swift
+@@ -59,7 +59,11 @@ extension UnsafeTreeV2 {
+ 
+     if !isUnique() {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow(to: minimumCapacity) }
++      #else
+       self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
++      #endif
+     } else {
+       withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+     }
+@@ -70,7 +74,11 @@ extension UnsafeTreeV2 {
+ 
+     if !isUnique() {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
++      #else
+       self = withMutableHeader { $0._ensureUniqueSlow() }
++      #endif
+     } else {
+       withMutableHeader { $0._ensureCapacitySlow() }
+     }
+@@ -84,7 +92,11 @@ extension UnsafeTreeV2 {
+ 
+     if isReadOnly {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
++      #else
+       self = withMutableHeader { $0._ensureUniqueSlow() }
++      #endif
+     } else {
+       withMutableHeader { $0._ensureCapacitySlow() }
+     }
+diff --git a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+__tree.swift b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+__tree.swift
+index 8bda72ae8..1f37cfead 100644
+--- a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+__tree.swift
++++ b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+__tree.swift
+@@ -35,14 +35,22 @@ extension UnsafeTreeV2 {
+     @_transparent
+     unsafeAddress {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      UnsafePointer(_buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr })
++      #else
+       UnsafePointer(withMutableHeader { $0.begin_ptr })
++      #endif
+     }
+ 
+     @inline(__always)
+     @_transparent
+     nonmutating unsafeMutableAddress {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr }
++      #else
+       withMutableHeader { $0.begin_ptr }
++      #endif
+     }
+   }
+ }
+@@ -55,7 +63,11 @@ extension UnsafeTreeV2 {
+   package var __end_node: _NodePtr {
+     //    origin.pointee.end_ptr
+     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++    #if RED_BLACK_TREE_TSAN_SAFE
++    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
++    #else
+     withMutableHeader { $0.end_ptr }
++    #endif
+   }
+ }
+ 
+@@ -67,7 +79,11 @@ extension UnsafeTreeV2 {
+   package var __root: _NodePtr {
+     @inline(__always) _read {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }.pointee
++      #else
+       yield withMutableHeader { $0.root_ptr }.pointee
++      #endif
+     }
+   }
+ 
+@@ -76,7 +92,11 @@ extension UnsafeTreeV2 {
+   @inlinable
+   package func __root_ptr() -> _NodeRef {
+     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++    #if RED_BLACK_TREE_TSAN_SAFE
++    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }
++    #else
+     withMutableHeader { $0.root_ptr }
++    #endif
+   }
+ }
+ 
+@@ -88,7 +108,11 @@ extension UnsafeTreeV2 {
+   package var __size_: Int {
+     get {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
++      #else
+       withMutableHeader { $0.count }
++      #endif
+     }
+     nonmutating set {
+       /* NOP */
+diff --git a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2.swift b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2.swift
+index 4c56158ed..631e906ee 100644
+--- a/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2.swift
++++ b/Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2.swift
+@@ -49,13 +49,23 @@ extension UnsafeTreeV2 {
+   @inlinable
+   package var nullptr: _NodePtr {
+     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+-    _read { yield withMutableHeader { $0.nullptr } }
++    _read {
++      #if RED_BLACK_TREE_TSAN_SAFE
++      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
++      #else
++      yield withMutableHeader { $0.nullptr }
++      #endif
++    }
+   }
+ 
+   @inlinable
+   package var end: _NodePtr {
+     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++    #if RED_BLACK_TREE_TSAN_SAFE
++    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
++    #else
+     withMutableHeader { $0.end_ptr }
++    #endif
+   }
+ 
+   @inlinable
+@@ -98,7 +108,13 @@ extension UnsafeTreeV2 {
+ 
+   @inlinable
+   // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
+-  var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
++  var initializedCount: Int {
++    #if RED_BLACK_TREE_TSAN_SAFE
++    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
++    #else
++    withMutableHeader { $0.freshPoolUsedCount }
++    #endif
++  }
+ }
+ 
+ extension UnsafeTreeV2 {
+@@ -109,7 +125,11 @@ extension UnsafeTreeV2 {
+   @inlinable
+   var freeCapacity: Int {
+     // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++    #if RED_BLACK_TREE_TSAN_SAFE
++    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity - $0.pointee.count }
++    #else
+     withMutableHeader { $0.freshPoolCapacity - $0.count }
++    #endif
+   }
+ }
+ 
+@@ -169,23 +189,41 @@ extension UnsafeTreeV2 {
+     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+       #if USE_LAZY_DETACH
+         // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++        #if RED_BLACK_TREE_TSAN_SAFE
++        _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
++          ? index.sealed.purified
++          : __retrieve_(index.sealed.purified.tag).deepPurified
++        #else
+         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+           ? index.sealed.purified
+           : __retrieve_(index.sealed.purified.tag).deepPurified
++        #endif
+       #else
+         // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++        #if RED_BLACK_TREE_TSAN_SAFE
++        _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
++          ? index.sealed.purified
++          : __retrieve_(index.tag).deepPurified
++        #else
+         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+           ? index.sealed.purified
+           : __retrieve_(index.tag).deepPurified
++        #endif
+       #endif
+     }
+   #else
+     @inlinable
+     package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+       // TODO(RBT-050): 共有ヘッダーへのinoutアクセスをTSan観点で再検討。値渡しのwithReadOnlyHeaderは性能上不採用。変更方法は性能を確認してユーザーが判断する。
++      #if RED_BLACK_TREE_TSAN_SAFE
++      _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
++        ? index.sealed.purified
++        : .failure(.crossTree)
++      #else
+       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+         ? index.sealed.purified
+         : .failure(.crossTree)
++      #endif
+     }
+   #endif
+ 

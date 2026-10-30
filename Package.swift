@@ -86,8 +86,8 @@ var _settings: [SwiftSetting] =
     // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
     .define("RED_BLACK_TREE_TSAN_SAFE", .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])),
 
-    // TSan計測時は性能測定を省く。通常のReleaseやTSanSafe単独の測定は残す。
-    .define("TSAN_TEST", .when(traits: ["TSAN_TEST"])),
+    // Sanitizer計測時は性能測定を省く。通常のReleaseやTSanSafe単独の測定は残す。
+    .define("SANITIZER_TEST", .when(traits: ["SANITIZER_TEST"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
@@ -137,8 +137,8 @@ let package = Package(
       description: "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
     ),
     .trait(
-      name: "TSAN_TEST",
-      description: "Skip performance measurements during Thread Sanitizer tests. Does not enable the sanitizer or change library behavior."
+      name: "SANITIZER_TEST",
+      description: "Skip performance measurements during sanitizer tests. Does not enable the sanitizer or change library behavior."
     ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",

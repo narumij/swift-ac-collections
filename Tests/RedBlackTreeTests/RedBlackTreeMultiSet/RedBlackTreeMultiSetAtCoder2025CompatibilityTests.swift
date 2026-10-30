@@ -254,7 +254,7 @@ import XCTest
     #endif
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !TSAN_TEST
+  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
     // firstIndex(where:) はMultiSetでは COMPATIBLE_ATCODER_2025 専用API(+Deprecated.swift参照)
     extension RedBlackTreeMultiSetPerformanceTests {
       func testPerformanceFirstIndex4() throws {

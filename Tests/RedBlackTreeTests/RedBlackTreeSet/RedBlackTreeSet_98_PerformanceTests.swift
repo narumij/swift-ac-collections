@@ -23,7 +23,7 @@ final class RedBlackTreeSetPerformanceTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !TSAN_TEST
+  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
     func testPerformanceDistanceFromTo() throws {
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {

@@ -366,6 +366,11 @@ jobs:
   address-sanitizer:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
 
     steps:
       - uses: actions/checkout@v4
@@ -381,14 +386,16 @@ jobs:
         run: |
           mkdir -p asan-logs
           set -o pipefail
-          swift test -c debug --sanitize address --build-system native 2>&1 \
-            | tee asan-logs/full-console.log
+          swift --version | tee asan-logs/environment.log
+          uname -a | tee -a asan-logs/environment.log
+          swift test -c ${{ matrix.configuration }} --sanitize address --build-system native \
+            --traits SANITIZER_TEST 2>&1 | tee asan-logs/full-console.log
 
       - name: Upload Address Sanitizer diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: address-sanitizer-diagnostics
+          name: address-sanitizer-${{ matrix.configuration }}-diagnostics
           path: asan-logs
           if-no-files-found: warn
 
@@ -418,7 +425,7 @@ jobs:
           swift --version | tee tsan-logs/environment.log
           uname -a | tee -a tsan-logs/environment.log
           swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
-            --traits RED_BLACK_TREE_TSAN_SAFE,TSAN_TEST 2>&1 | tee tsan-logs/full-console.log
+            --traits RED_BLACK_TREE_TSAN_SAFE,SANITIZER_TEST 2>&1 | tee tsan-logs/full-console.log
 
       - name: Upload Thread Sanitizer diagnostics
         if: always()

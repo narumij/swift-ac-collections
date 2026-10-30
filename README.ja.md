@@ -109,9 +109,7 @@ AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release
 - [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
 - [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
-APIドキュメントは[Swift Package Index](https://swiftpackageindex.com/narumij/swift-ac-collections)の
-ドキュメントリンクから閲覧できます（初回生成・公開待ち）。
-公開されるまでは、[GitHub PagesのAPIドキュメント](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)をご利用ください。
+[APIドキュメント（DocC）](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)
 
 ## AtCoder 2025
 

@@ -107,10 +107,7 @@ Current guides in this checkout:
 - [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
 - [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
-API documentation will be available through the documentation link on
-[Swift Package Index](https://swiftpackageindex.com/narumij/swift-ac-collections)
-once the initial generation and publication complete.
-Until then, use the [API documentation on GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/).
+[API documentation (DocC)](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)
 
 ## AtCoder 2025
 

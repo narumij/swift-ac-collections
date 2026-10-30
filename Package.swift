@@ -127,7 +127,12 @@ let additionalDependencies: [Target.Dependency] =
 let package = Package(
   name: "swift-ac-collections",
   platforms: [
-    .macOS(.v15)
+    // UInt128 requires these minimum OS versions.
+    .macOS(.v15),
+    .iOS(.v18),
+    .tvOS(.v18),
+    .watchOS(.v11),
+    .visionOS(.v2),
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [

@@ -85,6 +85,8 @@ traitを有効にした後は、通常どおり`AcCollections`をimportすると
 <!-- 英訳: Which branch should I use? -->
 通常は `main` を利用してください。現在は開発中で、APIや実装は変更される可能性があります。
 
+名前が `_` で始まる宣言は内部実装用であり、`public` であっても公開APIとしての互換性は保証しません。
+
 AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release/AtCoder/2025` です。
 
 ---

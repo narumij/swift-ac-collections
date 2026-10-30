@@ -83,6 +83,8 @@ After enabling the trait, import `AcCollections` normally to use the one- throug
 
 Use `main` for general use. The library is under development; APIs and implementations may change.
 
+Declarations whose names begin with `_` are implementation details and carry no public API compatibility guarantee, even when declared `public`.
+
 Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
 
 ---

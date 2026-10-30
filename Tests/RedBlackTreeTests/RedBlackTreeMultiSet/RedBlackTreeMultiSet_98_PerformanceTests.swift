@@ -3,7 +3,7 @@ import XCTest
 
 final class RedBlackTreeMultiSetPerformanceTests: RedBlackTreeTestCase {
 
-  #if ENABLE_PERFORMANCE_TESTING
+  #if ENABLE_PERFORMANCE_TESTING && !TSAN_TEST
     func testPerformanceDistanceFromTo() throws {
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {

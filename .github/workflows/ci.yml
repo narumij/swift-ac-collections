@@ -418,7 +418,7 @@ jobs:
           swift --version | tee tsan-logs/environment.log
           uname -a | tee -a tsan-logs/environment.log
           swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
-            --traits RED_BLACK_TREE_TSAN_SAFE 2>&1 | tee tsan-logs/full-console.log
+            --traits RED_BLACK_TREE_TSAN_SAFE,TSAN_TEST 2>&1 | tee tsan-logs/full-console.log
 
       - name: Upload Thread Sanitizer diagnostics
         if: always()

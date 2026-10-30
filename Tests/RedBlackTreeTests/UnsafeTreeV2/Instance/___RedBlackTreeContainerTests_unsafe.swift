@@ -346,7 +346,7 @@ import XCTest
       XCTAssertTrue(tree.___tree_invariant())
     }
 
-    #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING && !TSAN_TEST
       func testPerformanceExample() throws {
 
         throw XCTSkip()

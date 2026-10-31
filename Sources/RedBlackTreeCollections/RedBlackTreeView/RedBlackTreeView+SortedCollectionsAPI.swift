@@ -14,9 +14,6 @@
     @inlinable
     public mutating func removeFirst(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      // Check before mutating, without scanning the rest of a large view.
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeFirst() }
     }
 
@@ -25,8 +22,6 @@
     @inlinable
     public mutating func removeLast(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeLast() }
     }
 
@@ -51,9 +46,6 @@
     @inlinable
     public mutating func removeFirst(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      // Check before mutating, without scanning the rest of a large view.
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeFirst() }
     }
 
@@ -62,8 +54,6 @@
     @inlinable
     public mutating func removeLast(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeLast() }
     }
 
@@ -88,9 +78,6 @@
     @inlinable
     public mutating func removeFirst(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      // Check before mutating, without scanning the rest of a large view.
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeFirst() }
     }
 
@@ -99,8 +86,6 @@
     @inlinable
     public mutating func removeLast(_ k: Int) {
       precondition(k >= 0, "Invalid removal count")
-      guard k > 0 else { return }
-      precondition(prefix(k).reduce(0, { count, _ in count + 1 }) == k, "Invalid removal count")
       for _ in 0..<k { removeLast() }
     }
 

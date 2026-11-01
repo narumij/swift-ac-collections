@@ -13,7 +13,7 @@
 ## 判定基準
 
 RedBlackTreeCollectionsはLLVM libc++の赤黒木実装を移植・適応したものであるため、
-C++挙動一致の正本はLLVM libc++とする。macOS / Apple toolchainでlibc++を使った
+C++挙動一致の正本はLLVM libc++とする。macOS / Xcode toolchainでlibc++を使った
 比較結果を、移植元との一致および回帰判定に用いる。
 
 GNU libstdc++など、その他のC++標準ライブラリ実装との比較は参考情報である。
@@ -95,7 +95,7 @@ curated boundary traceとseeded traceを合わせたsuiteは35 XCTest。
 
 | 位置付け | 比較環境 | 標準ライブラリ | 構成 | 共通契約の結果 | 実装差として観測した事項 |
 | --- | --- | --- | --- | --- | --- |
-| 正本 | macOS / Apple toolchain | LLVM `libc++` | Debug / Release | 35 XCTest成功 | MultiMap `find`がSwiftと同じ同値個体を選択した |
+| 正本 | macOS / Xcode toolchain | LLVM `libc++` | Debug / Release | 35 XCTest成功 | MultiMap `find`がSwiftと同じ同値個体を選択した |
 | 参考 | Ubuntu 24.04 CI | GNU `libstdc++` | Debug | 35 XCTest成功 | MultiMap `find`が同値群の先頭を選択し、Swiftと個体・rankが異なった |
 | 対象外 | Windows | MSVC STL | 実施しない | 未検証 | 2026-10-04ユーザー決定。完成条件・追加検証に含めない |
 

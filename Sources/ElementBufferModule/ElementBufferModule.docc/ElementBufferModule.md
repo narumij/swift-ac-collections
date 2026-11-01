@@ -31,8 +31,8 @@ It does not synchronize concurrent access: callers must prevent overlapping read
 to the same element. This also applies when using the value-access API with Swift 6.4.
 
 For general-purpose use with Swift 6.4 and supported platforms, use `reference(at:_:)` to read
-and write an element within an exclusive borrowing scope. On Apple platforms, this API requires
-OS version 27 or later. It returns Swift's
+and write an element within an exclusive borrowing scope. On macOS, iOS, tvOS, watchOS, and visionOS, this API requires
+version 27 or later. It returns Swift's
 [`MutableRef`](https://developer.apple.com/documentation/swift/mutableref):
 
 ```swift

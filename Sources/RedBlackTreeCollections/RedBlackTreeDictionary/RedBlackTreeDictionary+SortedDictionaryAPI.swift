@@ -5,7 +5,7 @@
 // API reference: Swift Collections SortedDictionary, commit
 // 7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1.
 // https://github.com/apple/swift-collections/tree/7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1/Sources/SortedCollections/SortedDictionary
-// These implementations compose this library's operations, not Apple's B-tree.
+// These implementations compose this library's existing operations.
 // Existing updateValue, index(forKey:), filter, mapValues and grouping are reused.
 
 #if !COMPATIBLE_ATCODER_2025
@@ -41,7 +41,6 @@
     }
 
     /// Creates a dictionary, keeping the last key-value pair for each equivalent key.
-    /// Matches Apple's labeled-tuple overload, which replaces the key as well.
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (key: Key, value: Value) {
       self.init()
@@ -88,7 +87,7 @@
     }
   }
 
-  // As in SortedSetAPI: Apple's removeSubrange is internal, and it has no
+  // As in SortedSetAPI: the referenced removeSubrange is internal, and there is no
   // removeAll(where:). These public wrappers follow Swift removal naming.
   extension RedBlackTreeDictionary {
     /// Removes the members selected by a valid, ascending index range.

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Adapts the removal naming used in the root containers' SortedCollectionsAPI
-// files to mutable views. These are not Apple's read-only SubSequence APIs.
+// files to mutable views. These extend the referenced read-only SubSequence APIs with mutation.
 // Operations affect only the view's bounds. Through a container's _modify
 // accessor they update that container; a standalone view uses copy-on-write.
 #if !COMPATIBLE_ATCODER_2025

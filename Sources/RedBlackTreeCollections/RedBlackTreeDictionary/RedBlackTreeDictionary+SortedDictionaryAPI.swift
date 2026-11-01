@@ -37,7 +37,7 @@
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (Key, Value) {
       var tree = Tree.create()
-      tree.___insert_range_unique(pairs, replacingKey: true, uniquingKeysWith: { $1 }) {
+      tree.___insert_range_unique_replacing_key(pairs, uniquingKeysWith: { $1 }) {
         Base.__payload_($0)
       }
       self.init(__tree_: tree)
@@ -47,7 +47,7 @@
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (key: Key, value: Value) {
       var tree = Tree.create()
-      tree.___insert_range_unique(pairs, replacingKey: true, uniquingKeysWith: { $1 }) {
+      tree.___insert_range_unique_replacing_key(pairs, uniquingKeysWith: { $1 }) {
         Base.__payload_($0)
       }
       self.init(__tree_: tree)

@@ -105,14 +105,12 @@ AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release
 
 ## ドキュメント
 
-各モジュールの現行ソース版ガイド：
+Swift Package Indexで公開している各モジュールのAPIドキュメント：
 
-- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
-- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
-- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
-- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
-
-[APIドキュメント（DocC）](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)
+- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
+- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
+- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
+- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
 
 ## AtCoder 2025
 

@@ -103,14 +103,12 @@ Use range-based removal APIs for consecutive deletions.
 
 ## Documentation
 
-Current guides in this checkout:
+API documentation hosted by Swift Package Index:
 
-- [RedBlackTreeCollections](Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/RedBlackTreeCollections.md)
-- [NextPermutationModule](Sources/NextPermutationModule/NextPermutationModule.docc/NextPermutationModule.md)
-- [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
-- [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
-
-[API documentation (DocC)](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)
+- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
+- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
+- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
+- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
 
 ## AtCoder 2025
 

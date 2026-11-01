@@ -82,7 +82,7 @@
 
     /// Accesses a view over the specified concrete index range.
     ///
-    /// An invalid or reversed range produces an empty view.
+    /// The index range must be valid and ordered; otherwise, a runtime error occurs.
     ///
     /// - Parameter bounds: The concrete index range to access.
     @inlinable
@@ -99,7 +99,7 @@
 
     /// Accesses a view over the specified range expression.
     ///
-    /// An expression that resolves to an invalid or reversed range produces an empty view.
+    /// The expression must resolve to a valid, ordered index range; otherwise, a runtime error occurs.
     ///
     /// - Parameter bounds: The range expression to resolve and access.
     @inlinable

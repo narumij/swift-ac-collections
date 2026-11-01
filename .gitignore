@@ -27,3 +27,6 @@ __pycache__/
 
 # Provisional local quality assessment data
 /Benchmarks/QualityAssessment/
+
+# Local-only SortedSet boundary comparison results
+/Benchmarks/Results/2M/SortedBounds/

@@ -288,29 +288,30 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Replaces the element at `i` when its value equals `newMember` under `==`.
+    /// Replaces the element at `i` with an equal element under `==`.
     ///
     /// Requiring equivalence preserves the multiset's sorted order.
     ///
     /// - Parameters:
     ///   - newMember: The replacement element.
     ///   - i: The index of the element to replace.
-    /// - Returns: The replaced element, or `nil` if the index is invalid or the values are unequal under `==`.
+    /// - Returns: The replaced element.
+    /// - Precondition: `i` is valid for this multiset and is not `endIndex`.
+    ///   `newMember == self[i]` must hold; this operation does not reposition elements.
     @inlinable
-    public mutating func update(_ newMember: Element, at i: Index) -> Element? {
+    @discardableResult
+    public mutating func update(_ newMember: Element, at i: Index) -> Element {
       __tree_.ensureUnique()
       let __i = __tree_.__purified_(i)
       guard
         __i.accessible.error == nil,
         let i = __i.pointer
       else {
-        return nil
+        fatalError(.invalidIndex)
       }
 
       let oldMember = Base.__key_(i)
-      guard oldMember == newMember else {
-        return nil
-      }
+      precondition(oldMember == newMember, "Replacement must be equal to the existing element")
 
       Base.__key_ptr(i).pointee = newMember
       return oldMember

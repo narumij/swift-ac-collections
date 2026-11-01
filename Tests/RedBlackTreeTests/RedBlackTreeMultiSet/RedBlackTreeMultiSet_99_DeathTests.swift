@@ -42,6 +42,35 @@
 
   struct RedBlackTreeMultiSetDeathTests {
 
+    // RBT-048: Index-based replacement requires a valid element index.
+    @Test
+    func updatingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 2, 3])
+        set.update(1, at: set.endIndex)
+      }
+    }
+
+    @Test
+    func updatingRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 2, 3])
+        let index = set.startIndex
+        set.remove(at: index)
+        set.update(1, at: index)
+      }
+    }
+
+    // Replacement stays at the same position, so it must preserve equality.
+    @Test
+    func updatingWithNonEquivalentMember_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 2, 3])
+        set.update(99, at: set.startIndex)
+      }
+    }
+
+
     #if !COMPATIBLE_ATCODER_2025
       /// 空のMultiSetでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
       /// (空のときにCoWを省いても、範囲の検査は省かない)。

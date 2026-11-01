@@ -42,6 +42,26 @@
 
   struct RedBlackTreeMultiMapDeathTests {
 
+    // RBT-048: Index-based replacement requires a valid element index.
+    @Test
+    func updatingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        map.updateValue(100, at: map.endIndex)
+      }
+    }
+
+    @Test
+    func updatingRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        let index = map.startIndex
+        map.remove(at: index)
+        map.updateValue(100, at: index)
+      }
+    }
+
+
     #if !COMPATIBLE_ATCODER_2025
       /// 空のMultiMapでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
       /// (空のときにCoWを省いても、範囲の検査は省かない)。

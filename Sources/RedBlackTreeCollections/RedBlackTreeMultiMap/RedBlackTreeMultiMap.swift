@@ -341,15 +341,16 @@ extension RedBlackTreeMultiMap {
     /// - Parameters:
     ///   - newValue: The replacement mapped value.
     ///   - ptr: The index of the pair to update.
-    /// - Returns: The previous mapped value, or `nil` if `ptr` is invalid.
+    /// - Returns: The previous mapped value.
+    /// - Precondition: `ptr` is valid for this multimap and is not `endIndex`.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
-    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Value? {
+    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Value {
       __tree_.ensureUnique()
       let unsealed = __tree_.__purified_(ptr).accessible
       guard let p = unsealed.pointer
-      else { return nil }
+      else { fatalError(.invalidIndex) }
       let old = Base.__mapped_value_(p)
       Base.__mapped_value_ptr(p).pointee = newValue
       return old

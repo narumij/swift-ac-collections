@@ -11,8 +11,7 @@
 
 // Added for Maintanance/CLAUDE_TASK.md (Permutation boundary fix).
 // Measures repeated valid element access through the public
-// `NextPermutationsSequence.Permutation.subscript(position:)` (formerly
-// `Permutations.SubSequenceN`; titles keep the old name for result continuity),
+// `NextPermutations.Permutation.subscript(position:)`,
 // so that the cost of a bounds precondition on that subscript can be compared before and after.
 //
 // Methodology (see Maintanance/PermutationModule/ProductReadinessAssessment.md):
@@ -176,7 +175,7 @@ extension Benchmark {
   public mutating func addPermutationBenchmarks() {
 
     self.add(
-      title: "Permutations.SubSequenceN subscript sequential access",
+      title: "NextPermutations.Permutation subscript sequential access",
       input: Int.self
     ) { size in
       return { timer in
@@ -196,7 +195,7 @@ extension Benchmark {
     }
 
     self.add(
-      title: "Permutations.SubSequenceN subscript shuffled access",
+      title: "NextPermutations.Permutation subscript shuffled access",
       input: Int.self
     ) { size in
       var rng = PermutationBenchmarkRNG(seed: 0x5EED_0000 &+ UInt64(size))
@@ -228,7 +227,7 @@ extension Benchmark {
     // cannot be merged. Both code states execute identical work.
 
     self.add(
-      title: "Permutations.SubSequenceN subscript sequential access (batched)",
+      title: "NextPermutations.Permutation subscript sequential access (batched)",
       input: Int.self
     ) { size in
       let reps = repetitions(size)
@@ -255,7 +254,7 @@ extension Benchmark {
     }
 
     self.add(
-      title: "Permutations.SubSequenceN subscript shuffled access (batched)",
+      title: "NextPermutations.Permutation subscript shuffled access (batched)",
       input: Int.self
     ) { size in
       let reps = repetitions(size)
@@ -290,7 +289,7 @@ extension Benchmark {
     // count and checksum are validated against closed forms outside the
     // timed region.
     self.add(
-      title: "Permutations nextPermutations end-to-end checksum",
+      title: "NextPermutations nextPermutations end-to-end checksum",
       input: Int.self
     ) { size in
       precondition(1 <= size && size <= 10, "end-to-end size must be in 1...10")
@@ -320,7 +319,7 @@ extension Benchmark {
     // by enumerating the distinct permutations of 21 zeroes and 7 ones.
     // Downstream processing is deliberately outside this benchmark.
     self.add(
-      title: "Permutations binary selection checksum",
+      title: "NextPermutations binary selection checksum",
       input: Int.self
     ) { size in
       let selectedCount = 7
@@ -423,7 +422,7 @@ extension Benchmark {
     }
 
     self.add(
-      title: "Permutations Bool binary selection checksum",
+      title: "NextPermutations Bool binary selection checksum",
       input: Int.self
     ) { size in
       let selectedCount = 7

@@ -118,7 +118,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer<Int> Reference sequential read checksum",
+        title: "ElementBuffer<Int> MutableRef sequential read checksum",
         input: Int.self
       ) { size in
         var value = 0
@@ -157,7 +157,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer<Int> Reference sequential write",
+        title: "ElementBuffer<Int> MutableRef sequential write",
         input: Int.self
       ) { size in
         return { timer in
@@ -177,7 +177,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer2D<Int> Reference sequential read checksum",
+        title: "ElementBuffer2D<Int> MutableRef sequential read checksum",
         input: Int.self
       ) { size in
         let shape = bareArray2DShape(for: size)
@@ -228,7 +228,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer2D<Int> Reference sequential write",
+        title: "ElementBuffer2D<Int> MutableRef sequential write",
         input: Int.self
       ) { size in
         let shape = bareArray2DShape(for: size)
@@ -287,7 +287,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer3D<Int> Reference sequential read checksum",
+        title: "ElementBuffer3D<Int> MutableRef sequential read checksum",
         input: Int.self
       ) { size in
         let shape = bareArray3DShape(for: size)
@@ -346,7 +346,7 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "ElementBuffer3D<Int> Reference sequential write",
+        title: "ElementBuffer3D<Int> MutableRef sequential write",
         input: Int.self
       ) { size in
         let shape = bareArray3DShape(for: size)

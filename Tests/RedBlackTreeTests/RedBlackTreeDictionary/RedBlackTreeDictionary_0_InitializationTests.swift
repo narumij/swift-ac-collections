@@ -5,6 +5,31 @@ import RedBlackTreeCollections
 // Keep public, current behavior here; implementation and stress tests may remain elsewhere.
 final class RedBlackTreeDictionaryInitializationTests: RedBlackTreeTestCase {
 
+  #if !COMPATIBLE_ATCODER_2025
+    func testKeysWithValuesKeepsLastKeyAndValueRegardlessOfTupleLabels() {
+      struct Key: Comparable {
+        let order: Int
+        let tag: String
+        static func < (lhs: Self, rhs: Self) -> Bool { lhs.order < rhs.order }
+        static func == (lhs: Self, rhs: Self) -> Bool { lhs.order == rhs.order }
+      }
+      let pairs = [(Key(order: 2, tag: "first"), 10),
+                   (Key(order: 1, tag: "other"), 20),
+                   (Key(order: 2, tag: "last"), 30)]
+      let unlabeled = RedBlackTreeDictionary(keysWithValues: AnySequence(pairs))
+      let labeled = RedBlackTreeDictionary(
+        keysWithValues: pairs.map { (key: $0.0, value: $0.1) })
+      let combined = RedBlackTreeDictionary(pairs, uniquingKeysWith: +)
+      XCTAssertEqual(combined.map { $0.key.tag }, ["other", "first"])
+      XCTAssertEqual(combined.map { $0.value }, [20, 40])
+      for dictionary in [unlabeled, labeled] {
+        XCTAssertEqual(dictionary.map { $0.key.order }, [1, 2])
+        XCTAssertEqual(dictionary.map { $0.key.tag }, ["other", "last"])
+        XCTAssertEqual(dictionary.map { $0.value }, [20, 30])
+      }
+    }
+  #endif
+
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
 
   let elements = [("apple", 1), ("cherry", 3), ("banana", 2)]

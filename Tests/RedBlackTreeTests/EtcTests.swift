@@ -85,6 +85,42 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   }
 
   #if !COMPATIBLE_ATCODER_2025
+    /// Zero movement succeeds even at the limit, including an empty collection's endIndex.
+    func testIndexLimitedByZeroMovement() {
+      func check<I: Equatable>(
+        _ indices: [I],
+        index offset: (I, Int, I) -> I?,
+        formIndex: (inout I, Int, I) -> Bool
+      ) {
+        for index in indices {
+          XCTAssertEqual(offset(index, 0, index), index)
+          var current = index
+          XCTAssertTrue(formIndex(&current, 0, index))
+          XCTAssertEqual(current, index)
+          XCTAssertNil(offset(index, 1, index))
+          XCTAssertNil(offset(index, -1, index))
+        }
+      }
+      for values in [[], [0, 1, 2]] {
+        let set = RedBlackTreeSet(values)
+        check([set.startIndex, set.endIndex],
+          index: set.index(_:offsetBy:limitedBy:),
+          formIndex: set.formIndex(_:offsetBy:limitedBy:))
+        let multiSet = RedBlackTreeMultiSet(values)
+        check([multiSet.startIndex, multiSet.endIndex],
+          index: multiSet.index(_:offsetBy:limitedBy:),
+          formIndex: multiSet.formIndex(_:offsetBy:limitedBy:))
+        let dictionary = RedBlackTreeDictionary(keysWithValues: values.map { ($0, $0) })
+        check([dictionary.startIndex, dictionary.endIndex],
+          index: dictionary.index(_:offsetBy:limitedBy:),
+          formIndex: dictionary.formIndex(_:offsetBy:limitedBy:))
+        let multiMap = RedBlackTreeMultiMap(keysWithValues: values.map { ($0, $0) })
+        check([multiMap.startIndex, multiMap.endIndex],
+          index: multiMap.index(_:offsetBy:limitedBy:),
+          formIndex: multiMap.formIndex(_:offsetBy:limitedBy:))
+      }
+    }
+
     /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
     /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
     func testFormIndexLimitedByMatchesString() {

@@ -72,12 +72,15 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.map(\.value), ["first", "new", "last"])
     }
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
     func test_updateValue_rejectsEndIndex() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "value")]
 
       XCTAssertNil(map.updateValue("new", at: map.endIndex))
       XCTAssertEqual(map.map(\.value), ["value"])
     }
+    #endif
 
     func test_updateValue_preservesValueSemanticsAfterCopy() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "old")]
@@ -91,6 +94,8 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
 
     /// 同じkeyの群から中央を削除した後、保存していたIndexへのupdateValueはnilを返し、
     /// 残っているkey/valueを変えないこと（RBT-045 MM1）
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
     func test_updateValue_atRemovedIndexReturnsNilAndKeepsSurvivors() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "first"), (1, "middle"), (1, "last"), (2, "other")]
       let removedIndex = map.index(after: map.startIndex)
@@ -103,6 +108,7 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.map(\.value), ["first", "last", "other"])
       XCTAssertEqual(map.count(forKey: 1), 2)
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

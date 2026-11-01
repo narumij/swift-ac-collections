@@ -29,6 +29,8 @@ import XCTest
         XCTAssertEqual(Array(b), [1, 2, 3])
       }
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
       func test_multiSetUpdate_unsharedFailure_doesNotCopy() {
         var a: RedBlackTreeMultiSet<Int> = [1, 2, 3]
         let before = a.__tree_.copyCount
@@ -39,8 +41,11 @@ import XCTest
         XCTAssertEqual(a.__tree_.copyCount, before, "非共有ならnilでも複製しない")
         XCTAssertEqual(Array(a), [1, 2, 3])
       }
+    #endif
 
       #if RBT047_EXPECT_NO_COPY_ON_FAILURE
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
         func test_multiSetUpdate_sharedMismatch_doesNotCopy() {
           var a: RedBlackTreeMultiSet<Int> = [1, 2, 3]
           let b = a
@@ -52,7 +57,10 @@ import XCTest
           XCTAssertEqual(Array(a), [1, 2, 3])
           XCTAssertEqual(Array(b), [1, 2, 3])
         }
+    #endif
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
         func test_multiSetUpdate_sharedEndIndex_doesNotCopy() {
           var a: RedBlackTreeMultiSet<Int> = [1, 2, 3]
           let b = a
@@ -63,7 +71,10 @@ import XCTest
           XCTAssertEqual(a.__tree_.copyCount, before, "endIndexでnilなら複製しないはず")
           XCTAssertEqual(Array(b), [1, 2, 3])
         }
+    #endif
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
         func test_multiSetUpdate_sharedRemovedIndex_doesNotCopy() {
           var a: RedBlackTreeMultiSet<Int> = [1, 1, 1]
           let removed = a.index(after: a.startIndex)
@@ -77,6 +88,7 @@ import XCTest
           XCTAssertEqual(Array(a), [1, 1])
           XCTAssertEqual(Array(b), [1, 1])
         }
+    #endif
       #endif
 
       // MARK: - MultiMap.updateValue(_:at:) -> Value?
@@ -93,6 +105,8 @@ import XCTest
         XCTAssertEqual(b.map(\.value), ["a", "b"])
       }
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
       func test_multiMapUpdateValue_unsharedFailure_doesNotCopy() {
         var a: RedBlackTreeMultiMap<Int, String> = [(1, "a")]
         let before = a.__tree_.copyCount
@@ -102,8 +116,11 @@ import XCTest
         XCTAssertEqual(a.__tree_.copyCount, before)
         XCTAssertEqual(a.map(\.value), ["a"])
       }
+    #endif
 
       #if RBT047_EXPECT_NO_COPY_ON_FAILURE
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
         func test_multiMapUpdateValue_sharedEndIndex_doesNotCopy() {
           var a: RedBlackTreeMultiMap<Int, String> = [(1, "a")]
           let b = a
@@ -114,7 +131,10 @@ import XCTest
           XCTAssertEqual(a.__tree_.copyCount, before, "endIndexでnilなら複製しないはず")
           XCTAssertEqual(b.map(\.value), ["a"])
         }
+    #endif
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
         func test_multiMapUpdateValue_sharedRemovedIndex_doesNotCopy() {
           var a: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b")]
           let removed = a.startIndex
@@ -127,6 +147,7 @@ import XCTest
           XCTAssertEqual(a.__tree_.copyCount, before, "削除済みindexでnilなら複製しないはず")
           XCTAssertEqual(b.map(\.value), ["b"])
         }
+    #endif
       #endif
 
     #else

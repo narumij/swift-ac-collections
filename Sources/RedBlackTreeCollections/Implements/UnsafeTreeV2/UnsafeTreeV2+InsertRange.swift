@@ -334,6 +334,55 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 }
 
+extension UnsafeTreeV2 where Base: PairValueTrait {
+
+  // MEMO: ___insert_range_uniqueと混ぜてDRYしていたが、最適化アンラッキーが発生したので、分けた
+  @inlinable
+  internal mutating func ___insert_range_unique_replacing_key<S>(
+    _ __source: S,
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform __t_: (S.Element) -> Base._PayloadValue
+  )
+    rethrows
+  where
+    S: Sequence
+  {
+    var it = __source.makeIterator()
+
+    if __root == nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
+      ensureCapacity()
+      __insert_node_at(
+        end, end.__left_ref,
+        __construct_node(__element))
+    }
+
+    if __root == nullptr { return }
+
+    var __max_node = __tree_max(__root)
+
+    while let __element = it.next().map(__t_) {
+      unsafeEnsureCapacity()
+      let __nd = __construct_node(__element)
+      if value_comp(__get_value(__max_node), __get_value(__nd)) {  // __node > __max_node
+        __insert_node_at(__max_node, __max_node.__right_ref, __nd)
+        __max_node = __nd
+      } else {
+        let (__parent, __child) = __find_equal(__get_value(__nd))
+        if __child.pointee == nullptr {
+          __insert_node_at(__parent, __child, __nd)
+        } else {
+          Base.__mapped_value_ptr(__child).pointee = try combine(
+            Base.__mapped_value_(__child),
+            Base.__mapped_value_(__nd))
+          // Replace only after combining succeeds; an equivalent key preserves tree order.
+          Base.__key_ptr(__child).pointee = Base.__key_(__nd)
+          destroy(__nd)
+        }
+      }
+    }
+  }
+}
+
 extension UnsafeTreeV2 {
 
   @inlinable

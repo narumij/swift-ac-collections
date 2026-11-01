@@ -136,7 +136,7 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
         let removed = map.remove(at: map.startIndex)
         XCTAssertTrue(removed.value === weakShared)
       }
-      var replaced = map.updateValue(Box(10), at: map.startIndex)
+      var replaced: Box? = map.updateValue(Box(10), at: map.startIndex)
       XCTAssertTrue(replaced === weakShared)
       XCTAssertEqual(map.map(\.key), [1, 2, 3])
       XCTAssertEqual(map.map(\.value.id), [10, 1, 3])

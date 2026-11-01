@@ -5,7 +5,7 @@
 // API reference: Swift Collections SortedDictionary, commit
 // 7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1.
 // https://github.com/apple/swift-collections/tree/7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1/Sources/SortedCollections/SortedDictionary
-// These implementations compose this library's operations, not Apple's B-tree.
+// These implementations compose this library's existing operations.
 // Existing updateValue, index(forKey:), filter, mapValues and grouping are reused.
 
 #if !COMPATIBLE_ATCODER_2025
@@ -33,21 +33,24 @@
     }
 
 
-    /// Creates a dictionary, keeping the last value for each equivalent key.
-    /// The existing key is retained when an equivalent key occurs again.
+    /// Creates a dictionary, keeping the last key-value pair for each equivalent key.
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (Key, Value) {
-      self.init(pairs, uniquingKeysWith: { _, new in new })
+      var tree = Tree.create()
+      tree.___insert_range_unique_replacing_key(pairs, uniquingKeysWith: { $1 }) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
     }
 
     /// Creates a dictionary, keeping the last key-value pair for each equivalent key.
-    /// Matches Apple's labeled-tuple overload, which replaces the key as well.
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (key: Key, value: Value) {
-      self.init()
-      for pair in pairs {
-        update(pair, hint: endIndex)
+      var tree = Tree.create()
+      tree.___insert_range_unique_replacing_key(pairs, uniquingKeysWith: { $1 }) {
+        Base.__payload_($0)
       }
+      self.init(__tree_: tree)
     }
 
     /// Creates a dictionary from strictly ascending, unique keys in linear time.
@@ -88,7 +91,7 @@
     }
   }
 
-  // As in SortedSetAPI: Apple's removeSubrange is internal, and it has no
+  // As in SortedSetAPI: the referenced removeSubrange is internal, and there is no
   // removeAll(where:). These public wrappers follow Swift removal naming.
   extension RedBlackTreeDictionary {
     /// Removes the members selected by a valid, ascending index range.

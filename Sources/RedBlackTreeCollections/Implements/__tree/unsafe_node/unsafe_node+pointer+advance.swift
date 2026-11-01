@@ -73,8 +73,6 @@ package func
 {
   var __x: _SafePtr = .success(__x)
 
-  guard __x != __l else { return .failure(.limit) }
-
   var __n = __n
   if __n < 0 {
     while __n != 0 {

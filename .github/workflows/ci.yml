@@ -3,13 +3,21 @@ name: CI
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: Run performance comparison only, or the full CI suite
+        required: true
+        default: performance
+        type: choice
+        options:
+          - performance
+          - all
       performance_base_ref:
         description: Performance comparison base (branch, tag, or commit SHA)
         required: true
         default: main
         type: string
       performance_head_ref:
-        description: Performance comparison head (empty uses the selected workflow branch)
+        description: Commit, tag, or branch to test (also performance head; empty uses selected workflow branch)
         required: false
         type: string
   push:
@@ -22,13 +30,15 @@ on:
 
 jobs:
   documentation:
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
@@ -72,7 +82,7 @@ jobs:
           if-no-files-found: warn
 
   public-target-documentation:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'all')
     runs-on: ubuntu-24.04
     continue-on-error: true
     permissions:
@@ -94,6 +104,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
@@ -139,11 +151,13 @@ jobs:
           if-no-files-found: warn
 
   debug:
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
     runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
@@ -153,7 +167,7 @@ jobs:
 
   release:
     name: Release (Swift ${{ matrix.swift }})
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -162,6 +176,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
@@ -374,7 +390,7 @@ jobs:
           if-no-files-found: warn
 
   address-sanitizer:
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
@@ -384,6 +400,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
@@ -410,7 +428,7 @@ jobs:
           if-no-files-found: warn
 
   thread-sanitizer:
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
@@ -420,6 +438,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest

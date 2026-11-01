@@ -143,6 +143,8 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(result[2] === members[2])
     }
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
     func test_update_rejectsEndIndexAndNonEquivalentMember() {
       let member = Member(key: 1, label: "member")
       var multiset = RedBlackTreeMultiSet([member])
@@ -151,6 +153,7 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertNil(multiset.update(Member(key: 2, label: "different"), at: multiset.startIndex))
       XCTAssertTrue(multiset[multiset.startIndex] === member)
     }
+    #endif
 
     func test_update_preservesValueSemanticsAfterCopy() {
       let oldMember = Member(key: 1, label: "old")
@@ -166,6 +169,8 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     }
 
     /// 削除済みのIndexへのupdateはnilを返し、残っている等価な要素とその個数を変えないこと（RBT-043 M1）
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
     func test_update_atRemovedIndexReturnsNilAndKeepsSurvivors() {
       let members = [
         Member(key: 1, label: "first"),
@@ -184,6 +189,7 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(result[0] === members[0])
       XCTAssertTrue(result[1] === members[2])
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

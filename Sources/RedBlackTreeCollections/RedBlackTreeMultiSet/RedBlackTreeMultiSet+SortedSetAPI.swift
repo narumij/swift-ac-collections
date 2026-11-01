@@ -6,7 +6,7 @@
 // 7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1, Sources/SortedCollections/SortedSet.
 // https://github.com/apple/swift-collections/tree/7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1/Sources/SortedCollections/SortedSet
 // Implementations below compose this library's existing operations; they do not
-// copy Apple's B-tree implementation or its index invalidation rules.
+// copy the referenced B-tree implementation or its index invalidation rules.
 
 // MultiSet adaptation of RedBlackTreeSet+SortedSetAPI.swift.
 // Ranges include all duplicates at included endpoints. Strict before/after
@@ -90,8 +90,8 @@
   }
 
   // Swift-style removal names over the existing erase operations.
-  // Apple's compared SortedSet has internal removeSubrange, but no
-  // removeAll(where:). These are adaptations, not copies of public Apple APIs.
+  // The referenced SortedSet has internal removeSubrange, but no
+  // removeAll(where:). These wrappers use standard Swift removal naming.
   extension RedBlackTreeMultiSet {
 
     /// Removes the members selected by a valid, ascending index range.

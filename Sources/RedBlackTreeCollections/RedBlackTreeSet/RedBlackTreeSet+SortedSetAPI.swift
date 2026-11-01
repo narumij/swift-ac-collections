@@ -13,6 +13,8 @@
 
     // Value endpoints need not be present in the set. Resolve them through the
     // existing bound expressions. These subscripts expose read-only views.
+    
+    // TODO: セッターも検討
 
     /// Returns the members greater than or equal to the lower bound and less than the upper bound.
     @inlinable

@@ -1,4 +1,4 @@
-#if DEATH_TEST
+#if DEATH_TEST && swift(>=6.4)
   import ElementBufferModule
   import Testing
 

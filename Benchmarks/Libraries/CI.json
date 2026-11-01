@@ -61,15 +61,15 @@
     },
     {
       "kind": "group",
-      "title": "Permutations",
+      "title": "NextPermutations",
       "directory": "permutations",
       "contents": [
         {
           "kind": "chart",
           "title": "subscript access (batched)",
           "tasks": [
-            "Permutations.SubSequenceN subscript sequential access (batched)",
-            "Permutations.SubSequenceN subscript shuffled access (batched)"
+            "NextPermutations.Permutation subscript sequential access (batched)",
+            "NextPermutations.Permutation subscript shuffled access (batched)"
           ]
         }
       ]

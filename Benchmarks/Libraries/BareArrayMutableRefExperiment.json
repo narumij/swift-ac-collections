@@ -9,7 +9,7 @@
       "tasks": [
         "std::vector<intptr_t> 1D sequential read checksum",
         "ElementBuffer<Int> element(at:) sequential read checksum",
-        "ElementBuffer<Int> Reference sequential read checksum",
+        "ElementBuffer<Int> MutableRef sequential read checksum",
         "Array<Int> 1D sequential read checksum"
       ]
     },
@@ -19,7 +19,7 @@
       "tasks": [
         "std::vector<intptr_t> 1D sequential write",
         "ElementBuffer<Int> setElement(_:at:) sequential write",
-        "ElementBuffer<Int> Reference sequential write",
+        "ElementBuffer<Int> MutableRef sequential write",
         "Array<Int> 1D sequential write"
       ]
     },
@@ -29,7 +29,7 @@
       "tasks": [
         "std::vector<std::vector<intptr_t>> 2D sequential read checksum",
         "ElementBuffer2D<Int> element(at:) sequential read checksum",
-        "ElementBuffer2D<Int> Reference sequential read checksum",
+        "ElementBuffer2D<Int> MutableRef sequential read checksum",
         "Array<Array<Int>> 2D sequential read checksum"
       ]
     },
@@ -39,7 +39,7 @@
       "tasks": [
         "std::vector<std::vector<intptr_t>> 2D sequential write",
         "ElementBuffer2D<Int> setElement(_:at:) sequential write",
-        "ElementBuffer2D<Int> Reference sequential write",
+        "ElementBuffer2D<Int> MutableRef sequential write",
         "Array<Array<Int>> 2D sequential write"
       ]
     },
@@ -49,7 +49,7 @@
       "tasks": [
         "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential read checksum",
         "ElementBuffer3D<Int> element(at:) sequential read checksum",
-        "ElementBuffer3D<Int> Reference sequential read checksum",
+        "ElementBuffer3D<Int> MutableRef sequential read checksum",
         "Array<Array<Array<Int>>> 3D sequential read checksum"
       ]
     },
@@ -59,7 +59,7 @@
       "tasks": [
         "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential write",
         "ElementBuffer3D<Int> setElement(_:at:) sequential write",
-        "ElementBuffer3D<Int> Reference sequential write",
+        "ElementBuffer3D<Int> MutableRef sequential write",
         "Array<Array<Array<Int>>> 3D sequential write"
       ]
     }

@@ -12,10 +12,10 @@
           "kind": "chart",
           "title": "Binary selections ending at 32 choose 7",
           "tasks": [
-            "Permutations binary selection checksum",
+            "NextPermutations binary selection checksum",
             "Array iterator binary selection checksum",
             "Borrowed Span iterator binary selection checksum",
-            "Permutations Bool binary selection checksum",
+            "NextPermutations Bool binary selection checksum",
             "std::next_permutation binary selection checksum"
           ]
         }

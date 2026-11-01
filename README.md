@@ -24,7 +24,7 @@ These sorted sets and dictionaries are designed to
 
 ### Using Swift Package Manager
 
-The current package requires Swift 6.4 or later. On macOS, it targets macOS 15 or later.
+The current package requires Swift 6.2 or later. On macOS, it targets macOS 15 or later.
 
 Add the following to the `dependencies` section of your `Package.swift`:
 
@@ -77,7 +77,7 @@ After enabling the trait, import `AcCollections` normally to use the one- throug
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | Development version (Swift 6.4 or later) |
+| `main` | ⭐ | Development version (Swift 6.2 or later) |
 | `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
 | `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
 

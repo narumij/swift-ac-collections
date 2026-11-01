@@ -10,7 +10,7 @@ import XCTest
 /// 既存の`SetBaseTests`/`MultiSetBaseTests`は`___ptr_range_comp`の成功ケースしか踏んでいなかったため、
 /// `TreeNodeOnlyFixture.UniqueSealKey`/`.MultiSealKey`(`___recycle_count`をキーに使う)で
 /// `___ptr_comp`本体・失敗分岐・重複キー時の木構造タイブレークを検証する。
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 final class TreeFoundamentalMultiplicityTests: TreeTestCase, _UnsafeNodePtrType {
 
   typealias UniqueSUT = TreeNodeOnlyFixture.UniqueSealKey

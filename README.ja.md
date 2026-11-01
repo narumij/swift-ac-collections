@@ -26,7 +26,7 @@ swift-ac-collections は、
 
 ### Swift Package Manager での利用
 
-現行パッケージはSwift 6.4以降が必要です。macOSでは15以降を対象とします。
+現行パッケージはSwift 6.2以降が必要です。macOSでは15以降を対象とします。
 
 `Package.swift` の `dependencies` に以下を追加してください:
 
@@ -78,7 +78,7 @@ traitを有効にした後は、通常どおり`AcCollections`をimportすると
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | 開発版（Swift 6.4以降） |
+| `main` | ⭐ | 開発版（Swift 6.2以降） |
 | `compatible/AtCoder/2025` | | AtCoder 2025 互換版 |
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 

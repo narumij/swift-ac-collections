@@ -1,6 +1,8 @@
 import ElementBufferModule
 import XCTest
 
+// Match the availability of ElementBuffer.reference(at:).
+#if swift(>=6.4)
 /// On Swift 6.4 and later, a borrowed reference accesses the owner's storage directly and depends on the owner's lifetime.
 @available(macOS 27.0, *)
 final class BareArray_7_BorrowedReferenceTests: XCTestCase {
@@ -180,3 +182,4 @@ final class BareArray_7_BorrowedReferenceTests: XCTestCase {
     XCTAssertEqual(destroyed, [0, 1])
   }
 }
+#endif

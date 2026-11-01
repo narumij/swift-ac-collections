@@ -103,8 +103,10 @@ final class AcCollectionsTests: XCTestCase {
     array.setElement(7, at: 1)
     XCTAssertEqual(array.element(at: 1), 7)
 
-    var reference = array.reference(at: 1)
-    reference.value = 8
-    XCTAssertEqual(array.element(at: 1), 8)
+    #if swift(>=6.4)
+      var reference = array.reference(at: 1)
+      reference.value = 8
+      XCTAssertEqual(array.element(at: 1), 8)
+    #endif
   }
 }

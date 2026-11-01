@@ -7,13 +7,13 @@
 
 import RedBlackTreeCollections
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 struct TreeNodeOnlyFixture: ~Copyable {
   var end_node: UnsafeNode
   var storage: InlineArray<128, UnsafeNode>
 }
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
 
   /// 本家の`__tree`と同じく、rootは独立フィールドとして持たず、常に`end_node.__left_`から
@@ -24,7 +24,7 @@ extension TreeNodeOnlyFixture {
   }
 }
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
 
   static func makeEmpty() -> Self {
@@ -34,7 +34,7 @@ extension TreeNodeOnlyFixture {
   }
 }
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
 
   /// `storage`内のインデックス`i`のノードへの生ポインタを得る。
@@ -50,7 +50,7 @@ extension TreeNodeOnlyFixture {
   }
 }
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
 
   /// `root`(= `end_node.__left_`)が赤黒木として正しいことを、実際の`__tree_invariant`
@@ -60,19 +60,19 @@ extension TreeNodeOnlyFixture {
   }
 }
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture: _UnsafeNodePtrType & NullPtrInterface {
   var nullptr: _NodePtr { .nullptr }
 }
 
 // 以下の二つと類似関数を基本層とする定義で構わない気がしてきた
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture: TreeAlgorithmBaseProtocol_ptr {}
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture: TreeAlgorithmProtocol_ptr {}
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
   
   enum PointerKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {

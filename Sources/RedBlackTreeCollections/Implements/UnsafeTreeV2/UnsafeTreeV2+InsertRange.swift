@@ -249,6 +249,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inlinable
   internal mutating func ___insert_range_unique<S>(
     _ __source: S,
+    replacingKey: Bool = false,
     uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
     transform __t_: (S.Element) -> Base._PayloadValue
   )
@@ -283,6 +284,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
           Base.__mapped_value_ptr(__child).pointee = try combine(
             Base.__mapped_value_(__child),
             Base.__mapped_value_(__nd))
+          // Replace only after combining succeeds; an equivalent key preserves tree order.
+          if replacingKey {
+            Base.__key_ptr(__child).pointee = Base.__key_(__nd)
+          }
           destroy(__nd)
         }
       }

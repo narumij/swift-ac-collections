@@ -33,20 +33,24 @@
     }
 
 
-    /// Creates a dictionary, keeping the last value for each equivalent key.
-    /// The existing key is retained when an equivalent key occurs again.
+    /// Creates a dictionary, keeping the last key-value pair for each equivalent key.
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (Key, Value) {
-      self.init(pairs, uniquingKeysWith: { _, new in new })
+      var tree = Tree.create()
+      tree.___insert_range_unique(pairs, replacingKey: true, uniquingKeysWith: { $1 }) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
     }
 
     /// Creates a dictionary, keeping the last key-value pair for each equivalent key.
     @inlinable
     public init<S: Sequence>(keysWithValues pairs: S) where S.Element == (key: Key, value: Value) {
-      self.init()
-      for pair in pairs {
-        update(pair, hint: endIndex)
+      var tree = Tree.create()
+      tree.___insert_range_unique(pairs, replacingKey: true, uniquingKeysWith: { $1 }) {
+        Base.__payload_($0)
       }
+      self.init(__tree_: tree)
     }
 
     /// Creates a dictionary from strictly ascending, unique keys in linear time.

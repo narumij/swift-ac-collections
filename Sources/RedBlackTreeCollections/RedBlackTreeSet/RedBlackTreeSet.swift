@@ -428,7 +428,19 @@ extension RedBlackTreeSet {
   public mutating func remove(_ member: Element) -> Element? {
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
-    return __tree_.update { $0.___erase_unique(member) } ? member : nil
+    #if false
+      // RBT-052: Previous fast path returned the probe instead of the stored element.
+      // Retained for performance comparison.
+      return __tree_.update { $0.___erase_unique(member) } ? member : nil
+    #else
+      return __tree_.update {
+        let index = $0.find(member)
+        guard index != $0.end else { return nil }
+        let removed = Base.__payload_(index)
+        _ = $0.erase(index)
+        return removed
+      }
+    #endif
   }
 }
 

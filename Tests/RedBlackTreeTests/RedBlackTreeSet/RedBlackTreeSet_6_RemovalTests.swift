@@ -3,6 +3,32 @@ import XCTest
 
 final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
+  /// Equivalent probes must return the stored object, retained beyond node destruction.
+  func test_removeReturnsStoredObjectAndRetainsItUntilReleased() {
+    final class Member: Comparable {
+      let key: Int
+      init(_ key: Int) { self.key = key }
+      static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+    }
+    var set = RedBlackTreeSet<Member>()
+    weak var stored: Member?
+    do {
+      let member = Member(1)
+      stored = member
+      set.insert(member)
+    }
+    let probe = Member(1)
+    var removed = set.remove(probe)
+    XCTAssertTrue(removed === stored)
+    XCTAssertFalse(removed === probe)
+    XCTAssertTrue(set.isEmpty)
+    XCTAssertNotNil(stored)
+    removed = nil
+    XCTAssertNil(stored)
+    XCTAssertNil(set.remove(probe))
+  }
+
   /// popFirst() が空セットの場合に nil を返すこと
   func test_popFirst_empty() {
     var set = RedBlackTreeSet<Int>()

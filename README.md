@@ -110,7 +110,7 @@ Current guides in this checkout:
 - [OptionalElementBufferModule](Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md)
 - [ElementBufferModule](Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md)
 
-[API documentation (DocC)](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)
+[API documentation (DocC, Swift Package Index · 0.6.3)](https://swiftpackageindex.com/narumij/swift-ac-collections/0.6.3/documentation/redblacktreecollections)
 
 ## AtCoder 2025
 

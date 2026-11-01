@@ -134,11 +134,13 @@
     @inlinable
     public init<S: Sequence>(sortedKeysWithValues pairs: S) where S.Element == (Key, Value) {
       var previous: Key?
-      self.init(keysWithValues: pairs.lazy.map { pair in
+      // Keep this lazy; Swift 6.2 otherwise also considers Sequence.map.
+      let checked: LazyMapSequence<S, (Key, Value)> = pairs.lazy.map { pair in
         if let previous { precondition(!(pair.0 < previous), "Keys must be nondecreasing") }
         previous = pair.0
         return pair
-      })
+      }
+      self.init(keysWithValues: checked)
     }
 
     /// Creates a multimap from nondecreasing keys, retaining every labeled pair.

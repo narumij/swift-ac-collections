@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// Older standard libraries require Comparable values to be Copyable.
+#if compiler(>=6.4)
 @inlinable
 package func __default_three_way_comparator<T: ~Copyable & Comparable>(_ __lhs: borrowing T, _ __rhs: borrowing T) -> Int {
   if __lhs < __rhs {
@@ -30,3 +32,15 @@ package func __default_three_way_comparator<T: ~Copyable & Comparable>(_ __lhs: 
     0
   }
 }
+#else
+@inlinable
+package func __default_three_way_comparator<T: Comparable>(_ __lhs: borrowing T, _ __rhs: borrowing T) -> Int {
+  if __lhs < __rhs {
+    -1
+  } else if __lhs > __rhs {
+    1
+  } else {
+    0
+  }
+}
+#endif

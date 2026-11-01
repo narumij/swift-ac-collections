@@ -152,14 +152,24 @@ jobs:
         run: swift test -c debug
 
   release:
+    name: Release (Swift ${{ matrix.swift }})
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["6.2.4", "6.3.3", "latest"]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: ${{ matrix.swift }}
+
+      - name: Record Swift version
+        run: swift --version
 
       - name: Run tests
         run: swift test -c release

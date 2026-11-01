@@ -5,7 +5,7 @@ import XCTest
 
   /// `Implements/__tree/unsafe_node/Seal/_NodePtrSealing.swift`と`_SealedTag.swift`の
   /// テスト。ノードの世代管理(`___recycle_count`によるseal/unseal判定)を検証する。
-  @available(anyAppleOS 26.0, *)
+  @available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
   final class TreeFoundamentalNodeSealingTests: TreeTestCase, _UnsafeNodePtrType {
 
     func makeFixture() -> TreeNodeOnlyFixture {

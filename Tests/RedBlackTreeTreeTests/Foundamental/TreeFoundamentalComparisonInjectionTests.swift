@@ -3,7 +3,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeCollections
 
-  @available(anyAppleOS 26.0, *)
+  @available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
   final class TreeFoundamentalComparisonInjectionTests: TreeTestCase {
 
     /// 現行の`Base`注入経路で使うstatic比較・key取得の最小実装。

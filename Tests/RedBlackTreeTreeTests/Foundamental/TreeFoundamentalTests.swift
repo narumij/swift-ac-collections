@@ -23,7 +23,7 @@ import XCTest
 /// `TreeNodeOnlyFixture`を使った、現行の生木アルゴリズム(`_ptr`系プロトコル)への直接テスト。
 /// `Legacy/ArrayBased`は`_std`系(独立した配列実装)であり、Sourcesが実際に使う`_ptr`系
 /// プロトコルとは別物なので、この基本層の検証には使えない。
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
 
   func makeFixture() -> TreeNodeOnlyFixture {

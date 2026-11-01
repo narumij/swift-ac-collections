@@ -3,10 +3,12 @@
 import XCTest
 import Testing
 
-@testable import NextPermutationModule
+import NextPermutationModule
 
 final class EtcTests: XCTestCase {
 
+  // Iterating Span with for-in requires Swift 6.4.
+  #if swift(>=6.4)
   @available(macOS 27.0, *)
   func testIterableSupportsForIn() {
     let source = [1, 2, 3]
@@ -19,5 +21,5 @@ final class EtcTests: XCTestCase {
 
     XCTAssertEqual(result, 6)
   }
-
+  #endif
 }

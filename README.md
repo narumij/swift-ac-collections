@@ -5,20 +5,28 @@
 
 English | [日本語](README.ja.md)
 
-## Concept
-
-swift-ac-collections is a Swift library that provides a variety of data structures, centered on
-
-**sorted sets and dictionaries that aim for performance comparable to C++ `std::set` / `std::map`**.
-
-These sorted sets and dictionaries are designed to
-**make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
-
 [![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 <br>
 [![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
 [![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+## Concept
+
+swift-ac-collections is a Swift library that provides a variety of data structures, centered on
+**sorted sets and dictionaries with performance comparable to C++ `std::set` / `std::map`**.
+
+*Successful lookups: time per element (1 to 16M elements). Apple Silicon, macOS, Swift 6.4 Release. `std::set` was measured in the same environment.*
+
+![Lookup performance of std::set and RedBlackTreeSet (successful lookups, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+
+*Removing elements in random order: time per element (1 to 16M elements). Same measurement conditions as above.*
+
+![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+
+These sorted sets and dictionaries are not limited to competitive programming; they can also be used for general development.
+
+With them, you can solve [AtCoder][atcoder] problems that assume `std::set` / `std::multiset` with performance on par with C++.
 
 ## Usage
 
@@ -88,18 +96,6 @@ Declarations whose names begin with `_` are implementation details and carry no 
 Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
 
 ---
-
-## Containers
-
-- RedBlackTreeSet — Sorted set (no duplicate elements)
-- RedBlackTreeMultiSet — Sorted multiset (duplicates allowed)
-- RedBlackTreeDictionary — Sorted dictionary (unique keys)
-- RedBlackTreeMultiMap — Sorted map (duplicate keys allowed)
-
-## Removal
-
-Indices become invalid after removal and must not be reused.  
-Use range-based removal APIs for consecutive deletions.
 
 ## Documentation
 

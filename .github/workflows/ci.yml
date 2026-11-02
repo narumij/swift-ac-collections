@@ -345,7 +345,7 @@ jobs:
           '
 
       - name: Collect executed benchmark binaries
-        if: failure()
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
@@ -379,7 +379,7 @@ jobs:
           done
 
       - name: Upload benchmark performance artifacts
-        if: failure()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-performance-results

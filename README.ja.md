@@ -5,22 +5,33 @@
 
 [English](README.md) | 日本語
 
-## コンセプト
-
-swift-ac-collections は、
-
-**C++ の `std::set` / `std::map` に匹敵する性能を目指すソート済み集合・辞書**
-を中心に、さまざまなデータ構造を提供する Swift ライブラリです。
-
-このソート済み集合・辞書は、**「C++ の `std::set` / `std::multiset` を前提とした
-[AtCoder][atcoder] の問題を、Swift でも実用的な性能で解けるようにする」**
-ことを目的として設計されています。
-
 [![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 <br>
 [![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
 [![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnarumij%2Fswift-ac-collections%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/narumij/swift-ac-collections)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+## コンセプト
+
+swift-ac-collections は、**C++ の `std::set` / `std::map` に匹敵する性能のソート済み集合・辞書**
+を中心に、さまざまなデータ構造を提供する Swift ライブラリです。
+
+
+*検索ヒットするケース、1要素あたりの時間（1〜16M要素）。Apple Silicon・macOS、Swift 6.4 Release。`std::set`は同じ環境で計測。*
+
+![std::set と RedBlackTreeSet の検索性能比較（成功する検索、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+
+
+*ランダムな順に要素を削除するケース、1要素あたりの時間（1〜16M要素）。測定条件は上と同じ。*
+
+![std::set と RedBlackTreeSet の削除性能比較（ランダム削除、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+
+
+
+このソート済み集合・辞書は、競技プログラミングに限らず、一般の開発にも利用可能です。
+
+これらを用いることで、`std::set` / `std::multiset` を前提とした
+[AtCoder][atcoder] の問題を、C++と同等の性能で解くことができます。
 
 ## 利用方法
 
@@ -90,18 +101,6 @@ traitを有効にした後は、通常どおり`AcCollections`をimportすると
 AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release/AtCoder/2025` です。
 
 ---
-
-## コンテナ
-
-- RedBlackTreeSet — ソート済み集合（重複なし）
-- RedBlackTreeMultiSet — ソート済み集合（重複あり）
-- RedBlackTreeDictionary — ソート済み辞書（キー一意）
-- RedBlackTreeMultiMap — ソート済みマップ（重複キー可）
-
-## 削除について
-
-インデックスは削除で無効になります（再利用不可）。
-連続削除には範囲削除 API を使用してください。
 
 ## ドキュメント
 

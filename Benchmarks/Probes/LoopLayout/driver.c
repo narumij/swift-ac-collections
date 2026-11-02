@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
         if (!timed_out) completed_rounds = r + 1;
     }
     fprintf(stderr, "# completed_rounds %d (incl. warmup) failures %d elapsed_ms %" PRIu64 "\n",
-            completed_rounds, failures, (now_ns() - start) / 1000000ULL);
+            completed_rounds, failures, (uint64_t)((now_ns() - start) / 1000000ULL));
     for (int b = 0; b < NBUFFERS; b++) free(allocations[b]);
     free(tasks);
     if (failures) return 1;

@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.6] - 2026-11-03
+
+### Changed
+- `RedBlackTreeMultiSet.update(_:at:)`と`RedBlackTreeMultiMap.updateValue(_:at:)`は、有効でない添字や`endIndex`を事前条件違反として停止するよう変更。戻り値はOptionalでなくなった（source-breaking）
+- 添字範囲によるViewの取得で、無効または逆順の範囲を空のViewにせず、実行時エラーとするよう変更
+- `RedBlackTreeDictionary`をキーと値の組の列から作るとき、同じキーが重複した場合は値だけでなくキーも最後の組のものを残すよう統一
+- `RedBlackTreeSet.remove(_:)`が、引数ではなく集合に格納されていた要素を返すよう変更
+- READMEの冒頭に`std::set`との性能比較グラフを掲載し、構成を整理。コンテナ4型のAPIドキュメントへのリンクを追加
+- APIドキュメントの参照先と、他実装との比較に関する記述を明確化
+- CIで、手動で指定したコミットの全項目実行と、成功時のベンチマーク成果物の保存に対応
+
+### Fixed
+- 移動量0で上限付きの添字移動を行ったとき、上限に一致する位置で失敗扱いになる問題を修正
+
+## [0.6.5] - 2026-11-01
+
+### Changed
+- パッケージの最低Swiftバージョンを6.2へ引き下げ、Swift 6.2・6.3に対応。リリース互換性のテストを追加
+
+## [0.6.4] - 2026-11-01
+
+### Changed
+- READMEのドキュメント案内を、Swift Package Indexで公開しているAPIドキュメントへのリンクに変更
+- 上限・下限探索APIのベンチマークを追加
+
+## [0.6.3] - 2026-11-01
+
+### Added
+- 赤黒木4型に、swift-collectionsのソート済みコレクションに倣ったAPIを追加。値の範囲によるsubscript、`removeFirst(_:)`・`removeLast(_:)`、`firstIndex(after:)`・`lastIndex(before:)`、`removeSubrange(_:)`、`removeAll(where:)`など
+- 赤黒木のViewに、Swift標準に倣った削除APIを追加
+- 赤黒木のCoWコピー元を読み取り専用で扱う`RED_BLACK_TREE_TSAN_SAFE` traitを追加し、既定で有効化（評価中。全操作で競合がないことを保証するものではない）
+- CIにThread Sanitizerのdebug・release実行と、Address Sanitizerのrelease実行を追加
+- GitHub Sponsorsへのリンクを追加
+
+### Changed
+- 対応プラットフォームとして、iOS 18・tvOS 18・watchOS 11・visionOS 2以降を明示
+
+## [0.6.2] - 2026-10-29
+
+### Added
+- swift-collections・swift-algorithms・LLVM libc++のライセンス全文を`Licenses/`に同梱し、改変コードの出典表示を明確化
+
+### Removed
+- リポジトリ内の開発用ユーティリティを整理。AtCoder 2025向けPermutation提出用ファイルの生成utilityなどを削除
+
+## [0.6.1] - 2026-10-27
+
+### Changed
+- API Matrixと設計文書に、人向けの概要を追加
+
+## [0.6.0] - 2026-10-18
+
+<!-- 0.5.4から0.6.0までの利用者向け変更は、下記0.5.5に記載したAddress Sanitizer jobの追加のみ。0.5.5のタグは存在しない -->
+
 ## [0.5.5] - 2026-10-17
 
 ### Changed

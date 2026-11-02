@@ -67,6 +67,10 @@ point that re-exports the same declarations.
 API documentation hosted by Swift Package Index:
 
 - [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
+  - [RedBlackTreeSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreeset)
+  - [RedBlackTreeMultiSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultiset)
+  - [RedBlackTreeDictionary](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreedictionary)
+  - [RedBlackTreeMultiMap](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultimap)
 - [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
 - [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
 - [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)

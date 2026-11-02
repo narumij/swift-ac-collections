@@ -62,7 +62,44 @@ import AcCollections
 import `NextPermutationModule`; the former `PermutationModule` name remains as a compatibility entry
 point that re-exports the same declarations.
 
-### Enabling OptionalElementBuffer
+## Documentation
+
+API documentation hosted by Swift Package Index:
+
+- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
+  - [RedBlackTreeSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreeset)
+  - [RedBlackTreeMultiSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultiset)
+  - [RedBlackTreeDictionary](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreedictionary)
+  - [RedBlackTreeMultiMap](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultimap)
+- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
+- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
+- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
+
+## Branch Strategy
+
+| Branch | Recommended | Description |
+|----------|----------|----------|
+| `main` | ⭐ | Development version (Swift 6.2 or later) |
+| `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
+| `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
+
+Use `main` for general use. The library is under development; APIs and implementations may change.
+
+Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
+
+## AtCoder 2025
+
+If you need the exact version used by the AtCoder 2025 judge environment, specify the following:
+
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "release/AtCoder/2025"),
+]
+```
+
+## Enabling OptionalElementBuffer
 
 `OptionalElementBuffer` isn't exposed through `AcCollections` by default. To explicitly use this
 experimental low-level utility, enable the `ENABLE_OPTIONAL_ELEMENT_BUFFER` trait on the package
@@ -77,46 +114,9 @@ dependencies: [
 ]
 ```
 
-After enabling the trait, import `AcCollections` normally to use the one- through four-dimensional
-`OptionalElementBuffer` types. For more about configuring dependency traits, see
-[Adding dependencies to a Swift package](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
-
-## Branch Strategy
-
-| Branch | Recommended | Description |
-|----------|----------|----------|
-| `main` | ⭐ | Development version (Swift 6.2 or later) |
-| `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
-| `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
-
-Use `main` for general use. The library is under development; APIs and implementations may change.
+## Other Notes
 
 Declarations whose names begin with `_` are implementation details and carry no public API compatibility guarantee, even when declared `public`.
-
-Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
-
----
-
-## Documentation
-
-API documentation hosted by Swift Package Index:
-
-- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
-- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
-- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
-- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
-
-## AtCoder 2025
-
-If you need the exact version used by the AtCoder 2025 judge environment, specify the following:
-
-```swift
-dependencies: [
-  .package(
-    url: "https://github.com/narumij/swift-ac-collections",
-    branch: "release/AtCoder/2025"),
-]
-```
 
 ## License
 

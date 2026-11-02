@@ -66,23 +66,18 @@ import AcCollections
 通常の入口は`AcCollections`で、Permutation APIも再公開します。moduleを直接利用する場合の
 主入口は`NextPermutationModule`です。旧名`PermutationModule`は同じ宣言を再公開する互換入口として残します。
 
-### OptionalElementBufferを有効にする
+## ドキュメント
 
-`OptionalElementBuffer`は既定では`AcCollections`から公開されません。実験的な低レベル部品として
-明示的に利用する場合は、package dependencyで`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にします。
+Swift Package Indexで公開している各モジュールのAPIドキュメント：
 
-```swift
-dependencies: [
-  .package(
-    url: "https://github.com/narumij/swift-ac-collections",
-    branch: "main",
-    traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
-]
-```
-
-traitを有効にした後は、通常どおり`AcCollections`をimportすると1Dから4Dの
-`OptionalElementBuffer`を利用できます。SwiftPMのtrait設定については、
-[Swift Package Managerの案内](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
+- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
+  - [RedBlackTreeSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreeset)
+  - [RedBlackTreeMultiSet](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultiset)
+  - [RedBlackTreeDictionary](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreedictionary)
+  - [RedBlackTreeMultiMap](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections/redblacktreemultimap)
+- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
+- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
+- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
 
 <!-- 英訳: Branch Strategy -->
 ## ブランチ運用方針
@@ -96,20 +91,7 @@ traitを有効にした後は、通常どおり`AcCollections`をimportすると
 <!-- 英訳: Which branch should I use? -->
 通常は `main` を利用してください。現在は開発中で、APIや実装は変更される可能性があります。
 
-名前が `_` で始まる宣言は内部実装用であり、`public` であっても公開APIとしての互換性は保証しません。
-
 AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release/AtCoder/2025` です。
-
----
-
-## ドキュメント
-
-Swift Package Indexで公開している各モジュールのAPIドキュメント：
-
-- [RedBlackTreeCollections](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/redblacktreecollections)
-- [NextPermutationModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/nextpermutationmodule)
-- [OptionalElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/optionalelementbuffermodule)
-- [ElementBufferModule](https://swiftpackageindex.com/narumij/swift-ac-collections/documentation/elementbuffermodule)
 
 ## AtCoder 2025
 
@@ -122,6 +104,24 @@ dependencies: [
     branch: "release/AtCoder/2025"),
 ]
 ```
+
+## OptionalElementBufferを有効にする
+
+`OptionalElementBuffer`は既定では`AcCollections`から公開されません。実験的な低レベル部品として
+明示的に利用する場合は、package dependencyで`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にします。
+
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "main",
+    traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
+]
+```
+
+## その他
+
+名前が `_` で始まる宣言は内部実装用であり、`public` であっても公開APIとしての互換性は保証しません。
 
 ## ライセンス
 
@@ -137,5 +137,3 @@ Swift Collections・Swift Algorithmsなどの第三者由来コードのライ�
 不具合報告や機能追加の要望は、Issue または Pull Request でお気軽にお寄せください。  
 
 [atcoder]: https://atcoder.jp/
-
-<!-- 何度目かの正直 -->

@@ -101,7 +101,7 @@ dependencies: [
 ]
 ```
 
-### OptionalElementBufferを有効にする
+## OptionalElementBufferを有効にする
 
 `OptionalElementBuffer`は既定では`AcCollections`から公開されません。実験的な低レベル部品として
 明示的に利用する場合は、package dependencyで`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にします。

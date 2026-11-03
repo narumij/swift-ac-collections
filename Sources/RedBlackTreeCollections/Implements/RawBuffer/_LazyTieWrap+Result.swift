@@ -59,3 +59,13 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
     }
   }
 #endif
+
+#if DEBUG
+  extension _NodePtrSealing {
+
+    @inlinable
+    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+      .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
+    }
+  }
+#endif

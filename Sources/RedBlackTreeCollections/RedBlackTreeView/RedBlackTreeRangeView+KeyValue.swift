@@ -114,6 +114,14 @@
     }
   }
 
+extension RedBlackTreeKeyValueRangeView {
+
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    __tree_.index(p)
+  }
+}
+
   #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyValueRangeView: Sequence {}
 

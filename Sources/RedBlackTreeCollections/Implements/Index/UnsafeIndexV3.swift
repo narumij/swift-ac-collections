@@ -24,7 +24,7 @@
 //
 // - Important: 生成元以外の木での使用は未定義。
 @_documentation(visibility: internal)
-public typealias UnsafeIndexV3 = _LazyTiedPtr
+public typealias UnsafeIndexV3 = _LazyTiedPtrV2
 
 /// An index into a red-black-tree collection.
 public typealias RedBlackTreeIndex = UnsafeIndexV3

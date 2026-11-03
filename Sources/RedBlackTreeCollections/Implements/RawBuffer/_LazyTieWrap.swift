@@ -86,14 +86,6 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
   extension _NodePtrSealing {
 
     @inlinable
-    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
-      .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
-    }
-  }
-
-  extension _NodePtrSealing {
-
-    @inlinable
     package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTiedPtr {
       .init(rawValue: self, lazyDetach: __tree_.lazyDetach)
     }

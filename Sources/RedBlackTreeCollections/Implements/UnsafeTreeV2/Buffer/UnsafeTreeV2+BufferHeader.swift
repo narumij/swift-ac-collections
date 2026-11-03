@@ -185,13 +185,31 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
+  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+  
+  @inlinable
   mutating func index(_ p: _NodePtr) -> _LazyTiedPtr {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
   }
   
   @inlinable
+  mutating func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+  
+  @inlinable
   mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+    assert(p != .nullptr)
+    return p.___has_payload_content ? .some(index(p)) : .none
+  }
+  
+  @inlinable
+  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
     assert(p != .nullptr)
     return p.___has_payload_content ? .some(index(p)) : .none
   }

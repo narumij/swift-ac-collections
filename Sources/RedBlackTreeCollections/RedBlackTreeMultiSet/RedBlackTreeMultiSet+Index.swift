@@ -321,22 +321,6 @@
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
-      __tree_.index(p)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
-      __tree_.index_or_nil(p)
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-
-  extension RedBlackTreeMultiSet {
-
-    @inlinable
     func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
       __tree_.index(p)
     }

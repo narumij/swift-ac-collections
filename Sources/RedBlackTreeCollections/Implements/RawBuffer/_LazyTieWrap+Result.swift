@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
 // 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
 //
 // `_LazyDetachPointer`は、`_SealedPtr`に解放時メモリ延長を付与したもの
@@ -68,4 +69,5 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
       .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
     }
   }
+#endif
 #endif

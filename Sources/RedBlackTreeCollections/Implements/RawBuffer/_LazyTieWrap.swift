@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
 // （遅延）結束バンド
 @frozen
 public struct _LazyTieWrap<RawValue> {
@@ -135,4 +136,5 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
       .init(rawValue: .init(unsafe: .nullptr), lazyDetach: _emptyLazyDetach)
     }
   }
+#endif
 #endif

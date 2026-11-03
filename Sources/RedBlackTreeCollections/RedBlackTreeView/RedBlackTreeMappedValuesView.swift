@@ -115,14 +115,6 @@
   }
 
 
-  extension RedBlackTreeMappedValuesView {
-
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
-      __tree_.index(p)
-    }
-  }
-
 extension RedBlackTreeMappedValuesView {
 
   @inlinable

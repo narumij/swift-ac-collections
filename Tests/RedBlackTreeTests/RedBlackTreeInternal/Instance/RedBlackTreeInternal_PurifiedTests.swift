@@ -9,20 +9,6 @@
 import XCTest
 @testable import RedBlackTreeCollections
 
-extension Result
-where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
-
-  var __recycle_count: UnsafeNode.Seal? {
-    try? map { $0.rawValue.pointer.pointee.___recycle_count }.get()
-  }
-
-  var seal: UnsafeNode.Seal? { try? map { $0.rawValue.seal }.get() }
-
-  var ___tracking_tag: _TrackingTag? {
-    try? map { $0.rawValue.pointer.pointee.___tracking_tag }.get()
-  }
-}
-
 extension Result where Success == _LazyTieWrapV2, Failure == SealError {
 
   var __recycle_count: UnsafeNode.Seal? {
@@ -33,18 +19,6 @@ extension Result where Success == _LazyTieWrapV2, Failure == SealError {
 
   var ___tracking_tag: _TrackingTag? {
     try? map { $0.rawValue.pointer.pointee.___tracking_tag }.get()
-  }
-}
-
-extension _LazyTieWrap where RawValue == _NodePtrSealing {
-  var __recycle_count: UnsafeNode.Seal? {
-    rawValue.pointer.pointee.___recycle_count
-  }
-
-  var seal: UnsafeNode.Seal? { rawValue.seal }
-
-  var ___tracking_tag: _TrackingTag? {
-    rawValue.pointer.pointee.___tracking_tag
   }
 }
 

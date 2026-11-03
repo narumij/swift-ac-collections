@@ -177,21 +177,9 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
-  // `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtr`から使われる
-  @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-
+  // `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtrV2`から使われる
   @inlinable
   mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-  
-  @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTiedPtr {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
   }
@@ -200,12 +188,6 @@ extension UnsafeTreeV2BufferHeader {
   mutating func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-  
-  @inlinable
-  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
-    assert(p != .nullptr)
-    return p.___has_payload_content ? .some(index(p)) : .none
   }
   
   @inlinable

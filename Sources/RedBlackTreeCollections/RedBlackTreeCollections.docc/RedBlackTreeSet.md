@@ -62,13 +62,13 @@
 - ``RedBlackTreeSet/containsSubrange(_:)-88ekq``
 - ``RedBlackTreeSet/containsSubrange(_:)-9eg9f``
 - ``RedBlackTreeSet/distance(from:to:)-5lep8``
-- ``RedBlackTreeSet/distance(from:to:)-7ecok``
+- ``RedBlackTreeSet/distance(from:to:)-(Index,_)``
 - ``RedBlackTreeSet/subscript(_:)-91gxs``
-- ``RedBlackTreeSet/erase(_:)-6xhp2``
-- ``RedBlackTreeSet/erase(_:)-fmh0``
+- ``RedBlackTreeSet/erase(_:)-(UnboundedRange)``
+- ``RedBlackTreeSet/erase(_:)-(IndexRangeExpression)``
 - ``RedBlackTreeSet/erase(_:)-3oq3k``
 - ``RedBlackTreeSet/erase(_:)-4nsu4``
-- ``RedBlackTreeSet/erase(_:)-207dn``
+- ``RedBlackTreeSet/erase(_:)-(IndexRange)``
 - ``RedBlackTreeSet/erase(_:where:)-23cbu``
 - ``RedBlackTreeSet/erase(_:where:)-4vhkk``
 - ``RedBlackTreeSet/erase(_:where:)-8qz11``
@@ -91,7 +91,7 @@
 - ``RedBlackTreeSet/remove(at:)``
 - ``RedBlackTreeSet/removeAll(keepingCapacity:)``
 - ``RedBlackTreeSet/erase(where:)``
-- ``RedBlackTreeSet/erase(_:)-66kob``
+- ``RedBlackTreeSet/erase(_:)-(Index)``
 - ``RedBlackTreeSet/erase(exactly:)``
 
 ### Transforming a Set

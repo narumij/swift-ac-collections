@@ -62,14 +62,14 @@
 - ``RedBlackTreeMultiSet/containsSubrange(_:)-31gzi``
 - ``RedBlackTreeMultiSet/containsSubrange(_:)-3zqnk``
 - ``RedBlackTreeMultiSet/containsSubrange(_:)-4sw2l``
-- ``RedBlackTreeMultiSet/distance(from:to:)-5fn2h``
+- ``RedBlackTreeMultiSet/distance(from:to:)-(Index,_)``
 - ``RedBlackTreeMultiSet/distance(from:to:)-7t789``
 - ``RedBlackTreeMultiSet/subscript(_:)-2vp1w``
-- ``RedBlackTreeMultiSet/erase(_:)-6z958``
+- ``RedBlackTreeMultiSet/erase(_:)-(UnboundedRange)``
 - ``RedBlackTreeMultiSet/erase(_:)-2t2ok``
-- ``RedBlackTreeMultiSet/erase(_:)-9ceva``
+- ``RedBlackTreeMultiSet/erase(_:)-(IndexRangeExpression)``
 - ``RedBlackTreeMultiSet/erase(_:)-6lojn``
-- ``RedBlackTreeMultiSet/erase(_:)-7om7w``
+- ``RedBlackTreeMultiSet/erase(_:)-(Index)``
 - ``RedBlackTreeMultiSet/erase(_:where:)-2oa8h``
 - ``RedBlackTreeMultiSet/erase(_:where:)-4g5kr``
 - ``RedBlackTreeMultiSet/erase(_:where:)-88guz``
@@ -96,7 +96,7 @@
 - ``RedBlackTreeMultiSet/remove(at:)``
 - ``RedBlackTreeMultiSet/removeAll(keepingCapacity:)``
 - ``RedBlackTreeMultiSet/erase(where:)``
-- ``RedBlackTreeMultiSet/erase(_:)-9tgad``
+- ``RedBlackTreeMultiSet/erase(_:)-(IndexRange)``
 - ``RedBlackTreeMultiSet/erase(exactly:)``
 - ``RedBlackTreeMultiSet/eraseUnique(_:)``
 - ``RedBlackTreeMultiSet/eraseMulti(_:)``

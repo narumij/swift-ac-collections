@@ -30,32 +30,39 @@
 //
 // `_SealedPtr`は外部での変更リスクがある場合に使う
 //
-public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
+public typealias _LazyTieWrappedPtrV2 = Result<_LazyTieWrapV2, SealError>
 
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+extension Result where Success == _LazyTieWrapV2, Failure == SealError {
 
   @inlinable
   @inline(__always)
-  static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
-    .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
-  }
+  static func unchecked(
+    _ _p: _NodePtr,
+    end_ptr: _NodePtr,
+    lazyDetach: _LazyTie
+  ) -> Self { .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach)) }
 }
 
 #if DEBUG
-  extension _LazyTieWrap where RawValue == _NodePtrSealing {
-    
-    package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
-      -> Self
-    {
-      if rawTag == .nullptr {
-        return .nullptr
-      }
+extension _LazyTieWrapV2 {
+  package static func unsafe<Base: ___TreeBase>(
+    tree: UnsafeTreeV2<Base>,
+    rawTag: _TrackingTag
+  ) -> Self {
+    if rawTag == .nullptr { return .nullptr }
 
-      return (try? tree.__retrieve_(rawTag)
-        .flatMap(\.uncheckedSeal)
-        .flatMap { $0.band(tree) }
-        .get())
-      ?? .nullptr
-    }
+    return
+      (try? tree.__retrieve_(rawTag).flatMap(\.uncheckedSeal)
+      .flatMap { $0.band(tree) }.get()) ?? .nullptr
   }
+}
+#endif
+
+#if DEBUG
+extension _NodePtrSealing {
+
+  @inlinable
+  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtrV2
+  { .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach)) }
+}
 #endif

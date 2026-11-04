@@ -67,13 +67,13 @@
 - ``RedBlackTreeMultiMap/containsSubrange(_:)-37mam``
 - ``RedBlackTreeMultiMap/containsSubrange(_:)-8a6je``
 - ``RedBlackTreeMultiMap/distance(from:to:)-20v5u``
-- ``RedBlackTreeMultiMap/distance(from:to:)-4uhx1``
+- ``RedBlackTreeMultiMap/distance(from:to:)-(Index,_)``
 - ``RedBlackTreeMultiMap/subscript(_:)-4lurb``
-- ``RedBlackTreeMultiMap/erase(_:)-sjf1``
+- ``RedBlackTreeMultiMap/erase(_:)-(UnboundedRange)``
 - ``RedBlackTreeMultiMap/erase(_:)-1at5``
 - ``RedBlackTreeMultiMap/erase(_:)-4mzti``
-- ``RedBlackTreeMultiMap/erase(_:)-7ofvq``
-- ``RedBlackTreeMultiMap/erase(_:)-151rw``
+- ``RedBlackTreeMultiMap/erase(_:)-(IndexRange)``
+- ``RedBlackTreeMultiMap/erase(_:)-(Index)``
 - ``RedBlackTreeMultiMap/erase(_:where:)-4fung``
 - ``RedBlackTreeMultiMap/erase(_:where:)-52ee4``
 - ``RedBlackTreeMultiMap/erase(_:where:)-87l6w``
@@ -99,7 +99,7 @@
 - ``RedBlackTreeMultiMap/remove(at:)``
 - ``RedBlackTreeMultiMap/removeAll(keepingCapacity:)``
 - ``RedBlackTreeMultiMap/erase(where:)``
-- ``RedBlackTreeMultiMap/erase(_:)-8begn``
+- ``RedBlackTreeMultiMap/erase(_:)-(IndexRangeExpression)``
 - ``RedBlackTreeMultiMap/eraseUnique(_:)``
 - ``RedBlackTreeMultiMap/eraseMulti(_:)``
 - ``RedBlackTreeMultiMap/erase(exactly:)``

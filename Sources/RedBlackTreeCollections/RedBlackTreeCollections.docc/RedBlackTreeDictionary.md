@@ -70,13 +70,13 @@
 - ``RedBlackTreeDictionary/containsSubrange(_:)-6et6n``
 - ``RedBlackTreeDictionary/containsSubrange(_:)-ecvx``
 - ``RedBlackTreeDictionary/distance(from:to:)-1agrj``
-- ``RedBlackTreeDictionary/distance(from:to:)-26cz3``
+- ``RedBlackTreeDictionary/distance(from:to:)-(Index,_)``
 - ``RedBlackTreeDictionary/subscript(_:)-7ie0l``
-- ``RedBlackTreeDictionary/erase(_:)-7e9wt``
-- ``RedBlackTreeDictionary/erase(_:)-tsqp``
+- ``RedBlackTreeDictionary/erase(_:)-(UnboundedRange)``
+- ``RedBlackTreeDictionary/erase(_:)-(Index)``
 - ``RedBlackTreeDictionary/erase(_:)-2quii``
 - ``RedBlackTreeDictionary/erase(_:)-4l2hq``
-- ``RedBlackTreeDictionary/erase(_:)-7b3q1``
+- ``RedBlackTreeDictionary/erase(_:)-(IndexRange)``
 - ``RedBlackTreeDictionary/erase(_:where:)-18oym``
 - ``RedBlackTreeDictionary/erase(_:where:)-4atb3``
 - ``RedBlackTreeDictionary/erase(_:where:)-806jw``
@@ -102,7 +102,7 @@
 - ``RedBlackTreeDictionary/removeValue(forKey:)``
 - ``RedBlackTreeDictionary/removeAll(keepingCapacity:)``
 - ``RedBlackTreeDictionary/erase(where:)``
-- ``RedBlackTreeDictionary/erase(_:)-1yrnu``
+- ``RedBlackTreeDictionary/erase(_:)-(IndexRangeExpression)``
 - ``RedBlackTreeDictionary/erase(exactly:)``
 
 ### Merging Dictionaries

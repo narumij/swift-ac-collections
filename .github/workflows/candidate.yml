@@ -241,29 +241,8 @@ jobs:
           set -euo pipefail
           mkdir -p ../benchmark-results
 
-          cp ../../candidate/Benchmarks/Libraries/CI.json ./Libraries/CI.json
-          cp ../../candidate/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json
-
-          OPTIONAL_ARRAY_RENAMED=1
-          if ! grep -qF 'title: "OptionalElementBuffer2D<Int>' \
-            Sources/Benchmarks/OptionalArrayBenchmarks.swift; then
-            OPTIONAL_ARRAY_RENAMED=0
-            sed -i \
-              -e 's/OptionalElementBuffer2D<Int>/OptionalArray2D<Int>/g' \
-              -e 's/OptionalElementBuffer3D<Int>/OptionalArray3D<Int>/g' \
-              ./Libraries/CI.json
-          fi
-
-          BARE_ARRAY_RENAMED=1
-          if ! grep -qF 'title: "ElementBuffer2D<Int>' \
-            Sources/Benchmarks/BareArrayBenchmarks.swift; then
-            BARE_ARRAY_RENAMED=0
-            sed -i \
-              -e 's/ElementBuffer2D<Int>/BareArray2D<Int>/g' \
-              -e 's/ElementBuffer3D<Int>/BareArray3D<Int>/g' \
-              ./Libraries/CI.json
-          fi
-
+          # Measure each revision using its own benchmark definitions.
+          # Do not copy current task names into an older checkout or rename results.
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/baseline.json \
@@ -278,26 +257,14 @@ jobs:
             --cycles 1 \
             --mode append
 
-          if [ "$BARE_ARRAY_RENAMED" -eq 0 ]; then
-            sed -i \
-              -e 's/BareArray2D<Int>/ElementBuffer2D<Int>/g' \
-              -e 's/BareArray3D<Int>/ElementBuffer3D<Int>/g' \
-              ../benchmark-results/baseline.json
-          fi
-
-          if [ "$OPTIONAL_ARRAY_RENAMED" -eq 0 ]; then
-            sed -i \
-              -e 's/OptionalArray2D<Int>/OptionalElementBuffer2D<Int>/g' \
-              -e 's/OptionalArray3D<Int>/OptionalElementBuffer3D<Int>/g' \
-              ../benchmark-results/baseline.json
-          fi
-
       - name: Check performance regression
         working-directory: candidate/Benchmarks
         shell: bash
         run: |
           set -euo pipefail
 
+          # results compare scores only tasks with measurements in both files.
+          # Added, removed, or renamed tasks are reported but excluded from the gate.
           OUTPUT="$(
             swift run -c release benchmark results compare \
               ../../baseline/benchmark-results/baseline.json \

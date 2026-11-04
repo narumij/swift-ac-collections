@@ -30,17 +30,17 @@
   }
 
 
-  extension RedBlackTreeDictionary {
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
-      __tree_.index(p)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
-      __tree_.index_or_nil(p)
-    }
+extension RedBlackTreeDictionary {
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    __tree_.index(p)
   }
+
+  @inlinable
+  func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
+    __tree_.index_or_nil(p)
+  }
+}
 
   extension RedBlackTreeDictionary {
     /// Returns the index of the element with the given key.

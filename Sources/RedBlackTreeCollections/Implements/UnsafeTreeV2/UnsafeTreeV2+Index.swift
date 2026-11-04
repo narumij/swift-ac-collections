@@ -53,17 +53,17 @@ extension UnsafeTreeV2 {
 
   // Result連鎖(`flatMap { index($0) }`)内で成功値を包む用途として残す
   @inlinable
-  func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+  func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
-  func index(_ p: _NodePtr) -> _LazyTiedPtr {
+  func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
-  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
     return withMutableHeader { $0.index_or_nil(p) }
   }
 }
@@ -100,8 +100,8 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 extension UnsafeTreeV2 {
 
   @inlinable
-  func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func prev_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -113,8 +113,8 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func next_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -126,8 +126,8 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func adv_iter(_ i: _LazyTiedPtrV2, offsetBy distance: Int) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
     switch result {
@@ -140,9 +140,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func adv_iter(
-    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
-    -> _LazyTieWrappedPtr
+    -> _LazyTieWrappedPtrV2
   {
     __purified_(limit).flatMap { limit in
       __purified_(i)
@@ -153,9 +153,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func index_or_nil(
-    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
-    -> _LazyTiedPtr?
+    -> _LazyTiedPtrV2?
   {
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success(let index):
@@ -169,7 +169,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func form_index(
-    _ i: inout _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: inout _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
     -> Bool
   {

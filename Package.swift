@@ -29,6 +29,8 @@ var defines: [String] = [
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
   // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
   "RED_BLACK_TREE_TSAN_SAFE",
+  //  "_TREE_COPY_COUNTER",
+  //  "_TREE_INTERNAL_CHECKS",
 ]
 
 var _settings: [SwiftSetting] =
@@ -103,15 +105,16 @@ var _settings: [SwiftSetting] =
       .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
     ),
     .define("_TREE_COPY_COUNTER", .when(traits: ["ENABLE_TREE_COPY_COUNTER"])),
-    .define("_TREE_INTERNAL_CHECKS", .when(traits: ["ENABLE_TREE_INTERNAL_CHECKS"])),
-    .define("_TREE_ASSERT_INTERNAL", .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])),
+    .define(
+      "_TREE_ASSERT_INTERNAL",
+      .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])
+    ),
     .define(
       "_UNSAFE_TREE_ASSERT_INTERNAL",
       .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
     ),
     .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
-    .define("_TREE_INTERNAL_CHECKS", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define(
       "_UNSAFE_TREE_ASSERT_INTERNAL",
@@ -155,9 +158,10 @@ let package = Package(
     .trait(name: "AC_COLLECTIONS_TEST_INTERNAL"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
-    .trait(name: "ENABLE_TREE_COPY_COUNTER"), .trait(name: "ENABLE_TREE_INTERNAL_CHECKS"),
+    .trait(name: "ENABLE_TREE_COPY_COUNTER"),
     .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
-    .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"), .trait(name: "_O_UNCHECKED"),
+    .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "_O_UNCHECKED"),
     .trait(
       name: "ENABLE_DEATH_TESTS",
       description:

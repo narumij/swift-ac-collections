@@ -72,7 +72,7 @@ package struct UnsafeTreeV2BufferHeader {
     @usableFromInline var freshBucketCount: Int = 0
   #endif
 
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     // CoWの発火回数を観察するためのプロパティ
     @usableFromInline internal var copyCount: UInt = 0
   #endif

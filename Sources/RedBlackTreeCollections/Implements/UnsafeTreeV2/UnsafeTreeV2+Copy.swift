@@ -148,7 +148,7 @@ extension UnsafeTreeV2BufferHeader {
 
     _newBuffer.withUnsafeMutablePointerToHeader { newHeader in
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         newHeader.pointee.copyCount += 1
       #endif
 

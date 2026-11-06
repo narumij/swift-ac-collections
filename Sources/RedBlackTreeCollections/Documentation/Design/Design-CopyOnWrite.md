@@ -169,7 +169,7 @@ CoW関連の変更では、少なくとも次を確認する。
 - 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
 - 分岐した別の木の世代変更が、対象木で有効なIndexへ影響しないこと
 - 空の木では不要なslotと世代履歴をコピーしないこと
-- `AC_COLLECTIONS_INTERNAL_CHECKS` の `copyCount` で発火回数を確認できること
+- `_TREE_COPY_COUNTER` の `copyCount` で発火回数を確認できること
 - Releaseビルドでコピー低速経路の分離とホットパスのコード生成を確認すること
 
 ## 関連文書

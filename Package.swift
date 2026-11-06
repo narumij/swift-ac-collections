@@ -92,9 +92,6 @@ var _settings: [SwiftSetting] =
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
-    // CoWの挙動チェックを可能にするマクロ定義
-    // アロケーション関連のテストを走らせるために必要
-    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる
@@ -104,6 +101,8 @@ var _settings: [SwiftSetting] =
       "_TREE_ALLOCATION_COUNTER",
       .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
     ),
+    // CoWの挙動チェックを可能にするマクロ定義
+    // アロケーション関連のテストを走らせるために必要
     .define("_TREE_COPY_COUNTER", .when(traits: ["ENABLE_TREE_COPY_COUNTER"])),
     .define(
       "_TREE_ASSERT_INTERNAL",
@@ -120,6 +119,9 @@ var _settings: [SwiftSetting] =
       "_UNSAFE_TREE_ASSERT_INTERNAL",
       .when(traits: ["NORMAL_DEBUG_TEST"])
     ),
+    
+      .define("_PERM_COPY_COUNTER", .when(traits: ["ENABLE_PERM_COPY_COUNTER"])),
+
   ] + defines.map { .define($0) }
 
 let additionalDependencies: [Target.Dependency] =
@@ -154,13 +156,12 @@ let package = Package(
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
-    .trait(name: "AC_COLLECTIONS_INTERNAL_CHECKS"),
-    .trait(name: "AC_COLLECTIONS_TEST_INTERNAL"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
     .trait(name: "ENABLE_TREE_COPY_COUNTER"),
     .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
     .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "ENABLE_PERM_COPY_COUNTER"),
     .trait(name: "_O_UNCHECKED"),
     .trait(
       name: "ENABLE_DEATH_TESTS",

@@ -62,7 +62,7 @@
     @usableFromInline var _sealed_end: _SealedPtr
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeKeyValueRangeView {
       package var _copyCount: UInt {
         __tree_.copyCount

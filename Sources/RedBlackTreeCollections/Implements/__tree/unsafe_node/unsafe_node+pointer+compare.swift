@@ -27,8 +27,8 @@ package func ___ptr_comp_multi(
 )
   -> Bool
 {
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
   guard
     !__l.___is_end,
     !__r.___is_end,
@@ -71,7 +71,7 @@ package func ___ptr_comp_multi(
 // ノードの高さを数える
 @inlinable
 package func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
-  assert(!__p.___is_null, "Node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__p.___is_null, "Node shouldn't be null")
   var __h = 0
   var __p = __p
   while !__p.___is_root {
@@ -92,8 +92,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   @available(macOS 15.0, *)
   @inlinable
   package func ___ptr_bitmap_128() -> UInt128 {
-    assert(!___is_null, "Node shouldn't be null")
-    assert(!___is_end, "Node shouldn't be end")
+    _TREE_ASSERT_INTERNAL(!___is_null, "Node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(!___is_end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
     var __p = self
     while !__p.___is_root {
@@ -110,8 +110,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @inlinable
   internal func ___ptr_bitmap_64() -> UInt64 {
-    assert(!___is_null, "Node shouldn't be null")
-    assert(!___is_end, "Node shouldn't be end")
+    _TREE_ASSERT_INTERNAL(!___is_null, "Node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(!___is_end, "Node shouldn't be end")
     var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
     var __p = self
     while !__p.___is_root {
@@ -125,16 +125,17 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 @inlinable
 package func ___ptr_comp_bitmap(
-  _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+  _ __l: UnsafeMutablePointer<UnsafeNode>,
+  _ __r: UnsafeMutablePointer<UnsafeNode>
 ) -> Bool {
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
 
   #if USE_INT128
-    if #available(macOS 15.0, *) {
-      return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
-        < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
-    }
+  if #available(macOS 15.0, *) {
+    return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
+      < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
+  }
   #endif
 
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())

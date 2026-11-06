@@ -340,7 +340,7 @@
     }
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeSliceV2.KeyValue {
 
       package var _copyCount: UInt {

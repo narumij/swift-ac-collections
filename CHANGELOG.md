@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-11-07
+
+### Changed
+- 赤黒木のテスト用カウンターと内部アサートを個別のTraitで有効にする構成へ変更し、利用者のDebugビルドでは既定で無効化。通常のアサートや公開APIの事前条件検査は維持
+- 通常の開発用Debugテストでは`NORMAL_DEBUG_TEST`で割当・コピーカウンター、内部アサート、テスト用の不変条件検査を有効化。個別の検査は対応する`ENABLE_TREE_*`・`ENABLE_UNSAFE_TREE_ASSERT_INTERNAL` Traitで選択可能
+
+## [0.7.0] - 2026-11-05
+
+### Changed
+- 赤黒木の内部Index表現を非ジェネリック型に整理し、添字の検証とバッファ操作をリファクタリング。公開の`RedBlackTreeIndex`と`UnsafeIndexV3`の型エイリアスは維持
+- 性能CIでは比較する各リビジョン自身のベンチマーク定義を使用し、両方で計測された共通項目だけを回帰判定の対象に変更
+
+### Fixed
+- DocCの添字オーバーロードへのリンクをシグネチャによる指定に変更し、参照先を明確化
+- ベンチマーク名の変更後に、過去版の計測が`unknown tasks`で停止する問題を修正
+
 ## [0.6.6] - 2026-11-03
 
 ### Changed

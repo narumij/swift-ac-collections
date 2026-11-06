@@ -139,7 +139,7 @@ extension _BucketAllocator {
     endNode.initialize(to: .create(tag: .end, nullptr: nullptr, ___has_payload_content: false))
     beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeInitializedCount += 1
     #endif
 
@@ -322,7 +322,7 @@ extension _BucketAllocator {
     UnsafeMutableRawPointer(b.end_ptr)
       .assumingMemoryBound(to: UnsafeNode.self)
       .deinitialize(count: 1)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeDeinitializedCount += 1
     #endif
   }
@@ -333,12 +333,12 @@ extension _BucketAllocator {
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1
         #endif
       }
       p.deinitialize(count: 1)
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1
       #endif
     }

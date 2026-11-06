@@ -99,7 +99,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       if __node == nullptr {
         unsafeEnsureCapacity()
-        assert(capacity > count)
+        _UNSAFE_TREE_ASSERT_INTERNAL(capacity > count)
         update {
           __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
           $0.__insert_node_at(__parent, __child, __node)
@@ -124,7 +124,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
     if __node == nullptr {
       unsafeEnsureCapacity()
-      assert(capacity > count)
+      _UNSAFE_TREE_ASSERT_INTERNAL(capacity > count)
       update {
         __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
         $0.__insert_node_at(__parent, __child, __node)
@@ -156,7 +156,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       let __mapped_value = try transform(Base.__mapped_value_(__p))
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mapped_value)))
-      assert(other.__tree_invariant(other.__root))
+      _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }
     return other
   }
@@ -179,7 +179,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       other.unsafeEnsureCapacity()
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mv)))
-      assert(other.__tree_invariant(other.__root))
+      _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }
     return other
   }

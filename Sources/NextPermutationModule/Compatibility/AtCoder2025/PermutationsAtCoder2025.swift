@@ -209,7 +209,7 @@ extension Permutations {
     var capacity: Int
     @usableFromInline
     var count: Int
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _PERM_COPY_COUNTER
       @usableFromInline
       var copyCount: UInt = 0
     #endif
@@ -277,7 +277,7 @@ extension Permutations.SubSequenceA: RandomAccessCollection {
   public subscript(position: Int) -> C.Element {
     elementBuffer[indexBuffer[position]]
   }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _PERM_COPY_COUNTER
     public var _copyCount: UInt { indexBuffer.header.copyCount }
   #endif
 }
@@ -296,7 +296,7 @@ extension Permutations.SubSequenceN: RandomAccessCollection {
   public subscript(position: Int) -> C.Element {
     elementBuffer[position]
   }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _PERM_COPY_COUNTER
     public var _copyCount: UInt { elementBuffer.header.copyCount }
   #endif
 }
@@ -375,7 +375,7 @@ extension Permutations.Buffer {
 
     let capacity = newCapacity ?? self.header.capacity
     let count = self.header.count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _PERM_COPY_COUNTER
       let copyCount = self.header.copyCount
     #endif
 
@@ -383,7 +383,7 @@ extension Permutations.Buffer {
 
     newStorage.header.capacity = capacity
     newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _PERM_COPY_COUNTER
       newStorage.header.copyCount = copyCount &+ 1
     #endif
 
@@ -410,7 +410,7 @@ extension Permutations.Buffer {
     let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
     newStorage.header.capacity = capacity
     newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _PERM_COPY_COUNTER
       newStorage.header.copyCount = 0
     #endif
     newStorage.withUnsafeMutablePointerToElements { newElements in
@@ -435,7 +435,7 @@ extension Permutations.Buffer {
     let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
     newStorage.header.capacity = capacity
     newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _PERM_COPY_COUNTER
       newStorage.header.copyCount = 0
     #endif
 

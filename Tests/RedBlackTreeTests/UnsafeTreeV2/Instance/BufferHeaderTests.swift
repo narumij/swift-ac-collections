@@ -48,8 +48,10 @@ import XCTest
           p?.initialize(to: UnsafeNode.nullptr.pointee)
           p?.__value_().initialize(to: 0)
           p?.pointee.___has_payload_content = true
+          #if _TREE_ALLOCATION_COUNTER
           nodeInitializedCount += 1
           payloadInitializedCount += 1
+          #endif
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
         }
@@ -62,9 +64,9 @@ import XCTest
     }
 
     func testFromZero() throws {
-      let null_back = UnsafeNode.nullptr.pointee
+      let _ = UnsafeNode.nullptr.pointee
       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
-      let end_back = header.end_ptr.pointee
+      let _ = header.end_ptr.pointee
 
       for i in 1..<100 {
         let capa = header.freshPoolCapacity
@@ -103,7 +105,7 @@ import XCTest
         XCTAssertNotNil(p)
         p.__value_().initialize(to: 0)
         p.pointee.___has_payload_content = true
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadInitializedCount += 1
         #endif
       }

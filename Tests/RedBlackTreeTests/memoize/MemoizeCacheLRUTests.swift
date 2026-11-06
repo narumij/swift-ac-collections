@@ -215,7 +215,7 @@
     #endif
 
     func testCopyOnWrite() throws {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var cache0 = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 2)
         XCTAssertEqual(cache0._copyCount, 0)
         let cache1 = cache0
@@ -235,14 +235,5 @@
         XCTAssertEqual(cache0[i], i)
       }
     }
-
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
-    func testPerformanceExample() throws {
-      // This is an example of a performance test case.
-      self.measure {
-        // Put the code you want to measure the time of here.
-      }
-    }
-    #endif
   }
 #endif

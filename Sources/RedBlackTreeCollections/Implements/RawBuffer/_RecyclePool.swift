@@ -43,7 +43,7 @@
         p.pointee.___recycle_count &+= 1
       #endif
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
       #if GRAPHVIZ_DEBUG

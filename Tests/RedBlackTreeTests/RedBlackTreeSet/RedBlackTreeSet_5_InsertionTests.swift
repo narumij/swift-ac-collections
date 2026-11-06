@@ -12,9 +12,8 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       self.label = label
     }
 
-    static func == (lhs: ComparableReference, rhs: ComparableReference) -> Bool {
-      lhs.key == rhs.key
-    }
+    static func == (lhs: ComparableReference, rhs: ComparableReference) -> Bool
+    { lhs.key == rhs.key }
 
     static func < (lhs: ComparableReference, rhs: ComparableReference) -> Bool {
       lhs.key < rhs.key
@@ -198,160 +197,174 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    /// ヒント付きinsertが新規要素と重複要素を正しく扱うこと
-    func test_insert_withHint() {
-      var set = RedBlackTreeSet([10, 30])
+  /// ヒント付きinsertが新規要素と重複要素を正しく扱うこと
+  func test_insert_withHint() {
+    var set = RedBlackTreeSet([10, 30])
 
-      let insertedWithGoodHint = set.insert(20, hint: set.firstIndex(of: 30)!)
-      XCTAssertTrue(insertedWithGoodHint.inserted)
-      XCTAssertEqual(set[insertedWithGoodHint.indexAfterInsert], 20)
-      XCTAssertEqual(set + [], [10, 20, 30])
+    let insertedWithGoodHint = set.insert(20, hint: set.firstIndex(of: 30)!)
+    XCTAssertTrue(insertedWithGoodHint.inserted)
+    XCTAssertEqual(set[insertedWithGoodHint.indexAfterInsert], 20)
+    XCTAssertEqual(set + [], [10, 20, 30])
 
-      let insertedWithBadHint = set.insert(25, hint: set.startIndex)
-      XCTAssertTrue(insertedWithBadHint.inserted)
-      XCTAssertEqual(set[insertedWithBadHint.indexAfterInsert], 25)
-      XCTAssertEqual(set + [], [10, 20, 25, 30])
+    let insertedWithBadHint = set.insert(25, hint: set.startIndex)
+    XCTAssertTrue(insertedWithBadHint.inserted)
+    XCTAssertEqual(set[insertedWithBadHint.indexAfterInsert], 25)
+    XCTAssertEqual(set + [], [10, 20, 25, 30])
 
-      let duplicate = set.insert(20, hint: set.endIndex)
-      XCTAssertFalse(duplicate.inserted)
-      XCTAssertEqual(set[duplicate.indexAfterInsert], 20)
-      XCTAssertEqual(set + [], [10, 20, 25, 30])
-    }
+    let duplicate = set.insert(20, hint: set.endIndex)
+    XCTAssertFalse(duplicate.inserted)
+    XCTAssertEqual(set[duplicate.indexAfterInsert], 20)
+    XCTAssertEqual(set + [], [10, 20, 25, 30])
+  }
 
-    /// ヒント付きupdateが新規要素ではnilを返し、重複要素では旧要素を返すこと
-    func test_update_withHint() {
-      var set = RedBlackTreeSet([10, 30])
+  /// ヒント付きupdateが新規要素ではnilを返し、重複要素では旧要素を返すこと
+  func test_update_withHint() {
+    var set = RedBlackTreeSet([10, 30])
 
-      let insertedWithGoodHint = set.update(20, hint: set.firstIndex(of: 30)!)
-      XCTAssertNil(insertedWithGoodHint)
-      XCTAssertEqual(set + [], [10, 20, 30])
+    let insertedWithGoodHint = set.update(20, hint: set.firstIndex(of: 30)!)
+    XCTAssertNil(insertedWithGoodHint)
+    XCTAssertEqual(set + [], [10, 20, 30])
 
-      let insertedWithBadHint = set.update(25, hint: set.startIndex)
-      XCTAssertNil(insertedWithBadHint)
-      XCTAssertEqual(set + [], [10, 20, 25, 30])
+    let insertedWithBadHint = set.update(25, hint: set.startIndex)
+    XCTAssertNil(insertedWithBadHint)
+    XCTAssertEqual(set + [], [10, 20, 25, 30])
 
-      let duplicate = set.update(20, hint: set.endIndex)
-      XCTAssertEqual(duplicate, 20)
-      XCTAssertEqual(set + [], [10, 20, 25, 30])
-    }
+    let duplicate = set.update(20, hint: set.endIndex)
+    XCTAssertEqual(duplicate, 20)
+    XCTAssertEqual(set + [], [10, 20, 25, 30])
+  }
 
-    /// ヒント付きinsertは同順序の別参照を入れず既存の参照を残し、ヒント付きupdateは旧参照を返して
-    /// 格納参照を置き換えること。位置の悪いhintとendIndexのどちらでも同じで、先に共有したコピーの
-    /// 格納参照は変わらないこと（RBT-042 S1）
-    func test_hintedInsertKeepsAndHintedUpdateReplacesEquivalentReference() {
-      let low = ComparableReference(key: 10, label: "low")
-      let high = ComparableReference(key: 30, label: "high")
-      var set = RedBlackTreeSet([low, high])
-      let shared = set
+  /// ヒント付きinsertは同順序の別参照を入れず既存の参照を残し、ヒント付きupdateは旧参照を返して
+  /// 格納参照を置き換えること。位置の悪いhintとendIndexのどちらでも同じで、先に共有したコピーの
+  /// 格納参照は変わらないこと（RBT-042 S1）
+  func test_hintedInsertKeepsAndHintedUpdateReplacesEquivalentReference() {
+    let low = ComparableReference(key: 10, label: "low")
+    let high = ComparableReference(key: 30, label: "high")
+    var set = RedBlackTreeSet([low, high])
+    let shared = set
 
-      // insert：key 30にstartIndex（位置の悪いhint）、key 10にendIndex
-      let keptHigh = set.insert(ComparableReference(key: 30, label: "duplicate"), hint: set.startIndex)
-      XCTAssertFalse(keptHigh.inserted)
-      XCTAssertTrue(set[keptHigh.indexAfterInsert] === high)
-      let keptLow = set.insert(ComparableReference(key: 10, label: "duplicate"), hint: set.endIndex)
-      XCTAssertFalse(keptLow.inserted)
-      XCTAssertTrue(set[keptLow.indexAfterInsert] === low)
-      XCTAssertEqual(set.map(\.key), [10, 30])
-      XCTAssertTrue(set.first === low)
-      XCTAssertTrue(set.last === high)
+    // insert：key 30にstartIndex（位置の悪いhint）、key 10にendIndex
+    let keptHigh = set.insert(
+      ComparableReference(key: 30, label: "duplicate"),
+      hint: set.startIndex
+    )
+    XCTAssertFalse(keptHigh.inserted)
+    XCTAssertTrue(set[keptHigh.indexAfterInsert] === high)
+    let keptLow = set.insert(
+      ComparableReference(key: 10, label: "duplicate"),
+      hint: set.endIndex
+    )
+    XCTAssertFalse(keptLow.inserted)
+    XCTAssertTrue(set[keptLow.indexAfterInsert] === low)
+    XCTAssertEqual(set.map(\.key), [10, 30])
+    XCTAssertTrue(set.first === low)
+    XCTAssertTrue(set.last === high)
 
-      // update：同じhintで、旧参照を返し、格納参照を新しい参照へ置き換える
-      let newHigh = ComparableReference(key: 30, label: "new")
-      XCTAssertTrue(set.update(newHigh, hint: set.startIndex) === high)
-      let newLow = ComparableReference(key: 10, label: "new")
-      XCTAssertTrue(set.update(newLow, hint: set.endIndex) === low)
-      XCTAssertEqual(set.map(\.key), [10, 30])
-      XCTAssertTrue(set.first === newLow)
-      XCTAssertTrue(set.last === newHigh)
+    // update：同じhintで、旧参照を返し、格納参照を新しい参照へ置き換える
+    let newHigh = ComparableReference(key: 30, label: "new")
+    XCTAssertTrue(set.update(newHigh, hint: set.startIndex) === high)
+    let newLow = ComparableReference(key: 10, label: "new")
+    XCTAssertTrue(set.update(newLow, hint: set.endIndex) === low)
+    XCTAssertEqual(set.map(\.key), [10, 30])
+    XCTAssertTrue(set.first === newLow)
+    XCTAssertTrue(set.last === newHigh)
 
-      // 共有していたコピーは元の参照を保持する
-      XCTAssertEqual(shared.map(\.key), [10, 30])
-      XCTAssertTrue(shared.first === low)
-      XCTAssertTrue(shared.last === high)
-    }
+    // 共有していたコピーは元の参照を保持する
+    XCTAssertEqual(shared.map(\.key), [10, 30])
+    XCTAssertTrue(shared.first === low)
+    XCTAssertTrue(shared.last === high)
+  }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
-    /// Linuxのスケジューラ風に、run queueへのenqueue時にIndexを保存し、
-    /// sleep/dequeue時はtaskを再検索せず、そのIndexから取り除く主用途の実験。
-    func test_indexInserting_linuxSchedulerStyleRunQueueExperiment() {
-      var runQueue = RedBlackTreeSet<RunnableTask>()
-      let interactive = RunnableTask(pid: 101, virtualRuntime: 10)
-      let background = RunnableTask(pid: 202, virtualRuntime: 30)
+  /// Linuxのスケジューラ風に、run queueへのenqueue時にIndexを保存し、
+  /// sleep/dequeue時はtaskを再検索せず、そのIndexから取り除く主用途の実験。
+  func test_indexInserting_linuxSchedulerStyleRunQueueExperiment() {
+    var runQueue = RedBlackTreeSet<RunnableTask>()
+    let interactive = RunnableTask(pid: 101, virtualRuntime: 10)
+    let background = RunnableTask(pid: 202, virtualRuntime: 30)
 
-      let (interactiveInserted, _) = runQueue.index(inserting: interactive)
-      let (backgroundInserted, backgroundIndex) = runQueue.index(inserting: background)
+    let (interactiveInserted, _) = runQueue.index(inserting: interactive)
+    let (backgroundInserted, backgroundIndex) = runQueue.index(
+      inserting: background
+    )
 
-      XCTAssertTrue(interactiveInserted)
-      XCTAssertTrue(backgroundInserted)
-      XCTAssertEqual(runQueue.first, interactive)
+    XCTAssertTrue(interactiveInserted)
+    XCTAssertTrue(backgroundInserted)
+    XCTAssertEqual(runQueue.first, interactive)
 
-      // The background task sleeps: dequeue it directly through its saved Index.
-      let successor = runQueue.erase(exactly: backgroundIndex)
+    // The background task sleeps: dequeue it directly through its saved Index.
+    let successor = runQueue.erase(exactly: backgroundIndex)
 
-      XCTAssertEqual(successor, runQueue.endIndex)
-      XCTAssertEqual(Array(runQueue), [interactive])
-    }
+    XCTAssertEqual(successor, runQueue.endIndex)
+    XCTAssertEqual(Array(runQueue), [interactive])
+  }
 
-    /// 空のSetに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
-    /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
-    /// 発生しないこと。
-    func test_eraseExactly_onEmptySetReturnsNilWithoutCopy() {
-      var set = RedBlackTreeSet<Int>()
+  /// 空のSetに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
+  /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
+  /// 発生しないこと。
+  func test_eraseExactly_onEmptySetReturnsNilWithoutCopy() {
+    var set = RedBlackTreeSet<Int>()
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        XCTAssertEqual(set._copyCount, 0)
-      #endif
-      XCTAssertNil(set.erase(exactly: set.startIndex))
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        XCTAssertEqual(set._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
-      #endif
-      XCTAssertNil(set.erase(exactly: set.endIndex))
-    }
+    #if _TREE_COPY_COUNTER
+    XCTAssertEqual(set._copyCount, 0)
+    #endif
+    XCTAssertNil(set.erase(exactly: set.startIndex))
+    #if _TREE_COPY_COUNTER
+    XCTAssertEqual(set._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
+    #endif
+    XCTAssertNil(set.erase(exactly: set.endIndex))
+  }
   #endif
 
   #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
-    /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
-    func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
-      var set = RedBlackTreeSet(0..<8)
+  /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
+  func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
+    var set = RedBlackTreeSet(0 ..< 8)
 
-      // recycle countが進んだnodeもCoWで正しく引き継がれることを確認する。
-      let removedIndex = set.firstIndex(of: 4)!
-      XCTAssertTrue((set.erase(exactly: removedIndex) != nil))
-      let recycled = set.index(inserting: 8)
-      XCTAssertTrue(recycled.inserted)
+    // recycle countが進んだnodeもCoWで正しく引き継がれることを確認する。
+    let removedIndex = set.firstIndex(of: 4)!
+    XCTAssertTrue((set.erase(exactly: removedIndex) != nil))
+    let recycled = set.index(inserting: 8)
+    XCTAssertTrue(recycled.inserted)
 
-      set._copyCount = 0
-      let shared = set
+    #if _TREE_COPY_COUNTER
+    set._copyCount = 0
+    #endif
+    let shared = set
 
-      withExtendedLifetime(shared) {
-        var saved: [(element: Int, index: RedBlackTreeSet<Int>.Index)] = [
-          (8, recycled.index)
-        ]
+    withExtendedLifetime(shared) {
+      var saved: [(element: Int, index: RedBlackTreeSet<Int>.Index)] = [
+        (8, recycled.index)
+      ]
 
-        // 最初の挿入でCoWし、その後もしばらく挿入とIndex保存を続ける。
-        for element in 9..<64 {
-          let result = set.index(inserting: element)
-          XCTAssertTrue(result.inserted)
-          saved.append((element, result.index))
-        }
-
-        XCTAssertGreaterThan(set._copyCount, 0)
-
-        for (element, index) in saved {
-          XCTAssertTrue(set.isElement(at: index))
-          XCTAssertEqual(set[index], element)
-        }
-
-        for (element, index) in saved {
-          XCTAssertTrue((set.erase(exactly: index) != nil))
-          XCTAssertFalse(set.contains(element))
-        }
-
-        XCTAssertGreaterThan(set._copyCount, 0)
-        XCTAssertEqual(set + [], [0, 1, 2, 3, 5, 6, 7])
-        XCTAssertEqual(shared + [], [0, 1, 2, 3, 5, 6, 7, 8])
+      // 最初の挿入でCoWし、その後もしばらく挿入とIndex保存を続ける。
+      for element in 9 ..< 64 {
+        let result = set.index(inserting: element)
+        XCTAssertTrue(result.inserted)
+        saved.append((element, result.index))
       }
+
+      #if _TREE_COPY_COUNTER
+      XCTAssertGreaterThan(set._copyCount, 0)
+      #endif
+
+      for (element, index) in saved {
+        XCTAssertTrue(set.isElement(at: index))
+        XCTAssertEqual(set[index], element)
+      }
+
+      for (element, index) in saved {
+        XCTAssertTrue((set.erase(exactly: index) != nil))
+        XCTAssertFalse(set.contains(element))
+      }
+
+      #if _TREE_COPY_COUNTER
+      XCTAssertGreaterThan(set._copyCount, 0)
+      #endif
+      XCTAssertEqual(set + [], [0, 1, 2, 3, 5, 6, 7])
+      XCTAssertEqual(shared + [], [0, 1, 2, 3, 5, 6, 7, 8])
     }
+  }
   #endif
 }

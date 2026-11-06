@@ -56,16 +56,16 @@ extension UnsafeTreeV2 {
             header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
       }
     #endif
-    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
-    assert(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
-    assert(__check(tree), "一括チェックに合格すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")
     return tree
   }
 
   @inlinable
   @inline(never)  // 呼び出し元ホットパスのレジスタ圧低下を狙っている
   internal func copy() -> UnsafeTreeV2 {
-    assert(__check(self), "一括チェックに合格すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(self), "一括チェックに合格すること")
     // 採用判断は保留。従来版を残し、並行アクセスと性能を比較できるようにする。
     #if !RED_BLACK_TREE_TSAN_SAFE
       // 従来版：共有ヘッダにinoutアクセスを開始する。
@@ -84,9 +84,9 @@ extension UnsafeTreeV2 {
             header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
       }
     #endif
-    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
-    assert(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
-    assert(__check(tree), "一括チェックに合格すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")
     return tree
   }
 }
@@ -143,12 +143,12 @@ extension UnsafeTreeV2BufferHeader {
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
     #if DEBUG
-      assert(_newBuffer.header.freshBucketCount <= 1, "バケット数が単一またはなしであること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(_newBuffer.header.freshBucketCount <= 1, "バケット数が単一またはなしであること")
     #endif
 
     _newBuffer.withUnsafeMutablePointerToHeader { newHeader in
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         newHeader.pointee.copyCount += 1
       #endif
 
@@ -159,7 +159,7 @@ extension UnsafeTreeV2BufferHeader {
 
       copyHeader(_PayloadValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
-      assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
+      _UNSAFE_TREE_ASSERT_INTERNAL(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
     }
 
     return _newBuffer
@@ -227,13 +227,13 @@ extension UnsafeTreeV2BufferHeader {
         d.pointee.___recycle_count = s.pointee.___recycle_count
       #endif
       
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         nodeInitializedCount += 1
       #endif
       // 必要な場合、値を初期化する
       if s.pointee.___has_payload_content {
         d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadInitializedCount += 1
         #endif
       }
@@ -241,7 +241,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // ルートノードを設定
     other.__root = __ptr_(__root)
-    assert(__tree_invariant(other.__root), "木の不変条件検査に合格すること")
+    _TREE_ASSERT_INTERNAL(__tree_invariant(other.__root), "木の不変条件検査に合格すること")
 
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)

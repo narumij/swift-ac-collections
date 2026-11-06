@@ -94,6 +94,7 @@ import XCTest
       XCTAssertEqual(storage.__value_(ptr), 100)
     }
 
+    #if _TREE_ALLOCATION_COUNTER
     /// `___pushRecycle`/`___popRecycle`が、破棄したノードをLIFO(スタック)順に
     /// 積み下ろしし、その都度`recycleCount`とpayloadの初期化/破棄カウントが整合すること。
     func testDestroyStack() async throws {
@@ -161,7 +162,8 @@ import XCTest
         storage._buffer.header[i].pointee.___has_payload_content = false
       }
     }
-
+    #endif
+    
     /// recycle pool(破棄済みノードの連結リスト)の構造が、`.copy()`後も
     /// 元の木と同じ形(連結順・左右の子のindex)を保つこと。
     func testDestroyStack2() async throws {
@@ -192,7 +194,6 @@ import XCTest
     /// 入れ子の`do`ブロックで構築→破棄を繰り返した場合でも、recycle poolが
     /// 正しいLIFO順でノードを積み重ねること(ネストしたスコープでも整合する)。
     func testConstructDestroy() async throws {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
         let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
         do {
           let p = storage.__construct_node(-1)
@@ -258,7 +259,6 @@ import XCTest
           XCTAssertEqual(storage._buffer.header.recycleCount, 3)
           XCTAssertEqual(storage.__left_(2), .nullptr)
         }
-      #endif
     }
 
     /// `__insert_unique`で0..<5を挿入した木が`__tree_invariant`を満たし、

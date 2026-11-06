@@ -39,7 +39,6 @@ extension TreeAlgorithmBaseProtocol_legacy {
     return __x == __left_(__parent_(__x))
   }
 
-  #if TREE_INVARIANT_CHECKS
     /// Determines if the subtree rooted at `__x` is a proper red black subtree.  If
     ///    `__x` is a proper subtree, returns the black height (null counts as 1).  If
     ///    `__x` is an improper subtree, returns 0.
@@ -106,11 +105,6 @@ extension TreeAlgorithmBaseProtocol_legacy {
       // do normal node checks
       return __tree_sub_invariant(__root) != 0
     }
-  #else
-    @inlinable
-    @inline(__always)
-    package func __tree_invariant(_ __root: _NodePtr) -> Bool { true }
-  #endif
 
   /// Returns:  pointer to the left-most node under `__x`.
   @inlinable

@@ -10,41 +10,6 @@ import XCTest
 /// other tests could not detect it, so this file performs minimal reachability checks.
 final class AcCollectionsTests: XCTestCase {
 
-  override func setUpWithError() throws {
-    #if DEBUG
-      // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
-      // counterのresetは常に行う。
-      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
-        XCTAssertEqual(deallocatedCount, 0)
-        XCTAssertEqual(nodeDeinitializedCount, 0)
-        XCTAssertEqual(payloadDeinitializedCount, 0)
-      #endif
-      _ = RedBlackTreeSet<Int>()
-      allocatedCount = 0
-      deallocatedCount = 0
-      nodeInitializedCount = 0
-      nodeDeinitializedCount = 0
-      payloadInitializedCount = 0
-      payloadDeinitializedCount = 0
-    #endif
-  }
-
-  override func tearDownWithError() throws {
-    #if DEBUG
-      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
-        XCTAssertEqual(allocatedCount, deallocatedCount)
-        XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)
-        XCTAssertEqual(payloadInitializedCount, payloadDeinitializedCount)
-      #endif
-      allocatedCount = 0
-      deallocatedCount = 0
-      nodeInitializedCount = 0
-      nodeDeinitializedCount = 0
-      payloadInitializedCount = 0
-      payloadDeinitializedCount = 0
-    #endif
-  }
-
   func test_importAcCollections_exposesRedBlackTreeSet() {
     var set = RedBlackTreeSet<Int>()
     set.insert(3)

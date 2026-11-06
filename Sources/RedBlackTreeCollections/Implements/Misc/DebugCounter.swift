@@ -1,4 +1,4 @@
-#if DEBUG
+#if _TREE_ALLOCATION_COUNTER
 import Foundation
 
 // Debug計測も並行CoWから更新される。加算全体を_modifyで保護し、

@@ -68,7 +68,7 @@ jobs:
       - name: Run all Debug tests
         run: >-
           swift test -c debug
-          --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS,ENABLE_DEATH_TESTS
+          --traits NORMAL_DEBUG_TEST,ENABLE_DEATH_TESTS
 
   release-all-tests:
     needs: resolve
@@ -84,7 +84,7 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run all Release tests
-        run: swift test -c release --traits ENABLE_DEATH_TESTS
+        run: swift test -c release --traits NORMAL_RELEASE_TEST,ENABLE_DEATH_TESTS
 
   documentation:
     needs: resolve

@@ -26,12 +26,12 @@
     @usableFromInline
     package func equiv(with tree: UnsafeNode) -> Bool {
       #if false
-        assert(___tracking_tag == tree.___tracking_tag)
-        assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
-        assert(__right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag)
-        assert(__parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag)
-        assert(__is_black_ == tree.__is_black_)
-        assert(___has_payload_content == tree.___has_payload_content)
+      _ASSERT_INTERNAL(___tracking_tag == tree.___tracking_tag)
+      _ASSERT_INTERNAL(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
+      _ASSERT_INTERNAL(__right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag)
+      _ASSERT_INTERNAL(__parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag)
+      _ASSERT_INTERNAL(__is_black_ == tree.__is_black_)
+      _ASSERT_INTERNAL(___has_payload_content == tree.___has_payload_content)
       #endif
       guard
         ___tracking_tag == tree.___tracking_tag,

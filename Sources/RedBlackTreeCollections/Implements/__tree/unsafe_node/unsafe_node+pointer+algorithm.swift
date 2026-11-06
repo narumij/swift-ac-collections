@@ -129,7 +129,7 @@ package func
 package func
   __tree_min(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
-  assert(__x != .nullptr, "Root node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(__x != .nullptr, "Root node shouldn't be null")
   var __x = __x
   while __x.__left_ != .nullptr {
     __x = __x.__left_
@@ -142,7 +142,7 @@ package func
 package func
   __tree_max(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
-  assert(__x != .nullptr, "Root node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(__x != .nullptr, "Root node shouldn't be null")
   var __x = __x
   while __x.__right_ != .nullptr {
     __x = __x.__right_
@@ -155,7 +155,7 @@ package func
 package func
   __tree_next(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
-  assert(__x != .nullptr, "node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(__x != .nullptr, "node shouldn't be null")
   var __x = __x
   if __x.__right_ != .nullptr {
     return __tree_min(__x.__right_)
@@ -176,7 +176,7 @@ package func
 package func
   __tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
-  assert(__x != .nullptr, "node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(__x != .nullptr, "node shouldn't be null")
   var __x = __x
   if __x.__right_ != .nullptr {
     return __tree_min(__x.__right_)
@@ -193,7 +193,7 @@ package func
 package func
   __tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
-  assert(__x != .nullptr, "node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(__x != .nullptr, "node shouldn't be null")
   // unsafe not allowed
   if __x.__left_ != .nullptr {
     return __tree_max(__x.__left_)

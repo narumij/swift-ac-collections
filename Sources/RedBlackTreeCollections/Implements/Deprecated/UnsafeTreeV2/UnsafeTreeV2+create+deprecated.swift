@@ -28,7 +28,7 @@
           (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
         }
       }
-      assert(tree.__tree_invariant(tree.__root))
+      _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
       return tree
     }
   }
@@ -60,7 +60,7 @@
           fatalError(.duplicateValue(for: Base.__key(__v)))
         }
       }
-      assert(tree.__tree_invariant(tree.__root))
+      _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
       return tree
     }
   }
@@ -101,7 +101,7 @@
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       }
-      assert(tree.__tree_invariant(tree.__root))
+      _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
       return tree
     }
   }

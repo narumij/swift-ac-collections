@@ -9,7 +9,7 @@ import XCTest
 // COMPATIBLE_ATCODER_2025 専用の内部挙動・性能・回帰テストを集約するファイル。
 // 互換モードを廃止するときは、このファイルを一括削除する。
 #if COMPATIBLE_ATCODER_2025
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
@@ -408,7 +408,7 @@ import XCTest
   }
 
   final class PerformacesAtCoder2025LegacyTests: RedBlackTreeTestCase {
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceExample4() throws {
         self.measure {
           var set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -673,7 +673,7 @@ import XCTest
   }
 
   extension RedBlackTreeSetPerformanceTests {
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceFirstIndex4() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
@@ -682,7 +682,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceFirstIndex5() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
@@ -691,7 +691,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceFirstIndex6() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
@@ -702,7 +702,7 @@ import XCTest
   }
 
   extension RedBlackTreeSetPerformanceTests {
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare0() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         XCTAssertTrue(set.startIndex < set.endIndex)
@@ -714,7 +714,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare1() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -728,7 +728,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare2() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -742,7 +742,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare3() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -756,7 +756,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare4() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -770,7 +770,7 @@ import XCTest
       }
     #endif
 
-    #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+    #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
       func testPerformanceCompare5() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let r = set.index(before: set.endIndex)

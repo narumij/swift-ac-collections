@@ -121,7 +121,7 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
   /// 空の辞書への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
   /// バッファからの退避)も発生させないこと。
   func test_removalMethods_onEmptyDictionary_doNotTriggerCopyOnWrite() {
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _TREE_COPY_COUNTER
       var empty = RedBlackTreeDictionary<Int, String>()
       XCTAssertEqual(empty._copyCount, 0)
 

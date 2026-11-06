@@ -22,7 +22,7 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
   /// 空のMultiMapへの削除操作はトラップしない以上、無駄なCoW(共有される空
   /// シングルトンバッファからの退避)も発生させないこと。
   func test_popFirstAndPopLast_onEmptyMultiMap_doNotTriggerCopyOnWrite() {
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if _TREE_COPY_COUNTER
       var empty = RedBlackTreeMultiMap<Int, String>()
       XCTAssertEqual(empty._copyCount, 0)
 

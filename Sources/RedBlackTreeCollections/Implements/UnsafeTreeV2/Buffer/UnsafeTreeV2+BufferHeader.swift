@@ -72,7 +72,7 @@ package struct UnsafeTreeV2BufferHeader {
     @usableFromInline var freshBucketCount: Int = 0
   #endif
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     // CoWの発火回数を観察するためのプロパティ
     @usableFromInline internal var copyCount: UInt = 0
   #endif
@@ -327,7 +327,7 @@ extension UnsafeTreeV2BufferHeader {
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
       #if GRAPHVIZ_DEBUG
@@ -390,7 +390,7 @@ extension UnsafeTreeV2BufferHeader {
           nullptr: nullptr))
     #endif
     assert(p.pointee.___has_payload_content == true)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeInitializedCount += 1
     #endif
     freshPoolUsedCount &+= 1
@@ -418,7 +418,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       payloadInitializedCount += 1
     #endif
     assert(p.pointee.___tracking_tag >= 0, "特殊ノードではないこと")

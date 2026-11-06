@@ -42,7 +42,7 @@ extension RedBlackTreeDictionary {
   /// releaseビルドでは無効化されています(?)
   @inlinable
   package func ___tree_invariant() -> Bool {
-    #if DEBUG
+    #if _TREE_INVARIANT
       #if SIZECHECK
         // 並行してサイズもチェックする。その分遅い
         __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, __tree_.end)
@@ -61,7 +61,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   extension RedBlackTreeDictionary {
 
     package var _copyCount: UInt {

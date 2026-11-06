@@ -163,7 +163,7 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run tests
-        run: swift test -c debug
+        run: swift test -c debug --traits NORMAL_DEBUG_TEST
 
   release:
     name: Release (Swift ${{ matrix.swift }})
@@ -188,7 +188,7 @@ jobs:
         run: swift --version
 
       - name: Run tests
-        run: swift test -c release
+        run: swift test -c release --traits NORMAL_RELEASE_TEST
 
   performance:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -380,7 +380,7 @@ jobs:
           swift --version | tee asan-logs/environment.log
           uname -a | tee -a asan-logs/environment.log
           swift test -c ${{ matrix.configuration }} --sanitize address --build-system native \
-            --traits SANITIZER_TEST 2>&1 | tee asan-logs/full-console.log
+            2>&1 | tee asan-logs/full-console.log
 
       - name: Upload Address Sanitizer diagnostics
         if: always()
@@ -418,7 +418,7 @@ jobs:
           swift --version | tee tsan-logs/environment.log
           uname -a | tee -a tsan-logs/environment.log
           swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
-            --traits RED_BLACK_TREE_TSAN_SAFE,SANITIZER_TEST 2>&1 | tee tsan-logs/full-console.log
+            2>&1 | tee tsan-logs/full-console.log
 
       - name: Upload Thread Sanitizer diagnostics
         if: always()

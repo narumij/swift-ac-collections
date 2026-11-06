@@ -48,15 +48,15 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
   func testStride() throws {
 
     #if !DEBUG
-      XCTAssertEqual(MemoryLayout<_Bucket>.size, 24)
+    XCTAssertEqual(MemoryLayout<_Bucket>.size, 24)
     #endif
 
     #if !DEBUG && USE_COMPACT_NODE_METADATA
-      XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 32)
+    XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 32)
     #endif
 
     #if !DEBUG && !USE_COMPACT_NODE_METADATA
-      XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 40)
+    XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 40)
     #endif
   }
 
@@ -64,7 +64,8 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
   func testAligments0() throws {
     XCTAssertEqual(
       MemoryLayout<UnsafeNode>.alignment,
-      MemoryLayout<UnsafeTreeV2BufferHeader>.alignment)
+      MemoryLayout<UnsafeTreeV2BufferHeader>.alignment
+    )
   }
 
   /// 各`RedBlackTreePair`の組み合わせのアライメント・歩幅が期待値と一致すること。
@@ -81,20 +82,38 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int>>.alignment, 8)
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int>>.stride, 16)
 
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.alignment, 16)
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.stride, 32)
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.alignment,
+      16
+    )
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.stride,
+      32
+    )
 
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.alignment, 16)
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.stride, 32)
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.alignment,
+      16
+    )
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.stride,
+      32
+    )
 
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.alignment, 16)
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.alignment,
+      16
+    )
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.stride, 48)
 
-    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.alignment, 16)
+    XCTAssertEqual(
+      MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.alignment,
+      16
+    )
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.stride, 48)
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+  #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

@@ -151,7 +151,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
       ])
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !SANITIZER_TEST
+  #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     _ = 3

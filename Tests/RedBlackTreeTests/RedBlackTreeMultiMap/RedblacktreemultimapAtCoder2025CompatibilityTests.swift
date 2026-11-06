@@ -285,7 +285,7 @@ import XCTest
     }
   #endif
 
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
@@ -566,7 +566,7 @@ import XCTest
       XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
     }
   }
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet3() throws {
         tree._copyCount = 0
@@ -631,7 +631,7 @@ import XCTest
     /// 互換モード専用のremoveFirst(forKey:)/removeFirst(_unsafeForKey:)/removeAll(forKey:)も、
     /// 見つからない場合はトラップしない以上、無駄なCoWを発生させないこと。
     func test_removeByKeyVariants_notFound_doNotTriggerCopyOnWrite() {
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var map = RedBlackTreeMultiMap<Int, Int>()
         XCTAssertEqual(map._copyCount, 0)
 

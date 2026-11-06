@@ -152,7 +152,7 @@ import XCTest
     }
   }
 
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
@@ -181,7 +181,7 @@ import XCTest
     /// 互換モード専用のremove(_:)/removeAll(_:)も、見つからない場合はトラップしない以上、
     /// 無駄なCoWを発生させないこと。
     func test_removeAndRemoveAll_notFound_doNotTriggerCopyOnWrite() {
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var multiset = RedBlackTreeMultiSet<Int>()
         XCTAssertEqual(multiset._copyCount, 0)
 

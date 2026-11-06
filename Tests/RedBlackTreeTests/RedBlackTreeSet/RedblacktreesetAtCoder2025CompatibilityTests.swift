@@ -70,7 +70,7 @@ import XCTest
 
     /// 互換モード専用のpopFirst()も、空集合ではトラップしない以上、無駄なCoWを発生させないこと。
     func test_popFirst_onEmptySet_doesNotTriggerCopyOnWrite() {
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var set = RedBlackTreeSet<Int>()
         XCTAssertEqual(set._copyCount, 0)
 

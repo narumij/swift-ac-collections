@@ -13,7 +13,6 @@ import XCTest
       XCTAssertEqual(__root, .nullptr)
     }
 
-    #if TREE_INVARIANT_CHECKS
       func testRootInvaliant() throws {
 
         XCTAssertTrue(__tree_invariant(__root))
@@ -38,9 +37,7 @@ import XCTest
         ]
         XCTAssertFalse(__tree_invariant(__root))
       }
-    #endif
 
-    #if TREE_INVARIANT_CHECKS
       func testRotate() throws {
 
         __nodes = [
@@ -72,9 +69,7 @@ import XCTest
         __tree_right_rotate(2)
         XCTAssertEqual(__nodes, initial)
       }
-    #endif
 
-    #if TREE_INVARIANT_CHECKS
       func testBalancing0() throws {
         __root = _TrackingTag(__nodes.count)
         __nodes.append(
@@ -87,7 +82,6 @@ import XCTest
         __tree_balance_after_insert(__root, 0)
         XCTAssertTrue(__tree_invariant(__root))
       }
-    #endif
   }
 
   final class TreeBaseTests_OneNode: TreeFixtureBase<Void> {
@@ -101,14 +95,12 @@ import XCTest
       __nodes[0].__parent_ = .end
     }
 
-    #if TREE_INVARIANT_CHECKS
       func testRootRedBlack() throws {
         __nodes[__root].__is_black_ = true
         XCTAssertTrue(__tree_invariant(__root))
         __nodes[__root].__is_black_ = false
         XCTAssertFalse(__tree_invariant(__root))
       }
-    #endif
   }
 
   final class TreeBaseTests_TwoNode: TreeFixtureBase<Void> {

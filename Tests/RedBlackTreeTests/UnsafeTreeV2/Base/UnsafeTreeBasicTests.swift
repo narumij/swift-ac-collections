@@ -194,7 +194,6 @@ import XCTest
     /// 入れ子の`do`ブロックで構築→破棄を繰り返した場合でも、recycle poolが
     /// 正しいLIFO順でノードを積み重ねること(ネストしたスコープでも整合する)。
     func testConstructDestroy() async throws {
-      #if _TREE_INTERNAL_CHECKS
         let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
         do {
           let p = storage.__construct_node(-1)
@@ -260,7 +259,6 @@ import XCTest
           XCTAssertEqual(storage._buffer.header.recycleCount, 3)
           XCTAssertEqual(storage.__left_(2), .nullptr)
         }
-      #endif
     }
 
     /// `__insert_unique`で0..<5を挿入した木が`__tree_invariant`を満たし、

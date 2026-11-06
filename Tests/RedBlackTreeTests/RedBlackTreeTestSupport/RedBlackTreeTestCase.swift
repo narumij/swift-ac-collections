@@ -38,12 +38,15 @@ class RedBlackTreeTestCase: XCTestCase {
     if RedBlackTreeSet<Int>().capacity != 0 {
       fatalError("singleton bufffer broken")
     }
-    #if _TREE_ALLOCATION_COUNTER
+    // 空シングルトンの構造検査はカウンターに依存しないため、Debug全体で行う。
+    #if DEBUG
     // XCTAssertNil(_emptyTreeStorage.header._tied)
     // ホットパス改善のため最初から結束バンド済みにした
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
+    #endif
+    #if _TREE_ALLOCATION_COUNTER
 
     XCTAssertEqual(
       allocatedCount,
@@ -70,7 +73,9 @@ class RedBlackTreeTestCase: XCTestCase {
     nodeDeinitializedCount = 0
     payloadInitializedCount = 0
     payloadDeinitializedCount = 0
+    #endif
 
+    #if DEBUG
     assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)

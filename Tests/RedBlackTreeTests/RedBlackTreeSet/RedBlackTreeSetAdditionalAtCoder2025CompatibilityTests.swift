@@ -9,7 +9,7 @@ import XCTest
 // COMPATIBLE_ATCODER_2025 専用の内部挙動・性能・回帰テストを集約するファイル。
 // 互換モードを廃止するときは、このファイルを一括削除する。
 #if COMPATIBLE_ATCODER_2025
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500

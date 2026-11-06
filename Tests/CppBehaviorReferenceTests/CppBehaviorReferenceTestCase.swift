@@ -36,10 +36,13 @@ class CppBehaviorReferenceTestCase: XCTestCase {
     if RedBlackTreeSet<Int>().capacity != 0 {
       fatalError("singleton bufffer broken")
     }
-    #if _TREE_ALLOCATION_COUNTER
+    // The empty-singleton structure checks do not depend on the counters.
+    #if DEBUG
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
+    #endif
+    #if _TREE_ALLOCATION_COUNTER
 
     XCTAssertEqual(allocatedCount, deallocatedCount, "possible memory leak")
     assert(allocatedCount == deallocatedCount)
@@ -62,7 +65,9 @@ class CppBehaviorReferenceTestCase: XCTestCase {
     nodeDeinitializedCount = 0
     payloadInitializedCount = 0
     payloadDeinitializedCount = 0
+    #endif
 
+    #if DEBUG
     assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)

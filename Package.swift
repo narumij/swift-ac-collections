@@ -20,15 +20,19 @@ var defines: [String] = [
   //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
-
+  
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
-
+  
   // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
-
+  
   "_TREE_ALLOCATION_COUNTER",
   "_TREE_INTERNAL_CHECKS",
   "_TREE_ASSERT_INTERNAL",
   "_UNSAFE_TREE_ASSERT_INTERNAL",
+  
+  // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
+  "RED_BLACK_TREE_TSAN_SAFE",
+  
 ]
 
 var _settings: [SwiftSetting] =
@@ -39,35 +43,12 @@ var _settings: [SwiftSetting] =
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     //         .define("COMPATIBLE_ATCODER_2025"),
 
-    // CoWの挙動チェックを可能にするマクロ定義
-    // アロケーション関連のテストを走らせるために必要
-    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
-
-    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
-    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
-    // このため、リリース時はどちらにせよ無効になる
-    //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
-
-    .define(
-      "_TREE_ALLOCATION_COUNTER",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-    .define(
-      "_TREE_INTERNAL_CHECKS",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-    .define(
-      "_TREE_ASSERT_INTERNAL",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-    .define(
-      "_UNSAFE_TREE_ASSERT_INTERNAL",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
     // オフにすることでいろいろスキップできる
-    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
+    .define("ENABLE_PERFORMANCE_TESTING",
+            .when(configuration: .release)),
+    .define("ENABLE_HEAVY_PERFORMANCE_TEST",
+            .when(configuration: .release, traits: ["NORMAL_RELEASE_TEST"])),
 
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
@@ -99,23 +80,14 @@ var _settings: [SwiftSetting] =
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
     ),
 
-    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
-
     .define(
       "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
     ),
 
+    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
+
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
-
-    // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
-    .define(
-      "RED_BLACK_TREE_TSAN_SAFE",
-      .when(traits: ["RED_BLACK_TREE_TSAN_SAFE"])
-    ),
-
-    // Sanitizer計測時は性能測定を省く。通常のReleaseやTSanSafe単独の測定は残す。
-    .define("SANITIZER_TEST", .when(traits: ["SANITIZER_TEST"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
@@ -132,6 +104,38 @@ var _settings: [SwiftSetting] =
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
+    
+    
+    // CoWの挙動チェックを可能にするマクロ定義
+    // アロケーション関連のテストを走らせるために必要
+    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
+
+    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
+    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
+    // このため、リリース時はどちらにせよ無効になる
+    //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
+
+    .define(
+      "_TREE_ALLOCATION_COUNTER",
+      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+    ),
+    .define(
+      "_TREE_COPY_COUNTER",
+      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+    ),
+    .define(
+      "_TREE_INTERNAL_CHECKS",
+      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+    ),
+    .define(
+      "_TREE_ASSERT_INTERNAL",
+      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+    ),
+    .define(
+      "_UNSAFE_TREE_ASSERT_INTERNAL",
+      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+    ),
+    
   ] + defines.map { .define($0) }
 
 let additionalDependencies: [Target.Dependency] =
@@ -176,6 +180,10 @@ let package = Package(
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "AC_COLLECTIONS_INTERNAL_CHECKS"),
     .trait(name: "AC_COLLECTIONS_TEST_INTERNAL"),
+    
+    .trait(name: "NORMAL_RELEASE_TEST"),
+    .trait(name: "NORMAL_DEBUG_TEST"),
+
     .trait(name: "_O_UNCHECKED"),
     .trait(
       name: "ENABLE_DEATH_TESTS",

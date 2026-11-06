@@ -306,11 +306,11 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
   func test_eraseExactly_onEmptySetReturnsNilWithoutCopy() {
     var set = RedBlackTreeSet<Int>()
 
-    #if _TREE_INTERNAL_CHECKS
+    #if _TREE_COPY_COUNTER
     XCTAssertEqual(set._copyCount, 0)
     #endif
     XCTAssertNil(set.erase(exactly: set.startIndex))
-    #if _TREE_INTERNAL_CHECKS
+    #if _TREE_COPY_COUNTER
     XCTAssertEqual(set._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
     #endif
     XCTAssertNil(set.erase(exactly: set.endIndex))
@@ -328,7 +328,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     let recycled = set.index(inserting: 8)
     XCTAssertTrue(recycled.inserted)
 
-    #if _TREE_INTERNAL_CHECKS
+    #if _TREE_COPY_COUNTER
     set._copyCount = 0
     #endif
     let shared = set
@@ -345,7 +345,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
         saved.append((element, result.index))
       }
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
       XCTAssertGreaterThan(set._copyCount, 0)
       #endif
 
@@ -359,7 +359,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
         XCTAssertFalse(set.contains(element))
       }
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
       XCTAssertGreaterThan(set._copyCount, 0)
       #endif
       XCTAssertEqual(set + [], [0, 1, 2, 3, 5, 6, 7])

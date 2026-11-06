@@ -37,7 +37,7 @@
   }
 #endif
 
-#if _TREE_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   extension RedBlackTreeSet {
     package var _copyCount: UInt {
       get { __tree_.copyCount }

@@ -134,7 +134,7 @@ extension ___LRUMemoizeStorage {
   public var capacity: Int { __tree_.capacity }
 }
 
-#if _TREE_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   extension ___LRUMemoizeStorage {
 
     package var _copyCount: UInt {

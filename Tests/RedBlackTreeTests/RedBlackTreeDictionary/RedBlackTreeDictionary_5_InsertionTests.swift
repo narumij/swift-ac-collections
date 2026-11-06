@@ -476,11 +476,11 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     func test_eraseExactly_onEmptyDictionaryReturnsNilWithoutCopy() {
       var dictionary = RedBlackTreeDictionary<String, Int>()
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(dictionary._copyCount, 0)
       #endif
       XCTAssertNil(dictionary.erase(exactly: dictionary.startIndex))
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(dictionary._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(dictionary.erase(exactly: dictionary.endIndex))

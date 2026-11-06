@@ -37,7 +37,7 @@ final class RedBlackTreeDictionaryBoundExpressionTests: RedBlackTreeTestCase {
     }
   }
 
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
   /// 空のDictionaryに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
   /// バッファからの退避)を発生させないこと。
   func testEraseBoundsOnEmptyDictionaryDoesNotCopy() throws {

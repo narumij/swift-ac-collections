@@ -1,7 +1,7 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if _TREE_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   /// RBT-047（index指定更新の失敗時CoW調査）の専用テスト。
   ///
   /// `copyCount`はCoW複製でコピー先のheaderだけが1増える内部カウンタで、公開契約ではない。

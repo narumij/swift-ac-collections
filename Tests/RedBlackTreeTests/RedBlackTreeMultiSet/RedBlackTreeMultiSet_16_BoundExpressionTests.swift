@@ -28,7 +28,7 @@ final class RedBlackTreeMultiSetBoundExpressionTests: RedBlackTreeTestCase {
 
   func testLastIsValid() throws { XCTAssertTrue(a.isValid(.last)) }
 
-  #if _TREE_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
   /// 空のMultiSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
   /// バッファからの退避)を発生させないこと。
   func testEraseBoundsOnEmptyMultiSetDoesNotCopy() throws {

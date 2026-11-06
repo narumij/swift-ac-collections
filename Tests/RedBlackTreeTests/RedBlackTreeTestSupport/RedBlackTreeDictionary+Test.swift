@@ -61,7 +61,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if _TREE_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   extension RedBlackTreeDictionary {
 
     package var _copyCount: UInt {

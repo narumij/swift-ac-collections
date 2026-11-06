@@ -137,11 +137,11 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     func test_eraseExactly_onEmptyMapReturnsNilWithoutTrapping() {
       var map = RedBlackTreeMultiMap<Int, String>()
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(map._copyCount, 0)
       #endif
       XCTAssertNil(map.erase(exactly: map.startIndex))
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(map._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(map.erase(exactly: map.endIndex))

@@ -244,11 +244,11 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     func test_eraseExactly_onEmptyMultiSetReturnsNilWithoutCopy() {
       var multiset = RedBlackTreeMultiSet<Int>()
 
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(multiset._copyCount, 0)
       #endif
       XCTAssertNil(multiset.erase(exactly: multiset.startIndex))
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(multiset._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(multiset.erase(exactly: multiset.endIndex))

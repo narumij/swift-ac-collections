@@ -59,7 +59,7 @@ import XCTest
     /// 空のビューに対する削除系操作は、トラップしない以上、無駄なCoW
     /// (共有される空シングルトンバッファからの退避)も発生させないこと。
     func test_removalMethods_onEmptyView_doNotTriggerCopyOnWrite() {
-      #if _TREE_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var empty = RedBlackTreeDictionary<Int, String>()
         XCTAssertEqual(empty._copyCount, 0)
 

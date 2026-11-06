@@ -1,6 +1,6 @@
 import XCTest
 
-#if _TREE_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   @testable import RedBlackTreeCollections
 
   final class RedBlackTreeMultiMapCopyOnWriteTests: RedBlackTreeTestCase {

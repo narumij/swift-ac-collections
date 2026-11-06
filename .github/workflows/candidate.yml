@@ -18,7 +18,7 @@ jobs:
   resolve:
     if: >-
       github.event_name == 'push' ||
-      (github.event.issue.pull_request && github.event.comment.body == '/test release')
+      github.event.issue.pull_request
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -33,6 +33,9 @@ jobs:
           script: |
             if (context.eventName === 'push') {
               core.setOutput('sha', context.sha);
+              return;
+            }
+            if ((context.payload.comment.body ?? '').trim() !== '/test release') {
               return;
             }
             const {owner, repo} = context.repo;
@@ -54,6 +57,7 @@ jobs:
 
   debug-all-tests:
     needs: resolve
+    if: needs.resolve.outputs.sha != ''
     runs-on: ubuntu-24.04
 
     steps:
@@ -72,6 +76,7 @@ jobs:
 
   release-all-tests:
     needs: resolve
+    if: needs.resolve.outputs.sha != ''
     runs-on: ubuntu-24.04
 
     steps:
@@ -88,6 +93,7 @@ jobs:
 
   documentation:
     needs: resolve
+    if: needs.resolve.outputs.sha != ''
     runs-on: ubuntu-24.04
 
     steps:
@@ -125,6 +131,7 @@ jobs:
   # here; Linux ASan with exit tests has not been verified before this job.
   address-sanitizer-death-tests:
     needs: resolve
+    if: needs.resolve.outputs.sha != ''
     runs-on: ubuntu-24.04
 
     steps:
@@ -164,6 +171,7 @@ jobs:
 
   performance:
     needs: resolve
+    if: needs.resolve.outputs.sha != ''
     runs-on: ubuntu-24.04
 
     steps:

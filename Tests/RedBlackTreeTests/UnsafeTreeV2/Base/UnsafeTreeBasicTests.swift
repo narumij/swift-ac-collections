@@ -94,7 +94,7 @@ import XCTest
       XCTAssertEqual(storage.__value_(ptr), 100)
     }
 
-    #if _TREE_DEBUG_COUNTER
+    #if _TREE_ALLOCATION_COUNTER
     /// `___pushRecycle`/`___popRecycle`が、破棄したノードをLIFO(スタック)順に
     /// 積み下ろしし、その都度`recycleCount`とpayloadの初期化/破棄カウントが整合すること。
     func testDestroyStack() async throws {

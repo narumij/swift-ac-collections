@@ -17,15 +17,18 @@ var defines: [String] = [
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
-  //    "USE_INT128",
+  //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
 
-  "ALLOW_CROSS_TREE_INDEX"  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
+  "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
   // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
 
-  //  "AC_COLLECTIONS_INTERNAL_CHECKS",
+  "_TREE_ALLOCATION_COUNTER",
+  "_TREE_INTERNAL_CHECKS",
+  "_TREE_ASSERT_INTERNAL",
+  "_UNSAFE_TREE_ASSERT_INTERNAL",
 ]
 
 var _settings: [SwiftSetting] =
@@ -46,7 +49,7 @@ var _settings: [SwiftSetting] =
     //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
 
     .define(
-      "_TREE_DEBUG_COUNTER",
+      "_TREE_ALLOCATION_COUNTER",
       .when(traits: ["AC_COLLECTIONS_ASSERT_INTERNAL"])
     ),
     .define(
@@ -173,13 +176,16 @@ let package = Package(
       name: "USE_COMPACT_NODE_METADATA",
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
-    ), .trait(name: "USE_C_MALLOC"), .trait(name: "USE_INT128"),
+    ),
+    .trait(name: "USE_C_MALLOC"),
+    .trait(name: "USE_INT128"),
     .trait(name: "BENCHMARK"),
     .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
-    ), .trait(name: "GRAPHVIZ_DEBUG"),
+    ),
+    .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "AC_COLLECTIONS_INTERNAL_CHECKS"),

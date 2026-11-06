@@ -15,7 +15,7 @@ import RedBlackTreeCollections
 class CppBehaviorReferenceTestCase: XCTestCase {
 
   override func setUpWithError() throws {
-    #if _TREE_DEBUG_COUNTER
+    #if _TREE_ALLOCATION_COUNTER
     // The test-only SKIP_DEBUG_LIFETIME_BALANCE_CHECKS trait skips only the
     // balance assertions; counter resets and structural checks always run.
     #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
@@ -40,7 +40,7 @@ class CppBehaviorReferenceTestCase: XCTestCase {
     if RedBlackTreeSet<Int>().capacity != 0 {
       fatalError("singleton bufffer broken")
     }
-    #if _TREE_DEBUG_COUNTER
+    #if _TREE_ALLOCATION_COUNTER
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)

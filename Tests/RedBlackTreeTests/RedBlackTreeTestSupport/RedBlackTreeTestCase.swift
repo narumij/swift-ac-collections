@@ -14,7 +14,7 @@ func blackHole<T>(_ value: T) {
 class RedBlackTreeTestCase: XCTestCase {
 
   override func setUpWithError() throws {
-    #if _TREE_DEBUG_COUNTER
+    #if _TREE_ALLOCATION_COUNTER
       // DONE: 以下のアサートが止まるケースがあることについて、理由を調査すること
       // 直前にこのクラスを継承してないテストが走り、事後処理がないためだった。
       // assert(deallocatedCount == 0) // アサート(a)
@@ -44,7 +44,7 @@ class RedBlackTreeTestCase: XCTestCase {
     if RedBlackTreeSet<Int>().capacity != 0 {
       fatalError("singleton bufffer broken")
     }
-    #if _TREE_DEBUG_COUNTER
+    #if _TREE_ALLOCATION_COUNTER
       // XCTAssertNil(_emptyTreeStorage.header._tied)
       // ホットパス改善のため最初から結束バンド済みにした
       XCTAssertNotNil(_emptyTreeStorage.header._tied)

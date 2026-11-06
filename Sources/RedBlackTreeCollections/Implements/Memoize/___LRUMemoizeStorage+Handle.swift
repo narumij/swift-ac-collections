@@ -71,7 +71,7 @@ extension ___LRUHandle {
     // あえてのdefer
     defer {
       p.__value_().initialize(to: k)
-      #if _TREE_DEBUG_COUNTER
+      #if _TREE_ALLOCATION_COUNTER
         payloadInitializedCount += 1
       #endif
     }

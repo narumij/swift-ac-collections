@@ -175,7 +175,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
   #if DEBUG
     func testSetKeyAndValueComp() {
-      let set: RedBlackTreeSet = [3, 1, 4, 5]
+      let _: RedBlackTreeSet = [3, 1, 4, 5]
       typealias SUT = RedBlackTreeSet<Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }
@@ -216,7 +216,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
   #if DEBUG
     func testMultisetKeyAndValueComp() {
-      let multi: RedBlackTreeMultiSet = [1, 2, 3]
+      let _: RedBlackTreeMultiSet = [1, 2, 3]
       typealias SUT = RedBlackTreeMultiSet<Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }

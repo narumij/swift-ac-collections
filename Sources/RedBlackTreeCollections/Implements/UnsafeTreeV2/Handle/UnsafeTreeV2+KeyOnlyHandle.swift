@@ -112,7 +112,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
     // あえてのdefer
     defer {
       p.__value_().initialize(to: k)
-      #if DEBUG
+      #if _TREE_DEBUG_COUNTER
         payloadInitializedCount += 1
       #endif
     }

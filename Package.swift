@@ -46,6 +46,10 @@ var _settings: [SwiftSetting] =
     //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
 
     .define(
+      "_TREE_DEBUG_COUNTER",
+      .when(traits: ["AC_COLLECTIONS_ASSERT_INTERNAL"])
+    ),
+    .define(
       "_TREE_INTERNAL_CHECKS",
       .when(traits: ["AC_COLLECTIONS_ASSERT_INTERNAL"])
     ),

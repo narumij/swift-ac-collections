@@ -52,14 +52,14 @@
   extension UnsafeMutableRawPointer {
     @inlinable
     static func _allocate(byteCount: Int, alignment: Int) -> UnsafeMutableRawPointer {
-      #if DEBUG
+      #if _TREE_DEBUG_COUNTER
       allocatedCount += 1
       #endif
       return self.allocate(byteCount: byteCount, alignment: alignment)
     }
     @inlinable
     func _deallocate() {
-      #if DEBUG
+      #if _TREE_DEBUG_COUNTER
       deallocatedCount += 1
       #endif
       self.deallocate()

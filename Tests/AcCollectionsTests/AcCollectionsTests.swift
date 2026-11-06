@@ -11,7 +11,7 @@ import XCTest
 final class AcCollectionsTests: XCTestCase {
 
   override func setUpWithError() throws {
-    #if DEBUG
+    #if _TREE_DEBUG_COUNTER
       // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
       // counterのresetは常に行う。
       #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
@@ -30,7 +30,7 @@ final class AcCollectionsTests: XCTestCase {
   }
 
   override func tearDownWithError() throws {
-    #if DEBUG
+    #if _TREE_DEBUG_COUNTER
       #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
         XCTAssertEqual(allocatedCount, deallocatedCount)
         XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)

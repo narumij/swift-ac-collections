@@ -14,7 +14,7 @@ import XCTest
 class TreeTestCase: XCTestCase {
 
   override func setUpWithError() throws {
-    #if DEBUG
+    #if _TREE_DEBUG_COUNTER
       // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
       // counterのresetと構造検査は常に行う。
       #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
@@ -40,7 +40,7 @@ class TreeTestCase: XCTestCase {
       fatalError("singleton buffer broken")
     }
 
-    #if DEBUG
+    #if _TREE_DEBUG_COUNTER
       XCTAssertNotNil(_emptyTreeStorage.header._tied)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)

@@ -48,8 +48,10 @@ import XCTest
           p?.initialize(to: UnsafeNode.nullptr.pointee)
           p?.__value_().initialize(to: 0)
           p?.pointee.___has_payload_content = true
+          #if _TREE_DEBUG_COUNTER
           nodeInitializedCount += 1
           payloadInitializedCount += 1
+          #endif
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
         }
@@ -103,7 +105,7 @@ import XCTest
         XCTAssertNotNil(p)
         p.__value_().initialize(to: 0)
         p.pointee.___has_payload_content = true
-        #if DEBUG
+        #if _TREE_DEBUG_COUNTER
           payloadInitializedCount += 1
         #endif
       }

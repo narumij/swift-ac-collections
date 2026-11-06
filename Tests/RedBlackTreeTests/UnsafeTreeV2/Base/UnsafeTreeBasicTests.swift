@@ -94,6 +94,7 @@ import XCTest
       XCTAssertEqual(storage.__value_(ptr), 100)
     }
 
+    #if _TREE_DEBUG_COUNTER
     /// `___pushRecycle`/`___popRecycle`が、破棄したノードをLIFO(スタック)順に
     /// 積み下ろしし、その都度`recycleCount`とpayloadの初期化/破棄カウントが整合すること。
     func testDestroyStack() async throws {
@@ -161,7 +162,8 @@ import XCTest
         storage._buffer.header[i].pointee.___has_payload_content = false
       }
     }
-
+    #endif
+    
     /// recycle pool(破棄済みノードの連結リスト)の構造が、`.copy()`後も
     /// 元の木と同じ形(連結順・左右の子のindex)を保つこと。
     func testDestroyStack2() async throws {

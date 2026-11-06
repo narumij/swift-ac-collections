@@ -109,9 +109,14 @@ var _settings: [SwiftSetting] =
       .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])
     ),
     .define(
+      "_TREE_INVARIANT",
+      .when(traits: ["ENABLE_TREE_INVARIANT"])
+    ),
+    .define(
       "_UNSAFE_TREE_ASSERT_INTERNAL",
       .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
     ),
+    .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
@@ -158,6 +163,7 @@ let package = Package(
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
     .trait(name: "ENABLE_TREE_COPY_COUNTER"),
     .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "ENABLE_TREE_INVARIANT"),
     .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"),
     .trait(name: "_O_UNCHECKED"),
     .trait(

@@ -107,18 +107,6 @@ extension Benchmark {
     }
 
     self.add(
-      title: "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
-      return { timer in
-        for i in lookups {
-          precondition(d[i] == 2 * i)
-        }
-      }
-    }
-
-    self.add(
       title: "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups",
       input: ([Int], [Int]).self
     ) { input, lookups in
@@ -127,6 +115,18 @@ extension Benchmark {
       return { timer in
         for i in lookups {
           precondition(d[i + c] == nil)
+        }
+      }
+    }
+
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      return { timer in
+        for i in lookups {
+          precondition(d[i] == 2 * i)
         }
       }
     }

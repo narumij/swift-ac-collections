@@ -161,14 +161,16 @@ where Element == (key: _Key, value: _MappedValue) {}
 
 // 積載型からコレクション要素型への変換方法を示すこと
 public protocol _BasePaylodValue_ElementInterface: ~Copyable, _PayloadValueType, _ElementType {
-  @inlinable static func __element_(_ __value: _PayloadValue) -> Element
+  @inlinable
+  static func __element_(_ __value: _PayloadValue) -> Element
 }
 
 // DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
 public protocol _KeyValueBasePaylodValue_ElementInterface: ~Copyable,
   _BasePaylodValue_ElementInterface
 {
-  @inlinable static func __payload_(_ __e: Element) -> _PayloadValue
+  @inlinable
+  static func __payload_(_ __e: Element) -> _PayloadValue
 }
 
 // SetやMultiSetの、積載型からコレクション要素型への変換方法

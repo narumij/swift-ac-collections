@@ -1,4 +1,4 @@
-#if DEBUG && DEATH_TEST
+#if DEBUG && DEATH_TEST && _TREE_ASSERT_INTERNAL
 import Foundation
 import Testing
 
@@ -97,7 +97,6 @@ struct TreeFoundamentalDeathTests {
   func nullAlgorithmPrecondition_terminatesProcess(
     _ operation: NullPrecondition
   ) async {
-    #if _TREE_ASSERT_INTERNAL
     switch operation {
     case .freeMinimum:
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
@@ -199,7 +198,6 @@ struct TreeFoundamentalDeathTests {
         harness._ptr__tree_remove(UnsafeNode.template, UnsafeNode.template)
       }
     }
-    #endif
   }
 }
 #endif

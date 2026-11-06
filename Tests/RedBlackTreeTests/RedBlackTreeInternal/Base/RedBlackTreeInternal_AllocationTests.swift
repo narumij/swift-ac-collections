@@ -101,7 +101,7 @@ final class AllocationTests: RedBlackTreeTestCase {
         XCTAssertTrue(!A.__tree_.isIdentical(to: B.__tree_))
       }
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_INTERNAL_CHECKS
         do {
           var A = RedBlackTreeSet<Int>()
           XCTAssertEqual(A._copyCount, 0)

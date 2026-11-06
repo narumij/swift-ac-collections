@@ -1,6 +1,6 @@
 import XCTest
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_INTERNAL_CHECKS
   @testable import RedBlackTreeCollections
 
   final class RedBlackTreeDictionaryCopyOnWriteTests: RedBlackTreeTestCase {

@@ -131,7 +131,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
   package func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != nullptr, "Root node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "Root node shouldn't be null")
     var __x = __x
     while __x.__left_ != nullptr {
       __x = __x.__left_
@@ -144,7 +144,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
   package func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != nullptr, "Root node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "Root node shouldn't be null")
     var __x = __x
     while __x.__right_ != nullptr {
       __x = __x.__right_
@@ -157,7 +157,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
   package func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
     var __x = __x
     if __x.__right_ != nullptr {
       return __tree_min(__x.__right_)
@@ -178,7 +178,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
   package func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
     var __x = __x
     if __x.__right_ != nullptr {
       return __tree_min(__x.__right_)
@@ -195,7 +195,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
   package func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
-    assert(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
     // unsafe not allowed
     if __x.__left_ != nullptr {
       return __tree_max(__x.__left_)
@@ -213,7 +213,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
     __tree_leaf(_ __x: _NodePtr) -> _NodePtr
   {
     // unsafe不明
-    assert(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
     var __x = __x
     while true {
       if __x.__left_ != nullptr {
@@ -249,8 +249,8 @@ extension TreeAlgorithmProtocol_ptr where Self: ~Copyable {
     __tree_left_rotate(_ __x: _NodePtr)
   {
     let __x = __x
-    assert(__x != nullptr, "node shouldn't be null")
-    assert(__x.__right_ != nullptr, "node should have a right child")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x.__right_ != nullptr, "node should have a right child")
     let __y = __x.__right_
     __x.__right_ = __y.__left_
     if __x.__right_ != nullptr {
@@ -273,8 +273,8 @@ extension TreeAlgorithmProtocol_ptr where Self: ~Copyable {
     __tree_right_rotate(_ __x: _NodePtr)
   {
     let __x = __x
-    assert(__x != nullptr, "node shouldn't be null")
-    assert(__x.__left_ != nullptr, "node should have a left child")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "node shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x.__left_ != nullptr, "node should have a left child")
     let __y = __x.__left_
     __x.__left_ = __y.__right_
     if __x.__left_ != nullptr {
@@ -303,8 +303,8 @@ extension TreeAlgorithmProtocol_ptr where Self: ~Copyable {
     _ptr__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
     var __x = __x
-    assert(__root != nullptr, "Root of the tree shouldn't be null")
-    assert(__x != nullptr, "Can't attach null node to a leaf")
+    _TREE_ASSERT_INTERNAL(__root != nullptr, "Root of the tree shouldn't be null")
+    _TREE_ASSERT_INTERNAL(__x != nullptr, "Can't attach null node to a leaf")
     __x.__is_black_ = __x == __root
     while __x != __root, !__x.__parent_unsafe.__is_black_ {
       // __x->__parent_ != __root because __x->__parent_->__is_black == false
@@ -363,9 +363,9 @@ extension TreeAlgorithmProtocol_ptr where Self: ~Copyable {
     _ptr__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-    assert(__root != nullptr, "Root node should not be null")
-    assert(__z != nullptr, "The node to remove should not be null")
-    assert(__tree_invariant(__root), "The tree invariants should hold")
+    _TREE_ASSERT_INTERNAL(__root != nullptr, "Root node should not be null")
+    _TREE_ASSERT_INTERNAL(__z != nullptr, "The node to remove should not be null")
+    _TREE_ASSERT_INTERNAL(__tree_invariant(__root), "The tree invariants should hold")
     var __root = __root
     // __z will be removed from the tree.  Client still needs to destruct/deallocate it
     // __y is either __z, or if __z has two children, __tree_next(__z).

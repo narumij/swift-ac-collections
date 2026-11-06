@@ -66,7 +66,7 @@
         ___destroy_count = 0
       }
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_INTERNAL_CHECKS
         /// O(*k*)
         var ___destroyNodes: [_NodePtr] {
           if ___destroy_node == nullptr {

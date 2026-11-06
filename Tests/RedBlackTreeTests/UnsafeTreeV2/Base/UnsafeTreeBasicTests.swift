@@ -192,7 +192,7 @@ import XCTest
     /// 入れ子の`do`ブロックで構築→破棄を繰り返した場合でも、recycle poolが
     /// 正しいLIFO順でノードを積み重ねること(ネストしたスコープでも整合する)。
     func testConstructDestroy() async throws {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_INTERNAL_CHECKS
         let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
         do {
           let p = storage.__construct_node(-1)

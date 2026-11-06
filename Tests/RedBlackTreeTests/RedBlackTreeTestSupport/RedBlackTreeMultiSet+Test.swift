@@ -61,7 +61,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_INTERNAL_CHECKS
   extension RedBlackTreeMultiSet {
 
     package var _copyCount: UInt {

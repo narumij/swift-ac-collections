@@ -315,7 +315,7 @@
           "[etc]",
           "__tree_invariant: \(__tree_invariant(__root))",
         ])
-        #if AC_COLLECTIONS_INTERNAL_CHECKS
+        #if _TREE_INTERNAL_CHECKS
           ll.append("- copyCount: \(_buffer.header.copyCount)")
         #endif
 

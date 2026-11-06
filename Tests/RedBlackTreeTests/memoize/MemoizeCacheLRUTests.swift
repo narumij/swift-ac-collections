@@ -215,7 +215,7 @@
     #endif
 
     func testCopyOnWrite() throws {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_INTERNAL_CHECKS
         var cache0 = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 2)
         XCTAssertEqual(cache0._copyCount, 0)
         let cache1 = cache0

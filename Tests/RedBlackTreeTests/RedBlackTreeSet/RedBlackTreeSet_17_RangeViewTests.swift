@@ -156,7 +156,7 @@
       var set = RedBlackTreeSet(0..<3)
       set[...].erase()
       XCTAssertTrue(set.isEmpty)
-      #if DEBUG
+      #if _TREE_INTERNAL_CHECKS
         XCTAssertEqual(set._copyCount, 0)
       #endif
     }

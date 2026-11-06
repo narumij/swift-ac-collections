@@ -100,7 +100,7 @@ extension UnsafeTreeV2 {
       // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -132,7 +132,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
     var tree: Tree = .create()
     tree.___insert_range_unique(try _decodedElements(from: decoder))
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 
@@ -141,7 +141,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func createMulti(from decoder: Decoder) throws -> UnsafeTreeV2 {
     var tree: Tree = .create()
     tree.___insert_range_multi(try _decodedElements(from: decoder)) { $0 }
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 }

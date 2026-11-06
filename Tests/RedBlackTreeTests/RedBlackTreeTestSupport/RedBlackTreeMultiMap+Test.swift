@@ -61,7 +61,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_INTERNAL_CHECKS
   extension RedBlackTreeMultiMap {
 
     package var _copyCount: UInt {

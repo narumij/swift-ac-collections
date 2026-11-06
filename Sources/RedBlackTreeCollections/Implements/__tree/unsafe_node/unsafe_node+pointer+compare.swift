@@ -27,8 +27,8 @@ package func ___ptr_comp_multi(
 )
   -> Bool
 {
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
   guard
     !__l.___is_end,
     !__r.___is_end,

@@ -96,7 +96,7 @@
       print(" lazyDetach present     :", _lazyDetach != nil)
       print(" uniquelyOwned          :", isRawBufferUniquelyOwned)
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_INTERNAL_CHECKS
         print(" copyCount              :", copyCount)
       #endif
 

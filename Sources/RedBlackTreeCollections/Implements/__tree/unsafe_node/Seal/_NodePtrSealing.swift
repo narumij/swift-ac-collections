@@ -47,7 +47,7 @@ public struct _NodePtrSealing {
   // 現在の状態で封印する
   @inlinable
   init(_p: _NodePtr) {
-    assert(!_p.___is_null)
+    _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _p.pointee.___recycle_count
     #if !USE_LAZY_DETACH
@@ -69,7 +69,7 @@ public struct _NodePtrSealing {
   // 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
-    assert(!_p.___is_null)
+    _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _seal
     #if !USE_LAZY_DETACH

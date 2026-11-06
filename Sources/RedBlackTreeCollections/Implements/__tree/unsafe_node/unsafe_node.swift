@@ -291,7 +291,7 @@ extension UnsafeNode {
     internal static func create() -> Template {
       let template = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
       template.initialize(to: .create(tag: 0, nullptr: nullptr))
-      assert(template.pointee.___has_payload_content == true)
+      _TREE_ASSERT_INTERNAL(template.pointee.___has_payload_content == true)
       return .init(template: template)
     }
   }

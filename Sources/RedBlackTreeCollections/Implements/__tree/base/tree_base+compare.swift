@@ -52,8 +52,8 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
   public static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l.___is_end || !l.__parent_.___is_null)
-    assert(r.___is_end || !r.__parent_.___is_null)
+    _TREE_ASSERT_INTERNAL(l.___is_end || !l.__parent_.___is_null)
+    _TREE_ASSERT_INTERNAL(r.___is_end || !r.__parent_.___is_null)
 
     guard
       l != r,
@@ -70,12 +70,12 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
 
-    assert(!__f.___is_null)
-    assert(!__p.___is_null)
-    assert(!__l.___is_null)
-    assert(__l.___is_end || __f.___has_payload_content)
-    assert(__l.___is_end || __p.___has_payload_content)
-    assert(__l.___is_end || __l.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(!__f.___is_null)
+    _TREE_ASSERT_INTERNAL(!__p.___is_null)
+    _TREE_ASSERT_INTERNAL(!__l.___is_null)
+    _TREE_ASSERT_INTERNAL(__l.___is_end || __f.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(__l.___is_end || __p.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(__l.___is_end || __l.___has_payload_content)
 
     guard !__f.___is_end else {
       // end <= end <= endは有効
@@ -103,8 +103,8 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
   public static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    assert(l.___is_end || !l.__parent_.___is_null)
-    assert(r.___is_end || !r.__parent_.___is_null)
+    _TREE_ASSERT_INTERNAL(l.___is_end || !l.__parent_.___is_null)
+    _TREE_ASSERT_INTERNAL(r.___is_end || !r.__parent_.___is_null)
 
     guard
       l != r,
@@ -126,13 +126,13 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
 
-    assert(!__f.___is_null)
-    assert(!__p.___is_null)
-    assert(!__l.___is_null)
+    _TREE_ASSERT_INTERNAL(!__f.___is_null)
+    _TREE_ASSERT_INTERNAL(!__p.___is_null)
+    _TREE_ASSERT_INTERNAL(!__l.___is_null)
     
-    assert(__f.___is_end || __f.___has_payload_content)
-    assert(__p.___is_end || __p.___has_payload_content)
-    assert(__l.___is_end || __l.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(__f.___is_end || __f.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(__p.___is_end || __p.___has_payload_content)
+    _TREE_ASSERT_INTERNAL(__l.___is_end || __l.___has_payload_content)
 
     guard !__f.___is_end else {
       // end <= end <= endは有効

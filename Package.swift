@@ -20,19 +20,15 @@ var defines: [String] = [
   //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
-  
+
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
-  
+
   // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
-  
-  "_TREE_ALLOCATION_COUNTER",
-  "_TREE_INTERNAL_CHECKS",
-  "_TREE_ASSERT_INTERNAL",
-  "_UNSAFE_TREE_ASSERT_INTERNAL",
-  
+
+  //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
+  //  "_UNSAFE_TREE_ASSERT_INTERNAL",
   // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
   "RED_BLACK_TREE_TSAN_SAFE",
-  
 ]
 
 var _settings: [SwiftSetting] =
@@ -45,23 +41,21 @@ var _settings: [SwiftSetting] =
 
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
     // オフにすることでいろいろスキップできる
-    .define("ENABLE_PERFORMANCE_TESTING",
-            .when(configuration: .release)),
-    .define("ENABLE_HEAVY_PERFORMANCE_TEST",
-            .when(configuration: .release, traits: ["NORMAL_RELEASE_TEST"])),
-
+    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
+    .define(
+      "ENABLE_HEAVY_PERFORMANCE_TEST",
+      .when(configuration: .release, traits: ["NORMAL_RELEASE_TEST"])
+    ),
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
     // 利用可能な型アライメントが8に制限される
     .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
-
     // 一部のポインタ比較で128bit幅のパス表現を用いる
     // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
     // 念のために用意してある
     // メモリ計算の都合、Int.max / pair.strideが上限となる
     // TODO: USE_UINT128_NODE_PATH_BITMAPにリネームする
     .define("USE_INT128", .when(traits: ["USE_INT128"])),
-
     // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる
     // そこまでのメモリを積んだマシンは現実的には無いとは思うが、もしも限界付近まで利用する場合には以下が必要になる
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
@@ -69,7 +63,6 @@ var _settings: [SwiftSetting] =
       "ENABLE_OFFSET_OVERFLOW_GUARD",
       .when(traits: ["ENABLE_OFFSET_OVERFLOW_GUARD"])
     ),
-
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
     // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
@@ -79,37 +72,27 @@ var _settings: [SwiftSetting] =
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
     ),
-
     .define(
       "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
-    ),
-
-    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
-
+    ), .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
-
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
     // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
     .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
-
     .define(
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
       .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
     ),
-
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
-    
-    
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
-
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる
@@ -117,25 +100,23 @@ var _settings: [SwiftSetting] =
 
     .define(
       "_TREE_ALLOCATION_COUNTER",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+      .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
     ),
-    .define(
-      "_TREE_COPY_COUNTER",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-    .define(
-      "_TREE_INTERNAL_CHECKS",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
-    .define(
-      "_TREE_ASSERT_INTERNAL",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
-    ),
+    .define("_TREE_COPY_COUNTER", .when(traits: ["ENABLE_TREE_COPY_COUNTER"])),
+    .define("_TREE_INTERNAL_CHECKS", .when(traits: ["ENABLE_TREE_INTERNAL_CHECKS"])),
+    .define("_TREE_ASSERT_INTERNAL", .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])),
     .define(
       "_UNSAFE_TREE_ASSERT_INTERNAL",
-      .when(traits: ["AC_COLLECTIONS_TEST_INTERNAL"])
+      .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
     ),
-    
+    .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_INTERNAL_CHECKS", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define(
+      "_UNSAFE_TREE_ASSERT_INTERNAL",
+      .when(traits: ["NORMAL_DEBUG_TEST"])
+    ),
   ] + defines.map { .define($0) }
 
 let additionalDependencies: [Target.Dependency] =
@@ -158,33 +139,25 @@ let package = Package(
         "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
     ),
     .trait(
-      name: "SANITIZER_TEST",
-      description:
-        "Skip performance measurements during sanitizer tests. Does not enable the sanitizer or change library behavior."
-    ),
-    .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
-    ),
-    .trait(name: "USE_C_MALLOC"),
-    .trait(name: "USE_INT128"),
+    ), .trait(name: "USE_C_MALLOC"), .trait(name: "USE_INT128"),
     .trait(name: "BENCHMARK"),
     .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
-    ),
-    .trait(name: "GRAPHVIZ_DEBUG"),
+    ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "AC_COLLECTIONS_INTERNAL_CHECKS"),
     .trait(name: "AC_COLLECTIONS_TEST_INTERNAL"),
-    
-    .trait(name: "NORMAL_RELEASE_TEST"),
-    .trait(name: "NORMAL_DEBUG_TEST"),
-
-    .trait(name: "_O_UNCHECKED"),
+    .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
+    .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
+    .trait(name: "ENABLE_TREE_COPY_COUNTER"), .trait(name: "ENABLE_TREE_INTERNAL_CHECKS"),
+    .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"), .trait(name: "_O_UNCHECKED"),
     .trait(
       name: "ENABLE_DEATH_TESTS",
       description:
@@ -192,12 +165,10 @@ let package = Package(
     ),
   ],
   dependencies: [
-
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin.git",
       from: "1.4.1"
     ),
-
     //    .package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.6.0",
@@ -228,7 +199,6 @@ let package = Package(
       dependencies: ["AcCollections", "RedBlackTreeCollections"],
       swiftSettings: _settings
     ),
-
     .target(
       name: "_malloc_free",
       publicHeadersPath: "include",
@@ -237,7 +207,6 @@ let package = Package(
         .define("NDEBUG", .when(configuration: .release)),
       ]
     ),
-
     .target(
       name: "RedBlackTreeCollections",
       dependencies: additionalDependencies,
@@ -247,21 +216,18 @@ let package = Package(
         // .strictMemorySafety()
       ]
     ),
-
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
       path: "Sources/_RedBlackTreeModule",
       swiftSettings: [.strictMemorySafety()]
     ),
-
     .target(
       name: "RedBlackTreeFixture",
       dependencies: ["RedBlackTreeCollections"],
       path: "Tests/RedBlackTreeFixture",
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
@@ -271,7 +237,6 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeLegacyTests",
       dependencies: [
@@ -280,7 +245,6 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeTreeTests",
       dependencies: [
@@ -288,9 +252,7 @@ let package = Package(
         "RedBlackTreeCollections", "RedBlackTreeFixture",
       ],
       swiftSettings: _settings
-    ),
-
-    .target(name: "CppBehaviorReference", publicHeadersPath: "include"),
+    ), .target(name: "CppBehaviorReference", publicHeadersPath: "include"),
     .testTarget(
       name: "CppBehaviorReferenceTests",
       dependencies: [
@@ -298,7 +260,6 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
-
     .target(
       name: "OptionalElementBufferModule",
       exclude: ["Documentation"],
@@ -311,7 +272,6 @@ let package = Package(
       dependencies: ["OptionalElementBufferModule"],
       swiftSettings: _settings
     ),
-
     .target(
       name: "ElementBufferModule",
       exclude: ["Documentation"],
@@ -324,7 +284,6 @@ let package = Package(
       dependencies: ["ElementBufferModule"],
       swiftSettings: _settings
     ),
-
     .target(
       name: "NextPermutationModule",
       dependencies: [],

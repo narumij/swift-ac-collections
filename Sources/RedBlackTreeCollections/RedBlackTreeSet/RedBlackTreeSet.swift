@@ -498,7 +498,8 @@ extension RedBlackTreeSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 

@@ -66,6 +66,28 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(multiset), [1, 2, 2, 3])
     }
 
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = [1, 2, 2, 3]
+      for offset in expected.indices {
+        let original = RedBlackTreeMultiSet([1, 2, 2, 3])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(Array(original), expected)
+        XCTAssertEqual(Array(copy), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next], remaining[offset])
+        }
+      }
+    }
+
     func test_erase_returnsTheFollowingIndex() {
       var multiset = RedBlackTreeMultiSet([1, 2, 2, 3])
 

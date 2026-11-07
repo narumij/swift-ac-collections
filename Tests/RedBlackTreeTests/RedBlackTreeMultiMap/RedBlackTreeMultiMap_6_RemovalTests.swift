@@ -206,6 +206,28 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
 
   final class RedBlackTreeMultiMapEraseIndexTests: RedBlackTreeTestCase {
 
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = ["a", "b", "c", "d"]
+      for offset in expected.indices {
+        let original = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (2, "b"), (2, "c"), (3, "d")])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(original.map(\.value), expected)
+        XCTAssertEqual(copy.map(\.value), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next].value, remaining[offset])
+        }
+      }
+    }
+
     /// `erase(_:)`はIndexの位置の組を取り除き、その次の位置を返すこと。
     func testEraseIndexReturnsFollowingIndex() {
       var m = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (2, "b"), (2, "c"), (3, "d")])

@@ -319,6 +319,7 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
+    #if true
     @inlinable
     mutating func ___pushRecycle(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
@@ -340,8 +341,15 @@ extension UnsafeTreeV2BufferHeader {
       p.pointee.__left_ = recycleHead
       recycleHead = p
     }
+    #else
+    // TODO: 性能確認
+    @inlinable
+    mutating func ___pushRecycle(_ p: _NodePtr) {
+      freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      ___pushRecycleWithoutDeinitialize(p)
+    }
+    #endif
 
-    // TODO: 二つの整理
     // payloadの破棄を呼出し側で済ませたノードを回収する。
     @inlinable
     mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {

@@ -84,3 +84,37 @@ final class RedBlackTreeSetValueSemanticsTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(copy), [0, 1, 2, 3, 99])
   }
 }
+
+#if !_TREE_ALLOCATION_COUNTER && !_TREE_COPY_COUNTER
+  // 並行CoW: 共有した値を各タスクへコピーして同時に変更しても、互いと元の値に影響しないこと。
+  // Debugのprocess-globalな寿命カウンタ自体は並行更新に対応しないため、カウンタ無効時だけ実行する。
+  extension RedBlackTreeSetValueSemanticsTests {
+    func testSetConcurrentCopies() async {
+      let original = RedBlackTreeSet(0 ..< 256)
+      let results = await withTaskGroup(of: (Int, [Int]).self) { group in
+        for worker in 0 ..< 8 {
+          group.addTask { [original] in
+            var copy = original
+            for key in 0 ..< 128 {
+              copy.remove(key)
+              copy.insert(1000 + worker * 128 + key)
+            }
+            return (worker, Array(copy))
+          }
+        }
+        var values: [(Int, [Int])] = []
+        for await value in group { values.append(value) }
+        return values
+      }
+      XCTAssertEqual(Array(original), Array(0 ..< 256))
+      XCTAssertEqual(results.count, 8)
+      for (worker, values) in results {
+        XCTAssertEqual(
+          values,
+          Array(128 ..< 256)
+            + Array((1000 + worker * 128) ..< (1128 + worker * 128))
+        )
+      }
+    }
+  }
+#endif

@@ -107,6 +107,7 @@ extension UnsafeTreeV2 {
           ___tree_adv_iter($0, 1)
         }
 
+      #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
       case .lessThan(let __v):
         ptr = ___tree_prev_iter(lower_bound(__v))
 
@@ -126,6 +127,7 @@ extension UnsafeTreeV2 {
           __f.___has_payload_content
           ? __f
           : upper_bound(__v).unchecked
+      #endif
 
       #if DEBUG
         case .index(let i):

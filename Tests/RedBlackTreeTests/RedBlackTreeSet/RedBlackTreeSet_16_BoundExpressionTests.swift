@@ -331,6 +331,7 @@ final class RedBlackTreeSetBoundExpressionTests: RedBlackTreeTestCase {
     XCTAssertFalse(a.isValid(upperBound(10) ..< lowerBound(-10)))
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAllKeys() throws {
     let cases: [(key: Int, expected: Int?)] = [
       (-1, nil), (0, nil), (1, 0), (2, 1), (3, 2), (4, 2),
@@ -340,7 +341,9 @@ final class RedBlackTreeSetBoundExpressionTests: RedBlackTreeTestCase {
       XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
     }
   }
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanOrEqualAllKeys() throws {
     let cases: [(key: Int, expected: Int?)] = [
       (-1, nil), (0, 0), (1, 1), (2, 2), (3, 2),
@@ -354,6 +357,7 @@ final class RedBlackTreeSetBoundExpressionTests: RedBlackTreeTestCase {
       )
     }
   }
+  #endif
 
   /// `.find(_:)`は等しい要素がある場合だけ有効な位置になること（解決した値はPublicBehavior側）
   func testFindAllKeys() throws {
@@ -412,6 +416,7 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(a[last()], 2)
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   /// `lessThan`・`lessThanOrEqual`・`find`は、各keyで対応する要素を返し、無ければ`nil`になること。
   func testLessThanLessThanOrEqualAndFindAllKeys() throws {
     let lessThan: [(key: Int, expected: Int?)] = [
@@ -437,6 +442,7 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[.find(key)], expected, "find key=\(key)")
     }
   }
+  #endif
 
   /// 逆向きのBound範囲のviewは空になり、列挙しても要素を返さないこと。
   func testReversedBoundsViewIsEmpty() throws {
@@ -493,12 +499,14 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessGreaterHelpers() throws {
     XCTAssertEqual(a[.lessThan(1)], 0)
     XCTAssertEqual(a[.greaterThan(1)], 2)
     XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
     XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
   }
+  #endif
 
   func testBoundRangeOperators() throws {
     let view1 = a[lowerBound(0) ..< upperBound(2)]

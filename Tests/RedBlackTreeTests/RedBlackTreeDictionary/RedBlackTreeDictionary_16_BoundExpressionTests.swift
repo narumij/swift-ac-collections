@@ -28,6 +28,7 @@ final class RedBlackTreeDictionaryBoundExpressionTests: RedBlackTreeTestCase {
 
   func testLastIsValid() throws { XCTAssertTrue(a.isValid(.last)) }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAllKeysIsValid() throws {
     let cases: [(key: Int, valid: Bool)] = [
       (-1, false), (0, false), (1, true), (2, true), (3, true), (4, true),
@@ -36,6 +37,7 @@ final class RedBlackTreeDictionaryBoundExpressionTests: RedBlackTreeTestCase {
       XCTAssertEqual(a.isValid(.lessThan(key)), valid, "key=\(key)")
     }
   }
+  #endif
 
   #if _TREE_COPY_COUNTER
   /// 空のDictionaryに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
@@ -185,6 +187,7 @@ final class RedBlackTreeDictionaryBoundPublicBehaviorTests: RedBlackTreeTestCase
     XCTAssertEqual(pairs(b), ["1:b", "3:d"])
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAllKeys() throws {
     let cases: [(key: Int, expected: String?)] = [
       (-1, nil), (0, nil), (1, "a"), (2, "b"), (3, "c"), (4, "c"),
@@ -194,13 +197,16 @@ final class RedBlackTreeDictionaryBoundPublicBehaviorTests: RedBlackTreeTestCase
       XCTAssertEqual(a[.lessThan(key)]?.value, expected, "key=\(key)")
     }
   }
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessGreaterHelpers() throws {
     XCTAssertEqual(a[.lessThan(1)]?.value, "a")
     XCTAssertEqual(a[.greaterThan(1)]?.value, "c")
     XCTAssertEqual(a[.lessThanOrEqual(1)]?.value, "b")
     XCTAssertEqual(a[.greaterThanOrEqual(1)]?.value, "b")
   }
+  #endif
 
   func testBoundRangeOperators() throws {
     XCTAssertEqual(

@@ -170,6 +170,7 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 1, 1, 2, 3])
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAndOrEqualMulti() throws {
     let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
 
@@ -185,13 +186,16 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(b[.lessThanOrEqual(2)], 2)
     XCTAssertEqual(b[.lessThanOrEqual(3)], 2)
   }
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessGreaterHelpers() throws {
     XCTAssertEqual(a[.lessThan(1)], 0)
     XCTAssertEqual(a[.greaterThan(1)], 2)
     XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
     XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
   }
+  #endif
 
   func testBoundRangeOperators() throws {
     let view1 = a[lowerBound(0) ..< upperBound(2)]

@@ -102,10 +102,14 @@ extension RedBlackTreeBoundExpression {
     indirect case advanced(offset: Int, limit: Internal? = nil)
     case before
     case after
-    case lessThan(Key)
-    case greaterThan(Key)
-    case lessThanOrEqual(Key)
-    case greaterThanOrEqual(Key)
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
+    // MultiSetでは、挙動が期待通りじゃないが、それ以外に意味論的問題もはらむので半凍結
+    // TODO: tatyam setの挙動調査
+      case lessThan(Key)
+      case greaterThan(Key)
+      case lessThanOrEqual(Key)
+      case greaterThanOrEqual(Key)
+    #endif
     #if DEBUG
       // 性能問題が発生したので、デバッグ便利ケース落ち
       case index(UnsafeIndexV3)
@@ -180,6 +184,8 @@ extension RedBlackTreeBoundExpression {
     .init(_internal: .init(.find(k)))
   }
 
+  // 比較系の位置指定は実験実装（RBT-063）。traitで有効にした場合だけ提供する。
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   /// Represents the greatest element that is less than the given value.
   @inlinable
   public static func lessThan(_ k: Key) -> Self {
@@ -203,6 +209,7 @@ extension RedBlackTreeBoundExpression {
   public static func greaterThanOrEqual(_ k: Key) -> Self {
     .init(_internal: .init(.greaterThanOrEqual(k)))
   }
+  #endif
 
   #if DEBUG
     @inlinable

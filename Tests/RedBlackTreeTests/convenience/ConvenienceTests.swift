@@ -155,6 +155,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func test_set_LT_GT() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -231,9 +232,11 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThan(5)], nil)
       XCTAssertEqual(set.elements, [])
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func test_set_LE_GE() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -310,9 +313,11 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThanOrEqual(5)], nil)
       XCTAssertEqual(set.elements, [])
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func test_Multiset_LT_GT() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -389,9 +394,11 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThan(5)], nil)
       XCTAssertEqual(set.sorted(), [])
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func test_Multiset_LE_GE() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -468,9 +475,11 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThanOrEqual(5)], nil)
       XCTAssertEqual(set.sorted(), [])
     }
+    #endif
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func testRedBlackTreeConveniences() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
 
@@ -484,5 +493,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(numbers[.greaterThan(5)], 7)
       XCTAssertEqual(numbers[.greaterThanOrEqual(5)], 5)
     }
+    #endif
   #endif
 }

@@ -249,6 +249,8 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
       }
 
+    #endif
+
       // 範囲ビューの.values経由の変更が、毎回木全体をコピーする（Dictionary/MultiMapのvaluesはself = Self()で回避している）。
       #if DEBUG  // バッファの同一性を@testableで見る
         func testRangeViewValuesModifyDoesNotCopyEachTime() {
@@ -269,6 +271,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         }
       #endif
 
+    #if false
       // removeAll(keepingCapacity: true)の前に取ったIndexが有効と判定され、解放済みの要素を読む（ASanでheap-use-after-free）。
       func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
         var set: RedBlackTreeSet<Int> = [1]

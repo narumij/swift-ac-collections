@@ -212,6 +212,7 @@ extension RedBlackTreeKeyValueRangeView {
 
           @inline(__always) _modify {
             var view = makeValuesView()
+            __tree_ = .create()
             defer {
               __tree_ = view.__tree_
               _sealed_start = view._sealed_start

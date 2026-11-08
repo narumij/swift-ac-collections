@@ -111,10 +111,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         if __child.pointee == nullptr {
           __insert_node_at(__parent, __child, __nd)
         } else {
+          defer { destroy(__nd) }
           Base.__mapped_value_ptr(__child).pointee = try combine(
             Base.__mapped_value_(__child),
             Base.__mapped_value_(__nd))
-          destroy(__nd)
         }
       }
     }
@@ -280,10 +280,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         if __child.pointee == nullptr {
           __insert_node_at(__parent, __child, __nd)
         } else {
+          defer { destroy(__nd) }
           Base.__mapped_value_ptr(__child).pointee = try combine(
             Base.__mapped_value_(__child),
             Base.__mapped_value_(__nd))
-          destroy(__nd)
         }
       }
     }
@@ -371,12 +371,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         if __child.pointee == nullptr {
           __insert_node_at(__parent, __child, __nd)
         } else {
+          defer { destroy(__nd) }
           Base.__mapped_value_ptr(__child).pointee = try combine(
             Base.__mapped_value_(__child),
             Base.__mapped_value_(__nd))
           // Replace only after combining succeeds; an equivalent key preserves tree order.
           Base.__key_ptr(__child).pointee = Base.__key_(__nd)
-          destroy(__nd)
         }
       }
     }

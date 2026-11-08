@@ -31,7 +31,7 @@ var defines: [String] = [
   
 //  "_TREE_COPY_COUNTER",
 //  "_TREE_ALLOCATION_COUNTER",
-  //  "_TREE_INTERNAL_CHECKS",
+//  "_TREE_INTERNAL_CHECKS",
 ]
 
 var _settings: [SwiftSetting] =

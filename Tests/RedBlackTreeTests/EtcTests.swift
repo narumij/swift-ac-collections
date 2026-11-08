@@ -19,24 +19,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-
-    #if false
-      // 以下、2026-11-07〜08のバグ探しで再現した不具合。各テストは正しい挙動を期待するので、修正前は失敗する。
-      // 停止しない・解放済みメモリを読むものは、その旨を各テストに書いた。
-
-      // merge失敗後、走査が存在しない要素を返し、等値比較も崩れる（RBT-058の続き）。
-      func testMergeThrowLeavesNoPhantomElement() {
-        enum Stop: Error { case requested }
-        var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 1, 2: 2, 3: 3]
-        XCTAssertThrowsError(try dictionary.merge([(1, 10), (0, 0)]) { _, _ in
-          throw Stop.requested
-        })
-        XCTAssertEqual(dictionary.sorted { $0.key < $1.key }.map(\.key), [1, 2, 3])
-        XCTAssertEqual(dictionary, [1: 1, 2: 2, 3: 3])
-      }
-
-    #endif
-
     #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
       // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
       // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
@@ -88,7 +70,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
     #endif
 
-    #if false
+    #if false // 木の作成時の世代管理の問題
       // 空にした木をコピーしてから挿入すると、削除前のIndexが新しい要素に解決する。
       func testIndexOfRemovedElementStaysInvalidAfterCopyingEmptyTree() {
         var set: RedBlackTreeSet<Int> = [1]
@@ -143,28 +125,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         _ = emptyCopy.eraseUnique(0)
         _ = emptyCopy.eraseMulti(0)
         XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
-      }
-    #endif
-
-    #if false
-      // letで共有した木から複数スレッドが同時に最初のIndexを作ると、_lazyDetachの遅延生成が競合する。
-      // releaseで同じ位置のIndex同士が一致しないことがある。TSanではdata raceとして報告される。
-      func testConcurrentFirstIndexCreationAgrees() {
-        nonisolated(unsafe) let indices = UnsafeMutablePointer<RedBlackTreeSet<Int>.Index?>
-          .allocate(capacity: 2)
-        indices.initialize(repeating: nil, count: 2)
-        defer { indices.deinitialize(count: 2); indices.deallocate() }
-        var mismatches = 0
-        for trial in 0..<20_000 {
-          var set = RedBlackTreeSet<Int>()
-          set.insert(trial)
-          let shared = set
-          DispatchQueue.concurrentPerform(iterations: 2) { thread in
-            indices[thread] = shared.startIndex
-          }
-          if indices[0]! != indices[1]! || indices[0]! != shared.startIndex { mismatches += 1 }
-        }
-        XCTAssertEqual(mismatches, 0)
       }
     #endif
 

@@ -144,3 +144,27 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
     XCTAssertEqual(backward, [4, 3, 2, 1, 0])
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetIndexRangeTests {
+    /// letで共有した木から複数スレッドが同時に最初のIndexを作っても、同じ位置のIndexが一致すること
+    /// （RBT-008: _lazyDetachの初回生成の競合。修正前はReleaseで食い違い、TSanでdata raceになった）。
+    func testConcurrentFirstIndexCreationAgrees() {
+      nonisolated(unsafe) let indices = UnsafeMutablePointer<RedBlackTreeSet<Int>.Index?>
+        .allocate(capacity: 2)
+      indices.initialize(repeating: nil, count: 2)
+      defer { indices.deinitialize(count: 2); indices.deallocate() }
+      var mismatches = 0
+      for trial in 0..<20_000 {
+        var set = RedBlackTreeSet<Int>()
+        set.insert(trial)
+        let shared = set
+        DispatchQueue.concurrentPerform(iterations: 2) { thread in
+          indices[thread] = shared.startIndex
+        }
+        if indices[0]! != indices[1]! || indices[0]! != shared.startIndex { mismatches += 1 }
+      }
+      XCTAssertEqual(mismatches, 0)
+    }
+  }
+#endif

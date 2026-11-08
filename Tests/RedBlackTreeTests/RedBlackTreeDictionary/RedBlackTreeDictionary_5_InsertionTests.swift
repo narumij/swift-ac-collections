@@ -543,3 +543,18 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryInsertionTests {
+    // RBT-058: merge失敗後も、走査に存在しない要素が現れず、等値比較も崩れないこと。
+    func test_mergeSequence_throwingCombine_leavesNoPhantomElement() {
+      enum Stop: Error { case requested }
+      var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 1, 2: 2, 3: 3]
+      XCTAssertThrowsError(try dictionary.merge([(1, 10), (0, 0)]) { _, _ in
+        throw Stop.requested
+      })
+      XCTAssertEqual(dictionary.sorted { $0.key < $1.key }.map(\.key), [1, 2, 3])
+      XCTAssertEqual(dictionary, [1: 1, 2: 2, 3: 3])
+    }
+  }
+#endif

@@ -317,13 +317,18 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         }
       }
 
-      // init(minimumCapacity:)に負の値を渡すと、確保領域の外に書き込む（ASanでheap-buffer-overflow）。
-      // Int.maxを渡すと確保サイズが桁あふれし、capacity == Int.maxのまま数十バイトしか確保しない（同じくASanで検出）。
-      func testExtremeMinimumCapacity() {
+    #endif
+
+      // RBT-069: 負の容量で確保領域の外に書き込む（ASanで検出）。
+      func testNegativeMinimumCapacity() {
         var negative = RedBlackTreeSet<Int>(minimumCapacity: -1)
         for value in 0..<20 { negative.insert(value) }
         XCTAssertEqual(Array(negative), Array(0..<20))
+      }
 
+    #if false
+      // Int.maxを渡すと確保サイズが桁あふれし、capacity == Int.maxのまま数十バイトしか確保しない（ASanで検出）。
+      func testExtremeMinimumCapacity() {
         var huge = RedBlackTreeDictionary<Int, Int>(minimumCapacity: Int.max)
         for key in 0..<100 { huge[key] = key }
         XCTAssertEqual(huge.count, 100)

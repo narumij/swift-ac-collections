@@ -37,7 +37,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? _createWithEmptySingleton()
-      : _createWithNewBuffer(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
+      : _createWithNewBuffer(minimumCapacity: Swift.max(nodeCapacity, 1), nullptr: UnsafeNode.nullptr)
   }
 
   // シングルトンバッファを用いて高速に生成する

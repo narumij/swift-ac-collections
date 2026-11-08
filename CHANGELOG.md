@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Range ViewおよびMappedValues Viewの`erase()`や最後の1要素に対する`popLast()`で、空になったViewの`startIndex`と`endIndex`が一致しない問題を修正
 - Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
 - `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary.removeValue(forKey:)`および`RedBlackTreeMultiMap.eraseUnique(_:)`・`eraseMulti(_:)`で、該当するキーがない場合にもCopy-on-Writeが発生する問題を修正（AtCoder 2025互換モードでは従来の処理を維持）
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正

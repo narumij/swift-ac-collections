@@ -158,8 +158,8 @@ import XCTest
       
       for i in 0..<4 {
         // pop時にtrueにする仕様なため
-        XCTAssertTrue(storage._buffer.header[i].pointee.___has_payload_content)
-        storage._buffer.header[i].pointee.___has_payload_content = false
+        XCTAssertTrue(storage._buffer.header[_TrackingTag(i)].pointee.___has_payload_content)
+        storage._buffer.header[_TrackingTag(i)].pointee.___has_payload_content = false
       }
     }
     #endif

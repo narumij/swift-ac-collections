@@ -171,7 +171,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(popped.startIndex, popped.endIndex)
       }
 
-    #if false
+    #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
       // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
       // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
       func testMultiBoundsOrEqualReachEndsOfEqualRun() {
@@ -190,6 +190,9 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(multiMap[.greaterThanOrEqual(5)]?.value, "a")
       }
 
+    #endif
+
+    #if false
       // 空の木の.lastはdocどおりpast-the-endに置き換わる。修正前はfatalErrorで止まる。
       func testEmptyLastBoundIsEnd() {
         let empty: RedBlackTreeSet<Int> = []

@@ -330,3 +330,14 @@
     }
   }
 #endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeSet<Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif

@@ -131,3 +131,18 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapRangeViewTests {
+    /// 同じキーの並びの中で前後が逆になった境界式は、空のビューになること。
+    /// 多重系だけが通る、同値キーを木の位置で比べ直す経路を確かめる。
+    func test_invertedBoundRangeWithinEqualKeys_isEmpty() {
+      typealias Bound = RedBlackTreeBoundExpression<Int>
+      let map: RedBlackTreeMultiMap = [(0, "z"), (1, "a"), (1, "b"), (1, "c"), (2, "x")]
+      let view = map[Bound.lowerBound(1).advanced(by: 2) ..< Bound.lowerBound(1).advanced(by: 1)]
+      XCTAssertTrue(view.isEmpty)
+      XCTAssertEqual(view.map(\.value), [])
+      XCTAssertEqual(view.reversed().map(\.value), [])
+    }
+  }
+#endif

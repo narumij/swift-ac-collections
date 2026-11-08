@@ -497,3 +497,28 @@
     }
   }
 #endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeMultiSet<Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetDeathTests {
+    // 同じキーの並びの中で前後が逆になったIndex範囲は、ビューを作らずに停止すること。
+    @Test func invertedIndexRangeWithinEqualKeys_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        let multiset: RedBlackTreeMultiSet = [0, 1, 1, 1, 2]
+        let first = multiset.index(after: multiset.startIndex)
+        let second = multiset.index(after: first)
+        _ = multiset[second..<first]
+      }
+    }
+  }
+#endif

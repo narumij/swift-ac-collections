@@ -506,3 +506,40 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryInsertionTests {
+    // RBT-058: combineがthrowしても、countと実際に走査できる要素数は一致する。
+    func test_mergeSequence_throwingCombine_keepsCountConsistent() {
+      enum Stop: Error { case requested }
+      var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 5: 50]
+
+      XCTAssertThrowsError(try dictionary.merge([(1, 11), (3, 33)]) { _, _ in
+        throw Stop.requested
+      }) { error in
+        XCTAssertTrue(error is Stop)
+      }
+
+      XCTAssertEqual(dictionary.count, dictionary.reduce(0) { count, _ in count + 1 })
+      XCTAssertEqual(dictionary[1], 10)
+      XCTAssertEqual(dictionary[5], 50)
+    }
+
+    // RBT-058: Dictionaryを渡すmergeでも同じ。
+    func test_mergeDictionary_throwingCombine_keepsCountConsistent() {
+      enum Stop: Error { case requested }
+      var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 5: 50]
+      let other: RedBlackTreeDictionary<Int, Int> = [1: 11, 3: 33]
+
+      XCTAssertThrowsError(try dictionary.merge(other) { _, _ in
+        throw Stop.requested
+      }) { error in
+        XCTAssertTrue(error is Stop)
+      }
+
+      XCTAssertEqual(dictionary.count, dictionary.reduce(0) { count, _ in count + 1 })
+      XCTAssertEqual(dictionary[1], 10)
+      XCTAssertEqual(dictionary[5], 50)
+    }
+  }
+#endif

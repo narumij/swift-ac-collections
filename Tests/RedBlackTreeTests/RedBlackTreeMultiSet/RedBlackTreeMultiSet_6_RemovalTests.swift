@@ -261,3 +261,22 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetRemovalTests {
+    /// 何も消さない削除や空での削除は、共有中のストレージをコピーしないこと（Swift.Setと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let multiSet = RedBlackTreeMultiSet(0..<100)
+      var multiCopy = multiSet
+      _ = multiCopy.eraseUnique(-1)
+      _ = multiCopy.eraseMulti(-1)
+      XCTAssertTrue(multiSet.isTriviallyIdentical(to: multiCopy))
+
+      let empty = RedBlackTreeMultiSet<Int>()
+      var emptyCopy = empty
+      _ = emptyCopy.eraseUnique(0)
+      _ = emptyCopy.eraseMulti(0)
+      XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
+    }
+  }
+#endif

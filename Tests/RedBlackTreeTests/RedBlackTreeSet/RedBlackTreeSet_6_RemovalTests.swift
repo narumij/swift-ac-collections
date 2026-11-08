@@ -451,3 +451,15 @@ extension RedBlackTreeSetRemoveTests {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetRemoveTests {
+    /// 何も消さない削除は、共有中のストレージをコピーしないこと（Swift.Setと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let set = RedBlackTreeSet(0..<100)
+      var copy = set
+      _ = copy.remove(-1)
+      XCTAssertTrue(set.isTriviallyIdentical(to: copy))
+    }
+  }
+#endif

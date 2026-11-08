@@ -30,3 +30,18 @@ final class RedBlackTreeDictionaryValueSemanticsTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(copy.map(\.key)), [0, 1, 2, 3, 99])
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryValueSemanticsTests {
+    /// dict[k]?.mutatingが値をコピーせずにその場で変更すること（コピーするとappendの繰り返しがO(n^2)になる）。
+    func test_optionalChainingModify_doesNotCopyValue() {
+      final class Ref {}
+      struct Probe {
+        var ref = Ref()
+        mutating func isUnique() -> Bool { isKnownUniquelyReferenced(&ref) }
+      }
+      var dictionary: RedBlackTreeDictionary<Int, Probe> = [0: Probe()]
+      XCTAssertEqual(dictionary[0]?.isUnique(), true)
+    }
+  }
+#endif

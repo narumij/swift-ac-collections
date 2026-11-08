@@ -104,3 +104,26 @@
     #endif
   }
 #endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapIndexValidityXCTests {
+    /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
+    /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
+    func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
+      var c = RedBlackTreeMultiMap(keysWithValues: [(1, 1)])
+      let index = c.startIndex
+      c.removeAll(keepingCapacity: true)
+      XCTAssertFalse(c.isElement(at: index))
+    }
+
+    /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
+    func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
+      func make() -> RedBlackTreeMultiMap<Int, Int>.Index {
+        let c = RedBlackTreeMultiMap(keysWithValues: (1...5).map { ($0, $0) })
+        return c.index(after: c.startIndex)
+      }
+      let index = make()
+      XCTAssertFalse(String(describing: index).isEmpty)
+    }
+  }
+#endif

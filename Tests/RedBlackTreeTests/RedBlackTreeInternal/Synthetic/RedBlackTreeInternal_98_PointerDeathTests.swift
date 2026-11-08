@@ -74,3 +74,20 @@
     }
   }
 #endif
+
+#if DEBUG && DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  extension RedBlackTreeInternalPointerDeathTests {
+    // 生きた木で失効フラグだけを設定し、ノード比較へ進む前に拒否して停止すること。
+    @Test func detachedIndexComparison_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        let tree: RedBlackTreeSet<Int> = [1, 2]
+        let first = tree.startIndex
+        let last = tree.index(before: tree.endIndex)
+        withExtendedLifetime(tree) {
+          first.lazyDetach.isDetached = true
+          _ = first < last
+        }
+      }
+    }
+  }
+#endif

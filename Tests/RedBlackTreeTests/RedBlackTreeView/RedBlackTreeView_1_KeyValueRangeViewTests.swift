@@ -170,3 +170,50 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyValueRangeViewTests {
+    /// 範囲ビューのerase(where:)でビューの先頭要素を消しても、残りの要素はビューに残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest() {
+      let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      var keyValue = dictionary[dictionary.lowerBound(3)..<dictionary.lowerBound(8)]
+      keyValue.erase(where: { $0.key == 3 })
+      XCTAssertEqual(keyValue.map(\.key), [4, 5, 6, 7])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyValueRangeViewTests {
+    /// MultiMapでも、範囲ビューのerase(where:)で先頭要素を消して残りが残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest_multiMap() {
+      let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0 * 10) })
+      var keyValue = multiMap[multiMap.lowerBound(3)..<multiMap.lowerBound(8)]
+      keyValue.erase(where: { $0.key == 3 })
+      XCTAssertEqual(keyValue.map(\.key), [4, 5, 6, 7])
+    }
+
+    /// erase()やpopLast()で空にしたキーと値の範囲ビューは、startIndexとendIndexが一致すること。
+    func test_viewEmptiedByEraseOrPopLast_hasEqualBounds() {
+      let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0) })
+      var erased = dictionary[dictionary.lowerBound(3)..<dictionary.lowerBound(8)]
+      _ = erased.erase()
+      XCTAssertTrue(erased.isEmpty)
+      XCTAssertEqual(erased.startIndex, erased.endIndex)
+      var popped = dictionary[dictionary.lowerBound(3)..<dictionary.lowerBound(4)]
+      _ = popped.popLast()
+      XCTAssertTrue(popped.isEmpty)
+      XCTAssertEqual(popped.startIndex, popped.endIndex)
+
+      let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0) })
+      var multiErased = multiMap[multiMap.lowerBound(3)..<multiMap.lowerBound(8)]
+      _ = multiErased.erase()
+      XCTAssertTrue(multiErased.isEmpty)
+      XCTAssertEqual(multiErased.startIndex, multiErased.endIndex)
+      var multiPopped = multiMap[multiMap.lowerBound(3)..<multiMap.lowerBound(4)]
+      _ = multiPopped.popLast()
+      XCTAssertTrue(multiPopped.isEmpty)
+      XCTAssertEqual(multiPopped.startIndex, multiPopped.endIndex)
+    }
+  }
+#endif

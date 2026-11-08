@@ -562,3 +562,20 @@ final class RedBlackTreeSetBoundDistanceTests: RedBlackTreeTestCase {
   }
 }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBoundPublicBehaviorTests {
+    /// 空の木の.lastは、docどおりpast-the-endに置き換わること。
+    func testEmptyLastBoundIsEnd() {
+      let empty: RedBlackTreeSet<Int> = []
+      XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
+    }
+
+    /// .start.advanced(by:)に要素数を超える距離を渡すと、終わらずにループせずnilになること。
+    func testBoundAdvancedByHugeOffsetTerminates() {
+      let set: RedBlackTreeSet<Int> = [1, 2, 3]
+      XCTAssertNil(set[.start.advanced(by: 4)])
+      XCTAssertNil(set[.start.advanced(by: Int.max)])
+    }
+  }
+#endif

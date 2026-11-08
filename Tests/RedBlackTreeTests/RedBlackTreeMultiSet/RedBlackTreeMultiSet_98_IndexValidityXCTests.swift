@@ -138,3 +138,26 @@
     }
   }
 #endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetIndexValidityXCTests {
+    /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
+    /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
+    func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
+      var c = RedBlackTreeMultiSet([1])
+      let index = c.startIndex
+      c.removeAll(keepingCapacity: true)
+      XCTAssertFalse(c.isElement(at: index))
+    }
+
+    /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
+    func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
+      func make() -> RedBlackTreeMultiSet<Int>.Index {
+        let c = RedBlackTreeMultiSet([1, 2, 3, 4, 5])
+        return c.index(after: c.startIndex)
+      }
+      let index = make()
+      XCTAssertFalse(String(describing: index).isEmpty)
+    }
+  }
+#endif

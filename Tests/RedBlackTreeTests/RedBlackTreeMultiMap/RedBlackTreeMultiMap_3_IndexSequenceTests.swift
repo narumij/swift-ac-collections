@@ -180,3 +180,57 @@ final class RedBlackTreeMultiMapIndexRangeTests: RedBlackTreeTestCase {
     XCTAssertFalse(success)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapIndexRangeTests {
+    /// 移動量0はlimit上（空のendIndexを含む）でも成功し、limitを越える移動は失敗すること。
+    func testIndexLimitedByZeroMovement() {
+      func check<I: Equatable>(
+        _ indices: [I],
+        index offset: (I, Int, I) -> I?,
+        formIndex: (inout I, Int, I) -> Bool
+      ) {
+        for index in indices {
+          XCTAssertEqual(offset(index, 0, index), index)
+          var current = index
+          XCTAssertTrue(formIndex(&current, 0, index))
+          XCTAssertEqual(current, index)
+          XCTAssertNil(offset(index, 1, index))
+          XCTAssertNil(offset(index, -1, index))
+        }
+      }
+      for values in [[], [0, 1, 2]] {
+        let c = RedBlackTreeMultiMap(keysWithValues: values.map { ($0, $0) })
+        check([c.startIndex, c.endIndex],
+          index: c.index(_:offsetBy:limitedBy:),
+          formIndex: c.formIndex(_:offsetBy:limitedBy:))
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapIndexRangeTests {
+    /// index(_:offsetBy:limitedBy:)に巨大な距離を渡しても、範囲の外に出たところで止まってnilを返すこと。
+    func testIndexOffsetByHugeDistanceTerminates() {
+      let c = RedBlackTreeMultiMap(keysWithValues: (0..<4).map { ($0, $0) })
+      XCTAssertNil(c.index(c.startIndex, offsetBy: Int.max, limitedBy: c.endIndex))
+      XCTAssertNil(c.index(c.endIndex, offsetBy: Int.min, limitedBy: c.startIndex))
+    }
+
+    /// `formIndex(_:offsetBy:limitedBy:)`が`String`と同じく、limit到達時は成功し、
+    /// 超過時はlimitまで移動して失敗を返すこと。
+    func testFormIndexLimitedByMatchesString() {
+      let c = RedBlackTreeMultiMap(keysWithValues: (0..<4).map { ($0, $0) })
+      let limit = c.index(after: c.startIndex)
+
+      var exact = c.startIndex
+      XCTAssertTrue(c.formIndex(&exact, offsetBy: 1, limitedBy: limit))
+      XCTAssertEqual(exact, limit)
+
+      var over = c.startIndex
+      XCTAssertFalse(c.formIndex(&over, offsetBy: 2, limitedBy: limit))
+      XCTAssertEqual(over, limit)
+    }
+  }
+#endif

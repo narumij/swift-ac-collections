@@ -265,3 +265,16 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryRemovalTests {
+    /// 空での削除は、共有中のストレージをコピーしないこと（Swift.Dictionaryと同じ）。
+    /// 空でない辞書で見つからないキーを消す場合は、EtcTestsの未修正分を参照。
+    func test_noOpRemoval_onEmpty_keepsSharedStorage() {
+      let empty = RedBlackTreeDictionary<Int, Int>()
+      var emptyCopy = empty
+      _ = emptyCopy.removeValue(forKey: 0)
+      XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
+    }
+  }
+#endif

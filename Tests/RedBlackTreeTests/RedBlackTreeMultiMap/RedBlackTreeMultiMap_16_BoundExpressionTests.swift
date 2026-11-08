@@ -293,3 +293,20 @@ final class RedBlackTreeMultiMapBoundDistanceTests: RedBlackTreeTestCase {
   }
 }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapBoundPublicBehaviorTests {
+    /// 空の木の.lastは、docどおりpast-the-endに置き換わること。
+    func testEmptyLastBoundIsEnd() {
+      let empty = RedBlackTreeMultiMap<Int, Int>()
+      XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
+    }
+
+    /// .start.advanced(by:)に要素数を超える距離を渡すと、終わらずにループせずnilになること。
+    func testBoundAdvancedByHugeOffsetTerminates() {
+      let c = RedBlackTreeMultiMap(keysWithValues: [(1, 1), (2, 2), (3, 3)])
+      XCTAssertNil(c[.start.advanced(by: 4)])
+      XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
+#endif

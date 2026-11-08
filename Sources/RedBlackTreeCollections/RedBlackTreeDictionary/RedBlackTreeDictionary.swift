@@ -534,7 +534,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
-    #if false
+    #if COMPATIBLE_ATCODER_2025
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {

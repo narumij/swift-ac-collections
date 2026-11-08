@@ -4,7 +4,7 @@
 import XCTest
 @testable import RedBlackTreeCollections
 
-final class IndexComparisonLifetimeTests: XCTestCase {
+final class IndexComparisonLifetimeTests: RedBlackTreeTestCase {
   func testLiveIndicesKeepTreeOrderIncludingDuplicatesAndEnd() {
     let tree: RedBlackTreeMultiSet<Int> = [3, 1, 3, 2]
     var indices = [tree.startIndex]

@@ -84,7 +84,7 @@
 ///
 /// ## Multiset Algebra
 ///
-/// For multiplicities a and b, `union` yields a+b, `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol.
+/// For multiplicities a and b, `union` yields max(a,b), `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol. To keep every occurrence from both operands (a+b), use `meld(_:)` or `melding(_:)`.
 ///
 /// ## Iterating over Elements
 ///

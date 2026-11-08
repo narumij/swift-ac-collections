@@ -280,4 +280,27 @@ import XCTest
     }
   #endif
 
+  // 互換モードのunionは、各要素の個数の和（a + b）を保つ（通常モードは和集合でmax(a, b)）
+  extension RedBlackTreeMultiSetSetAlgebraTests {
+
+    func test_union_addsMultiplicities() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
+
+      XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 2, 3, 3, 3, 4])
+    }
+
+    func test_formUnion_addsMultiplicitiesInPlaceAndChangesOnlyTheReceiver() {
+      let original = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let other = RedBlackTreeMultiSet([2, 3, 3, 4])
+      var receiver = original
+
+      receiver.formUnion(other)
+
+      XCTAssertEqual(Array(receiver), [1, 2, 2, 2, 3, 3, 3, 4])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3])
+      XCTAssertEqual(Array(other), [2, 3, 3, 4])
+    }
+  }
+
 #endif

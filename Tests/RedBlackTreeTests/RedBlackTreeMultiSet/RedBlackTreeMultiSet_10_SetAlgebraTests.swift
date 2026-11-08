@@ -3,20 +3,23 @@ import XCTest
 
 final class RedBlackTreeMultiSetSetAlgebraTests: RedBlackTreeTestCase {
 
-  func test_union_addsMultiplicities() {
-    let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
-    let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
+  // 互換モードのunion（個数の和）はRedBlackTreeMultiSetAtCoder2025CompatibilityTests.swiftで確認する
+  #if !COMPATIBLE_ATCODER_2025
+    func test_union_keepsMaximumMultiplicity() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
 
-    XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 2, 3, 3, 3, 4])
-  }
+      XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 3, 3, 4])
+    }
 
-  func test_formUnion_addsMultiplicitiesInPlace() {
-    var lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+    func test_formUnion_keepsMaximumMultiplicityInPlace() {
+      var lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
 
-    lhs.formUnion(RedBlackTreeMultiSet([2, 3, 3, 4]))
+      lhs.formUnion(RedBlackTreeMultiSet([2, 3, 3, 4]))
 
-    XCTAssertEqual(Array(lhs), [1, 2, 2, 2, 3, 3, 3, 4])
-  }
+      XCTAssertEqual(Array(lhs), [1, 2, 2, 3, 3, 4])
+    }
+  #endif
 
   func test_intersection_keepsMinimumMultiplicity() {
     let lhs = RedBlackTreeMultiSet([1, 2, 2, 2, 3, 3])
@@ -67,12 +70,14 @@ final class RedBlackTreeMultiSetSetAlgebraTests: RedBlackTreeTestCase {
   func test_formOperations_changeOnlyTheReceiver() {
     let original = RedBlackTreeMultiSet([1, 2, 2, 3])
     let other = RedBlackTreeMultiSet([2, 3, 3, 4])
-    let cases: [(name: String, operation: (inout RedBlackTreeMultiSet<Int>, RedBlackTreeMultiSet<Int>) -> Void, expected: [Int])] = [
-      ("formUnion", { $0.formUnion($1) }, [1, 2, 2, 2, 3, 3, 3, 4]),
+    var cases: [(name: String, operation: (inout RedBlackTreeMultiSet<Int>, RedBlackTreeMultiSet<Int>) -> Void, expected: [Int])] = [
       ("formIntersection", { $0.formIntersection($1) }, [2, 3]),
       ("formDifference", { $0.formDifference($1) }, [1, 2]),
       ("formSymmetricDifference", { $0.formSymmetricDifference($1) }, [1, 2, 3, 4]),
     ]
+    #if !COMPATIBLE_ATCODER_2025
+      cases.append(("formUnion", { $0.formUnion($1) }, [1, 2, 2, 3, 3, 4]))
+    #endif
 
     for (name, operation, expected) in cases {
       var receiver = original

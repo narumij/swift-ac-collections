@@ -30,34 +30,36 @@
  (swift-collectionsのissuesに対応してないと明言されていた)
 */
 
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiSet {
 
-  /// Returns a multiset formed by adding the multiplicities in two multisets.
+  /// Returns the union of two multisets.
   ///
-  /// If an element occurs *a* times in this multiset and *b* times in `other`,
-  /// it occurs *a + b* times in the result.
+  /// For each element, the result keeps the greater of the two multiplicities.
+  /// To keep every occurrence from both multisets, use `melding(_:)`.
   ///
   /// - Parameter other: The multiset to combine with this multiset.
-  /// - Returns: A new multiset containing all occurrences from both operands.
+  /// - Returns: A new multiset containing the union of the occurrences.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public func union(_ other: __owned RedBlackTreeMultiSet<Element>)
-    -> RedBlackTreeMultiSet<Element>
-  {
-    .init(__tree_: __tree_.___meld_multi(other.__tree_))
+  public func union(
+    _ other: __owned RedBlackTreeMultiSet<Element>
+  ) -> RedBlackTreeMultiSet<Element> {
+    .init(__tree_: __tree_.___meld_unique(other.__tree_))
   }
 
-  /// Adds every occurrence from another multiset to this multiset.
+  /// Replaces this multiset with its union with another multiset.
   ///
-  /// Multiplicities from the two operands are added.
+  /// For each element, the result keeps the greater of the two multiplicities.
+  /// To add every occurrence from `other`, use `meld(_:)`.
   ///
-  /// - Parameter other: The multiset whose occurrences are added.
+  /// - Parameter other: The multiset to combine with this multiset.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    __tree_ = __tree_.___meld_multi(other.__tree_)
-  }
+  public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>)
+  { __tree_ = __tree_.___meld_unique(other.__tree_) }
 }
+#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -70,9 +72,9 @@ extension RedBlackTreeMultiSet {
   /// - Returns: A new multiset containing the unmatched occurrences.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public func symmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>)
-    -> RedBlackTreeMultiSet<Element>
-  {
+  public func symmetricDifference(
+    _ other: __owned RedBlackTreeMultiSet<Element>
+  ) -> RedBlackTreeMultiSet<Element> {
     .init(__tree_: __tree_.___symmetric_difference(other.__tree_))
   }
 
@@ -84,9 +86,9 @@ extension RedBlackTreeMultiSet {
   /// - Parameter other: The multiset with which to form the symmetric difference.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-    __tree_ = __tree_.___symmetric_difference(other.__tree_)
-  }
+  public mutating func formSymmetricDifference(
+    _ other: __owned RedBlackTreeMultiSet<Element>
+  ) { __tree_ = __tree_.___symmetric_difference(other.__tree_) }
 }
 
 extension RedBlackTreeMultiSet {
@@ -99,9 +101,9 @@ extension RedBlackTreeMultiSet {
   /// - Returns: A new multiset containing the common occurrences.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public func intersection(_ other: RedBlackTreeMultiSet<Element>)
-    -> RedBlackTreeMultiSet<Element>
-  {
+  public func intersection(
+    _ other: RedBlackTreeMultiSet<Element>
+  ) -> RedBlackTreeMultiSet<Element> {
     .init(__tree_: __tree_.___intersection(other.__tree_))
   }
 
@@ -112,60 +114,37 @@ extension RedBlackTreeMultiSet {
   /// - Parameter other: The multiset whose occurrences are retained.
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  public mutating func formIntersection(_ other: RedBlackTreeMultiSet<Element>) {
-    __tree_ = __tree_.___intersection(other.__tree_)
-  }
+  public mutating func formIntersection(_ other: RedBlackTreeMultiSet<Element>)
+  { __tree_ = __tree_.___intersection(other.__tree_) }
 }
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
+extension RedBlackTreeMultiSet {
 
-    /// Returns the difference of two multisets.
-    ///
-    /// For each element, `other`'s multiplicity is subtracted from this
-    /// multiset's multiplicity without going below zero.
-    ///
-    /// - Parameter other: The multiset whose occurrences are subtracted.
-    /// - Returns: A new multiset containing the remaining occurrences.
-    /// - Complexity: O(*n* + *m*)
-    @inlinable
-    public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
-      -> RedBlackTreeMultiSet<Element>
-    {
-      .init(__tree_: __tree_.___difference(other.__tree_))
-    }
-
-    /// Subtracts the occurrences in another multiset from this multiset.
-    ///
-    /// Multiplicities don't go below zero.
-    ///
-    /// - Parameter other: The multiset whose occurrences are subtracted.
-    /// - Complexity: O(*n* + *m*)
-    @inlinable
-    public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-      __tree_ = __tree_.___difference(other.__tree_)
-    }
+  /// Returns the difference of two multisets.
+  ///
+  /// For each element, `other`'s multiplicity is subtracted from this
+  /// multiset's multiplicity without going below zero.
+  ///
+  /// - Parameter other: The multiset whose occurrences are subtracted.
+  /// - Returns: A new multiset containing the remaining occurrences.
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  public func difference(
+    _ other: __owned RedBlackTreeMultiSet<Element>
+  ) -> RedBlackTreeMultiSet<Element> {
+    .init(__tree_: __tree_.___difference(other.__tree_))
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
-      -> RedBlackTreeMultiSet<Element>
-    {
-      var result = self
-      result.formDifference(other)
-      return result
-    }
-
-    /// - Complexity: O(*n* + *m*)
-    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-      __tree_ = __tree_.___difference(other.__tree_)
-    }
-  }
+  /// Subtracts the occurrences in another multiset from this multiset.
+  ///
+  /// Multiplicities don't go below zero.
+  ///
+  /// - Parameter other: The multiset whose occurrences are subtracted.
+  /// - Complexity: O(*n* + *m*)
+  @inlinable
+  public mutating func formDifference(
+    _ other: __owned RedBlackTreeMultiSet<Element>
+  ) { __tree_ = __tree_.___difference(other.__tree_) }
+}
 #endif

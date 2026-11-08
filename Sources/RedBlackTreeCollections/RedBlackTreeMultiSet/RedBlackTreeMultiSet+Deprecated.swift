@@ -534,3 +534,78 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+  // 互換モードのunionは、各要素の個数の和（a + b）を保つ。
+  // 以降の版では和集合（max(a, b)）に変わるため、警告で知らせる
+  extension RedBlackTreeMultiSet {
+
+    /// Returns a multiset formed by adding the multiplicities in two multisets.
+    ///
+    /// If an element occurs *a* times in this multiset and *b* times in `other`,
+    /// it occurs *a + b* times in the result.
+    ///
+    /// - Parameter other: The multiset to combine with this multiset.
+    /// - Returns: A new multiset containing all occurrences from both operands.
+    /// - Complexity: O(*n* + *m*)
+    @available(
+      *,
+      deprecated,
+      message:
+        "In later versions, union keeps the greater multiplicity. Use melding(_:) to add multiplicities."
+    )
+    @inlinable
+    public func union(
+      _ other: __owned RedBlackTreeMultiSet<Element>
+    ) -> RedBlackTreeMultiSet<Element> {
+      .init(__tree_: __tree_.___meld_multi(other.__tree_))
+    }
+
+    /// Adds every occurrence from another multiset to this multiset.
+    ///
+    /// Multiplicities from the two operands are added.
+    ///
+    /// - Parameter other: The multiset whose occurrences are added.
+    /// - Complexity: O(*n* + *m*)
+    @available(
+      *,
+      deprecated,
+      message:
+        "In later versions, formUnion keeps the greater multiplicity. Use meld(_:) to add multiplicities."
+    )
+    @inlinable
+    public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>)
+    { __tree_ = __tree_.___meld_multi(other.__tree_) }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  // 搭載版（AtCoder 2025）のdifferenceには問題があるため、互換モードでは警告で知らせる
+  extension RedBlackTreeMultiSet {
+
+    @available(
+      *,
+      deprecated,
+      message: "This API is buggy and may behave incorrectly."
+    )
+    @inlinable
+    public func difference(
+      _ other: __owned RedBlackTreeMultiSet<Element>
+    ) -> RedBlackTreeMultiSet<Element> {
+      var result = self
+      result.formDifference(other)
+      return result
+    }
+
+    /// - Complexity: O(*n* + *m*)
+    @available(
+      *,
+      deprecated,
+      message: "This API is buggy and may behave incorrectly."
+    )
+    @inlinable
+    public mutating func formDifference(
+      _ other: __owned RedBlackTreeMultiSet<Element>
+    ) { __tree_ = __tree_.___difference(other.__tree_) }
+  }
+#endif

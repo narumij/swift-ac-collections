@@ -112,3 +112,26 @@ extension _LazyTie {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
+
+#if USE_LAZY_DETACH
+extension _LazyTie {
+
+  @inlinable
+  package func release() {
+    /* NOP */
+  }
+}
+#else
+extension _LazyTie {
+
+  // 全削除で結束を捨てる前に、古いIndexのDebug比較を失効させる。
+  // 共有の空singletonの結束は、ほかの空コンテナでも使われる。
+  @inlinable
+  package func release() {
+    if self === _emptyLazyDetach {
+      return
+    }
+    isDetached = true
+  }
+}
+#endif

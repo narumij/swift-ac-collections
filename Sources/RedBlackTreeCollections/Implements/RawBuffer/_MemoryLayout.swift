@@ -47,7 +47,12 @@ extension _MemoryLayout {
   // オーバーフローによるメモリ破壊を予防するための限度
   @inlinable
   var maximumCount: Int {
+    #if USE_COMPACT_NODE_METADATA
+    // メタデータ制限の場合、CoW可能な上限を限度とする
+    Int(_TrackingTag.max)
+    #else
     Int.max / stride
+    #endif
   }
 
   // オーバーフローによるメモリ破壊を予防するための限度のチェック

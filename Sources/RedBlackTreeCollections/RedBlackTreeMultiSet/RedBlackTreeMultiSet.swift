@@ -515,8 +515,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ member: Element) -> Bool {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(member)
+      return __tree_._removeIfPresent(member) != nil
     }
   }
 
@@ -530,8 +529,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(member)
+      return __tree_._eraseMultiIfPresent(member)
     }
   }
 #endif

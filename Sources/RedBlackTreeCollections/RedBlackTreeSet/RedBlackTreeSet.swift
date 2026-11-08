@@ -426,6 +426,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
+    #if COMPATIBLE_ATCODER_2025
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     #if false
@@ -440,6 +441,9 @@ extension RedBlackTreeSet {
         _ = $0.erase(index)
         return removed
       }
+    #endif
+    #else
+      return __tree_._removeIfPresent(member)
     #endif
   }
 }

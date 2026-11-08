@@ -237,7 +237,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(dictionary[0]?.isUnique(), true)
       }
 
-    #if false
       // 何も消さない削除や空での削除でも、共有中のストレージを丸ごとコピーする（Swift.Setはコピーしない）。
       func testNoOpRemovalKeepsSharedStorage() {
         let set = RedBlackTreeSet(0..<100)
@@ -258,7 +257,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
       }
 
-    #endif
 
       // 範囲ビューの.values経由の変更が、毎回木全体をコピーする（Dictionary/MultiMapのvaluesはself = Self()で回避している）。
       #if DEBUG  // バッファの同一性を@testableで見る

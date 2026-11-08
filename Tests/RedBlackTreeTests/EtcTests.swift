@@ -326,7 +326,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(Array(negative), Array(0..<20))
       }
 
-    #if false
       // index(_:offsetBy:)に巨大な距離を渡すと、範囲の外に出たあとも|distance|回ループを続けて終わらない。
       func testIndexOffsetByHugeDistanceTerminates() {
         let set: RedBlackTreeSet<Int> = [1, 2, 3]
@@ -341,7 +340,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertNil(set[.start.advanced(by: Int.max)])
       }
 
-    #endif
 
       // 解放済みの木のIndexをprintすると、ノードからtagを読む（ASanでheap-use-after-free。releaseでも読む）。
       func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {

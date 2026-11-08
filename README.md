@@ -99,16 +99,14 @@ dependencies: [
 ]
 ```
 
-To enable the compatibility mode in the current source tree, select the
-`COMPATIBLE_ATCODER_2025` package trait. It is disabled by default:
+To enable the existing compatibility mode in a local build, pass the compiler flag:
 
 ```sh
-swift build --traits COMPATIBLE_ATCODER_2025
+swift build -Xswiftc -DCOMPATIBLE_ATCODER_2025
 ```
 
-For a package dependency, specify `traits: ["COMPATIBLE_ATCODER_2025"]`.
-This selects the existing compatibility code paths; it does not pin the package
-to the exact judge release shown above.
+This selects the compatibility code paths; it does not pin the package to the
+exact judge release shown above. Compatibility mode is not a package trait.
 
 ## Enabling OptionalElementBuffer
 

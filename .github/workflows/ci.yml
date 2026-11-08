@@ -215,9 +215,9 @@ jobs:
       matrix:
         include:
           - configuration: debug
-            traits: COMPATIBLE_ATCODER_2025,NORMAL_DEBUG_TEST
+            test-options: --traits NORMAL_DEBUG_TEST
           - configuration: release
-            traits: COMPATIBLE_ATCODER_2025
+            test-options: ''
 
     steps:
       - uses: actions/checkout@v4
@@ -230,7 +230,7 @@ jobs:
       - name: Run compatibility tests
         run: >-
           swift test -c ${{ matrix.configuration }}
-          --traits ${{ matrix.traits }}
+          ${{ matrix.test-options }} -Xswiftc -DCOMPATIBLE_ATCODER_2025
 
   performance:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'

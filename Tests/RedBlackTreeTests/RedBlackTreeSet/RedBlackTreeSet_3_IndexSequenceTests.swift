@@ -152,7 +152,7 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
   }
 }
 
-#if false && !COMPATIBLE_ATCODER_2025
+#if ENABLE_EXPERIMENTAL_TSAN_SAFE && !COMPATIBLE_ATCODER_2025
 // TODO: いつかなおす
 // withMutableHeaderを経由するため、書き込みが衝突してると判定される
 // withMutableHeaderを経由してる理由は性能だったので、安直に触れないのであとまわし

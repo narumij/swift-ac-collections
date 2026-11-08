@@ -5,7 +5,6 @@ import Foundation
 import PackageDescription
 
 var defines: [String] = [
-  // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
   //  "USING_ALGORITHMS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
@@ -32,6 +31,9 @@ var defines: [String] = [
 //  "_TREE_COPY_COUNTER",
 //  "_TREE_ALLOCATION_COUNTER",
 //  "_TREE_INTERNAL_CHECKS",
+    
+    // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
+    // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
 ]
 
 var _settings: [SwiftSetting] =

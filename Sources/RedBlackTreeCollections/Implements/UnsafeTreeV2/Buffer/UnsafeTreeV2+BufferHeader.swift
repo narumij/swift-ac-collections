@@ -71,8 +71,9 @@ package struct UnsafeTreeV2BufferHeader {
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
+  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   // 試作: _lazyDetachの実体はmallocしたセルに置き、ヘッダはそのポインタだけを持つ
-  // （セルの解放と初回生成の同期は未対応）
+  // （セルの解放は未対応）
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
 
   // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
@@ -95,6 +96,10 @@ package struct UnsafeTreeV2BufferHeader {
       }
     }
   }
+  #else
+  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
+  @usableFromInline var _lazyDetach: _LazyTie?
+  #endif
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -157,8 +162,13 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
+    #if ENABLE_EXPERIMENTAL_TSAN_SAFE
     guard let p = lazyDetachPointer else { return true }
     return isKnownUniquelyReferenced(&p.pointee)
+    #else
+    guard let _ = _lazyDetach else { return true }
+    return isKnownUniquelyReferenced(&_lazyDetach!)
+    #endif
   }
 
   // IndexやIteratorを結ぶ共有メモリ
@@ -240,13 +250,7 @@ extension UnsafeTreeV2BufferHeader {
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
   }
 
-  // 試作: 生成済みのセルをたどるだけの非mutating版
-  @inlinable
-  func _indexThroughPointer(_ p: _NodePtr) -> _LazyTiedPtrV2 {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetachPointer.unsafelyUnwrapped.pointee)
-  }
-
+  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   // 試作: 渡されたセルを使う非mutating版
   @inlinable
   func _index(_ p: _NodePtr, cell: UnsafeMutablePointer<_LazyTie>) -> _LazyTiedPtrV2 {
@@ -283,6 +287,7 @@ extension UnsafeTreeV2BufferHeader {
       return cell
     }
   }
+  #endif
   
   @inlinable
   mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {

@@ -66,6 +66,7 @@ package struct UnsafeTreeV2BufferHeader {
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
+  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
   @usableFromInline var _lazyDetach: _LazyTie?
 
   #if DEBUG
@@ -172,6 +173,7 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
+    _lazyDetach = nil
   }
 }
 

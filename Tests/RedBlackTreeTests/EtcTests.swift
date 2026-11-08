@@ -278,7 +278,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         }
       #endif
 
-    #if false
       // removeAll(keepingCapacity: true)の前に取ったIndexが有効と判定され、解放済みの要素を読む（ASanでheap-use-after-free）。
       func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
         var set: RedBlackTreeSet<Int> = [1]
@@ -287,6 +286,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertFalse(set.isElement(at: index))
       }
 
+    #if false
       // 空にした木をコピーしてから挿入すると、削除前のIndexが新しい要素に解決する。
       func testIndexOfRemovedElementStaysInvalidAfterCopyingEmptyTree() {
         var set: RedBlackTreeSet<Int> = [1]

@@ -310,7 +310,6 @@ extension RedBlackTreeSet {
     {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -333,7 +332,6 @@ extension RedBlackTreeSet {
     public mutating func update(_ newMember: Element, hint: Index) -> Element? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -430,8 +428,6 @@ extension RedBlackTreeSet {
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     #if false
-      // RBT-052: Previous fast path returned the probe instead of the stored element.
-      // Retained for performance comparison.
       return __tree_.update { $0.___erase_unique(member) } ? member : nil
     #else
       return __tree_.update {

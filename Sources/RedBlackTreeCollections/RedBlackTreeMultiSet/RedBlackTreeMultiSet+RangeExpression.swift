@@ -222,7 +222,6 @@
       rethrows
     {
       assert(__tree_.count == 0 || __tree_.isUnique())
-      // Predicate errors propagate; only invalid ranges terminate the operation.
       let result = try __tree_.___erase_validate_range_if(range, shouldBeRemoved)
       switch result {
       case .success: break

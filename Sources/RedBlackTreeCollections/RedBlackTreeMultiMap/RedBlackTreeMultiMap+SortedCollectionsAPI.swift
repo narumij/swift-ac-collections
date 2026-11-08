@@ -2,22 +2,10 @@
 // Licensed under the Apache License v2.0.
 // SPDX-License-Identifier: Apache-2.0
 
-// API naming references: Swift Collections SortedSet and SortedDictionary, commit
-// 7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1, Sources/SortedCollections/SortedSet.
-// https://github.com/apple/swift-collections/tree/7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1/Sources/SortedCollections/SortedSet
-// Implementations below compose this library's existing operations; they do not
-// copy the referenced B-tree implementation or its index invalidation rules.
 
-// Combines SortedSet-style range/removal APIs with SortedDictionary-style
-// initializers. Key ranges include every duplicate at an included endpoint.
-// modifyValue(forKey:default:) is intentionally absent: a key does not select
-// a single value here. Existing key-based Values views and index-based updates
-// retain their distinct meanings.
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    // Key endpoints need not be present in the multimap. Resolve them through the
-    // existing bound expressions. These subscripts expose read-only views.
 
     /// Returns the pairs greater than or equal to the lower bound and less than the upper bound.
     @inlinable
@@ -91,9 +79,6 @@
     }
   }
 
-  // Swift-style removal names over the existing erase operations.
-  // The referenced SortedSet has internal removeSubrange, but no
-  // removeAll(where:). These wrappers use standard Swift removal naming.
   extension RedBlackTreeMultiMap {
 
     /// Removes the pairs selected by a valid, ascending index range.
@@ -134,7 +119,6 @@
     @inlinable
     public init<S: Sequence>(sortedKeysWithValues pairs: S) where S.Element == (Key, Value) {
       var previous: Key?
-      // Keep this lazy; Swift 6.2 otherwise also considers Sequence.map.
       let checked: LazyMapSequence<S, (Key, Value)> = pairs.lazy.map { pair in
         if let previous { precondition(!(pair.0 < previous), "Keys must be nondecreasing") }
         previous = pair.0

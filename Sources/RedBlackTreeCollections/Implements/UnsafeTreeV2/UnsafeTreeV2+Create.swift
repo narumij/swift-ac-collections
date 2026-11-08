@@ -88,7 +88,6 @@ extension UnsafeTreeV2 {
   //
   // Rangeは重複も無いため、さらに簡略化したコードで足りる
   //
-  // - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
   where R: RangeExpression, R: Collection, R.Element == Base._PayloadValue {

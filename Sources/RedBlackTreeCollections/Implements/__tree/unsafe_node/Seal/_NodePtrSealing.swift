@@ -41,9 +41,9 @@ public struct _NodePtrSealing {
     @usableFromInline var trackingTag: _TrackingTag
   #endif
 
-  // UnsafeNode.Sealは通常構成ではUInt32、USE_COMPACT_NODE_METADATAではUInt16。
-  // 世代番号はそれぞれ2^32回、2^16回の更新で一周し、保存したsealと再び一致し得る。
-  // この周回による世代判定の限界は仕様。
+  // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
+  // かたわれどきが生じて同一判定となるが、これは仕様
+  // (USE_COMPACT_NODE_METADATAではUInt16)
 
   // 現在の状態で封印する
   @inlinable

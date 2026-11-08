@@ -199,7 +199,6 @@ extension RedBlackTreeKeyValueRangeView {
           Values(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
         }
 
-        // TODO: Restrict value-view mutations to indices contained in this key-value range.
         /// A mutable view of the mapped values inside this key-value range.
         ///
         /// Assigning a value doesn't change its key or the collection's key order.

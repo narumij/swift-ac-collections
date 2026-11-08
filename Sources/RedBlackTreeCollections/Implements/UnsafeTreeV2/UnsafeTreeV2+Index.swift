@@ -173,10 +173,6 @@ extension UnsafeTreeV2 {
   )
     -> Bool
   {
-    // The environment-provided nullptr lives in ManagedBufferHeader. The first
-    // traversal intentionally brings that header's cache line in before the
-    // decision traversal invokes the API again. Do not fold these calls
-    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:

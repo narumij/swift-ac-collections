@@ -22,8 +22,6 @@
 
 import Synchronization
 
-// `lazyDetach`の初回生成だけを直列化するロック（試行実装、RBT-008）。
-// 生成済みの場合は取らないので、通常の経路の費用はnil確認のみ。
 @usableFromInline
 let _lazyDetachLock = Mutex<Void>(())
 
@@ -140,11 +138,6 @@ extension UnsafeTreeV2BufferHeader {
     guard let _ = _lazyDetach else { return true }
     return isKnownUniquelyReferenced(&_lazyDetach!)
   }
-  // TODO: `tiedRawBuffer`と`lazyDetach`の一度だけの初期化を、並行アクセス時にも保証するか検討する。
-  // 候補は`Synchronization.AtomicLazyReference`だが、値型ヘッダへの直接格納は
-  // メモリレイアウトやコピー方法へ影響し、専用の参照型へまとめる方式は常時1アロケーション増える。
-  // また、このヘッダ全体はスレッドセーフではないため、この2参照だけをatomic化する意義も要検討。
-  // 所有構造の再設計と、通常利用時の生成コスト・アクセス性能を測定できる段階で再検討すること。
 
   // IndexやIteratorを結ぶ共有メモリ
   //
@@ -184,22 +177,17 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  // 生成側を分離し、生成済みの経路(getter)をインライン化しやすく保つ
   @usableFromInline
   @inline(never)
   mutating func _createLazyDetachLocked() {
-    // ロックする
     _lazyDetachLock.withLock { _ in
-      // もう一回nil確認してnilなら生成
       if _lazyDetach == nil {
         _lazyDetach = .create()
       }
     }
-    // ロック解除
   }
   #endif
 
-  // 確保済みメモリの内容を未初期化に戻し、木を空にする
   @usableFromInline
   internal mutating func deinitialize() {
     ___flushFreshPool()
@@ -209,8 +197,7 @@ extension UnsafeTreeV2BufferHeader {
     #if !USE_LAZY_DETACH
     // バッファ切り離しをしないケースでのみ、全削除でのインデックス無効化が利用できる
     // バッファ切り離しをするケースで解放すると内部バッファが解放されてUBになる
-    // TODO: 仕様の再検討
-    // RBT-071, RBT-077
+    // TODO: 仕様の再検討 RBT-071, RBT-077
     _lazyDetach?.release()
     _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
     #endif
@@ -219,7 +206,6 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
-  // `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtrV2`から使われる
   @inlinable
   mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
     assert(p != .nullptr)
@@ -390,7 +376,6 @@ extension UnsafeTreeV2BufferHeader {
     }
     #endif
 
-    // payloadの破棄を呼出し側で済ませたノードを回収する。
     @inlinable
     mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
@@ -412,12 +397,6 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
-    // recycle poolの先頭ノードを取り出す。
-    //
-    // ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
-    // fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
-    //
-    // - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead

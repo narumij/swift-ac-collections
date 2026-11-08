@@ -2,11 +2,6 @@
 // Licensed under the Apache License v2.0.
 // SPDX-License-Identifier: Apache-2.0
 
-// API reference: Swift Collections SortedDictionary, commit
-// 7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1.
-// https://github.com/apple/swift-collections/tree/7b371ce850bbca30f7dbd05ea1e38897c5e1f0e1/Sources/SortedCollections/SortedDictionary
-// These implementations compose this library's existing operations.
-// Existing updateValue, index(forKey:), filter, mapValues and grouping are reused.
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
@@ -91,8 +86,6 @@
     }
   }
 
-  // As in SortedSetAPI: the referenced removeSubrange is internal, and there is no
-  // removeAll(where:). These public wrappers follow Swift removal naming.
   extension RedBlackTreeDictionary {
     /// Removes the members selected by a valid, ascending index range.
     @inlinable

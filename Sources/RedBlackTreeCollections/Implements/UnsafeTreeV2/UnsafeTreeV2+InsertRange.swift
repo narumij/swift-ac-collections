@@ -349,7 +349,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   {
     var it = __source.makeIterator()
 
-    if __root == nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
+    if __root == nullptr, let __element = it.next().map(__t_) {
       ensureCapacity()
       __insert_node_at(
         end, end.__left_ref,
@@ -363,7 +363,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     while let __element = it.next().map(__t_) {
       unsafeEnsureCapacity()
       let __nd = __construct_node(__element)
-      if value_comp(__get_value(__max_node), __get_value(__nd)) {  // __node > __max_node
+      if value_comp(__get_value(__max_node), __get_value(__nd)) {
         __insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
@@ -375,7 +375,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
           Base.__mapped_value_ptr(__child).pointee = try combine(
             Base.__mapped_value_(__child),
             Base.__mapped_value_(__nd))
-          // Replace only after combining succeeds; an equivalent key preserves tree order.
           Base.__key_ptr(__child).pointee = Base.__key_(__nd)
         }
       }

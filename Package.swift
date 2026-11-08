@@ -28,8 +28,6 @@ var defines: [String] = [
 
   //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
-  // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
-  "RED_BLACK_TREE_TSAN_SAFE",
   
 //  "_TREE_COPY_COUNTER",
 //  "_TREE_ALLOCATION_COUNTER",
@@ -150,12 +148,6 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
-    .default(enabledTraits: ["RED_BLACK_TREE_TSAN_SAFE"]),
-    .trait(
-      name: "RED_BLACK_TREE_TSAN_SAFE",
-      description:
-        "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
-    ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:

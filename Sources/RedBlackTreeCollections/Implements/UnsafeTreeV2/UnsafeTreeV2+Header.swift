@@ -22,6 +22,8 @@
 
 extension UnsafeTreeV2 {
 
+  // (Astra) 読取りだけでも共有ヘッダへのinoutアクセスを開始するため、共有元の参照には使わない。
+  // 読取りにはwithUnsafeMutablePointerToHeaderで得たポインタを使う。
   @inlinable
   @inline(__always)
   internal func withMutableHeader<R>(

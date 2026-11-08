@@ -48,7 +48,7 @@ package struct UnsafeTreeV2BufferHeader {
     self.recycleHead = nullptr
     self.nullptr = nullptr
     self.begin_ptr = head.begin_ptr
-    self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
+    self.root_ptr = head.end_ptr.pointer(to: \.__left_)!
     self.freshBucketAllocator = allocator
     self.pushFreshBucket(head: head)
     assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")

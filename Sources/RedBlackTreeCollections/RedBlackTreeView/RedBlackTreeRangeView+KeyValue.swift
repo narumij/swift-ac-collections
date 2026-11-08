@@ -291,8 +291,10 @@ extension RedBlackTreeKeyValueRangeView {
     public mutating func popLast() -> Element? {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
-      let (_, _end) = _raw_range
-      return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+      let (_start, _end) = _raw_range
+      let last = __tree_.__tree_prev_iter(_end)
+      if last == _start { _sealed_start = _sealed_end }
+      return Base.__element_(__tree_._unchecked_remove(at: last).payload)
     }
 
     /// Removes and returns the first key-value pair.
@@ -333,7 +335,9 @@ extension RedBlackTreeKeyValueRangeView {
       _ensureUnique()
       let (_start, _end) = _raw_range
       // ややチェックが甘いので末端チェック付き削除が必要
-      return ___index(try! __tree_.___erase_range(_start, _end).get())
+      let next = try! __tree_.___erase_range(_start, _end).get()
+      _sealed_start = next.uncheckedSeal
+      return ___index(next)
     }
 
     /// Removes the key-value pairs in the view that satisfy `shouldBeRemoved`.

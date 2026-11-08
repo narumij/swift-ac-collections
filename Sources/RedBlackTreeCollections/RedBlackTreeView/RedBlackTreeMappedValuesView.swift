@@ -256,9 +256,11 @@ extension RedBlackTreeMappedValuesView {
     public mutating func popLast() -> Element? {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
-      let (_, _end) = _raw_range
+      let (_start, _end) = _raw_range
+      let last = __tree_.__tree_prev_iter(_end)
+      if last == _start { _sealed_start = _sealed_end }
       return Base.___mapped_value(
-        __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+        __tree_._unchecked_remove(at: last).payload)
     }
 
     /// Removes the first pair and returns its mapped value.
@@ -299,7 +301,9 @@ extension RedBlackTreeMappedValuesView {
       _ensureUnique()
       let (_start, _end) = _raw_range
       // ややチェックが甘いので末端チェック付き削除が必要
-      return ___index(try! __tree_.___erase_range(_start, _end).get())
+      let next = try! __tree_.___erase_range(_start, _end).get()
+      _sealed_start = next.uncheckedSeal
+      return ___index(next)
     }
 
     /// Removes pairs whose mapped values satisfy `shouldBeRemoved`.

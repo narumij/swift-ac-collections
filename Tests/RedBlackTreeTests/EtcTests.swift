@@ -157,7 +157,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(Array(multiView), [4, 5, 6, 7])
       }
 
-    #if false
       // 範囲ビューをerase()やpopLast()で空にすると、isEmptyなのにstartIndex != endIndexになる。
       func testViewEmptiedByEraseOrPopLastHasEqualBounds() {
         let set = RedBlackTreeSet(0..<10)
@@ -172,6 +171,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(popped.startIndex, popped.endIndex)
       }
 
+    #if false
       // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
       // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
       func testMultiBoundsOrEqualReachEndsOfEqualRun() {

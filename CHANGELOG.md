@@ -11,11 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `USE_COMPACT_NODE_METADATA`を有効にしたDebugテストをCIに追加
 
 ### Changed
+- 赤黒木の全削除時、`USE_LAZY_DETACH`が無効な構成では古い識別情報に失効を記録し、新しい識別情報を生成するよう変更。全削除後のIndexの保証範囲は引き続き検討中
+- `USE_COMPACT_NODE_METADATA`構成の確保可能な要素数の上限を、ノードタグの表現上限に合わせるよう変更
+- 赤黒木を共有する複数スレッドから初めてIndexを取得する際、遅延分離用の識別情報の生成競合により二重解放・クラッシュが報告されたため、初回生成をMutexで直列化する対策を追加（試行実装。並行利用全般の安全性を保証するものではない）
 - 比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）を、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitによるopt-inへ変更。MultiSet / MultiMapの同値要素に対する位置の意味が未確定のため、実験的提供として扱う（既存の利用にはtraitの有効化が必要）
 - オフセット計算のオーバーフロー検査を既定で有効化
 - `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
 
 ### Fixed
+- 既定構成のDebugビルドで、同じ発行元のIndexを大小比較する際、ノード参照前に失効情報を検査し、失効済みなら事前条件違反として停止するよう修正
+- MultiMapの`index(inserting:)`は同値キーがあっても挿入し、`inserted`が常に`true`になることを説明に反映
+- MultiSetの`update(_:at:)`とMultiMapの`updateValue(_:at:)`の概要およびAPI Matrixを、無効Index等では`nil`を返すのではなく事前条件違反となる説明に訂正
+- MultiSet / MultiMapの`find`は現行実装で同値要素の先頭を保証しないことを明記し、先頭が必要な場合は`firstIndex(of:)`を案内
+- 世代番号の周回に関するコメントに、通常構成のUInt32とcompact構成のUInt16の違い、およびそれぞれ2^32回・2^16回の更新で周回する制約を明記
 - `RedBlackTreeSet`・`RedBlackTreeMultiSet`・`RedBlackTreeDictionary`・`RedBlackTreeMultiMap`の`erase(Index)`で、ストレージを共有するコピー元の要素まで削除される問題を修正
 - Dictionaryのマージで重複キーの結合処理がthrowした際、一時ノードが回収されず、要素数と走査結果が不整合になる問題を修正
 - Range Viewの条件付き削除で先頭を削除した後も残りの要素を保持し、途中でthrowした場合も削除済みの範囲を反映するよう修正
@@ -23,7 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
 - `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
-- 赤黒木の全削除時に遅延分離用の識別情報をリセットし、削除前のIndexが再利用される問題を修正
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正
 - 既定構成で、解放済みの木に属するIndexを文字列化する際にノードのメモリを参照する問題を修正

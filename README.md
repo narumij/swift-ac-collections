@@ -114,6 +114,14 @@ dependencies: [
 ]
 ```
 
+## Experimental LRU storage
+
+The low-level `___LRUMemoizeStorage` and its supporting types are disabled by default.
+For local experiments, uncomment `"ENABLE_EXPERIMENTAL_LRU"` in the `defines` array in
+`Package.swift`. This is a compile-time flag, not a package trait.
+The implementation still has known limitations around clearing, capacity limits, and copying;
+enabling it does not resolve those limitations.
+
 ## Other Notes
 
 Declarations whose names begin with `_` are implementation details and carry no public API compatibility guarantee, even when declared `public`.

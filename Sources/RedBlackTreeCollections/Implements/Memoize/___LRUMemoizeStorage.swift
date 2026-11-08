@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if ENABLE_EXPERIMENTAL_LRU
+
 // メモ化用途向け、LRU (least recently used) cache 動作
 // https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
 //
@@ -143,3 +145,5 @@ extension ___LRUMemoizeStorage {
     }
   }
 #endif
+
+#endif // ENABLE_EXPERIMENTAL_LRU

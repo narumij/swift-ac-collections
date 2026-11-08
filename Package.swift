@@ -5,6 +5,7 @@ import Foundation
 import PackageDescription
 
 var defines: [String] = [
+  // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
   //  "USING_ALGORITHMS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",

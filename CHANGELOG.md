@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `USE_COMPACT_NODE_METADATA`を有効にしたDebugテストをCIに追加
 
 ### Changed
+- 実験用LRUストレージと関連型を既定で無効化し、コンパイルフラグ`ENABLE_EXPERIMENTAL_LRU`を明示した場合のみ利用可能に変更。Package Traitは提供せず、既知の制約は継続して保留
 - 赤黒木の全削除時、`USE_LAZY_DETACH`が無効な構成では古い識別情報に失効を記録し、新しい識別情報を生成するよう変更。全削除後のIndexの保証範囲は引き続き検討中
 - `USE_COMPACT_NODE_METADATA`構成の確保可能な要素数の上限を、ノードタグの表現上限に合わせるよう変更
 - 赤黒木を共有する複数スレッドから初めてIndexを取得する際、遅延分離用の識別情報の生成競合により二重解放・クラッシュが報告されたため、初回生成をMutexで直列化する対策を追加（試行実装。並行利用全般の安全性を保証するものではない）

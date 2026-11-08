@@ -200,7 +200,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
       }
 
-    #if false
+    #if false && ENABLE_EXPERIMENTAL_LRU
       // LRUをmaxCount: 0で作って値を入れると、count == -1になる（ASanではheap-buffer-overflow）。
       func testLRUZeroMaxCountStaysEmpty() {
         var cache = ___LRUMemoizeStorage<Int, Int>(maxCount: 0)

@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG && ENABLE_EXPERIMENTAL_LRU
   @testable import RedBlackTreeCollections
   import XCTest
 

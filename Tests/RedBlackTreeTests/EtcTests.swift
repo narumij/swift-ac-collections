@@ -7,72 +7,6 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && DEBUG
-  /// Test-only marker for sequences whose iteration order is ascending.
-  private protocol SortedSequence: Sequence {}
-
-  extension Range: SortedSequence where Self: Sequence {}
-  extension ClosedRange: SortedSequence where Self: Sequence {}
-
-  extension RedBlackTreeSet {
-    fileprivate func union<S>(_ other: S) -> RedBlackTreeSet<Element>
-    where S: SortedSequence, S.Element == Element {
-      .init(__tree_: __tree_.___meld_unique(other))
-    }
-  }
-
-  extension UnsafeTreeV2 {
-    fileprivate mutating func ___copy_range<Iterator: IteratorProtocol>(
-      _ iterator: inout Iterator,
-      to parent: UnsafeMutablePointer<UnsafeNode>,
-      _ child: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-    ) where Iterator.Element == _PayloadValue {
-      var (parent, child) = (parent, child)
-      while let payload = iterator.next() {
-        unsafeEnsureCapacity()
-        (parent, child) = ___emplace_hint_right(parent, child, payload)
-      }
-    }
-
-    fileprivate func ___meld_unique<S>(_ other: S) -> UnsafeTreeV2
-    where S: SortedSequence, S.Element == _PayloadValue {
-      var result: UnsafeTreeV2 =
-        ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
-      var (parent, child) = result.___max_ref()
-      var (first, last) = (__begin_node_, __end_node)
-      var iterator = other.makeIterator()
-
-      outer: while let payload = iterator.next() {
-        while first != last {
-          let value = __get_value(first)
-          if value_comp(__key(payload), value) {
-            result.unsafeEnsureCapacity()
-            (parent, child) = result.___emplace_hint_right(parent, child, payload)
-            continue outer
-          }
-
-          result.unsafeEnsureCapacity()
-          (parent, child) = result.___emplace_hint_right(
-            parent, child, Base.__payload_(first)
-          )
-          first = __tree_next_iter(first)
-          if !value_comp(value, __key(payload)) {
-            continue outer
-          }
-        }
-
-        result.unsafeEnsureCapacity()
-        (parent, child) = result.___emplace_hint_right(parent, child, payload)
-        result.___copy_range(&iterator, to: parent, child)
-        return result
-      }
-
-      result.___copy_range(first, last, to: parent, child)
-      return result
-    }
-  }
-#endif
-
 /// 棚卸し用の雑多な検証置き場。
 final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
@@ -236,37 +170,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && DEBUG
-    func testAPICheck() throws {
-
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0..<10)
-        XCTAssertTrue(result.elementsEqual(0..<10), "\(result)")
-      }
-
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0...10)
-        XCTAssertTrue(result.elementsEqual(0...10), "\(result)")
-      }
-    }
-  #endif
-
 }
-
-#if COMPATIBLE_ATCODER_2025 && DEBUG
-  // これ、整理整頓対象でいいかも
-  extension EtcTests {
-    /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
-    func testRev() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
-        result.append(p.index)
-      }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-  }
-#endif
 
 // 並行CoWの試行テスト。採用判断まで無効化して保存する。
 // 再実行するときはfalseを!DEBUGへ戻し、Releaseで実行する。

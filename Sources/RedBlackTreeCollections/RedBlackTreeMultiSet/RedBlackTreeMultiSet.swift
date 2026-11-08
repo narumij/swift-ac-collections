@@ -80,11 +80,11 @@
 ///
 /// ## Combining Multisets
 ///
-/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. The insertion APIs accept a set, multiset, or arbitrary sequence.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. The insertion APIs accept a set, multiset, or arbitrary sequence.
 ///
 /// ## Multiset Algebra
 ///
-/// For multiplicities a and b, `union` yields max(a,b), `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol. To keep every occurrence from both operands (a+b), use `meld(_:)` or `melding(_:)`.
+/// For multiplicities a and b, `union` yields max(a,b), `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol. To keep every occurrence from both operands (a+b), use `insert(contentsOf:)` or `inserting(contentsOf:)`.
 ///
 /// ## Iterating over Elements
 ///
@@ -121,7 +121,6 @@
 /// | Removal at a known index; rebalancing | Amortized O(1) |
 /// | Lookup and removal/processing of K matching elements | O(log n + K) |
 /// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
-/// | `meld`, `melding` | O(n+m), new storage |
 /// | Union, intersection, difference, symmetric difference | O(n+m) |
 ///
 ///

@@ -133,8 +133,6 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `merging(_:)` | ✅ | — | — | — | 統合した新しいSetを返す |
 | `merge(_:uniquingKeysWith:)` | — | — | — | ✅ | Dictionaryまたはキー値列を統合し、重複キーをクロージャで解決する |
 | `merging(_:uniquingKeysWith:)` | — | — | — | ✅ | 統合した新しいDictionaryを返す |
-| `meld(_:)` | — | ✅ | ✅ | — | 同種コンテナを構造的に結合する。Multi系では重複を保持する |
-| `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す。Multi系では重複を保持する |
 
 ## 削除
 
@@ -186,7 +184,8 @@ erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱�
 | `symmetricDifference(_:)` / `formSymmetricDifference(_:)` | ✅ | ✅ | — | — | 対称差を生成、または自身を更新する |
 
 MultiSetの集合演算は重複数を考慮する。Setの演算と同じ名前でも、個数に関する
-意味を確認して変更すること。
+意味を確認して変更すること。MultiSetの`union`は各要素の個数をmax(a, b)にする。
+個数の和（a + b）が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。
 
 ## 標準プロトコル適合
 

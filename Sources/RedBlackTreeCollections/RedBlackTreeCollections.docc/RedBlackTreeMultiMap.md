@@ -104,11 +104,6 @@
 - ``RedBlackTreeMultiMap/eraseMulti(_:)``
 - ``RedBlackTreeMultiMap/erase(exactly:)``
 
-### Combining MultiMaps
-
-- ``RedBlackTreeMultiMap/meld(_:)``
-- ``RedBlackTreeMultiMap/melding(_:)``
-
 ### Transforming a MultiMap
 
 - ``RedBlackTreeMultiMap/filter(_:)``

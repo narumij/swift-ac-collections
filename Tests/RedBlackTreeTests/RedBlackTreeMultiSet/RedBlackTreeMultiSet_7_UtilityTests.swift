@@ -47,17 +47,4 @@ final class RedBlackTreeMultiSetUtilityTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(original), [1, 2])
     XCTAssertEqual(Array(result), [1, 2, 2, 3, 3])
   }
-
-  func test_meldAndMelding_preserveEveryMember() {
-    let lhs = RedBlackTreeMultiSet([1, 2, 2])
-    let rhs = RedBlackTreeMultiSet([2, 3])
-    var mutated = lhs
-
-    mutated.meld(rhs)
-    let copied = lhs.melding(rhs)
-
-    XCTAssertEqual(Array(mutated), [1, 2, 2, 2, 3])
-    XCTAssertEqual(Array(copied), [1, 2, 2, 2, 3])
-    XCTAssertEqual(Array(lhs), [1, 2, 2])
-  }
 }

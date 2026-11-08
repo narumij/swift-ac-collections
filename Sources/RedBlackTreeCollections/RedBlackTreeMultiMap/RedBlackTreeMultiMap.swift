@@ -92,7 +92,7 @@
 ///
 /// ## Combining Multimaps
 ///
-/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. Inputs can be multimaps or sequences of pairs; every pair is retained, including duplicate keys.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. Inputs can be multimaps or sequences of pairs; every pair is retained, including duplicate keys.
 ///
 /// ## Transforming and Iterating
 ///
@@ -131,7 +131,6 @@
 /// | Removal at a known index; rebalancing | Amortized O(1) |
 /// | Lookup and removal/processing of K matching elements | O(log n + K) |
 /// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
-/// | `meld`, `melding` | O(n+m), new storage |
 /// | `filter`, `mapValues`, `compactMapValues` | O(n), plus closure costs |
 ///
 ///

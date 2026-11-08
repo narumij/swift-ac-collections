@@ -36,7 +36,7 @@ extension RedBlackTreeMultiSet {
   /// Returns the union of two multisets.
   ///
   /// For each element, the result keeps the greater of the two multiplicities.
-  /// To keep every occurrence from both multisets, use `melding(_:)`.
+  /// To keep every occurrence from both multisets, use `inserting(contentsOf:)`.
   ///
   /// - Parameter other: The multiset to combine with this multiset.
   /// - Returns: A new multiset containing the union of the occurrences.
@@ -51,7 +51,7 @@ extension RedBlackTreeMultiSet {
   /// Replaces this multiset with its union with another multiset.
   ///
   /// For each element, the result keeps the greater of the two multiplicities.
-  /// To add every occurrence from `other`, use `meld(_:)`.
+  /// To add every occurrence from `other`, use `insert(contentsOf:)`.
   ///
   /// - Parameter other: The multiset to combine with this multiset.
   /// - Complexity: O(*n* + *m*)

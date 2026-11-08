@@ -552,7 +552,7 @@
       *,
       deprecated,
       message:
-        "In later versions, union keeps the greater multiplicity. Use melding(_:) to add multiplicities."
+        "In later versions, union keeps the greater multiplicity. Use inserting(contentsOf:) to add multiplicities."
     )
     @inlinable
     public func union(
@@ -571,7 +571,7 @@
       *,
       deprecated,
       message:
-        "In later versions, formUnion keeps the greater multiplicity. Use meld(_:) to add multiplicities."
+        "In later versions, formUnion keeps the greater multiplicity. Use insert(contentsOf:) to add multiplicities."
     )
     @inlinable
     public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>)
@@ -607,5 +607,34 @@
     public mutating func formDifference(
       _ other: __owned RedBlackTreeMultiSet<Element>
     ) { __tree_ = __tree_.___difference(other.__tree_) }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  // meldは互換モードだけに残す。個数の和はinsert(contentsOf:)を使う
+  extension RedBlackTreeMultiSet {
+
+    /// Combines two multisets while preserving every occurrence.
+    ///
+    /// This operation consumes `other` and replaces this multiset with the result.
+    ///
+    /// - Parameter other: The multiset to consume and combine.
+    /// - Complexity: O(*n* + *m*)
+    @inlinable
+    public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
+      __tree_ = __tree_.___meld_multi(other.__tree_)
+    }
+
+    /// Returns a multiset containing every occurrence from both multisets.
+    ///
+    /// - Parameter other: The multiset to consume and combine.
+    /// - Returns: The combined multiset.
+    /// - Complexity: O(*n* + *m*)
+    @inlinable
+    public func melding(
+      _ other: __owned RedBlackTreeMultiSet<Element>
+    ) -> RedBlackTreeMultiSet<Element> {
+      .init(__tree_: __tree_.___meld_multi(other.__tree_))
+    }
   }
 #endif

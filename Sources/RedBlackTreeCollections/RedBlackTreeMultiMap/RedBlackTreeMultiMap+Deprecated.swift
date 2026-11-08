@@ -620,3 +620,34 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+  // meldは互換モードだけに残す。結合はinsert(contentsOf:)を使う
+  extension RedBlackTreeMultiMap {
+
+    /// Combines two multimaps while preserving every key-value pair.
+    ///
+    /// This operation consumes `other` and replaces this multimap with the result.
+    ///
+    /// - Parameter other: The multimap to consume and combine.
+    /// - Complexity: O(*n* + *m*)
+    @inlinable
+    public mutating func meld(_ other: __owned RedBlackTreeMultiMap<Key, Value>) {
+      __tree_ = __tree_.___meld_multi(other.__tree_)
+    }
+
+    /// Returns a multimap containing every pair from both multimaps.
+    ///
+    /// - Parameter other: The multimap to consume and combine.
+    /// - Returns: The combined multimap.
+    /// - Complexity: O(*n* + *m*)
+    @inlinable
+    public func melding(
+      _ other: __owned RedBlackTreeMultiMap<Key, Value>
+    ) -> RedBlackTreeMultiMap<Key, Value> {
+      var result = self
+      result.meld(other)
+      return result
+    }
+  }
+#endif

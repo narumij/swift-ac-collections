@@ -7,8 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `USE_COMPACT_NODE_METADATA`を有効にしたDebugテストをCIに追加
+
+### Changed
+- 比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）を、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitによるopt-inへ変更。MultiSet / MultiMapの同値要素に対する位置の意味が未確定のため、実験的提供として扱う（既存の利用にはtraitの有効化が必要）
+- オフセット計算のオーバーフロー検査を既定で有効化
+- `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
+
 ### Fixed
 - `RedBlackTreeSet`・`RedBlackTreeMultiSet`・`RedBlackTreeDictionary`・`RedBlackTreeMultiMap`の`erase(Index)`で、ストレージを共有するコピー元の要素まで削除される問題を修正
+- Dictionaryのマージで重複キーの結合処理がthrowした際、一時ノードが回収されず、要素数と走査結果が不整合になる問題を修正
+- Range Viewの条件付き削除で先頭を削除した後も残りの要素を保持し、途中でthrowした場合も削除済みの範囲を反映するよう修正
+- Range ViewおよびMappedValues Viewの`erase()`や最後の1要素に対する`popLast()`で、空になったViewの`startIndex`と`endIndex`が一致しない問題を修正
+- Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
+- `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
+- 赤黒木の全削除時に遅延分離用の識別情報をリセットし、削除前のIndexが再利用される問題を修正
+- 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
+- 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正
+- 既定構成で、解放済みの木に属するIndexを文字列化する際にノードのメモリを参照する問題を修正
+- 子ノード・キー・値への参照取得を`inout`を伴わないアドレス計算へ変更し、読み取り専用の探索でも書き込みアクセスとして扱われる問題を修正
 
 ## [0.7.1] - 2026-11-07
 

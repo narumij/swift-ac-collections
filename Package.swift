@@ -16,7 +16,7 @@ var defines: [String] = [
   //  "USE_INT128",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
   //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",

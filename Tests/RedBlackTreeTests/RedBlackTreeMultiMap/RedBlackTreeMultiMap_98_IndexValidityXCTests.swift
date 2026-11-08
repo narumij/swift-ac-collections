@@ -25,7 +25,7 @@
       XCTAssertFalse(
         multiMap.isElement(at: .unsafe(tree: multiMap.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(multiMap.isElement(at: .unsafe(tree: multiMap.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(multiMap.isElement(at: .unsafe(tree: multiMap.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(multiMap.isElement(at: .unsafe(tree: multiMap.__tree_, rawTag: 5)))
     }
@@ -43,7 +43,7 @@
         range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }

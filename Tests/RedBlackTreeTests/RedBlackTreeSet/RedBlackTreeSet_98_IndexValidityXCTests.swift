@@ -17,7 +17,7 @@
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -26,10 +26,10 @@
       let range = base.elements(in: 2..<6)
       typealias Index = RedBlackTreeSet<Int>.Index
 
-      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }

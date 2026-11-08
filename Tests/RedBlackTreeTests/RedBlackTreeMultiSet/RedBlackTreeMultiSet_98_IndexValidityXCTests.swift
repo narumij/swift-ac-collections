@@ -18,7 +18,7 @@
       XCTAssertFalse(
         multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -27,10 +27,10 @@
       let range = base.elements(in: 2..<6)
       typealias Index = RedBlackTreeMultiSet<Int>.Index
 
-      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }

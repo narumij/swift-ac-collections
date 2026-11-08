@@ -15,7 +15,7 @@ import XCTest
       typealias Element = Int
 
       static func __get_value(_ p: _NodePtr) -> Int {
-        p.pointee.___tracking_tag
+        Int(p.pointee.___tracking_tag)
       }
 
       static func compare(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
@@ -98,7 +98,7 @@ import XCTest
       }
 
       func __get_value(_ p: _NodePtr) -> Int {
-        p.pointee.___tracking_tag
+        Int(p.pointee.___tracking_tag)
       }
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
@@ -184,7 +184,7 @@ import XCTest
       var __root: _NodePtr { endNode.__left_ }
 
       func __get_value(_ p: _NodePtr) -> Int {
-        p.pointee.___tracking_tag
+        Int(p.pointee.___tracking_tag)
       }
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
@@ -237,7 +237,7 @@ import XCTest
       }
 
       func __get_value(_ p: _NodePtr) -> Int {
-        p.pointee.___tracking_tag
+        Int(p.pointee.___tracking_tag)
       }
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
@@ -408,7 +408,7 @@ import XCTest
         let staticResult = staticTree.find(key)
         let instanceResult = instanceTree.find(key)
         XCTAssertEqual(staticResult, instanceResult)
-        XCTAssertEqual(staticResult.pointee.___tracking_tag, key)
+        XCTAssertEqual(Int(staticResult.pointee.___tracking_tag), key)
       }
 
       for key in [5, 25, 35] {
@@ -445,8 +445,8 @@ import XCTest
 
         XCTAssertEqual(staticLower, instanceLower)
         XCTAssertEqual(staticUpper, instanceUpper)
-        XCTAssertEqual(staticLower == end ? nil : staticLower.pointee.___tracking_tag, item.lower)
-        XCTAssertEqual(staticUpper == end ? nil : staticUpper.pointee.___tracking_tag, item.upper)
+        XCTAssertEqual(staticLower == end ? nil : Int(staticLower.pointee.___tracking_tag), item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : Int(staticUpper.pointee.___tracking_tag), item.upper)
 
         XCTAssertEqual(staticTree.__lower_bound_unique(item.key), staticLower)
         XCTAssertEqual(instanceTree.__lower_bound_unique(item.key), instanceLower)
@@ -518,14 +518,14 @@ import XCTest
         XCTAssertEqual(staticUpper, instanceUpper)
         XCTAssertEqual(staticTree.upper_bound(item.key), staticUpper)
         XCTAssertEqual(instanceTree.upper_bound(item.key), instanceUpper)
-        XCTAssertEqual(staticLower == end ? nil : staticLower.pointee.___tracking_tag, item.lower)
-        XCTAssertEqual(staticUpper == end ? nil : staticUpper.pointee.___tracking_tag, item.upper)
+        XCTAssertEqual(staticLower == end ? nil : Int(staticLower.pointee.___tracking_tag), item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : Int(staticUpper.pointee.___tracking_tag), item.upper)
 
         let expectedFind = [10, 20, 30].contains(item.key) ? item.key : nil
         let staticFound = staticTree.find(item.key)
         let instanceFound = instanceTree.find(item.key)
         XCTAssertEqual(staticFound, instanceFound)
-        XCTAssertEqual(staticFound == end ? nil : staticFound.pointee.___tracking_tag, expectedFind)
+        XCTAssertEqual(staticFound == end ? nil : Int(staticFound.pointee.___tracking_tag), expectedFind)
         XCTAssertEqual(staticTree.find_first(item.key), staticFound)
         XCTAssertEqual(instanceTree.find_first(item.key), instanceFound)
       }

@@ -24,7 +24,7 @@
       XCTAssertFalse(
         dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -40,7 +40,7 @@
         range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }

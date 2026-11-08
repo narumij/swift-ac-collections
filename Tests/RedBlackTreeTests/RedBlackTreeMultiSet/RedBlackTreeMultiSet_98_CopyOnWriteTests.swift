@@ -151,3 +151,21 @@ import XCTest
 
   }
 #endif
+
+#if _TREE_COPY_COUNTER && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetCopyOnWriteTests {
+    /// 共有中にupdate(_:at:)が成功すると、自分の側だけ1回複製し、共有元は変わらないこと（RBT-047）。
+    func test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal() {
+      var a: RedBlackTreeMultiSet<Int> = [1, 2, 3]
+      let b = a
+      let before = a.__tree_.copyCount
+
+      XCTAssertEqual(a.update(1, at: a.startIndex), 1)
+
+      XCTAssertEqual(a.__tree_.copyCount, before + 1, "共有中の成功更新は1回複製する")
+      XCTAssertEqual(b.__tree_.copyCount, before, "共有元は複製されない")
+      XCTAssertEqual(Array(a), [1, 2, 3])
+      XCTAssertEqual(Array(b), [1, 2, 3])
+    }
+  }
+#endif

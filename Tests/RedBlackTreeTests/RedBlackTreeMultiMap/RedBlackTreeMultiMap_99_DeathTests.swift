@@ -470,3 +470,32 @@
     }
   }
 #endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // RBT-047/048: 共有中でも、無効なIndexによる値の更新は停止すること。
+    @Test
+    func updatingSharedEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a")])
+        let shared = map
+        withExtendedLifetime(shared) {
+          map.updateValue("x", at: map.endIndex)
+        }
+      }
+    }
+
+    @Test
+    func updatingSharedRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (1, "b")])
+        let removed = map.startIndex
+        map.remove(at: removed)
+        let shared = map
+        withExtendedLifetime(shared) {
+          map.updateValue("x", at: removed)
+        }
+      }
+    }
+  }
+#endif

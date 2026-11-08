@@ -252,3 +252,20 @@ import XCTest
     #endif
   }
 #endif
+
+#if _TREE_COPY_COUNTER && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapCopyOnWriteTests {
+    /// 共有中にupdateValue(_:at:)が成功すると、自分の側だけ1回複製し、共有元は変わらないこと（RBT-047）。
+    func test_multiMapUpdateValue_sharedSuccess_copiesAndKeepsOriginal() {
+      var a: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b")]
+      let b = a
+      let before = a.__tree_.copyCount
+
+      XCTAssertEqual(a.updateValue("x", at: a.startIndex), "a")
+
+      XCTAssertEqual(a.__tree_.copyCount, before + 1, "共有中の成功更新は1回複製する")
+      XCTAssertEqual(a.map(\.value), ["x", "b"])
+      XCTAssertEqual(b.map(\.value), ["a", "b"])
+    }
+  }
+#endif

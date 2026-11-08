@@ -522,3 +522,43 @@
     }
   }
 #endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetDeathTests {
+    // RBT-047/048: 共有中でも、無効なIndexや==が成り立たない値による更新は停止すること。
+    @Test
+    func updatingSharedWithNonEquivalentMember_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 2, 3])
+        let shared = set
+        withExtendedLifetime(shared) {
+          set.update(99, at: set.startIndex)
+        }
+      }
+    }
+
+    @Test
+    func updatingSharedEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 2, 3])
+        let shared = set
+        withExtendedLifetime(shared) {
+          set.update(1, at: set.endIndex)
+        }
+      }
+    }
+
+    @Test
+    func updatingSharedRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var set = RedBlackTreeMultiSet([1, 1, 1])
+        let removed = set.index(after: set.startIndex)
+        set.remove(at: removed)
+        let shared = set
+        withExtendedLifetime(shared) {
+          set.update(1, at: removed)
+        }
+      }
+    }
+  }
+#endif

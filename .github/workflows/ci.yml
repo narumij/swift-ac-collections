@@ -165,6 +165,22 @@ jobs:
       - name: Run tests
         run: swift test -c debug --traits NORMAL_DEBUG_TEST
 
+  debug-compact-node-metadata:
+    name: Debug (compact node metadata)
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests
+        run: swift test -c debug --traits NORMAL_DEBUG_TEST,USE_COMPACT_NODE_METADATA
+
   release:
     name: Release (Swift ${{ matrix.swift }})
     if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'

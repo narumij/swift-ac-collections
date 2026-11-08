@@ -237,14 +237,16 @@ extension Benchmark {
         var sum = 0
         timer.measure {
           var total = 0
-          for _ in 0..<reps {
-            var s = 0
-            var i = 0
-            while i < p.count {
-              s &+= p[i]
-              i += 1
+          withUnsafePointer(to: p) { p in
+            for _ in 0..<reps {
+              var s = 0
+              var i = 0
+              while i < p.pointee.count {
+                s &+= permutationElement(p, at: i)
+                i += 1
+              }
+              total &+= s
             }
-            total &+= s
           }
           sum = total
         }
@@ -454,6 +456,18 @@ extension Benchmark {
       }
     }
   }
+}
+
+// 最適化アンラッキー対策
+/// Reads one element through the public subscript outside the caller's loop.
+///
+/// Keeping the access out of line keeps the timed loop small and unvectorized,
+/// so its speed depends less on where the linker happens to place it.
+@inline(never)
+private func permutationElement(
+  _ p: UnsafePointer<NextPermutations<Int>.Permutation>, at i: Int
+) -> Int {
+  p.pointee[i]
 }
 
 /// Number of passes per sample so that one sample performs about 2^20 accesses.

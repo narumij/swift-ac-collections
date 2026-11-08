@@ -534,6 +534,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
+    #if false
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
@@ -545,6 +546,9 @@ extension RedBlackTreeDictionary {
       _ = $0.erase(__i)
       return value
     }
+    #else
+    __tree_._removeIfPresent(key)?.tuple.value
+    #endif
   }
 }
 

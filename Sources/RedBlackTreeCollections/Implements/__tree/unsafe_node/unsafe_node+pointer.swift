@@ -67,14 +67,16 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     nonmutating _modify { yield &pointee.__is_black_ }
   }
 
+  // inout(&pointee)を経由すると、読取り専用の探索でも排他アクセス上は書込みとして扱われ、
+  // 並行読取りでTSanがaccess raceを報告する。アドレス計算だけで参照を得る(RBT-070)。
   @inlinable
   package var __left_ref: _NodeRef {
-    _ref(to: &pointee.__left_)
+    pointer(to: \.__left_)!
   }
 
   @inlinable
   package var __right_ref: _NodeRef {
-    _ref(to: &pointee.__right_)
+    pointer(to: \.__right_)!
   }
 }
 

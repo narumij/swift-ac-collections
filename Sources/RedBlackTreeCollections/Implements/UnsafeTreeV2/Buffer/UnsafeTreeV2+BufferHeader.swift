@@ -169,6 +169,13 @@ extension UnsafeTreeV2BufferHeader {
   // 確保済みメモリの内容を未初期化に戻し、木を空にする
   @usableFromInline
   internal mutating func deinitialize() {
+    #if DEBUG && !USE_LAZY_DETACH
+      // 全削除で結束を捨てる前に、古いIndexのDebug比較を失効させる。
+      // 共有の空singletonの結束は、ほかの空コンテナでも使われる。
+      if let tie = _lazyDetach, tie !== _emptyLazyDetach {
+        tie.isDetached = true
+      }
+    #endif
     ___flushFreshPool()
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr

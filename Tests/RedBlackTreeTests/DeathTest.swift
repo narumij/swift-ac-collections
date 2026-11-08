@@ -2,10 +2,25 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Testing
-  import RedBlackTreeCollections
+  @testable import RedBlackTreeCollections
 
   /// 棚卸し用の雑多な検証置き場。
   struct Test {
+    #if DEBUG && !USE_LAZY_DETACH
+      // 生きた木で失効フラグだけを設定し、ノード比較へ進む前の拒否を確認する。
+      @Test func detachedIndexComparison_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+          let tree: RedBlackTreeSet<Int> = [1, 2]
+          let first = tree.startIndex
+          let last = tree.index(before: tree.endIndex)
+          withExtendedLifetime(tree) {
+            first.lazyDetach.isDetached = true
+            _ = first < last
+          }
+        }
+      }
+    #endif
+
     #if ENABLE_OFFSET_OVERFLOW_GUARD
       // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止する。
       @Test func extremeMinimumCapacity_terminatesProcess() async {

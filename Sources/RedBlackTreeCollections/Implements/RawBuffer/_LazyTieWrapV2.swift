@@ -62,6 +62,11 @@ extension _LazyTieWrapV2: Comparable {
     if lhs.lazyDetach !== rhs.lazyDetach {
       return lhs.lazyDetach < rhs.lazyDetach
     }
+    #if !USE_LAZY_DETACH
+      // 通常構成ではIndexがノードの寿命を延長しない。
+      // 同じ発行元の比較で生ポインタをたどる前に、寿命を確認する。
+      precondition(!lhs.lazyDetach.isDetached, .invalidIndex)
+    #endif
     return lhs.rawValue < rhs.rawValue
   }
 }

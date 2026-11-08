@@ -55,6 +55,28 @@
       recycleHead = p
     }
 
+    // payloadの破棄を呼出し側で済ませたノードを回収する。
+    @inlinable
+    mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
+      assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
+      assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
+      assert(recycleHead != p, "過剰リサイクル不可")
+      count -= 1
+      #if DEBUG || true
+        p.pointee.___recycle_count &+= 1
+      #endif
+      #if _TREE_ALLOCATION_COUNTER
+        payloadDeinitializedCount += 1
+      #endif
+      #if GRAPHVIZ_DEBUG
+        p.pointee.__right_ = nullptr
+        p.pointee.__parent_ = nullptr
+      #endif
+      p.pointee.___has_payload_content = false
+      p.pointee.__left_ = recycleHead
+      recycleHead = p
+    }
+
     // recycle poolの先頭ノードを取り出す。
     //
     // ノード生成側がfresh poolとの選択を済ませるため、

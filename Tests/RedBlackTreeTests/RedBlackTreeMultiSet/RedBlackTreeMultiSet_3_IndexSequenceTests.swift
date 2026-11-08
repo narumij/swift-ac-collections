@@ -101,3 +101,24 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+// IndexのComparable準拠はDebugビルドだけにある。
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetIndexRangeTests {
+    /// 重複キーとendIndexを含む生きたIndexどうしの`<`が、並び順どおりになること。
+    func testLiveIndicesKeepTreeOrderIncludingDuplicatesAndEnd() {
+      let tree: RedBlackTreeMultiSet<Int> = [3, 1, 3, 2]
+      var indices = [tree.startIndex]
+      while indices.last! != tree.endIndex {
+        indices.append(tree.index(after: indices.last!))
+      }
+      withExtendedLifetime(tree) {
+        for i in indices.indices {
+          for j in indices.indices {
+            XCTAssertEqual(indices[i] < indices[j], i < j)
+          }
+        }
+      }
+    }
+  }
+#endif

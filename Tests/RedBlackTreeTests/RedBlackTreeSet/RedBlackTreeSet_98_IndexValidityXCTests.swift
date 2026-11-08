@@ -175,3 +175,29 @@
     }
   }
 #endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  extension RedBlackTreeSetIndexValidityXCTests {
+    /// ストレージを解放すると、残っているIndexが失効扱いになること。
+    func testStorageReleaseMarksOutstandingIndicesDetached() {
+      var tree: RedBlackTreeSet<Int>? = [1, 2]
+      let index = tree!.startIndex
+      XCTAssertFalse(index.lazyDetach.isDetached)
+      tree = nil
+      XCTAssertTrue(index.lazyDetach.isDetached)
+    }
+
+    /// removeAll(keepingCapacity: true)で古いIndexが失効し、その後のIndexは新しく有効になること。
+    func testClearRetiresOldTieAndAllowsFreshIndices() {
+      var tree: RedBlackTreeSet<Int> = [1, 2]
+      let old = tree.startIndex
+      tree.removeAll(keepingCapacity: true)
+      XCTAssertTrue(old.lazyDetach.isDetached)
+      tree.insert(3)
+      withExtendedLifetime(tree) {
+        XCTAssertFalse(tree.startIndex.lazyDetach.isDetached)
+        XCTAssertTrue(tree.startIndex < tree.endIndex)
+      }
+    }
+  }
+#endif

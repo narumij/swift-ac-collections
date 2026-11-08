@@ -132,6 +132,8 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(dictionary, [1: 1, 2: 2, 3: 3])
       }
 
+    #endif
+
       // 範囲ビューのerase(where:)でビューの先頭要素を消すと、残りがあってもビューが空になる。
       func testViewEraseWhereFirstElementKeepsRest() {
         let set = RedBlackTreeSet(0..<10)
@@ -155,6 +157,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertEqual(Array(multiView), [4, 5, 6, 7])
       }
 
+    #if false
       // 範囲ビューをerase()やpopLast()で空にすると、isEmptyなのにstartIndex != endIndexになる。
       func testViewEmptiedByEraseOrPopLastHasEqualBounds() {
         let set = RedBlackTreeSet(0..<10)

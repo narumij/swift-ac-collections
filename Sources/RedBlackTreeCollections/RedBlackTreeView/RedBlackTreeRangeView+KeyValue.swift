@@ -344,7 +344,10 @@ extension RedBlackTreeKeyValueRangeView {
       guard _raw_range.0 != _raw_range.1 else { return }
       _ensureUnique()
       let (_start, _end) = _raw_range
-      let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked) {
+      // TODO: あとで見直す
+      var first = _start.unchecked
+      defer { _sealed_start = first.pointer!.uncheckedSeal }
+      let result = try __tree_.___erase_view_range_if(&first, _end.unchecked) {
         try shouldBeRemoved(Base.__element_($0))
       }
       assert(result.error == nil)

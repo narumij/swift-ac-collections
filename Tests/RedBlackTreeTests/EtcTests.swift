@@ -192,13 +192,13 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
     #endif
 
-    #if false
       // 空の木の.lastはdocどおりpast-the-endに置き換わる。修正前はfatalErrorで止まる。
       func testEmptyLastBoundIsEnd() {
         let empty: RedBlackTreeSet<Int> = []
         XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
       }
 
+    #if false
       // LRUをmaxCount: 0で作って値を入れると、count == -1になる（ASanではheap-buffer-overflow）。
       func testLRUZeroMaxCountStaysEmpty() {
         var cache = ___LRUMemoizeStorage<Int, Int>(maxCount: 0)

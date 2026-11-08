@@ -62,7 +62,9 @@ extension UnsafeTreeV2 {
         ptr = __begin_node_.unchecked
 
       case .last:
-        ptr = ___tree_prev_iter(__end_node)
+        ptr = __begin_node_ == __end_node
+          ? __end_node.unchecked
+          : ___tree_prev_iter(__end_node)
 
       case .end:
         ptr = __end_node.unchecked

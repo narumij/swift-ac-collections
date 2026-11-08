@@ -63,9 +63,9 @@ extension UnsafeTreeV2 {
   func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     assert(p != .nullptr)
     return _buffer.withUnsafeMutablePointerToHeader { header in
-      .unchecked(
-        p, end_ptr: header.pointee.end_ptr,
-        lazyDetach: Header._loadLazyDetach(at: header.pointer(to: \._lazyDetach)!))
+      // 試作: セルの確認と生成はポインタのフィールドだけに対して行う
+      let cell = Header._lazyDetachCell(at: header.pointer(to: \.lazyDetachPointer)!)
+      return header.pointee._index(p, cell: cell)
     }
   }
 

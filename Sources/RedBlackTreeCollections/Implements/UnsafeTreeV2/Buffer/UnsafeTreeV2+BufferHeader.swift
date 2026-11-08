@@ -71,8 +71,30 @@ package struct UnsafeTreeV2BufferHeader {
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
+  // 試作: _lazyDetachの実体はmallocしたセルに置き、ヘッダはそのポインタだけを持つ
+  // （セルの解放と初回生成の同期は未対応）
+  @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
+
   // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
-  @usableFromInline var _lazyDetach: _LazyTie?
+  @inlinable
+  var _lazyDetach: _LazyTie? {
+    @inline(__always)
+    get { lazyDetachPointer?.pointee }
+    @inline(__always)
+    set {
+      guard let newValue else {
+        lazyDetachPointer = nil
+        return
+      }
+      if let p = lazyDetachPointer {
+        p.pointee = newValue
+      } else {
+        let p = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
+        p.initialize(to: newValue)
+        lazyDetachPointer = p
+      }
+    }
+  }
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -135,8 +157,8 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
-    guard let _ = _lazyDetach else { return true }
-    return isKnownUniquelyReferenced(&_lazyDetach!)
+    guard let p = lazyDetachPointer else { return true }
+    return isKnownUniquelyReferenced(&p.pointee)
   }
 
   // IndexやIteratorを結ぶ共有メモリ
@@ -176,44 +198,17 @@ extension UnsafeTreeV2BufferHeader {
       return _lazyDetach!
     }
   }
-
+  
   @usableFromInline
   @inline(never)
   mutating func _createLazyDetachLocked() {
     _lazyDetachLock.withLock { _ in
-      withUnsafeMutablePointer(to: &_lazyDetach) {
-        _ = Self._createLazyDetach(at: $0)
+      if _lazyDetach == nil {
+        _lazyDetach = .create()
       }
     }
   }
   #endif
-
-  // 共有された木を複数スレッドから読む経路用。ヘッダ全体への書込みアクセスを始めずに、
-  // _lazyDetachだけをatomicに読み、未生成なら一度だけ生成して公開する。
-  @inlinable
-  static func _loadLazyDetach(at slot: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
-    if let tie = _stdlib_atomicLoadARCRef(object: _lazyDetachObject(slot)) {
-      return unsafeDowncast(tie, to: _LazyTie.self)
-    }
-    return _createLazyDetach(at: slot)
-  }
-
-  @usableFromInline
-  @inline(never)
-  static func _createLazyDetach(at slot: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
-    let object = _lazyDetachObject(slot)
-    // 先に公開された方が勝ち、負けた側の生成物はARCで解放される
-    _ = _stdlib_atomicInitializeARCRef(object: object, desired: _LazyTie.create())
-    return unsafeDowncast(_stdlib_atomicLoadARCRef(object: object)!, to: _LazyTie.self)
-  }
-
-  // _LazyTie?とAnyObject?はどちらもポインタ1語でnilが0のため、同じ領域として扱う
-  @inlinable
-  static func _lazyDetachObject(_ slot: UnsafeMutablePointer<_LazyTie?>)
-    -> UnsafeMutablePointer<AnyObject?>
-  {
-    UnsafeMutableRawPointer(slot).assumingMemoryBound(to: AnyObject?.self)
-  }
 
   @usableFromInline
   internal mutating func deinitialize() {
@@ -243,6 +238,50 @@ extension UnsafeTreeV2BufferHeader {
   mutating func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+
+  // 試作: 生成済みのセルをたどるだけの非mutating版
+  @inlinable
+  func _indexThroughPointer(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetachPointer.unsafelyUnwrapped.pointee)
+  }
+
+  // 試作: 渡されたセルを使う非mutating版
+  @inlinable
+  func _index(_ p: _NodePtr, cell: UnsafeMutablePointer<_LazyTie>) -> _LazyTiedPtrV2 {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: cell.pointee)
+  }
+
+  // 試作: lazyDetachPointerのフィールドに対して、ヘッダ全体を開かずに
+  // 「atomicに確認し、無ければロックの中で作って公開する」
+  @inlinable
+  static func _lazyDetachCell(
+    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
+  ) -> UnsafeMutablePointer<_LazyTie> {
+    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
+    if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
+      return cell
+    }
+    return _createLazyDetachCell(at: field)
+  }
+
+  @usableFromInline
+  @inline(never)
+  static func _createLazyDetachCell(
+    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
+  ) -> UnsafeMutablePointer<_LazyTie> {
+    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
+    return _lazyDetachLock.withLock { _ in
+      if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
+        return cell
+      }
+      let cell = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
+      cell.initialize(to: .create())
+      bits.pointee.store(UInt(bitPattern: cell), ordering: .releasing)
+      return cell
+    }
   }
   
   @inlinable

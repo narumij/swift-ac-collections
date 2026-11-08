@@ -239,3 +239,22 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapRemovalTests {
+    /// 何も消さない削除や空での削除は、共有中のストレージをコピーしないこと。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<100).map { ($0, $0) })
+      var copy = multiMap
+      _ = copy.eraseUnique(-1)
+      _ = copy.eraseMulti(-1)
+      XCTAssertTrue(multiMap.isTriviallyIdentical(to: copy))
+
+      let empty = RedBlackTreeMultiMap<Int, Int>()
+      var emptyCopy = empty
+      _ = emptyCopy.eraseUnique(0)
+      _ = emptyCopy.eraseMulti(0)
+      XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
+    }
+  }
+#endif

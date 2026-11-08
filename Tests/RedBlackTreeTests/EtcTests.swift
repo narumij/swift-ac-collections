@@ -103,31 +103,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
     #endif
 
-    #if false
-      // 見つからないキーの削除で、共有中のストレージを丸ごとコピーする（Set／MultiSetは修正済み）。
-      // 4型への横展開で見つけた。修正前は失敗する。
-      func testNoOpRemovalKeepsSharedStorageDictionary() {
-        let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<100).map { ($0, $0) })
-        var copy = dictionary
-        _ = copy.removeValue(forKey: -1)
-        XCTAssertTrue(dictionary.isTriviallyIdentical(to: copy))
-      }
-
-      func testNoOpRemovalKeepsSharedStorageMultiMap() {
-        let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<100).map { ($0, $0) })
-        var copy = multiMap
-        _ = copy.eraseUnique(-1)
-        _ = copy.eraseMulti(-1)
-        XCTAssertTrue(multiMap.isTriviallyIdentical(to: copy))
-
-        let empty = RedBlackTreeMultiMap<Int, Int>()
-        var emptyCopy = empty
-        _ = emptyCopy.eraseUnique(0)
-        _ = emptyCopy.eraseMulti(0)
-        XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
-      }
-    #endif
-
   #endif
 
 }

@@ -99,6 +99,17 @@ dependencies: [
 ]
 ```
 
+To enable the compatibility mode in the current source tree, select the
+`COMPATIBLE_ATCODER_2025` package trait. It is disabled by default:
+
+```sh
+swift build --traits COMPATIBLE_ATCODER_2025
+```
+
+For a package dependency, specify `traits: ["COMPATIBLE_ATCODER_2025"]`.
+This selects the existing compatibility code paths; it does not pin the package
+to the exact judge release shown above.
+
 ## Enabling OptionalElementBuffer
 
 `OptionalElementBuffer` isn't exposed through `AcCollections` by default. To explicitly use this

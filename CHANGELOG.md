@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- 既存のAtCoder 2025互換モードを選択する`COMPATIBLE_ATCODER_2025` Package Traitを追加（既定では無効）
 - `USE_COMPACT_NODE_METADATA`を有効にしたDebugテストをCIに追加
 
 ### Changed

@@ -40,7 +40,10 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-    //         .define("COMPATIBLE_ATCODER_2025"),
+    .define(
+      "COMPATIBLE_ATCODER_2025",
+      .when(traits: ["COMPATIBLE_ATCODER_2025"])
+    ),
 
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
     // オフにすることでいろいろスキップできる
@@ -148,6 +151,10 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
+    .trait(
+      name: "COMPATIBLE_ATCODER_2025",
+      description: "Enable the existing AtCoder 2025 compatibility mode."
+    ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:

@@ -188,7 +188,11 @@ extension _NodePtrSealing: Hashable {}
 
 extension _NodePtrSealing: CustomStringConvertible {
   public var description: String {
-    "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+    #if USE_LAZY_DETACH
+      "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+    #else
+      "_NodePtrSealing<\((tag: trackingTag, seal: seal, pointer))>"
+    #endif
   }
 }
 

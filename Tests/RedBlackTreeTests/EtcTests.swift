@@ -341,6 +341,8 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertNil(set[.start.advanced(by: Int.max)])
       }
 
+    #endif
+
       // 解放済みの木のIndexをprintすると、ノードからtagを読む（ASanでheap-use-after-free。releaseでも読む）。
       func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
         func make() -> RedBlackTreeSet<Int>.Index {
@@ -351,6 +353,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertFalse(String(describing: index).isEmpty)
       }
 
+    #if false
       // letで共有した木から複数スレッドが同時に最初のIndexを作ると、_lazyDetachの遅延生成が競合する。
       // releaseで同じ位置のIndex同士が一致しないことがある。TSanではdata raceとして報告される。
       func testConcurrentFirstIndexCreationAgrees() {

@@ -51,7 +51,7 @@
 ///
 /// ## Insertion and Removal
 ///
-/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. Invalid indices or unequal replacements return `nil`.
+/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. The index must be valid and must not be `endIndex`; an invalid index or an unequal replacement violates a precondition.
 ///
 /// `eraseUnique(_:)` removes one match; `eraseMulti(_:)` removes all matches. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty multiset. Predicate removal with `erase(where:)`, range removal, and `removeAll(keepingCapacity:)` are also available. For sequential removal, continue with the index returned by `erase(_:) -> Index`, not a deleted index.
 ///
@@ -273,7 +273,7 @@ extension RedBlackTreeMultiSet {
   /// - Parameter newMember: An element to insert.
   /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
-  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
+  /// - SeeAlso: `index(inserting:)`, which returns the index of the newly inserted occurrence.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (

@@ -122,8 +122,8 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(key:value:hint:)` | — | — | 検討 | ✅ | ヒントを用いてキーと値を挿入する |
 | `update(_:hint:)` | ✅ | — | — | ✅ | ヒントを用いて挿入、または既存要素を置換し、旧要素を返す。新規挿入時は `nil` |
 | `update(with:)` | ✅ | — | — | — | Set要素を挿入または置換し、旧要素を返す |
-| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を等価な要素で置換し、旧要素を返す。無効Indexまたは非等価時は `nil` |
-| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す。無効Indexでは `nil` |
+| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を `==` で等しい要素に置換し、旧要素を返す。無効Index・endIndex・非等価な置換は事前条件違反 |
+| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す。無効Index・endIndexは事前条件違反 |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新または挿入し、旧値を返す |
 | `updateValue(_:forKey:hint:)` | — | — | — | ✅ | ヒントを用いてキーの値を更新または挿入し、旧値を返す |
 | `index(inserting:)` | ✅ | ✅ | ✅ | ✅ | 挿入し、挿入位置のIndexを返す |

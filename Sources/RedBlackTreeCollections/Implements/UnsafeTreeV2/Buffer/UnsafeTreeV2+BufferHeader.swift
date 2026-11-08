@@ -181,12 +181,39 @@ extension UnsafeTreeV2BufferHeader {
   @inline(never)
   mutating func _createLazyDetachLocked() {
     _lazyDetachLock.withLock { _ in
-      if _lazyDetach == nil {
-        _lazyDetach = .create()
+      withUnsafeMutablePointer(to: &_lazyDetach) {
+        _ = Self._createLazyDetach(at: $0)
       }
     }
   }
   #endif
+
+  // 共有された木を複数スレッドから読む経路用。ヘッダ全体への書込みアクセスを始めずに、
+  // _lazyDetachだけをatomicに読み、未生成なら一度だけ生成して公開する。
+  @inlinable
+  static func _loadLazyDetach(at slot: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
+    if let tie = _stdlib_atomicLoadARCRef(object: _lazyDetachObject(slot)) {
+      return unsafeDowncast(tie, to: _LazyTie.self)
+    }
+    return _createLazyDetach(at: slot)
+  }
+
+  @usableFromInline
+  @inline(never)
+  static func _createLazyDetach(at slot: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
+    let object = _lazyDetachObject(slot)
+    // 先に公開された方が勝ち、負けた側の生成物はARCで解放される
+    _ = _stdlib_atomicInitializeARCRef(object: object, desired: _LazyTie.create())
+    return unsafeDowncast(_stdlib_atomicLoadARCRef(object: object)!, to: _LazyTie.self)
+  }
+
+  // _LazyTie?とAnyObject?はどちらもポインタ1語でnilが0のため、同じ領域として扱う
+  @inlinable
+  static func _lazyDetachObject(_ slot: UnsafeMutablePointer<_LazyTie?>)
+    -> UnsafeMutablePointer<AnyObject?>
+  {
+    UnsafeMutableRawPointer(slot).assumingMemoryBound(to: AnyObject?.self)
+  }
 
   @usableFromInline
   internal mutating func deinitialize() {

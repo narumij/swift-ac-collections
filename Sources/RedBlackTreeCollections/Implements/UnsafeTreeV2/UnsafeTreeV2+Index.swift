@@ -57,14 +57,21 @@ extension UnsafeTreeV2 {
     return withMutableHeader { $0.index(p) }
   }
 
+  // 共有された木から複数スレッドが同時に呼んでも、ヘッダへの書込みアクセスが重ならないよう、
+  // _lazyDetachはatomicに読み出す
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
-    return withMutableHeader { $0.index(p) }
+    assert(p != .nullptr)
+    return _buffer.withUnsafeMutablePointerToHeader { header in
+      .unchecked(
+        p, end_ptr: header.pointee.end_ptr,
+        lazyDetach: Header._loadLazyDetach(at: header.pointer(to: \._lazyDetach)!))
+    }
   }
 
   @inlinable
   func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
-    return withMutableHeader { $0.index_or_nil(p) }
+    p.___has_payload_content ? .some(index(p)) : .none
   }
 }
 

@@ -19,7 +19,7 @@ var defines: [String] = [
 //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
   //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-  //  "ENABLE_OFFSET_OVERFLOW_GUARD",
+    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 

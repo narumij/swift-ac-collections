@@ -327,13 +327,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       }
 
     #if false
-      // Int.maxを渡すと確保サイズが桁あふれし、capacity == Int.maxのまま数十バイトしか確保しない（ASanで検出）。
-      func testExtremeMinimumCapacity() {
-        var huge = RedBlackTreeDictionary<Int, Int>(minimumCapacity: Int.max)
-        for key in 0..<100 { huge[key] = key }
-        XCTAssertEqual(huge.count, 100)
-      }
-
       // index(_:offsetBy:)に巨大な距離を渡すと、範囲の外に出たあとも|distance|回ループを続けて終わらない。
       func testIndexOffsetByHugeDistanceTerminates() {
         let set: RedBlackTreeSet<Int> = [1, 2, 3]

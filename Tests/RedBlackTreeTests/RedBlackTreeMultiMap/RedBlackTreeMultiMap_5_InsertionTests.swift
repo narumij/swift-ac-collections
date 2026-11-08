@@ -33,6 +33,66 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["b", "c", "d"])
   }
 
+  // MARK: - 同値キーの並び（RBT-074）
+
+  /// キーと値の列からの初期化は、同値キーの値を入力の順に並べること（RBT-074）
+  func test_initFromPairs_keepsInputOrderOfEquivalentKeys() {
+    let pairs = [(2, "b1"), (1, "a1"), (2, "b2"), (1, "a2"), (2, "b3")]
+    let expected = ["a1", "a2", "b1", "b2", "b3"]
+
+    XCTAssertEqual(RedBlackTreeMultiMap<Int, String>(keysWithValues: pairs).map(\.value), expected)
+    XCTAssertEqual(
+      RedBlackTreeMultiMap<Int, String>(keysWithValues: AnySequence(pairs)).map(\.value), expected)
+  }
+
+  /// insert(contentsOf:)・inserting(contentsOf:)は、既存の同値キーの後ろに、
+  /// 入力側の同値キーの値を入力の順で置くこと（RBT-074）
+  func test_insertContentsOf_appendsEquivalentKeyPairsAfterExistingOnes() {
+    let map = RedBlackTreeMultiMap<Int, String>(
+      keysWithValues: [(1, "a0"), (5, "a1"), (5, "a2"), (9, "a9")])
+    let other = [(5, "b1"), (5, "b2"), (5, "b3"), (7, "b7")]
+    let expected = ["a0", "a1", "a2", "b1", "b2", "b3", "b7", "a9"]
+
+    var fromMultiMap = map
+    fromMultiMap.insert(contentsOf: RedBlackTreeMultiMap<Int, String>(keysWithValues: other))
+    XCTAssertEqual(fromMultiMap.map(\.value), expected)
+
+    var fromSequence = map
+    fromSequence.insert(contentsOf: other)
+    XCTAssertEqual(fromSequence.map(\.value), expected)
+
+    XCTAssertEqual(
+      map.inserting(contentsOf: RedBlackTreeMultiMap<Int, String>(keysWithValues: other)).map(\.value),
+      expected)
+    XCTAssertEqual(map.inserting(contentsOf: other).map(\.value), expected)
+  }
+
+  /// 固定シードの乱択入力でも、初期化とinsert(contentsOf:)の結果が、
+  /// キーごとに「既存の並び→入力の並び」（安定なmerge）と一致すること（RBT-074）
+  func test_insertContentsOf_matchesStableMergeForSeededInputs() {
+    var random = InsertionOrderRandom(seed: 0x5EED_0074)
+
+    for trial in 0..<200 {
+      let lhs = (0..<Int.random(in: 0...40, using: &random)).map {
+        (Int.random(in: 0...5, using: &random), "a\($0)")
+      }
+      let rhs = (0..<Int.random(in: 0...40, using: &random)).map {
+        (Int.random(in: 0...5, using: &random), "b\($0)")
+      }
+      let expected = (lhs + rhs).enumerated()
+        .sorted { ($0.element.0, $0.offset) < ($1.element.0, $1.offset) }
+        .map(\.element.1)
+
+      var fromMultiMap = RedBlackTreeMultiMap<Int, String>(keysWithValues: lhs)
+      fromMultiMap.insert(contentsOf: RedBlackTreeMultiMap<Int, String>(keysWithValues: rhs))
+      XCTAssertEqual(fromMultiMap.map(\.value), expected, "trial \(trial)")
+
+      var fromSequence = RedBlackTreeMultiMap<Int, String>(keysWithValues: lhs)
+      fromSequence.insert(contentsOf: rhs)
+      XCTAssertEqual(fromSequence.map(\.value), expected, "trial \(trial)")
+    }
+  }
+
   #if !COMPATIBLE_ATCODER_2025
     func test_insertWithHint_handlesEquivalentGoodAndBadHints() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "c"), (3, "x")]
@@ -168,3 +228,16 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+/// SplitMix64. 並びのテストで、再現できる乱択入力を作る
+private struct InsertionOrderRandom: RandomNumberGenerator {
+  var state: UInt64
+  init(seed: UInt64) { state = seed }
+  mutating func next() -> UInt64 {
+    state &+= 0x9E37_79B9_7F4A_7C15
+    var z = state
+    z = (z ^ (z &>> 30)) &* 0xBF58_476D_1CE4_E5B9
+    z = (z ^ (z &>> 27)) &* 0x94D0_49BB_1331_11EB
+    return z ^ (z &>> 31)
+  }
+}

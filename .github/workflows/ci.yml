@@ -206,6 +206,32 @@ jobs:
       - name: Run tests
         run: swift test -c release --traits NORMAL_RELEASE_TEST
 
+  atcoder-2025-compatibility:
+    name: AtCoder 2025 compatibility (${{ matrix.configuration }})
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - configuration: debug
+            traits: COMPATIBLE_ATCODER_2025,NORMAL_DEBUG_TEST
+          - configuration: release
+            traits: COMPATIBLE_ATCODER_2025
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run compatibility tests
+        run: >-
+          swift test -c ${{ matrix.configuration }}
+          --traits ${{ matrix.traits }}
+
   performance:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04

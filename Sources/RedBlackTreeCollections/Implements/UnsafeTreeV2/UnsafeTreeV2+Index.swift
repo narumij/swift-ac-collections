@@ -58,20 +58,14 @@ extension UnsafeTreeV2 {
   }
 
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
-  // 共有された木から複数スレッドが同時に呼んでも、ヘッダへの書込みアクセスが重ならないよう、
-  // _lazyDetachのセルはポインタのフィールドだけをatomicに確認して取り出す
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
-    assert(p != .nullptr)
-    return _buffer.withUnsafeMutablePointerToHeader { header in
-      let cell = Header._lazyDetachCell(at: header.pointer(to: \.lazyDetachPointer)!)
-      return header.pointee._index(p, cell: cell)
-    }
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index(p) }
   }
 
   @inlinable
   func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
-    p.___has_payload_content ? .some(index(p)) : .none
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index_or_nil(p) }
   }
   #else
   @inlinable

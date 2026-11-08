@@ -249,45 +249,6 @@ extension UnsafeTreeV2BufferHeader {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
   }
-
-  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
-  // 試作: 渡されたセルを使う非mutating版
-  @inlinable
-  func _index(_ p: _NodePtr, cell: UnsafeMutablePointer<_LazyTie>) -> _LazyTiedPtrV2 {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: cell.pointee)
-  }
-
-  // 試作: lazyDetachPointerのフィールドに対して、ヘッダ全体を開かずに
-  // 「atomicに確認し、無ければロックの中で作って公開する」
-  @inlinable
-  static func _lazyDetachCell(
-    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
-  ) -> UnsafeMutablePointer<_LazyTie> {
-    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
-    if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
-      return cell
-    }
-    return _createLazyDetachCell(at: field)
-  }
-
-  @usableFromInline
-  @inline(never)
-  static func _createLazyDetachCell(
-    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
-  ) -> UnsafeMutablePointer<_LazyTie> {
-    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
-    return _lazyDetachLock.withLock { _ in
-      if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
-        return cell
-      }
-      let cell = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
-      cell.initialize(to: .create())
-      bits.pointee.store(UInt(bitPattern: cell), ordering: .releasing)
-      return cell
-    }
-  }
-  #endif
   
   @inlinable
   mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {

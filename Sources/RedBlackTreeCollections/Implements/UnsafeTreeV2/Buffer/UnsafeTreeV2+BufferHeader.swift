@@ -20,6 +20,13 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Synchronization
+
+// `lazyDetach`の初回生成だけを直列化するロック（試行実装、RBT-008）。
+// 生成済みの場合は取らないので、通常の経路の費用はnil確認のみ。
+@usableFromInline
+let _lazyDetachLock = Mutex<Void>(())
+
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
@@ -171,13 +178,24 @@ extension UnsafeTreeV2BufferHeader {
   var lazyDetach: _LazyTie {
     mutating get {
       if _lazyDetach == nil {
-        // ロックする
-        // もう一回nil確認してnilなら生成
-        _lazyDetach = .create()
-        // ロック解除
+        _createLazyDetachLocked()
       }
       return _lazyDetach!
     }
+  }
+
+  // 生成側を分離し、生成済みの経路(getter)をインライン化しやすく保つ
+  @usableFromInline
+  @inline(never)
+  mutating func _createLazyDetachLocked() {
+    // ロックする
+    _lazyDetachLock.withLock { _ in
+      // もう一回nil確認してnilなら生成
+      if _lazyDetach == nil {
+        _lazyDetach = .create()
+      }
+    }
+    // ロック解除
   }
   #endif
 
@@ -194,7 +212,7 @@ extension UnsafeTreeV2BufferHeader {
     // TODO: 仕様の再検討
     // RBT-071, RBT-077
     _lazyDetach?.release()
-    _lazyDetach = .create()
+    _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
     #endif
   }
 }

@@ -113,15 +113,7 @@ extension _LazyTie {
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
 
-#if USE_LAZY_DETACH
-extension _LazyTie {
-
-  @inlinable
-  package func release() {
-    /* NOP */
-  }
-}
-#else
+#if !USE_LAZY_DETACH
 extension _LazyTie {
 
   // 全削除で結束を捨てる前に、古いIndexのDebug比較を失効させる。

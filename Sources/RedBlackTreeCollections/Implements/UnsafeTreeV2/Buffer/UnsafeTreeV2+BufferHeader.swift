@@ -156,6 +156,7 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
+  #if false
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
@@ -165,6 +166,20 @@ extension UnsafeTreeV2BufferHeader {
       return _lazyDetach!
     }
   }
+  #else
+  @inlinable
+  var lazyDetach: _LazyTie {
+    mutating get {
+      if _lazyDetach == nil {
+        // ロックする
+        // もう一回nil確認してnilなら生成
+        _lazyDetach = .create()
+        // ロック解除
+      }
+      return _lazyDetach!
+    }
+  }
+  #endif
 
   // 確保済みメモリの内容を未初期化に戻し、木を空にする
   @usableFromInline
@@ -173,13 +188,13 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
-    _lazyDetach?.release()
     #if !USE_LAZY_DETACH
     // バッファ切り離しをしないケースでのみ、全削除でのインデックス無効化が利用できる
     // バッファ切り離しをするケースで解放すると内部バッファが解放されてUBになる
     // TODO: 仕様の再検討
     // RBT-071, RBT-077
-    _lazyDetach = nil
+    _lazyDetach?.release()
+    _lazyDetach = .create()
     #endif
   }
 }

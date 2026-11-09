@@ -478,8 +478,16 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
+      #if false
       __tree_.ensureUnique()
       __tree_.deinitialize()
+      #else
+      if __tree_.isUnique() {
+        __tree_.deinitialize()
+      } else {
+        __tree_ = .create(minimumCapacity: __tree_.capacity)
+      }
+      #endif
     } else if !keepCapacity {
       __tree_ = .create()
     }

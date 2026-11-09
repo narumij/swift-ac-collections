@@ -142,6 +142,7 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
+      #if false
       // 空の場合は削除対象が存在し得ないため、ensureUnique()による
       // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
       guard __tree_.count > 0 else { return }
@@ -151,6 +152,13 @@
       ) {
         try shouldBeRemoved($0.tuple)
       }
+      #else
+      _ = try __tree_.___erase_sanitize_range_if_with_many_care(
+        bounds.evaluate(__tree_).relative(to: __tree_)
+      ) {
+        try shouldBeRemoved($0.tuple)
+      }
+      #endif
     }
   }
 #endif

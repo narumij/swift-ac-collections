@@ -20,7 +20,7 @@
     }
   }
 
-  #if false  // RBT-104：呼び出し口をpurifiedに戻した状態で、ASanで赤を確かめ直すまで止めておく
+  #if true  // RBT-104：呼び出し口をpurifiedに戻した状態で、ASanで赤を確かめ直すまで止めておく
   // RBT-104：中身を破棄したノードを指すIndexを渡しても、破棄済みの中身や古いリンクを読む前に停止すること。
 
   private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {

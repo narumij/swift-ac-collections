@@ -383,6 +383,7 @@ extension _BucketAllocator {
         #endif
       }
       p.pointee.___has_payload_content = false
+      p.pointee.___recycle_count += 1
       p.deinitialize(count: 1)
       #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1

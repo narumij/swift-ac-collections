@@ -104,4 +104,20 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-081 B2：共有中の空でない木でremoveAll(keepingCapacity: true)しても、木を全コピーしないこと。
+
+  #if _TREE_COPY_COUNTER
+    func testRemoveAllKeepingCapacityFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+
+      shared.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(shared.isEmpty)
+      XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+      XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+    }
+  #endif
 }

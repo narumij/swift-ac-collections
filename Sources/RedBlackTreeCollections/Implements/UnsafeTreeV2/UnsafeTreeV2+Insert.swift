@@ -8,16 +8,16 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  func ___simple_retrieve(_ __parent: _NodePtr) -> _NodePtr {
+  func __simple_retrieve(_ __parent: _NodePtr) -> _NodePtr {
     __parent.___is_end ? __end_node : _buffer.header[__parent.trackingTag]
   }
 
   @inlinable
-  func ___retrieve(
+  func __simple_retrieve(
     _ __parent: _NodePtr,
     _ __child: _NodeRef
   ) -> (__parent: _NodePtr, __child: _NodeRef) {
-    let __p = ___simple_retrieve(__parent)
+    let __p = __simple_retrieve(__parent)
     if __parent.__left_ref == __child {
       return (__p, __p.__left_ref)
     } else if __parent.__right_ref == __child {
@@ -40,7 +40,7 @@ extension UnsafeTreeV2 {
     ensureUniqueAndCapacity()  // これが問題で全体をupdate内には移せない
 
     if __e != __end_node {  // 木の不一致判定
-      (__parent, __child) = ___retrieve(__parent, __child)
+      (__parent, __child) = __simple_retrieve(__parent, __child)
     }
     let __h = __construct_node(__k)
     __insert_node_at(__parent, __child, __h)
@@ -66,8 +66,8 @@ extension UnsafeTreeV2 {
     ensureUniqueAndCapacity()
     
     if __e != __end_node {  // 木の不一致判定
-      (__parent, __child) = ___retrieve(__parent, __child)
-      __p = ___simple_retrieve(__p)
+      (__parent, __child) = __simple_retrieve(__parent, __child)
+      __p = __simple_retrieve(__p)
     }
     
     let __h = __construct_node(__k)

@@ -119,5 +119,41 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
       XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
     }
+
+    func testRemoveAllKeepingCapacityFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+
+      shared.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(shared.isEmpty)
+      XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+      XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+    }
+
+    func testRemoveAllKeepingCapacityFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+
+      shared.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(shared.isEmpty)
+      XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+    }
+
+    func testRemoveAllKeepingCapacityFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var shared = original
+
+      shared.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(shared.isEmpty)
+      XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+      XCTAssertEqual(original.map(\.key), [1, 2, 2, 3, 4])
+      XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+    }
   #endif
 }

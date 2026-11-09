@@ -46,6 +46,32 @@ extension UnsafeTreeV2 {
     __insert_node_at(__parent, __child, __h)
     return (__h, true)
   }
+
+  @inlinable
+  mutating func ___insert_unique_hint_if_not_present(
+    _ __k: _PayloadValue,_ __p: _NodePtr
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    
+    var __p = __p
+    var __dummy = nullptr
+    
+    // 問題が起きる可能性がすこしある
+    var (__parent, __child) = __find_equal(__p, &__dummy, __key(__k))
+
+    if __child.pointee != nullptr {
+      return (__child.pointee, false)
+    }
+    
+    ensureUniqueAndCapacity()
+    
+    (__parent, __child) = ___retrieve(__parent, __child)
+    __p = ___simple_retrieve(__p)
+    
+    let __h = __construct_node(__k)
+    __insert_node_at(__parent, __child, __h)
+    
+    return (__h, true)
+  }
 }
 
 extension UnsafeTreeV2 where Base: ScalarValueTrait {

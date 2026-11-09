@@ -108,10 +108,20 @@
     ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
-      __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
-      guard let p = p.pointer, !p.___is_end else { return nil }
-      return __tree_._unchecked_remove(at: p).payload
+      #if false
+        __tree_.ensureUnique()
+        let p = bound.evaluate(__tree_)
+        guard let p = p.pointer, !p.___is_end else { return nil }
+        return __tree_._unchecked_remove(at: p).payload
+      #else
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).pointer, !p.___is_end else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return __tree_._unchecked_remove(at: p).payload
+      #endif
     }
   }
 

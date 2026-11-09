@@ -71,10 +71,20 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
-      __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
-      guard let p = p.accessible.pointer else { return nil }
-      return Base.__element_(__tree_._unchecked_remove(at: p).payload)
+      #if false
+        __tree_.ensureUnique()
+        let p = bound.evaluate(__tree_)
+        guard let p = p.accessible.pointer else { return nil }
+        return Base.__element_(__tree_._unchecked_remove(at: p).payload)
+      #else
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).accessible.pointer else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return Base.__element_(__tree_._unchecked_remove(at: p).payload)
+      #endif
     }
   }
 

@@ -406,12 +406,12 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func ___pushRecycle(_ p: _NodePtr) {
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
-      ___pushRecycleWithoutDeinitialize(p)
+      ___raw_pushRecycle(p)
     }
     #endif
 
     @inlinable
-    mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
+    mutating func ___raw_pushRecycle(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")

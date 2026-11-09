@@ -75,11 +75,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         defer {
           if let value {
             Base.__mapped_value_ptr(__node).initialize(to: value)
+            
           } else {
             _ = update {
               let next = $0.__remove_node_pointer(__node)
               Base.__key_ptr(__node).deinitialize(count: 1)
-              $0.header.pointee.___pushRecycleWithoutDeinitialize(__node)
+              $0.header.pointee.___raw_pushRecycle(__node)
               return next
             }
           }

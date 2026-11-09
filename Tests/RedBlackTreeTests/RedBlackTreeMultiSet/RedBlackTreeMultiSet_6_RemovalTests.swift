@@ -316,5 +316,34 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(shared), [1, 3])
       XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
     }
+
+    /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（IndexRange）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseIndexRangeWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（IndexRangeExpression）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseIndexRangeExpressionWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
   }
 #endif

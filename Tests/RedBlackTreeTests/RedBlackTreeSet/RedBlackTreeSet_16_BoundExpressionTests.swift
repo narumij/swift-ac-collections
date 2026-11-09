@@ -483,6 +483,32 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のBound範囲のeraseで木がコピーされた")
   }
 
+  /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（BoundRangeExpression）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+  func testEraseBoundRangeWhereNothingMatchesFromSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var shared = original
+    var visited: [Int] = []
+
+    shared.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0); return false }
+
+    XCTAssertEqual(visited, [2, 3, 4])
+    XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+  }
+
+  /// 共有中の木で`erase(_:where:)`（BoundRangeExpression）が要素を消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-081）。
+  func testEraseBoundRangeWhereSomeMatchFromSharedSetCallsPredicateOncePerElement() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var shared = original
+    var visited: [Int] = []
+
+    shared.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0); return $0 % 2 == 0 }
+
+    XCTAssertEqual(visited, [2, 3, 4])
+    XCTAssertEqual(Array(shared), [1, 3, 5])
+    XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+  }
+
   func testSubscriptBoundsModifyPopFirst() throws {
     var b = RedBlackTreeSet<Int>(0 ..< 4)
     let removed = b[lowerBound(0) ..< upperBound(2)].popFirst()

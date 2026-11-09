@@ -139,6 +139,19 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のBound範囲のeraseで木がコピーされた")
   }
 
+  /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（BoundRangeExpression）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+  func testEraseBoundRangeWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+    var shared = original
+    var visited: [Int] = []
+
+    shared.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0); return false }
+
+    XCTAssertEqual(visited, [2, 2, 3])
+    XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+  }
+
   func testSubscriptBoundsView() throws {
     let view = a[lowerBound(0) ..< upperBound(2)]
     XCTAssertEqual(Array(view), [0, 1, 2])

@@ -104,4 +104,53 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-087：共有中に削除対象のないBoundでeraseしても、木をコピーしないこと。
+  // 4型とも修正するまで失敗する。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testEraseMissingBoundFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      XCTAssertNil(shared.erase(find(9)))
+      XCTAssertNil(shared.erase(lowerBound(10)))
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+    }
+
+    func testEraseMissingBoundFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      XCTAssertNil(shared.erase(find(9)))
+      XCTAssertNil(shared.erase(lowerBound(10)))
+
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+    }
+
+    func testEraseMissingBoundFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      XCTAssertNil(shared.erase(find(9)))
+      XCTAssertNil(shared.erase(lowerBound(10)))
+
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+    }
+
+    func testEraseMissingBoundFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      var shared = original
+
+      XCTAssertNil(shared.erase(find(9)))
+      XCTAssertNil(shared.erase(lowerBound(10)))
+
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+    }
+  #endif
 }

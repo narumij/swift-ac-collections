@@ -141,6 +141,17 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(fromMultiSet.isTriviallyIdentical(to: original), "空のMultiSetのmergeで木がコピーされた")
   }
 
+  /// 共有中のSetに空のSequenceをmergeしても、木をコピーしないこと（RBT-101）
+  func test_merge_emptySequenceIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    shared.merge([Int]())
+
+    XCTAssertEqual(Array(shared), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのmergeで木がコピーされた")
+  }
+
   /// 標準ライブラリのSetをmerge(_:)で追加できること
   func test_merge_fromSwiftSet() {
     var set: RedBlackTreeSet<Int> = [1, 2, 3]

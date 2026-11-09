@@ -273,7 +273,8 @@ extension RedBlackTreeSet {
       let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
       return (__inserted, __inserted ? newMember : Base.__payload_(__r))
     #else
-    return __tree_.___insert_unique_if_not_present(newMember)
+    let (__r, __inserted) = __tree_.___insert_unique_if_not_present(newMember)
+    return (__inserted, Base.__payload_(__r))
     #endif
   }
 
@@ -312,7 +313,7 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      #if true  // RBT-086: hint付きは旧コードに戻して再現テストの赤を確かめる
+      #if false
         __tree_.ensureUniqueAndCapacity()
         let p = __tree_.__purified_(hint)
         guard let __p = p.pointer else {

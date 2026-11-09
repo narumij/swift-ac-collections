@@ -6,6 +6,7 @@
 //
 
 extension UnsafeTreeV2 {
+  
   @inlinable
   func ___retrieve(
     _ __parent: _NodePtr,
@@ -23,26 +24,30 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 where Base: ScalarValueTrait {
+extension UnsafeTreeV2 {
 
   @inlinable
   mutating func ___insert_unique_if_not_present(
-    _ newMember: _Key
-  ) -> (inserted: Bool, memberAfterInsert: _PayloadValue)
-  where _Key == _PayloadValue {
-    var (__parent, __child) = update { $0.__find_equal(__key(newMember)) }
+    _ __k: _PayloadValue
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    
+    var (__parent, __child) = __find_equal(__key(__k))
     let __e = __end_node
     if __child.pointee != nullptr {
-      return (false, Base.__payload_(__child.pointee))
+      return (__child.pointee, false)
     }
-    ensureUniqueAndCapacity()
+    
+    ensureUniqueAndCapacity() // これが問題で全体をupdate内には移せない
+    
     if __e != __end_node {  // 木の不一致判定
       (__parent, __child) = ___retrieve(__parent, __child)
     }
-    return update {
-      let __h = $0.__construct_node(newMember)
-      $0.__insert_node_at(__parent, __child, __h)
-      return (true, Base.__payload_(__h))
-    }
+    let __h = __construct_node(__k)
+    __insert_node_at(__parent, __child, __h)
+    return (__h, true)
   }
+}
+
+extension UnsafeTreeV2 where Base: ScalarValueTrait {
+  
 }

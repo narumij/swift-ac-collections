@@ -307,9 +307,15 @@ extension RedBlackTreeDictionary {
     public mutating func index(inserting newMember: Element) -> (
       inserted: Bool, index: Index
     ) {
-      __tree_.ensureUniqueAndCapacity()
-      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-      return (__inserted, ___index(__r))
+      #if false
+        __tree_.ensureUniqueAndCapacity()
+        let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
+        return (__inserted, ___index(__r))
+      #else
+        let (__r, __inserted) = __tree_.___insert_unique_if_not_present(
+          Base.__payload_(newMember))
+        return (__inserted, ___index(__r))
+      #endif
     }
   }
 

@@ -297,9 +297,14 @@ extension RedBlackTreeDictionary {
   public mutating func insert(_ newMember: Element)
     -> (inserted: Bool, memberAfterInsert: Element)
   {
-    __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-    return (__inserted, __inserted ? newMember : Base.__element_(__r))
+    #if false
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
+      return (__inserted, __inserted ? newMember : Base.__element_(__r))
+    #else
+      let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
+      return (__inserted, Base.__element_(__r))
+    #endif
   }
 }
 
@@ -337,14 +342,23 @@ extension RedBlackTreeDictionary {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
-      guard let __p = p.pointer else {
-        fatalError(.invalidIndex)
-      }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(
-        __p, newMember.key, Base.__payload_(newMember))
-      return (__inserted, ___index(__r))
+      #if false
+        __tree_.ensureUniqueAndCapacity()
+        let p = __tree_.__purified_(hint)
+        guard let __p = p.pointer else {
+          fatalError(.invalidIndex)
+        }
+        let (__r, __inserted) = __tree_.__emplace_hint_unique(
+          __p, newMember.key, Base.__payload_(newMember))
+        return (__inserted, ___index(__r))
+      #else
+        guard let __p = __tree_.__purified_(hint).pointer else {
+          fatalError(.invalidIndex)
+        }
+        let (__r, __inserted) = __tree_.___insert_unique_hint_if_not_present(
+          Base.__payload_(newMember), __p)
+        return (__inserted, ___index(__r))
+      #endif
     }
 
     /// Inserts or replaces a key-value pair, using `hint` as a suggested insertion position.

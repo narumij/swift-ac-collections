@@ -268,18 +268,13 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    #if !COMPATIBLE_ATCODER_2025
-      // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）
-      if !__tree_.isUnique() {
-        let __r = __tree_.find(newMember)
-        if __r != __tree_.end {
-          return (false, Base.__payload_(__r))
-        }
-      }
+    #if false
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+      return (__inserted, __inserted ? newMember : Base.__payload_(__r))
+    #else
+    return __tree_.insertIfNotPresent(newMember)
     #endif
-    __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-    return (__inserted, __inserted ? newMember : Base.__payload_(__r))
   }
 
   /// Inserts the given element, replacing an existing equivalent element if one is already present.
@@ -317,23 +312,33 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）。hintの検査は先に行う
-      if !__tree_.isUnique() {
-        guard __tree_.__purified_(hint).pointer != nil else {
+      #if false
+        __tree_.ensureUniqueAndCapacity()
+        let p = __tree_.__purified_(hint)
+        guard let __p = p.pointer else {
           fatalError(.invalidIndex)
         }
-        let __r = __tree_.find(newMember)
-        if __r != __tree_.end {
-          return (false, ___index(__r))
+        let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+        return (__inserted, ___index(__r))
+      #else
+        // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）。hintの検査は先に行う
+        if !__tree_.isUnique() {
+          guard __tree_.__purified_(hint).pointer != nil else {
+            fatalError(.invalidIndex)
+          }
+          let __r = __tree_.find(newMember)
+          if __r != __tree_.end {
+            return (false, ___index(__r))
+          }
         }
-      }
-      __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
-      guard let __p = p.pointer else {
-        fatalError(.invalidIndex)
-      }
-      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
-      return (__inserted, ___index(__r))
+        __tree_.ensureUniqueAndCapacity()
+        let p = __tree_.__purified_(hint)
+        guard let __p = p.pointer else {
+          fatalError(.invalidIndex)
+        }
+        let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+        return (__inserted, ___index(__r))
+      #endif
     }
 
     /// Inserts or replaces an element, using `hint` as a suggested insertion position.
@@ -443,20 +448,9 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    #if COMPATIBLE_ATCODER_2025
-    guard __tree_.count > 0 else { return nil }
-    __tree_.ensureUnique()
     #if false
+    __tree_.ensureUnique()
       return __tree_.update { $0.___erase_unique(member) } ? member : nil
-    #else
-      return __tree_.update {
-        let index = $0.find(member)
-        guard index != $0.end else { return nil }
-        let removed = Base.__payload_(index)
-        _ = $0.erase(index)
-        return removed
-      }
-    #endif
     #else
       return __tree_._removeIfPresent(member)
     #endif

@@ -352,6 +352,22 @@
         expectNoInvalidMemoryAccess(result)
       }
 
+      /// 同じ無効なIndexを2つ渡しても、同一位置として何もせずに返らず、事前条件違反で停止すること（RBT-099）。
+      @Test
+      func mappedValuesSwapWithSameErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values.swapAt(stale, stale)
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
       @Test
       func mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() async {
         let result = await #expect(

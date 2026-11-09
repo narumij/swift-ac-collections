@@ -136,4 +136,19 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       }
     }
   #endif
+
+  // RBT-099：共有中の木で、同じ位置どうしのvalues.swapAtは木をコピーしないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testValuesSwapAtSameIndexOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b"]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.values.swapAt(i, i)
+
+      XCTAssertEqual(shared.map(\.value), ["a", "b"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "同じ位置のswapAtで木がコピーされた")
+    }
+  #endif
 }

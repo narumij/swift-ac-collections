@@ -33,7 +33,7 @@ var defines: [String] = [
 //  "_TREE_INTERNAL_CHECKS",
     
     // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
-    "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
+    // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
 ]
 
 var _settings: [SwiftSetting] =

@@ -104,4 +104,48 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-101：共有中の空でない木に、空のSequenceをmerge・insert(contentsOf:)しても、木をコピーしないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testSetMergeEmptySequenceOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      shared.merge([Int]())
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのmergeで木がコピーされた")
+    }
+
+    func testMultiSetInsertContentsOfEmptySequenceOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      shared.insert(contentsOf: [Int]())
+
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのinsert(contentsOf:)で木がコピーされた")
+    }
+
+    func testDictionaryMergeEmptySequenceOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      shared.merge([(Int, String)]()) { $1 }
+
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのmergeで木がコピーされた")
+    }
+
+    func testMultiMapInsertContentsOfEmptySequenceOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      var shared = original
+
+      shared.insert(contentsOf: [(Int, String)]())
+
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのinsert(contentsOf:)で木がコピーされた")
+    }
+  #endif
 }

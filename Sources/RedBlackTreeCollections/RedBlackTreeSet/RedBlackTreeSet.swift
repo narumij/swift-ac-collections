@@ -273,7 +273,7 @@ extension RedBlackTreeSet {
       let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
       return (__inserted, __inserted ? newMember : Base.__payload_(__r))
     #else
-    return __tree_.insertIfNotPresent(newMember)
+    return __tree_.___insert_unique_if_not_present(newMember)
     #endif
   }
 

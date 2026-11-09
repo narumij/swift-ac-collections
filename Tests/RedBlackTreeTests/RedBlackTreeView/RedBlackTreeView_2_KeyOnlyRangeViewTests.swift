@@ -199,6 +199,38 @@ import XCTest
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
     }
 
+    /// 共有中の木で、範囲ビューの`erase(where:)`が範囲の先頭から消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれ、コピー後のビューの範囲が正しく、共有元は変わらないこと（RBT-081）。
+    func test_eraseWhere_firstMatchIsStart_fromSharedTree() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      let lo = original.index(after: original.startIndex)
+      let hi = original.index(lo, offsetBy: 3)
+      var view = original[lo ..< hi]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return $0 != 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(view), [3])
+      XCTAssertEqual(view.count, 1)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// 共有中の木で、範囲ビューの`erase(where:)`が範囲の途中から消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれ、コピー後のビューの範囲が正しく、共有元は変わらないこと（RBT-081）。
+    func test_eraseWhere_firstMatchIsInMiddle_fromSharedTree() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      let lo = original.index(after: original.startIndex)
+      let hi = original.index(lo, offsetBy: 3)
+      var view = original[lo ..< hi]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return $0 == 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(view), [2, 4])
+      XCTAssertEqual(view.count, 2)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
     /// erase()やpopLast()で空にした範囲ビューは、startIndexとendIndexが一致すること。
     func test_viewEmptiedByEraseOrPopLast_hasEqualBounds() {
       let set = RedBlackTreeSet(0..<10)

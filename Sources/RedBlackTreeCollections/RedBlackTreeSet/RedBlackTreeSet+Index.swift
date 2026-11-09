@@ -318,15 +318,10 @@
         let __r = __tree_._unchecked_remove(at: __p).__r
         return ___index(__r)
       #else
-        guard var __p = __tree_.__purified_(index).accessible.pointer else {
+        guard let __p = __tree_.__purified_(index).accessible.pointer else {
           return nil
         }
-        let __e = __tree_.__end_node
-        __tree_.ensureUnique()
-        if __e != __tree_.__end_node {
-          __p = __tree_.__simple_retrieve(__p)
-        }
-        let __r = __tree_._unchecked_remove(at: __p).__r
+        let __r = __tree_.___erase_with_many_care(__p)
         return ___index(__r)
       #endif
     }

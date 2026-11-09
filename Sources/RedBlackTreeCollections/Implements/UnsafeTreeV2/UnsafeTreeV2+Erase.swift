@@ -20,6 +20,20 @@
 //
 //===----------------------------------------------------------------------===//
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  mutating func ___erase_with_many_care(_ __p: _NodePtr) -> _NodePtr {
+    var __p = __p
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __p = __simple_retrieve(__p)
+    }
+    return erase(__p)
+  }
+}
+
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 

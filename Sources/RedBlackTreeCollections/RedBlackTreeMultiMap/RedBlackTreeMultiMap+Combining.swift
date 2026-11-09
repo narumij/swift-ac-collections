@@ -33,12 +33,22 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(
     contentsOf other: RedBlackTreeMultiMap<Key, Value>
   ) {
+    #if false
     __tree_.ensureUnique()
     __tree_.___insert_range_multi(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node
     )
+    #else
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_multi(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node
+    )
+    #endif
   }
 
   /// Inserts every key-value pair produced by `other`, including duplicate keys.

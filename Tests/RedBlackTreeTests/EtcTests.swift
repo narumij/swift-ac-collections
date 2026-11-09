@@ -104,4 +104,65 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-102：MultiMapの位置添字で取り出した要素は、同値キーの並びどおりで、元の木を後から変更・破棄しても壊れないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testMultiMapPositionSubscriptReadsEquivalentKeysInOrder() {
+      var map = RedBlackTreeMultiMap<String, String>()
+      map.insert(key: "b", value: "b0")
+      map.insert(key: "a", value: "a0")
+      map.insert(key: "b", value: "b1")
+      map.insert(key: "a", value: "a1")
+      map.insert(key: "b", value: "b2")
+
+      var pairs: [String] = []
+      var i = map.startIndex
+      while i != map.endIndex {
+        pairs.append("\(map[i].key):\(map[i].value)")
+        i = map.index(after: i)
+      }
+      XCTAssertEqual(pairs, ["a:a0", "a:a1", "b:b0", "b:b1", "b:b2"])
+    }
+
+    func testMultiMapPositionSubscriptElementsOutliveMutation() {
+      final class Box {
+        let id: Int
+        init(_ id: Int) { self.id = id }
+      }
+      var map = RedBlackTreeMultiMap<String, Box>()
+      for i in 0 ..< 200 { map.insert(key: "key\(i / 2)", value: Box(i)) }
+
+      var taken: [(key: String, value: Box)] = []
+      var i = map.startIndex
+      while i != map.endIndex {
+        taken.append(map[i])
+        i = map.index(after: i)
+      }
+
+      map.removeAll()
+      for j in 0 ..< 200 { map.insert(key: "other\(j)", value: Box(-j)) }
+
+      XCTAssertEqual(taken.count, 200)
+      for (key, value) in taken {
+        XCTAssertEqual(key, "key\(value.id / 2)")
+      }
+    }
+
+    func testMultiMapPositionSubscriptOnSharedTreeKeepsSharedStorage() {
+      var original = RedBlackTreeMultiMap<String, [Int]>()
+      original.insert(key: "a", value: [1])
+      original.insert(key: "a", value: [2])
+      let shared = original
+
+      let element = shared[shared.index(after: shared.startIndex)]
+
+      XCTAssertEqual(element.key, "a")
+      XCTAssertEqual(element.value, [2])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original))
+      original.insert(key: "a", value: [3])
+      XCTAssertEqual(element.value, [2])
+      XCTAssertEqual(shared.map(\.value), [[1], [2]])
+    }
+  #endif
 }

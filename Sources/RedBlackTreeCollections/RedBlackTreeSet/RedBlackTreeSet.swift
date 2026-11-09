@@ -322,23 +322,7 @@ extension RedBlackTreeSet {
         let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
         return (__inserted, ___index(__r))
       #else
-        // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）。hintの検査は先に行う
-        if !__tree_.isUnique() {
-          guard __tree_.__purified_(hint).pointer != nil else {
-            fatalError(.invalidIndex)
-          }
-          let __r = __tree_.find(newMember)
-          if __r != __tree_.end {
-            return (false, ___index(__r))
-          }
-        }
-        __tree_.ensureUniqueAndCapacity()
-        let p = __tree_.__purified_(hint)
-        guard let __p = p.pointer else {
-          fatalError(.invalidIndex)
-        }
-        let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
-        return (__inserted, ___index(__r))
+      return __tree_.insert(newMember, hint: hint)
       #endif
     }
 

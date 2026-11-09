@@ -344,9 +344,10 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
+    // TODO: 取り急ぎの修正なので、再度吟味すること
     @usableFromInline
     mutating func ___flushFreshPool() {
-      freshBucketAllocator.deinitialize(bucket: freshBucketHead)
+      freshBucketAllocator.flush(bucket: freshBucketHead)
       freshPoolUsedCount = 0
       freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }

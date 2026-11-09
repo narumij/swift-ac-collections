@@ -104,4 +104,21 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-081/RBT-088：共有中の空でない木に、何も消さない述語でerase(where:)しても、
+  // 木をコピーしないこと。述語は各要素に1回ずつ、順に呼ばれること。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testEraseWhereNothingMatchesFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+  #endif
 }

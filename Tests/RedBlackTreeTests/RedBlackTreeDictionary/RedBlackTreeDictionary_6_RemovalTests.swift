@@ -347,5 +347,20 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
     }
+
+    #if _TREE_COPY_COUNTER
+      /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
+      func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {
+        let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+        var shared = original
+
+        shared.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(shared.isEmpty)
+        XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+        XCTAssertEqual(original.map(\.key), [1, 2, 3, 4, 5])
+        XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+      }
+    #endif
   }
 #endif

@@ -345,5 +345,20 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
     }
+
+    #if _TREE_COPY_COUNTER
+      /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
+      func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {
+        let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+        var shared = original
+
+        shared.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(shared.isEmpty)
+        XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+        XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+        XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+      }
+    #endif
   }
 #endif

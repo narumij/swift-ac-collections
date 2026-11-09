@@ -121,6 +121,16 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
         XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
       }
 
+      func testEraseEmptyEqualRangeFromSharedSetDoesNotCopy() {
+        let original: RedBlackTreeSet<Int> = [1, 2, 3]
+        var shared = original
+
+        shared.erase(shared.equalRange(9))
+
+        XCTAssertEqual(Array(shared), [1, 2, 3])
+        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndexRangeのeraseで木がコピーされた")
+      }
+
       func testEraseEmptyIndexRangeFromSharedMultiSetDoesNotCopy() {
         let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
         var shared = original

@@ -102,3 +102,34 @@ func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result
 public typealias _NodeRange = _RawRange<UnsafeMutablePointer<UnsafeNode>>
 // _SafeNodeRangeがいいという説がある
 public typealias _SafeRange = Result<_NodeRange, SealError>
+
+extension _RawRange where Bound: Equatable {
+  
+  @inlinable
+  var isEmpty: Bool { lowerBound == upperBound }
+}
+
+//extension Result where Success == _RawRange<_NodePtr> {
+//  
+//  @inlinable
+//  var isEmpty: Bool {
+//    switch self {
+//    case .success(let success):
+//      return success.isEmpty
+//    case .failure:
+//      return true
+//    }
+//  }
+//}
+
+//extension Result {
+//  
+//  @inlinable
+//  func unsafeGet() -> Success {
+//    do {
+//      return try get()
+//    } catch {
+//      fatalError("\(error)")
+//    }
+//  }
+//}

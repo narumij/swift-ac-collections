@@ -159,5 +159,50 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(shared), [1, 2, 3])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiSetのmergeで木がコピーされた")
     }
+
+    func testMultiSetInsertContentsOfEmptySetOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      shared.insert(contentsOf: RedBlackTreeSet<Int>())
+
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSetのinsert(contentsOf:)で木がコピーされた")
+    }
+
+    func testMultiSetInsertContentsOfEmptyMultiSetOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      shared.insert(contentsOf: RedBlackTreeMultiSet<Int>())
+
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiSetのinsert(contentsOf:)で木がコピーされた")
+    }
+
+    func testDictionaryMergeEmptyDictionaryOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      shared.merge(RedBlackTreeDictionary<Int, String>()) { $1 }
+
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のDictionaryのmergeで木がコピーされた")
+    }
+
+    func testMultiMapInsertContentsOfEmptyMultiMapOnSharedTreeDoesNotCopy() {
+      var original = RedBlackTreeMultiMap<Int, String>()
+      original.insert(key: 1, value: "a")
+      original.insert(key: 2, value: "b")
+      original.insert(key: 2, value: "c")
+      var shared = original
+
+      shared.insert(contentsOf: RedBlackTreeMultiMap<Int, String>())
+
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiMapのinsert(contentsOf:)で木がコピーされた")
+    }
   #endif
 }

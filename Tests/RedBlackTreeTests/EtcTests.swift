@@ -104,4 +104,87 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-081：共有中の空でない木で、範囲と述語を両方取るeraseが何も消さないとき、
+  // 木をコピーしないこと。消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれること。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testEraseIndexRangeWhereNothingMatchesFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeExpressionWhereNothingMatchesFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseBoundRangeWhereNothingMatchesFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeWhereSomeMatchFromSharedSetCallsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    func testEraseIndexRangeExpressionWhereSomeMatchFromSharedSetCallsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    func testEraseBoundRangeWhereSomeMatchFromSharedSetCallsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+  #endif
 }

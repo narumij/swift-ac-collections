@@ -108,7 +108,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   // RBT-086の横展開：共有中に既存のキー・要素を挿入しても、木をコピーしないこと。
   // 修正するまで失敗するので、#if falseを1つずつ外しながら直す。
 
-  #if false  // Dictionary.insert(_:)
+  #if true  // Dictionary.insert(_:)
     func testInsertExistingKeyIntoSharedDictionaryDoesNotCopy() {
       let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       var shared = original
@@ -123,7 +123,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false  // Dictionary.insert(_:hint:)
+    #if true  // Dictionary.insert(_:hint:)
       func testInsertExistingKeyWithHintIntoSharedDictionaryDoesNotCopy() {
         let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var shared = original
@@ -139,7 +139,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
-    #if false  // Dictionary.index(inserting:)
+    #if true  // Dictionary.index(inserting:)
       func testIndexInsertingExistingKeyIntoSharedDictionaryDoesNotCopy() {
         let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
         var shared = original

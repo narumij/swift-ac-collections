@@ -106,8 +106,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false  // RBT-086: 修正するまで失敗する再現テストなので、対応時に有効にする。
-    // RBT-086: 共有中のSetに既存の要素をinsertしても、木をコピーしないこと（現状は失敗する再現テスト）
+    // RBT-086: 共有中のSetに既存の要素をinsertしても、木をコピーしないこと
     func testInsertExistingElementIntoSharedSetDoesNotCopy() {
       let original: RedBlackTreeSet<Int> = [1, 2, 3]
       var shared = original
@@ -120,7 +119,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のinsertで木がコピーされた")
     }
 
-    // RBT-086: hint付きでも、既存の要素なら木をコピーしないこと（現状は失敗する再現テスト）
+    // RBT-086: hint付きでも、既存の要素なら木をコピーしないこと
     func testInsertExistingElementWithHintIntoSharedSetDoesNotCopy() {
       let original: RedBlackTreeSet<Int> = [1, 2, 3]
       var shared = original
@@ -132,6 +131,5 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(shared), [1, 2, 3])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のhint付きinsertで木がコピーされた")
     }
-    #endif
   #endif
 }

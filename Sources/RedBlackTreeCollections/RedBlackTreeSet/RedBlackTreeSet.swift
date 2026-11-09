@@ -268,6 +268,15 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
+    #if !COMPATIBLE_ATCODER_2025
+      // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）
+      if !__tree_.isUnique() {
+        let __r = __tree_.find(newMember)
+        if __r != __tree_.end {
+          return (false, Base.__payload_(__r))
+        }
+      }
+    #endif
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     return (__inserted, __inserted ? newMember : Base.__payload_(__r))
@@ -308,6 +317,16 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
+      // 共有中に既存の要素を挿入しても、木をコピーしない（RBT-086）。hintの検査は先に行う
+      if !__tree_.isUnique() {
+        guard __tree_.__purified_(hint).pointer != nil else {
+          fatalError(.invalidIndex)
+        }
+        let __r = __tree_.find(newMember)
+        if __r != __tree_.end {
+          return (false, ___index(__r))
+        }
+      }
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
       guard let __p = p.pointer else {

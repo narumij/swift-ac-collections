@@ -58,6 +58,20 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 2, 3, 3, 3])
   }
 
+  func test_insertContentsOf_emptyTreeIntoSharedMultiSetDoesNotCopy() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+
+    var fromSet = original
+    fromSet.insert(contentsOf: RedBlackTreeSet<Int>())
+    XCTAssertEqual(Array(fromSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromSet.isTriviallyIdentical(to: original), "空のSetのinsert(contentsOf:)で木がコピーされた")
+
+    var fromMultiSet = original
+    fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet<Int>())
+    XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromMultiSet.isTriviallyIdentical(to: original), "空のMultiSetのinsert(contentsOf:)で木がコピーされた")
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 

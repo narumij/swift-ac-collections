@@ -24,6 +24,17 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["a", "b", "c", "d"])
   }
 
+  func test_insertContentsOf_emptyMultiMapIntoSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+    var shared = original
+
+    shared.insert(contentsOf: RedBlackTreeMultiMap<Int, String>())
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiMapのinsert(contentsOf:)で木がコピーされた")
+  }
+
   func test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries() {
     var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c")]
 

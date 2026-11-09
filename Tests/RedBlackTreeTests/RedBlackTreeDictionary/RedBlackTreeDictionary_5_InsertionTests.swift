@@ -290,6 +290,17 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(other["b"], 10)
   }
 
+  func test_merge_emptyDictionaryIntoSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    shared.merge(RedBlackTreeDictionary<Int, String>()) { $1 }
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のDictionaryのmergeで木がコピーされた")
+  }
+
   /// default付きsubscriptのdefaultは必要なときだけ評価されること（RBT-044 D1）。
   /// 既存キーの読み出し・変更では評価せず、未登録キーの読み出しでは評価しても登録せず、
   /// 未登録キーの初回変更で一度だけ評価して登録すること。

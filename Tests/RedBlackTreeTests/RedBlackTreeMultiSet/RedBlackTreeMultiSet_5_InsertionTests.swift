@@ -82,6 +82,19 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのinsert(contentsOf:)で木がコピーされた")
   }
 
+  func test_insertContentsOf_singlePassSequenceConsumesEveryElementOnce() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 3]
+    var multiset = original
+    let source = SinglePassSequence([0, 3, 3, 5])
+
+    multiset.insert(contentsOf: source)
+
+    XCTAssertEqual(Array(multiset), [0, 1, 3, 3, 3, 5])
+    XCTAssertEqual(Array(original), [1, 3])
+    XCTAssertEqual(source.makeIteratorCount, 1)
+    XCTAssertTrue(source.isExhausted)
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 

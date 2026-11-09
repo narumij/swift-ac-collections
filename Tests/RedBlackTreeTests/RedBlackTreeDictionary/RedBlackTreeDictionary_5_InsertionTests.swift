@@ -311,6 +311,28 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのmergeで木がコピーされた")
   }
 
+  func test_merge_singlePassSequenceConsumesEveryElementOnce() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c"]
+
+    var newFirst = original
+    let newFirstSource = SinglePassSequence([(0, "x"), (3, "y"), (5, "z")])
+    newFirst.merge(newFirstSource) { $0 + $1 }
+    XCTAssertEqual(newFirst.map(\.key), [0, 1, 3, 5])
+    XCTAssertEqual(newFirst.map(\.value), ["x", "a", "cy", "z"])
+    XCTAssertEqual(newFirstSource.makeIteratorCount, 1)
+    XCTAssertTrue(newFirstSource.isExhausted)
+
+    var existingFirst = original
+    let existingFirstSource = SinglePassSequence([(3, "y"), (0, "x")])
+    existingFirst.merge(existingFirstSource) { $0 + $1 }
+    XCTAssertEqual(existingFirst.map(\.key), [0, 1, 3])
+    XCTAssertEqual(existingFirst.map(\.value), ["x", "a", "cy"])
+    XCTAssertEqual(existingFirstSource.makeIteratorCount, 1)
+    XCTAssertTrue(existingFirstSource.isExhausted)
+
+    XCTAssertEqual(original.map(\.value), ["a", "c"])
+  }
+
   /// default付きsubscriptのdefaultは必要なときだけ評価されること（RBT-044 D1）。
   /// 既存キーの読み出し・変更では評価せず、未登録キーの読み出しでは評価しても登録せず、
   /// 未登録キーの初回変更で一度だけ評価して登録すること。

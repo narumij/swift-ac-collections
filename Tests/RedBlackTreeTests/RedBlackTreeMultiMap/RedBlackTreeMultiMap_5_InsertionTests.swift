@@ -45,6 +45,20 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのinsert(contentsOf:)で木がコピーされた")
   }
 
+  func test_insertContentsOf_singlePassSequenceConsumesEveryElementOnce() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (3, "c")]
+    var map = original
+    let source = SinglePassSequence([(0, "x"), (3, "y")])
+
+    map.insert(contentsOf: source)
+
+    XCTAssertEqual(map.map(\.key), [0, 1, 3, 3])
+    XCTAssertEqual(map.map(\.value), ["x", "a", "c", "y"])
+    XCTAssertEqual(original.map(\.value), ["a", "c"])
+    XCTAssertEqual(source.makeIteratorCount, 1)
+    XCTAssertTrue(source.isExhausted)
+  }
+
   func test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries() {
     var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c")]
 

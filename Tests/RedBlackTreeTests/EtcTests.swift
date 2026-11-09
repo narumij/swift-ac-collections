@@ -104,4 +104,22 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-081：共有中の空でない木で、Viewのerase(where:)が何も消さないとき、木をコピーしないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testViewEraseWhereNothingMatchesFromSharedSetDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared[lo ..< hi].erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
+    }
+  #endif
 }

@@ -119,5 +119,33 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
       XCTAssertEqual(dictionary.values[i].isUnique(), true)
     }
+
+    func testMappedValuesViewSubscriptModifyDoesNotCopyValueForOtherEntryPoints() {
+      final class Ref {}
+      struct Probe {
+        var ref = Ref()
+        mutating func isUnique() -> Bool { isKnownUniquelyReferenced(&ref) }
+      }
+      var multiMap: RedBlackTreeMultiMap<Int, Probe> = [(0, Probe()), (0, Probe())]
+      let m = multiMap.index(after: multiMap.startIndex)
+      XCTAssertEqual(multiMap.values[m].isUnique(), true)
+
+      var dictionary: RedBlackTreeDictionary<Int, Probe> = [0: Probe(), 1: Probe(), 2: Probe()]
+      let lo = dictionary.index(after: dictionary.startIndex)
+      let hi = dictionary.index(lo, offsetBy: 2)
+      XCTAssertEqual(dictionary[lo ..< hi].values[lo].isUnique(), true)
+    }
+
+    func testMappedValuesViewSubscriptMutationOnSharedTreeKeepsOriginal() {
+      let original: RedBlackTreeDictionary<Int, [Int]> = [0: [1], 1: [2]]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.values[i].append(3)
+
+      XCTAssertEqual(shared[1], [2, 3])
+      XCTAssertEqual(original[1], [2])
+      XCTAssertEqual(original[0], [1])
+    }
   #endif
 }

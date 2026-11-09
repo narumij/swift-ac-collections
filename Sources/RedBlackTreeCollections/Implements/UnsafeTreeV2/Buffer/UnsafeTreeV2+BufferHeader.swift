@@ -228,6 +228,10 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
+    if _lazyDetach != nil {
+      _lazyDetach?.release()
+      _lazyDetach = .create()
+    }
   }
 }
 

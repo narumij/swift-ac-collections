@@ -509,6 +509,44 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
   }
 
+  /// `erase(_:where:)`（BoundRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+  /// 共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+  func testEraseBoundRangeWhereRethrowsPredicateErrorAndKeepsSharedOriginal() {
+    struct StopError: Error, Equatable {}
+    let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    var set = original
+    var visited: [Int] = []
+
+    XCTAssertThrowsError(
+      try set.erase(lowerBound(2) ..< upperBound(5)) { element in
+        visited.append(element)
+        if element == 4 { throw StopError() }
+        return element == 2
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [2, 3, 4])
+    XCTAssertEqual(Array(original), [1, 2, 3, 4, 5, 6])
+    XCTAssertTrue(set.contains(1))
+    XCTAssertTrue(set.contains(6))
+    XCTAssertEqual(Array(set), Array(set).sorted())
+    XCTAssertTrue(set.isSubset(of: original))
+  }
+
+  /// 共有中の木で`erase(_:where:)`（BoundRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+  func testEraseBoundRangeWhereAllMatchRemovesOnlyTheRange() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    var set = original
+    var visited: [Int] = []
+
+    set.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0); return true }
+
+    XCTAssertEqual(visited, [2, 3, 4])
+    XCTAssertEqual(Array(set), [1, 5])
+    XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+  }
+
   func testSubscriptBoundsModifyPopFirst() throws {
     var b = RedBlackTreeSet<Int>(0 ..< 4)
     let removed = b[lowerBound(0) ..< upperBound(2)].popFirst()

@@ -82,8 +82,16 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
+    #if false
     __tree_.ensureUnique()
     __tree_.___insert_range_unique(other)
+    #else
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
+    _ = __tree_.update { $0.__insert_unique(__first) }
+    __tree_.___insert_range_unique(IteratorSequence(it))
+    #endif
   }
 
   /// Returns a set containing the elements of this set and `other`.

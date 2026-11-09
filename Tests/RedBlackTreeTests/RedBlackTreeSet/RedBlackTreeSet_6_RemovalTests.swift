@@ -702,5 +702,37 @@ extension RedBlackTreeSetRemoveTests {
         XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
       }
     #endif
+
+    /// `removeAll(keepingCapacity: true)`の後の容量は、予約した木・挿入で育った木・削除で疎になった木のいずれでも、
+    /// 共有中なら変更前の容量を下回らず、一意なら変更前と同じであること（RBT-095）。
+    func test_removeAllKeepingCapacity_keepsCapacityForTreeShapes() {
+      func shapes() -> [(String, RedBlackTreeSet<Int>)] {
+        var reserved = RedBlackTreeSet<Int>(minimumCapacity: 100)
+        for i in 0 ..< 5 { reserved.insert(i) }
+        var grown = RedBlackTreeSet<Int>()
+        for i in 0 ..< 1000 { grown.insert(i) }
+        var sparse = RedBlackTreeSet<Int>(0 ..< 1000)
+        sparse.erase { $0 % 10 != 0 }
+        return [("reserved", reserved), ("grown", grown), ("sparse", sparse)]
+      }
+
+      for (name, set) in shapes() {
+        let original = set
+        var shared = set
+        let before = shared.capacity
+        shared.removeAll(keepingCapacity: true)
+        XCTAssertTrue(shared.isEmpty, name)
+        XCTAssertGreaterThanOrEqual(shared.capacity, before, "共有中: \(name)")
+        XCTAssertEqual(original.count, set.count, name)
+      }
+
+      for (name, set) in shapes() {
+        var unique = set
+        let before = unique.capacity
+        unique.removeAll(keepingCapacity: true)
+        XCTAssertTrue(unique.isEmpty, name)
+        XCTAssertEqual(unique.capacity, before, "一意: \(name)")
+      }
+    }
   }
 #endif

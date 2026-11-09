@@ -104,37 +104,4 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
-
-  // RBT-095：removeAll(keepingCapacity: true)の後の容量が、変更前の容量を下回らないこと。
-  // 共有中の木は新しい木に差し替わり、一意な木はその場で空になる。
-
-  func testRemoveAllKeepingCapacityKeepsCapacityForTreeShapes() {
-    func shapes() -> [(String, RedBlackTreeSet<Int>)] {
-      var reserved = RedBlackTreeSet<Int>(minimumCapacity: 100)
-      for i in 0 ..< 5 { reserved.insert(i) }
-      var grown = RedBlackTreeSet<Int>()
-      for i in 0 ..< 1000 { grown.insert(i) }
-      var sparse = RedBlackTreeSet<Int>(0 ..< 1000)
-      sparse.erase { $0 % 10 != 0 }
-      return [("reserved", reserved), ("grown", grown), ("sparse", sparse)]
-    }
-
-    for (name, set) in shapes() {
-      let original = set
-      var shared = set
-      let before = shared.capacity
-      shared.removeAll(keepingCapacity: true)
-      XCTAssertTrue(shared.isEmpty, name)
-      XCTAssertGreaterThanOrEqual(shared.capacity, before, "共有中: \(name)")
-      XCTAssertEqual(original.count, set.count, name)
-    }
-
-    for (name, set) in shapes() {
-      var unique = set
-      let before = unique.capacity
-      unique.removeAll(keepingCapacity: true)
-      XCTAssertTrue(unique.isEmpty, name)
-      XCTAssertEqual(unique.capacity, before, "一意: \(name)")
-    }
-  }
 }

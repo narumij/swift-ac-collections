@@ -40,19 +40,50 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     }
 
     _modify {
-      ensureUnique()
+      #if false
+        ensureUnique()
 
-      let (__parent, __child) = __find_equal(key)
+        let (__parent, __child) = __find_equal(key)
 
-      let found = __child.pointee != nullptr
+        let found = __child.pointee != nullptr
 
-      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
+        var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
 
-      defer {
-        if let value {
-          if found {
-            Base.__mapped_value_ptr(__child).initialize(to: value)
+        defer {
+          if let value {
+            if found {
+              Base.__mapped_value_ptr(__child).initialize(to: value)
+            } else {
+              unsafeEnsureCapacity()
+              update {
+                let __h = $0.__construct_node(Base.__payload_((key, value)))
+                $0.__insert_node_at(__parent, __child, __h)
+              }
+            }
           } else {
+            if found {
+              _ = update {
+                let node = __child.pointee
+                let next = $0.__remove_node_pointer(node)
+                Base.__key_ptr(node).deinitialize(count: 1)
+                $0.header.pointee.___pushRecycleWithoutDeinitialize(node)
+                return next
+              }
+            } else {
+              /* NOP */
+            }
+          }
+        }
+
+        yield &value
+      #else
+        // RBT-081: 共有中に存在しないキーへnilを代入しても、木をコピーしない
+        if !isUnique(), lookup(key) == nil {
+          var value: Base._MappedValue? = nil
+          yield &value
+          if let value {
+            ensureUnique()
+            let (__parent, __child) = __find_equal(key)
             unsafeEnsureCapacity()
             update {
               let __h = $0.__construct_node(Base.__payload_((key, value)))
@@ -60,21 +91,43 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
             }
           }
         } else {
-          if found {
-            _ = update {
-              let node = __child.pointee
-              let next = $0.__remove_node_pointer(node)
-              Base.__key_ptr(node).deinitialize(count: 1)
-              $0.header.pointee.___pushRecycleWithoutDeinitialize(node)
-              return next
-            }
-          } else {
-            /* NOP */
-          }
-        }
-      }
+          ensureUnique()
 
-      yield &value
+          let (__parent, __child) = __find_equal(key)
+
+          let found = __child.pointee != nullptr
+
+          var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
+
+          defer {
+            if let value {
+              if found {
+                Base.__mapped_value_ptr(__child).initialize(to: value)
+              } else {
+                unsafeEnsureCapacity()
+                update {
+                  let __h = $0.__construct_node(Base.__payload_((key, value)))
+                  $0.__insert_node_at(__parent, __child, __h)
+                }
+              }
+            } else {
+              if found {
+                _ = update {
+                  let node = __child.pointee
+                  let next = $0.__remove_node_pointer(node)
+                  Base.__key_ptr(node).deinitialize(count: 1)
+                  $0.header.pointee.___pushRecycleWithoutDeinitialize(node)
+                  return next
+                }
+              } else {
+                /* NOP */
+              }
+            }
+          }
+
+          yield &value
+        }
+      #endif
     }
   }
 

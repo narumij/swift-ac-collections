@@ -356,7 +356,6 @@ extension RedBlackTreeKeyValueRangeView {
       }
       assert(result.error == nil)
       #else
-      // _ensureUnique()を暗黙に模倣しているので、そこらへんの挙動には注意が必要
       let (_start, _end) = _raw_range
       var first = _start.unchecked
       var last = _end.unchecked

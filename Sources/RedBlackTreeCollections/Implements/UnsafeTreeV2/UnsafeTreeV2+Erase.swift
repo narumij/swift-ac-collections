@@ -57,9 +57,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // 末尾チェック付きの削除ループ
-  //
-  // 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
   func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
@@ -74,7 +71,6 @@ extension UnsafeTreeV2 {
     return .success(__last)
   }
 
-  // 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
   func ___erase_range_if(
@@ -97,7 +93,6 @@ extension UnsafeTreeV2 {
     return __last
   }
 
-  // 削除後の範囲先頭も更新する。途中でthrowしても、それまでの削除を反映する。
   @inlinable
   @discardableResult
   func ___erase_view_range_if(
@@ -121,6 +116,45 @@ extension UnsafeTreeV2 {
     return __last
   }
 
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_view_range_if_with_many_care(
+    _ __first: inout _SafePtr,
+    _ __last: inout _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    var current = __first
+    while current != __last {
+      guard current.___has_payload_content else {
+        return .failure(.other)
+      }
+      if try shouldBeRemoved(__value_(current.pointer!)) {
+        break
+      }
+      current = ___tree_next_iter(current.accessible.pointer!)
+    }
+    guard current != __last else {
+      return __last
+    }
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __first = __simple_retrieve(__first.pointer!).unchecked
+      __last = __simple_retrieve(__last.pointer!).unchecked
+      current = __simple_retrieve(current.pointer!).unchecked
+    }
+    let next = erase(current.accessible.pointer!).unchecked
+    if current == __first {
+      __first = next
+      return try ___erase_view_range_if(&__first, __last, shouldBeRemoved)
+    }
+    return try ___erase_range_if(next, __last, shouldBeRemoved)
+  }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

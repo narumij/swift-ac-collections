@@ -276,6 +276,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each element to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      #if false
       guard _raw_range.0 != _raw_range.1 else { return }
       _ensureUnique()
       let (_start, _end) = _raw_range
@@ -284,6 +285,17 @@ extension RedBlackTreeKeyOnlyRangeView {
       defer { _sealed_start = first.pointer!.uncheckedSeal }
       let result = try __tree_.___erase_view_range_if(&first, _end.unchecked, shouldBeRemoved)
       assert(result.error == nil)
+      #else
+      let (_start, _end) = _raw_range
+      var first = _start.unchecked
+      var last = _end.unchecked
+      defer {
+        _sealed_start = first.pointer!.uncheckedSeal
+        _sealed_end = last.pointer!.uncheckedSeal
+      }
+      let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last, shouldBeRemoved)
+      assert(result.error == nil)
+      #endif
     }
   }
 

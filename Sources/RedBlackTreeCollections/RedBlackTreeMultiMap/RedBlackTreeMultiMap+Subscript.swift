@@ -60,7 +60,7 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025 && false
   extension RedBlackTreeMultiMap {
 
     /// Accesses the element at the specified position.
@@ -75,6 +75,24 @@
         // unsafeAddress, _read、双方バグるので、基本のget。しくしく
         // TODO: またいつか試す
         __tree_._unsafeAddress(position).pointee.tuple
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025 && true
+  extension RedBlackTreeMultiMap {
+
+    /// Accesses the element at the specified position.
+    ///
+    /// - Parameter position: A valid element index of this multimap.
+    /// - Precondition: `position` identifies an element in this multimap and isn't `endIndex`.
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      unsafeAddress {
+        __tree_._unsafeAddress(position).pointer(to: \.tuple)!
       }
     }
   }

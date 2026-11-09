@@ -36,11 +36,20 @@ extension RedBlackTreeSet {
   ///   was faster when 90% of `other` duplicated existing elements.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
+    #if false
     __tree_.ensureUnique()
     __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
+    #else
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_unique(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node)
+    #endif
   }
 
   /// Inserts the elements of `other`, discarding duplicate occurrences.
@@ -50,11 +59,20 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
+    #if false
     __tree_.ensureUnique()
     __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
+    #else
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_unique(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node)
+    #endif
   }
 
   /// Inserts the elements of `other`, ignoring values equivalent to existing elements.

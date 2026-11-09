@@ -71,6 +71,14 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
+#if DEBUG
+  extension RedBlackTreeMultiMap {
+    package var _isUnique: Bool {
+      mutating get { __tree_.isUnique() }
+    }
+  }
+#endif
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 

@@ -149,6 +149,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Precondition: `position` identifies an element inside the view.
     ///
     /// - Complexity: O(1).
+    #if false
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
@@ -161,6 +162,20 @@ extension RedBlackTreeMappedValuesView {
         __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
       }
     }
+    #else
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      unsafeAddress {
+        __tree_._unsafeAddress(position).pointer(to: \.tuple.value)!
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        _ensureUnique()
+        return __tree_._unsafeMutableAddress(position).pointer(to: \.tuple.value)!
+      }
+    }
+    #endif
   }
 
   extension RedBlackTreeMappedValuesView
@@ -174,6 +189,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Precondition: Both indices identify elements inside the view.
     /// - Complexity: O(1).
     public mutating func swapAt(_ i: Index, _ j: Index) {
+      #if false
       _ensureUnique()
 
       let __i = __tree_.__purified_(i)
@@ -187,6 +203,26 @@ extension RedBlackTreeMappedValuesView {
         &Base.__mapped_value_ptr(i).pointee,
         &Base.__mapped_value_ptr(j).pointee
       )
+      #else
+      let __i = __tree_.__purified_(i)
+      let __j = __tree_.__purified_(j)
+      guard var i = __i.accessible.pointer,
+        var j = __j.accessible.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      guard i != j else { return }
+      let __e = __tree_.__end_node
+      _ensureUnique()
+      if __e != __tree_.__end_node {
+        i = __tree_.__simple_retrieve(i)
+        j = __tree_.__simple_retrieve(j)
+      }
+      swap(
+        &Base.__mapped_value_ptr(i).pointee,
+        &Base.__mapped_value_ptr(j).pointee
+      )
+      #endif
     }
   }
 
@@ -311,6 +347,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      #if false
       guard _raw_range.0 != _raw_range.1 else { return }
       _ensureUnique()
       let (_start, _end) = _raw_range
@@ -321,6 +358,19 @@ extension RedBlackTreeMappedValuesView {
         try shouldBeRemoved(Base.___mapped_value($0))
       }
       assert(result.error == nil)
+      #else
+      let (_start, _end) = _raw_range
+      var first = _start.unchecked
+      var last = _end.unchecked
+      defer {
+        _sealed_start = first.pointer!.uncheckedSeal
+        _sealed_end = last.pointer!.uncheckedSeal
+      }
+      let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
+        try shouldBeRemoved(Base.___mapped_value($0))
+      }
+      assert(result.error == nil)
+      #endif
     }
   }
 

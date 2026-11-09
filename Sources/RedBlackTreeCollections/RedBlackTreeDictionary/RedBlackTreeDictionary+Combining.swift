@@ -40,12 +40,22 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
+    #if false
     __tree_.ensureUnique()
     try __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node,
       uniquingKeysWith: combine)
+    #else
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    try __tree_.___insert_range_unique(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node,
+      uniquingKeysWith: combine)
+    #endif
   }
 
   /// Merges the elements of `other` into the dictionary.

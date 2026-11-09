@@ -20,6 +20,20 @@
 //
 //===----------------------------------------------------------------------===//
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  mutating func ___erase_with_many_care(_ __p: _NodePtr) -> _NodePtr {
+    var __p = __p
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __p = __simple_retrieve(__p)
+    }
+    return erase(__p)
+  }
+}
+
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
@@ -43,9 +57,6 @@
 
 extension UnsafeTreeV2 {
 
-  // 末尾チェック付きの削除ループ
-  //
-  // 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
   func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
@@ -60,7 +71,6 @@ extension UnsafeTreeV2 {
     return .success(__last)
   }
 
-  // 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
   func ___erase_range_if(
@@ -83,7 +93,6 @@ extension UnsafeTreeV2 {
     return __last
   }
 
-  // 削除後の範囲先頭も更新する。途中でthrowしても、それまでの削除を反映する。
   @inlinable
   @discardableResult
   func ___erase_view_range_if(
@@ -107,6 +116,149 @@ extension UnsafeTreeV2 {
     return __last
   }
 
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_view_range_if_with_many_care(
+    _ __first: inout _SafePtr,
+    _ __last: inout _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    var current = __first
+    while current != __last {
+      guard current.___has_payload_content else {
+        return .failure(.other)
+      }
+      if try shouldBeRemoved(__value_(current.pointer!)) {
+        break
+      }
+      current = ___tree_next_iter(current.accessible.pointer!)
+    }
+    guard current != __last else {
+      return __last
+    }
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __first = __simple_retrieve(__first.pointer!).unchecked
+      __last = __simple_retrieve(__last.pointer!).unchecked
+      current = __simple_retrieve(current.pointer!).unchecked
+    }
+    let next = erase(current.accessible.pointer!).unchecked
+    if current == __first {
+      __first = next
+      return try ___erase_view_range_if(&__first, __last, shouldBeRemoved)
+    }
+    return try ___erase_range_if(next, __last, shouldBeRemoved)
+  }
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
+
+  @inlinable
+  mutating func ___erase_range_with_many_care(_range range: _SafeRange) throws -> _NodePtr {
+      var __r = try range.get()
+      if __r.isEmpty {
+        return __r.upperBound
+      }
+      let __e = __end_node
+      if count > 0 {
+        ensureUnique()
+      }
+      if __e != __end_node {
+        __r = __simple_retrieve(__r)
+      }
+      guard isValid(range: __r) else {
+        throw SealError.unknown
+      }
+      assert(count == 0 || isUnique())
+      return try ___erase_range(__r.lowerBound, __r.upperBound).get()
+  }
+  
+  @inlinable
+  mutating func ___erase_sanitize_range_with_many_care(_range range: _SafeRange) -> _NodePtr? {
+    guard var __r = try? sanitize(range).get() else {
+      return nil
+    }
+    if __r.isEmpty {
+      return __r.upperBound
+    }
+    let __e = __end_node
+    if count > 0 {
+      ensureUnique()
+    }
+    if __e != __end_node {
+      __r = __simple_retrieve(__r)
+    }
+    assert(count == 0 || isUnique())
+    return try? ___erase_range(__r.lowerBound, __r.upperBound).get()
+  }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_range_if_with_many_care(
+    _ __first: _SafePtr,
+    _ __last: _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    var __first = __first
+    var __last = __last
+    while __first != __last {
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
+      if try shouldBeRemoved(__value_(__first.pointer!)) {
+        break
+      }
+      __first = ___tree_next_iter(__first.accessible.pointer!)
+    }
+    guard __first != __last else {
+      return __last
+    }
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __first = __simple_retrieve(__first.pointer!).unchecked
+      __last = __simple_retrieve(__last.pointer!).unchecked
+    }
+    __first = erase(__first.accessible.pointer!).unchecked
+    // 2個目以降の削除は短縮処理で行う
+    return try ___erase_range_if(__first, __last, shouldBeRemoved)
+  }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_validate_range_if_with_many_care(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    try range
+      .flatMap(validated(range:))
+      .flatMapThrowing { range in
+        try ___erase_range_if_with_many_care(
+          range.lowerBound.unchecked, range.upperBound.unchecked, shouldBeRemoved)
+      }
+  }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_sanitize_range_if_with_many_care(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    try sanitize(range)
+      .flatMapThrowing { range in
+        try ___erase_range_if_with_many_care(
+          range.lowerBound.unchecked, range.upperBound.unchecked, shouldBeRemoved)
+      }
+  }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

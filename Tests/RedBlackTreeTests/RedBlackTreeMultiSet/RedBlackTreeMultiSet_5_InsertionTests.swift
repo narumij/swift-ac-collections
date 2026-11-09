@@ -58,6 +58,20 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 2, 3, 3, 3])
   }
 
+  func test_insertContentsOf_emptyTreeIntoSharedMultiSetDoesNotCopy() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+
+    var fromSet = original
+    fromSet.insert(contentsOf: RedBlackTreeSet<Int>())
+    XCTAssertEqual(Array(fromSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromSet.isTriviallyIdentical(to: original), "空のSetのinsert(contentsOf:)で木がコピーされた")
+
+    var fromMultiSet = original
+    fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet<Int>())
+    XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromMultiSet.isTriviallyIdentical(to: original), "空のMultiSetのinsert(contentsOf:)で木がコピーされた")
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 
@@ -325,6 +339,29 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
         XCTAssertEqual(multiset._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(multiset.erase(exactly: multiset.endIndex))
+    }
+
+    /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_endIndexKeepsSharedStorage() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+    }
+
+    /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_staleIndexKeepsSharedStorage() {
+      var shared: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      let i = shared.startIndex
+      XCTAssertNotNil(shared.erase(exactly: i))
+      let original = shared
+
+      XCTAssertNil(shared.erase(exactly: i))
+
+      XCTAssertEqual(Array(shared), [2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
     }
   #endif
 }

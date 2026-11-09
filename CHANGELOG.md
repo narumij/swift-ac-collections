@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.7.2] - 2026-11-10
 
 ### Added
 - CIにAtCoder 2025互換モードのDebug・Releaseテストを追加（コンパイルフラグで有効化）
@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）を、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitによるopt-inへ変更。MultiSet / MultiMapの同値要素に対する位置の意味が未確定のため、実験的提供として扱う（既存の利用にはtraitの有効化が必要）
 - オフセット計算のオーバーフロー検査を既定で有効化
 - `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
+- MappedValues Viewの位置添字（`values[i]`）経由のその場変更で、値をコピーしてから書き戻していた処理を、格納値を直接参照する形に変更し、値の不要なコピーを削減
+- `RedBlackTreeDictionary`・`RedBlackTreeMultiMap`の位置添字`self[position]`を、要素をコピーして返す形から、格納された要素を直接参照する形に変更
 - `RedBlackTreeMultiSet`の`union(_:)`・`formUnion(_:)`を、各要素の個数の和（a + b）から和集合（max(a, b)）へ変更。C++の`std::set_union`と同じく、同値要素は左の全要素と、右の末尾max(b − a, 0)個を残す。個数の和が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。AtCoder 2025互換モードでは従来の個数の和を維持
 
 ### Removed
@@ -38,6 +40,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
 - `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
 - `RedBlackTreeDictionary.removeValue(forKey:)`および`RedBlackTreeMultiMap.eraseUnique(_:)`・`eraseMulti(_:)`で、該当するキーがない場合にもCopy-on-Writeが発生する問題を修正（AtCoder 2025互換モードでは従来の処理を維持）
+- `RedBlackTreeSet`の`insert(_:)`・`insert(_:hint:)`・`index(inserting:)`で、既存の要素を挿入する場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary`の`insert(_:)`・`insert(_:hint:)`・`index(inserting:)`で、既存のキーを挿入する場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary`の添字`self[key]`で、存在しないキーに`nil`を代入する場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:)`（境界式1つ）で、削除対象がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:)`（Index範囲・境界式範囲）で、空でない木から空の範囲を削除する場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(exactly:)`で、`endIndex`や無効なIndexを渡した場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(where:)`で、条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:where:)`（Index範囲・境界式範囲）で、範囲内に条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- Range Viewおよびその`values`の`erase(where:)`で、条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`removeAll(keepingCapacity: true)`で、共有中の木を全要素コピーしてから削除していた問題を修正
+- MappedValues Viewの`swapAt(_:_:)`で、同じ位置を渡した場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeSet.merge(_:)`、`RedBlackTreeMultiSet.insert(contentsOf:)`、`RedBlackTreeDictionary.merge(_:uniquingKeysWith:)`、`RedBlackTreeMultiMap.insert(contentsOf:)`で、空の赤黒木を渡した場合にもCopy-on-Writeが発生する問題を修正（赤黒木を渡す場合のみ。Sequenceを渡す場合は従来どおり）
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正

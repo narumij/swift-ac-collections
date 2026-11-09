@@ -108,10 +108,20 @@
     ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
-      __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
-      guard let p = p.pointer, !p.___is_end else { return nil }
-      return __tree_._unchecked_remove(at: p).payload
+      #if false
+        __tree_.ensureUnique()
+        let p = bound.evaluate(__tree_)
+        guard let p = p.pointer, !p.___is_end else { return nil }
+        return __tree_._unchecked_remove(at: p).payload
+      #else
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).pointer, !p.___is_end else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return __tree_._unchecked_remove(at: p).payload
+      #endif
     }
   }
 
@@ -146,11 +156,15 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
+      #if false
       // 空の場合は削除対象が存在し得ないため、ensureUnique()による
       // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
       guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
+      #else
+      _ = __tree_.___erase_sanitize_range_with_many_care(_range: bounds.evaluate(__tree_).relative(to: __tree_))
+      #endif
     }
 
     /// Removes the elements in the selected range that satisfy a predicate.
@@ -164,12 +178,17 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
+      #if false
       // 空の場合は削除対象が存在し得ないため、ensureUnique()による
       // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
       guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       _ = try __tree_.___erase_sanitize_range_if(
         bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
+      #else
+      _ = try __tree_.___erase_sanitize_range_if_with_many_care(
+        bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
+      #endif
     }
   }
 #endif

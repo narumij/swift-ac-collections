@@ -128,7 +128,7 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && true
+#if !COMPATIBLE_ATCODER_2025 && false
   extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
@@ -140,6 +140,22 @@ extension RedBlackTreeDictionary {
       get {
         // unsafeAddress, _read、双方バグるので、基本のget
         __tree_._unsafeAddress(position).pointee.tuple
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025 && true
+  extension RedBlackTreeDictionary {
+
+    /// Accesses the element at the specified position.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      unsafeAddress {
+        __tree_._unsafeAddress(position).pointer(to: \.tuple)!
       }
     }
   }

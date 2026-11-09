@@ -66,6 +66,19 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [3])
   }
 
+  /// 共有中のSetに既存の要素をinsertしても、木をコピーしないこと（RBT-086）
+  func test_insert_existingElementIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    let result = shared.insert(2)
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(result.memberAfterInsert, 2)
+    XCTAssertEqual(Array(shared), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のinsertで木がコピーされた")
+  }
+
   /// 複数要素をinsert(contentsOf:)で挿入した場合、全要素が含まれること
   func test_insert_multipleElements() {
     // 事前条件: 空集合を用意
@@ -111,6 +124,21 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     // - 要素は昇順（順序保証仕様）
     XCTAssertEqual(set.count, 4)
     XCTAssertEqual(set + [], [1, 2, 3, 4])
+  }
+
+  /// 共有中のSetに空のSet・MultiSetをmergeしても、木をコピーしないこと（RBT-098）
+  func test_merge_emptyTreeIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+
+    var fromSet = original
+    fromSet.merge(RedBlackTreeSet<Int>())
+    XCTAssertEqual(Array(fromSet), [1, 2, 3])
+    XCTAssertTrue(fromSet.isTriviallyIdentical(to: original), "空のSetのmergeで木がコピーされた")
+
+    var fromMultiSet = original
+    fromMultiSet.merge(RedBlackTreeMultiSet<Int>())
+    XCTAssertEqual(Array(fromMultiSet), [1, 2, 3])
+    XCTAssertTrue(fromMultiSet.isTriviallyIdentical(to: original), "空のMultiSetのmergeで木がコピーされた")
   }
 
   /// 標準ライブラリのSetをmerge(_:)で追加できること
@@ -274,6 +302,19 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.first === low)
     XCTAssertTrue(shared.last === high)
   }
+
+  /// hint付きでも、既存の要素なら共有中のSetの木をコピーしないこと（RBT-086）
+  func test_insertWithHint_existingElementIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    let result = shared.insert(2, hint: shared.startIndex)
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(shared[result.indexAfterInsert], 2)
+    XCTAssertEqual(Array(shared), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のhint付きinsertで木がコピーされた")
+  }
   #endif
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
@@ -300,6 +341,18 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(runQueue), [interactive])
   }
 
+  /// 共有中のSetに既存の要素を`index(inserting:)`しても、木をコピーしないこと（RBT-086）
+  func test_indexInserting_existingElementIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    let result = shared.index(inserting: 2)
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(shared[result.index], 2)
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のindex(inserting:)で木がコピーされた")
+  }
+
   /// 空のSetに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
   /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
   /// 発生しないこと。
@@ -314,6 +367,29 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
     #endif
     XCTAssertNil(set.erase(exactly: set.endIndex))
+  }
+
+  /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+  func test_eraseExactly_endIndexKeepsSharedStorage() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+  }
+
+  /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+  func test_eraseExactly_staleIndexKeepsSharedStorage() {
+    var shared: RedBlackTreeSet<Int> = [1, 2, 3]
+    let i = shared.startIndex
+    XCTAssertNotNil(shared.erase(exactly: i))
+    let original = shared
+
+    XCTAssertNil(shared.erase(exactly: i))
+
+    XCTAssertEqual(Array(shared), [2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
   }
   #endif
 

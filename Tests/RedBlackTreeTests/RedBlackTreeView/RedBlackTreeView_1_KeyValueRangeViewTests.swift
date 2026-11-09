@@ -180,6 +180,82 @@ import XCTest
       keyValue.erase(where: { $0.key == 3 })
       XCTAssertEqual(keyValue.map(\.key), [4, 5, 6, 7])
     }
+
+    /// 共有中の空でない木で、範囲ビューの`erase(where:)`が何も消さないとき、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared[lo ..< hi].erase { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
+    }
+
+    /// 部分範囲のViewの`erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、
+    /// 範囲外のkey/valueに触れないこと。共有していた元の辞書のkey/valueは変わらないこと。変更側の途中状態は
+    /// 契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）
+    func test_eraseWhere_onPartialViewThrowsBeforeFirstMatchAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      var dictionary: RedBlackTreeDictionary<Int, String> = [
+        1: "outside-before", 2: "b", 3: "c", 4: "d", 5: "outside-after",
+      ]
+      let lower = dictionary.index(after: dictionary.startIndex)
+      let upper = dictionary.index(dictionary.startIndex, offsetBy: 4)
+      let original = dictionary
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try dictionary[lower..<upper].erase(where: { element in
+          visited.append("\(element.key):\(element.value)")
+          if element.key == 3 { throw StopError() }
+          return false
+        })
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["2:b", "3:c"])
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertEqual(original.map(\.value), ["outside-before", "b", "c", "d", "outside-after"])
+      XCTAssertEqual(dictionary[1], "outside-before")
+      XCTAssertEqual(dictionary[5], "outside-after")
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
+
+    /// 共有中の木から取り出した範囲ビューで、`erase(where:)`がビューの先頭を含めて要素を消すとき、
+    /// 述語は範囲内の各要素に1回ずつ順に呼ばれ、ビューには残りの要素が残り、元の辞書は変わらないこと（RBT-094）。
+    func test_eraseWhere_onStandaloneViewOfSharedTree_keepsRestAndOriginal() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var view = original[original.lowerBound(2)..<original.lowerBound(5)]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0.key); return $0.key != 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(view.map(\.key), [3])
+      XCTAssertEqual(view.count, 1)
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
+
+    /// 共有中の木から取り出した範囲ビューで、`erase(where:)`の述語がすべての要素に一致するとき、
+    /// ビューは空になってstartIndexとendIndexが一致し、元の辞書は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatchOnStandaloneViewOfSharedTree_emptiesView() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var view = original[original.lowerBound(2)..<original.lowerBound(5)]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0.key); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertTrue(view.isEmpty)
+      XCTAssertEqual(view.startIndex, view.endIndex)
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
   }
 #endif
 

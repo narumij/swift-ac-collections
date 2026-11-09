@@ -159,6 +159,81 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(pairs(b), ["0:a", "2:c"])
   }
 
+  /// 共有中に削除対象のないBoundでeraseしても、木をコピーしないこと（RBT-087）
+  func testEraseMissingBoundFromSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+    var shared = original
+
+    XCTAssertNil(shared.erase(find(9)))
+    XCTAssertNil(shared.erase(lowerBound(10)))
+
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+  }
+
+  /// 共有中の空でない木から空のBound範囲をeraseしても、木をコピーしないこと（RBT-081）
+  func testEraseEmptyBoundRangeFromSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+    var shared = original
+
+    shared.erase(lowerBound(2) ..< lowerBound(2))
+    shared.erase(lowerBound(10) ..< upperBound(20))
+
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のBound範囲のeraseで木がコピーされた")
+  }
+
+  /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（BoundRangeExpression）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+  func testEraseBoundRangeWhereNothingMatchesFromSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+    var shared = original
+    var visited: [Int] = []
+
+    shared.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0.key); return false }
+
+    XCTAssertEqual(visited, [2, 2, 3])
+    XCTAssertEqual(shared.map(\.key), [1, 2, 2, 3, 4])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+  }
+
+  /// `erase(_:where:)`（BoundRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外のkey/valueに触れないこと。
+  /// 共有していた元のmultimapは変わらないこと。変更側の途中状態は契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）。
+  func testEraseBoundRangeWhereRethrowsPredicateErrorAndKeepsSharedOriginal() {
+    struct StopError: Error, Equatable {}
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e"), (5, "f")]
+    var map = original
+    var visited: [String] = []
+
+    XCTAssertThrowsError(
+      try map.erase(lowerBound(2) ..< upperBound(4)) { element in
+        visited.append(element.value)
+        if element.value == "d" { throw StopError() }
+        return element.value == "b"
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, ["b", "c", "d"])
+    XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e", "f"])
+    XCTAssertTrue(map.contains { $0.key == 1 })
+    XCTAssertTrue(map.contains { $0.key == 5 })
+    XCTAssertEqual(map.map(\.key), map.map(\.key).sorted())
+    XCTAssertTrue(map.allSatisfy { element in original.contains { $0.key == element.key && $0.value == element.value } })
+  }
+
+  /// 共有中の木で`erase(_:where:)`（BoundRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+  func testEraseBoundRangeWhereAllMatchRemovesOnlyTheRange() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+    var map = original
+    var visited: [String] = []
+
+    map.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0.value); return true }
+
+    XCTAssertEqual(visited, ["b", "c", "d"])
+    XCTAssertEqual(map.map(\.key), [1, 4])
+    XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+  }
+
   func testSubscriptBoundsView() throws {
     XCTAssertEqual(
       pairs(a[lowerBound(0) ..< upperBound(2)]),

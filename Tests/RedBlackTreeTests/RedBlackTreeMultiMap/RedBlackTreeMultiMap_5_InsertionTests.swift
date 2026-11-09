@@ -24,6 +24,17 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["a", "b", "c", "d"])
   }
 
+  func test_insertContentsOf_emptyMultiMapIntoSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+    var shared = original
+
+    shared.insert(contentsOf: RedBlackTreeMultiMap<Int, String>())
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiMapのinsert(contentsOf:)で木がコピーされた")
+  }
+
   func test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries() {
     var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c")]
 
@@ -205,6 +216,29 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
         XCTAssertEqual(map._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(map.erase(exactly: map.endIndex))
+    }
+
+    /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_endIndexKeepsSharedStorage() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      var shared = original
+
+      XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+    }
+
+    /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_staleIndexKeepsSharedStorage() {
+      var shared: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      let i = shared.startIndex
+      XCTAssertNotNil(shared.erase(exactly: i))
+      let original = shared
+
+      XCTAssertNil(shared.erase(exactly: i))
+
+      XCTAssertEqual(shared.map(\.value), ["b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
     }
   #endif
 }

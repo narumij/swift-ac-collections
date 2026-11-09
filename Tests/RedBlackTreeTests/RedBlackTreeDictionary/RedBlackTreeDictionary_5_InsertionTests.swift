@@ -25,6 +25,17 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[1], "one")
   }
 
+  /// 共有中のDictionaryで、存在しないキーにnilを代入しても、木をコピーしないこと（RBT-081）
+  func test_keySubscript_assigningNilToMissingKeyInSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    shared[99] = nil
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "存在しないキーへのnil代入で木がコピーされた")
+  }
+
   func test_defaultSubscript_doesNotInsertUntilMutated() {
     var dictionary = RedBlackTreeDictionary<Int, [String]>()
 
@@ -125,6 +136,19 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[3], 10)
   }
 
+  /// 共有中の辞書に既存のキーをinsertしても、木をコピーしないこと（RBT-086）
+  func test_insert_existingKeyIntoSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    let result = shared.insert((2, "x"))
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(result.memberAfterInsert.value, "b")
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのinsertで木がコピーされた")
+  }
+
   func test_insertKeyValue_returnsInsertedFlagAndExistingMemberOnDuplicate() {
     var dictionary = RedBlackTreeDictionary<Int, Int>()
 
@@ -219,6 +243,19 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(dictionary[2], "replacement")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }
+
+    /// hint付きでも、既存のキーなら共有中の辞書の木をコピーしないこと（RBT-086）
+    func test_insertWithHint_existingKeyIntoSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      let result = shared.insert((2, "x"), hint: shared.startIndex)
+
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(shared[result.indexAfterInsert].value, "b")
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのhint付きinsertで木がコピーされた")
+    }
   #endif
 
   func test_updateValue_returnsTheReplacedValue() {
@@ -251,6 +288,17 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary["b"], 12)
     XCTAssertEqual(dictionary["c"], 3)
     XCTAssertEqual(other["b"], 10)
+  }
+
+  func test_merge_emptyDictionaryIntoSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    shared.merge(RedBlackTreeDictionary<Int, String>()) { $1 }
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のDictionaryのmergeで木がコピーされた")
   }
 
   /// default付きsubscriptのdefaultは必要なときだけ評価されること（RBT-044 D1）。
@@ -447,6 +495,18 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(dictionary.count, 2)
     }
 
+    /// 共有中の辞書に既存のキーを`index(inserting:)`しても、木をコピーしないこと（RBT-086）
+    func test_indexInserting_existingKeyIntoSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      let result = shared.index(inserting: (2, "x"))
+
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(shared[result.index].value, "b")
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのindex(inserting:)で木がコピーされた")
+    }
+
     /// `erase(exactly:)`は、Indexが指す要素を削除し、後続のIndexを返すこと。
     func test_eraseExactly_removesIndexedElementAndReturnsSuccessor() {
       var dictionary: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
@@ -484,6 +544,29 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
         XCTAssertEqual(dictionary._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(dictionary.erase(exactly: dictionary.endIndex))
+    }
+
+    /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_endIndexKeepsSharedStorage() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+    }
+
+    /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_staleIndexKeepsSharedStorage() {
+      var shared: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      let i = shared.startIndex
+      XCTAssertNotNil(shared.erase(exactly: i))
+      let original = shared
+
+      XCTAssertNil(shared.erase(exactly: i))
+
+      XCTAssertEqual(shared.map(\.value), ["b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
     }
   #endif
 }

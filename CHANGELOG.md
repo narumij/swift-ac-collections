@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）を、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitによるopt-inへ変更。MultiSet / MultiMapの同値要素に対する位置の意味が未確定のため、実験的提供として扱う（既存の利用にはtraitの有効化が必要）
 - オフセット計算のオーバーフロー検査を既定で有効化
 - `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
+- MappedValues Viewの位置添字（`values[i]`）経由のその場変更で、値をコピーしてから書き戻していた処理を、格納値を直接参照する形に変更し、値の不要なコピーを削減
+- `RedBlackTreeDictionary`の位置添字`self[position]`を、要素をコピーして返す形から、格納された要素を直接参照する形に変更
 - `RedBlackTreeMultiSet`の`union(_:)`・`formUnion(_:)`を、各要素の個数の和（a + b）から和集合（max(a, b)）へ変更。C++の`std::set_union`と同じく、同値要素は左の全要素と、右の末尾max(b − a, 0)個を残す。個数の和が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。AtCoder 2025互換モードでは従来の個数の和を維持
 
 ### Removed
@@ -48,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 4種の赤黒木の`erase(_:where:)`（Index範囲・境界式範囲）で、範囲内に条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
 - Range Viewおよびその`values`の`erase(where:)`で、条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
 - 4種の赤黒木の`removeAll(keepingCapacity: true)`で、共有中の木を全要素コピーしてから削除していた問題を修正
+- MappedValues Viewの`swapAt(_:_:)`で、同じ位置を渡した場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeSet.merge(_:)`、`RedBlackTreeMultiSet.insert(contentsOf:)`、`RedBlackTreeDictionary.merge(_:uniquingKeysWith:)`、`RedBlackTreeMultiMap.insert(contentsOf:)`で、空の赤黒木を渡した場合にもCopy-on-Writeが発生する問題を修正（赤黒木を渡す場合のみ。Sequenceを渡す場合は従来どおり）
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正

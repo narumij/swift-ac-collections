@@ -136,6 +136,19 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[3], 10)
   }
 
+  /// 共有中の辞書に既存のキーをinsertしても、木をコピーしないこと（RBT-086）
+  func test_insert_existingKeyIntoSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    let result = shared.insert((2, "x"))
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(result.memberAfterInsert.value, "b")
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのinsertで木がコピーされた")
+  }
+
   func test_insertKeyValue_returnsInsertedFlagAndExistingMemberOnDuplicate() {
     var dictionary = RedBlackTreeDictionary<Int, Int>()
 
@@ -229,6 +242,19 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(replaced, "two")
       XCTAssertEqual(dictionary[2], "replacement")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
+
+    /// hint付きでも、既存のキーなら共有中の辞書の木をコピーしないこと（RBT-086）
+    func test_insertWithHint_existingKeyIntoSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      let result = shared.insert((2, "x"), hint: shared.startIndex)
+
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(shared[result.indexAfterInsert].value, "b")
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのhint付きinsertで木がコピーされた")
     }
   #endif
 
@@ -456,6 +482,18 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(result.index, existing)
       XCTAssertEqual(dictionary["b"], 2, "既存の値は置き換えないはず")
       XCTAssertEqual(dictionary.count, 2)
+    }
+
+    /// 共有中の辞書に既存のキーを`index(inserting:)`しても、木をコピーしないこと（RBT-086）
+    func test_indexInserting_existingKeyIntoSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      let result = shared.index(inserting: (2, "x"))
+
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(shared[result.index].value, "b")
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのindex(inserting:)で木がコピーされた")
     }
 
     /// `erase(exactly:)`は、Indexが指す要素を削除し、後続のIndexを返すこと。

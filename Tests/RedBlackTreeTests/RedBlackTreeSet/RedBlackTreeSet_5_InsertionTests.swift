@@ -66,7 +66,6 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [3])
   }
 
-  /// 複数要素をinsert(contentsOf:)で挿入した場合、全要素が含まれること
   /// 共有中のSetに既存の要素をinsertしても、木をコピーしないこと（RBT-086）
   func test_insert_existingElementIntoSharedSetDoesNotCopy() {
     let original: RedBlackTreeSet<Int> = [1, 2, 3]
@@ -80,6 +79,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のinsertで木がコピーされた")
   }
 
+  /// 複数要素をinsert(contentsOf:)で挿入した場合、全要素が含まれること
   func test_insert_multipleElements() {
     // 事前条件: 空集合を用意
     var set = RedBlackTreeSet<Int>()
@@ -324,6 +324,18 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
 
     XCTAssertEqual(successor, runQueue.endIndex)
     XCTAssertEqual(Array(runQueue), [interactive])
+  }
+
+  /// 共有中のSetに既存の要素を`index(inserting:)`しても、木をコピーしないこと（RBT-086）
+  func test_indexInserting_existingElementIntoSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    let result = shared.index(inserting: 2)
+
+    XCTAssertFalse(result.inserted)
+    XCTAssertEqual(shared[result.index], 2)
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のindex(inserting:)で木がコピーされた")
   }
 
   /// 空のSetに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。

@@ -514,13 +514,21 @@ extension RedBlackTreeSet {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      let result = try __tree_.___erase_range_if(
-        __tree_.__begin_node_.unchecked,
-        __tree_.__end_node.unchecked,
-        shouldBeRemoved)
-      assert(result.error == nil)
+      #if false
+        guard __tree_.count > 0 else { return }
+        __tree_.ensureUnique()
+        let result = try __tree_.___erase_range_if(
+          __tree_.__begin_node_.unchecked,
+          __tree_.__end_node.unchecked,
+          shouldBeRemoved)
+        assert(result.error == nil)
+      #else
+        let __first = __tree_.__begin_node_.unchecked
+        let __last = __tree_.__end_node.unchecked
+        let result = try __tree_.___erase_range_if_with_many_care(
+          __first, __last, shouldBeRemoved)
+        assert(result.error == nil)
+      #endif
     }
   }
 #endif

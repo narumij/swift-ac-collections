@@ -163,6 +163,38 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
     assert(count == 0 || isUnique())
     return try? ___erase_range(__r.lowerBound, __r.upperBound).get()
   }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_range_if_with_many_care(
+    _ __first: _SafePtr,
+    _ __last: _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    var __first = __first
+    var __last = __last
+    while __first != __last {
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
+      if try shouldBeRemoved(__value_(__first.pointer!)) {
+        break
+      }
+      __first = ___tree_next_iter(__first.accessible.pointer!)
+    }
+    guard __first != __last else {
+      return __last
+    }
+    let __e = __end_node
+    ensureUnique()
+    if __e != __end_node {
+      __first = __simple_retrieve(__first.pointer!).unchecked
+      __last = __simple_retrieve(__last.pointer!).unchecked
+    }
+    __first = erase(__first.accessible.pointer!).unchecked
+    return try ___erase_range_if(__first, __last, shouldBeRemoved)
+  }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

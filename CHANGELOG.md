@@ -43,6 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RedBlackTreeDictionary`の添字`self[key]`で、存在しないキーに`nil`を代入する場合にもCopy-on-Writeが発生する問題を修正
 - 4種の赤黒木の`erase(_:)`（境界式1つ）で、削除対象がない場合にもCopy-on-Writeが発生する問題を修正
 - 4種の赤黒木の`erase(_:)`（Index範囲・境界式範囲）で、空でない木から空の範囲を削除する場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(exactly:)`で、`endIndex`や無効なIndexを渡した場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(where:)`で、条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:where:)`（Index範囲・境界式範囲）で、範囲内に条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- Range Viewおよびその`values`の`erase(where:)`で、条件に一致する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`removeAll(keepingCapacity: true)`で、共有中の木を全要素コピーしてから削除していた問題を修正
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正

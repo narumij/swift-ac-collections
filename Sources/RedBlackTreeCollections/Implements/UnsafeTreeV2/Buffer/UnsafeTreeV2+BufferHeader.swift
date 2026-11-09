@@ -228,13 +228,6 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
-    #if !USE_LAZY_DETACH
-    // バッファ切り離しをしないケースでのみ、全削除でのインデックス無効化が利用できる
-    // バッファ切り離しをするケースで解放すると内部バッファが解放されてUBになる
-    // TODO: 仕様の再検討 RBT-071, RBT-077
-//    _lazyDetach?.release()
-//    _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
-    #endif
   }
 }
 

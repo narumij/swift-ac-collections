@@ -112,16 +112,3 @@ extension _LazyTie {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
-
-#if !USE_LAZY_DETACH && false
-extension _LazyTie {
-
-  @inlinable
-  package func release() {
-    if self === _emptyLazyDetach {
-      return
-    }
-    isDetached = true
-  }
-}
-#endif

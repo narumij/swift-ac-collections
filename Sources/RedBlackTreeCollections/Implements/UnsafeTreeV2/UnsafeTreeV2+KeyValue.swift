@@ -77,54 +77,46 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
         yield &value
       #else
-        // RBT-081: 共有中に存在しないキーへnilを代入しても、木をコピーしない
-        if !isUnique(), lookup(key) == nil {
+        // RBT-081: 探索は一意化の前に1回だけ行う。存在しないキーにnilのまま戻るなら、木をコピーしない
+        var (__parent, __child) = __find_equal(key)
+        let __e = __end_node
+
+        if __child.pointee == nullptr {
           var value: Base._MappedValue? = nil
-          yield &value
-          if let value {
-            ensureUnique()
-            let (__parent, __child) = __find_equal(key)
-            unsafeEnsureCapacity()
-            update {
-              let __h = $0.__construct_node(Base.__payload_((key, value)))
-              $0.__insert_node_at(__parent, __child, __h)
-            }
-          }
-        } else {
-          ensureUnique()
-
-          let (__parent, __child) = __find_equal(key)
-
-          let found = __child.pointee != nullptr
-
-          var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
-
           defer {
             if let value {
-              if found {
-                Base.__mapped_value_ptr(__child).initialize(to: value)
-              } else {
-                unsafeEnsureCapacity()
-                update {
-                  let __h = $0.__construct_node(Base.__payload_((key, value)))
-                  $0.__insert_node_at(__parent, __child, __h)
-                }
+              ensureUnique()
+              if __e != __end_node {  // 木の不一致判定
+                (__parent, __child) = __simple_retrieve(__parent, __child)
               }
-            } else {
-              if found {
-                _ = update {
-                  let node = __child.pointee
-                  let next = $0.__remove_node_pointer(node)
-                  Base.__key_ptr(node).deinitialize(count: 1)
-                  $0.header.pointee.___pushRecycleWithoutDeinitialize(node)
-                  return next
-                }
-              } else {
-                /* NOP */
+              unsafeEnsureCapacity()
+              update {
+                let __h = $0.__construct_node(Base.__payload_((key, value)))
+                $0.__insert_node_at(__parent, __child, __h)
               }
             }
           }
-
+          yield &value
+        } else {
+          // 見つかったときの__find_equalは、親ではなく見つかったノード自身を返すので、ノードを引き直す
+          var __node = __child.pointee
+          ensureUnique()
+          if __e != __end_node {  // 木の不一致判定
+            __node = __simple_retrieve(__node)
+          }
+          var value: Base._MappedValue? = Base.__mapped_value_ptr(__node).move()
+          defer {
+            if let value {
+              Base.__mapped_value_ptr(__node).initialize(to: value)
+            } else {
+              _ = update {
+                let next = $0.__remove_node_pointer(__node)
+                Base.__key_ptr(__node).deinitialize(count: 1)
+                $0.header.pointee.___pushRecycleWithoutDeinitialize(__node)
+                return next
+              }
+            }
+          }
           yield &value
         }
       #endif

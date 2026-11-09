@@ -105,42 +105,64 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
-    // RBT-086: 共有中のSetに既存の要素をinsertしても、木をコピーしないこと
-    func testInsertExistingElementIntoSharedSetDoesNotCopy() {
-      let original: RedBlackTreeSet<Int> = [1, 2, 3]
-      var shared = original
+  // RBT-086の横展開：共有中に既存のキー・要素を挿入しても、木をコピーしないこと。
+  // 修正するまで失敗するので、#if falseを1つずつ外しながら直す。
 
-      let result = shared.insert(2)
-
-      XCTAssertFalse(result.inserted)
-      XCTAssertEqual(result.memberAfterInsert, 2)
-      XCTAssertEqual(Array(shared), [1, 2, 3])
-      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のinsertで木がコピーされた")
-    }
-
-    // RBT-086: hint付きでも、既存の要素なら木をコピーしないこと
-    func testInsertExistingElementWithHintIntoSharedSetDoesNotCopy() {
-      let original: RedBlackTreeSet<Int> = [1, 2, 3]
-      var shared = original
-
-      let result = shared.insert(2, hint: shared.startIndex)
-
-      XCTAssertFalse(result.inserted)
-      XCTAssertEqual(shared[result.indexAfterInsert], 2)
-      XCTAssertEqual(Array(shared), [1, 2, 3])
-      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のhint付きinsertで木がコピーされた")
-    }
-
-    // RBT-081: 共有中のDictionaryで、存在しないキーにnilを代入しても、木をコピーしないこと
-    func testAssigningNilToMissingKeyInSharedDictionaryDoesNotCopy() {
+  #if false  // Dictionary.insert(_:)
+    func testInsertExistingKeyIntoSharedDictionaryDoesNotCopy() {
       let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       var shared = original
 
-      shared[99] = nil
+      let result = shared.insert((2, "x"))
 
-      XCTAssertEqual(shared.map(\.key), [1, 2, 3])
-      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "存在しないキーへのnil代入で木がコピーされた")
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(result.memberAfterInsert.value, "b")
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのinsertで木がコピーされた")
     }
+  #endif
+
+  #if !COMPATIBLE_ATCODER_2025
+    #if false  // Dictionary.insert(_:hint:)
+      func testInsertExistingKeyWithHintIntoSharedDictionaryDoesNotCopy() {
+        let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var shared = original
+
+        let result = shared.insert((2, "x"), hint: shared.startIndex)
+
+        XCTAssertFalse(result.inserted)
+        XCTAssertEqual(shared[result.indexAfterInsert].value, "b")
+        XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのhint付きinsertで木がコピーされた")
+      }
+    #endif
+  #endif
+
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    #if false  // Dictionary.index(inserting:)
+      func testIndexInsertingExistingKeyIntoSharedDictionaryDoesNotCopy() {
+        let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+        var shared = original
+
+        let result = shared.index(inserting: (2, "x"))
+
+        XCTAssertFalse(result.inserted)
+        XCTAssertEqual(shared[result.index].value, "b")
+        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存キーのindex(inserting:)で木がコピーされた")
+      }
+    #endif
+
+    #if true  // Set.index(inserting:)
+      func testIndexInsertingExistingElementIntoSharedSetDoesNotCopy() {
+        let original: RedBlackTreeSet<Int> = [1, 2, 3]
+        var shared = original
+
+        let result = shared.index(inserting: 2)
+
+        XCTAssertFalse(result.inserted)
+        XCTAssertEqual(shared[result.index], 2)
+        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のindex(inserting:)で木がコピーされた")
+      }
+    #endif
   #endif
 }

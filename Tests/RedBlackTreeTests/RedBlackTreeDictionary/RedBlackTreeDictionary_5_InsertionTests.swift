@@ -25,6 +25,17 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[1], "one")
   }
 
+  /// 共有中のDictionaryで、存在しないキーにnilを代入しても、木をコピーしないこと（RBT-081）
+  func test_keySubscript_assigningNilToMissingKeyInSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    shared[99] = nil
+
+    XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "存在しないキーへのnil代入で木がコピーされた")
+  }
+
   func test_defaultSubscript_doesNotInsertUntilMutated() {
     var dictionary = RedBlackTreeDictionary<Int, [String]>()
 

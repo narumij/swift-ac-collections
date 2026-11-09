@@ -136,4 +136,28 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       }
     }
   #endif
+
+  // RBT-098：共有中の空でない木に、空の木をmerge・insert(contentsOf:)しても、木をコピーしないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testSetMergeEmptySetOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      shared.merge(RedBlackTreeSet<Int>())
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSetのmergeで木がコピーされた")
+    }
+
+    func testSetMergeEmptyMultiSetOnSharedTreeDoesNotCopy() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      shared.merge(RedBlackTreeMultiSet<Int>())
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のMultiSetのmergeで木がコピーされた")
+    }
+  #endif
 }

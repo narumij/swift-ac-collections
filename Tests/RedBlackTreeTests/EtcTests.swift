@@ -131,5 +131,16 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(shared), [1, 2, 3])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "既存要素のhint付きinsertで木がコピーされた")
     }
+
+    // RBT-081: 共有中のDictionaryで、存在しないキーにnilを代入しても、木をコピーしないこと
+    func testAssigningNilToMissingKeyInSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+
+      shared[99] = nil
+
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "存在しないキーへのnil代入で木がコピーされた")
+    }
   #endif
 }

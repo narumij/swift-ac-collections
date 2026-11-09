@@ -38,6 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
 - `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
 - `RedBlackTreeDictionary.removeValue(forKey:)`および`RedBlackTreeMultiMap.eraseUnique(_:)`・`eraseMulti(_:)`で、該当するキーがない場合にもCopy-on-Writeが発生する問題を修正（AtCoder 2025互換モードでは従来の処理を維持）
+- `RedBlackTreeSet`の`insert(_:)`・`insert(_:hint:)`・`index(inserting:)`で、既存の要素を挿入する場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary`の`insert(_:)`・`insert(_:hint:)`・`index(inserting:)`で、既存のキーを挿入する場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary`の添字`self[key]`で、存在しないキーに`nil`を代入する場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:)`（境界式1つ）で、削除対象がない場合にもCopy-on-Writeが発生する問題を修正
+- 4種の赤黒木の`erase(_:)`（Index範囲・境界式範囲）で、空でない木から空の範囲を削除する場合にもCopy-on-Writeが発生する問題を修正
 - 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
 - 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
 - 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正

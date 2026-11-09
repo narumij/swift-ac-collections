@@ -267,6 +267,21 @@ import XCTest
       values.erase(where: { $0 == 30 })
       XCTAssertEqual(Array(values), [40, 50, 60, 70])
     }
+
+    /// 共有中の空でない木で、範囲ビューの.values`erase(where:)`が何も消さないとき、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [String] = []
+
+      shared[lo ..< hi].values.erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, ["b", "c", "d"])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
+    }
   }
 #endif
 

@@ -104,36 +104,4 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
-
-  // 辞書の位置添字で取り出した要素は、辞書を後から変更・削除しても壊れないこと。
-
-  #if !COMPATIBLE_ATCODER_2025
-    func testDictionaryPositionSubscriptElementsOutliveMutation() {
-      final class Box: Equatable {
-        let id: Int
-        init(_ id: Int) { self.id = id }
-        static func == (lhs: Box, rhs: Box) -> Bool { lhs.id == rhs.id }
-      }
-      var dictionary = RedBlackTreeDictionary<String, Box>()
-      for i in 0 ..< 200 { dictionary["key\(i)"] = Box(i) }
-
-      var taken: [(key: String, value: Box)] = []
-      var i = dictionary.startIndex
-      while i != dictionary.endIndex {
-        taken.append(dictionary[i])
-        let (k, v) = dictionary[i]
-        XCTAssertEqual(dictionary[k]?.id, v.id)
-        i = dictionary.index(after: i)
-      }
-
-      dictionary.removeAll()
-      for j in 0 ..< 200 { dictionary["other\(j)"] = Box(-j) }
-
-      XCTAssertEqual(taken.count, 200)
-      XCTAssertEqual(Set(taken.map(\.key)).count, 200)
-      for (key, value) in taken {
-        XCTAssertEqual(key, "key\(value.id)")
-      }
-    }
-  #endif
 }

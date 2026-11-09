@@ -312,7 +312,7 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      #if false
+      #if true  // RBT-086: hint付きは旧コードに戻して再現テストの赤を確かめる
         __tree_.ensureUniqueAndCapacity()
         let p = __tree_.__purified_(hint)
         guard let __p = p.pointer else {

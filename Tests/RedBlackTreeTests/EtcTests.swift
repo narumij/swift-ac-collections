@@ -120,5 +120,41 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(shared), [1, 2, 3])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
     }
+
+    func testEraseWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [1, 2, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+
+    func testEraseWhereNothingMatchesFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+
+    func testEraseWhereNothingMatchesFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [1, 2, 2])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
   #endif
 }

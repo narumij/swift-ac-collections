@@ -156,6 +156,338 @@
     }
   #endif
 
+  // RBT-104：範囲を受け取るAPIに、容量保持の全削除より前に取ったIndex・IndexRangeを渡しても、破棄済みの中身を読む前に停止すること。
+  #if !USE_LAZY_DETACH
+    /// 容量を保ったまま全削除したSetと、削除前に取ったIndex・IndexRange。
+    private func rbt104SetAfterRemoveAllKeepingCapacity()
+      -> (tree: RedBlackTreeSet<String>, stale: RedBlackTreeSet<String>.Index, staleRange: RedBlackTreeIndexRange)
+    {
+      var t = RedBlackTreeSet<String>()
+      for c in "abc" { t.insert(rbt104Element(c)) }
+      let stale = t.index(after: t.startIndex)
+      let staleRange = t.equalRange(rbt104Element("b"))
+      t.removeAll(keepingCapacity: true)
+      t.insert(rbt104Element("x"))
+      return (t, stale, staleRange)
+    }
+
+    struct RBT104SetRangeAfterRemoveAllKeepingCapacityDeathTests {
+
+      @Test
+      func containsSubrangeIndexRange_returnsFalse() {
+        let (t, _, staleRange) = rbt104SetAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(staleRange))
+      }
+
+      @Test
+      func containsSubrangeExpression_returnsFalse() {
+        let (t, stale, _) = rbt104SetAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(stale..<t.endIndex))
+      }
+
+      @Test
+      func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, _, staleRange) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t[staleRange].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, stale, _) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t[stale..<t.endIndex].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104SetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+    }
+
+    /// 容量を保ったまま全削除したMultiSetと、削除前に取ったIndex・IndexRange。
+    private func rbt104MultiSetAfterRemoveAllKeepingCapacity()
+      -> (tree: RedBlackTreeMultiSet<String>, stale: RedBlackTreeMultiSet<String>.Index, staleRange: RedBlackTreeIndexRange)
+    {
+      var t = RedBlackTreeMultiSet<String>()
+      for c in "abc" { t.insert(rbt104Element(c)) }
+      let stale = t.index(after: t.startIndex)
+      let staleRange = t.equalRange(rbt104Element("b"))
+      t.removeAll(keepingCapacity: true)
+      t.insert(rbt104Element("x"))
+      return (t, stale, staleRange)
+    }
+
+    struct RBT104MultiSetRangeAfterRemoveAllKeepingCapacityDeathTests {
+
+      @Test
+      func containsSubrangeIndexRange_returnsFalse() {
+        let (t, _, staleRange) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(staleRange))
+      }
+
+      @Test
+      func containsSubrangeExpression_returnsFalse() {
+        let (t, stale, _) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(stale..<t.endIndex))
+      }
+
+      @Test
+      func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, _, staleRange) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t[staleRange].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, stale, _) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t[stale..<t.endIndex].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104MultiSetAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+    }
+
+    /// 容量を保ったまま全削除したDictionaryと、削除前に取ったIndex・IndexRange。
+    private func rbt104DictionaryAfterRemoveAllKeepingCapacity()
+      -> (tree: RedBlackTreeDictionary<String, String>, stale: RedBlackTreeDictionary<String, String>.Index, staleRange: RedBlackTreeIndexRange)
+    {
+      var t = RedBlackTreeDictionary<String, String>()
+      for c in "abc" { t[rbt104Element(c)] = rbt104Element(c) }
+      let stale = t.index(after: t.startIndex)
+      let staleRange = t.equalRange(rbt104Element("b"))
+      t.removeAll(keepingCapacity: true)
+      t[rbt104Element("x")] = rbt104Element("x")
+      return (t, stale, staleRange)
+    }
+
+    struct RBT104DictionaryRangeAfterRemoveAllKeepingCapacityDeathTests {
+
+      @Test
+      func containsSubrangeIndexRange_returnsFalse() {
+        let (t, _, staleRange) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(staleRange))
+      }
+
+      @Test
+      func containsSubrangeExpression_returnsFalse() {
+        let (t, stale, _) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(stale..<t.endIndex))
+      }
+
+      @Test
+      func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, _, staleRange) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t[staleRange].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, stale, _) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t[stale..<t.endIndex].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104DictionaryAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+    }
+
+    /// 容量を保ったまま全削除したMultiMapと、削除前に取ったIndex・IndexRange。
+    private func rbt104MultiMapAfterRemoveAllKeepingCapacity()
+      -> (tree: RedBlackTreeMultiMap<String, String>, stale: RedBlackTreeMultiMap<String, String>.Index, staleRange: RedBlackTreeIndexRange)
+    {
+      var t = RedBlackTreeMultiMap<String, String>()
+      for c in "abc" { t.insert(key: rbt104Element(c), value: rbt104Element(c)) }
+      let stale = t.index(after: t.startIndex)
+      let staleRange = t.equalRange(rbt104Element("b"))
+      t.removeAll(keepingCapacity: true)
+      t.insert(key: rbt104Element("x"), value: rbt104Element("x"))
+      return (t, stale, staleRange)
+    }
+
+    struct RBT104MultiMapRangeAfterRemoveAllKeepingCapacityDeathTests {
+
+      @Test
+      func containsSubrangeIndexRange_returnsFalse() {
+        let (t, _, staleRange) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(staleRange))
+      }
+
+      @Test
+      func containsSubrangeExpression_returnsFalse() {
+        let (t, stale, _) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+        #expect(!t.containsSubrange(stale..<t.endIndex))
+      }
+
+      @Test
+      func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, _, staleRange) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t[staleRange].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          let (t, stale, _) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t[stale..<t.endIndex].first
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, _, staleRange) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t.erase(staleRange, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+          var (t, stale, _) = rbt104MultiMapAfterRemoveAllKeepingCapacity()
+          _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+    }
+
+  #endif
+
   #if USE_COMPACT_NODE_METADATA
     /// compact構成で世代が一周し、回収済みになった枠を指すIndex。
     private func indexAfterSealWraparound()

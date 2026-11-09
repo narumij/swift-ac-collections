@@ -459,6 +459,18 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 2])
   }
 
+  /// 共有中に削除対象のないBoundでeraseしても、木をコピーしないこと（RBT-087）
+  func testEraseMissingBoundFromSharedSetDoesNotCopy() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    XCTAssertNil(shared.erase(find(9)))
+    XCTAssertNil(shared.erase(lowerBound(10)))
+
+    XCTAssertEqual(Array(shared), [1, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+  }
+
   func testSubscriptBoundsModifyPopFirst() throws {
     var b = RedBlackTreeSet<Int>(0 ..< 4)
     let removed = b[lowerBound(0) ..< upperBound(2)].popFirst()

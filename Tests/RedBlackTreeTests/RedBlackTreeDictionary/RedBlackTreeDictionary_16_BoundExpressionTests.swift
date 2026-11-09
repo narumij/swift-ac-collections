@@ -139,6 +139,18 @@ final class RedBlackTreeDictionaryBoundPublicBehaviorTests: RedBlackTreeTestCase
     XCTAssertEqual(pairs(b), ["0:a", "2:c"])
   }
 
+  /// 共有中に削除対象のないBoundでeraseしても、木をコピーしないこと（RBT-087）
+  func testEraseMissingBoundFromSharedDictionaryDoesNotCopy() {
+    let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+    var shared = original
+
+    XCTAssertNil(shared.erase(find(9)))
+    XCTAssertNil(shared.erase(lowerBound(10)))
+
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+  }
+
   func testEraseBounds() throws {
     var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
     b.erase(lowerBound(1) ..< upperBound(3))

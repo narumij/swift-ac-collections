@@ -159,6 +159,18 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(pairs(b), ["0:a", "2:c"])
   }
 
+  /// 共有中に削除対象のないBoundでeraseしても、木をコピーしないこと（RBT-087）
+  func testEraseMissingBoundFromSharedMultiMapDoesNotCopy() {
+    let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+    var shared = original
+
+    XCTAssertNil(shared.erase(find(9)))
+    XCTAssertNil(shared.erase(lowerBound(10)))
+
+    XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "削除対象のないerase(Bound)で木がコピーされた")
+  }
+
   func testSubscriptBoundsView() throws {
     XCTAssertEqual(
       pairs(a[lowerBound(0) ..< upperBound(2)]),

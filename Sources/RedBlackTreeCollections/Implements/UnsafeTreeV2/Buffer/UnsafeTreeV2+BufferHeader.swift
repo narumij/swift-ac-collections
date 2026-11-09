@@ -71,35 +71,8 @@ package struct UnsafeTreeV2BufferHeader {
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
-  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
-  // 試作: _lazyDetachの実体はmallocしたセルに置き、ヘッダはそのポインタだけを持つ
-  // （セルの解放は未対応）
-  @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
-
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
-  @inlinable
-  var _lazyDetach: _LazyTie? {
-    @inline(__always)
-    get { lazyDetachPointer?.pointee }
-    @inline(__always)
-    set {
-      guard let newValue else {
-        lazyDetachPointer = nil
-        return
-      }
-      if let p = lazyDetachPointer {
-        p.pointee = newValue
-      } else {
-        let p = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
-        p.initialize(to: newValue)
-        lazyDetachPointer = p
-      }
-    }
-  }
-  #else
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
   @usableFromInline var _lazyDetach: _LazyTie?
-  #endif
+
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -162,13 +135,8 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
-    #if ENABLE_EXPERIMENTAL_TSAN_SAFE
-    guard let p = lazyDetachPointer else { return true }
-    return isKnownUniquelyReferenced(&p.pointee)
-    #else
     guard let _ = _lazyDetach else { return true }
     return isKnownUniquelyReferenced(&_lazyDetach!)
-    #endif
   }
 
   // IndexやIteratorを結ぶ共有メモリ
@@ -199,25 +167,46 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
   #else
+  // 試作: フィールドを直接acquireで読み、未生成ならロックの中で作ってreleaseで公開する
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
-      if _lazyDetach == nil {
-        _createLazyDetachLocked()
-      }
-      return _lazyDetach!
+      withUnsafeMutablePointer(to: &_lazyDetach) { Self._loadLazyDetach(at: $0) }
     }
   }
-  
+
+  @inlinable
+  @inline(__always)
+  static func _lazyDetachBits(_ field: UnsafeMutablePointer<_LazyTie?>)
+    -> UnsafeMutablePointer<Atomic<UInt>>
+  {
+    UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _loadLazyDetach(at field: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
+    let raw = _lazyDetachBits(field).pointee.load(ordering: .acquiring)
+    if let p = UnsafeRawPointer(bitPattern: raw) {
+      return Unmanaged<_LazyTie>.fromOpaque(p).takeUnretainedValue()
+    }
+    return _createLazyDetach(at: field)
+  }
+
   @usableFromInline
   @inline(never)
-  mutating func _createLazyDetachLocked() {
+  static func _createLazyDetach(at field: UnsafeMutablePointer<_LazyTie?>) -> _LazyTie {
     _lazyDetachLock.withLock { _ in
-      if _lazyDetach == nil {
-        let t = _LazyTie.create()
-        atomicMemoryFence(ordering: .releasing)
-        _lazyDetach = t
+      let bits = _lazyDetachBits(field)
+      let raw = bits.pointee.load(ordering: .acquiring)
+      if let p = UnsafeRawPointer(bitPattern: raw) {
+        return Unmanaged<_LazyTie>.fromOpaque(p).takeUnretainedValue()
       }
+      let tie = _LazyTie.create()
+      // フィールドが+1を所有する（_LazyTie?の強参照と同じ表現）
+      let owned = Unmanaged.passRetained(tie)
+      bits.pointee.store(UInt(bitPattern: owned.toOpaque()), ordering: .releasing)
+      return tie
     }
   }
   #endif

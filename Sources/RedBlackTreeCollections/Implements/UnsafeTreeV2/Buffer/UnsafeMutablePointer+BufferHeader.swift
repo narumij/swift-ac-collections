@@ -29,8 +29,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeTreeV2BufferHeader {
   @inlinable
   func index(_ p: UnsafeMutablePointer<UnsafeNode>) -> _LazyTiedPtrV2 {
     assert(p != .nullptr)
-    let cell = _LazyTie._lazyDetachCell(at: pointer(to: \.lazyDetachPointer)!)
-    return .unchecked(p, end_ptr: pointee.end_ptr, lazyDetach: cell.pointee)
+    let tie = UnsafeTreeV2BufferHeader._loadLazyDetach(at: pointer(to: \._lazyDetach)!)
+    return .unchecked(p, end_ptr: pointee.end_ptr, lazyDetach: tie)
   }
   
   @inlinable
@@ -39,36 +39,4 @@ extension UnsafeMutablePointer where Pointee == UnsafeTreeV2BufferHeader {
   }
 }
 
-extension _LazyTie {
-  
-  // 試作: lazyDetachPointerのフィールドに対して、ヘッダ全体を開かずに
-  // 「atomicに確認し、無ければロックの中で作って公開する」
-  @inlinable
-  static func _lazyDetachCell(
-    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
-  ) -> UnsafeMutablePointer<_LazyTie> {
-    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
-    if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
-      return cell
-    }
-    return _createLazyDetachCell(at: field)
-  }
-
-  @usableFromInline
-  @inline(never)
-  static func _createLazyDetachCell(
-    at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>
-  ) -> UnsafeMutablePointer<_LazyTie> {
-    let bits = UnsafeMutableRawPointer(field).assumingMemoryBound(to: Atomic<UInt>.self)
-    return _lazyDetachLock.withLock { _ in
-      if let cell = UnsafeMutablePointer<_LazyTie>(bitPattern: bits.pointee.load(ordering: .acquiring)) {
-        return cell
-      }
-      let cell = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
-      cell.initialize(to: .create())
-      bits.pointee.store(UInt(bitPattern: cell), ordering: .releasing)
-      return cell
-    }
-  }
-}
 #endif

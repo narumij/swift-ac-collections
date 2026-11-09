@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - オフセット計算のオーバーフロー検査を既定で有効化
 - `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
 - MappedValues Viewの位置添字（`values[i]`）経由のその場変更で、値をコピーしてから書き戻していた処理を、格納値を直接参照する形に変更し、値の不要なコピーを削減
-- `RedBlackTreeDictionary`の位置添字`self[position]`を、要素をコピーして返す形から、格納された要素を直接参照する形に変更
+- `RedBlackTreeDictionary`・`RedBlackTreeMultiMap`の位置添字`self[position]`を、要素をコピーして返す形から、格納された要素を直接参照する形に変更
 - `RedBlackTreeMultiSet`の`union(_:)`・`formUnion(_:)`を、各要素の個数の和（a + b）から和集合（max(a, b)）へ変更。C++の`std::set_union`と同じく、同値要素は左の全要素と、右の末尾max(b − a, 0)個を残す。個数の和が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。AtCoder 2025互換モードでは従来の個数の和を維持
 
 ### Removed

@@ -232,8 +232,8 @@ extension UnsafeTreeV2BufferHeader {
     // バッファ切り離しをしないケースでのみ、全削除でのインデックス無効化が利用できる
     // バッファ切り離しをするケースで解放すると内部バッファが解放されてUBになる
     // TODO: 仕様の再検討 RBT-071, RBT-077
-    _lazyDetach?.release()
-    _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
+//    _lazyDetach?.release()
+//    _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
     #endif
   }
 }

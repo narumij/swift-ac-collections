@@ -54,7 +54,8 @@ extension UnsafeTreeV2 {
     
     var __p = __p
     var __dummy = nullptr
-    
+    let __e = __end_node
+
     // 問題が起きる可能性がすこしある
     var (__parent, __child) = __find_equal(__p, &__dummy, __key(__k))
 
@@ -64,40 +65,14 @@ extension UnsafeTreeV2 {
     
     ensureUniqueAndCapacity()
     
-    (__parent, __child) = ___retrieve(__parent, __child)
-    __p = ___simple_retrieve(__p)
+    if __e != __end_node {  // 木の不一致判定
+      (__parent, __child) = ___retrieve(__parent, __child)
+      __p = ___simple_retrieve(__p)
+    }
     
     let __h = __construct_node(__k)
     __insert_node_at(__parent, __child, __h)
     
     return (__h, true)
-  }
-}
-
-extension UnsafeTreeV2 where Base: ScalarValueTrait {
-  
-  public mutating func insert(
-    _ newMember: _PayloadValue,
-    hint: UnsafeIndexV3
-  ) -> (inserted: Bool, indexAfterInsert: UnsafeIndexV3) {
-    guard var __p = __purified_(hint).pointer else { fatalError() }
-    var __dummy = nullptr
-    
-    // 問題が起きる可能性がすこしある
-    var (__parent, __child) = __find_equal(__p, &__dummy, __key(newMember))
-
-    if __child.pointee != nullptr {
-      return (false, index(__child.pointee))
-    }
-    
-    ensureUniqueAndCapacity()
-    
-    (__parent, __child) = ___retrieve(__parent, __child)
-    __p = ___simple_retrieve(__p)
-    
-    let __h = __construct_node(newMember)
-    __insert_node_at(__parent, __child, __h)
-    
-    return (true, index(__h))
   }
 }

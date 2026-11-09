@@ -37,6 +37,18 @@ import XCTest
       XCTAssertEqual(dictionary.map(\.value), ["a", "b"])
     }
 
+    /// 共有中の木で、同じ位置どうしの`swapAt`は何も変えず、木をコピーしないこと（RBT-099）。
+    func test_valuesSwapAt_sameIndexOnSharedTree_keepsSharedStorage() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b"]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.values.swapAt(i, i)
+
+      XCTAssertEqual(shared.map(\.value), ["a", "b"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "同じ位置のswapAtで木がコピーされた")
+    }
+
     func test_valuesSwapAt_preservesValueSemanticsAfterCopy() {
       var dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       let first = dictionary.startIndex

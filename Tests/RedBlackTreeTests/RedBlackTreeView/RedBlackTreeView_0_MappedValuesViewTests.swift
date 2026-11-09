@@ -283,6 +283,49 @@ import XCTest
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
     }
 
+    /// `values[i]`で値をその場で変更するとき、値を取り出してコピーせず、格納された値を直接変更すること（RBT-093）。
+    func test_subscript_modifyInPlace_doesNotCopyValue() {
+      final class Ref {}
+      struct Probe {
+        var ref = Ref()
+        mutating func isUnique() -> Bool { isKnownUniquelyReferenced(&ref) }
+      }
+      var dictionary: RedBlackTreeDictionary<Int, Probe> = [0: Probe()]
+      let i = dictionary.startIndex
+
+      XCTAssertEqual(dictionary.values[i].isUnique(), true)
+    }
+
+    /// MultiMapの`values[i]`と、範囲ビューの`.values[i]`でも、値をその場で変更するときに値をコピーしないこと（RBT-093）。
+    func test_subscript_modifyInPlace_doesNotCopyValue_multiMapAndRangeView() {
+      final class Ref {}
+      struct Probe {
+        var ref = Ref()
+        mutating func isUnique() -> Bool { isKnownUniquelyReferenced(&ref) }
+      }
+      var multiMap: RedBlackTreeMultiMap<Int, Probe> = [(0, Probe()), (0, Probe())]
+      let m = multiMap.index(after: multiMap.startIndex)
+      XCTAssertEqual(multiMap.values[m].isUnique(), true)
+
+      var dictionary: RedBlackTreeDictionary<Int, Probe> = [0: Probe(), 1: Probe(), 2: Probe()]
+      let lo = dictionary.index(after: dictionary.startIndex)
+      let hi = dictionary.index(lo, offsetBy: 2)
+      XCTAssertEqual(dictionary[lo ..< hi].values[lo].isUnique(), true)
+    }
+
+    /// 木を共有している辞書で`values[i]`を変更しても、共有元の値は変わらないこと（RBT-093）。
+    func test_subscript_mutationOnSharedTree_keepsOriginal() {
+      let original: RedBlackTreeDictionary<Int, [Int]> = [0: [1], 1: [2]]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.values[i].append(3)
+
+      XCTAssertEqual(shared[1], [2, 3])
+      XCTAssertEqual(original[1], [2])
+      XCTAssertEqual(original[0], [1])
+    }
+
     /// 部分範囲の.valuesの`erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、
     /// 範囲外のkey/valueに触れないこと。共有していた元の辞書のkey/valueは変わらないこと。変更側の途中状態は
     /// 契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）

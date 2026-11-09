@@ -109,7 +109,16 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   // 木をコピーしないこと。まずSetの失効したIndexの1本だけ有効にする。
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
-    #if true  // Set・失効したIndex
+    #if true  // Set（失効したIndexとendIndex）
+      func testEraseExactlyEndIndexFromSharedSetDoesNotCopy() {
+        let original: RedBlackTreeSet<Int> = [1, 2, 3]
+        var shared = original
+
+        XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+      }
+
       func testEraseExactlyStaleIndexFromSharedSetDoesNotCopy() {
         var shared: RedBlackTreeSet<Int> = [1, 2, 3]
         let i = shared.startIndex
@@ -124,15 +133,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
     #if false  // 残り（endIndexと、ほかの3型）
-      func testEraseExactlyEndIndexFromSharedSetDoesNotCopy() {
-        let original: RedBlackTreeSet<Int> = [1, 2, 3]
-        var shared = original
-
-        XCTAssertNil(shared.erase(exactly: shared.endIndex))
-
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
-      }
-
       func testEraseExactlyEndIndexFromSharedMultiSetDoesNotCopy() {
         let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
         var shared = original

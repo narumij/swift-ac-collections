@@ -122,8 +122,8 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(key:value:hint:)` | — | — | 検討 | ✅ | ヒントを用いてキーと値を挿入する |
 | `update(_:hint:)` | ✅ | — | — | ✅ | ヒントを用いて挿入、または既存要素を置換し、旧要素を返す。新規挿入時は `nil` |
 | `update(with:)` | ✅ | — | — | — | Set要素を挿入または置換し、旧要素を返す |
-| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を等価な要素で置換し、旧要素を返す。無効Indexまたは非等価時は `nil` |
-| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す。無効Indexでは `nil` |
+| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を `==` で等しい要素に置換し、旧要素を返す。無効Index・endIndex・非等価な置換は事前条件違反 |
+| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す。無効Index・endIndexは事前条件違反 |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新または挿入し、旧値を返す |
 | `updateValue(_:forKey:hint:)` | — | — | — | ✅ | ヒントを用いてキーの値を更新または挿入し、旧値を返す |
 | `index(inserting:)` | ✅ | ✅ | ✅ | ✅ | 挿入し、挿入位置のIndexを返す |
@@ -133,8 +133,6 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `merging(_:)` | ✅ | — | — | — | 統合した新しいSetを返す |
 | `merge(_:uniquingKeysWith:)` | — | — | — | ✅ | Dictionaryまたはキー値列を統合し、重複キーをクロージャで解決する |
 | `merging(_:uniquingKeysWith:)` | — | — | — | ✅ | 統合した新しいDictionaryを返す |
-| `meld(_:)` | — | ✅ | ✅ | — | 同種コンテナを構造的に結合する。Multi系では重複を保持する |
-| `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す。Multi系では重複を保持する |
 
 ## 削除
 
@@ -186,7 +184,8 @@ erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱�
 | `symmetricDifference(_:)` / `formSymmetricDifference(_:)` | ✅ | ✅ | — | — | 対称差を生成、または自身を更新する |
 
 MultiSetの集合演算は重複数を考慮する。Setの演算と同じ名前でも、個数に関する
-意味を確認して変更すること。
+意味を確認して変更すること。MultiSetの`union`は各要素の個数をmax(a, b)にする。
+個数の和（a + b）が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。
 
 ## 標準プロトコル適合
 

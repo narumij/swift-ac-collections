@@ -38,24 +38,11 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
-    // 採用判断は保留。従来版を残し、並行アクセスと性能を比較できるようにする。
-    #if !RED_BLACK_TREE_TSAN_SAFE
-      // 従来版：共有ヘッダにinoutアクセスを開始する。
-      let tree = withMutableHeader { header in
-        UnsafeTreeV2._create(
-          unsafeBufferObject:
-            header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
-      }
-    // MEMO: TSanで問題が検出されるが、コピー処理完了まではisUnique判定が維持されるので、今のところ問題では無いと考えている
-    // 微妙な性能影響と、検査とどちらをとるかで悩み
-    #else
-      // 試行版：コピー元は共有中なので、読取りだけ行う。
       let tree = _buffer.withUnsafeMutablePointerToHeader { header in
         UnsafeTreeV2._create(
           unsafeBufferObject:
             header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
       }
-    #endif
     _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
     _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
     _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")
@@ -66,24 +53,11 @@ extension UnsafeTreeV2 {
   @inline(never)  // 呼び出し元ホットパスのレジスタ圧低下を狙っている
   internal func copy() -> UnsafeTreeV2 {
     _UNSAFE_TREE_ASSERT_INTERNAL(__check(self), "一括チェックに合格すること")
-    // 採用判断は保留。従来版を残し、並行アクセスと性能を比較できるようにする。
-    #if !RED_BLACK_TREE_TSAN_SAFE
-      // 従来版：共有ヘッダにinoutアクセスを開始する。
-      let tree = withMutableHeader { header in
-        UnsafeTreeV2._create(
-          unsafeBufferObject:
-            header.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
-      }
-    // MEMO: TSanで問題が検出されるが、コピー処理完了まではisUnique判定が維持されるので、今のところ問題では無いと考えている
-    // 微妙な性能影響と、検査とどちらをとるかで悩み
-    #else
-      // 試行版：コピー元は共有中なので、読取りだけ行う。
       let tree = _buffer.withUnsafeMutablePointerToHeader { header in
         UnsafeTreeV2._create(
           unsafeBufferObject:
             header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
       }
-    #endif
     _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
     _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
     _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")

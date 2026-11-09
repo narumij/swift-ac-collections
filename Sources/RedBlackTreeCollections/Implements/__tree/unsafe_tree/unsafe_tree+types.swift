@@ -125,11 +125,11 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   // ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
-    _ref(to: &__payload_ptr(p).pointee.tuple.key)
+    __payload_ptr(p).pointer(to: \.tuple.key)!
   }
   @inlinable
   static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
-    _ref(to: &__payload_ptr(p.pointee).pointee.tuple.key)
+    __payload_ptr(p.pointee).pointer(to: \.tuple.key)!
   }
   
   @inlinable
@@ -150,11 +150,11 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   // ```
   @inlinable
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
-    _ref(to: &__payload_ptr(p).pointee.tuple.value)
+    __payload_ptr(p).pointer(to: \.tuple.value)!
   }
   @inlinable
   static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
-    _ref(to: &__payload_ptr(p.pointee).pointee.tuple.value)
+    __payload_ptr(p.pointee).pointer(to: \.tuple.value)!
   }
   
   @inlinable
@@ -171,7 +171,7 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType & _KeyVa
   
   @inlinable
   static func __element__ptr(_ p: _NodePtr) -> _ElementValuePtr {
-    _ref(to: &__payload_ptr(p).pointee.tuple)
+    __payload_ptr(p).pointer(to: \.tuple)!
   }
   
   @inlinable

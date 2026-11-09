@@ -91,6 +91,34 @@ jobs:
       - name: Run all Release tests
         run: swift test -c release --traits NORMAL_RELEASE_TEST,ENABLE_DEATH_TESTS
 
+  atcoder-2025-compatibility:
+    name: AtCoder 2025 compatibility (${{ matrix.configuration }})
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - configuration: debug
+            test-options: --traits NORMAL_DEBUG_TEST
+          - configuration: release
+            test-options: ''
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run compatibility tests
+        run: >-
+          swift test -c ${{ matrix.configuration }}
+          ${{ matrix.test-options }} -Xswiftc -DCOMPATIBLE_ATCODER_2025
+
   documentation:
     needs: resolve
     if: needs.resolve.outputs.sha != ''
@@ -351,7 +379,7 @@ jobs:
     if: >-
       always() && github.event_name == 'issue_comment' &&
       needs.resolve.result == 'success' && needs.resolve.outputs.sha != ''
-    needs: [resolve, debug-all-tests, release-all-tests, documentation, address-sanitizer-death-tests, performance]
+    needs: [resolve, debug-all-tests, release-all-tests, atcoder-2025-compatibility, documentation, address-sanitizer-death-tests, performance]
     runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
@@ -365,7 +393,7 @@ jobs:
         with:
           script: |
             const results = JSON.parse(process.env.JOB_RESULTS);
-            const jobs = ['debug-all-tests', 'release-all-tests', 'documentation', 'address-sanitizer-death-tests', 'performance'];
+            const jobs = ['debug-all-tests', 'release-all-tests', 'atcoder-2025-compatibility', 'documentation', 'address-sanitizer-death-tests', 'performance'];
             const passed = jobs.every(name => results[name].result === 'success');
             const url = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             const body = [

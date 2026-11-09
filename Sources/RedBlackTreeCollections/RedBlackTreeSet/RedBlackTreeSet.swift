@@ -84,7 +84,7 @@
 ///
 /// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan` / `.lessThanOrEqual`, `.greaterThan` / `.greaterThanOrEqual`, `.before` / `.after`, and `.advanced(by:limit:)`. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before` / `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan` / `.lessThanOrEqual` / `.greaterThan` / `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -310,7 +310,6 @@ extension RedBlackTreeSet {
     {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -333,7 +332,6 @@ extension RedBlackTreeSet {
     public mutating func update(_ newMember: Element, hint: Index) -> Element? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -426,11 +424,10 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
+    #if COMPATIBLE_ATCODER_2025
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     #if false
-      // RBT-052: Previous fast path returned the probe instead of the stored element.
-      // Retained for performance comparison.
       return __tree_.update { $0.___erase_unique(member) } ? member : nil
     #else
       return __tree_.update {
@@ -440,6 +437,9 @@ extension RedBlackTreeSet {
         _ = $0.erase(index)
         return removed
       }
+    #endif
+    #else
+      return __tree_._removeIfPresent(member)
     #endif
   }
 }
@@ -498,7 +498,8 @@ extension RedBlackTreeSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 

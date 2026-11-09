@@ -280,4 +280,43 @@ import XCTest
     }
   #endif
 
+  // 互換モードのunionは、各要素の個数の和（a + b）を保つ（通常モードは和集合でmax(a, b)）
+  extension RedBlackTreeMultiSetSetAlgebraTests {
+
+    func test_union_addsMultiplicities() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
+
+      XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 2, 3, 3, 3, 4])
+    }
+
+    func test_formUnion_addsMultiplicitiesInPlaceAndChangesOnlyTheReceiver() {
+      let original = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let other = RedBlackTreeMultiSet([2, 3, 3, 4])
+      var receiver = original
+
+      receiver.formUnion(other)
+
+      XCTAssertEqual(Array(receiver), [1, 2, 2, 2, 3, 3, 3, 4])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3])
+      XCTAssertEqual(Array(other), [2, 3, 3, 4])
+    }
+  }
+
+  // meldは互換モードだけに残っている
+  extension RedBlackTreeMultiSetUtilityTests {
+
+    func test_meldAndMelding_preserveEveryMember() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2])
+      let rhs = RedBlackTreeMultiSet([2, 3])
+      var mutated = lhs
+
+      mutated.meld(rhs)
+      let copied = lhs.melding(rhs)
+
+      XCTAssertEqual(Array(mutated), [1, 2, 2, 2, 3])
+      XCTAssertEqual(Array(copied), [1, 2, 2, 2, 3])
+      XCTAssertEqual(Array(lhs), [1, 2, 2])
+    }
+  }
 #endif

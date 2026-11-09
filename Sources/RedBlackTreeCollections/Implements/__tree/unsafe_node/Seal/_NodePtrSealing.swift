@@ -43,6 +43,7 @@ public struct _NodePtrSealing {
 
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
+  // (USE_COMPACT_NODE_METADATAではUInt16)
 
   // 現在の状態で封印する
   @inlinable
@@ -188,7 +189,11 @@ extension _NodePtrSealing: Hashable {}
 
 extension _NodePtrSealing: CustomStringConvertible {
   public var description: String {
-    "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+    #if USE_LAZY_DETACH
+      "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+    #else
+      "_NodePtrSealing<\((tag: trackingTag, seal: seal, pointer))>"
+    #endif
   }
 }
 

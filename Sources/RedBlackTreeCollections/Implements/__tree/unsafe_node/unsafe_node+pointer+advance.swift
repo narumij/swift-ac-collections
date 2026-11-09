@@ -54,11 +54,13 @@ package func
   if __n < 0 {
     while __n != 0 {
       __x = __x.flatMap { ___tree_prev_iter($0) }
+      if case .failure = __x { return __x }
       __n &+= 1
     }
   } else {
     while __n != 0 {
       __x = __x.flatMap { ___tree_next_iter($0) }
+      if case .failure = __x { return __x }
       __n &-= 1
     }
   }
@@ -78,12 +80,14 @@ package func
     while __n != 0 {
       guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_prev_iter($0) }
+      if case .failure = __x { return __x }
       __n &+= 1
     }
   } else {
     while __n != 0 {
       guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_next_iter($0) }
+      if case .failure = __x { return __x }
       __n &-= 1
     }
   }

@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if ENABLE_EXPERIMENTAL_LRU
+
 public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 
   @inlinable
@@ -149,3 +151,5 @@ extension ___LRULinkList {
     return _rankLowest
   }
 }
+
+#endif

@@ -124,6 +124,7 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     let b = duplicates()
     XCTAssertEqual(b[lowerBound(1)]?.value, "b")
     XCTAssertEqual(b[upperBound(1)]?.value, "d")
+    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     XCTAssertEqual(
       b[.lessThan(2)]?.value,
       "c",
@@ -132,6 +133,7 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     // `.lessThanOrEqual(k)`は`find(k)`が成功すればその位置（DSL.md）。重複keyのどの値かは
     // 規定されていないので、keyだけを確かめる。
     XCTAssertEqual(b[.lessThanOrEqual(1)]?.key, 1)
+    #endif
   }
 
   func testViewCount() throws {
@@ -215,6 +217,7 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(pairs(b), ["1:b", "3:d"])
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAndOrEqualMulti() throws {
     let b: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
 
@@ -230,13 +233,16 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(b[.lessThanOrEqual(2)]?.key, 2)
     XCTAssertEqual(b[.lessThanOrEqual(3)]?.key, 2)
   }
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessGreaterHelpers() throws {
     XCTAssertEqual(a[.lessThan(1)]?.value, "a")
     XCTAssertEqual(a[.greaterThan(1)]?.value, "c")
     XCTAssertEqual(a[.lessThanOrEqual(1)]?.value, "b")
     XCTAssertEqual(a[.greaterThanOrEqual(1)]?.value, "b")
   }
+  #endif
 
   func testBoundRangeOperators() throws {
     XCTAssertEqual(
@@ -286,4 +292,21 @@ final class RedBlackTreeMultiMapBoundDistanceTests: RedBlackTreeTestCase {
     XCTAssertEqual(c.distance(from: lowerBound(2), to: lowerBound(2)), 0)
   }
 }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapBoundPublicBehaviorTests {
+    /// 空の木の.lastは、docどおりpast-the-endに置き換わること。
+    func testEmptyLastBoundIsEnd() {
+      let empty = RedBlackTreeMultiMap<Int, Int>()
+      XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
+    }
+
+    /// .start.advanced(by:)に要素数を超える距離を渡すと、終わらずにループせずnilになること。
+    func testBoundAdvancedByHugeOffsetTerminates() {
+      let c = RedBlackTreeMultiMap(keysWithValues: [(1, 1), (2, 2), (3, 3)])
+      XCTAssertNil(c[.start.advanced(by: 4)])
+      XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
 #endif

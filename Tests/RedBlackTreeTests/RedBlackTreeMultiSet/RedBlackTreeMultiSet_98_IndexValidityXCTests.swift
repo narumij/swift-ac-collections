@@ -18,7 +18,7 @@
       XCTAssertFalse(
         multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(multiset.isElement(at: .unsafe(tree: multiset.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -27,10 +27,10 @@
       let range = base.elements(in: 2..<6)
       typealias Index = RedBlackTreeMultiSet<Int>.Index
 
-      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }
@@ -135,6 +135,29 @@
         XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")
       #endif
       XCTAssertEqual(b.sorted(), Array(1..<19), "先頭と末尾が削除された残りとなる")
+    }
+  }
+#endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetIndexValidityXCTests {
+    /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
+    /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
+    func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
+      var c = RedBlackTreeMultiSet([1])
+      let index = c.startIndex
+      c.removeAll(keepingCapacity: true)
+      XCTAssertFalse(c.isElement(at: index))
+    }
+
+    /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
+    func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
+      func make() -> RedBlackTreeMultiSet<Int>.Index {
+        let c = RedBlackTreeMultiSet([1, 2, 3, 4, 5])
+        return c.index(after: c.startIndex)
+      }
+      let index = make()
+      XCTAssertFalse(String(describing: index).isEmpty)
     }
   }
 #endif

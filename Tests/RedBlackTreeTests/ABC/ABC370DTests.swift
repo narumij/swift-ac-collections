@@ -20,7 +20,7 @@ final class ABC370DTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
     func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
       
       let _g1 = RedBlackTreeSet<Int>(0..<W)

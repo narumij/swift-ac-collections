@@ -170,6 +170,7 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 1, 1, 2, 3])
   }
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessThanAndOrEqualMulti() throws {
     let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
 
@@ -185,13 +186,16 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(b[.lessThanOrEqual(2)], 2)
     XCTAssertEqual(b[.lessThanOrEqual(3)], 2)
   }
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
   func testLessGreaterHelpers() throws {
     XCTAssertEqual(a[.lessThan(1)], 0)
     XCTAssertEqual(a[.greaterThan(1)], 2)
     XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
     XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
   }
+  #endif
 
   func testBoundRangeOperators() throws {
     let view1 = a[lowerBound(0) ..< upperBound(2)]
@@ -241,4 +245,21 @@ final class RedBlackTreeMultiSetBoundDistanceTests: RedBlackTreeTestCase {
     XCTAssertEqual(c.distance(from: lowerBound(2), to: lowerBound(2)), 0)
   }
 }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetBoundPublicBehaviorTests {
+    /// 空の木の.lastは、docどおりpast-the-endに置き換わること。
+    func testEmptyLastBoundIsEnd() {
+      let empty = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(empty.distance(from: .start, to: .last), 0)
+    }
+
+    /// .start.advanced(by:)に要素数を超える距離を渡すと、終わらずにループせずnilになること。
+    func testBoundAdvancedByHugeOffsetTerminates() {
+      let c = RedBlackTreeMultiSet([1, 2, 3])
+      XCTAssertNil(c[.start.advanced(by: 4)])
+      XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
 #endif

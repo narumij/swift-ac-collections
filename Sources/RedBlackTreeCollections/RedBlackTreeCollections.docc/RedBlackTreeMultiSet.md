@@ -115,8 +115,6 @@
 
 ### Combining MultiSets
 
-- ``RedBlackTreeMultiSet/meld(_:)``
-- ``RedBlackTreeMultiSet/melding(_:)``
 - ``RedBlackTreeMultiSet/union(_:)``
 - ``RedBlackTreeMultiSet/intersection(_:)``
 - ``RedBlackTreeMultiSet/difference(_:)``

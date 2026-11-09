@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// The following top-level functions provide type-inferred endpoints for range expressions.
 
 /// Represents the first element.
 ///

@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// Older standard libraries require Comparable values to be Copyable.
 #if compiler(>=6.4)
 @inlinable
 package func __default_three_way_comparator<T: ~Copyable & Comparable>(_ __lhs: borrowing T, _ __rhs: borrowing T) -> Int {

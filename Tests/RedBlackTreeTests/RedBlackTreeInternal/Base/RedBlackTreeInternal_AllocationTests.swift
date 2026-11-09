@@ -147,3 +147,47 @@ final class AllocationTests: RedBlackTreeTestCase {
 
   #endif  // DEBUG
 }
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension AllocationTests {
+    /// 範囲ビューの.values経由の変更は、一意になった後は毎回木全体をコピーしないこと。
+    func testRangeViewValuesModifyDoesNotCopyEachTime() {
+      let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<100).map { ($0, 0) })
+      let indices = (0..<100).map { dictionary.index(forKey: $0)! }
+      var view = dictionary[dictionary.startIndex..<dictionary.endIndex]
+      view.values[indices[0]] += 1  // 1回目は共有を外すためのコピーが起きてよい
+      // _copyCountは新しいヘッダで0から数え直すため、毎回のコピーを数えられない。バッファの同一性で見る。
+      // ObjectIdentifierは参照を保持しないので、一意性を妨げない。
+      var copies = 0
+      for index in indices.dropFirst() {
+        let before = ObjectIdentifier(view.__tree_._buffer.buffer)
+        view.values[index] += 1
+        if ObjectIdentifier(view.__tree_._buffer.buffer) != before { copies += 1 }
+      }
+      XCTAssertEqual(copies, 0, "一意になった後はコピーしないこと")
+      XCTAssertEqual(Array(view.values), Array(repeating: 1, count: 100))
+    }
+  }
+#endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension AllocationTests {
+    /// MultiMapでも、範囲ビューの.values経由の変更は、一意になった後は毎回木全体をコピーしないこと。
+    func testRangeViewValuesModifyDoesNotCopyEachTime_multiMap() {
+      let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<100).map { ($0, 0) })
+      var indices: [RedBlackTreeMultiMap<Int, Int>.Index] = []
+      var i = multiMap.startIndex
+      while i != multiMap.endIndex { indices.append(i); i = multiMap.index(after: i) }
+      var view = multiMap[multiMap.startIndex..<multiMap.endIndex]
+      view.values[indices[0]] += 1  // 1回目は共有を外すためのコピーが起きてよい
+      var copies = 0
+      for index in indices.dropFirst() {
+        let before = ObjectIdentifier(view.__tree_._buffer.buffer)
+        view.values[index] += 1
+        if ObjectIdentifier(view.__tree_._buffer.buffer) != before { copies += 1 }
+      }
+      XCTAssertEqual(copies, 0, "一意になった後はコピーしないこと")
+      XCTAssertEqual(Array(view.values), Array(repeating: 1, count: 100))
+    }
+  }
+#endif

@@ -66,6 +66,28 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(multiset), [1, 2, 2, 3])
     }
 
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = [1, 2, 2, 3]
+      for offset in expected.indices {
+        let original = RedBlackTreeMultiSet([1, 2, 2, 3])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(Array(original), expected)
+        XCTAssertEqual(Array(copy), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next], remaining[offset])
+        }
+      }
+    }
+
     func test_erase_returnsTheFollowingIndex() {
       var multiset = RedBlackTreeMultiSet([1, 2, 2, 3])
 
@@ -239,3 +261,22 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetRemovalTests {
+    /// 何も消さない削除や空での削除は、共有中のストレージをコピーしないこと（Swift.Setと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let multiSet = RedBlackTreeMultiSet(0..<100)
+      var multiCopy = multiSet
+      _ = multiCopy.eraseUnique(-1)
+      _ = multiCopy.eraseMulti(-1)
+      XCTAssertTrue(multiSet.isTriviallyIdentical(to: multiCopy))
+
+      let empty = RedBlackTreeMultiSet<Int>()
+      var emptyCopy = empty
+      _ = emptyCopy.eraseUnique(0)
+      _ = emptyCopy.eraseMulti(0)
+      XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
+    }
+  }
+#endif

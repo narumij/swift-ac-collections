@@ -48,6 +48,7 @@ import XCTest
       }
     }
 
+    #if !USE_COMPACT_NODE_METADATA
     @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
@@ -56,6 +57,7 @@ import XCTest
         XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
       }
     }
+    #endif
   }
 
   final class NodeFlagTests0_1_2_3_4_5_6: TreeFixture0_1_2_3_4_5_6 {
@@ -78,6 +80,7 @@ import XCTest
       }
     }
 
+    #if !USE_COMPACT_NODE_METADATA
     @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
@@ -86,6 +89,7 @@ import XCTest
         XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
       }
     }
+    #endif
   }
 
 #endif

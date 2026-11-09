@@ -16,10 +16,10 @@ var defines: [String] = [
   //  "USE_INT128",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+//  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
   //  "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-  //  "ENABLE_OFFSET_OVERFLOW_GUARD",
+    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
@@ -27,10 +27,13 @@ var defines: [String] = [
 
   //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
-  // 赤黒木のCoWコピー元をinoutで渡さない経路を選ぶ。既定で有効（試用中）。
-  "RED_BLACK_TREE_TSAN_SAFE",
-  //  "_TREE_COPY_COUNTER",
-  //  "_TREE_INTERNAL_CHECKS",
+  
+//  "_TREE_COPY_COUNTER",
+//  "_TREE_ALLOCATION_COUNTER",
+//  "_TREE_INTERNAL_CHECKS",
+    
+    // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
+    // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
 ]
 
 var _settings: [SwiftSetting] =
@@ -87,6 +90,12 @@ var _settings: [SwiftSetting] =
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
       .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
     ),
+    // 境界式の比較系(.lessThan / .greaterThan / .lessThanOrEqual / .greaterThanOrEqual)
+    // 多重系の同値要素の扱いが未確定のため実験扱い（RBT-063）
+    .define(
+      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
+    ),
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
@@ -141,12 +150,6 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
-    .default(enabledTraits: ["RED_BLACK_TREE_TSAN_SAFE"]),
-    .trait(
-      name: "RED_BLACK_TREE_TSAN_SAFE",
-      description:
-        "Use read-only source-header access for red-black tree CoW copies. Enabled by default for evaluation; this does not certify all operations as race-free."
-    ),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:
@@ -159,6 +162,11 @@ let package = Package(
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
+    .trait(
+      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+      description:
+        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
+    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),

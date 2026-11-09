@@ -198,3 +198,14 @@ final class RedBlackTreeDictionaryInitializationTests: RedBlackTreeTestCase {
     XCTAssertTrue(observers.allSatisfy { $0.box == nil }, "途中まで作られたgroupが要素を保持していないこと")
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryInitializationTests {
+    /// RBT-069: 負の最小容量を渡しても、確保領域の外に書き込まずに使えること（ASanで検出）。
+    func test_negativeMinimumCapacity_isUsable() {
+      var negative = RedBlackTreeDictionary<Int, Int>(minimumCapacity: -1)
+      for value in 0..<20 { negative[value] = value }
+      XCTAssertEqual(negative.map(\.key), Array(0..<20))
+    }
+  }
+#endif

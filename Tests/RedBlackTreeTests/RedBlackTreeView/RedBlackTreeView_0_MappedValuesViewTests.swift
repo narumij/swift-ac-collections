@@ -257,3 +257,27 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMappedValuesViewTests {
+    /// 範囲ビューの.valuesのerase(where:)でビューの先頭要素を消しても、残りの値はビューに残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest() {
+      let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      var values = dictionary[dictionary.lowerBound(3)..<dictionary.lowerBound(8)].values
+      values.erase(where: { $0 == 30 })
+      XCTAssertEqual(Array(values), [40, 50, 60, 70])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMappedValuesViewTests {
+    /// MultiMapでも、範囲ビューの.valuesのerase(where:)で先頭要素を消して残りが残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest_multiMap() {
+      let multiMap = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0 * 10) })
+      var values = multiMap[multiMap.lowerBound(3)..<multiMap.lowerBound(8)].values
+      values.erase(where: { $0 == 30 })
+      XCTAssertEqual(Array(values), [40, 50, 60, 70])
+    }
+  }
+#endif

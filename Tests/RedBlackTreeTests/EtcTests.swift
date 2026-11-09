@@ -7,72 +7,6 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && DEBUG
-  /// Test-only marker for sequences whose iteration order is ascending.
-  private protocol SortedSequence: Sequence {}
-
-  extension Range: SortedSequence where Self: Sequence {}
-  extension ClosedRange: SortedSequence where Self: Sequence {}
-
-  extension RedBlackTreeSet {
-    fileprivate func union<S>(_ other: S) -> RedBlackTreeSet<Element>
-    where S: SortedSequence, S.Element == Element {
-      .init(__tree_: __tree_.___meld_unique(other))
-    }
-  }
-
-  extension UnsafeTreeV2 {
-    fileprivate mutating func ___copy_range<Iterator: IteratorProtocol>(
-      _ iterator: inout Iterator,
-      to parent: UnsafeMutablePointer<UnsafeNode>,
-      _ child: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-    ) where Iterator.Element == _PayloadValue {
-      var (parent, child) = (parent, child)
-      while let payload = iterator.next() {
-        unsafeEnsureCapacity()
-        (parent, child) = ___emplace_hint_right(parent, child, payload)
-      }
-    }
-
-    fileprivate func ___meld_unique<S>(_ other: S) -> UnsafeTreeV2
-    where S: SortedSequence, S.Element == _PayloadValue {
-      var result: UnsafeTreeV2 =
-        ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
-      var (parent, child) = result.___max_ref()
-      var (first, last) = (__begin_node_, __end_node)
-      var iterator = other.makeIterator()
-
-      outer: while let payload = iterator.next() {
-        while first != last {
-          let value = __get_value(first)
-          if value_comp(__key(payload), value) {
-            result.unsafeEnsureCapacity()
-            (parent, child) = result.___emplace_hint_right(parent, child, payload)
-            continue outer
-          }
-
-          result.unsafeEnsureCapacity()
-          (parent, child) = result.___emplace_hint_right(
-            parent, child, Base.__payload_(first)
-          )
-          first = __tree_next_iter(first)
-          if !value_comp(value, __key(payload)) {
-            continue outer
-          }
-        }
-
-        result.unsafeEnsureCapacity()
-        (parent, child) = result.___emplace_hint_right(parent, child, payload)
-        result.___copy_range(&iterator, to: parent, child)
-        return result
-      }
-
-      result.___copy_range(first, last, to: parent, child)
-      return result
-    }
-  }
-#endif
-
 /// 棚卸し用の雑多な検証置き場。
 final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
@@ -85,188 +19,90 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    /// Zero movement succeeds even at the limit, including an empty collection's endIndex.
-    func testIndexLimitedByZeroMovement() {
-      func check<I: Equatable>(
-        _ indices: [I],
-        index offset: (I, Int, I) -> I?,
-        formIndex: (inout I, Int, I) -> Bool
-      ) {
-        for index in indices {
-          XCTAssertEqual(offset(index, 0, index), index)
-          var current = index
-          XCTAssertTrue(formIndex(&current, 0, index))
-          XCTAssertEqual(current, index)
-          XCTAssertNil(offset(index, 1, index))
-          XCTAssertNil(offset(index, -1, index))
+    #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
+      // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
+      // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
+      #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
+      func testMultiBoundsOrEqualReachEndsOfEqualRun() {
+        let multiSet: RedBlackTreeMultiSet<Int> = [1, 5, 5, 5, 7]
+        XCTAssertEqual(Array(multiSet[...(.lessThanOrEqual(5))]), [1, 5, 5, 5])
+        XCTAssertEqual(Array(multiSet[(.greaterThanOrEqual(5))...]), [5, 5, 5, 7])
+        var erased = multiSet
+        _ = erased.erase(.lessThanOrEqual(5))
+        XCTAssertEqual(Array(erased), [1, 5, 5, 7])  // 最後の5を消す
+
+        var multiMap = RedBlackTreeMultiMap<Int, String>()
+        multiMap.insert(key: 5, value: "a")
+        multiMap.insert(key: 5, value: "b")
+        multiMap.insert(key: 5, value: "c")
+        XCTAssertEqual(multiMap[.lessThanOrEqual(5)]?.value, "c")
+        XCTAssertEqual(multiMap[.greaterThanOrEqual(5)]?.value, "a")
+      }
+      #endif
+
+    #endif
+
+    #if false && ENABLE_EXPERIMENTAL_LRU // LRUはあとまわし
+      // LRUをmaxCount: 0で作って値を入れると、count == -1になる（ASanではheap-buffer-overflow）。
+      func testLRUZeroMaxCountStaysEmpty() {
+        var cache = ___LRUMemoizeStorage<Int, Int>(maxCount: 0)
+        cache[1] = 1
+        XCTAssertEqual(cache.count, 0)
+        XCTAssertNil(cache[1])
+      }
+
+      // LRUのコピー側でgetしただけで、元の値の追い出し順が変わる。
+      func testLRUGetOnCopyDoesNotAffectOriginal() {
+        var original = ___LRUMemoizeStorage<Int, Int>(maxCount: 3)
+        original[1] = 10
+        original[2] = 20
+        original[3] = 30
+        var copy = original
+        _ = copy[1]
+        original[4] = 40  // originalだけなら1を追い出す
+        original[5] = 50  // originalだけなら2を追い出す
+        XCTAssertNil(original[1])
+        XCTAssertNil(original[2])
+        XCTAssertEqual(original[3], 30)
+        XCTAssertEqual(original[4], 40)
+        XCTAssertEqual(original[5], 50)
+      }
+
+    #endif
+
+    #if false // 木の作成時の世代管理の問題
+      // 空にした木をコピーしてから挿入すると、削除前のIndexが新しい要素に解決する。
+      func testIndexOfRemovedElementStaysInvalidAfterCopyingEmptyTree() {
+        var set: RedBlackTreeSet<Int> = [1]
+        let index = set.startIndex
+        set.remove(1)
+        var copy = set
+        copy.insert(2)
+        XCTAssertFalse(copy.isElement(at: index))
+      }
+
+      // コピーして両方に挿入すると、片方のIndexがもう片方の別の要素に解決する。
+      func testIndexFromDivergedCopyIsNotElementOfOther() {
+        var a: RedBlackTreeSet<Int> = [1]
+        var b = a
+        a.insert(5)
+        b.insert(7)
+        let index = a.firstIndex(of: 5)!
+        XCTAssertFalse(b.isElement(at: index))
+      }
+
+      // form系で木を作り直すと、前のIndexが同じ番号の新しいノードに解決する。
+      func testIndexIsInvalidAfterFormUnionRebuild() {
+        var set = RedBlackTreeSet([0, 2, 4])
+        let index = set.firstIndex(of: 4)!
+        set.formUnion(RedBlackTreeSet([1, 3]))
+        if set.isElement(at: index) {
+          XCTAssertEqual(set[index], 4)
         }
       }
-      for values in [[], [0, 1, 2]] {
-        let set = RedBlackTreeSet(values)
-        check([set.startIndex, set.endIndex],
-          index: set.index(_:offsetBy:limitedBy:),
-          formIndex: set.formIndex(_:offsetBy:limitedBy:))
-        let multiSet = RedBlackTreeMultiSet(values)
-        check([multiSet.startIndex, multiSet.endIndex],
-          index: multiSet.index(_:offsetBy:limitedBy:),
-          formIndex: multiSet.formIndex(_:offsetBy:limitedBy:))
-        let dictionary = RedBlackTreeDictionary(keysWithValues: values.map { ($0, $0) })
-        check([dictionary.startIndex, dictionary.endIndex],
-          index: dictionary.index(_:offsetBy:limitedBy:),
-          formIndex: dictionary.formIndex(_:offsetBy:limitedBy:))
-        let multiMap = RedBlackTreeMultiMap(keysWithValues: values.map { ($0, $0) })
-        check([multiMap.startIndex, multiMap.endIndex],
-          index: multiMap.index(_:offsetBy:limitedBy:),
-          formIndex: multiMap.formIndex(_:offsetBy:limitedBy:))
-      }
-    }
 
-    /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
-    /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
-    func testFormIndexLimitedByMatchesString() {
-      let string = "abcd"
-      let stringLimit = string.index(after: string.startIndex)
+    #endif
 
-      var stringExact = string.startIndex
-      XCTAssertTrue(string.formIndex(&stringExact, offsetBy: 1, limitedBy: stringLimit))
-      XCTAssertEqual(stringExact, stringLimit)
-
-      var stringOver = string.startIndex
-      XCTAssertFalse(string.formIndex(&stringOver, offsetBy: 2, limitedBy: stringLimit))
-      XCTAssertEqual(stringOver, stringLimit)
-
-      let set = RedBlackTreeSet([0, 1, 2, 3])
-      let setLimit = set.index(after: set.startIndex)
-
-      var setExact = set.startIndex
-      XCTAssertTrue(set.formIndex(&setExact, offsetBy: 1, limitedBy: setLimit))
-      XCTAssertEqual(setExact, setLimit)
-
-      var setOver = set.startIndex
-      XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
-      XCTAssertEqual(setOver, setLimit)
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025 && DEBUG
-    func testAPICheck() throws {
-
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0..<10)
-        XCTAssertTrue(result.elementsEqual(0..<10), "\(result)")
-      }
-
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0...10)
-        XCTAssertTrue(result.elementsEqual(0...10), "\(result)")
-      }
-    }
-  #endif
-
-  #if DEBUG && !COMPATIBLE_ATCODER_2025
-    /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
-    /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
-    func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
-      let decoder = JSONDecoder()
-      let emptyJSON = "[]".data(using: .utf8)!
-
-      let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
-      XCTAssertTrue(emptySet.__tree_.isReadOnly)
-
-      let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
-      XCTAssertTrue(emptyDict.__tree_.isReadOnly)
-
-      let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
-      XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
-
-      let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
-      XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
-    }
   #endif
 
 }
-
-#if COMPATIBLE_ATCODER_2025 && DEBUG
-  // これ、整理整頓対象でいいかも
-  extension EtcTests {
-    /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
-    func testRev() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
-        result.append(p.index)
-      }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-  }
-#endif
-
-// 並行CoWの試行テスト。採用判断まで無効化して保存する。
-// 再実行するときはfalseを!DEBUGへ戻し、Releaseで実行する。
-#if false
-// Debugのprocess-globalな検査カウンタ自体が並行更新されるため、
-// 製品のCoWを検証するこの試験はReleaseで実行する。
-// 同じvarの同時変更ではなく、Sendableな値を各タスクへコピーして使う。
-final class EtcConcurrentCopyTests: XCTestCase {
-  func testSetConcurrentCopies() async {
-    let original = RedBlackTreeSet(0 ..< 256)
-    let results = await withTaskGroup(of: (Int, [Int]).self) { group in
-      for worker in 0 ..< 8 {
-        group.addTask { [original] in
-          var copy = original
-          for key in 0 ..< 128 {
-            copy.remove(key)
-            copy.insert(1000 + worker * 128 + key)
-          }
-          return (worker, Array(copy))
-        }
-      }
-      var values: [(Int, [Int])] = []
-      for await value in group { values.append(value) }
-      return values
-    }
-    XCTAssertEqual(Array(original), Array(0 ..< 256))
-    XCTAssertEqual(results.count, 8)
-    for (worker, values) in results {
-      XCTAssertEqual(
-        values,
-        Array(128 ..< 256)
-          + Array((1000 + worker * 128) ..< (1128 + worker * 128))
-      )
-    }
-  }
-
-  func testDictionaryConcurrentCopies() async {
-    var initial = RedBlackTreeDictionary<Int, Int>()
-    for key in 0 ..< 256 { initial[key] = key }
-    let original = initial
-    let results = await withTaskGroup(of: (Int, [Int], [Int]).self) { group in
-      for worker in 0 ..< 8 {
-        group.addTask { [original] in
-          var copy = original
-          for key in 0 ..< 128 {
-            copy.removeValue(forKey: key)
-            copy[key + 128] = worker
-            copy[1000 + key] = worker + 100
-          }
-          return (worker, copy.map { $0.key }, copy.map { $0.value })
-        }
-      }
-      var values: [(Int, [Int], [Int])] = []
-      for await value in group { values.append(value) }
-      return values
-    }
-    XCTAssertEqual(original.map { $0.key }, Array(0 ..< 256))
-    XCTAssertEqual(original.map { $0.value }, Array(0 ..< 256))
-    XCTAssertEqual(results.count, 8)
-    for (worker, keys, values) in results {
-      XCTAssertEqual(keys, Array(128 ..< 256) + Array(1000 ..< 1128))
-      XCTAssertEqual(
-        values,
-        Array(repeating: worker, count: 128)
-          + Array(repeating: worker + 100, count: 128)
-      )
-    }
-  }
-}
-#endif

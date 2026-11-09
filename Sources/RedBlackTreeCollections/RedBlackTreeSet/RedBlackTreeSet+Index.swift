@@ -321,12 +321,20 @@
 
     @inlinable
     func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+      __tree_.index(p)
+      #else
       __tree_.withMutableHeader { $0.index(p) }
+      #endif
     }
-    
+
     @inlinable
     func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+      __tree_.index_or_nil(p)
+      #else
       __tree_.withMutableHeader { $0.index_or_nil(p) }
+      #endif
     }
   }
 #endif

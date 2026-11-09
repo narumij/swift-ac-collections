@@ -12,6 +12,7 @@ xcuserdata/
 DerivedData/
 
 # Generated benchmark and review files
+/_Artifacts/
 Benchmarks/.build/
 /Benchmarks/_Artifacts/
 /.task-graphs/

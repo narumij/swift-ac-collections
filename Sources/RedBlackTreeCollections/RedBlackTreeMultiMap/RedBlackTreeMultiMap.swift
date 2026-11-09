@@ -59,7 +59,7 @@
 ///
 /// ## Insertion, Updating, and Removal
 ///
-/// `insert(key:value:)` / `insert(_:)` add a pair even when its key already exists. `insert(_:hint:)` can insert immediately before a valid hint when the ordering conditions fit. A valid hint that does not satisfy those ordering conditions affects only performance; insertion still uses the normal ordered position. An invalid hint violates a precondition. `updateValue(_:at:)` replaces only the mapped value at an index and returns its old value, or `nil` for an invalid index.
+/// `insert(key:value:)` / `insert(_:)` add a pair even when its key already exists. `insert(_:hint:)` can insert immediately before a valid hint when the ordering conditions fit. A valid hint that does not satisfy those ordering conditions affects only performance; insertion still uses the normal ordered position. An invalid hint violates a precondition. `updateValue(_:at:)` replaces only the mapped value at an index and returns its old value. The index must be valid and must not be `endIndex`; an invalid index violates a precondition.
 ///
 /// `eraseUnique(_:)` removes one matching pair; `eraseMulti(_:)` removes all. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty map. Predicate removal, range/view removal, and `removeAll(keepingCapacity:)` are supported. For sequential removal use the next index returned by `erase(_:) -> Index`. `index(inserting:)` returns an insertion result and index. `erase(exactly:)` removes the indexed element and returns the next index, or `nil` if the index is not accessible in this map.
 ///
@@ -92,7 +92,7 @@
 ///
 /// ## Combining Multimaps
 ///
-/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. Inputs can be multimaps or sequences of pairs; every pair is retained, including duplicate keys.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. Inputs can be multimaps or sequences of pairs; every pair is retained, including duplicate keys.
 ///
 /// ## Transforming and Iterating
 ///
@@ -104,7 +104,7 @@
 ///
 /// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan` / `.lessThanOrEqual`, `.greaterThan` / `.greaterThanOrEqual`, `.before` / `.after`, and `.advanced(by:limit:)`. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before` / `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan` / `.lessThanOrEqual` / `.greaterThan` / `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
@@ -131,7 +131,6 @@
 /// | Removal at a known index; rebalancing | Amortized O(1) |
 /// | Lookup and removal/processing of K matching elements | O(log n + K) |
 /// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
-/// | `meld`, `melding` | O(n+m), new storage |
 /// | `filter`, `mapValues`, `compactMapValues` | O(n), plus closure costs |
 ///
 ///
@@ -320,7 +319,7 @@ extension RedBlackTreeMultiMap {
   /// - Parameter newMember: A key-value pair to insert.
   /// - Returns: `(true, newMember)`; a multimap always inserts another pair.
   /// - Complexity: O(log *n*)
-  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
+  /// - SeeAlso: `index(inserting:)`, which returns the index of the newly inserted occurrence.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -510,7 +509,8 @@ extension RedBlackTreeMultiMap {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -547,8 +547,12 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ key: Key) -> Bool {
+      #if COMPATIBLE_ATCODER_2025
       __tree_._strongEnsureUnique()
       return __tree_.___erase_unique(key)
+      #else
+      __tree_._removeIfPresent(key) != nil
+      #endif
     }
   }
 
@@ -562,8 +566,12 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ key: Key) -> Int {
+      #if COMPATIBLE_ATCODER_2025
       __tree_._strongEnsureUnique()
       return __tree_.___erase_multi(key)
+      #else
+      __tree_._eraseMultiIfPresent(key)
+      #endif
     }
   }
 #endif

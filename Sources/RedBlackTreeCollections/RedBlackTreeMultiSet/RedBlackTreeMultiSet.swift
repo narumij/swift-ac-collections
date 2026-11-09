@@ -51,7 +51,7 @@
 ///
 /// ## Insertion and Removal
 ///
-/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. Invalid indices or unequal replacements return `nil`.
+/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. The index must be valid and must not be `endIndex`; an invalid index or an unequal replacement violates a precondition.
 ///
 /// `eraseUnique(_:)` removes one match; `eraseMulti(_:)` removes all matches. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty multiset. Predicate removal with `erase(where:)`, range removal, and `removeAll(keepingCapacity:)` are also available. For sequential removal, continue with the index returned by `erase(_:) -> Index`, not a deleted index.
 ///
@@ -80,11 +80,11 @@
 ///
 /// ## Combining Multisets
 ///
-/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. `meld(_:)` replaces this value with the combined result; `melding(_:)` returns a result. Both traverse two sorted trees and build new storage. Spare capacity alone is not a reason to prefer meld. The insertion APIs accept a set, multiset, or arbitrary sequence.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. The insertion APIs accept a set, multiset, or arbitrary sequence.
 ///
 /// ## Multiset Algebra
 ///
-/// For multiplicities a and b, `union` yields a+b, `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol.
+/// For multiplicities a and b, `union` yields max(a,b), `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol. To keep every occurrence from both operands (a+b), use `insert(contentsOf:)` or `inserting(contentsOf:)`.
 ///
 /// ## Iterating over Elements
 ///
@@ -96,7 +96,7 @@
 ///
 /// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan` / `.lessThanOrEqual`, `.greaterThan` / `.greaterThanOrEqual`, `.before` / `.after`, and `.advanced(by:limit:)`. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before` / `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan` / `.lessThanOrEqual` / `.greaterThan` / `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -121,7 +121,6 @@
 /// | Removal at a known index; rebalancing | Amortized O(1) |
 /// | Lookup and removal/processing of K matching elements | O(log n + K) |
 /// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
-/// | `meld`, `melding` | O(n+m), new storage |
 /// | Union, intersection, difference, symmetric difference | O(n+m) |
 ///
 ///
@@ -273,7 +272,7 @@ extension RedBlackTreeMultiSet {
   /// - Parameter newMember: An element to insert.
   /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
-  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
+  /// - SeeAlso: `index(inserting:)`, which returns the index of the newly inserted occurrence.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -477,7 +476,8 @@ extension RedBlackTreeMultiSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -514,8 +514,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ member: Element) -> Bool {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(member)
+      return __tree_._removeIfPresent(member) != nil
     }
   }
 
@@ -529,8 +528,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(member)
+      return __tree_._eraseMultiIfPresent(member)
     }
   }
 #endif

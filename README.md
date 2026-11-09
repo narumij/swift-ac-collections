@@ -99,6 +99,15 @@ dependencies: [
 ]
 ```
 
+To enable the existing compatibility mode in a local build, pass the compiler flag:
+
+```sh
+swift build -Xswiftc -DCOMPATIBLE_ATCODER_2025
+```
+
+This selects the compatibility code paths; it does not pin the package to the
+exact judge release shown above. Compatibility mode is not a package trait.
+
 ## Enabling OptionalElementBuffer
 
 `OptionalElementBuffer` isn't exposed through `AcCollections` by default. To explicitly use this
@@ -113,6 +122,14 @@ dependencies: [
     traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
 ]
 ```
+
+## Experimental LRU storage
+
+The low-level `___LRUMemoizeStorage` and its supporting types are disabled by default.
+For local experiments, uncomment `"ENABLE_EXPERIMENTAL_LRU"` in the `defines` array in
+`Package.swift`. This is a compile-time flag, not a package trait.
+The implementation still has known limitations around clearing, capacity limits, and copying;
+enabling it does not resolve those limitations.
 
 ## Other Notes
 

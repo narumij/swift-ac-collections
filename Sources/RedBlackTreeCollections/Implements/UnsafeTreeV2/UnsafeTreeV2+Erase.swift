@@ -82,6 +82,31 @@ extension UnsafeTreeV2 {
     }
     return __last
   }
+
+  // 削除後の範囲先頭も更新する。途中でthrowしても、それまでの削除を反映する。
+  @inlinable
+  @discardableResult
+  func ___erase_view_range_if(
+    _ __first: inout _SafePtr,
+    _ __last: _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+    var current = __first
+    while current != __last {
+      guard current.___has_payload_content else {
+        return .failure(.other)
+      }
+      if try shouldBeRemoved(__value_(current.pointer!)) {
+        let next = erase(current.accessible.pointer!).unchecked
+        if current == __first { __first = next }
+        current = next
+      } else {
+        current = ___tree_next_iter(current.accessible.pointer!)
+      }
+    }
+    return __last
+  }
+
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

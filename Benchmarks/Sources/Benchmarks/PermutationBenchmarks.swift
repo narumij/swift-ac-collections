@@ -225,15 +225,28 @@ extension Benchmark {
     // `repetitions(size)` times inside one sample (~1M accesses per sample).
     // `identity(_:)` makes the collection opaque on each pass so the passes
     // cannot be merged. Both code states execute identical work.
+    
+    struct Prepare_NextPermutations_Permutation_subscript_sequential: ~Copyable {
+      let perm: NextPermutations<Int>
+      let p: NextPermutations<Int>.Permutation
+    }
+    
+    // 最適化アンラッキー回避策
+    @inline(never)
+    func prepare_NextPermutations_Permutation_subscript_sequential(size: Int) -> Prepare_NextPermutations_Permutation_subscript_sequential {
+      var permutations = Array(0..<size).nextPermutations()
+      return .init(perm: permutations, p: permutations.next()!)
+    }
 
     self.add(
       title: "NextPermutations.Permutation subscript sequential access (batched)",
       input: Int.self
     ) { size in
+      
       let reps = repetitions(size)
       return { timer in
-        var permutations = Array(0..<size).nextPermutations()
-        let p = permutations.next()!
+        let prepare = prepare_NextPermutations_Permutation_subscript_sequential(size: size)
+        let p = prepare.p
         var sum = 0
         timer.measure {
           var total = 0

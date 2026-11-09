@@ -30,26 +30,6 @@ final class RedBlackTreeMultiMapTransformingAndCombiningTests: RedBlackTreeTestC
     XCTAssertEqual(result.map(\.value), ["a", "b", "c", "d"])
   }
 
-  func test_meld_combinesEveryEntryInPlace() {
-    var lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
-    let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
-
-    lhs.meld(rhs)
-
-    XCTAssertEqual(lhs.map(\.key), [1, 1, 2, 2])
-    XCTAssertEqual(lhs.map(\.value), ["a", "b", "c", "d"])
-  }
-
-  func test_melding_returnsCombinedCopyAndPreservesOperands() {
-    let lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
-    let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
-
-    let result = lhs.melding(rhs)
-
-    XCTAssertEqual(result.map(\.value), ["a", "b", "c", "d"])
-    XCTAssertEqual(lhs.map(\.value), ["a", "c"])
-    XCTAssertEqual(rhs.map(\.value), ["b", "d"])
-  }
   /// mapValues・compactMapValues・filterは、重複keyの値を区別した入力でもclosureのエラーをそのまま投げ、
   /// 投げた後はclosureを呼ばないこと。元のkey/valueは変わらず、途中まで作られた結果が参照値を
   /// 保持し続けないこと（RBT-045 MM2）

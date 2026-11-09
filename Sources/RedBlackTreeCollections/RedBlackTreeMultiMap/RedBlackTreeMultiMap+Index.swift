@@ -141,10 +141,13 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
-    /// Returns the index of the first element with the given key.
+    /// Returns an index of an element with the given key.
+    ///
+    /// When multiple elements match, the current implementation does not guarantee
+    /// the first matching position. Use `firstIndex(of:)` when that position is needed.
     ///
     /// - Parameter key: The key to find.
-    /// - Returns: The first matching index, or `endIndex` if the multimap doesn't contain `key`.
+    /// - Returns: A matching index, or `endIndex` if the multimap doesn't contain `key`.
     /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ key: Key) -> Index {
@@ -292,11 +295,11 @@ extension RedBlackTreeMultiMap {
     // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
-    /// Returns the index of the given element, inserting it if necessary.
+    /// Inserts the given key-value pair and returns its index.
     ///
-    /// If the element is inserted, `inserted` is `true` and `index` refers to
-    /// the newly inserted element. If an equivalent element is already present,
-    /// `inserted` is `false` and `index` refers to the existing element.
+    /// A new pair is inserted even when an equivalent key is already present.
+    /// Therefore `inserted` is always `true`, and `index` refers to the newly
+    /// inserted pair.
     ///
     /// - Complexity: O(log **n**), where **n** is the number of elements.
     @inlinable

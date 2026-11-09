@@ -137,3 +137,14 @@ final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
     XCTAssertEqual(multiset.count, initialCount, "要素数3のまま変化しないこと")
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapInitializationTests {
+    /// RBT-069: 負の最小容量を渡しても、確保領域の外に書き込まずに使えること（ASanで検出）。
+    func test_negativeMinimumCapacity_isUsable() {
+      var negative = RedBlackTreeMultiMap<Int, Int>(minimumCapacity: -1)
+      for value in 0..<20 { negative.insert(key: value, value: value) }
+      XCTAssertEqual(negative.map(\.key), Array(0..<20))
+    }
+  }
+#endif

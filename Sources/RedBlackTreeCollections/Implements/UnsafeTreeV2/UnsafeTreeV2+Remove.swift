@@ -54,3 +54,37 @@ extension UnsafeTreeV2 {
     return _unchecked_remove_v2(at: __tree_prev_iter(__end_node))
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+extension UnsafeTreeV2 {
+
+  @inlinable
+  mutating func _removeIfPresent(_ key: _Key) -> _PayloadValue? {
+    var node = find(key)
+    guard node != end else { return nil }
+    let tag = node.trackingTag
+    if __ensureUnique() {
+      node = try! __retrieve_(tag).get()
+    }
+    return _unchecked_remove(at: node).payload
+  }
+
+  @inlinable
+  mutating func _eraseMultiIfPresent(_ key: _Key) -> Int {
+    var (first, last) = __equal_range_multi(key)
+    guard first != last else { return 0 }
+    let firstTag = first.trackingTag
+    let lastTag = last.trackingTag
+    if __ensureUnique() {
+      first = try! __retrieve_(firstTag).get()
+      last = try! __retrieve_(lastTag).get()
+    }
+    var removed = 0
+    while first != last {
+      first = erase(first)
+      removed &+= 1
+    }
+    return removed
+  }
+}
+#endif

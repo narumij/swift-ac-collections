@@ -199,7 +199,6 @@ extension RedBlackTreeKeyValueRangeView {
           Values(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
         }
 
-        // TODO: Restrict value-view mutations to indices contained in this key-value range.
         /// A mutable view of the mapped values inside this key-value range.
         ///
         /// Assigning a value doesn't change its key or the collection's key order.
@@ -212,6 +211,7 @@ extension RedBlackTreeKeyValueRangeView {
 
           @inline(__always) _modify {
             var view = makeValuesView()
+            __tree_ = .create()
             defer {
               __tree_ = view.__tree_
               _sealed_start = view._sealed_start
@@ -290,8 +290,10 @@ extension RedBlackTreeKeyValueRangeView {
     public mutating func popLast() -> Element? {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
-      let (_, _end) = _raw_range
-      return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+      let (_start, _end) = _raw_range
+      let last = __tree_.__tree_prev_iter(_end)
+      if last == _start { _sealed_start = _sealed_end }
+      return Base.__element_(__tree_._unchecked_remove(at: last).payload)
     }
 
     /// Removes and returns the first key-value pair.
@@ -332,7 +334,9 @@ extension RedBlackTreeKeyValueRangeView {
       _ensureUnique()
       let (_start, _end) = _raw_range
       // ややチェックが甘いので末端チェック付き削除が必要
-      return ___index(try! __tree_.___erase_range(_start, _end).get())
+      let next = try! __tree_.___erase_range(_start, _end).get()
+      _sealed_start = next.uncheckedSeal
+      return ___index(next)
     }
 
     /// Removes the key-value pairs in the view that satisfy `shouldBeRemoved`.
@@ -343,7 +347,10 @@ extension RedBlackTreeKeyValueRangeView {
       guard _raw_range.0 != _raw_range.1 else { return }
       _ensureUnique()
       let (_start, _end) = _raw_range
-      let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked) {
+      // TODO: あとで見直す
+      var first = _start.unchecked
+      defer { _sealed_start = first.pointer!.uncheckedSeal }
+      let result = try __tree_.___erase_view_range_if(&first, _end.unchecked) {
         try shouldBeRemoved(Base.__element_($0))
       }
       assert(result.error == nil)

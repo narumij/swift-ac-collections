@@ -347,6 +347,28 @@ extension RedBlackTreeSetRemoveTests {
 extension RedBlackTreeSetRemoveTests {
 
   #if !COMPATIBLE_ATCODER_2025
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = [1, 2, 3]
+      for offset in expected.indices {
+        let original = RedBlackTreeSet([1, 2, 3])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(Array(original), expected)
+        XCTAssertEqual(Array(copy), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next], remaining[offset])
+        }
+      }
+    }
+
     /// erase(_:) が指定インデックスの要素を削除し、次のインデックスを返すこと
     func test_erase_index_returnsNext() {
       var set = RedBlackTreeSet([1, 2, 3])
@@ -429,3 +451,15 @@ extension RedBlackTreeSetRemoveTests {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetRemoveTests {
+    /// 何も消さない削除は、共有中のストレージをコピーしないこと（Swift.Setと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let set = RedBlackTreeSet(0..<100)
+      var copy = set
+      _ = copy.remove(-1)
+      XCTAssertTrue(set.isTriviallyIdentical(to: copy))
+    }
+  }
+#endif

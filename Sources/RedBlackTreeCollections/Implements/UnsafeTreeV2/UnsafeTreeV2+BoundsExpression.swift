@@ -62,7 +62,9 @@ extension UnsafeTreeV2 {
         ptr = __begin_node_.unchecked
 
       case .last:
-        ptr = ___tree_prev_iter(__end_node)
+        ptr = __begin_node_ == __end_node
+          ? __end_node.unchecked
+          : ___tree_prev_iter(__end_node)
 
       case .end:
         ptr = __end_node.unchecked
@@ -105,12 +107,22 @@ extension UnsafeTreeV2 {
           ___tree_adv_iter($0, 1)
         }
 
+      #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
       case .lessThan(let __v):
         ptr = ___tree_prev_iter(lower_bound(__v))
 
       case .greaterThan(let __v):
         ptr = upper_bound(__v).unchecked
 
+      // 検討メモ: 以下の包含比較2種は、一致時にfindの結果をそのまま使う。
+      // 現行の__find_equal版は同値列の先頭・末尾を保証しない。
+      // 旧find（lower_bound版）と同じ動作のfind_firstが既にあり、
+      // 同値列の先頭を選ぶ場合はこのfind_firstを利用できる。これを使えば、
+      // lessThanOrEqual / greaterThanOrEqualともに一致時は同値列の先頭になる。
+      // tatyamのSortedMultisetはleが同値列の末尾、geが先頭を選ぶため、
+      // 旧findへの置換だけではleの位置選択とは一致しない。
+      // 参考: https://github.com/tatyam-prime/SortedSet/blob/main/SortedMultiset.py
+      // どの位置を採用するかは未決。旧findへの置換を決定したものではない。
       case .lessThanOrEqual(let __v):
         let __f = find(__v).unchecked
         ptr =
@@ -124,6 +136,7 @@ extension UnsafeTreeV2 {
           __f.___has_payload_content
           ? __f
           : upper_bound(__v).unchecked
+      #endif
 
       #if DEBUG
         case .index(let i):

@@ -445,3 +445,57 @@
     }
   }
 #endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeMultiMap<Int, Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // 同じキーの並びの中で前後が逆になったIndex範囲は、ビューを作らずに停止すること。
+    @Test func invertedIndexRangeWithinEqualKeys_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        let map: RedBlackTreeMultiMap = [(0, "z"), (1, "a"), (1, "b"), (1, "c"), (2, "x")]
+        let first = map.index(after: map.startIndex)
+        let second = map.index(after: first)
+        _ = map[second..<first]
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // RBT-047/048: 共有中でも、無効なIndexによる値の更新は停止すること。
+    @Test
+    func updatingSharedEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a")])
+        let shared = map
+        withExtendedLifetime(shared) {
+          map.updateValue("x", at: map.endIndex)
+        }
+      }
+    }
+
+    @Test
+    func updatingSharedRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (1, "b")])
+        let removed = map.startIndex
+        map.remove(at: removed)
+        let shared = map
+        withExtendedLifetime(shared) {
+          map.updateValue("x", at: removed)
+        }
+      }
+    }
+  }
+#endif

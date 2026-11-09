@@ -16,7 +16,7 @@ cd Benchmarks
 The script builds Release, measures through **2,097,152 elements (2M)** with
 three cycles and three minimum iterations, and renders four PNG charts.
 Sizes are powers of two (`--smoothness 1`). No sanitizer instrumentation is used.
-The current default `RED_BLACK_TREE_TSAN_SAFE` trait remains enabled.
+The read-only source-header path formerly selected by `RED_BLACK_TREE_TSAN_SAFE` is now unconditional.
 
 Both containers are built by the same seeded shuffled insertion order using
 `SortedPeerInput`. Keys are the even integers in `0..<2N`; hit queries shuffle

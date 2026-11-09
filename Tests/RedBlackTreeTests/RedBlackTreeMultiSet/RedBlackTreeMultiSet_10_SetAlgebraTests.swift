@@ -3,20 +3,51 @@ import XCTest
 
 final class RedBlackTreeMultiSetSetAlgebraTests: RedBlackTreeTestCase {
 
-  func test_union_addsMultiplicities() {
-    let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
-    let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
+  // 互換モードのunion（個数の和）はRedBlackTreeMultiSetAtCoder2025CompatibilityTests.swiftで確認する
+  #if !COMPATIBLE_ATCODER_2025
+    func test_union_keepsMaximumMultiplicity() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
 
-    XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 2, 3, 3, 3, 4])
-  }
+      XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 3, 3, 4])
+    }
 
-  func test_formUnion_addsMultiplicitiesInPlace() {
-    var lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+    func test_formUnion_keepsMaximumMultiplicityInPlace() {
+      var lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
 
-    lhs.formUnion(RedBlackTreeMultiSet([2, 3, 3, 4]))
+      lhs.formUnion(RedBlackTreeMultiSet([2, 3, 3, 4]))
 
-    XCTAssertEqual(Array(lhs), [1, 2, 2, 2, 3, 3, 3, 4])
-  }
+      XCTAssertEqual(Array(lhs), [1, 2, 2, 3, 3, 4])
+    }
+
+    /// std::set_unionと同じく、同値要素は左の全要素と、右の末尾max(n − m, 0)個を残すこと（RBT-074）
+    func test_union_keepsSameOccurrencesAsSetUnion() {
+      struct Tagged: Comparable {
+        let key: Int
+        let tag: String
+        static func < (a: Self, b: Self) -> Bool { a.key < b.key }
+        static func == (a: Self, b: Self) -> Bool { a.key == b.key }
+      }
+      func tagged(_ pairs: [(Int, String)]) -> RedBlackTreeMultiSet<Tagged> {
+        RedBlackTreeMultiSet(pairs.map { Tagged(key: $0.0, tag: $0.1) })
+      }
+      let cases: [(lhs: [(Int, String)], rhs: [(Int, String)], expected: [String])] = [
+        ([(5, "a1"), (5, "a2"), (5, "a3")], [(5, "b1"), (5, "b2")], ["a1", "a2", "a3"]),
+        ([(5, "a1"), (5, "a2")], [(5, "b1"), (5, "b2"), (5, "b3")], ["a1", "a2", "b3"]),
+        (
+          [(1, "a0"), (5, "a1"), (5, "a2"), (9, "a9")],
+          [(5, "b1"), (5, "b2"), (5, "b3"), (7, "b7")],
+          ["a0", "a1", "a2", "b3", "b7", "a9"]
+        ),
+      ]
+      for (lhs, rhs, expected) in cases {
+        XCTAssertEqual(tagged(lhs).union(tagged(rhs)).map(\.tag), expected)
+        var formed = tagged(lhs)
+        formed.formUnion(tagged(rhs))
+        XCTAssertEqual(formed.map(\.tag), expected)
+      }
+    }
+  #endif
 
   func test_intersection_keepsMinimumMultiplicity() {
     let lhs = RedBlackTreeMultiSet([1, 2, 2, 2, 3, 3])
@@ -67,12 +98,14 @@ final class RedBlackTreeMultiSetSetAlgebraTests: RedBlackTreeTestCase {
   func test_formOperations_changeOnlyTheReceiver() {
     let original = RedBlackTreeMultiSet([1, 2, 2, 3])
     let other = RedBlackTreeMultiSet([2, 3, 3, 4])
-    let cases: [(name: String, operation: (inout RedBlackTreeMultiSet<Int>, RedBlackTreeMultiSet<Int>) -> Void, expected: [Int])] = [
-      ("formUnion", { $0.formUnion($1) }, [1, 2, 2, 2, 3, 3, 3, 4]),
+    var cases: [(name: String, operation: (inout RedBlackTreeMultiSet<Int>, RedBlackTreeMultiSet<Int>) -> Void, expected: [Int])] = [
       ("formIntersection", { $0.formIntersection($1) }, [2, 3]),
       ("formDifference", { $0.formDifference($1) }, [1, 2]),
       ("formSymmetricDifference", { $0.formSymmetricDifference($1) }, [1, 2, 3, 4]),
     ]
+    #if !COMPATIBLE_ATCODER_2025
+      cases.append(("formUnion", { $0.formUnion($1) }, [1, 2, 2, 3, 3, 4]))
+    #endif
 
     for (name, operation, expected) in cases {
       var receiver = original

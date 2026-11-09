@@ -37,8 +37,6 @@ extension UnsafeTreeV2 {
     case .success(let sealed):
       return sealed.pointer.__value_()
     case .failure(let error):
-      // Index validation is a memory-safety boundary. Keep this check active
-      // under -Ounchecked instead of relying on precondition or force unwrap.
       fatalError(errorMessage(error))
     }
   }

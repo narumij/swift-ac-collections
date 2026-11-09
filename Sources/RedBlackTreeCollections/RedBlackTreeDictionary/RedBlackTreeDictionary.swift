@@ -97,7 +97,7 @@
 ///
 /// Index-range subscripting returns a pair view without copying elements into an array. The view has its own endpoint. Mutating directly through the subscript changes the base; mutating a view stored in a separate variable is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.lessThan`, `.lessThanOrEqual`, `.greaterThan`, `.greaterThanOrEqual`, `.before`, `.after`, and `.advanced(by:limit:)`. A single bound resolving to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges produce empty views.
+/// `Bound` provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before`, `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan`, `.lessThanOrEqual`, `.greaterThan`, and `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound resolving to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges produce empty views.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
@@ -361,7 +361,6 @@ extension RedBlackTreeDictionary {
     {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -419,7 +418,6 @@ extension RedBlackTreeDictionary {
     ) -> Value? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -536,6 +534,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
+    #if COMPATIBLE_ATCODER_2025
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
@@ -547,6 +546,9 @@ extension RedBlackTreeDictionary {
       _ = $0.erase(__i)
       return value
     }
+    #else
+    __tree_._removeIfPresent(key)?.tuple.value
+    #endif
   }
 }
 
@@ -582,7 +584,8 @@ extension RedBlackTreeDictionary {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 

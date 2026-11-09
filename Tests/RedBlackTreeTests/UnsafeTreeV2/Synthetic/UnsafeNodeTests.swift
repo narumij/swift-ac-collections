@@ -7,6 +7,11 @@
 
 import XCTest
 
+@inlinable
+package func _ref<T>(to a: inout T) -> UnsafeMutablePointer<T> {
+  withUnsafeMutablePointer(to: &a) { $0 }
+}
+
 #if DEBUG
 @testable import RedBlackTreeCollections
 

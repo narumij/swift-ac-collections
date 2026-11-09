@@ -150,10 +150,13 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// Returns the index of the first element equal to `member`.
+    /// Returns an index of an element equal to `member`.
+    ///
+    /// When multiple elements match, the current implementation does not guarantee
+    /// the first matching position. Use `firstIndex(of:)` when that position is needed.
     ///
     /// - Parameter member: The element to find.
-    /// - Returns: The first matching index, or `endIndex` if the multiset doesn't contain `member`.
+    /// - Returns: A matching index, or `endIndex` if the multiset doesn't contain `member`.
     /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ member: Element) -> Index {

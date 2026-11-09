@@ -57,6 +57,17 @@ extension UnsafeTreeV2 {
     return withMutableHeader { $0.index(p) }
   }
 
+  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index_or_nil(p) }
+  }
+  #else
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     return withMutableHeader { $0.index(p) }
@@ -66,6 +77,7 @@ extension UnsafeTreeV2 {
   func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
     return withMutableHeader { $0.index_or_nil(p) }
   }
+  #endif
 }
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
@@ -173,10 +185,6 @@ extension UnsafeTreeV2 {
   )
     -> Bool
   {
-    // The environment-provided nullptr lives in ManagedBufferHeader. The first
-    // traversal intentionally brings that header's cache line in before the
-    // decision traversal invokes the API again. Do not fold these calls
-    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:

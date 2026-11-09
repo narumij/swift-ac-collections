@@ -670,4 +670,29 @@ import XCTest
 
   extension RedBlackTreeMultiMapTests {
   }
+
+  // meldは互換モードだけに残っている
+  extension RedBlackTreeMultiMapTransformingAndCombiningTests {
+
+    func test_meld_combinesEveryEntryInPlace() {
+      var lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
+      let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
+
+      lhs.meld(rhs)
+
+      XCTAssertEqual(lhs.map(\.key), [1, 1, 2, 2])
+      XCTAssertEqual(lhs.map(\.value), ["a", "b", "c", "d"])
+    }
+
+    func test_melding_returnsCombinedCopyAndPreservesOperands() {
+      let lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
+      let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
+
+      let result = lhs.melding(rhs)
+
+      XCTAssertEqual(result.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(lhs.map(\.value), ["a", "c"])
+      XCTAssertEqual(rhs.map(\.value), ["b", "d"])
+    }
+  }
 #endif

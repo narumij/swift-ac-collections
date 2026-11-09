@@ -24,7 +24,7 @@
       XCTAssertFalse(
         dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(dictionary.isElement(at: .unsafe(tree: dictionary.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -40,7 +40,7 @@
         range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }
@@ -145,6 +145,29 @@
         XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")
       #endif
       XCTAssertEqual(b.sorted().map(\.key), Array(1..<19), "先頭と末尾が削除された残りとなる")
+    }
+  }
+#endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryIndexValidityXCTests {
+    /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
+    /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
+    func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
+      var c = RedBlackTreeDictionary(uniqueKeysWithValues: [(1, 1)])
+      let index = c.startIndex
+      c.removeAll(keepingCapacity: true)
+      XCTAssertFalse(c.isElement(at: index))
+    }
+
+    /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
+    func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
+      func make() -> RedBlackTreeDictionary<Int, Int>.Index {
+        let c = RedBlackTreeDictionary(uniqueKeysWithValues: (1...5).map { ($0, $0) })
+        return c.index(after: c.startIndex)
+      }
+      let index = make()
+      XCTAssertFalse(String(describing: index).isEmpty)
     }
   }
 #endif

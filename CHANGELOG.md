@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- CIにAtCoder 2025互換モードのDebug・Releaseテストを追加（コンパイルフラグで有効化）
+- `USE_COMPACT_NODE_METADATA`を有効にしたDebugテストをCIに追加
+
+### Changed
+- `RED_BLACK_TREE_TSAN_SAFE`の有効側を通常処理へ統合し、旧経路・同名コンパイルフラグ・Package Traitを撤去。既定構成の処理は維持
+- 実験用LRUストレージと関連型を既定で無効化し、コンパイルフラグ`ENABLE_EXPERIMENTAL_LRU`を明示した場合のみ利用可能に変更。Package Traitは提供せず、既知の制約は継続して保留
+- 赤黒木の全削除時、`USE_LAZY_DETACH`が無効な構成では古い識別情報に失効を記録し、新しい識別情報を生成するよう変更。全削除後のIndexの保証範囲は引き続き検討中
+- `USE_COMPACT_NODE_METADATA`構成の確保可能な要素数の上限を、ノードタグの表現上限に合わせるよう変更
+- 赤黒木を共有する複数スレッドから初めてIndexを取得する際、遅延分離用の識別情報の生成競合により二重解放・クラッシュが報告されたため、初回生成をMutexで直列化する対策を追加（試行実装。並行利用全般の安全性を保証するものではない）
+- 比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）を、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitによるopt-inへ変更。MultiSet / MultiMapの同値要素に対する位置の意味が未確定のため、実験的提供として扱う（既存の利用にはtraitの有効化が必要）
+- オフセット計算のオーバーフロー検査を既定で有効化
+- `RedBlackTreeDictionary`のOptional subscript経由の変更で、値の不要なコピーを削減
+- `RedBlackTreeMultiSet`の`union(_:)`・`formUnion(_:)`を、各要素の個数の和（a + b）から和集合（max(a, b)）へ変更。C++の`std::set_union`と同じく、同値要素は左の全要素と、右の末尾max(b − a, 0)個を残す。個数の和が必要な場合は`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。AtCoder 2025互換モードでは従来の個数の和を維持
+
+### Removed
+- `RedBlackTreeMultiSet`・`RedBlackTreeMultiMap`の`meld(_:)`・`melding(_:)`を通常構成から削除。MultiSetの計測では`insert(contentsOf:)`のほうが速かった。結合には`insert(contentsOf:)`・`inserting(contentsOf:)`を使う。AtCoder 2025互換モードでは維持
+
+### Fixed
+- 既定構成のDebugビルドで、同じ発行元のIndexを大小比較する際、ノード参照前に失効情報を検査し、失効済みなら事前条件違反として停止するよう修正
+- MultiMapの`index(inserting:)`は同値キーがあっても挿入し、`inserted`が常に`true`になることを説明に反映
+- MultiSetの`update(_:at:)`とMultiMapの`updateValue(_:at:)`の概要およびAPI Matrixを、無効Index等では`nil`を返すのではなく事前条件違反となる説明に訂正
+- MultiSet / MultiMapの`find`は現行実装で同値要素の先頭を保証しないことを明記し、先頭が必要な場合は`firstIndex(of:)`を案内
+- 世代番号の周回に関するコメントに、通常構成のUInt32とcompact構成のUInt16の違い、およびそれぞれ2^32回・2^16回の更新で周回する制約を明記
+- `RedBlackTreeSet`・`RedBlackTreeMultiSet`・`RedBlackTreeDictionary`・`RedBlackTreeMultiMap`の`erase(Index)`で、ストレージを共有するコピー元の要素まで削除される問題を修正
+- Dictionaryのマージで重複キーの結合処理がthrowした際、一時ノードが回収されず、要素数と走査結果が不整合になる問題を修正
+- Range Viewの条件付き削除で先頭を削除した後も残りの要素を保持し、途中でthrowした場合も削除済みの範囲を反映するよう修正
+- Range ViewおよびMappedValues Viewの`erase()`や最後の1要素に対する`popLast()`で、空になったViewの`startIndex`と`endIndex`が一致しない問題を修正
+- Range Viewの`values`経由の変更で、不要なCopy-on-Writeが繰り返し発生する問題を修正
+- `RedBlackTreeSet.remove(_:)`および`RedBlackTreeMultiSet.eraseUnique(_:)`・`eraseMulti(_:)`で、該当する要素がない場合にもCopy-on-Writeが発生する問題を修正
+- `RedBlackTreeDictionary.removeValue(forKey:)`および`RedBlackTreeMultiMap.eraseUnique(_:)`・`eraseMulti(_:)`で、該当するキーがない場合にもCopy-on-Writeが発生する問題を修正（AtCoder 2025互換モードでは従来の処理を維持）
+- 空の赤黒木で境界式`.last`を評価すると停止する問題を修正し、`endIndex`へ解決するよう変更
+- 赤黒木の初期化に負の`minimumCapacity`を渡した場合の容量計算を修正
+- 大きな移動量でIndexや境界式を進めると、走査に失敗した後もループを続ける問題を修正。終端を越える前進は事前条件違反として停止するよう修正
+- 既定構成で、解放済みの木に属するIndexを文字列化する際にノードのメモリを参照する問題を修正
+- 子ノード・キー・値への参照取得を`inout`を伴わないアドレス計算へ変更し、読み取り専用の探索でも書き込みアクセスとして扱われる問題を修正
+
 ## [0.7.1] - 2026-11-07
 
 ### Changed

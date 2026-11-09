@@ -17,7 +17,7 @@
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       for rawTag in 0..<5 {
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: _TrackingTag(rawTag))))
       }
     }
 
@@ -26,10 +26,10 @@
       let range = base.elements(in: 2..<6)
       typealias Index = RedBlackTreeSet<Int>.Index
 
-      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 0)))
       for rawTag in 1...5 {
-        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: rawTag)))
+        XCTAssertTrue(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: _TrackingTag(rawTag))))
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }
@@ -149,6 +149,55 @@
         XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")
       #endif
       XCTAssertEqual(b.sorted(), Array(1..<19), "先頭と末尾が削除された残りとなる")
+    }
+  }
+#endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetIndexValidityXCTests {
+    /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
+    /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
+    func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
+      var set: RedBlackTreeSet<Int> = [1]
+      let index = set.startIndex
+      set.removeAll(keepingCapacity: true)
+      XCTAssertFalse(set.isElement(at: index))
+    }
+
+    /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
+    func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
+      func make() -> RedBlackTreeSet<Int>.Index {
+        let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+        return set.firstIndex(of: 2)!
+      }
+      let index = make()
+      XCTAssertFalse(String(describing: index).isEmpty)
+    }
+  }
+#endif
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  extension RedBlackTreeSetIndexValidityXCTests {
+    /// ストレージを解放すると、残っているIndexが失効扱いになること。
+    func testStorageReleaseMarksOutstandingIndicesDetached() {
+      var tree: RedBlackTreeSet<Int>? = [1, 2]
+      let index = tree!.startIndex
+      XCTAssertFalse(index.lazyDetach.isDetached)
+      tree = nil
+      XCTAssertTrue(index.lazyDetach.isDetached)
+    }
+
+    /// removeAll(keepingCapacity: true)で古いIndexが失効し、その後のIndexは新しく有効になること。
+    func testClearRetiresOldTieAndAllowsFreshIndices() {
+      var tree: RedBlackTreeSet<Int> = [1, 2]
+      let old = tree.startIndex
+      tree.removeAll(keepingCapacity: true)
+      XCTAssertTrue(old.lazyDetach.isDetached)
+      tree.insert(3)
+      withExtendedLifetime(tree) {
+        XCTAssertFalse(tree.startIndex.lazyDetach.isDetached)
+        XCTAssertTrue(tree.startIndex < tree.endIndex)
+      }
     }
   }
 #endif

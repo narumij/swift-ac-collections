@@ -167,3 +167,52 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeViewTests {
+    /// 範囲ビューのerase(where:)でビューの先頭要素を消しても、残りの要素はビューに残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest() {
+      let set = RedBlackTreeSet(0..<10)
+      var view = set[set.lowerBound(3)..<set.lowerBound(8)]
+      view.erase(where: { $0 == 3 })
+      XCTAssertEqual(Array(view), [4, 5, 6, 7])
+      XCTAssertEqual(view.count, 4)
+
+      let multiSet = RedBlackTreeMultiSet(0..<10)
+      var multiView = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(8)]
+      multiView.erase(where: { $0 == 3 })
+      XCTAssertEqual(Array(multiView), [4, 5, 6, 7])
+    }
+
+    /// erase()やpopLast()で空にした範囲ビューは、startIndexとendIndexが一致すること。
+    func test_viewEmptiedByEraseOrPopLast_hasEqualBounds() {
+      let set = RedBlackTreeSet(0..<10)
+      var erased = set[set.lowerBound(3)..<set.lowerBound(8)]
+      _ = erased.erase()
+      XCTAssertTrue(erased.isEmpty)
+      XCTAssertEqual(erased.startIndex, erased.endIndex)
+
+      var popped = set[set.lowerBound(3)..<set.lowerBound(4)]
+      _ = popped.popLast()
+      XCTAssertTrue(popped.isEmpty)
+      XCTAssertEqual(popped.startIndex, popped.endIndex)
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeViewTests {
+    /// MultiSetでも、erase()やpopLast()で空にした範囲ビューはstartIndexとendIndexが一致すること。
+    func test_viewEmptiedByEraseOrPopLast_hasEqualBounds_multiSet() {
+      let multiSet = RedBlackTreeMultiSet(0..<10)
+      var erased = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(8)]
+      _ = erased.erase()
+      XCTAssertTrue(erased.isEmpty)
+      XCTAssertEqual(erased.startIndex, erased.endIndex)
+      var popped = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(4)]
+      _ = popped.popLast()
+      XCTAssertTrue(popped.isEmpty)
+      XCTAssertEqual(popped.startIndex, popped.endIndex)
+    }
+  }
+#endif

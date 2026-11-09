@@ -23,6 +23,28 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = ["a", "b", "c"]
+      for offset in expected.indices {
+        let original = RedBlackTreeDictionary<Int, String>(keysWithValues: [(1, "a"), (2, "b"), (3, "c")])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(original.map(\.value), expected)
+        XCTAssertEqual(copy.map(\.value), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next].value, remaining[offset])
+        }
+      }
+    }
+
     func test_erase_returnsTheFollowingIndex() {
       var dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       let removed = dictionary.firstIndex(of: 2)!
@@ -243,3 +265,20 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryRemovalTests {
+    /// 何も消さない削除や空での削除は、共有中のストレージをコピーしないこと（Swift.Dictionaryと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<100).map { ($0, $0) })
+      var copy = dictionary
+      _ = copy.removeValue(forKey: -1)
+      XCTAssertTrue(dictionary.isTriviallyIdentical(to: copy))
+
+      let empty = RedBlackTreeDictionary<Int, Int>()
+      var emptyCopy = empty
+      _ = emptyCopy.removeValue(forKey: 0)
+      XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
+    }
+  }
+#endif

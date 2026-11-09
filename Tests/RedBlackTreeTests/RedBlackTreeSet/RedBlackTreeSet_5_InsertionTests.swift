@@ -353,6 +353,29 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     #endif
     XCTAssertNil(set.erase(exactly: set.endIndex))
   }
+
+  /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+  func test_eraseExactly_endIndexKeepsSharedStorage() {
+    let original: RedBlackTreeSet<Int> = [1, 2, 3]
+    var shared = original
+
+    XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+  }
+
+  /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+  func test_eraseExactly_staleIndexKeepsSharedStorage() {
+    var shared: RedBlackTreeSet<Int> = [1, 2, 3]
+    let i = shared.startIndex
+    XCTAssertNotNil(shared.erase(exactly: i))
+    let original = shared
+
+    XCTAssertNil(shared.erase(exactly: i))
+
+    XCTAssertEqual(Array(shared), [2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
+  }
   #endif
 
   #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

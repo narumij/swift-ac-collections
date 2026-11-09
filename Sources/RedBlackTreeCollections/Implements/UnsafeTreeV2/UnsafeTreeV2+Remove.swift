@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: このソースの位置づけを再確認する
+
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -57,6 +59,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // TODO: なおす
   @inlinable
   mutating func _removeIfPresent(_ key: _Key) -> _PayloadValue? {
     var node = find(key)
@@ -68,6 +71,7 @@ extension UnsafeTreeV2 {
     return _unchecked_remove(at: node).payload
   }
 
+  // TODO: なおす
   @inlinable
   mutating func _eraseMultiIfPresent(_ key: _Key) -> Int {
     var (first, last) = __equal_range_multi(key)

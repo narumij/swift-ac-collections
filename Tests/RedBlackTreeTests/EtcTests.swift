@@ -132,7 +132,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       }
     #endif
 
-    #if false  // 残り（endIndexと、ほかの3型）
+    #if true  // 残り（endIndexと、ほかの3型）
       func testEraseExactlyEndIndexFromSharedMultiSetDoesNotCopy() {
         let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
         var shared = original

@@ -121,6 +121,54 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
     }
 
+    func testEraseWhereSomeMatchFromSharedSetCallsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    func testEraseWhereSomeMatchFromSharedMultiSetCallsPredicateOncePerElement() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 3])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+    }
+
+    func testEraseWhereSomeMatchFromSharedDictionaryCallsPredicateOncePerElement() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d"]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return $0.key % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4])
+      XCTAssertEqual(shared.map(\.key), [1, 3])
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4])
+    }
+
+    func testEraseWhereSomeMatchFromSharedMultiMapCallsPredicateOncePerElement() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d")]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return $0.key % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 2, 3])
+      XCTAssertEqual(shared.map(\.key), [1, 3])
+      XCTAssertEqual(original.map(\.key), [1, 2, 2, 3])
+    }
+
     func testEraseWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
       let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
       var shared = original

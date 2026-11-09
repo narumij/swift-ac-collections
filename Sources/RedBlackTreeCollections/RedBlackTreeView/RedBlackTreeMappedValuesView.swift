@@ -311,6 +311,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      #if false
       guard _raw_range.0 != _raw_range.1 else { return }
       _ensureUnique()
       let (_start, _end) = _raw_range
@@ -321,6 +322,20 @@ extension RedBlackTreeMappedValuesView {
         try shouldBeRemoved(Base.___mapped_value($0))
       }
       assert(result.error == nil)
+      #else
+      // _ensureUnique()を暗黙に模倣しているので、そこらへんの挙動には注意が必要
+      let (_start, _end) = _raw_range
+      var first = _start.unchecked
+      var last = _end.unchecked
+      defer {
+        _sealed_start = first.pointer!.uncheckedSeal
+        _sealed_end = last.pointer!.uncheckedSeal
+      }
+      let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
+        try shouldBeRemoved(Base.___mapped_value($0))
+      }
+      assert(result.error == nil)
+      #endif
     }
   }
 

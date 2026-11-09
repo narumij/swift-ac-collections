@@ -186,5 +186,122 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertEqual(Array(shared), [1, 3, 5])
       XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
     }
+
+    func testEraseIndexRangeWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeExpressionWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseBoundRangeWhereNothingMatchesFromSharedMultiSetDoesNotCopy() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeWhereNothingMatchesFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeExpressionWhereNothingMatchesFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseBoundRangeWhereNothingMatchesFromSharedDictionaryDoesNotCopy() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase(lowerBound(2) ..< upperBound(4)) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeWhereNothingMatchesFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseIndexRangeExpressionWhereNothingMatchesFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3, 4])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    func testEraseBoundRangeWhereNothingMatchesFromSharedMultiMapDoesNotCopy() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2, 3, 4])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
   #endif
 }

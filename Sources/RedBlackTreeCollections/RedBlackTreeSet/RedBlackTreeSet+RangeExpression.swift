@@ -171,9 +171,11 @@
     )
       rethrows
     {
+      #if false
       // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
       // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
       if __tree_.count > 0 { __tree_.ensureUnique() }
+      #endif
       let range = __tree_.__purified_safe_(bounds)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
@@ -191,9 +193,11 @@
       rethrows
     {
       // TOOD: AIの痕跡があって怪しさがただようので、再度調査すること
+      #if false
       // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
       // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
       if __tree_.count > 0 { __tree_.ensureUnique() }
+      #endif
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
@@ -227,12 +231,20 @@
     )
       rethrows
     {
+      #if false
       assert(__tree_.count == 0 || __tree_.isUnique())
       let result = try __tree_.___erase_validate_range_if(range, shouldBeRemoved)
       switch result {
       case .success: break
       case .failure(let error): fatalError("\(error)")
       }
+      #else
+      let result = try __tree_.___erase_validate_range_if_with_many_care(range, shouldBeRemoved)
+      switch result {
+      case .success: break
+      case .failure(let error): fatalError("\(error)")
+      }
+      #endif
     }
   }
 

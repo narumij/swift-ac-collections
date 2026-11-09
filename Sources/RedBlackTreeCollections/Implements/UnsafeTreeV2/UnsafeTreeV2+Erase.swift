@@ -196,6 +196,35 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
     // 2個目以降の削除は短縮処理で行う
     return try ___erase_range_if(__first, __last, shouldBeRemoved)
   }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_validate_range_if_with_many_care(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    try range
+      .flatMap(validated(range:))
+      .flatMapThrowing { range in
+        try ___erase_range_if_with_many_care(
+          range.lowerBound.unchecked, range.upperBound.unchecked, shouldBeRemoved)
+      }
+  }
+
+  @inlinable
+  @discardableResult
+  mutating func ___erase_sanitize_range_if_with_many_care(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    try sanitize(range)
+      .flatMapThrowing { range in
+        try ___erase_range_if_with_many_care(
+          range.lowerBound.unchecked, range.upperBound.unchecked, shouldBeRemoved)
+      }
+  }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

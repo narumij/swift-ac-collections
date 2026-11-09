@@ -130,6 +130,26 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       assert(count == 0 || isUnique())
       return try ___erase_range(__r.lowerBound, __r.upperBound).get()
   }
+  
+  @inlinable
+  mutating func ___erase_sanitize_range_with_many_care(_range range: _SafeRange) throws -> _NodePtr {
+      var __r = try sanitize(range).get()
+      if __r.isEmpty {
+        return __r.upperBound
+      }
+      let __e = __end_node
+      if count > 0 {
+        ensureUnique()
+      }
+      if __e != __end_node {
+        __r = __simple_retrieve(__r)
+      }
+      guard isValid(range: __r) else {
+        throw SealError.unknown
+      }
+      assert(count == 0 || isUnique())
+      return try ___erase_range(__r.lowerBound, __r.upperBound).get()
+  }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {

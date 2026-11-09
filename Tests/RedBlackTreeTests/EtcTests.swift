@@ -109,7 +109,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   // Bound範囲。Index範囲は直して仕様テストへ移した。
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false  // Bound範囲
+    #if true  // Bound範囲
       func testEraseEmptyBoundRangeFromSharedSetDoesNotCopy() {
         let original: RedBlackTreeSet<Int> = [1, 2, 3]
         var shared = original

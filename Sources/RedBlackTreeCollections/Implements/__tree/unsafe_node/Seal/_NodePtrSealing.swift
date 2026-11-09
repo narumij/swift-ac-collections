@@ -110,6 +110,7 @@ public struct _NodePtrSealing {
   // お清め
   @inlinable
   var purified: _SealedPtr {
+    #if true
     // 基本的にここにnullは到達しない
     assert(!pointer.___is_null)
     // validなpointerがendやnullに変化することはない
@@ -121,6 +122,17 @@ public struct _NodePtrSealing {
     //      return .failure(.unsealed)
     //    }
     //    return .success(self)
+    #else
+    // 基本的にここにnullは到達しない
+    assert(!pointer.___is_null)
+    if isUnsealed {
+      return .failure(.unsealed)
+    } else if !pointer.___has_payload_content {
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+    #endif
   }
 
   #if ALLOW_CROSS_TREE_INDEX

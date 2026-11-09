@@ -338,7 +338,7 @@ extension RedBlackTreeMultiSet {
     @discardableResult
     public mutating func insert(_ newMember: Element, hint: Index) -> Index {
       __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__deep_purified_(hint)
+      let p = __tree_.__purified_(hint)
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }

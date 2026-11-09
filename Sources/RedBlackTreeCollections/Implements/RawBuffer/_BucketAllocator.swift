@@ -381,8 +381,8 @@ extension _BucketAllocator {
         #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1
         #endif
-        p.pointee.___has_payload_content = false
       }
+      p.pointee.___has_payload_content = false
       p.deinitialize(count: 1)
       #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1

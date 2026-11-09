@@ -149,6 +149,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Precondition: `position` identifies an element inside the view.
     ///
     /// - Complexity: O(1).
+    #if false
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
@@ -161,6 +162,20 @@ extension RedBlackTreeMappedValuesView {
         __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
       }
     }
+    #else
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      unsafeAddress {
+        __tree_._unsafeAddress(position).pointer(to: \.tuple.value)!
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        _ensureUnique()
+        return __tree_._unsafeMutableAddress(position).pointer(to: \.tuple.value)!
+      }
+    }
+    #endif
   }
 
   extension RedBlackTreeMappedValuesView

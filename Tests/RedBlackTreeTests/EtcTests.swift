@@ -104,4 +104,20 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-093：MappedValuesViewの添字経由で値をその場で変更するとき、値をコピーしないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testMappedValuesViewSubscriptModifyDoesNotCopyValue() {
+      final class Ref {}
+      struct Probe {
+        var ref = Ref()
+        mutating func isUnique() -> Bool { isKnownUniquelyReferenced(&ref) }
+      }
+      var dictionary: RedBlackTreeDictionary<Int, Probe> = [0: Probe()]
+      let i = dictionary.startIndex
+
+      XCTAssertEqual(dictionary.values[i].isUnique(), true)
+    }
+  #endif
 }

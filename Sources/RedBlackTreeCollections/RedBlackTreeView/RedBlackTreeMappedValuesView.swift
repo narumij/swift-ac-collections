@@ -189,6 +189,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Precondition: Both indices identify elements inside the view.
     /// - Complexity: O(1).
     public mutating func swapAt(_ i: Index, _ j: Index) {
+      #if false
       _ensureUnique()
 
       let __i = __tree_.__purified_(i)
@@ -202,6 +203,26 @@ extension RedBlackTreeMappedValuesView {
         &Base.__mapped_value_ptr(i).pointee,
         &Base.__mapped_value_ptr(j).pointee
       )
+      #else
+      let __i = __tree_.__purified_(i)
+      let __j = __tree_.__purified_(j)
+      guard var i = __i.accessible.pointer,
+        var j = __j.accessible.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      guard i != j else { return }
+      let __e = __tree_.__end_node
+      _ensureUnique()
+      if __e != __tree_.__end_node {
+        i = __tree_.__simple_retrieve(i)
+        j = __tree_.__simple_retrieve(j)
+      }
+      swap(
+        &Base.__mapped_value_ptr(i).pointee,
+        &Base.__mapped_value_ptr(j).pointee
+      )
+      #endif
     }
   }
 

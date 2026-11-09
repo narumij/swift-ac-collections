@@ -479,5 +479,58 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
         XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
       }
     #endif
+
+    /// 容量の確認に使う木の形。予約した木・挿入で育った木・削除で疎になった木を、呼ぶたびに新しく作る。
+    private func removeAllKeepingCapacityShapes() -> [(String, () -> RedBlackTreeMultiSet<Int>)] {
+      [
+        ("reserved", {
+          var multiset = RedBlackTreeMultiSet<Int>(minimumCapacity: 100)
+          for i in 0 ..< 5 { multiset.insert(i) }
+          return multiset
+        }),
+        ("grown", {
+          var multiset = RedBlackTreeMultiSet<Int>()
+          for i in 0 ..< 1000 { multiset.insert(i / 2) }
+          return multiset
+        }),
+        ("sparse", {
+          var multiset = RedBlackTreeMultiSet<Int>(0 ..< 1000)
+          multiset.erase { $0 % 10 != 0 }
+          return multiset
+        }),
+      ]
+    }
+
+    /// 共有中の木に`removeAll(keepingCapacity: true)`すると、空になり、容量は変更前を下回らないこと。
+    /// 共有元の中身と容量は変わらないこと（RBT-095/RBT-096）。
+    func test_removeAllKeepingCapacity_onSharedTree_keepsCapacityAndOriginal() {
+      for (name, make) in removeAllKeepingCapacityShapes() {
+        let original = make()
+        let contents = Array(original)
+        let capacity = original.capacity
+        var shared = original
+
+        shared.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(shared.isEmpty, name)
+        XCTAssertGreaterThanOrEqual(shared.capacity, capacity, name)
+        XCTAssertEqual(Array(original), contents, name)
+        XCTAssertEqual(original.capacity, capacity, name)
+      }
+    }
+
+    /// 他に参照のない木に`removeAll(keepingCapacity: true)`すると、空になり、容量は変更前と同じであること。
+    /// 一意性は、作った値をそのまま変数に受ける構成で担保する（RBT-095/RBT-096）。
+    func test_removeAllKeepingCapacity_onUniqueTree_keepsCapacity() {
+      for (name, make) in removeAllKeepingCapacityShapes() {
+        var unique = make()
+        let capacity = unique.capacity
+
+        unique.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(unique.isEmpty, name)
+        XCTAssertEqual(unique.capacity, capacity, name)
+      }
+    }
   }
 #endif

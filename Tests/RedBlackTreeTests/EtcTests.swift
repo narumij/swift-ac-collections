@@ -104,4 +104,39 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
+
+  // RBT-081：共有中の木で、Viewのerase(where:)が要素を消すときも、述語は範囲内の各要素に
+  // 1回ずつ順に呼ばれ、コピー後のViewの範囲が正しく、共有元は変わらないこと。
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testViewEraseWhereFirstMatchIsStartFromSharedSet() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      let lo = original.index(after: original.startIndex)
+      let hi = original.index(lo, offsetBy: 3)
+      var view = original[lo ..< hi]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return $0 != 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(view), [3])
+      XCTAssertEqual(view.count, 1)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    func testViewEraseWhereFirstMatchIsInMiddleFromSharedSet() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      let lo = original.index(after: original.startIndex)
+      let hi = original.index(lo, offsetBy: 3)
+      var view = original[lo ..< hi]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return $0 == 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(view), [2, 4])
+      XCTAssertEqual(view.count, 2)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+  #endif
 }

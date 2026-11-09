@@ -322,7 +322,7 @@ extension RedBlackTreeSet {
         let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
         return (__inserted, ___index(__r))
       #else
-      guard let __p = __tree_.__purified_(hint).pointer else {
+      guard let __p = __tree_.__deep_purified_(hint).pointer else {
         fatalError(.invalidIndex)
       }
       let (__r, __inserted) = __tree_.___insert_unique_hint_if_not_present(newMember,__p)
@@ -344,7 +344,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func update(_ newMember: Element, hint: Index) -> Element? {
       __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
+      let p = __tree_.__deep_purified_(hint)
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }

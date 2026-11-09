@@ -64,7 +64,7 @@
     /// - Returns: `true` if the resolved bounds belong to this set and are in ascending order; otherwise, `false`.
     @inlinable
     public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
-      let range: _SafeRange = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      let range: _SafeRange = __tree_.__deep_purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValid(range: range)
     }
 
@@ -110,11 +110,11 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__deep_purified_safe_(bounds).relative(to: __tree_)
         return self[_validate: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__deep_purified_safe_(bounds).relative(to: __tree_)
         yield &self[_validate: range]
       }
     }

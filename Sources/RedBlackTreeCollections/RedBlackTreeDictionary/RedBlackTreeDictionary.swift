@@ -352,7 +352,7 @@ extension RedBlackTreeDictionary {
           __p, newMember.key, Base.__payload_(newMember))
         return (__inserted, ___index(__r))
       #else
-        guard let __p = __tree_.__purified_(hint).pointer else {
+        guard let __p = __tree_.__deep_purified_(hint).pointer else {
           fatalError(.invalidIndex)
         }
         let (__r, __inserted) = __tree_.___insert_unique_hint_if_not_present(
@@ -374,7 +374,7 @@ extension RedBlackTreeDictionary {
       -> Element?
     {
       __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
+      let p = __tree_.__deep_purified_(hint)
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }

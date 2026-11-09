@@ -87,8 +87,8 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
   {
     return try? liftA2(
-      __purified_(start).map(\.pointer),
-      __purified_(end).map(\.pointer),
+      __deep_purified_(start).map(\.pointer),
+      __deep_purified_(end).map(\.pointer),
       Base.___signed_distance
     )
     .get()
@@ -113,7 +113,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func prev_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    let result: _LazyTieWrappedPtrV2 = __deep_purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -126,7 +126,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func next_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    let result: _LazyTieWrappedPtrV2 = __deep_purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -139,7 +139,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func adv_iter(_ i: _LazyTiedPtrV2, offsetBy distance: Int) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    let result: _LazyTieWrappedPtrV2 = __deep_purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
     switch result {
@@ -156,8 +156,8 @@ extension UnsafeTreeV2 {
   )
     -> _LazyTieWrappedPtrV2
   {
-    __purified_(limit).flatMap { limit in
-      __purified_(i)
+    __deep_purified_(limit).flatMap { limit in
+      __deep_purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance, .success(limit.pointer)) }
         .flatMap { index($0) }
     }

@@ -132,7 +132,8 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
   
   @inlinable
-  mutating func ___erase_sanitize_range_with_many_care(_range range: _SafeRange) throws -> _NodePtr {
+  mutating func ___erase_sanitize_range_with_many_care(_range range: _SafeRange) -> _NodePtr {
+    do {
       var __r = try sanitize(range).get()
       if __r.isEmpty {
         return __r.upperBound
@@ -149,6 +150,10 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       }
       assert(count == 0 || isUnique())
       return try ___erase_range(__r.lowerBound, __r.upperBound).get()
+    }
+    catch {
+      return __end_node
+    }
   }
 }
 

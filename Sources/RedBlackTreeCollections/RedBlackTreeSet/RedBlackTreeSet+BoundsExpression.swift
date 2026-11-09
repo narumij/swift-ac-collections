@@ -163,7 +163,7 @@
       __tree_.ensureUnique()
       _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
       #else
-      _ = try? __tree_.___erase_sanitize_range_with_many_care(_range: bounds.evaluate(__tree_).relative(to: __tree_))
+      _ = __tree_.___erase_sanitize_range_with_many_care(_range: bounds.evaluate(__tree_).relative(to: __tree_))
       #endif
     }
 

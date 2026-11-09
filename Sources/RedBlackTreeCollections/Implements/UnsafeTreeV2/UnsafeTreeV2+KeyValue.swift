@@ -40,6 +40,43 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     }
 
     _modify {
+      #if PERF_TRIAL_MAIN // main(4bfd7dc)の_modify。計測用
+      ensureUnique()
+
+      let (__parent, __child) = __find_equal(key)
+
+      let found = __child.pointee != nullptr
+
+      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
+
+      defer {
+        if let value {
+          if found {
+            Base.__mapped_value_ptr(__child).initialize(to: value)
+          } else {
+            unsafeEnsureCapacity()
+            update {
+              let __h = $0.__construct_node(Base.__payload_((key, value)))
+              $0.__insert_node_at(__parent, __child, __h)
+            }
+          }
+        } else {
+          if found {
+            _ = update {
+              let node = __child.pointee
+              let next = $0.__remove_node_pointer(node)
+              Base.__key_ptr(node).deinitialize(count: 1)
+              $0.header.pointee.___raw_pushRecycle(node)
+              return next
+            }
+          } else {
+            /* NOP */
+          }
+        }
+      }
+
+      yield &value
+      #elseif PERF_TRIAL_TWO_YIELDS // 9713b30a6以降の_modify(yield 2か所)
       var (__parent, __child) = __find_equal(key)
       let __e = __end_node
 
@@ -88,6 +125,48 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         
         yield &value
       }
+      #else // yield 1か所に戻した試し版
+      var (__parent, __child) = __find_equal(key)
+      var __node = __child.pointee
+
+      if __node != nullptr {
+        let __e = __end_node
+        ensureUnique()
+        if __e != __end_node {
+          __node = __simple_retrieve(__node)
+        }
+      }
+
+      var value: Base._MappedValue? =
+        __node != nullptr ? Base.__mapped_value_ptr(__node).move() : nil
+
+      defer {
+        if __node != nullptr {
+          if let value {
+            Base.__mapped_value_ptr(__node).initialize(to: value)
+          } else {
+            _ = update {
+              let next = $0.__remove_node_pointer(__node)
+              Base.__key_ptr(__node).deinitialize(count: 1)
+              $0.header.pointee.___raw_pushRecycle(__node)
+              return next
+            }
+          }
+        } else if let value {
+          let __e = __end_node
+          ensureUniqueAndCapacity()
+          if __e != __end_node {
+            (__parent, __child) = __simple_retrieve(__parent, __child)
+          }
+          update {
+            let __h = $0.__construct_node(Base.__payload_((key, value)))
+            $0.__insert_node_at(__parent, __child, __h)
+          }
+        }
+      }
+
+      yield &value
+      #endif
     }
   }
 

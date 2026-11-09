@@ -193,6 +193,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       __last = __simple_retrieve(__last.pointer!).unchecked
     }
     __first = erase(__first.accessible.pointer!).unchecked
+    // 2個目以降の削除は短縮処理で行う
     return try ___erase_range_if(__first, __last, shouldBeRemoved)
   }
 }

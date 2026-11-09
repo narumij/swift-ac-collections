@@ -8,8 +8,8 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  func __simple_retrieve(_ __parent: _NodePtr) -> _NodePtr {
-    __parent.___is_end ? __end_node : _buffer.header[__parent.trackingTag]
+  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
+    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
   }
 
   @inlinable

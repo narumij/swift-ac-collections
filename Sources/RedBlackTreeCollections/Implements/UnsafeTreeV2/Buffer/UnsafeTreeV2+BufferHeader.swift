@@ -214,7 +214,9 @@ extension UnsafeTreeV2BufferHeader {
   mutating func _createLazyDetachLocked() {
     _lazyDetachLock.withLock { _ in
       if _lazyDetach == nil {
-        _lazyDetach = .create()
+        let t = _LazyTie.create()
+        atomicMemoryFence(ordering: .releasing)
+        _lazyDetach = t
       }
     }
   }

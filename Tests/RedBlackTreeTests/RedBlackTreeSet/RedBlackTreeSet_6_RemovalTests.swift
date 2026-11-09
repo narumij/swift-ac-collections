@@ -484,5 +484,31 @@ extension RedBlackTreeSetRemoveTests {
       XCTAssertEqual(Array(shared), [1, 2, 3])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndexRangeのeraseで木がコピーされた")
     }
+
+    /// 共有中の空でない木に、何も消さない述語で`erase(where:)`しても、木をコピーしないこと。述語は各要素に1回ずつ順に呼ばれること（RBT-081/RBT-088）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+
+    /// 共有中の木で`erase(where:)`が要素を消すときも、述語は各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-088）。
+    func test_eraseWhere_someMatch_callsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
   }
 #endif

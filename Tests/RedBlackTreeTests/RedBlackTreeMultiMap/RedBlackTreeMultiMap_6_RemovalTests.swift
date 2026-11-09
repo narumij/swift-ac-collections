@@ -268,5 +268,31 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
     }
+
+    /// 共有中の空でない木に、何も消さない述語で`erase(where:)`しても、木をコピーしないこと。述語は各要素に1回ずつ順に呼ばれること（RBT-081/RBT-088）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return false }
+
+      XCTAssertEqual(visited, [1, 2, 2])
+      XCTAssertEqual(shared.map(\.key), [1, 2, 2])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+
+    /// 共有中の木で`erase(where:)`が要素を消すときも、述語は各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-088）。
+    func test_eraseWhere_someMatch_callsPredicateOncePerElement() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d")]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0.key); return $0.key % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 2, 3])
+      XCTAssertEqual(shared.map(\.key), [1, 3])
+      XCTAssertEqual(original.map(\.key), [1, 2, 2, 3])
+    }
   }
 #endif

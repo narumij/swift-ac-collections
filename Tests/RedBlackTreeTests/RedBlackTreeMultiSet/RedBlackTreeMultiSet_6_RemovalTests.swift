@@ -346,6 +346,125 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
     }
 
+    /// `erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元のMultiSetは変わらないこと。変更側の途中状態は契約がないため、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseWhere_throwsBeforeFirstMatch_keepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var multiset = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try multiset.erase { element in
+          visited.append(element)
+          if element == 2 { throw StopError() }
+          return false
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3])
+      XCTAssertEqual(Array(multiset), Array(multiset).sorted())
+      XCTAssertTrue(multiset.allSatisfy { original.contains($0) })
+    }
+
+    /// 共有中の木で`erase(where:)`の述語がすべての要素に一致するとき、述語は各要素に1回ずつ順に呼ばれ、
+    /// MultiSetは空になり、共有元は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatch_emptiesMultiSetAndKeepsSharedOriginal() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var multiset = original
+      var visited: [Int] = []
+
+      multiset.erase { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [1, 2, 2, 3])
+      XCTAssertTrue(multiset.isEmpty)
+      XCTAssertEqual(multiset.startIndex, multiset.endIndex)
+      XCTAssertEqual(Array(original), [1, 2, 2, 3])
+    }
+
+    /// `erase(_:where:)`（IndexRange）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+    /// 共有していた元のMultiSetは変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4, 5]
+      var multiset = original
+      let lo = multiset.index(after: multiset.startIndex)
+      let hi = multiset.index(multiset.startIndex, offsetBy: 5)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try multiset.erase(lo ..< hi) { element in
+          visited.append(element)
+          if element == 3 { throw StopError() }
+          return element == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4, 5])
+      XCTAssertTrue(multiset.contains(1))
+      XCTAssertTrue(multiset.contains(5))
+      XCTAssertEqual(Array(multiset), Array(multiset).sorted())
+      XCTAssertTrue(multiset.allSatisfy { original.contains($0) })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRange）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var multiset = original
+      let lo = multiset.index(after: multiset.startIndex)
+      let hi = multiset.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      multiset.erase(lo ..< hi) { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(multiset), [1, 4])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+    }
+
+    /// `erase(_:where:)`（IndexRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+    /// 共有していた元のMultiSetは変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var multiset = original
+      let lo = multiset.index(after: multiset.startIndex)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try multiset.erase(lo...) { element in
+          visited.append(element)
+          if element == 3 { throw StopError() }
+          return element == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 2, 3])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+      XCTAssertTrue(multiset.contains(1))
+      XCTAssertEqual(Array(multiset), Array(multiset).sorted())
+      XCTAssertTrue(multiset.allSatisfy { original.contains($0) })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+      var multiset = original
+      let lo = multiset.index(after: multiset.startIndex)
+      var visited: [Int] = []
+
+      multiset.erase(lo...) { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [2, 2, 3, 4])
+      XCTAssertEqual(Array(multiset), [1])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+    }
+
     #if _TREE_COPY_COUNTER
       /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
       func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {

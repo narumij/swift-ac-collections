@@ -152,6 +152,44 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
   }
 
+  /// `erase(_:where:)`（BoundRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+  /// 共有していた元のMultiSetは変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+  func testEraseBoundRangeWhereRethrowsPredicateErrorAndKeepsSharedOriginal() {
+    struct StopError: Error, Equatable {}
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4, 5]
+    var multiset = original
+    var visited: [Int] = []
+
+    XCTAssertThrowsError(
+      try multiset.erase(lowerBound(2) ..< upperBound(4)) { element in
+        visited.append(element)
+        if element == 3 { throw StopError() }
+        return element == 2
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [2, 2, 3])
+    XCTAssertEqual(Array(original), [1, 2, 2, 3, 4, 5])
+    XCTAssertTrue(multiset.contains(1))
+    XCTAssertTrue(multiset.contains(5))
+    XCTAssertEqual(Array(multiset), Array(multiset).sorted())
+    XCTAssertTrue(multiset.allSatisfy { original.contains($0) })
+  }
+
+  /// 共有中の木で`erase(_:where:)`（BoundRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+  func testEraseBoundRangeWhereAllMatchRemovesOnlyTheRange() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3, 4]
+    var multiset = original
+    var visited: [Int] = []
+
+    multiset.erase(lowerBound(2) ..< upperBound(3)) { visited.append($0); return true }
+
+    XCTAssertEqual(visited, [2, 2, 3])
+    XCTAssertEqual(Array(multiset), [1, 4])
+    XCTAssertEqual(Array(original), [1, 2, 2, 3, 4])
+  }
+
   func testSubscriptBoundsView() throws {
     let view = a[lowerBound(0) ..< upperBound(2)]
     XCTAssertEqual(Array(view), [0, 1, 2])

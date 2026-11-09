@@ -348,6 +348,126 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
     }
 
+    /// `erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元の辞書のkey/valueは変わらないこと。変更側の途中状態は、元の要素だけをキー順に持つことだけを確かめる（RBT-094）。
+    func test_eraseWhere_throwsBeforeFirstMatch_keepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d"]
+      var dictionary = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try dictionary.erase { element in
+          visited.append(element.key)
+          if element.key == 2 { throw StopError() }
+          return false
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2])
+      XCTAssertEqual(original.map(\.key), [1, 2, 3, 4])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
+
+    /// 共有中の木で`erase(where:)`の述語がすべての要素に一致するとき、述語は各要素に1回ずつ順に呼ばれ、
+    /// 辞書は空になり、共有元は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatch_emptiesDictionaryAndKeepsSharedOriginal() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d"]
+      var dictionary = original
+      var visited: [Int] = []
+
+      dictionary.erase { visited.append($0.key); return true }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4])
+      XCTAssertTrue(dictionary.isEmpty)
+      XCTAssertEqual(dictionary.startIndex, dictionary.endIndex)
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+    }
+
+    /// `erase(_:where:)`（IndexRange）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外のkey/valueに触れないこと。
+    /// 共有していた元の辞書は変わらないこと。変更側の途中状態は契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f"]
+      var dictionary = original
+      let lo = dictionary.index(after: dictionary.startIndex)
+      let hi = dictionary.index(dictionary.startIndex, offsetBy: 5)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try dictionary.erase(lo ..< hi) { element in
+          visited.append(element.key)
+          if element.key == 4 { throw StopError() }
+          return element.key == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e", "f"])
+      XCTAssertEqual(dictionary[1], "a")
+      XCTAssertEqual(dictionary[6], "f")
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRange）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var dictionary = original
+      let lo = dictionary.index(after: dictionary.startIndex)
+      let hi = dictionary.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      dictionary.erase(lo ..< hi) { visited.append($0.key); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(dictionary.map(\.key), [1, 5])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
+
+    /// `erase(_:where:)`（IndexRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外のkey/valueに触れないこと。
+    /// 共有していた元の辞書は変わらないこと。変更側の途中状態は契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var dictionary = original
+      let lo = dictionary.index(after: dictionary.startIndex)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try dictionary.erase(lo...) { element in
+          visited.append(element.key)
+          if element.key == 4 { throw StopError() }
+          return element.key == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+      XCTAssertEqual(dictionary[1], "a")
+      XCTAssertEqual(dictionary.map(\.key), dictionary.map(\.key).sorted())
+      XCTAssertTrue(dictionary.allSatisfy { original[$0.key] == $0.value })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      var dictionary = original
+      let lo = dictionary.index(after: dictionary.startIndex)
+      var visited: [Int] = []
+
+      dictionary.erase(lo...) { visited.append($0.key); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(dictionary.map(\.key), [1])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
+
     #if _TREE_COPY_COUNTER
       /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
       func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {

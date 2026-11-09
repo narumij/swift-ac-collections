@@ -324,6 +324,126 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
       XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
     }
 
+    /// `erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元のmultimapのkey/valueは変わらないこと。変更側の途中状態は、元の要素だけをキー順に持つことだけを確かめる（RBT-094）。
+    func test_eraseWhere_throwsBeforeFirstMatch_keepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d")]
+      var map = original
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try map.erase { element in
+          visited.append(element.value)
+          if element.value == "b" { throw StopError() }
+          return false
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["a", "b"])
+      XCTAssertEqual(original.map(\.key), [1, 2, 2, 3])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(map.map(\.key), map.map(\.key).sorted())
+      XCTAssertTrue(map.allSatisfy { element in original.contains { $0.key == element.key && $0.value == element.value } })
+    }
+
+    /// 共有中の木で`erase(where:)`の述語がすべての要素に一致するとき、述語は各要素に1回ずつ順に呼ばれ、
+    /// multimapは空になり、共有元は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatch_emptiesMultiMapAndKeepsSharedOriginal() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d")]
+      var map = original
+      var visited: [String] = []
+
+      map.erase { visited.append($0.value); return true }
+
+      XCTAssertEqual(visited, ["a", "b", "c", "d"])
+      XCTAssertTrue(map.isEmpty)
+      XCTAssertEqual(map.startIndex, map.endIndex)
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d"])
+    }
+
+    /// `erase(_:where:)`（IndexRange）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外のkey/valueに触れないこと。
+    /// 共有していた元のmultimapは変わらないこと。変更側の途中状態は契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e"), (5, "f")]
+      var map = original
+      let lo = map.index(after: map.startIndex)
+      let hi = map.index(map.startIndex, offsetBy: 5)
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try map.erase(lo ..< hi) { element in
+          visited.append(element.value)
+          if element.value == "d" { throw StopError() }
+          return element.value == "b"
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["b", "c", "d"])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e", "f"])
+      XCTAssertTrue(map.contains { $0.key == 1 })
+      XCTAssertTrue(map.contains { $0.key == 5 })
+      XCTAssertEqual(map.map(\.key), map.map(\.key).sorted())
+      XCTAssertTrue(map.allSatisfy { element in original.contains { $0.key == element.key && $0.value == element.value } })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRange）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var map = original
+      let lo = map.index(after: map.startIndex)
+      let hi = map.index(lo, offsetBy: 3)
+      var visited: [String] = []
+
+      map.erase(lo ..< hi) { visited.append($0.value); return true }
+
+      XCTAssertEqual(visited, ["b", "c", "d"])
+      XCTAssertEqual(map.map(\.key), [1, 4])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
+
+    /// `erase(_:where:)`（IndexRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外のkey/valueに触れないこと。
+    /// 共有していた元のmultimapは変わらないこと。変更側の途中状態は契約がないため、範囲外のエントリが残り、元のエントリだけをkey順に持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var map = original
+      let lo = map.index(after: map.startIndex)
+      var visited: [String] = []
+
+      XCTAssertThrowsError(
+        try map.erase(lo...) { element in
+          visited.append(element.value)
+          if element.value == "d" { throw StopError() }
+          return element.value == "b"
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, ["b", "c", "d"])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+      XCTAssertTrue(map.contains { $0.key == 1 })
+      XCTAssertEqual(map.map(\.key), map.map(\.key).sorted())
+      XCTAssertTrue(map.allSatisfy { element in original.contains { $0.key == element.key && $0.value == element.value } })
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c"), (3, "d"), (4, "e")]
+      var map = original
+      let lo = map.index(after: map.startIndex)
+      var visited: [String] = []
+
+      map.erase(lo...) { visited.append($0.value); return true }
+
+      XCTAssertEqual(visited, ["b", "c", "d", "e"])
+      XCTAssertEqual(map.map(\.key), [1])
+      XCTAssertEqual(original.map(\.value), ["a", "b", "c", "d", "e"])
+    }
+
     #if _TREE_COPY_COUNTER
       /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
       func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {

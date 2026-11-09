@@ -732,6 +732,9 @@ extension RedBlackTreeSetRemoveTests {
         let contents = Array(original)
         let capacity = original.capacity
         var shared = original
+        #if DEBUG
+          XCTAssertFalse(shared._isUnique, "前提: \(name)は共有中")
+        #endif
 
         shared.removeAll(keepingCapacity: true)
 
@@ -747,6 +750,9 @@ extension RedBlackTreeSetRemoveTests {
     func test_removeAllKeepingCapacity_onUniqueTree_keepsCapacity() {
       for (name, make) in removeAllKeepingCapacityShapes() {
         var unique = make()
+        #if DEBUG
+          XCTAssertTrue(unique._isUnique, "前提: \(name)は一意")
+        #endif
         let capacity = unique.capacity
 
         unique.removeAll(keepingCapacity: true)

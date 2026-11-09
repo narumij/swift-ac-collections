@@ -46,6 +46,14 @@
   }
 #endif
 
+#if DEBUG
+  extension RedBlackTreeSet {
+    package var _isUnique: Bool {
+      mutating get { __tree_.isUnique() }
+    }
+  }
+#endif
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 

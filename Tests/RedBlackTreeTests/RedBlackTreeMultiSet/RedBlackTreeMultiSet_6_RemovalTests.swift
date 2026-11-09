@@ -278,5 +278,17 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       _ = emptyCopy.eraseMulti(0)
       XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
     }
+
+    /// 空でない共有中の木から空のIndex範囲（`i ..< i`）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyIndexRange_keepsSharedStorage() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.erase(i ..< i)
+
+      XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
+    }
   }
 #endif

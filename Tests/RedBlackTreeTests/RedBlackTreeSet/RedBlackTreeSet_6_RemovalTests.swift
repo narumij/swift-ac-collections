@@ -461,5 +461,28 @@ extension RedBlackTreeSetRemoveTests {
       _ = copy.remove(-1)
       XCTAssertTrue(set.isTriviallyIdentical(to: copy))
     }
+
+    /// 空でない共有中の木から空のIndex範囲（`i ..< i`）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyIndexRange_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.erase(i ..< i)
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
+    }
+
+    /// 空でない共有中の木から空の`equalRange`（IndexRange）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyEqualRange_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      shared.erase(shared.equalRange(9))
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndexRangeのeraseで木がコピーされた")
+    }
   }
 #endif

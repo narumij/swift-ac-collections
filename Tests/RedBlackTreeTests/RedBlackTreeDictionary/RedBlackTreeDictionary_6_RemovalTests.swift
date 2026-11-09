@@ -280,5 +280,17 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
       _ = emptyCopy.removeValue(forKey: 0)
       XCTAssertTrue(empty.isTriviallyIdentical(to: emptyCopy))
     }
+
+    /// 空でない共有中の木から空のIndex範囲（`i ..< i`）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyIndexRange_keepsSharedStorage() {
+      let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.erase(i ..< i)
+
+      XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
+    }
   }
 #endif

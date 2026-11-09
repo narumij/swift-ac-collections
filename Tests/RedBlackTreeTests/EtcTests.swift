@@ -106,65 +106,9 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 
   // RBT-081：共有中の空でない木から空の範囲をeraseしても、木をコピーしないこと。
-  // Index範囲とBound範囲に分け、#ifを1つずつ外しながら直す。
+  // Bound範囲。Index範囲は直して仕様テストへ移した。
 
   #if !COMPATIBLE_ATCODER_2025
-    #if true  // Index範囲
-      func testEraseEmptyIndexRangeFromSharedSetDoesNotCopy() {
-        let original: RedBlackTreeSet<Int> = [1, 2, 3]
-        var shared = original
-        let i = shared.index(after: shared.startIndex)
-
-        shared.erase(i ..< i)
-
-        XCTAssertEqual(Array(shared), [1, 2, 3])
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
-      }
-
-      func testEraseEmptyEqualRangeFromSharedSetDoesNotCopy() {
-        let original: RedBlackTreeSet<Int> = [1, 2, 3]
-        var shared = original
-
-        shared.erase(shared.equalRange(9))
-
-        XCTAssertEqual(Array(shared), [1, 2, 3])
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndexRangeのeraseで木がコピーされた")
-      }
-
-      func testEraseEmptyIndexRangeFromSharedMultiSetDoesNotCopy() {
-        let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
-        var shared = original
-        let i = shared.index(after: shared.startIndex)
-
-        shared.erase(i ..< i)
-
-        XCTAssertEqual(Array(shared), [1, 2, 2, 3])
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
-      }
-
-      func testEraseEmptyIndexRangeFromSharedDictionaryDoesNotCopy() {
-        let original: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
-        var shared = original
-        let i = shared.index(after: shared.startIndex)
-
-        shared.erase(i ..< i)
-
-        XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
-      }
-
-      func testEraseEmptyIndexRangeFromSharedMultiMapDoesNotCopy() {
-        let original: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (2, "b"), (2, "c")]
-        var shared = original
-        let i = shared.index(after: shared.startIndex)
-
-        shared.erase(i ..< i)
-
-        XCTAssertEqual(shared.map(\.value), ["a", "b", "c"])
-        XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
-      }
-    #endif
-
     #if false  // Bound範囲
       func testEraseEmptyBoundRangeFromSharedSetDoesNotCopy() {
         let original: RedBlackTreeSet<Int> = [1, 2, 3]

@@ -466,3 +466,107 @@
     }
   }
 #endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 消したときに文字列の領域が解放されるよう、毎回新しく作る要素。
+  private func freshElement(_ c: Character) -> String {
+    String(repeating: c, count: 40)
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {
+    guard let result else { return }
+
+    #if canImport(Darwin) || canImport(Glibc)
+      #expect(result.exitStatus != .signal(SIGSEGV))
+      #expect(result.exitStatus != .signal(SIGBUS))
+    #endif
+
+    let standardError = String(decoding: result.standardErrorContent, as: UTF8.self)
+    #expect(!standardError.contains("AddressSanitizer"))
+  }
+
+  /// 容量を保ったまま全削除したDictionaryと、削除前に取ったIndex・IndexRange。
+  private func dictionaryAfterRemoveAllKeepingCapacity()
+    -> (tree: RedBlackTreeDictionary<String, String>, stale: RedBlackTreeDictionary<String, String>.Index, staleRange: RedBlackTreeIndexRange)
+  {
+    var t = RedBlackTreeDictionary<String, String>()
+    for c in "abc" { t[freshElement(c)] = freshElement(c) }
+    let stale = t.index(after: t.startIndex)
+    let staleRange = t.equalRange(freshElement("b"))
+    t.removeAll(keepingCapacity: true)
+    t[freshElement("x")] = freshElement("x")
+    return (t, stale, staleRange)
+  }
+
+  // RBT-104: 範囲を受け取るAPIに、容量保持の全削除より前に取ったIndex・IndexRangeを渡しても、破棄済みの中身を読む前に停止すること。
+  struct RedBlackTreeDictionaryRemoveAllKeepingCapacityDeathTests {
+
+    @Test
+    func containsSubrangeIndexRange_returnsFalse() {
+      let (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(staleRange))
+    }
+
+    @Test
+    func containsSubrangeExpression_returnsFalse() {
+      let (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(stale..<t.endIndex))
+    }
+
+    @Test
+    func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t[staleRange].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t[stale..<t.endIndex].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+  }
+#endif

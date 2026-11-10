@@ -226,6 +226,34 @@ extension Benchmark {
     // `identity(_:)` makes the collection opaque on each pass so the passes
     // cannot be merged. Both code states execute identical work.
     
+    #if true
+    self.add(
+      title: "NextPermutations.Permutation subscript sequential access (batched)",
+      input: Int.self
+    ) { size in
+      let reps = repetitions(size)
+      return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
+        var sum = 0
+        timer.measure {
+          var total = 0
+          for _ in 0..<reps {
+            var s = 0
+            var i = 0
+            while i < p.count {
+              s &+= p[i]
+              i += 1
+            }
+            total &+= s
+          }
+          sum = total
+        }
+        blackHole(sum)
+        validate(sum, size: size, repetitions: reps)
+      }
+    }
+    #else
     struct Prepare_NextPermutations_Permutation_subscript_sequential: ~Copyable {
       let perm: NextPermutations<Int>
       let p: NextPermutations<Int>.Permutation
@@ -265,6 +293,7 @@ extension Benchmark {
         validate(sum, size: size, repetitions: reps)
       }
     }
+    #endif
 
     self.add(
       title: "NextPermutations.Permutation subscript shuffled access (batched)",

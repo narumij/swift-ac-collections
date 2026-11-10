@@ -228,13 +228,10 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
-    #if !USE_LAZY_DETACH
-    // バッファ切り離しをしないケースでのみ、全削除でのインデックス無効化が利用できる
-    // バッファ切り離しをするケースで解放すると内部バッファが解放されてUBになる
-    // TODO: 仕様の再検討 RBT-071, RBT-077
-//    _lazyDetach?.release()
-//    _lazyDetach = .create() // mutatingはSwiftの排他制御がかかるので、ロック不要らしい
-    #endif
+    if _lazyDetach != nil {
+      _lazyDetach?.release()
+      _lazyDetach = .create()
+    }
   }
 }
 
@@ -344,9 +341,10 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
+    // TODO: 取り急ぎの修正なので、再度吟味すること
     @usableFromInline
     mutating func ___flushFreshPool() {
-      freshBucketAllocator.deinitialize(bucket: freshBucketHead)
+      freshBucketAllocator.flush(bucket: freshBucketHead)
       freshPoolUsedCount = 0
       freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
@@ -387,8 +385,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleHead != p, "過剰リサイクル不可")
       count &-= 1
       assert(count >= 0)
+#if USE_RECYCLE_COUNT_OVERWRAP
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
+#else
+      if p.pointee.___recycle_count < UnsafeNode.Seal.max {
+        p.pointee.___recycle_count &+= 1
+      }
+#endif
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
@@ -417,8 +421,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleHead != p, "過剰リサイクル不可")
       count &-= 1
       assert(count >= 0)
+#if USE_RECYCLE_COUNT_OVERWRAP
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
+#else
+      if p.pointee.___recycle_count < .max {
+        p.pointee.___recycle_count &+= 1
+      }
+#endif
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif

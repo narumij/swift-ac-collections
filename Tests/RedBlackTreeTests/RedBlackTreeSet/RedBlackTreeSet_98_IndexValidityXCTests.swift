@@ -178,8 +178,6 @@ final class RedBlackTreeSetIndexValidityXCTests: RedBlackTreeTestCase {
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeSetIndexValidityXCTests {
-  #if false
-  // 性能退行があるので、RBT-071で再検討
   /// removeAll(keepingCapacity: true)の前に取ったIndexは無効と判定されること
   /// （有効と判定されると解放済みの要素を読む。ASanでheap-use-after-free）。
   func testIndexBeforeRemoveAllKeepingCapacityIsInvalid() {
@@ -188,7 +186,6 @@ extension RedBlackTreeSetIndexValidityXCTests {
     set.removeAll(keepingCapacity: true)
     XCTAssertFalse(set.isElement(at: index))
   }
-  #endif
 
   /// 解放済みの木のIndexを文字列化しても、解放済みのノードを読まないこと（ASanでheap-use-after-free）。
   func testDescribingIndexOfFreedTreeDoesNotReadFreedMemory() {
@@ -213,8 +210,17 @@ extension RedBlackTreeSetIndexValidityXCTests {
     XCTAssertTrue(index.lazyDetach.isDetached)
   }
 
-  #if false
-  // 性能退行があるので、RBT-071で再検討
+  /// 容量を保ったまま全削除したあと、削除前のIndexは要素を指さないこと（RBT-104）。
+  func testIndexBeforeRemoveAllKeepingCapacityIsNotElement() {
+    var set: RedBlackTreeSet<String> = ["a", "b", "c"]
+    let index = set.firstIndex(of: "b")!
+
+    set.removeAll(keepingCapacity: true)
+
+    XCTAssertEqual(set.count, 0)
+    XCTAssertFalse(set.isElement(at: index), "容量保持の全削除のあとも、削除前のIndexが要素として扱われた")
+  }
+
   /// removeAll(keepingCapacity: true)で古いIndexが失効し、その後のIndexは新しく有効になること。
   func testClearRetiresOldTieAndAllowsFreshIndices() {
     var tree: RedBlackTreeSet<Int> = [1, 2]
@@ -227,6 +233,5 @@ extension RedBlackTreeSetIndexValidityXCTests {
       XCTAssertTrue(tree.startIndex < tree.endIndex)
     }
   }
-  #endif
 }
 #endif

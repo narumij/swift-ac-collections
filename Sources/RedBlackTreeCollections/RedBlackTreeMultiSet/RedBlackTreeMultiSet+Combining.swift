@@ -82,8 +82,16 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func insert<S>(contentsOf other: S)
   where S: Sequence, S.Element == Element {
+    #if false
     __tree_.ensureUnique()
     __tree_.___insert_range_multi(other) { $0 }
+    #else
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
+    _ = __tree_.update { $0.__insert_multi(__first) }
+    __tree_.___insert_range_multi(IteratorSequence(it)) { $0 }
+    #endif
   }
 
   /// Returns a multiset containing this multiset plus each element of `other` once.

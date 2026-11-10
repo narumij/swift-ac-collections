@@ -102,8 +102,17 @@ extension _LazyTieWrapV2 {
   @inlinable
   package var sealed: _SealedPtr { rawValue.purified }
 
+  #if USE_RECYCLE_COUNT_OVERWRAP
   @inlinable
   func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool { lazyDetach === rhs }
+  #else
+  // TODO: 名前変更の検討
+  // 実際にはそのポインタの直接利用可否となっている
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
+    lazyDetach === rhs && rawValue.pointer.pointee.___recycle_count < .max
+  }
+  #endif
 
   // treeを経由しない封印のみの判定。発行元基準での有効性確認としてテストが使う
   @usableFromInline

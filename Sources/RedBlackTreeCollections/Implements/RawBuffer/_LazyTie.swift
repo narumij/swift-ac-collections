@@ -113,7 +113,7 @@ extension _LazyTie {
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
 
-#if !USE_LAZY_DETACH && false
+#if !USE_LAZY_DETACH
 extension _LazyTie {
 
   @inlinable

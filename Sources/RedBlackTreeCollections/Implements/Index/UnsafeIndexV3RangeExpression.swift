@@ -44,7 +44,9 @@ public typealias RedBlackTreeIndexRangeExpression = UnsafeIndexV3RangeExpression
 public func ..< (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
   -> RedBlackTreeIndexRangeExpression
 {
+  #if !ALLOW_CROSS_TREE_INDEX
   guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+  #endif
   return .init(.range(from: lhs, to: rhs))
 }
 
@@ -52,7 +54,9 @@ public func ..< (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
 public func ... (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
   -> RedBlackTreeIndexRangeExpression
 {
+  #if !ALLOW_CROSS_TREE_INDEX
   guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+  #endif
   return .init(.closedRange(from: lhs, through: rhs))
 }
 

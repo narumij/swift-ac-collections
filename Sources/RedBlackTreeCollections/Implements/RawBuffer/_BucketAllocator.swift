@@ -248,6 +248,25 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
+  // TODO: 取り急ぎの修正なので、再度吟味すること
+  @usableFromInline
+  package func flush(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    if let h = reserverHead {
+      _deinitializeNodeAndValues_flush(storage: h.primaryStorage(), h)
+      h.pointee.count = 0
+      reserverHead = h.pointee.next
+    }
+    while let h = reserverHead {
+      _deinitializeNodeAndValues_flush(storage: h.secondaryStorage(), h)
+      h.pointee.count = 0
+      reserverHead = h.pointee.next
+    }
+  }
+}
+
+extension _BucketAllocator {
+
   @inlinable
   package func deallocate(bucket b: _BucketPointer?) {
     var reserverHead = b
@@ -337,6 +356,40 @@ extension _BucketAllocator {
           payloadDeinitializedCount += 1
         #endif
       }
+      p.deinitialize(count: 1)
+      #if _TREE_ALLOCATION_COUNTER
+        nodeDeinitializedCount += 1
+      #endif
+    }
+    #if DEBUG
+      do {
+        var it = b._capacities(storage: storage, pairLayout: pairLayout)
+        while let p = it.pop() {
+          p.pointee.___tracking_tag = .debug
+        }
+      }
+    #endif
+  }
+  
+  // TODO: 取り急ぎの修正なので、再度吟味すること
+  @inlinable
+  func _deinitializeNodeAndValues_flush(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
+    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
+    while let p = it.pop() {
+      if p.pointee.___has_payload_content {
+        deinitialize(p.advanced(by: 1))
+        #if _TREE_ALLOCATION_COUNTER
+          payloadDeinitializedCount += 1
+        #endif
+      }
+      p.pointee.___has_payload_content = false
+      #if USE_RECYCLE_COUNT_OVERWRAP // 単に中身がなんなのかわかるためのフラグ
+      p.pointee.___recycle_count &+= 1
+      #else
+      if p.pointee.___recycle_count < .max {
+        p.pointee.___recycle_count &+= 1
+      }
+      #endif
       p.deinitialize(count: 1)
       #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1

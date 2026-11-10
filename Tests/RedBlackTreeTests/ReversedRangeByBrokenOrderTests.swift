@@ -17,7 +17,7 @@ private struct NonTransitive: Comparable {
   }
 }
 
-final class ReversedRangeByBrokenOrderTests: XCTestCase {
+final class ReversedRangeByBrokenOrderTests: RedBlackTreeTestCase {
 
   private typealias E = NonTransitive
   private typealias BE = RedBlackTreeBoundExpression

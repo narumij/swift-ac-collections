@@ -20,6 +20,7 @@
     return (0 ..< count).map { _ in Int.random(in: 0 ... 200, using: &g) }
   }
 
+
   /// `<`が全順序にならない要素で、範囲が逆向きになる場合の振る舞い。
   final class RedBlackTreeDictionaryBrokenOrderTests: RedBlackTreeTestCase {
 
@@ -55,12 +56,64 @@
       XCTAssertGreaterThanOrEqual(tree[reversedBounds].values.count, 0)
     }
 
+    /// 逆向きの範囲のViewで先頭から消し続けても、範囲外を読まずに`nil`で止まり、そのあとの`first`も`nil`になること。
+    func test_reversedRange_popFirstEndsWithNil() {
+      func drain(_ v: inout RedBlackTreeDictionary<BrokenOrderElement, String>.View) -> Int? {
+        var n = 0
+        while let x = v.popFirst() { _ = x.key.s.count + x.value.count; n += 1; if n > 3 { return nil } }
+        return v.popFirst() == nil ? n : nil
+      }
+
+      var tree = make()
+      var view = tree[reversedBounds]
+      XCTAssertNotNil(drain(&view))
+      XCTAssertNil(view.first)
+
+      tree = make()
+      var alternating = tree[reversedBounds]
+      for _ in 0 ..< 4 {
+        _ = alternating.popLast()
+        if let x = alternating.popFirst() { _ = x.key.s.count + x.value.count }
+      }
+      XCTAssertNil(alternating.popFirst())
+
+      tree = make()
+      let i = tree.lowerBound(BrokenOrderElement(1)), j = tree.upperBound(BrokenOrderElement(2))
+      var indexView = tree[i ..< j]
+      XCTAssertNotNil(drain(&indexView))
+
+      tree = make()
+      var valuesView = tree[reversedBounds]
+      var popped = 0
+      while valuesView.values.popFirst() != nil { popped += 1; if popped > 3 { break } }
+      XCTAssertLessThanOrEqual(popped, 3)
+      XCTAssertNil(valuesView.values.popFirst())
+
+      XCTAssertEqual(Array(tree).count, tree.count)
+    }
+
     /// 逆向きの範囲のViewで`removeFirst()`を呼んでも、止まらずに要素を返し、木は壊れず走査できること。
     func test_reversedRange_removeFirstKeepsTreeTraversable() {
       let tree = make()
       var view = tree[reversedBounds]
       _ = view.removeFirst()
       XCTAssertEqual(Array(tree).count, tree.count)
+    }
+
+    /// 逆向きの範囲のViewで`erase(where:)`・`removeAll(where:)`を呼んでも、止まらずに返り、木は壊れず走査できること。
+    func test_reversedRange_eraseWhereKeepsTreeTraversable() {
+      var tree = make()
+      var erasing = tree[reversedBounds]
+      erasing.erase(where: { _ in true })
+      XCTAssertEqual(Array(tree).count, tree.count)
+
+      tree = make()
+      var removing = tree[reversedBounds]
+      removing.removeAll(where: { _ in true })
+      XCTAssertEqual(Array(tree).count, tree.count)
+
+      var valuesErasing = make()[reversedBounds]
+      valuesErasing.values.erase(where: { _ in true })
     }
 
     /// 逆向きの範囲の境界式で`erase`を呼んでも、木は壊れず走査できること。
@@ -122,6 +175,92 @@
     func test_wholeTreeIteration_visitsEveryElement() {
       XCTAssertEqual(Array(make()).count, 3)
       XCTAssertEqual(Array(make().reversed()).count, 3)
+    }
+
+    /// 順序が壊れた木でも、正しい向きの範囲ならViewと範囲の操作が止まらずに動き、数が合うこと（スモークテスト）。
+    /// 範囲の端は、キーの比較と位置の前後が一致するもの（2番目の要素から終端まで）を使う。
+    func test_forwardRange_sequenceOperationsSmoke() {
+      let tree = make()
+      let i0 = tree.index(after: tree.startIndex)
+      let i2 = tree.endIndex
+      let view = tree[i0 ..< i2]
+
+      var visited = 0
+      for x in view { _ = x.key.s.count + x.value.count; visited += 1 }
+      XCTAssertEqual(visited, 2)
+      XCTAssertEqual(Array(view).count, 2)
+      XCTAssertEqual(view.map { x in x.key.s.count + x.value.count }.count, 2)
+      XCTAssertEqual(view.reduce(0) { r, _ in r + 1 }, 2)
+      XCTAssertEqual(Array(view.lazy.map { x in x.key.s.count + x.value.count }).count, 2)
+      XCTAssertTrue(view.elementsEqual(Array(view)) { $0.key == $1.key })
+      XCTAssertEqual(view.sorted().count, 2)
+      XCTAssertEqual(view.reversed().count, 2)
+      XCTAssertNotNil(view.first)
+      XCTAssertNotNil(view.last)
+      XCTAssertEqual(view.count, 2)
+      XCTAssertFalse(view.isEmpty)
+      XCTAssertEqual(Array(tree[...]).count, 3)
+      XCTAssertEqual(Array(tree[tree.startIndex ..< tree.index(after: tree.startIndex)]).count, 1)
+
+      XCTAssertEqual(Array(view.keys).count, 2)
+      XCTAssertEqual(Array(view.values).count, 2)
+      XCTAssertNotNil(view.values.first)
+      XCTAssertNotNil(view.values.last)
+      XCTAssertEqual(view.values.count, 2)
+
+      var valuesPopping = tree[i0 ..< i2]
+      var popped = 0
+      while valuesPopping.values.popFirst() != nil { popped += 1 }
+      XCTAssertEqual(popped, 2)
+      valuesPopping = tree[i0 ..< i2]
+      popped = 0
+      while valuesPopping.values.popLast() != nil { popped += 1 }
+      XCTAssertEqual(popped, 2)
+      var valuesErasing = tree[i0 ..< i2]
+      valuesErasing.values.erase(where: { _ in true })
+      XCTAssertEqual(valuesErasing.count, 0)
+
+      var popping = tree[i0 ..< i2]
+      var n = 0
+      while popping.popFirst() != nil { n += 1 }
+      XCTAssertEqual(n, 2)
+      popping = tree[i0 ..< i2]
+      n = 0
+      while popping.popLast() != nil { n += 1 }
+      XCTAssertEqual(n, 2)
+      var removing = tree[i0 ..< i2]
+      _ = removing.removeFirst()
+      _ = removing.removeLast()
+      XCTAssertTrue(removing.isEmpty)
+      removing = tree[i0 ..< i2]
+      removing.removeFirst(1)
+      removing.removeLast(1)
+      XCTAssertTrue(removing.isEmpty)
+      var erasing = tree[i0 ..< i2]
+      _ = erasing.erase()
+      XCTAssertTrue(erasing.isEmpty)
+      erasing = tree[i0 ..< i2]
+      erasing.erase(where: { _ in true })
+      XCTAssertTrue(erasing.isEmpty)
+      erasing = tree[i0 ..< i2]
+      erasing.removeAll()
+      XCTAssertTrue(erasing.isEmpty)
+      erasing = tree[i0 ..< i2]
+      erasing.removeAll(where: { _ in true })
+      XCTAssertTrue(erasing.isEmpty)
+
+      XCTAssertEqual(tree.distance(from: i0, to: i2), 2)
+      XCTAssertEqual(tree.distance(from: i2, to: i0), -2)
+      XCTAssertEqual(tree.index(i0, offsetBy: 2, limitedBy: tree.endIndex), i2)
+      XCTAssertEqual(tree.index(i2, offsetBy: -2, limitedBy: i0), i0)
+      XCTAssertTrue(tree.containsSubrange(i0 ..< i2))
+
+      var erasingTree = make()
+      _ = erasingTree.erase(erasingTree.startIndex ..< erasingTree.index(after: erasingTree.startIndex))
+      XCTAssertEqual(erasingTree.count, 2)
+      erasingTree = make()
+      erasingTree.erase(erasingTree.startIndex ..< erasingTree.endIndex, where: { _ in true })
+      XCTAssertEqual(erasingTree.count, 0)
     }
   }
 #endif

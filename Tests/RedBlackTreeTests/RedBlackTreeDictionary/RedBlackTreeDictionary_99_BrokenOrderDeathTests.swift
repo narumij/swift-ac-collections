@@ -157,10 +157,10 @@
     }
 
     enum PopFirst: String, CaseIterable, Codable, Sendable {
-      case popFirstOnceThenForIn, popLastThenPopFirst, popFirstLoop, removeFirstK, indexRangePopFirstLoop, valuesPopFirstLoop
+      case popFirstOnceThenForIn, removeFirstK
     }
 
-    /// 逆向きの範囲のViewで先頭から消し続けると、終端ノードを要素として読む前に停止すること。
+    /// 逆向きの範囲のViewで、先頭を消したあとに走査する・消す数を決めて先頭から消すと、終端ノードを要素として読む前に停止すること。
     @Test(arguments: PopFirst.allCases)
     func reversedViewPopFirstTraps(_ path: PopFirst) async {
       switch path {
@@ -171,36 +171,11 @@
           _ = v.popFirst()
           for x in v { _ = x.key.s.count + x.value.count }
         }
-      case .popLastThenPopFirst:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
-          var v = t[reversedBounds]
-          for _ in 0 ..< 4 { _ = v.popLast(); if let x = v.popFirst() { _ = x.key.s.count + x.value.count } }
-        }
-      case .popFirstLoop:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
-          var v = t[reversedBounds]
-          while let x = v.popFirst() { _ = x.key.s.count + x.value.count }
-        }
       case .removeFirstK:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           var t = make()
           var v = t[reversedBounds]
           v.removeFirst(3)
-        }
-      case .indexRangePopFirstLoop:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
-          let i = t.lowerBound(BrokenOrderElement(1)), j = t.upperBound(BrokenOrderElement(2))
-          var v = t[i ..< j]
-          while let x = v.popFirst() { _ = x.key.s.count + x.value.count }
-        }
-      case .valuesPopFirstLoop:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
-          var v = t[reversedBounds]
-          while let x = v.values.popFirst() { _ = x.count }
         }
       }
     }

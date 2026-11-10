@@ -236,12 +236,33 @@
 
           tree.erase(bounds)
           XCTAssertEqual(Array(tree).count, tree.count)
+          XCTAssertTrue(tree.___tree_invariant_for_fuzz())
           XCTAssertEqual(tree.reversed().count, tree.count)
           tree = base
           tree.erase(bounds, where: { _ in round % 3 == 0 })
           XCTAssertEqual(Array(tree).count, tree.count)
+          XCTAssertTrue(tree.___tree_invariant_for_fuzz())
         }
       }
+    }
+
+    /// 順序が壊れていても、ヒント付きの挿入・更新は、どの位置をヒントにしても止まらずに返り、
+    /// 木は正しい赤黒木のまま走査できること（スモークテスト）。
+    func test_hintedInsertAndUpdate_keepTreeValid() {
+      var tree = make(seededValues(30, seed: 16))
+      for v in seededValues(300, seed: 17) {
+        let h = tree.lowerBound(BrokenOrderElement((v * 7) % 201))
+        _ = tree.insert((key: BrokenOrderElement(v), value: "h"), hint: h)
+        _ = tree.insert((key: BrokenOrderElement(v), value: "e"), hint: tree.endIndex)
+        _ = tree.insert((key: BrokenOrderElement(v), value: "s"), hint: tree.startIndex)
+        let k = tree.upperBound(BrokenOrderElement((v * 11) % 201))
+        _ = tree.insert(key: BrokenOrderElement(v + 1), value: "k", hint: k)
+        let u = tree.lowerBound(BrokenOrderElement((v * 13) % 201))
+        _ = tree.update((key: BrokenOrderElement(v), value: "u"), hint: u)
+      }
+      XCTAssertEqual(Array(tree).count, tree.count)
+      XCTAssertEqual(tree.reversed().count, tree.count)
+      XCTAssertTrue(tree.___tree_invariant_for_fuzz())
     }
 
     /// 範囲を使わない木全体の操作は、順序が壊れていても止まらず、走査した要素の数が`count`と一致すること。
@@ -249,6 +270,7 @@
       func check(_ t: RedBlackTreeDictionary<BrokenOrderElement, String>, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(Array(t).count, t.count, file: file, line: line)
         XCTAssertEqual(t.reversed().count, t.count, file: file, line: line)
+        XCTAssertTrue(t.___tree_invariant_for_fuzz(), "赤黒木の不変条件", file: file, line: line)
         _ = t.description
       }
 

@@ -248,10 +248,12 @@
 
           tree.erase(bounds)
           XCTAssertEqual(Array(tree).count, tree.count)
+          XCTAssertTrue(tree.___tree_invariant_for_fuzz())
           XCTAssertEqual(tree.reversed().count, tree.count)
           tree = base
           tree.erase(bounds, where: { _ in round % 3 == 0 })
           XCTAssertEqual(Array(tree).count, tree.count)
+          XCTAssertTrue(tree.___tree_invariant_for_fuzz())
         }
       }
     }
@@ -261,6 +263,7 @@
       func check(_ t: RedBlackTreeMultiSet<BrokenOrderElement>, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(Array(t).count, t.count, file: file, line: line)
         XCTAssertEqual(t.reversed().count, t.count, file: file, line: line)
+        XCTAssertTrue(t.___tree_invariant_for_fuzz(), "赤黒木の不変条件", file: file, line: line)
         _ = t.description
       }
 

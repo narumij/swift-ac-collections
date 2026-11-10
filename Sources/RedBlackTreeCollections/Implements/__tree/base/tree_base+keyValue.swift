@@ -38,7 +38,6 @@ public protocol _PairBasePayloadValue_MappedValueProtocol: ~Copyable,
 
 extension _PairBasePayloadValue_MappedValueProtocol where Self: ~Copyable {
 
-  // TODO: アンスコいっことる
   @inlinable
   public static func __mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.tuple.value }
   

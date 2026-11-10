@@ -116,7 +116,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     var __p = self
     while !__p.___is_root {
       __f &>>= 1
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt64.bitWidth &- 1)
       __p = __p.__parent_
     }
     return __f

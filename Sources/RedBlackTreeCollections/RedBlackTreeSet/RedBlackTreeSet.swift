@@ -428,12 +428,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    #if false
-    __tree_.ensureUnique()
-      return __tree_.update { $0.___erase_unique(member) } ? member : nil
-    #else
-      return __tree_._removeIfPresent(member)
-    #endif
+    __tree_.___remove_if_present(member)
   }
 }
 

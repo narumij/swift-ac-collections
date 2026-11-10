@@ -548,7 +548,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ key: Key) -> Bool {
-      __tree_._removeIfPresent(key) != nil
+      __tree_.___erase_unique_if_present(key)
     }
   }
 
@@ -562,7 +562,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ key: Key) -> Int {
-      __tree_._eraseMultiIfPresent(key)
+      __tree_.___erase_multi_if_present(key)
     }
   }
 #endif

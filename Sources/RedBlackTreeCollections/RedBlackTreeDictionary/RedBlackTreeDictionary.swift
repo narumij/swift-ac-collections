@@ -538,7 +538,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
-    __tree_._removeIfPresent(key)?.tuple.value
+    __tree_.___remove_if_present(key)?.tuple.value
   }
 }
 

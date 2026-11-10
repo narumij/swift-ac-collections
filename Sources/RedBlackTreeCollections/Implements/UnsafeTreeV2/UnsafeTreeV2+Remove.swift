@@ -58,35 +58,49 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
-  // TODO: なおす
+  
   @inlinable
-  mutating func _removeIfPresent(_ key: _Key) -> _PayloadValue? {
-    var node = find(key)
-    guard node != end else { return nil }
-    let tag = node.trackingTag
-    if __ensureUnique() {
-      node = try! __retrieve_(tag).get()
+  mutating func ___remove_if_present(_ __k: _Key) -> _PayloadValue? {
+    var __i = find(__k)
+    if __i == end {
+      return nil
     }
-    return _unchecked_remove(at: node).payload
+    if __ensureUnique() {
+      __i = __simple_retrieve(__i)
+    }
+    let ___e = Base.__payload_(__i)
+    _ = erase(__i)
+    return ___e
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  mutating func ___erase_unique_if_present(_ __k: _Key) -> Bool {
+    var __i = find(__k)
+    if __i == end {
+      return false
+    }
+    if __ensureUnique() {
+      __i = __simple_retrieve(__i)
+    }
+    _ = erase(__i)
+    return true
   }
 
-  // TODO: なおす
   @inlinable
-  mutating func _eraseMultiIfPresent(_ key: _Key) -> Int {
-    var (first, last) = __equal_range_multi(key)
-    guard first != last else { return 0 }
-    let firstTag = first.trackingTag
-    let lastTag = last.trackingTag
+  mutating func ___erase_multi_if_present(_ __k: _Key) -> Int {
+    var __p = __equal_range_multi(__k)
+    guard __p.0 != __p.1 else { return 0 }
     if __ensureUnique() {
-      first = try! __retrieve_(firstTag).get()
-      last = try! __retrieve_(lastTag).get()
+      (__p.0,__p.1) = (__simple_retrieve(__p.0),__simple_retrieve(__p.1))
     }
-    var removed = 0
-    while first != last {
-      first = erase(first)
-      removed &+= 1
+    var __r = 0
+    while __p.0 != __p.1 {
+      defer { __r &+= 1 }
+      __p.0 = erase(__p.0)
     }
-    return removed
+    return __r
   }
 }

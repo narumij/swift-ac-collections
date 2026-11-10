@@ -1,6 +1,11 @@
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import Testing
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
 
   private typealias BE = RedBlackTreeBoundExpression
   private var reversedBounds: RedBlackTreeBoundRangeExpression<BrokenOrderElement> {
@@ -202,6 +207,25 @@
         var t = RedBlackTreeMultiMap<Double, String>()
         for x in [2.0, .nan, 2.0, 1.0] { t.insert(key: x, value: "v") }
         _ = t.distance(from: t.startIndex, to: t.upperBound(0.5))
+      }
+    }
+
+
+    /// 逆向きの範囲の境界式で`distance(from:to:)`を呼ぶと、止まること（返らない場合は10秒でSIGALRMになり、失敗として記録される）。
+    @Test
+    func boundDistanceOverReversedRangeTraps() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        alarm(10)  // 返らない場合に子プロセスを終わらせる
+        _ = make().distance(from: BE.lowerBound(BrokenOrderElement(1)), to: BE.upperBound(BrokenOrderElement(2)))
+      }
+    }
+
+    /// 逆向きの範囲の境界式を入れ替えて`distance(from:to:)`を呼んでも、止まること。
+    @Test
+    func boundDistanceBackwardOverReversedRangeTraps() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        alarm(10)  // 返らない場合に子プロセスを終わらせる
+        _ = make().distance(from: BE.upperBound(BrokenOrderElement(2)), to: BE.lowerBound(BrokenOrderElement(1)))
       }
     }
   }

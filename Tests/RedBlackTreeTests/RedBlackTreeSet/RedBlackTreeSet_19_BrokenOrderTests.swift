@@ -133,6 +133,31 @@
       for x in tree[...BrokenOrderElement(1)] { _ = x.s.count }
     }
 
+    /// 順序が壊れていても、検索系（`find`・`lowerBound`・`upperBound`・`firstIndex`・`equalRange`・`count`と、
+    /// 境界式の`.find`・`.lowerBound`・`.upperBound`）は止まらずに返り、返す位置は木の要素か終端であること（スモークテスト）。
+    func test_lookups_returnPositionsInTree() {
+      let tree = make(seededValues(60, seed: 9))
+      func check(_ i: RedBlackTreeSet<BrokenOrderElement>.Index?, file: StaticString = #filePath, line: UInt = #line) {
+        guard let i, i != tree.endIndex else { return }
+        XCTAssertTrue(tree.isElement(at: i), file: file, line: line)
+        _ = tree[i].s.count
+      }
+      for v in 0 ... 200 {
+        let k = BrokenOrderElement(v)
+        check(tree.find(k))
+        check(tree.lowerBound(k))
+        check(tree.upperBound(k))
+        check(tree.firstIndex(of: k))
+        check(tree.firstIndex(after: k))
+        check(tree.lastIndex(before: k))
+        for x in tree[tree.equalRange(k)] { _ = x }
+        XCTAssertGreaterThanOrEqual(tree.count(of: k), 0)
+        for b in [RedBlackTreeBoundExpression.find(k), .lowerBound(k), .upperBound(k)] {
+          if let e = tree[b] { _ = e.s.count }
+        }
+      }
+    }
+
     /// 範囲を使わない木全体の操作は、順序が壊れていても止まらず、走査した要素の数が`count`と一致すること。
     func test_wholeTreeOperations_keepCountConsistent() {
       func check(_ t: RedBlackTreeSet<BrokenOrderElement>, file: StaticString = #filePath, line: UInt = #line) {
@@ -244,6 +269,7 @@
       XCTAssertEqual(tree.index(i0, offsetBy: 2, limitedBy: tree.endIndex), i2)
       XCTAssertEqual(tree.index(i2, offsetBy: -2, limitedBy: i0), i0)
       XCTAssertTrue(tree.containsSubrange(i0 ..< i2))
+      XCTAssertEqual(tree.distance(from: BE.start, to: BE.end), 3)
 
       var erasingTree = make()
       _ = erasingTree.erase(erasingTree.startIndex ..< erasingTree.index(after: erasingTree.startIndex))

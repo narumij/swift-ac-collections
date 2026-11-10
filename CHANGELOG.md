@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `USE_LAZY_DETACH`が無効な構成（既定）で、`removeAll(keepingCapacity: true)`より前に取ったIndex・Index範囲を渡すと、添字・`distance(from:to:)`・`index(after:)`・`index(before:)`・ヒント付き`insert`/`update`・範囲を受け取るAPIやViewが破棄済みの要素を読む問題を修正（Address Sanitizerでheap-use-after-free）。全削除で識別情報を作り直し、各ノードの世代番号も進めるようにした。削除前のIndexでは`isElement(at:)`・`containsSubrange(_:)`が`false`を返し、その他のAPIは事前条件違反として停止する
 - 同じノードを2^32回（`USE_COMPACT_NODE_METADATA`構成では2^16回）再利用して世代番号が一周すると、削除済みの要素を指すIndexが有効と判定され、破棄済みの要素を読む問題を修正。世代番号は上限で止め、上限に達したノードを指すIndexは番号による解決で検査する
 - `RedBlackTreeSet.merge(_:)`、`RedBlackTreeMultiSet.insert(contentsOf:)`、`RedBlackTreeDictionary.merge(_:uniquingKeysWith:)`、`RedBlackTreeMultiMap.insert(contentsOf:)`で、空のSequenceを渡した場合にもCopy-on-Writeが発生する問題を修正
+- NaNを含む浮動小数点など、`<`が全順序にならない要素で、下限が上限より後ろの位置になる範囲から作ったViewの`last`・`popLast()`が、先頭の要素より前へ戻って範囲外のメモリを読む問題に対策（Release構成のAddress Sanitizerでheap-buffer-overflow）。木の先頭より前へ戻る移動は、事前条件違反として停止する
 
 ## [0.7.2] - 2026-11-10
 

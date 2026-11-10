@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - Unreleased
 
 ### Changed
 - Indexと境界式の`distance(from:to:)`で、どちらが前かをキーの比較ではなくノードの位置で決めるよう変更。`<`が全順序にならない要素で範囲が逆向きになる場合も、停止せずに位置どおりの符号付きの距離を返す

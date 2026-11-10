@@ -20,17 +20,22 @@ extension TreeAdvanceProtocol_ptr where Self: ~Copyable {
   func
     ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
   {
-    __x == __end_node
+    if __x == __end_node {
       // endへの操作は失敗
+      return .failure(.upperOutOfBounds)
+    }
+    let __x = __tree_next_iter(__x)
+    // nullptrの発生は失敗
+    return __x == nullptr
       ? .failure(.upperOutOfBounds)
-      : .success(__tree_next_iter(__x))
+      : .success(__x)
   }
 
   /// Returns:  pointer to the previous in-order node before `__x`.
   /// Note: `__x` may be the end node.
   @inlinable
   func
-    ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
+    ___tree_prev_iter(_ __x: _NodePtr) -> _SafePtr
   {
     let __x = __tree_prev_iter(__x)
     // nullptrの発生は失敗
@@ -42,7 +47,7 @@ extension TreeAdvanceProtocol_ptr where Self: ~Copyable {
   @inlinable
   func
     ___tree_adv_iter(
-      _ __x: UnsafeMutablePointer<UnsafeNode>,
+      _ __x: _NodePtr,
       _ __n: Int
     )
     -> _SafePtr
@@ -70,7 +75,7 @@ extension TreeAdvanceProtocol_ptr where Self: ~Copyable {
   @inlinable
   func
     ___tree_adv_iter(
-      _ __x: UnsafeMutablePointer<UnsafeNode>,
+      _ __x: _NodePtr,
       _ __n: Int,
       _ __l: _SafePtr
     )

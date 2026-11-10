@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+@available(*, deprecated, renamed: "___safe_distance")
 @inlinable
 package func
   __distance(

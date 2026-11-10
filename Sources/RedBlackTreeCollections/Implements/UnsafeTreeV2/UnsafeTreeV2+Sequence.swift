@@ -132,7 +132,7 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    let count = __distance(__first, __last)
+    let count = try! ___safe_distance(__first, __last).get()
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
       var buffer = buffer.baseAddress!
@@ -151,7 +151,7 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    let count = __distance(__first, __last)
+    let count = try! ___safe_distance(__first, __last).get()
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
       var buffer = buffer.baseAddress!

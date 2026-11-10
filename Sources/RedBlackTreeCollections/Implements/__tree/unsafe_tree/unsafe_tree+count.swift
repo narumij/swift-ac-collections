@@ -73,9 +73,9 @@ extension CountProtocol_ptr where Self: ~Copyable {
       } else if __comp_res.__greater() {
         __rt = __rt.__right_
       } else {
-        return __distance(
+        return try! ___safe_distance(
           __lower_bound_multi(__k, __rt.__left_, __rt),
-          __upper_bound_multi(__k, __rt.__right_, __result))
+          __upper_bound_multi(__k, __rt.__right_, __result)).get()
       }
     }
     return 0

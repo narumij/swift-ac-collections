@@ -269,6 +269,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     #if false
+    // 資料的にのこしてある
       __tree_.ensureUniqueAndCapacity()
       let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
       return (__inserted, __inserted ? newMember : Base.__payload_(__r))
@@ -313,21 +314,11 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      #if false
-        __tree_.ensureUniqueAndCapacity()
-        let p = __tree_.__purified_(hint)
-        guard let __p = p.pointer else {
-          fatalError(.invalidIndex)
-        }
-        let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
-        return (__inserted, ___index(__r))
-      #else
       guard let __p = __tree_.__purified_(hint).pointer else {
         fatalError(.invalidIndex)
       }
       let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(newMember,__p)
       return (__inserted, ___index(__r))
-      #endif
     }
 
     /// Inserts or replaces an element, using `hint` as a suggested insertion position.
@@ -437,12 +428,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    #if false
-    __tree_.ensureUnique()
-      return __tree_.update { $0.___erase_unique(member) } ? member : nil
-    #else
-      return __tree_._removeIfPresent(member)
-    #endif
+    __tree_.___remove_if_present(member)
   }
 }
 
@@ -478,16 +464,11 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      #if false
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
-      #else
       if __tree_.isUnique() {
         __tree_.deinitialize()
       } else {
         __tree_ = .create(minimumCapacity: __tree_.capacity)
       }
-      #endif
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -522,21 +503,11 @@ extension RedBlackTreeSet {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      #if false
-        guard __tree_.count > 0 else { return }
-        __tree_.ensureUnique()
-        let result = try __tree_.___erase_range_if(
-          __tree_.__begin_node_.unchecked,
-          __tree_.__end_node.unchecked,
-          shouldBeRemoved)
-        assert(result.error == nil)
-      #else
         let __first = __tree_.__begin_node_.unchecked
         let __last = __tree_.__end_node.unchecked
         let result = try __tree_.___erase_range_if_with_many_care(
           __first, __last, shouldBeRemoved)
         assert(result.error == nil)
-      #endif
     }
   }
 #endif

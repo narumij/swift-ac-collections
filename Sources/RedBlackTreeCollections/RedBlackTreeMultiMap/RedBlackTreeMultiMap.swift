@@ -487,16 +487,11 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      #if false
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
-      #else
       if __tree_.isUnique() {
         __tree_.deinitialize()
       } else {
         __tree_ = .create(minimumCapacity: __tree_.capacity)
       }
-      #endif
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -531,21 +526,11 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      #if false
-        guard __tree_.count > 0 else { return }
-        __tree_.ensureUnique()
-        let result = try __tree_.___erase_range_if(
-          __tree_.__begin_node_.unchecked,
-          __tree_.__end_node.unchecked,
-          { try shouldBeRemoved(Base.__element_($0)) })
-        assert(result.error == nil)
-      #else
         let __first = __tree_.__begin_node_.unchecked
         let __last = __tree_.__end_node.unchecked
         let result = try __tree_.___erase_range_if_with_many_care(
           __first, __last, { try shouldBeRemoved(Base.__element_($0)) })
         assert(result.error == nil)
-      #endif
     }
   }
 #endif
@@ -563,12 +548,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ key: Key) -> Bool {
-      #if COMPATIBLE_ATCODER_2025
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(key)
-      #else
-      __tree_._removeIfPresent(key) != nil
-      #endif
+      __tree_.___erase_unique_if_present(key)
     }
   }
 
@@ -582,12 +562,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ key: Key) -> Int {
-      #if COMPATIBLE_ATCODER_2025
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(key)
-      #else
-      __tree_._eraseMultiIfPresent(key)
-      #endif
+      __tree_.___erase_multi_if_present(key)
     }
   }
 #endif

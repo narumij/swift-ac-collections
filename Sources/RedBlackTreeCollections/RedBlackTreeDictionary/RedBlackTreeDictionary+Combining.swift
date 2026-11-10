@@ -68,12 +68,8 @@ extension RedBlackTreeDictionary {
     var it = other.makeIterator()
     guard let __first = it.next() else { return }
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(__first)) }
-    if !__inserted {
-      Base.__mapped_value_ptr(__r).pointee = try combine(Base.__mapped_value_(__r), Base.__mapped_value(__first))
-    }
-    // 2個目以降は以下で処理
     try __tree_.___insert_range_unique(
+      __first,
       IteratorSequence(it),
       uniquingKeysWith: combine
     ) { Base.__payload_($0) }

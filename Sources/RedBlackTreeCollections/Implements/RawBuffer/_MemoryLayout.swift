@@ -43,16 +43,33 @@ package struct _MemoryLayout {
 }
 
 extension _MemoryLayout {
-  
-  // オーバーフローによるメモリ破壊を予防するための限度
+
+  // 比較方式の見直しができるまで、これが上限値となる
   @inlinable
-  var maximumCount: Int {
+  var maximumCountByPathBitmap: Int {
+    // 2 ^ 64 ノードまで使える
+    #if USE_INT128
+    (1 << (UInt128.bitWidth >> 1)) - 1
+    #else
+    // 64bit環境ながら、2 ^ 32 ノードが上限となる
+    (1 << (UInt64.bitWidth >> 1)) - 1
+    #endif
+  }
+
+  @inlinable
+  var maximumCountByMemoryLimit: Int {
     #if USE_COMPACT_NODE_METADATA
     // メタデータ制限の場合、CoW可能な上限を限度とする
     Int(_TrackingTag.max)
     #else
     Int.max / stride
     #endif
+  }
+
+  // オーバーフローによるメモリ破壊を予防するための限度
+  @inlinable
+  var maximumCount: Int {
+    Swift.min(maximumCountByMemoryLimit, maximumCountByPathBitmap)
   }
 
   // オーバーフローによるメモリ破壊を予防するための限度のチェック

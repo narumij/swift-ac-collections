@@ -298,6 +298,7 @@ extension RedBlackTreeDictionary {
     -> (inserted: Bool, memberAfterInsert: Element)
   {
     #if false
+    // 資料的にのこしてある
       __tree_.ensureUniqueAndCapacity()
       let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
       return (__inserted, __inserted ? newMember : Base.__element_(__r))
@@ -342,23 +343,12 @@ extension RedBlackTreeDictionary {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      #if false
-        __tree_.ensureUniqueAndCapacity()
-        let p = __tree_.__purified_(hint)
-        guard let __p = p.pointer else {
-          fatalError(.invalidIndex)
-        }
-        let (__r, __inserted) = __tree_.__emplace_hint_unique(
-          __p, newMember.key, Base.__payload_(newMember))
-        return (__inserted, ___index(__r))
-      #else
         guard let __p = __tree_.__purified_(hint).pointer else {
           fatalError(.invalidIndex)
         }
         let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(
           Base.__payload_(newMember), __p)
         return (__inserted, ___index(__r))
-      #endif
     }
 
     /// Inserts or replaces a key-value pair, using `hint` as a suggested insertion position.
@@ -548,21 +538,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
-    #if COMPATIBLE_ATCODER_2025
-    guard __tree_.count > 0 else { return nil }
-    __tree_.ensureUnique()
-    return __tree_.update {
-      let __i = $0.find(key)
-      if __i == $0.end {
-        return nil
-      }
-      let value = Base.__mapped_value_(__i)
-      _ = $0.erase(__i)
-      return value
-    }
-    #else
-    __tree_._removeIfPresent(key)?.tuple.value
-    #endif
+    __tree_.___remove_if_present(key)?.tuple.value
   }
 }
 
@@ -576,16 +552,11 @@ extension RedBlackTreeDictionary {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      #if false
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
-      #else
       if __tree_.isUnique() {
         __tree_.deinitialize()
       } else {
         __tree_ = .create(minimumCapacity: __tree_.capacity)
       }
-      #endif
     } else if !keepCapacity {
       __tree_ = .create()
     }

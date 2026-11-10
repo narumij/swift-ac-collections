@@ -47,7 +47,6 @@ extension UnsafeIterator {
     public mutating func next() -> _NodePtr? {
       guard _current != _start else { return nil }
       _current = __tree_prev_iter(_current)
-      precondition(_current != nullptr)
       return _current
     }
   }

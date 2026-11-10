@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
 @inlinable
 package func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
@@ -67,6 +68,53 @@ package func ___ptr_comp_multi(
   // 共通祖先の左の子のほうが小さい。それが__lであれば真を返す。
   return __tree_is_left_child(__l)
 }
+#else
+@inlinable
+package func ___ptr_comp_multi(
+  _ __l: UnsafeMutablePointer<UnsafeNode>,
+  _ __r: UnsafeMutablePointer<UnsafeNode>
+)
+  -> Bool
+{
+  _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
+  _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
+  guard
+    !__l.___is_end,
+    !__r.___is_end,
+    __l != __r
+  else {
+    // endが混じってる場合と、等しい場合
+    // 右だけendの場合のみtrueで、それ以外はfalse
+    return !__l.___is_end && __r.___is_end
+  }
+  var (__l, __lh) = (__l, ___ptr_height(__l))
+  var (__r, __rh) = (__r, ___ptr_height(__r))
+  if __lh > __rh {
+    while __lh > __rh &+ 1 {
+      __l = __l.__parent_
+      __lh &-= 1
+    }
+    if __l.__parent_ == __r {
+      return __tree_is_left_child(__l)
+    }
+    __l = __l.__parent_
+  } else if __rh > __lh {
+    while __rh > __lh &+ 1 {
+      __r = __r.__parent_
+      __rh &-= 1
+    }
+    if __r.__parent_ == __l {
+      return !__tree_is_left_child(__r)
+    }
+    __r = __r.__parent_
+  }
+  while __l.__parent_ != __r.__parent_ {
+    __l = __l.__parent_
+    __r = __r.__parent_
+  }
+  return __tree_is_left_child(__l)
+}
+#endif
 
 // ノードの高さを数える
 @inlinable
@@ -116,7 +164,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     var __p = self
     while !__p.___is_root {
       __f &>>= 1
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt64.bitWidth &- 1)
       __p = __p.__parent_
     }
     return __f

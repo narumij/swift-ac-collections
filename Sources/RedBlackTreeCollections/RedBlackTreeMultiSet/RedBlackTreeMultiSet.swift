@@ -452,16 +452,11 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      #if false
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
-      #else
       if __tree_.isUnique() {
         __tree_.deinitialize()
       } else {
         __tree_ = .create(minimumCapacity: __tree_.capacity)
       }
-      #endif
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -498,21 +493,11 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      #if false
-        guard __tree_.count > 0 else { return }
-        __tree_.ensureUnique()
-        let result = try __tree_.___erase_range_if(
-          __tree_.__begin_node_.unchecked,
-          __tree_.__end_node.unchecked,
-          shouldBeRemoved)
-        assert(result.error == nil)
-      #else
         let __first = __tree_.__begin_node_.unchecked
         let __last = __tree_.__end_node.unchecked
         let result = try __tree_.___erase_range_if_with_many_care(
           __first, __last, shouldBeRemoved)
         assert(result.error == nil)
-      #endif
     }
   }
 #endif
@@ -530,7 +515,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ member: Element) -> Bool {
-      return __tree_._removeIfPresent(member) != nil
+      __tree_.___erase_unique_if_present(member)
     }
   }
 
@@ -544,7 +529,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {
-      return __tree_._eraseMultiIfPresent(member)
+      __tree_.___erase_multi_if_present(member)
     }
   }
 #endif

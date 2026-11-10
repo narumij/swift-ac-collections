@@ -110,7 +110,7 @@ extension _LazyTieWrapV2 {
   // 実際にはそのポインタの直接利用可否となっている
   @inlinable
   func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
-    rawValue.pointer.pointee.___recycle_count < .max && lazyDetach === rhs
+    lazyDetach === rhs && rawValue.pointer.pointee.___recycle_count < .max
   }
   #endif
 

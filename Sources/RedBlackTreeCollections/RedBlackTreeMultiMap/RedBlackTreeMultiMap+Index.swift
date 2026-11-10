@@ -292,7 +292,6 @@ extension RedBlackTreeMultiMap {
     
     // SetAlgebra都合でinsertの戻りが変えられない。
     // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
-    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
     /// Inserts the given key-value pair and returns its index.

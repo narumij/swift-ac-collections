@@ -226,7 +226,7 @@ extension Benchmark {
     // `identity(_:)` makes the collection opaque on each pass so the passes
     // cannot be merged. Both code states execute identical work.
     
-    #if false
+    #if true
     self.add(
       title: "NextPermutations.Permutation subscript sequential access (batched)",
       input: Int.self

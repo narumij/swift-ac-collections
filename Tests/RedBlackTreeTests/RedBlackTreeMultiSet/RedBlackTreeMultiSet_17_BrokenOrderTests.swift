@@ -26,7 +26,7 @@
 
     /// 逆向きの範囲のViewでも、`last`と`popLast()`は範囲外を読まずに`nil`を返し、要素を消さないこと。
     func test_reversedRange_lastAndPopLastReturnNil() {
-      var tree = make()
+      let tree = make()
 
       XCTAssertNil(tree[reversedBounds].last)
 
@@ -155,6 +155,62 @@
         for b in [RedBlackTreeBoundExpression.find(k), .lowerBound(k), .upperBound(k)] {
           if let e = tree[b] { _ = e.s.count }
         }
+      }
+    }
+
+    /// 順序が壊れていても、Index版・境界式版の`distance(from:to:)`は、木を先頭から列挙したときの位置の差を返すこと。
+    /// 逆向きの範囲（`lowerBound(1)`が`upperBound(2)`より後ろ）でも停止せず、符号付きで返す。
+    func test_distance_isDifferenceOfEnumeratedPositions() {
+      for tree in [make(), make(seededValues(40, seed: 11))] {
+        var indices: [RedBlackTreeMultiSet<BrokenOrderElement>.Index] = []
+        var i = tree.startIndex
+        while i != tree.endIndex { indices.append(i); i = tree.index(after: i) }
+        indices.append(tree.endIndex)
+        func position(_ x: RedBlackTreeMultiSet<BrokenOrderElement>.Index) -> Int { indices.firstIndex(of: x)! }
+
+        for a in indices {
+          for b in indices {
+            XCTAssertEqual(tree.distance(from: a, to: b), position(b) - position(a))
+          }
+        }
+
+        let lower = tree.lowerBound(BrokenOrderElement(1)), upper = tree.upperBound(BrokenOrderElement(2))
+        XCTAssertEqual(tree.distance(from: lower, to: upper), position(upper) - position(lower))
+        XCTAssertEqual(tree.distance(from: upper, to: lower), position(lower) - position(upper))
+
+        var bounds: [(RedBlackTreeBoundExpression<BrokenOrderElement>, RedBlackTreeMultiSet<BrokenOrderElement>.Index)] = [(.start, tree.startIndex), (.end, tree.endIndex)]
+        for v in [0, 1, 2, 5, 7, 100, 199] {
+          bounds.append((.lowerBound(BrokenOrderElement(v)), tree.lowerBound(BrokenOrderElement(v))))
+          bounds.append((.upperBound(BrokenOrderElement(v)), tree.upperBound(BrokenOrderElement(v))))
+        }
+        for (ba, ia) in bounds {
+          for (bb, ib) in bounds {
+            XCTAssertEqual(tree.distance(from: ba, to: bb), position(ib) - position(ia))
+          }
+        }
+      }
+    }
+
+    /// NaNを含むDoubleでも、`distance(from:to:)`は列挙した位置の差を返すこと（逆向きのIndex範囲と、範囲の外を越える境界式を含む）。
+    func test_distanceWithNaN_isDifferenceOfEnumeratedPositions() {
+      for data in [[2.0, .nan, 2.0, 1.0], [10.0, .nan, 20.0, 1.0]] {
+        var t = RedBlackTreeMultiSet<Double>()
+        for x in data { t.insert(x) }
+        var indices: [RedBlackTreeMultiSet<Double>.Index] = []
+        var i = t.startIndex
+        while i != t.endIndex { indices.append(i); i = t.index(after: i) }
+        indices.append(t.endIndex)
+        func position(_ x: RedBlackTreeMultiSet<Double>.Index) -> Int { indices.firstIndex(of: x)! }
+
+        for a in indices {
+          for b in indices {
+            XCTAssertEqual(t.distance(from: a, to: b), position(b) - position(a))
+          }
+        }
+        let upper = t.upperBound(0.5)
+        XCTAssertEqual(t.distance(from: t.startIndex, to: upper), position(upper))
+        XCTAssertEqual(t.distance(from: RedBlackTreeBoundExpression.start, to: .upperBound(0.5)), position(upper))
+        XCTAssertEqual(t.distance(from: RedBlackTreeBoundExpression.upperBound(0.5), to: .start), -position(upper))
       }
     }
 

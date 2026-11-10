@@ -1,11 +1,6 @@
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import Testing
-  #if canImport(Darwin)
-    import Darwin
-  #elseif canImport(Glibc)
-    import Glibc
-  #endif
 
   private typealias BE = RedBlackTreeBoundExpression
   private var reversedBounds: RedBlackTreeBoundRangeExpression<BrokenOrderElement> {
@@ -93,25 +88,25 @@
         }
       case .erase:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.erase()
         }
       case .removeAll:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeAll()
         }
       case .removeLast:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.removeLast()
         }
       case .removeLastK:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeLast(3)
         }
@@ -119,23 +114,13 @@
     }
 
     enum IndexOperation: String, CaseIterable, Codable, Sendable {
-      case distance, distanceBackward, offsetLimitedForward, offsetLimitedBackward, eraseIndexRange, eraseIndexRangeWhere
+      case offsetLimitedForward, offsetLimitedBackward, eraseIndexRange, eraseIndexRangeWhere
     }
 
-    /// 逆向きのIndex範囲での距離・移動・削除は停止すること。
+    /// 逆向きのIndex範囲での移動・削除は停止すること。
     @Test(arguments: IndexOperation.allCases)
     func reversedIndexOperationTraps(_ path: IndexOperation) async {
       switch path {
-      case .distance:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          let t = make()
-          _ = t.distance(from: t.lowerBound(BrokenOrderElement(1)), to: t.upperBound(BrokenOrderElement(2)))
-        }
-      case .distanceBackward:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          let t = make()
-          _ = t.distance(from: t.upperBound(BrokenOrderElement(2)), to: t.lowerBound(BrokenOrderElement(1)))
-        }
       case .offsetLimitedForward:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let t = make()
@@ -171,37 +156,19 @@
       switch path {
       case .popFirstOnceThenForIn:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.popFirst()
           for x in v { _ = x.key.s.count + x.value.count }
         }
       case .removeFirstK:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeFirst(3)
         }
       }
     }
 
-
-    /// 逆向きの範囲の境界式で`distance(from:to:)`を呼ぶと、止まること（返らない場合は10秒でSIGALRMになり、失敗として記録される）。
-    @Test
-    func boundDistanceOverReversedRangeTraps() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        alarm(10)  // 返らない場合に子プロセスを終わらせる
-        _ = make().distance(from: BE.lowerBound(BrokenOrderElement(1)), to: BE.upperBound(BrokenOrderElement(2)))
-      }
-    }
-
-    /// 逆向きの範囲の境界式を入れ替えて`distance(from:to:)`を呼んでも、止まること。
-    @Test
-    func boundDistanceBackwardOverReversedRangeTraps() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        alarm(10)  // 返らない場合に子プロセスを終わらせる
-        _ = make().distance(from: BE.upperBound(BrokenOrderElement(2)), to: BE.lowerBound(BrokenOrderElement(1)))
-      }
-    }
   }
 #endif

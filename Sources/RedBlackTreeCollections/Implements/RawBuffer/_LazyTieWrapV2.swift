@@ -102,8 +102,15 @@ extension _LazyTieWrapV2 {
   @inlinable
   package var sealed: _SealedPtr { rawValue.purified }
 
+  #if false
   @inlinable
   func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool { lazyDetach === rhs }
+  #else
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
+    rawValue.pointer.pointee.___recycle_count < UnsafeNode.Seal.max && lazyDetach === rhs
+  }
+  #endif
 
   // treeを経由しない封印のみの判定。発行元基準での有効性確認としてテストが使う
   @usableFromInline

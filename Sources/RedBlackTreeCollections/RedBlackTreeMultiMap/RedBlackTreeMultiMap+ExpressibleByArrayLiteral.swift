@@ -23,6 +23,7 @@
 // MARK: - ExpressibleByArrayLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
+  // TODO: 分割配置
 
   #if COMPATIBLE_ATCODER_2025
     /// Creates a multimap from an array literal, retaining pairs with duplicate keys.

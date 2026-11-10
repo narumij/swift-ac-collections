@@ -538,21 +538,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
-    #if COMPATIBLE_ATCODER_2025
-    guard __tree_.count > 0 else { return nil }
-    __tree_.ensureUnique()
-    return __tree_.update {
-      let __i = $0.find(key)
-      if __i == $0.end {
-        return nil
-      }
-      let value = Base.__mapped_value_(__i)
-      _ = $0.erase(__i)
-      return value
-    }
-    #else
     __tree_._removeIfPresent(key)?.tuple.value
-    #endif
   }
 }
 

@@ -28,6 +28,58 @@ extension UnsafeTreeV2 {
   }
 }
 
+#if true
+extension UnsafeTreeV2 {
+
+  @inlinable
+  mutating func ___insert_unique_if_not_present(
+    _ __k: _PayloadValue
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    var (__parent, __child) = __find_equal(__key(__k))
+    let __e = __end_node
+    if __child.pointee != nullptr { return (__child.pointee, false) }
+    ensureUniqueAndCapacity()  // これが問題で全体をupdate内には移せない
+
+    if __e != __end_node {  // 木の不一致判定
+      (__parent, __child) = __simple_retrieve(__parent, __child)
+    }
+    let __h = __construct_node(__k)
+    __insert_node_at(__parent, __child, __h)
+    return (__h, true)
+  }
+
+  @inlinable
+  mutating func ___insert_unique_hint_if_not_present(
+    _ __k: _PayloadValue,_ __p: _NodePtr
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    
+    var __p = __p
+    var __dummy = nullptr
+    let __e = __end_node
+
+    // 問題が起きる可能性がすこしある
+    var (__parent, __child) = __find_equal(__p, &__dummy, __key(__k))
+
+    if __child.pointee != nullptr {
+      return (__child.pointee, false)
+    }
+    
+    ensureUniqueAndCapacity()
+    
+    if __e != __end_node {  // 木の不一致判定
+      (__parent, __child) = __simple_retrieve(__parent, __child)
+      __p = __simple_retrieve(__p)
+    }
+    
+    let __h = __construct_node(__k)
+    __insert_node_at(__parent, __child, __h)
+    
+    return (__h, true)
+  }
+}
+#endif
+
+#if false
 extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
   @inlinable
@@ -122,3 +174,4 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     return (__h, true)
   }
 }
+#endif

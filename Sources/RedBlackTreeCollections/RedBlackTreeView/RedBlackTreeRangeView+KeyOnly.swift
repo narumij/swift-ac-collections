@@ -187,7 +187,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inlinable
     public var first: Element? {
       let (_start, _end) = _raw_range
-      guard _start != _end else { return nil }
+      guard _start != _end, _start != __tree_.__end_node else { return nil }
       return Base.__payload_(_start)
     }
 
@@ -212,6 +212,9 @@ extension RedBlackTreeKeyOnlyRangeView {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _) = _raw_range
+      guard _start != __tree_.__end_node else {
+        return nil
+      }
       let (_p, _r) = __tree_._unchecked_remove(at: _start)
       _sealed_start = _p.uncheckedSeal
       return _r

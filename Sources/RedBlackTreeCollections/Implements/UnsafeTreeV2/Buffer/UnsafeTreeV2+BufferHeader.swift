@@ -385,7 +385,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleHead != p, "過剰リサイクル不可")
       count &-= 1
       assert(count >= 0)
-#if false
+#if USE_RECYCLE_COUNT_OVERWRAP
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
 #else
@@ -421,7 +421,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleHead != p, "過剰リサイクル不可")
       count &-= 1
       assert(count >= 0)
-#if false
+#if USE_RECYCLE_COUNT_OVERWRAP
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
 #else

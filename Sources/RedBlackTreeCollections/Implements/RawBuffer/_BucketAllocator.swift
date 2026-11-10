@@ -383,7 +383,7 @@ extension _BucketAllocator {
         #endif
       }
       p.pointee.___has_payload_content = false
-      #if false
+      #if USE_RECYCLE_COUNT_OVERWRAP // 単に中身がなんなのかわかるためのフラグ
       p.pointee.___recycle_count &+= 1
       #else
       if p.pointee.___recycle_count < .max {

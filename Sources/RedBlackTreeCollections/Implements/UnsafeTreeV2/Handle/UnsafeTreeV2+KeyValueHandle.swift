@@ -191,3 +191,5 @@ extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2KeyValueHandle: FindHintEqualProtocol_ptr { }

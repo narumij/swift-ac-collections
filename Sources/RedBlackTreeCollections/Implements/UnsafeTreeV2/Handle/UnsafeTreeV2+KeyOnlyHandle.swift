@@ -205,3 +205,5 @@ extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: FindHintEqualProtocol_ptr { }

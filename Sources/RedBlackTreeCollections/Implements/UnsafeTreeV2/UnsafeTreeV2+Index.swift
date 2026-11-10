@@ -100,10 +100,10 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
     ) -> Int?
   {
-    return try? liftA2(
+    return try? liftM2(
       start.evaluate(self),
       end.evaluate(self),
-      Base.___signed_distance
+      Base.___signed_safe_distance
     )
     .get()
   }

@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-#if true
+#if !COMPATIBLE_ATCODER_2025
 /// `<`が推移律を満たさない要素（mod 3でじゃんけんのように回る）。
 /// 1 < 2 は成り立つが、{0, 1, 5}の木の中では lowerBound(1) が upperBound(2) より後ろの位置になる。
 private struct NonTransitive: Comparable {

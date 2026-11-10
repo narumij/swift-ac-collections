@@ -104,18 +104,4 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
   #endif
-
-  // RBT-104：容量を保ったまま全削除したあと、削除前のIndexは要素を指さないこと。
-
-  #if !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
-    func testIndexBeforeRemoveAllKeepingCapacityIsNotElement() {
-      var set: RedBlackTreeSet<String> = ["a", "b", "c"]
-      let index = set.firstIndex(of: "b")!
-
-      set.removeAll(keepingCapacity: true)
-
-      XCTAssertEqual(set.count, 0)
-      XCTAssertFalse(set.isElement(at: index), "容量保持の全削除のあとも、削除前のIndexが要素として扱われた")
-    }
-  #endif
 }

@@ -245,6 +245,28 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 where Base: PairValueTrait {
+  
+  @inlinable
+  internal mutating func ___insert_range_unique<S>(
+    _ __k: S.Element,
+    _ __source: S,
+    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
+    transform __t_: (S.Element) -> Base._PayloadValue
+  )
+    rethrows
+  where
+    S: Sequence
+  {
+    let (__r, __inserted) = update { $0.__insert_unique(__t_(__k)) }
+    
+    if !__inserted {
+      Base.__mapped_value_ptr(__r).pointee = try combine(
+        Base.__mapped_value_(__r),
+        Base.___mapped_value(__t_(__k)))
+    }
+    
+    return try ___insert_range_unique(__source, uniquingKeysWith: combine, transform: __t_)
+  }
 
   @inlinable
   internal mutating func ___insert_range_unique<S>(

@@ -75,12 +75,6 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
-      #if false
-        __tree_.ensureUnique()
-        let p = bound.evaluate(__tree_)
-        guard let p = p.accessible.pointer else { return nil }
-        return Base.__element_(__tree_._unchecked_remove(at: p).payload)
-      #else
         let __e = __tree_.__end_node
         guard var p = bound.evaluate(__tree_).accessible.pointer else { return nil }
         __tree_.ensureUnique()
@@ -88,7 +82,6 @@
           p = __tree_.__simple_retrieve(p)
         }
         return Base.__element_(__tree_._unchecked_remove(at: p).payload)
-      #endif
     }
   }
 
@@ -125,15 +118,10 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
-      #if false
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
-      #else
-      _ = __tree_.___erase_sanitize_range_with_many_care(_range: bounds.evaluate(__tree_).relative(to: __tree_))
-      #endif
+      _ = __tree_.___erase_sanitize_range_with_many_care(
+        _range:
+          bounds.evaluate(__tree_)
+          .relative(to: __tree_))
     }
 
     /// Removes the key-value pairs in the selected range that satisfy a predicate.
@@ -147,23 +135,11 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
-      #if false
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = try __tree_.___erase_sanitize_range_if(
-        bounds.evaluate(__tree_).relative(to: __tree_)
-      ) {
-        try shouldBeRemoved($0.tuple)
-      }
-      #else
       _ = try __tree_.___erase_sanitize_range_if_with_many_care(
         bounds.evaluate(__tree_).relative(to: __tree_)
       ) {
         try shouldBeRemoved($0.tuple)
       }
-      #endif
     }
   }
 #endif

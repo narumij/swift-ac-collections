@@ -166,13 +166,8 @@
     )
       rethrows
     {
-      #if false
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
-      #endif
-      let range = __tree_.__purified_safe_(bounds)
-      return try erase(_safeRange: range, where: shouldBeRemoved)
+      try erase(_safeRange: __tree_.__purified_safe_(bounds),
+                where: shouldBeRemoved)
     }
 
     /// Removes key-value pairs in the resolved range that satisfy `shouldBeRemoved`.
@@ -187,13 +182,8 @@
     )
       rethrows
     {
-      #if false
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
-      #endif
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return try erase(_safeRange: range, where: shouldBeRemoved)
+      try erase(_safeRange: __tree_.__purified_safe_(bounds).relative(to: __tree_),
+                where: shouldBeRemoved)
     }
   }
 
@@ -201,21 +191,12 @@
 
     @inlinable
     mutating func erase(_range range: _SafeRange) -> Index {
-      #if false
-      assert(__tree_.count == 0 || __tree_.isUnique())
-      do {
-        return try __tree_.___erase_validate_range(range).get()
-      } catch {
-        fatalError("\(error)")
-      }
-      #else
       do {
         let __p = try __tree_.___erase_range_with_many_care(_range: range)
         return ___index(__p)
       } catch {
         fatalError("\(error)")
       }
-      #endif
     }
 
     @inlinable
@@ -225,16 +206,6 @@
     )
       rethrows
     {
-      #if false
-      assert(__tree_.count == 0 || __tree_.isUnique())
-      let result = try __tree_.___erase_validate_range_if(range) {
-        try shouldBeRemoved(Base.__element_($0))
-      }
-      switch result {
-      case .success: break
-      case .failure(let error): fatalError("\(error)")
-      }
-      #else
       let result = try __tree_.___erase_validate_range_if_with_many_care(range) {
         try shouldBeRemoved(Base.__element_($0))
       }
@@ -242,7 +213,6 @@
       case .success: break
       case .failure(let error): fatalError("\(error)")
       }
-      #endif
     }
   }
 

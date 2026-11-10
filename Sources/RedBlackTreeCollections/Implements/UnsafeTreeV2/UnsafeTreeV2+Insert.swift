@@ -49,7 +49,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  mutating func ___insert_unique_hint_if_not_present(
+  mutating func __emplace_hint_unique_if_not_present(
     _ __k: _PayloadValue,_ __p: _NodePtr
   ) -> (__r: _NodePtr, __inserted: Bool) {
     

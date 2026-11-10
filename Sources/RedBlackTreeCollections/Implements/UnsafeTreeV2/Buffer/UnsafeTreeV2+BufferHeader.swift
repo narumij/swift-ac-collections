@@ -188,17 +188,6 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  #if false
-  @inlinable
-  var lazyDetach: _LazyTie {
-    mutating get {
-      if _lazyDetach == nil {
-        _lazyDetach = .create()
-      }
-      return _lazyDetach!
-    }
-  }
-  #else
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
@@ -220,7 +209,6 @@ extension UnsafeTreeV2BufferHeader {
       }
     }
   }
-  #endif
 
   @usableFromInline
   internal mutating func deinitialize() {

@@ -325,7 +325,7 @@ extension RedBlackTreeSet {
       guard let __p = __tree_.__purified_(hint).pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.___insert_unique_hint_if_not_present(newMember,__p)
+      let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(newMember,__p)
       return (__inserted, ___index(__r))
       #endif
     }

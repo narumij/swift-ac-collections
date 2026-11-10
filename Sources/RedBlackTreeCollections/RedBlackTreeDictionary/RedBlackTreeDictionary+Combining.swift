@@ -40,14 +40,6 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
-    #if false
-    __tree_.ensureUnique()
-    try __tree_.___insert_range_unique(
-      other: other.__tree_,
-      other.__tree_.__begin_node_,
-      other.__tree_.__end_node,
-      uniquingKeysWith: combine)
-    #else
     guard !other.isEmpty else { return }
     __tree_.ensureUnique()
     try __tree_.___insert_range_unique(
@@ -55,7 +47,6 @@ extension RedBlackTreeDictionary {
       other.__tree_.__begin_node_,
       other.__tree_.__end_node,
       uniquingKeysWith: combine)
-    #endif
   }
 
   /// Merges the elements of `other` into the dictionary.
@@ -74,25 +65,18 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    #if false
-    __tree_.ensureUnique()
-    try __tree_.___insert_range_unique(
-      other,
-      uniquingKeysWith: combine
-    ) { Base.__payload_($0) }
-    #else
     var it = other.makeIterator()
     guard let __first = it.next() else { return }
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(__first)) }
     if !__inserted {
-      Base.__mapped_value_ptr(__r).pointee = try combine(Base.__mapped_value_(__r), __first.1)
+      Base.__mapped_value_ptr(__r).pointee = try combine(Base.__mapped_value_(__r), Base.__mapped_value(__first))
     }
+    // 2個目以降は以下で処理
     try __tree_.___insert_range_unique(
       IteratorSequence(it),
       uniquingKeysWith: combine
     ) { Base.__payload_($0) }
-    #endif
   }
 
   /// Returns a new dictionary by merging this dictionary with `other`.

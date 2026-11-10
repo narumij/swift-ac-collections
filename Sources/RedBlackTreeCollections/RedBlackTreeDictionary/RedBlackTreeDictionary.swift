@@ -355,7 +355,7 @@ extension RedBlackTreeDictionary {
         guard let __p = __tree_.__purified_(hint).pointer else {
           fatalError(.invalidIndex)
         }
-        let (__r, __inserted) = __tree_.___insert_unique_hint_if_not_present(
+        let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(
           Base.__payload_(newMember), __p)
         return (__inserted, ___index(__r))
       #endif
@@ -620,21 +620,11 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      #if false
-        guard __tree_.count > 0 else { return }
-        __tree_.ensureUnique()
-        let result = try __tree_.___erase_range_if(
-          __tree_.__begin_node_.unchecked,
-          __tree_.__end_node.unchecked,
-          { try shouldBeRemoved(Base.__element_($0)) })
-        assert(result.error == nil)
-      #else
         let __first = __tree_.__begin_node_.unchecked
         let __last = __tree_.__end_node.unchecked
         let result = try __tree_.___erase_range_if_with_many_care(
           __first, __last, { try shouldBeRemoved(Base.__element_($0)) })
         assert(result.error == nil)
-      #endif
     }
   }
 #endif

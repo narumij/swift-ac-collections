@@ -73,7 +73,6 @@ package struct UnsafeTreeV2BufferHeader {
 
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   // 試作: _lazyDetachの実体はmallocしたセルに置き、ヘッダはそのポインタだけを持つ
-  // （セルの解放は未対応）
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
 
   // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。

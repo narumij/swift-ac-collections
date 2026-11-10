@@ -39,7 +39,7 @@ where
 
 extension _BaseNode_SignedDistanceProtocol where Self: ~Copyable {
 
-  @available(*, deprecated, renamed: "___signed_safe_distance")
+//  @available(*, deprecated, renamed: "___signed_safe_distance") // 調査用
   @inlinable
   public static func
     ___signed_distance(_ __first: _InputIter, _ __last: _InputIter)

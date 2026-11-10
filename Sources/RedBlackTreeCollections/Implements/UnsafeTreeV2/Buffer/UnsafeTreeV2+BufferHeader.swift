@@ -425,7 +425,7 @@ extension UnsafeTreeV2BufferHeader {
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
 #else
-      if p.pointee.___recycle_count < UnsafeNode.Seal.max {
+      if p.pointee.___recycle_count < .max {
         p.pointee.___recycle_count &+= 1
       }
 #endif

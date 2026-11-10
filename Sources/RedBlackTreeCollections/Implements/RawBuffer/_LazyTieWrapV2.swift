@@ -108,7 +108,7 @@ extension _LazyTieWrapV2 {
   #else
   @inlinable
   func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
-    rawValue.pointer.pointee.___recycle_count < UnsafeNode.Seal.max && lazyDetach === rhs
+    rawValue.pointer.pointee.___recycle_count < .max && lazyDetach === rhs
   }
   #endif
 

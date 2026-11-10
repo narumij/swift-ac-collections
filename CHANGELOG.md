@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.7.3] - 2026-11-10
 
 ### Changed
 - `ALLOW_CROSS_TREE_INDEX`が有効な構成（既定）では、Indexから範囲式を作る`..<`・`...`で、両端が別の識別情報に属していても停止しないよう変更。容量を保った全削除の前後で取ったIndexを組み合わせても範囲式を作れ、範囲の有効性は受け取ったAPIが検査する

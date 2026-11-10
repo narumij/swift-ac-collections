@@ -6,11 +6,12 @@
 /// 範囲が逆向きになる。
 /// Stringを持たせているのは、終端ノードのペイロードを読んだ場合にtrapではなく
 /// SIGSEGV等で落ちるようにして、読む前に止まったことをsignalで区別するため。
-struct BrokenOrderElement: Comparable {
+struct BrokenOrderElement: Comparable, Hashable {
   var v: Int
   var s: String
   init(_ v: Int) { self.v = v; self.s = String(repeating: "\(v)", count: 40) }
   static func == (l: Self, r: Self) -> Bool { l.v == r.v }
+  func hash(into hasher: inout Hasher) { hasher.combine(v) }
   static func < (l: Self, r: Self) -> Bool {
     let a = l.v % 3, b = r.v % 3
     return (b - a + 3) % 3 == 1 || (a == b && l.v < r.v)

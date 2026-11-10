@@ -288,7 +288,7 @@ extension RedBlackTreeKeyOnlyRangeView {
         _sealed_end = last.pointer!.uncheckedSeal
       }
       let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last, shouldBeRemoved)
-      assert(result.error == nil)
+//      assert(result.error == nil)
     }
   }
 

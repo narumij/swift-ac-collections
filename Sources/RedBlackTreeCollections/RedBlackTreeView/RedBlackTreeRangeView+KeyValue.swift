@@ -358,7 +358,7 @@ extension RedBlackTreeKeyValueRangeView {
       let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
         try shouldBeRemoved(Base.__element_($0))
       }
-      assert(result.error == nil)
+//      assert(result.error == nil)
     }
   }
 

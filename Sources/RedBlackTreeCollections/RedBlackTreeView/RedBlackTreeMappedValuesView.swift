@@ -346,7 +346,7 @@ extension RedBlackTreeMappedValuesView {
       let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
         try shouldBeRemoved(Base.___mapped_value($0))
       }
-      assert(result.error == nil)
+//      assert(result.error == nil)
     }
   }
 

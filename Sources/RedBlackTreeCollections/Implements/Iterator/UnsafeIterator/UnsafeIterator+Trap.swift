@@ -26,7 +26,7 @@ extension UnsafeIterator {
     @inline(__always)
     public mutating func next() -> UnsafeMutablePointer<UnsafeNode>? {
       let __p = _source.next()
-      precondition(__p != .nullptr)
+      precondition(__p?.___is_null != true && __p?.___is_end != true)
       return __p
     }
   }

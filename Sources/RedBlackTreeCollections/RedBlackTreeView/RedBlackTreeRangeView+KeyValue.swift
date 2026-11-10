@@ -122,7 +122,7 @@ extension RedBlackTreeKeyValueRangeView {
       ///
       /// - Complexity: O(1)
       @inlinable
-      public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
+      public __consuming func makeIterator() -> UnsafeIterator.Trap.KeyValueObverse<Base> {
         let (_start, _end) = _raw_range
         return .init(start: _start, end: _end, tree: __tree_)
       }

@@ -261,7 +261,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025 // falseで構わないが、取り急ぎなので念のため
+#if false
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable

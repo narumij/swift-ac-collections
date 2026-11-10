@@ -306,6 +306,35 @@
       XCTAssertTrue(tree.___tree_invariant_for_fuzz())
     }
 
+    /// 木を共有したまま、片方で逆向きの範囲を含むViewや境界式の操作をしても、もう片方の中身は変わらず、
+    /// 両方とも正しい赤黒木のまま走査できること（Copy-on-Write）。
+    func test_sharedTree_mutationsLeaveTheOtherCopyUnchanged() {
+      var g = SplitMix64(seed: 18)
+      let original = make(seededValues(40, seed: 19))
+      let snapshot = original.map { $0.key.v }
+      for _ in 0 ..< 100 {
+        let a = BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)), b = BrokenOrderElement(Int.random(in: 0 ... 200, using: &g))
+        let bounds = BE.lowerBound(a) ..< BE.upperBound(b)
+        var tree = original
+
+        var view = tree[bounds]
+        while view.popFirst() != nil {}
+        _ = view.popLast()
+        var erasing = tree[bounds]
+        erasing.erase(where: { _ in true })
+        var valuesView = tree[bounds]
+        while valuesView.values.popFirst() != nil {}
+        tree.erase(bounds)
+        tree.erase(bounds, where: { _ in true })
+
+        XCTAssertEqual(original.map { $0.key.v }, snapshot)
+        XCTAssertEqual(original.count, snapshot.count)
+        XCTAssertTrue(original.___tree_invariant_for_fuzz())
+        XCTAssertEqual(Array(tree).count, tree.count)
+        XCTAssertTrue(tree.___tree_invariant_for_fuzz())
+      }
+    }
+
     /// 範囲を使わない木全体の操作は、順序が壊れていても止まらず、走査した要素の数が`count`と一致すること。
     func test_wholeTreeOperations_keepCountConsistent() {
       func check(_ t: RedBlackTreeMultiMap<BrokenOrderElement, String>, file: StaticString = #filePath, line: UInt = #line) {

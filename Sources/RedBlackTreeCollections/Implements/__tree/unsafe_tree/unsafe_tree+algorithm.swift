@@ -167,7 +167,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
     }
     // endを越えて進めると、番兵(nullptr)が返る
     let __r = __x.__parent_unsafe
-    precondition(__r != nullptr)
+//    precondition(__r != nullptr)
     return __r
   }
 
@@ -191,7 +191,7 @@ extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
     }
     // endを越えて進めると、番兵(nullptr)が返る
     let __r = __x.__parent_
-    precondition(__r != nullptr)
+//    precondition(__r != nullptr)
     return __r
   }
 

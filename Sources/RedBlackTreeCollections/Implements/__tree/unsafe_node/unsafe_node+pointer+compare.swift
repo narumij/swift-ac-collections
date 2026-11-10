@@ -129,13 +129,13 @@ package func ___ptr_comp_bitmap(
   _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
   _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
 
-  #if USE_INT128
+  #if !USE_PATH_BITMAP_64
     return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
       < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
-  #endif
-
+  #else
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
     < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
+  #endif
 }
 
 //@inlinable

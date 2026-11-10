@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Indexと境界式の`distance(from:to:)`で、どちらが前かをキーの比較ではなくノードの位置で決めるよう変更。`<`が全順序にならない要素で範囲が逆向きになる場合も、停止せずに位置どおりの符号付きの距離を返す
-- 確保可能な要素数の上限に、ノードの位置比較で表せる数の制限を追加。`USE_INT128`が無効な構成（既定）では2^32 − 1個が上限となる。有効な構成では位置比較による制限は`Int.max`とし、従来のメモリ量による上限のままとなる
+- ノードの位置比較に使うパス表現を、既定で128bit幅に変更（従来の既定は64bit幅）。既定の構成では、確保可能な要素数の上限は従来どおりメモリ量による上限となる
+- `USE_INT128` traitを、64bit幅を選ぶ`USE_PATH_BITMAP_64` traitに置き換え。`USE_PATH_BITMAP_64`を有効にすると、パス表現は64bit幅になり、確保可能な要素数の上限は2^32 − 1個となる
 
 ### Fixed
 - `<`が全順序にならない要素で、下限が上限より後ろの位置になる範囲から作ったViewの`popFirst()`を続けて呼ぶと、終端ノードを要素として読み、木から外そうとする問題を修正（Release構成のAddress SanitizerでSEGV・heap-buffer-overflow）。開始が終端ノードに達したViewでは、`first`・`popFirst()`が`nil`を返す

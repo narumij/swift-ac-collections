@@ -145,7 +145,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       return !___ptr_comp(__p, __f)
     }
     
-    #if USE_INT128
+    #if !USE_PATH_BITMAP_64
       let (f, p, l) = (
         __f.___ptr_bitmap_128(),
         __p.___ptr_bitmap_128(),
@@ -153,8 +153,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       )
 
       return f <= p && p <= l
-    #endif
-
+    #else
     let (f, p, l) = (
       __f.___ptr_bitmap_64(),
       __p.___ptr_bitmap_64(),
@@ -162,5 +161,6 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     )
 
     return f <= p && p <= l
+    #endif
   }
 }

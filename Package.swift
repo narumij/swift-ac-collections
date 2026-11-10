@@ -13,11 +13,11 @@ var defines: [String] = [
   //  "DEATH_TEST"
   //  "BENCHMARK",
   //  "USE_C_MALLOC",
-  //  "USE_INT128",
+  //  "USE_PATH_BITMAP_64",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
 //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
-  //  "USE_INT128",
+  //  "USE_PATH_BITMAP_64",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
     "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
@@ -55,12 +55,10 @@ var _settings: [SwiftSetting] =
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
     // 利用可能な型アライメントが8に制限される
     .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
-    // 一部のポインタ比較で128bit幅のパス表現を用いる
-    // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
-    // 念のために用意してある
-    // メモリ計算の都合、Int.max / pair.strideが上限となる
-    // TODO: USE_UINT128_NODE_PATH_BITMAPにリネームする
-    .define("USE_INT128", .when(traits: ["USE_INT128"])),
+    // ノードの位置比較のパス表現を、既定の128bit幅から64bit幅に切り替える
+    // 64bit幅ではノード数の上限が2^32 - 1になる
+    // 128bit幅ではメモリ計算の都合、Int.max / pair.strideが上限となる
+    .define("USE_PATH_BITMAP_64", .when(traits: ["USE_PATH_BITMAP_64"])),
     // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる
     // そこまでのメモリを積んだマシンは現実的には無いとは思うが、もしも限界付近まで利用する場合には以下が必要になる
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
@@ -154,7 +152,12 @@ let package = Package(
       name: "USE_COMPACT_NODE_METADATA",
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
-    ), .trait(name: "USE_C_MALLOC"), .trait(name: "USE_INT128"),
+    ), .trait(name: "USE_C_MALLOC"),
+    .trait(
+      name: "USE_PATH_BITMAP_64",
+      description:
+        "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
+    ),
     .trait(name: "BENCHMARK"),
     .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",

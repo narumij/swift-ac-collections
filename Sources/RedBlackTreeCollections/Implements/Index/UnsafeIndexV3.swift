@@ -43,10 +43,3 @@ public typealias RedBlackTreeIndex = UnsafeIndexV3
 // 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い（わけでもない）
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
 
-// ○
-
-// ○
-
-// ○
-
-// ×

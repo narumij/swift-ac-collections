@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.4] - 2026-11-10
+
+### Fixed
+- NaNを含む浮動小数点など、`<`が全順序にならない要素で、下限が上限より後ろの位置になる範囲から作ったViewが、範囲外のメモリを読む問題に対策（Release構成のAddress Sanitizerでheap-buffer-overflow）。`last`・`popLast()`は`nil`を返し、`popLast()`は要素を削除しない。Viewの走査や、範囲の要素数・距離の計算で木の端を越える場合は、範囲外を読む前に事前条件違反として停止する
+
 ## [0.7.3] - 2026-11-10
 
 ### Changed

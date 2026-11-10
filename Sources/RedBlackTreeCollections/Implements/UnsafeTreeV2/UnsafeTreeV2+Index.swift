@@ -86,10 +86,10 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   internal func
     distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
   {
-    return try? liftA2(
+    return try? liftM2(
       __purified_(start).map(\.pointer),
       __purified_(end).map(\.pointer),
-      Base.___signed_distance
+      Base.___signed_safe_distance
     )
     .get()
   }

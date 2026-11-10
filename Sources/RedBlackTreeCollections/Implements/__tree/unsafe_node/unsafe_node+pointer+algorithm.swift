@@ -163,10 +163,7 @@ package func
   while !__tree_is_left_child(__x) {
     __x = __x.__parent_unsafe
   }
-  // endを越えて進めると、番兵(nullptr)が返る
-  let __r = __x.__parent_unsafe
-  precondition(__r != .nullptr)
-  return __r
+  return __x.__parent_unsafe
 }
 
 /// `__tree_next_iter` and `__tree_prev_iter` implement iteration through the tree. The order is as follows:
@@ -187,10 +184,7 @@ package func
   while !__tree_is_left_child(__x) {
     __x = __x.__parent_unsafe
   }
-  // endを越えて進めると、番兵(nullptr)が返る
-  let __r = __x.__parent_
-  precondition(__r != .nullptr)
-  return __r
+  return __x.__parent_
 }
 
 /// Returns:  pointer to the previous in-order node before `__x`.

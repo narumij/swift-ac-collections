@@ -24,10 +24,15 @@
 package func
   ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
 {
-  __x.___is_end
+  if __x.___is_end {
     // endへの操作は失敗
+    return .failure(.upperOutOfBounds)
+  }
+  let __x = __tree_next_iter(__x)
+  // nullptrの発生は失敗
+  return __x == .nullptr
     ? .failure(.upperOutOfBounds)
-    : .success(__tree_next_iter(__x))
+    : .success(__x)
 }
 
 /// Returns:  pointer to the previous in-order node before `__x`.
@@ -38,7 +43,7 @@ package func
 {
   let __x = __tree_prev_iter(__x)
   // nullptrの発生は失敗
-  return __x.___is_null
+  return __x == .nullptr
     ? .failure(.lowerOutOfBounds)
     : .success(__x)
 }

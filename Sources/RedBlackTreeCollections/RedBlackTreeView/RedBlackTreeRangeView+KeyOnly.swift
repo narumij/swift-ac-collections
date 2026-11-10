@@ -128,7 +128,7 @@ extension RedBlackTreeKeyOnlyRangeView {
       ///
       /// - Complexity: O(1)
       @inlinable
-      public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
+      public __consuming func makeIterator() -> UnsafeIterator.Trap.ValueObverse<Container.Base> {
         let (_start, _end) = _raw_range
         return .init(start: _start, end: _end, tree: __tree_)
       }

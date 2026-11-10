@@ -184,3 +184,4 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2: FindFirstProtocol_ptr {}
+extension UnsafeTreeV2: TreeAdvanceProtocol_ptr {}

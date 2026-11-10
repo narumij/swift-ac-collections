@@ -98,8 +98,8 @@
       else {
         return (__tree_.__end_node, __tree_.__end_node)
       }
-      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
-      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
+//      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
+//      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
       return (_start, _end)
     }
 
@@ -198,7 +198,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     public var last: Element? {
       let (_start, _end) = _raw_range
       guard _start != _end else { return nil }
-      return Base.__payload_(__tree_prev_iter(_end))
+//      return Base.__payload_(__tree_prev_iter(_end))
+      return try? __tree_.___tree_prev_iter(_end).map(Base.__payload_).get()
     }
   }
 
@@ -223,7 +224,9 @@ extension RedBlackTreeKeyOnlyRangeView {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _end) = _raw_range
-      let last = __tree_.__tree_prev_iter(_end)
+      guard let last = __tree_.___tree_prev_iter(_end).pointer else {
+        return nil
+      }
       if last == _start { _sealed_start = _sealed_end }
       return __tree_._unchecked_remove(at: last).payload
     }

@@ -175,7 +175,7 @@ extension RedBlackTreeKeyValueRangeView {
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       extension RedBlackTreeKeyValueRangeView {
 
-        public typealias Keys = RedBlackTreeIterator.Keys<Base>
+        public typealias Keys = UnsafeIterator.Trap.KeyObverse<Base>
         //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
         /// - Complexity: O(1)

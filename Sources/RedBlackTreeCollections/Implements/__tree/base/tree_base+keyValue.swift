@@ -40,7 +40,7 @@ extension _PairBasePayloadValue_MappedValueProtocol where Self: ~Copyable {
 
   // TODO: アンスコいっことる
   @inlinable
-  public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.tuple.value }
+  public static func __mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.tuple.value }
   
   @inlinable
   public static func __mapped_value(_ __v: _PayloadValue.Element) -> _MappedValue { __v.value }

@@ -22,6 +22,7 @@
 
 public protocol _BaseNode_SignedDistanceInterface: ~Copyable, _NodePtrType {
   static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
+  static func ___signed_safe_distance(_: _NodePtr, _: _NodePtr) -> Result<Int, SealError>
 }
 
 public protocol _BaseNode_SignedDistanceProtocol: ~Copyable,
@@ -51,5 +52,20 @@ extension _BaseNode_SignedDistanceProtocol where Self: ~Copyable {
       sign = -1
     }
     return sign &* __distance(__first, __last)
+  }
+  
+  @inlinable
+  public static func
+    ___signed_safe_distance(_ __first: _InputIter, _ __last: _InputIter)
+    -> Result<difference_type, SealError>
+  {
+    guard __first != __last else { return .success(0) }
+    var (__first, __last) = (__first, __last)
+    var sign = 1
+    if ___ptr_comp(__last, __first) {
+      swap(&__first, &__last)
+      sign = -1
+    }
+    return ___safe_distance(__first, __last).map { sign &* $0 }
   }
 }

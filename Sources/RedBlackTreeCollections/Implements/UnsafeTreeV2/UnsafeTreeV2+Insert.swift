@@ -53,7 +53,6 @@ extension UnsafeTreeV2 {
     _ __k: _PayloadValue,_ __p: _NodePtr
   ) -> (__r: _NodePtr, __inserted: Bool) {
     
-    var __p = __p
     var __dummy = nullptr
     let __e = __end_node
 
@@ -68,7 +67,6 @@ extension UnsafeTreeV2 {
     
     if __e != __end_node {  // 木の不一致判定
       (__parent, __child) = __simple_retrieve(__parent, __child)
-      __p = __simple_retrieve(__p)
     }
     
     let __h = __construct_node(__k)
@@ -77,9 +75,9 @@ extension UnsafeTreeV2 {
     return (__h, true)
   }
 }
-#endif
 
-#if false
+#else
+
 // チューニング作業中
 extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
@@ -102,11 +100,10 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   }
 
   @inlinable
-  mutating func ___insert_unique_hint_if_not_present(
+  mutating func __emplace_hint_unique_if_not_present(
     _ __k: _PayloadValue,_ __p: _NodePtr
   ) -> (__r: _NodePtr, __inserted: Bool) {
     
-    var __p = __p
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
@@ -120,7 +117,6 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
     ensureUniqueAndCapacity()
     if __e != __end_node {  // 木の不一致判定
       (__parent, __child) = __simple_retrieve(__parent, __child)
-      __p = __simple_retrieve(__p)
     }
     
     let __h = __construct_node(__k)
@@ -149,11 +145,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 
   @inlinable
-  mutating func ___insert_unique_hint_if_not_present(
+  mutating func __emplace_hint_unique_if_not_present(
     _ __k: _PayloadValue,_ __p: _NodePtr
   ) -> (__r: _NodePtr, __inserted: Bool) {
     
-    var __p = __p
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
@@ -167,7 +162,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     ensureUniqueAndCapacity()
     if __e != __end_node {  // 木の不一致判定
       (__parent, __child) = __simple_retrieve(__parent, __child)
-      __p = __simple_retrieve(__p)
     }
     
     let __h = __construct_node(__k)

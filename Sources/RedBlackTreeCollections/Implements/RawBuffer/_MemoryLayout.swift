@@ -50,9 +50,11 @@ extension _MemoryLayout {
     // 2 ^ 64 ノードまで使える
     #if !USE_PATH_BITMAP_64
     // (1 << (UInt128.bitWidth >> 1)) - 1
+    // TODO: マージンを取るかどうかを検討すること
     Int.max // 計算出来ないので代替値
     #else
     // 64bit環境ながら、2 ^ 32 ノードが上限となる
+    // TODO: マージンを取るかどうかを検討すること
     (1 << (UInt64.bitWidth >> 1)) - 1
     #endif
   }

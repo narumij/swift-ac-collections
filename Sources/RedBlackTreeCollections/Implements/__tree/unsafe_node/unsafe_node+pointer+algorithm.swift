@@ -208,6 +208,5 @@ package func
   while __tree_is_left_child(__xx) {
     __xx = __xx.__parent_unsafe
   }
-  precondition(!__xx.___is_end)
   return __xx.__parent_unsafe
 }

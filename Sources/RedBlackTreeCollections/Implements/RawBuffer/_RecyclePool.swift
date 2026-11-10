@@ -55,7 +55,6 @@
       recycleHead = p
     }
 
-    // payloadの破棄を呼出し側で済ませたノードを回収する。
     @inlinable
     mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
@@ -77,10 +76,7 @@
       recycleHead = p
     }
 
-    // recycle poolの先頭ノードを取り出す。
     //
-    // ノード生成側がfresh poolとの選択を済ませるため、
-    // 二重チェックを避けてここでは空判定を行わない。
     //
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {

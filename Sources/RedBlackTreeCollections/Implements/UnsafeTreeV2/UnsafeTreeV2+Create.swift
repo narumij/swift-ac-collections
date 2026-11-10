@@ -108,11 +108,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 where _PayloadValue: Decodable {
 
-  // `___emplace_hint_right`は比較を一切行わず常に最右へ追加するだけなので、
-  // 非ソート・重複を含む外部JSONを与えると赤黒木の順序・一意性が壊れていた
-  // (2026-10-03発見)。`___insert_range_unique`/`___insert_range_multi`と同じ、
-  // 単調増加なら高速・そうでなくても`__find_equal`等で正しい位置へ挿入する
-  // 経路へ切り替える。
   @inlinable
   internal static func _decodedElements(from decoder: Decoder) throws -> [_PayloadValue] {
     var container = try decoder.unkeyedContainer()

@@ -263,8 +263,6 @@ extension RedBlackTreeMappedValuesView {
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
-      // 空の場合はensureUnique()による無駄なコピーを避けるため、
-      // 範囲が空かどうかをコピー前に確認する。
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _) = _raw_range
@@ -324,7 +322,6 @@ extension RedBlackTreeMappedValuesView {
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
-      // 空の場合はensureUnique()による無駄なコピーを避ける。
       guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
       _ensureUnique()
       let (_start, _end) = _raw_range

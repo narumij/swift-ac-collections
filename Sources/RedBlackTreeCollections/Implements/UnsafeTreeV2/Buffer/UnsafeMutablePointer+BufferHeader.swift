@@ -41,8 +41,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeTreeV2BufferHeader {
 
 extension _LazyTie {
   
-  // 試作: lazyDetachPointerのフィールドに対して、ヘッダ全体を開かずに
-  // 「atomicに確認し、無ければロックの中で作って公開する」
   @inlinable
   static func _lazyDetachCell(
     at field: UnsafeMutablePointer<UnsafeMutablePointer<_LazyTie>?>

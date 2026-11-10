@@ -51,7 +51,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
 extension UnsafeTreeV2 {
 
-  // Result連鎖(`flatMap { index($0) }`)内で成功値を包む用途として残す
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
     return withMutableHeader { $0.index(p) }

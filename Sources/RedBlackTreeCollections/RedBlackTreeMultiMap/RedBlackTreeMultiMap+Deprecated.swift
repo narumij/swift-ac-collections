@@ -622,7 +622,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // meldは互換モードだけに残す。結合はinsert(contentsOf:)を使う
   extension RedBlackTreeMultiMap {
 
     /// Combines two multimaps while preserving every key-value pair.

@@ -166,7 +166,6 @@ extension UnsafeTreeV2 {
     while __first2 != __last2 {
       let __first1_next = ___lower_bound_onesided(
         __first1, __last1, other.__get_value(__first2))
-      // __first1を進められなかったなら、!(*__first1 < *__first2)
       let __may_be_equal1 = __first1 == __first1_next
       __first1 = __first1_next
       __set_intersection_add_output_if_equal(
@@ -224,7 +223,6 @@ extension UnsafeTreeV2 {
     _ __value: _Key
   ) -> UnsafeMutablePointer<UnsafeNode> {
     var __first = __first
-    // step = 0。距離1のときに後で比較を省けるよう、先頭を先に見る
     if __first == __last || !value_comp(__get_value(__first), __value) {
       return __first
     }
@@ -237,7 +235,6 @@ extension UnsafeTreeV2 {
         __dist += 1
       }
       if __it == __last || !value_comp(__get_value(__it), __value) {
-        // 直前の位置は比較済みなので、距離1なら二分探索を省ける
         if __dist == 1 {
           return __it
         }

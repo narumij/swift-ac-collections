@@ -130,10 +130,8 @@ package func ___ptr_comp_bitmap(
   _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
 
   #if USE_INT128
-  if #available(macOS 15.0, *) {
     return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
       < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
-  }
   #endif
 
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())

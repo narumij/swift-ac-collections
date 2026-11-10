@@ -146,7 +146,6 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     }
     
     #if USE_INT128
-    if #available(macOS 15.0, *) {
       let (f, p, l) = (
         __f.___ptr_bitmap_128(),
         __p.___ptr_bitmap_128(),
@@ -154,7 +153,6 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       )
 
       return f <= p && p <= l
-    }
     #endif
 
     let (f, p, l) = (

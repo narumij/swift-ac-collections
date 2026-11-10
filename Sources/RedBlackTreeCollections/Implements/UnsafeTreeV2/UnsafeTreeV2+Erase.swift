@@ -261,61 +261,6 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 }
 
-#if false && COMPATIBLE_ATCODER_2025 // falseで構わないが、取り急ぎなので念のため
-extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
-
-  @inlinable
-  func ___erase_validate_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
-    range
-      .flatMap(validated(range:))
-      .flatMap {
-        $0.fold(___erase_range)
-      }
-      .map(index)
-  }
-  
-  @inlinable
-  func ___erase_sanitize_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
-    sanitize(range)
-      .flatMap {
-        $0.fold(___erase_range)
-      }
-      .map(index)
-  }
-
-  @inlinable
-  func ___erase_validate_range_if(
-    _ range: _SafeRange,
-    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> Result<UnsafeIndexV3, SealError> {
-
-    try range
-      .flatMap(validated(range:))
-      .flatMapThrowing { range in
-        try range.fold { first, last in
-          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
-        }
-      }
-      .map(index)
-  }
-  
-  @inlinable
-  func ___erase_sanitize_range_if(
-    _ range: _SafeRange,
-    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> Result<UnsafeIndexV3, SealError> {
-
-    try sanitize(range)
-      .flatMapThrowing { range in
-        try range.fold { first, last in
-          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
-        }
-      }
-      .map(index)
-  }
-}
-#endif
-
 // TODO: 以下を別ファイルに切り出す
 extension Result {
 

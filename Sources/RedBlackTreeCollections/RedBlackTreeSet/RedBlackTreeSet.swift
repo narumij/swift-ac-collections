@@ -269,6 +269,7 @@ extension RedBlackTreeSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     #if false
+    // 資料的にのこしてある
       __tree_.ensureUniqueAndCapacity()
       let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
       return (__inserted, __inserted ? newMember : Base.__payload_(__r))

@@ -281,6 +281,7 @@
       inserted: Bool, index: Index
     ) {
       #if false
+      // 資料的にのこしてある
         __tree_.ensureUniqueAndCapacity()
         let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
         return (__inserted, ___index(__r))

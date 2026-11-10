@@ -113,7 +113,8 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
-      _ = __tree_.___erase_sanitize_range_with_many_care(_range: bounds.evaluate(__tree_).relative(to: __tree_))
+      _ = __tree_.___erase_sanitize_range_with_many_care(
+        _range: bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     /// Removes the key-value pairs in the selected range that satisfy a predicate.

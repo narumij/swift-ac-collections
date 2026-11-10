@@ -188,5 +188,24 @@
       }
     }
 
+
+
+    /// 決まった種の乱数で作ったIndex範囲の`erase`を繰り返すと、止まる組と止まらない組が混ざるが、
+    /// どこで止まってもSIGTRAPであること。最後に必ず止まる逆向きの範囲を置き、止まらずに終わることはない。
+    @Test func randomIndexRangeEraseEndsWithTrap() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var g = SplitMix64(seed: 14)
+        var t = make(seededValues(60, seed: 15))
+        for _ in 0 ..< 300 {
+          let i = t.lowerBound(BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)))
+          let j = t.upperBound(BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)))
+          _ = t.erase(i ..< j)
+          for x in t { _ = x }
+          if t.isEmpty { t = make(seededValues(60, seed: g.next())) }
+        }
+        var last = make()
+        _ = last.erase(last.lowerBound(BrokenOrderElement(1)) ..< last.upperBound(BrokenOrderElement(2)))
+      }
+    }
   }
 #endif

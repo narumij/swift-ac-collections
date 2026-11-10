@@ -190,6 +190,60 @@
       }
     }
 
+    /// 決まった種の乱数で作った多数の境界式の範囲（逆向きを含む）で、停止しない操作が範囲外を読まずに返り、
+    /// 操作後も木を走査できること。メモリ安全性はASan付きの実行（CI）で確かめる。
+    func test_randomBoundRanges_nonStoppingOperations() {
+      var g = SplitMix64(seed: 12)
+      let base = make(seededValues(60, seed: 13))
+      for round in 0 ..< 300 {
+        let a = BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)), b = BrokenOrderElement(Int.random(in: 0 ... 200, using: &g))
+        let rangeList: [RedBlackTreeBoundRangeExpression<BrokenOrderElement>] = [
+          BE.lowerBound(a) ..< BE.upperBound(b),
+          BE.lowerBound(a) ... BE.lowerBound(b),
+          BE.upperBound(a) ..< BE.lowerBound(b),
+        ]
+        for bounds in rangeList {
+          var tree = base
+          let view = tree[bounds]
+          if let e = view.first { XCTAssertTrue(tree.contains(key: e.key)); _ = e.key.s.count + e.value.count }
+          if let e = view.last { XCTAssertTrue(tree.contains(key: e.key)); _ = e.key.s.count + e.value.count }
+          XCTAssertGreaterThanOrEqual(view.count, 0)
+          _ = view.isEmpty
+
+          if let v = view.values.first { _ = v.count }
+          if let v = view.values.last { _ = v.count }
+          _ = view.values.count
+
+          var valuesPopping = tree[bounds]
+          var valuesPopped = 0
+          while let v = valuesPopping.values.popFirst() { _ = v.count; valuesPopped += 1; if valuesPopped > tree.count { break } }
+          XCTAssertLessThanOrEqual(valuesPopped, tree.count)
+          valuesPopped = 0
+          while let v = valuesPopping.values.popLast() { _ = v.count; valuesPopped += 1; if valuesPopped > tree.count { break } }
+          XCTAssertLessThanOrEqual(valuesPopped, tree.count)
+
+          var popping = tree[bounds]
+          var n = 0
+          while let e = popping.popFirst() { _ = e.key.s.count + e.value.count; n += 1; if n > tree.count { break } }
+          XCTAssertLessThanOrEqual(n, tree.count)
+          popping = tree[bounds]
+          n = 0
+          while let e = popping.popLast() { _ = e.key.s.count + e.value.count; n += 1; if n > tree.count { break } }
+          XCTAssertLessThanOrEqual(n, tree.count)
+
+          var erasing = tree[bounds]
+          erasing.erase(where: { _ in round % 2 == 0 })
+
+          tree.erase(bounds)
+          XCTAssertEqual(Array(tree).count, tree.count)
+          XCTAssertEqual(tree.reversed().count, tree.count)
+          tree = base
+          tree.erase(bounds, where: { _ in round % 3 == 0 })
+          XCTAssertEqual(Array(tree).count, tree.count)
+        }
+      }
+    }
+
     /// 範囲を使わない木全体の操作は、順序が壊れていても止まらず、走査した要素の数が`count`と一致すること。
     func test_wholeTreeOperations_keepCountConsistent() {
       func check(_ t: RedBlackTreeDictionary<BrokenOrderElement, String>, file: StaticString = #filePath, line: UInt = #line) {

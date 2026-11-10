@@ -149,20 +149,6 @@ extension RedBlackTreeMappedValuesView {
     /// - Precondition: `position` identifies an element inside the view.
     ///
     /// - Complexity: O(1).
-    #if false
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always)
-      get {
-        return __tree_._unsafeAddress(position).pointee.tuple.value
-      }
-      set {
-        _ensureUnique()
-        // TODO: unsafeMutableAddressにしたい
-        __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
-      }
-    }
-    #else
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
@@ -175,7 +161,6 @@ extension RedBlackTreeMappedValuesView {
         return __tree_._unsafeMutableAddress(position).pointer(to: \.tuple.value)!
       }
     }
-    #endif
   }
 
   extension RedBlackTreeMappedValuesView
@@ -190,6 +175,7 @@ extension RedBlackTreeMappedValuesView {
     /// - Complexity: O(1).
     public mutating func swapAt(_ i: Index, _ j: Index) {
       #if false
+      // TODO: 理解できたら消す
       _ensureUnique()
 
       let __i = __tree_.__purified_(i)
@@ -350,18 +336,6 @@ extension RedBlackTreeMappedValuesView {
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      #if false
-      guard _raw_range.0 != _raw_range.1 else { return }
-      _ensureUnique()
-      let (_start, _end) = _raw_range
-      // TODO: あとで見直す
-      var first = _start.unchecked
-      defer { _sealed_start = first.pointer!.uncheckedSeal }
-      let result = try __tree_.___erase_view_range_if(&first, _end.unchecked) {
-        try shouldBeRemoved(Base.___mapped_value($0))
-      }
-      assert(result.error == nil)
-      #else
       let (_start, _end) = _raw_range
       var first = _start.unchecked
       var last = _end.unchecked
@@ -373,7 +347,6 @@ extension RedBlackTreeMappedValuesView {
         try shouldBeRemoved(Base.___mapped_value($0))
       }
       assert(result.error == nil)
-      #endif
     }
   }
 

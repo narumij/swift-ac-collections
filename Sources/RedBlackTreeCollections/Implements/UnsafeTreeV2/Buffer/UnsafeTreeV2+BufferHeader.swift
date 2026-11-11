@@ -84,10 +84,12 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 
+  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
   //
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
+  #endif
 
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
@@ -172,11 +174,13 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
+  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
   // IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
   }
+  #endif
 
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
@@ -189,6 +193,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
   }
 
+  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリ
   //
   // ヘッダーにとっては解放責任のデタッチ先
@@ -205,6 +210,7 @@ extension UnsafeTreeV2BufferHeader {
       return _tied!
     }
   }
+  #endif
 
   @inlinable
   var lazyDetach: _LazyTie {
@@ -357,14 +363,16 @@ extension UnsafeTreeV2BufferHeader {
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
+      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
       assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      #endif
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
 
     #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @usableFromInline
     mutating func ___deallocFreshPoolKeepingHead() {
-      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+//      assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
     }
     #endif

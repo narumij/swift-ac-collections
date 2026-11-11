@@ -39,17 +39,17 @@ package final class UnsafeTreeV2Buffer:
         header.pointee._lazyDetach?.isDetached = true
       }
 
+      #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+      header.pointee.___deallocFreshPoolKeepingHead()
+      #else
       if !header.pointee.isRawBufferUniquelyOwned {
         // 内部バッファがぼっちじゃないので、続行
         header.pointee._tied!.isValueAccessAllowed = false
       } else {
         // 内部バッファがぼっちになるので、解散
-        #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
-        header.pointee.___deallocFreshPoolKeepingHead()
-        #else
         header.pointee.___deallocFreshPool()
-        #endif
       }
+      #endif
 
       #if ENABLE_EXPERIMENTAL_TSAN_SAFE
         if let p = header.pointee.lazyDetachPointer {
@@ -125,7 +125,9 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       var header = UnsafeTreeV2BufferHeader(allocator: .create(), nullptr: .nullptr, capacity: 0)
 
+      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
       _ = header.tiedRawBuffer
+      #endif
 
       header._lazyDetach = _emptyLazyDetach
 

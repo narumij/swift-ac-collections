@@ -45,6 +45,13 @@ package final class UnsafeTreeV2Buffer:
         // 内部バッファがぼっちになるので、解散
         header.pointee.___deallocFreshPool()
       }
+
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+        if let p = header.pointee.lazyDetachPointer {
+          p.deinitialize(count: 1)
+          p.deallocate()
+        }
+      #endif
     }
   }
 }

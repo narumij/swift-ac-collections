@@ -194,7 +194,6 @@ package func
   __tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   _TREE_ASSERT_INTERNAL(__x != .nullptr, "node shouldn't be null")
-  // unsafe not allowed
   if __x.__left_ != .nullptr {
     return __tree_max(__x.__left_)
   }

@@ -49,7 +49,6 @@ extension InsertNodeAtProtocol_ptr where Self: ~Copyable {
     __new_node.__parent_ = __parent
     // __new_node->__is_black_ is initialized in __tree_balance_after_insert
     __child.pointee = __new_node
-    // unsafe operation not allowed
     if __begin_node_.__left_ != nullptr {
       __begin_node_ = __begin_node_.__left_
     }

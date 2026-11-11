@@ -291,7 +291,6 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeDictionary {
 
-    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
     /// Returns the index of the given key-value pair's key, inserting the pair if necessary.

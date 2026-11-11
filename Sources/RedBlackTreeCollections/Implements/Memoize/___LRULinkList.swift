@@ -58,7 +58,7 @@ extension LinkPairValueTrait {
   }
 
   @inlinable
-  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
+  public static func __mapped_value(_ element: _PayloadValue) -> _MappedValue {
     element.value
   }
 

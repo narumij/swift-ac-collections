@@ -63,8 +63,6 @@ extension _LazyTieWrapV2: Comparable {
       return lhs.lazyDetach < rhs.lazyDetach
     }
     #if !USE_LAZY_DETACH
-      // 通常構成ではIndexがノードの寿命を延長しない。
-      // 同じ発行元の比較で生ポインタをたどる前に、寿命を確認する。
       precondition(!lhs.lazyDetach.isDetached, .invalidIndex)
     #endif
     return lhs.rawValue < rhs.rawValue
@@ -114,7 +112,6 @@ extension _LazyTieWrapV2 {
   }
   #endif
 
-  // treeを経由しない封印のみの判定。発行元基準での有効性確認としてテストが使う
   @usableFromInline
   package var isValid: Bool {
     switch purified {

@@ -240,7 +240,7 @@ final class TreeFoundamentalMultiplicityTests: TreeTestCase, _UnsafeNodePtrType 
     XCTAssertFalse(MultiSUT.___ptr_range_comp(first, before, end))
   }
 
-  /// `USE_INT128`無効時の通常経路(`___ptr_bitmap_64`)で、閉区間の包含判定を検証する。
+  /// `USE_PATH_BITMAP_64`有効時の経路(`___ptr_bitmap_64`)で、閉区間の包含判定を検証する。
   func testMultiHelper_ptrRangeComp_closedRangeViaBitmap() {
     var fixture = makeFixture()
     let end = fixture.endPtr()

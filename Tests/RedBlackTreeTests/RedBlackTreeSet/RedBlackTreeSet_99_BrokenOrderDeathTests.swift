@@ -1,11 +1,22 @@
+// 順序崩れのテストの前提
+// - 赤黒木の形は回転と色の付け替えだけで決まり、キーの比較を使わない。そのため、比較が全順序でなくても、
+//   木は正しい赤黒木のままで、範囲を使わない木全体の走査は安全に動く。
+// - 問題になるのは、比較の結果を位置の前後として使う場所（Viewの範囲、distance、範囲のerase）だけである。
+//   そこは、位置で決め直すか、端を越える前に止めることで、メモリ安全性を守る。
+// - 保証するのはメモリ安全性だけで、結果の正しさは保証しない。
+//
+// Premise of the broken-order tests
+// - The shape of a red-black tree is decided only by rotations and recoloring, which do not use key
+//   comparison. So even when the comparison is not a total order, the tree stays a valid red-black tree,
+//   and whole-tree traversal that uses no range runs safely.
+// - The problems arise only where a comparison result is used as the order of positions (view ranges,
+//   distance, range erase). Those places keep memory safety by deciding again from positions, or by
+//   stopping before passing an end.
+// - Only memory safety is guaranteed; the correctness of results is not.
+
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import Testing
-  #if canImport(Darwin)
-    import Darwin
-  #elseif canImport(Glibc)
-    import Glibc
-  #endif
 
   private typealias BE = RedBlackTreeBoundExpression
   private var reversedBounds: RedBlackTreeBoundRangeExpression<BrokenOrderElement> {
@@ -93,25 +104,25 @@
         }
       case .erase:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.erase()
         }
       case .removeAll:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeAll()
         }
       case .removeLast:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.removeLast()
         }
       case .removeLastK:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeLast(3)
         }
@@ -119,23 +130,13 @@
     }
 
     enum IndexOperation: String, CaseIterable, Codable, Sendable {
-      case distance, distanceBackward, offsetLimitedForward, offsetLimitedBackward, eraseIndexRange, eraseIndexRangeWhere, removeSubrange
+      case offsetLimitedForward, offsetLimitedBackward, eraseIndexRange, eraseIndexRangeWhere, removeSubrange
     }
 
-    /// 逆向きのIndex範囲での距離・移動・削除は停止すること。
+    /// 逆向きのIndex範囲での移動・削除は停止すること。
     @Test(arguments: IndexOperation.allCases)
     func reversedIndexOperationTraps(_ path: IndexOperation) async {
       switch path {
-      case .distance:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          let t = make()
-          _ = t.distance(from: t.lowerBound(BrokenOrderElement(1)), to: t.upperBound(BrokenOrderElement(2)))
-        }
-      case .distanceBackward:
-        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          let t = make()
-          _ = t.distance(from: t.upperBound(BrokenOrderElement(2)), to: t.lowerBound(BrokenOrderElement(1)))
-        }
       case .offsetLimitedForward:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let t = make()
@@ -177,14 +178,14 @@
       switch path {
       case .popFirstOnceThenForIn:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           _ = v.popFirst()
           for x in v { _ = x.s.count }
         }
       case .removeFirstK:
         await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-          var t = make()
+          let t = make()
           var v = t[reversedBounds]
           v.removeFirst(3)
         }
@@ -192,21 +193,22 @@
     }
 
 
-    /// 逆向きの範囲の境界式で`distance(from:to:)`を呼ぶと、止まること（返らない場合は10秒でSIGALRMになり、失敗として記録される）。
-    @Test
-    func boundDistanceOverReversedRangeTraps() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        alarm(10)  // 返らない場合に子プロセスを終わらせる
-        _ = make().distance(from: BE.lowerBound(BrokenOrderElement(1)), to: BE.upperBound(BrokenOrderElement(2)))
-      }
-    }
 
-    /// 逆向きの範囲の境界式を入れ替えて`distance(from:to:)`を呼んでも、止まること。
-    @Test
-    func boundDistanceBackwardOverReversedRangeTraps() async {
+    /// 決まった種の乱数で作ったIndex範囲の`erase`を繰り返すと、止まる組と止まらない組が混ざるが、
+    /// どこで止まってもSIGTRAPであること。最後に必ず止まる逆向きの範囲を置き、止まらずに終わることはない。
+    @Test func randomIndexRangeEraseEndsWithTrap() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        alarm(10)  // 返らない場合に子プロセスを終わらせる
-        _ = make().distance(from: BE.upperBound(BrokenOrderElement(2)), to: BE.lowerBound(BrokenOrderElement(1)))
+        var g = SplitMix64(seed: 14)
+        var t = make(seededValues(60, seed: 15))
+        for _ in 0 ..< 300 {
+          let i = t.lowerBound(BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)))
+          let j = t.upperBound(BrokenOrderElement(Int.random(in: 0 ... 200, using: &g)))
+          _ = t.erase(i ..< j)
+          for x in t { _ = x }
+          if t.isEmpty { t = make(seededValues(60, seed: g.next())) }
+        }
+        var last = make()
+        _ = last.erase(last.lowerBound(BrokenOrderElement(1)) ..< last.upperBound(BrokenOrderElement(2)))
       }
     }
   }

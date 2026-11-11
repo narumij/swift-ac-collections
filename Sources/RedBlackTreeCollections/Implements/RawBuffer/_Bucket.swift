@@ -148,12 +148,6 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   //               ^-(payload alignment)
   // ```
   //
-  // - Parameters:
-  //   - storage: Bucket固有のメタデータ直後にある、alignment調整前のslot領域先頭アドレス。
-  //   - payloadAlignment: Payload型に要求されるalignment。max(node, payload)で構わない。
-  //
-  // - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
-  //
   // - WARNING: 確保数0の場合利用してはならない
   //
   @inlinable

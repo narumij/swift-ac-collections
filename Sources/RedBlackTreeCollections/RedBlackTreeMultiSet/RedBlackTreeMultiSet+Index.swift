@@ -266,7 +266,6 @@
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeMultiSet {
 
-    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
     /// Inserts the given element and returns the index of the new occurrence.

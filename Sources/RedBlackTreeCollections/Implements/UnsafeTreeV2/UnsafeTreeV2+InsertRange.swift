@@ -262,7 +262,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     if !__inserted {
       Base.__mapped_value_ptr(__r).pointee = try combine(
         Base.__mapped_value_(__r),
-        Base.___mapped_value(__t_(__k)))
+        Base.__mapped_value(__t_(__k)))
     }
     
     return try ___insert_range_unique(__source, uniquingKeysWith: combine, transform: __t_)

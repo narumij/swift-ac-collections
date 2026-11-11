@@ -263,8 +263,6 @@ extension RedBlackTreeMappedValuesView {
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
-      // 空の場合はensureUnique()による無駄なコピーを避けるため、
-      // 範囲が空かどうかをコピー前に確認する。
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _) = _raw_range
@@ -273,7 +271,7 @@ extension RedBlackTreeMappedValuesView {
       }
       let (_p, _r) = __tree_._unchecked_remove(at: _start)
       _sealed_start = _p.uncheckedSeal
-      return Base.___mapped_value(_r)
+      return Base.__mapped_value(_r)
     }
 
     /// Removes the last pair and returns its mapped value, or returns `nil` if the view is empty.
@@ -287,7 +285,7 @@ extension RedBlackTreeMappedValuesView {
         return nil
       }
       if last == _start { _sealed_start = _sealed_end }
-      return Base.___mapped_value(
+      return Base.__mapped_value(
         __tree_._unchecked_remove(at: last).payload)
     }
 
@@ -324,7 +322,6 @@ extension RedBlackTreeMappedValuesView {
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
-      // 空の場合はensureUnique()による無駄なコピーを避ける。
       guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
       _ensureUnique()
       let (_start, _end) = _raw_range
@@ -347,7 +344,7 @@ extension RedBlackTreeMappedValuesView {
         _sealed_end = last.pointer!.uncheckedSeal
       }
       let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
-        try shouldBeRemoved(Base.___mapped_value($0))
+        try shouldBeRemoved(Base.__mapped_value($0))
       }
 //      assert(result.error == nil)
     }

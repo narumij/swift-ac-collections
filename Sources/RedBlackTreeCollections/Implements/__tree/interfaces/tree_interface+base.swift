@@ -107,7 +107,7 @@ protocol _TreePayloadValue_KeyInterface: ~Copyable, _KeyType, _PayloadValueType 
 @usableFromInline
 protocol _TreeRawValue_MappedValueInteface: ~Copyable, _KeyValueBaseType {
 
-  @inlinable func ___mapped_value(_ element: _PayloadValue) -> _MappedValue
+  @inlinable func __mapped_value(_ element: _PayloadValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意

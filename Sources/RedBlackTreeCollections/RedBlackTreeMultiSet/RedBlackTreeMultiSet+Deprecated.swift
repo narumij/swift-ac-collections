@@ -536,8 +536,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // 互換モードのunionは、各要素の個数の和（a + b）を保つ。
-  // 以降の版では和集合（max(a, b)）に変わるため、警告で知らせる
   extension RedBlackTreeMultiSet {
 
     /// Returns a multiset formed by adding the multiplicities in two multisets.
@@ -580,7 +578,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // 搭載版（AtCoder 2025）のdifferenceには問題があるため、互換モードでは警告で知らせる
   extension RedBlackTreeMultiSet {
 
     @available(
@@ -611,7 +608,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // meldは互換モードだけに残す。個数の和はinsert(contentsOf:)を使う
   extension RedBlackTreeMultiSet {
 
     /// Combines two multisets while preserving every occurrence.

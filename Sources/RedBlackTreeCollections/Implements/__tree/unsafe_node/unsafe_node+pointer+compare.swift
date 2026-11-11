@@ -20,55 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if false
-@inlinable
-package func ___ptr_comp_multi(
-  _ __l: UnsafeMutablePointer<UnsafeNode>,
-  _ __r: UnsafeMutablePointer<UnsafeNode>
-)
-  -> Bool
-{
-  _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
-  _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
-  guard
-    !__l.___is_end,
-    !__r.___is_end,
-    __l != __r
-  else {
-    // endが混じってる場合と、等しい場合
-    // 右だけendの場合のみtrueで、それ以外はfalse
-    return !__l.___is_end && __r.___is_end
-  }
-  var (__l, __lh) = (__l, ___ptr_height(__l))
-  var (__r, __rh) = (__r, ___ptr_height(__r))
-  // 親が一致するまで、高さを詰める
-  while __l.__parent_ != __r.__parent_ {
-    // 共通祖先が__rだった場合
-    if __l.__parent_ == __r {
-      // __lが左であれば、__lが小さい
-      return __tree_is_left_child(__l)
-    }
-    // 共通祖先が__lだった場合
-    if __r.__parent_ == __l {
-      // __rが左でなければ（つまり右）、__lが小さい
-      return !__tree_is_left_child(__r)
-    }
-    // ちょっとだけトリッキー
-    // 片方ずつ更新に一見みえるが、同じ高さの場合、両方更新となる
-    if __lh <= __rh {
-      __r = __r.__parent_
-      __rh &-= 1
-    }
-    if __lh > __rh {
-      __l = __l.__parent_
-      __lh &-= 1
-    }
-  }
-  // 共通祖先が__lと__r以外だった場合
-  // 共通祖先の左の子のほうが小さい。それが__lであれば真を返す。
-  return __tree_is_left_child(__l)
-}
-#else
 @inlinable
 package func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
@@ -114,7 +65,6 @@ package func ___ptr_comp_multi(
   }
   return __tree_is_left_child(__l)
 }
-#endif
 
 // ノードの高さを数える
 @inlinable
@@ -179,15 +129,13 @@ package func ___ptr_comp_bitmap(
   _TREE_ASSERT_INTERNAL(!__l.___is_null, "Left node shouldn't be null")
   _TREE_ASSERT_INTERNAL(!__r.___is_null, "Right node shouldn't be null")
 
-  #if USE_INT128
-  if #available(macOS 15.0, *) {
+  #if !USE_PATH_BITMAP_64
     return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
       < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
-  }
-  #endif
-
+  #else
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
     < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
+  #endif
 }
 
 //@inlinable

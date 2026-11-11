@@ -1,9 +1,6 @@
 #if _TREE_ALLOCATION_COUNTER
 import Foundation
 
-// Debug計測も並行CoWから更新される。加算全体を_modifyで保護し、
-// getter/setterだけのロックによる更新の取りこぼしを防ぐ。
-// カウンターはプロセス全体の合計。テスト間の独立した集計は提供しない。
 @usableFromInline
 final class _DebugCounter: @unchecked Sendable {
   private let lock = NSLock()

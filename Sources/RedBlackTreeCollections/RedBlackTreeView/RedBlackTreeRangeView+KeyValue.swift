@@ -336,7 +336,6 @@ extension RedBlackTreeKeyValueRangeView {
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
-      // 空の場合はensureUnique()による無駄なコピーを避ける。
       guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
       _ensureUnique()
       let (_start, _end) = _raw_range

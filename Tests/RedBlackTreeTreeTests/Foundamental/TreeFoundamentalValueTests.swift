@@ -88,7 +88,7 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     let payload = PairBase.__payload_(element)
 
     XCTAssertEqual(PairBase.__key(payload), element.key)
-    XCTAssertEqual(PairBase.___mapped_value(payload), element.value)
+    XCTAssertEqual(PairBase.__mapped_value(payload), element.value)
     XCTAssertEqual(PairBase.__element_(payload).key, element.key)
     XCTAssertEqual(PairBase.__element_(payload).value, element.value)
   }

@@ -16,21 +16,19 @@ var defines: [String] = [
   //  "USE_PATH_BITMAP_64",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-//  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
+  //  "USE_COMPACT_NODE_METADATA",
   //  "USE_PATH_BITMAP_64",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-//    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
-  
-  // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
+
   //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
-//  "_TREE_COPY_COUNTER",
-//  "_TREE_ALLOCATION_COUNTER",
-//  "_TREE_INTERNAL_CHECKS",    
-    // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
-    "USE_HEAD_BUCKET_PAIRING"
+  //  "_TREE_COPY_COUNTER",
+  //  "_TREE_ALLOCATION_COUNTER",
+  //  "_TREE_INTERNAL_CHECKS",
+  // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
+  "USE_HEAD_BUCKET_PAIRING",  // 互換版では無効となる
 ]
 
 var _settings: [SwiftSetting] =
@@ -111,16 +109,11 @@ var _settings: [SwiftSetting] =
     .define(
       "_TREE_ASSERT_INTERNAL",
       .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])
-    ),
-    .define(
-      "_TREE_INVARIANT",
-      .when(traits: ["ENABLE_TREE_INVARIANT"])
-    ),
+    ), .define("_TREE_INVARIANT", .when(traits: ["ENABLE_TREE_INVARIANT"])),
     .define(
       "_UNSAFE_TREE_ASSERT_INTERNAL",
       .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
-    ),
-    .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    ), .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
@@ -129,7 +122,6 @@ var _settings: [SwiftSetting] =
       .when(traits: ["NORMAL_DEBUG_TEST"])
     ),
 
-    
   ] + defines.map { .define($0) }
 
 let additionalDependencies: [Target.Dependency] =
@@ -154,8 +146,7 @@ let package = Package(
       name: "USE_PATH_BITMAP_64",
       description:
         "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
-    ),
-    .trait(name: "BENCHMARK"),
+    ), .trait(name: "BENCHMARK"),
     .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:
@@ -173,18 +164,16 @@ let package = Package(
       name: "CANDIDATE_DEBUG_TEST",
       description: "Enable internal checks for release-candidate Debug tests.",
       enabledTraits: [
-        "ENABLE_TREE_INVARIANT",
-        "ENABLE_TREE_ALLOCATION_COUNTER",
-        "ENABLE_TREE_COPY_COUNTER",
-        "ENABLE_TREE_ASSERT_INTERNAL",
+        "ENABLE_TREE_INVARIANT", "ENABLE_TREE_ALLOCATION_COUNTER",
+        "ENABLE_TREE_COPY_COUNTER", "ENABLE_TREE_ASSERT_INTERNAL",
         "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL",
       ]
     ),
     .trait(
       name: "CANDIDATE_RELEASE_TEST",
-      description: "Run release-candidate Release tests without XCTest performance measurements."
-    ),
-    .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
+      description:
+        "Run release-candidate Release tests without XCTest performance measurements."
+    ), .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
     .trait(name: "ENABLE_TREE_COPY_COUNTER"),
     .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
     .trait(name: "ENABLE_TREE_INVARIANT"),

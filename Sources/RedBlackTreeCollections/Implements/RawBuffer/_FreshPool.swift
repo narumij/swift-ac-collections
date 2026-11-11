@@ -45,6 +45,7 @@
     #endif
     var freshBucketAllocator: _BucketAllocator { get }
 
+    var nodeLayout: _MemoryLayout { get }
     var payloadLayout: _MemoryLayout { get }
     var pairLayout: _MemoryLayout { get }
   }
@@ -65,7 +66,7 @@
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = head.queue(pairLayout: pairLayout)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -90,7 +91,7 @@
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: pairLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(pairLayout: pairLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -113,7 +114,7 @@
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
-      var p = freshBucketHead?.accessor(payload: pairLayout)
+      var p = freshBucketHead?.accessor(pairLayout: pairLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
@@ -132,7 +133,7 @@
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
 
     @usableFromInline
@@ -140,6 +141,13 @@
       //      assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
+    
+#if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+@usableFromInline
+mutating func ___deallocFreshPoolKeepingHead() {
+  freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
+}
+#endif
   }
 
   // MARK: - 作業用サイズ計算
@@ -150,7 +158,7 @@
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, nodeLayout: nodeLayout, pairLayout: pairLayout)
     }
   }
 

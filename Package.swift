@@ -22,16 +22,13 @@ var defines: [String] = [
 //    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
-
+  
   // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
-
   //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
-  
 //  "_TREE_COPY_COUNTER",
 //  "_TREE_ALLOCATION_COUNTER",
-//  "_TREE_INTERNAL_CHECKS",
-    
+//  "_TREE_INTERNAL_CHECKS",    
     // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
     "USE_HEAD_BUCKET_PAIRING"
 ]

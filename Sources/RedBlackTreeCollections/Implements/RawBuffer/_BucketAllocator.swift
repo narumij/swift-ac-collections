@@ -339,7 +339,7 @@ extension _BucketAllocator {
   @inlinable
   @inline(__always)
   package func deallocate(bucket b: _BucketPointer?) {
-    deallocate_KeepingHead(bucket: b)
+    deallocate_FreeingHead(bucket: b)
   }
   #endif
 }

@@ -62,7 +62,7 @@ let package = Package(
         .enableExperimentalFeature("Lifetimes"),
       ],
       linkerSettings: [
-        .unsafeFlags(["-use-ld=lld", "-Xlinker", "-z", "-Xlinker", "separate-code"],
+        .unsafeFlags(["-use-ld=lld"],
                      .when(platforms: [.linux]))
       ]
     ),

@@ -188,7 +188,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: ["6.2.4", "6.3.3", "latest"]
+        swift:
+          # 一時停止: setup-swiftの鍵取得・Ubuntu配布先の名前解決失敗。復旧後に戻す。
+          # - "6.2.4"
+          # - "6.3.3"
+          - "latest"
 
     steps:
       - uses: actions/checkout@v4

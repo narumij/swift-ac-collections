@@ -78,6 +78,9 @@ extension UnsafeTreeV2 {
       case .find(let __v):
         ptr = find(__v).unchecked
 
+      case .first(let __v):
+        ptr = find_first(__v).unchecked
+
       case .advanced(let offset, let limit):
         switch limit {
         case .none:
@@ -107,7 +110,7 @@ extension UnsafeTreeV2 {
           ___tree_adv_iter($0, 1)
         }
 
-      #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
+      #if false
       case .lessThan(let __v):
         ptr = ___tree_prev_iter(lower_bound(__v))
 

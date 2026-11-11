@@ -78,3 +78,7 @@ public func upperBound<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
 public func find<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
   .find(key)
 }
+
+public func first<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
+  .first(key)
+}

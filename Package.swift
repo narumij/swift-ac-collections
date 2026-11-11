@@ -90,10 +90,10 @@ var _settings: [SwiftSetting] =
     ),
     // 境界式の比較系(.lessThan / .greaterThan / .lessThanOrEqual / .greaterThanOrEqual)
     // 多重系の同値要素の扱いが未確定のため実験扱い（RBT-063）
-    .define(
-      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
-    ),
+    //    .define(
+    //      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+    //      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
+    //    ),
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
@@ -165,11 +165,11 @@ let package = Package(
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
-    .trait(
-      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-      description:
-        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
-    ),
+    //    .trait(
+    //      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+    //      description:
+    //        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
+    //    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),

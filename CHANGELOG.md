@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0] - Unreleased
 
+### Added
+- 境界式に`.first(_:)`と、トップレベル関数の`first(_:)`を追加。指定した値と等しい要素のうち、走査順の先頭の要素を指す。MultiSet / MultiMapでは同値要素の群の先頭（同じキーでは最初に挿入された要素）になる。等しい要素が無い場合は、`.find(_:)`と同じく終端に置き換わる
+
+### Removed
+- 実験的に提供していた比較系の境界式（`.lessThan`・`.greaterThan`・`.lessThanOrEqual`・`.greaterThanOrEqual`）と、それを有効にする`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` traitを削除。同値要素の先頭を指す場合は`.first(_:)`を使う
+
 ### Changed
 - Indexと境界式の`distance(from:to:)`で、どちらが前かをキーの比較ではなくノードの位置で決めるよう変更。`<`が全順序にならない要素で範囲が逆向きになる場合も、停止せずに位置どおりの符号付きの距離を返す
 - ノードの位置比較に使うパス表現を、既定で128bit幅に変更（従来の既定は64bit幅）。既定の構成では、確保可能な要素数の上限は従来どおりメモリ量による上限となる

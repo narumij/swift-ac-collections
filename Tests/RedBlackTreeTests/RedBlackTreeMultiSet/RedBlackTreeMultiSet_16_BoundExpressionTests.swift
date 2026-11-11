@@ -245,33 +245,6 @@ final class RedBlackTreeMultiSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 1, 1, 2, 3])
   }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanAndOrEqualMulti() throws {
-    let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
-
-    XCTAssertEqual(b[.lessThan(-1)], nil)
-    XCTAssertEqual(b[.lessThan(0)], nil)
-    XCTAssertEqual(b[.lessThan(1)], 0)
-    XCTAssertEqual(b[.lessThan(2)], 1)
-    XCTAssertEqual(b[.lessThan(3)], 2)
-
-    XCTAssertEqual(b[.lessThanOrEqual(-1)], nil)
-    XCTAssertEqual(b[.lessThanOrEqual(0)], 0)
-    XCTAssertEqual(b[.lessThanOrEqual(1)], 1)
-    XCTAssertEqual(b[.lessThanOrEqual(2)], 2)
-    XCTAssertEqual(b[.lessThanOrEqual(3)], 2)
-  }
-  #endif
-
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessGreaterHelpers() throws {
-    XCTAssertEqual(a[.lessThan(1)], 0)
-    XCTAssertEqual(a[.greaterThan(1)], 2)
-    XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
-    XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
-  }
-  #endif
-
   func testBoundRangeOperators() throws {
     let view1 = a[lowerBound(0) ..< upperBound(2)]
     XCTAssertEqual(Array(view1), [0, 1, 2])
@@ -335,6 +308,33 @@ final class RedBlackTreeMultiSetBoundDistanceTests: RedBlackTreeTestCase {
       let c = RedBlackTreeMultiSet([1, 2, 3])
       XCTAssertNil(c[.start.advanced(by: 4)])
       XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetBoundPublicBehaviorTests {
+
+    /// `.first(k)`はkと等しい要素のうち走査順の先頭を指し、無い場合や空の木では`nil`になること。
+    func testFirstResolvesToTheHeadOfTheEqualRun() throws {
+      let b = RedBlackTreeMultiSet<Int>([0] + Array(repeating: 1, count: 100) + [2])
+      XCTAssertEqual(b[.first(1)], 1)
+      XCTAssertEqual(b[.first(1).before], 0, "先頭の1の直前は0であること")
+      XCTAssertEqual(b[first(1).before], 0, "トップレベルの`first(_:)`も群の先頭を指すこと")
+      XCTAssertEqual(b[.first(1) ..< upperBound(1)].count, 100)
+      XCTAssertEqual(Array(b[.first(1)...]), Array(repeating: 1, count: 100) + [2])
+      XCTAssertEqual(b[.first(0)], 0)
+      XCTAssertEqual(b[.first(2)], 2)
+      XCTAssertNil(b[.first(-1)])
+      XCTAssertNil(b[.first(3)])
+      XCTAssertNil(RedBlackTreeMultiSet<Int>()[.first(0)])
+    }
+
+    /// 重複が無い木では、`.first(k)`はkと等しい唯一の要素を指すこと。
+    func testFirstWithoutDuplicates() throws {
+      XCTAssertEqual(a[.first(1)], 1)
+      XCTAssertEqual(a[.first(1).before], 0)
+      XCTAssertEqual(a[.first(1).after], 2)
     }
   }
 #endif

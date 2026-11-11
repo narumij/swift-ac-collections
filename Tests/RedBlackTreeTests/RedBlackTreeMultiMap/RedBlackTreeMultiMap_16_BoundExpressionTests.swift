@@ -124,16 +124,6 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     let b = duplicates()
     XCTAssertEqual(b[lowerBound(1)]?.value, "b")
     XCTAssertEqual(b[upperBound(1)]?.value, "d")
-    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-    XCTAssertEqual(
-      b[.lessThan(2)]?.value,
-      "c",
-      "lowerBound(2)の1つ前は、keyが1の群の最後の値であること"
-    )
-    // `.lessThanOrEqual(k)`は`find(k)`が成功すればその位置（DSL.md）。重複keyのどの値かは
-    // 規定されていないので、keyだけを確かめる。
-    XCTAssertEqual(b[.lessThanOrEqual(1)]?.key, 1)
-    #endif
   }
 
   func testViewCount() throws {
@@ -292,33 +282,6 @@ final class RedBlackTreeMultiMapBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(pairs(b), ["1:b", "3:d"])
   }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanAndOrEqualMulti() throws {
-    let b: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
-
-    XCTAssertEqual(b[.lessThan(-1)]?.key, nil)
-    XCTAssertEqual(b[.lessThan(0)]?.key, nil)
-    XCTAssertEqual(b[.lessThan(1)]?.key, 0)
-    XCTAssertEqual(b[.lessThan(2)]?.key, 1)
-    XCTAssertEqual(b[.lessThan(3)]?.key, 2)
-
-    XCTAssertEqual(b[.lessThanOrEqual(-1)]?.key, nil)
-    XCTAssertEqual(b[.lessThanOrEqual(0)]?.key, 0)
-    XCTAssertEqual(b[.lessThanOrEqual(1)]?.key, 1)
-    XCTAssertEqual(b[.lessThanOrEqual(2)]?.key, 2)
-    XCTAssertEqual(b[.lessThanOrEqual(3)]?.key, 2)
-  }
-  #endif
-
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessGreaterHelpers() throws {
-    XCTAssertEqual(a[.lessThan(1)]?.value, "a")
-    XCTAssertEqual(a[.greaterThan(1)]?.value, "c")
-    XCTAssertEqual(a[.lessThanOrEqual(1)]?.value, "b")
-    XCTAssertEqual(a[.greaterThanOrEqual(1)]?.value, "b")
-  }
-  #endif
-
   func testBoundRangeOperators() throws {
     XCTAssertEqual(
       pairs(a[lowerBound(0) ..< upperBound(2)]),
@@ -382,6 +345,35 @@ final class RedBlackTreeMultiMapBoundDistanceTests: RedBlackTreeTestCase {
       let c = RedBlackTreeMultiMap(keysWithValues: [(1, 1), (2, 2), (3, 3)])
       XCTAssertNil(c[.start.advanced(by: 4)])
       XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapBoundPublicBehaviorTests {
+
+    /// `.first(k)`はkの要素のうち走査順（同じkeyでは挿入順）の先頭を指すこと。
+    func testFirstResolvesToTheHeadOfTheEqualKeyRun() throws {
+      var b = RedBlackTreeMultiMap<Int, Int>()
+      b.insert((0, -1))
+      for v in 0 ..< 100 { b.insert((1, v)) }
+      b.insert((2, -2))
+      XCTAssertEqual(b[.first(1)]?.value, 0)
+      XCTAssertEqual(b[first(1)]?.value, 0, "トップレベルの`first(_:)`も群の先頭を指すこと")
+      XCTAssertEqual(b[.first(1).before]?.key, 0)
+      XCTAssertEqual(b[.first(1).after]?.value, 1)
+      XCTAssertEqual(b[.first(1) ..< upperBound(1)].count, 100)
+      XCTAssertNil(b[.first(-1)])
+      XCTAssertNil(b[.first(3)])
+      XCTAssertNil(RedBlackTreeMultiMap<Int, Int>()[.first(0)])
+    }
+
+    /// 重複keyの群でも、`.first(k)`は群の先頭（`lowerBound(k)`と同じ要素）を指すこと。
+    func testFirstOnDuplicateKeys() throws {
+      let b = duplicates()
+      XCTAssertEqual(b[.first(1)]?.value, "b")
+      XCTAssertEqual(b[.first(1)]?.value, b[lowerBound(1)]?.value)
+      XCTAssertEqual(pairs(b[.first(1) ..< upperBound(1)]), ["1:b", "1:c"])
     }
   }
 #endif

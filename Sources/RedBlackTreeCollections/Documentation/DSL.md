@@ -21,27 +21,10 @@
 | `.lowerBound(k)` | `k` 以上の最初の要素 | `end` | O(log `count`) |
 | `.upperBound(k)` | `k` より大きい最初の要素 | `end` | O(log `count`) |
 | `.find(k)` | `k` と等しい要素 | `end` | O(log `count`) |
+| `.first(k)` | `k` と等しい要素のうち走査順の先頭 | `end` | O(log `count`) |
 
-### 比較系（実験実装）
-
-比較系の位置指定は実験実装であり、`ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait を有効にした場合だけ利用できる。
-多重系（MultiSet / MultiMap）で同値要素が複数あるとき、包含の比較系がどの要素を指すかは未確定である。
-
-| 式 | 意味 | 該当する位置がない場合 | 評価時の計算量 |
-|---|---|---|---|
-| `.lessThan(k)` | `k` より小さい最大の要素 | 先行要素がなければ評価失敗 | O(log `count`) |
-| `.greaterThan(k)` | `k` より大きい最小の要素 | `end` | O(log `count`) |
-| `.lessThanOrEqual(k)` | `k` 以下の最大の要素 | 先行要素がなければ評価失敗 | O(log `count`) |
-| `.greaterThanOrEqual(k)` | `k` 以上の最小の要素 | `end` | O(log `count`) |
-
-比較系の位置指定は、内部的には次のように評価される。
-
-| 式 | 評価 |
-|---|---|
-| `.lessThan(k)` | `lowerBound(k)` の1つ前 |
-| `.greaterThan(k)` | `upperBound(k)` |
-| `.lessThanOrEqual(k)` | `find(k)` が成功すればその位置、なければ `lowerBound(k)` の1つ前 |
-| `.greaterThanOrEqual(k)` | `find(k)` が成功すればその位置、なければ `upperBound(k)` |
+`.first(k)` は同値要素の群の先頭を指す。`.find(k)` は同値要素の先頭を指定するものではない。
+トップレベル関数 `first(k)` も `.first(k)` と同じ境界式を作る。
 
 ### 相対位置
 

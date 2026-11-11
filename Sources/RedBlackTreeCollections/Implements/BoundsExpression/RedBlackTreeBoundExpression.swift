@@ -185,12 +185,17 @@ extension RedBlackTreeBoundExpression {
     .init(_internal: .init(.find(k)))
   }
 
+  /// Represents the first element in traversal order whose key equals the given value.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  /// In multi collections, this selects the beginning of the equal-key group.
+  ///
+  /// - Complexity: O(log `count`) when evaluated.
   @inlinable
   public static func first(_ k: Key) -> Self {
     .init(_internal: .init(.first(k)))
   }
 
-  // 比較系の位置指定は実験実装（RBT-063）。traitで有効にした場合だけ提供する。
   #if false
   /// Represents the greatest element that is less than the given value.
   @inlinable

@@ -69,12 +69,10 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
-      # 性能は専用ベンチマークで判定し、XCTest.measureのばらつき判定は除外する。
       - name: Run Debug tests excluding performance measurements
         run: >-
           swift test -c debug
-          --traits NORMAL_DEBUG_TEST,ENABLE_DEATH_TESTS
-          --skip "/test(Performance|ProvisionalPerformance)"
+          --traits CANDIDATE_DEBUG_TEST,ENABLE_DEATH_TESTS
 
   release-all-tests:
     needs: resolve
@@ -90,11 +88,10 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
-      # 性能は専用ベンチマークで判定し、XCTest.measureのばらつき判定は除外する。
+      # 性能は専用ベンチマークで判定する。
       - name: Run Release tests excluding performance measurements
         run: >-
-          swift test -c release --traits NORMAL_RELEASE_TEST,ENABLE_DEATH_TESTS
-          --skip "/test(Performance|ProvisionalPerformance)"
+          swift test -c release --traits CANDIDATE_RELEASE_TEST,ENABLE_DEATH_TESTS
 
   atcoder-2025-compatibility:
     name: AtCoder 2025 compatibility (${{ matrix.configuration }})

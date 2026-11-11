@@ -172,6 +172,21 @@ let package = Package(
     //    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
+    .trait(
+      name: "CANDIDATE_DEBUG_TEST",
+      description: "Enable internal checks for release-candidate Debug tests.",
+      enabledTraits: [
+        "ENABLE_TREE_INVARIANT",
+        "ENABLE_TREE_ALLOCATION_COUNTER",
+        "ENABLE_TREE_COPY_COUNTER",
+        "ENABLE_TREE_ASSERT_INTERNAL",
+        "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL",
+      ]
+    ),
+    .trait(
+      name: "CANDIDATE_RELEASE_TEST",
+      description: "Run release-candidate Release tests without XCTest performance measurements."
+    ),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
     .trait(name: "ENABLE_TREE_COPY_COUNTER"),
     .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),

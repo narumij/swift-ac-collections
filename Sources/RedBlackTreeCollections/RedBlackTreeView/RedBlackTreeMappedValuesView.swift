@@ -338,10 +338,9 @@ extension RedBlackTreeMappedValuesView {
         _sealed_start = first.pointer!.uncheckedSeal
         _sealed_end = last.pointer!.uncheckedSeal
       }
-      let result = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
+      _ = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
         try shouldBeRemoved(Base.__mapped_value($0))
       }
-//      assert(result.error == nil)
     }
   }
 

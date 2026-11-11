@@ -84,7 +84,7 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 
-  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+  #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
   //
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
@@ -174,7 +174,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+  #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   // IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
@@ -193,7 +193,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
   }
 
-  #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+  #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリ
   //
   // ヘッダーにとっては解放責任のデタッチ先
@@ -363,7 +363,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
-      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+      #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
       assert(_tied == nil, "メモリ管理権が移行されていないこと")
       #endif
       freshBucketAllocator.deallocate(bucket: freshBucketHead)

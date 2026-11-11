@@ -125,7 +125,7 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       var header = UnsafeTreeV2BufferHeader(allocator: .create(), nullptr: .nullptr, capacity: 0)
 
-      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+      #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
       _ = header.tiedRawBuffer
       #endif
 

@@ -92,13 +92,13 @@
         " end_ptr                :", end_ptr,
         "tag:", end_ptr.pointee.___tracking_tag)
 
-      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+      #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
       print(" tiedRawBuffer present  :", _tied != nil)
       #endif
       
       print(" lazyDetach present     :", _lazyDetach != nil)
       
-      #if !USE_HEAD_BUCKET_PAIRING && COMPATIBLE_ATCODER_2025
+      #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
       print(" uniquelyOwned          :", isRawBufferUniquelyOwned)
       #endif
 

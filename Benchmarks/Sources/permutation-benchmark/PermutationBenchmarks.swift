@@ -194,26 +194,6 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "NextPermutations.Permutation subscript shuffled access",
-      input: Int.self
-    ) { size in
-      var rng = PermutationBenchmarkRNG(seed: 0x5EED_0000 &+ UInt64(size))
-      let indices = Array(0..<size).shuffled(using: &rng)
-      return { timer in
-        var permutations = Array(0..<size).nextPermutations()
-        let p = permutations.next()!
-        var sum = 0
-        timer.measure {
-          for i in indices {
-            sum &+= p[i]
-          }
-        }
-        blackHole(sum)
-        validate(sum, size: size)
-      }
-    }
-
     // Corrected variants (bounds-check validation, CLAUDE_TASK.md Task 1).
     //
     // The two cases above accumulate into `sum`, a variable captured by the
@@ -295,6 +275,26 @@ extension Benchmark {
     }
     #endif
 
+    self.add(
+      title: "NextPermutations.Permutation subscript shuffled access",
+      input: Int.self
+    ) { size in
+      var rng = PermutationBenchmarkRNG(seed: 0x5EED_0000 &+ UInt64(size))
+      let indices = Array(0..<size).shuffled(using: &rng)
+      return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
+        var sum = 0
+        timer.measure {
+          for i in indices {
+            sum &+= p[i]
+          }
+        }
+        blackHole(sum)
+        validate(sum, size: size)
+      }
+    }
+    
     self.add(
       title: "NextPermutations.Permutation subscript shuffled access (batched)",
       input: Int.self

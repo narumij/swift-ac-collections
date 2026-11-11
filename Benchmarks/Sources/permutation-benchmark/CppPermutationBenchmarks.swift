@@ -1,5 +1,5 @@
 import CollectionsBenchmark
-import CppBenchmarks
+import CppPermutationBenchmarks
 
 private final class CppPermutationSource {
   let pointer: UnsafeMutableRawPointer

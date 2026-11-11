@@ -48,6 +48,20 @@ let package = Package(
     .target(
       name: "CppBenchmarks",
     ),
+    .target(
+      name: "CppPermutationBenchmarks"
+    ),
+    .executableTarget(
+      name: "permutation-benchmark",
+      dependencies: [
+        .product(name: "AcCollections", package: "swift-ac-collections"),
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        "CppPermutationBenchmarks",
+      ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+      ]
+    ),
     .executableTarget(
       name: "benchmark",
       dependencies: [

@@ -19,7 +19,7 @@ var defines: [String] = [
 //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
   //  "USE_PATH_BITMAP_64",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
+//    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
@@ -66,7 +66,7 @@ var _settings: [SwiftSetting] =
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
     .define(
       "ENABLE_OFFSET_OVERFLOW_GUARD",
-      .when(traits: ["ENABLE_OFFSET_OVERFLOW_GUARD"])
+      .when(traits: ["USE_PATH_BITMAP_64"])
     ),
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる

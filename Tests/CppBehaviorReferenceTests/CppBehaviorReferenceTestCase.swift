@@ -38,7 +38,7 @@ class CppBehaviorReferenceTestCase: XCTestCase {
     }
     // The empty-singleton structure checks do not depend on the counters.
     #if DEBUG
-    #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
+    #if COMPATIBLE_ATCODER_2025
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     #endif
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)

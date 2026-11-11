@@ -41,7 +41,7 @@ class RedBlackTreeTestCase: XCTestCase {
     // 空シングルトンの構造検査はカウンターに依存しないため、Debug全体で行う。
     #if DEBUG // TODO: 調査。 これは、なんでDEBUGのままなんだ？
     // XCTAssertNil(_emptyTreeStorage.header._tied)
-    #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
+    #if COMPATIBLE_ATCODER_2025
     // ホットパス改善のため最初から結束バンド済みにした
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     #endif

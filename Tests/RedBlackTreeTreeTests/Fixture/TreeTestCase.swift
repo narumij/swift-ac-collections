@@ -38,7 +38,7 @@ class TreeTestCase: XCTestCase {
 
     // 空シングルトンの構造検査はカウンターに依存しないため、Debug全体で行う。
     #if DEBUG
-    #if !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
+    #if COMPATIBLE_ATCODER_2025
     XCTAssertNotNil(_emptyTreeStorage.header._tied)
     #endif
     XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)

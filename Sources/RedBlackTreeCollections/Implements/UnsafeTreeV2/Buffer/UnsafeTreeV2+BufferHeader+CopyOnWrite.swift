@@ -123,12 +123,12 @@ extension UnsafeTreeV2BufferHeader {
   // reserveCapacity用
 
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  internal func _ensureUniqueSlow<Base>(to minimumCapacity: Int) -> UnsafeTreeV2<Base> {
+  internal mutating func _ensureUniqueSlow<Base>(to minimumCapacity: Int) -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: minimumCapacity)
   }
 
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  internal func _ensureUniqueSlow<Base>() -> UnsafeTreeV2<Base> {
+  internal mutating func _ensureUniqueSlow<Base>() -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: _requestCapacity().request)
   }
 }

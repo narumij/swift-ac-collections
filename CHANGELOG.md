@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ノードの位置比較に使うパス表現を、既定で128bit幅に変更（従来の既定は64bit幅）。既定の構成では、確保可能な要素数の上限は従来どおりメモリ量による上限となる
 - `USE_INT128` traitを、64bit幅を選ぶ`USE_PATH_BITMAP_64` traitに置き換え。`USE_PATH_BITMAP_64`を有効にすると、パス表現は64bit幅になり、確保可能な要素数の上限は2^32 − 1個となる
 - 赤黒木1つあたりのメモリ確保を、木の本体と先頭バケットの2回から1回にまとめた。先頭バケットを木の本体の末尾に置き、本体と一緒に解放する。AtCoder 2025互換モードと`USE_LAZY_DETACH`の構成では、従来どおり別々に確保する
-- オフセット計算のオーバーフロー検査（0.7.2で既定有効化）を、既定では無効に変更。`USE_PATH_BITMAP_64` traitを有効にした構成で有効になる
+- オフセット計算のオーバーフロー検査（0.7.2で既定有効化）を、既定では無効に変更。`USE_PATH_BITMAP_64`または`ENABLE_OFFSET_OVERFLOW_GUARD` traitを有効にした構成で有効になる
 
 ### Fixed
 - APIドキュメントの境界式のコード例・逆順範囲・距離計算の説明、Dictionary / MultiMapの`keys`・`values`、Dictionaryのデコード時の重複キー処理、MultiSetの削除説明を現行実装に合わせて訂正（動作変更なし）

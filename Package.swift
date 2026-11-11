@@ -66,7 +66,7 @@ var _settings: [SwiftSetting] =
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
     .define(
       "ENABLE_OFFSET_OVERFLOW_GUARD",
-      .when(traits: ["USE_PATH_BITMAP_64"])
+      .when(traits: ["USE_PATH_BITMAP_64", "ENABLE_OFFSET_OVERFLOW_GUARD"])
     ),
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる

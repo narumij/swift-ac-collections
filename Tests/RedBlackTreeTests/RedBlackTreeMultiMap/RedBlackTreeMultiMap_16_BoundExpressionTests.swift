@@ -377,3 +377,31 @@ final class RedBlackTreeMultiMapBoundDistanceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapBoundPublicBehaviorTests {
+
+    /// トップレベル関数の境界式は、同名のstaticメンバーと同じ要素を指すこと。
+    /// 重複keyでもvalueが異なるので、valueで位置を見分ける。
+    func testTopLevelBoundsMatchStaticMembers() throws {
+      var b = RedBlackTreeMultiMap<Int, String>()
+      b.insert((0, "a"))
+      b.insert((2, "b"))
+      b.insert((2, "c"))
+      b.insert((2, "d"))
+      b.insert((4, "e"))
+      XCTAssertEqual(b[start()]?.value, b[.start]?.value)
+      XCTAssertEqual(b[last()]?.value, b[.last]?.value)
+      XCTAssertEqual(b[last()]?.value, "e")
+      XCTAssertNil(b[end()])
+      for k in -1 ... 5 {
+        XCTAssertEqual(b[lowerBound(k)]?.value, b[.lowerBound(k)]?.value, "lowerBound k=\(k)")
+        XCTAssertEqual(b[upperBound(k)]?.value, b[.upperBound(k)]?.value, "upperBound k=\(k)")
+        XCTAssertEqual(b[find(k)]?.key, b[.find(k)]?.key, "find k=\(k)")
+        XCTAssertEqual(b[first(k)]?.value, b[.first(k)]?.value, "first k=\(k)")
+      }
+      XCTAssertEqual(b[first(2)]?.value, "b", "first(2)は2の群の先頭であること")
+      XCTAssertNil(RedBlackTreeMultiMap<Int, String>()[last()])
+    }
+  }
+#endif

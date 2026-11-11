@@ -327,3 +327,24 @@ final class RedBlackTreeDictionaryBoundDistanceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryBoundPublicBehaviorTests {
+
+    /// トップレベル関数の境界式は、同名のstaticメンバーと同じ要素を指すこと。
+    func testTopLevelBoundsMatchStaticMembers() throws {
+      let b: RedBlackTreeDictionary = [0: "a", 2: "b", 4: "c"]
+      XCTAssertEqual(b[start()]?.value, b[.start]?.value)
+      XCTAssertEqual(b[last()]?.value, b[.last]?.value)
+      XCTAssertEqual(b[last()]?.value, "c")
+      XCTAssertNil(b[end()])
+      for k in -1 ... 5 {
+        XCTAssertEqual(b[lowerBound(k)]?.value, b[.lowerBound(k)]?.value, "lowerBound k=\(k)")
+        XCTAssertEqual(b[upperBound(k)]?.value, b[.upperBound(k)]?.value, "upperBound k=\(k)")
+        XCTAssertEqual(b[find(k)]?.value, b[.find(k)]?.value, "find k=\(k)")
+        XCTAssertEqual(b[first(k)]?.value, b[.first(k)]?.value, "first k=\(k)")
+      }
+      XCTAssertNil(RedBlackTreeDictionary<Int, String>()[last()])
+    }
+  }
+#endif

@@ -627,3 +627,28 @@ final class RedBlackTreeSetBoundDistanceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBoundPublicBehaviorTests {
+
+    /// トップレベル関数の境界式は、同名のstaticメンバーと同じ位置を指すこと。
+    /// 位置は、木の先頭からその位置までの要素数で比べる（終端なら要素数全体）。
+    func testTopLevelBoundsMatchStaticMembers() throws {
+      let b = RedBlackTreeSet<Int>([0, 2, 4])
+      func position(_ bound: RedBlackTreeSet<Int>.Bound) -> Int {
+        b[.start ..< bound].count
+      }
+      XCTAssertEqual(position(start()), position(.start))
+      XCTAssertEqual(position(last()), position(.last))
+      XCTAssertEqual(position(end()), position(.end))
+      for k in -1 ... 5 {
+        XCTAssertEqual(position(lowerBound(k)), position(.lowerBound(k)), "lowerBound k=\(k)")
+        XCTAssertEqual(position(upperBound(k)), position(.upperBound(k)), "upperBound k=\(k)")
+        XCTAssertEqual(position(find(k)), position(.find(k)), "find k=\(k)")
+        XCTAssertEqual(position(first(k)), position(.first(k)), "first k=\(k)")
+      }
+      XCTAssertEqual(b[last()], 4)
+      XCTAssertNil(RedBlackTreeSet<Int>()[last()])
+    }
+  }
+#endif

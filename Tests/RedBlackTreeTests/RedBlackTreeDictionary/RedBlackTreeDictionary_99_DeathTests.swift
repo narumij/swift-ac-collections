@@ -474,7 +474,7 @@
   }
 #endif
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {
     guard let result else { return }
 

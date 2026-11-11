@@ -12,7 +12,7 @@ import XCTest
 
   final class HeadBucketPairingTests: RedBlackTreeTestCase {
 
-    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
       /// 要素領域の先頭は1バイト境界しか保証されないため、先頭バケットはpairのalignmentへ切り上げて置かれる。
       /// 各種payload型と容量について、先頭バケット・begin_ptr・endノード・各ノード・各payloadが整列し、
       /// 最後のpayloadの末尾まで木のオブジェクトの要素領域に収まること。

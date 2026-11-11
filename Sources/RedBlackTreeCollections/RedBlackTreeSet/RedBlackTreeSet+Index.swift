@@ -260,7 +260,7 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   extension RedBlackTreeSet {
     
     // SetAlgebra都合でinsertの戻りが変えられない。

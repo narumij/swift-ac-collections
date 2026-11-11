@@ -155,7 +155,7 @@ extension _BucketAllocator {
     return header
   }
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @usableFromInline
     package func initializeHeadBucket(
       storage: UnsafeMutableRawPointer, capacity: Int, nullptr: _NodePtr
@@ -239,7 +239,7 @@ extension _BucketAllocator {
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @inlinable
     package func _pairedHeadAllocationSize(capacity: Int) -> Int {
       _headAllocationSize(capacity: capacity) &+ (pairLayout.alignment &- 1)
@@ -320,7 +320,7 @@ extension _BucketAllocator {
     }
   }
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @inlinable
     package func deallocateKeepingHead(bucket b: _BucketPointer?) {
       var reserverHead = b
@@ -363,7 +363,7 @@ extension _BucketAllocator {
     }
   #endif
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @inlinable
     func _deinitializeHeadBucket(_ b: _BucketPointer) {
       _deinitializeNodeAndValues(storage: b.primaryStorage(), b)

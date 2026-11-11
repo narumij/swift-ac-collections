@@ -507,7 +507,7 @@
   }
 #endif
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   /// 容量を保ったまま全削除したMultiMapと、削除前に取ったIndex・IndexRange。
   private func multiMapAfterRemoveAllKeepingCapacity()
     -> (tree: RedBlackTreeMultiMap<String, String>, stale: RedBlackTreeMultiMap<String, String>.Index, staleRange: RedBlackTreeIndexRange)

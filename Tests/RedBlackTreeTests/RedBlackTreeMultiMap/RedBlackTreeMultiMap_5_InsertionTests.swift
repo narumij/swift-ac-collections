@@ -206,7 +206,7 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     #endif
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
     /// MultiMapはキー重複を許容するため、既存キーへの`index(inserting:)`も
     /// (Setのような一意挿入ではなく)常に新しいエントリとして挿入されること。
     func test_indexInserting_allowsDuplicateKeysAndErasesByIndex() {

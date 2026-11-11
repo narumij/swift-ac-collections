@@ -79,7 +79,7 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
       }
     #endif
 
-    #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    #if ALLOW_CROSS_TREE_INDEX
       /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
       /// 解決できること(`index_stale_check.md`のF3)。
       func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {

@@ -80,7 +80,7 @@ final class RedBlackTreeDictionaryIndexValidityXCTests: RedBlackTreeTestCase {
     XCTAssertFalse(dictionary.isElement(at: stale))
   }
 
-  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX
   /// `RedBlackTreeDictionary_3`のF3仕様テストの前提: 生き残ったCoWコピーがあっても、
   /// 発行元のバッファが解放されたIndexは本当にdetachedになっていること。
   /// これが崩れると、F3/F4の仕様テストはdetachedでない経路を通って成功してしまう。
@@ -175,7 +175,7 @@ final class RedBlackTreeDictionaryIndexValidityXCTests: RedBlackTreeTestCase {
 
     XCTAssertFalse(b0.isValid, "bでは削除しているので不適格となる")
     XCTAssertFalse(b.isValid(index: b0), "すでに解放されているインデックスなので不適格")
-    #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
+    #if !ALLOW_CROSS_TREE_INDEX
     XCTAssertFalse(a.isValid(index: b0), "すでに解放されているインデックスなので不適格")
     #else
     XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")

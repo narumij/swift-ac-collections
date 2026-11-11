@@ -499,7 +499,7 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(result["c"], 3)
   }
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
     /// 新しいキーへの`index(inserting:)`は挿入し、`inserted`は`true`、`index`は
     /// 挿入した要素を指すこと。
     func test_indexInserting_insertsNewKey() {

@@ -342,7 +342,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   /// Linuxのスケジューラ風に、run queueへのenqueue時にIndexを保存し、
   /// sleep/dequeue時はtaskを再検索せず、そのIndexから取り除く主用途の実験。
   func test_indexInserting_linuxSchedulerStyleRunQueueExperiment() {
@@ -418,7 +418,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
   func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
     var set = RedBlackTreeSet(0 ..< 8)

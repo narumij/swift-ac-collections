@@ -570,7 +570,7 @@
   }
 #endif
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   /// 容量を保ったまま全削除したMultiSetと、削除前に取ったIndex・IndexRange。
   private func multiSetAfterRemoveAllKeepingCapacity()
     -> (tree: RedBlackTreeMultiSet<String>, stale: RedBlackTreeMultiSet<String>.Index, staleRange: RedBlackTreeIndexRange)

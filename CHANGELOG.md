@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.8.0] - 2026-11-11
+## [0.8.0] - 2026-11-12
 
 ### Added
 - 境界式に`.first(_:)`と、トップレベル関数の`first(_:)`を追加。指定した値と等しい要素のうち、走査順の先頭の要素を指す。MultiSet / MultiMapでは同値要素の群の先頭（同じキーでは最初に挿入された要素）になる。等しい要素が無い場合は、`.find(_:)`と同じく終端に置き換わる

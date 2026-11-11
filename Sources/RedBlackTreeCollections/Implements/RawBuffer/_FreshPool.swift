@@ -136,18 +136,14 @@
       freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
 
-    @usableFromInline
+    @inlinable
+    @inline(__always)
     mutating func ___deallocFreshPool() {
-      //      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      #if COMPATIBLE_ATCODER_2025
+      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      #endif
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
-    
-    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
-    @usableFromInline
-    mutating func ___deallocFreshPoolKeepingHead() {
-      freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
-    }
-    #endif
   }
 
   // MARK: - 作業用サイズ計算

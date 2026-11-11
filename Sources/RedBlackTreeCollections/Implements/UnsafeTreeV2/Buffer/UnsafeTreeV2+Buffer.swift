@@ -39,15 +39,9 @@ package final class UnsafeTreeV2Buffer:
         header.pointee._lazyDetach?.isDetached = true
       }
 
-      #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
-      header.pointee.___deallocFreshPoolKeepingHead()
-      #endif
-      
-      #if !USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+      #if !COMPATIBLE_ATCODER_2025
       header.pointee.___deallocFreshPool()
-      #endif
-      
-      #if COMPATIBLE_ATCODER_2025
+      #else
       if !header.pointee.isRawBufferUniquelyOwned {
         // 内部バッファがぼっちじゃないので、続行
         header.pointee._tied!.isValueAccessAllowed = false

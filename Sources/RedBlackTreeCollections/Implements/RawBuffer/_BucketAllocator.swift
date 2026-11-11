@@ -307,8 +307,9 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
+  #if DEBUG || !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   @inlinable
-  package func deallocate(bucket b: _BucketPointer?) {
+  package func deallocate_FreeingHead(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {
       reserverHead = h.pointee.next
@@ -319,20 +320,27 @@ extension _BucketAllocator {
       _deallocOtherBucket(h)
     }
   }
+  #endif
 
   #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
-    @inlinable
-    package func deallocateKeepingHead(bucket b: _BucketPointer?) {
-      var reserverHead = b
-      if let h = reserverHead {
-        reserverHead = h.pointee.next
-        _deinitializeHeadBucket(h)
-      }
-      while let h = reserverHead {
-        reserverHead = h.pointee.next
-        _deallocOtherBucket(h)
-      }
+  @inlinable
+  package func deallocate(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    if let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deinitializeHeadBucket(h)
     }
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deallocOtherBucket(h)
+    }
+  }
+  #else
+  @inlinable
+  @inline(__always)
+  package func deallocate(bucket b: _BucketPointer?) {
+    deallocate_KeepingHead(bucket: b)
+  }
   #endif
 }
 

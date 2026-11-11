@@ -10,6 +10,17 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeCollections
 
+extension UnsafeTreeV2BufferHeader {
+  
+  @usableFromInline
+  mutating func ___deallocFreshPool_FreeingHead() {
+    #if COMPATIBLE_ATCODER_2025
+    assert(_tied == nil, "メモリ管理権が移行されていないこと")
+    #endif
+    freshBucketAllocator.deallocate_FreeingHead(bucket: freshBucketHead)
+  }
+}
+
   final class BufferHeaderTests: PointerRedBlackTreeTestCase {
 
     typealias Fixture = UnsafeTreeV2BufferHeader
@@ -31,7 +42,7 @@ import XCTest
       XCTAssertEqual(header.end_ptr.__left_, .nullptr)
       XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
 
     func testInitial() throws {
@@ -59,7 +70,7 @@ import XCTest
         XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
         // popしたポインタはユニーク個数で指定数あること
         XCTAssertEqual(pointers.count, i)
-        header.___deallocFreshPool()
+        header.___deallocFreshPool_FreeingHead()
       }
     }
 
@@ -111,7 +122,7 @@ import XCTest
       }
       XCTAssertEqual(header.recycleHead, .nullptr)
       XCTAssertEqual(header.___popRecycle(), .nullptr)
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
 
     /// `___popRecycle()` は速度を優先した内部プリミティブであり、空チェックを行わない。
@@ -143,7 +154,7 @@ import XCTest
       XCTAssertEqual(header.count, 1)
       XCTAssertEqual(nullBack, UnsafeNode.nullptr.pointee)
 
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
   }
 #endif

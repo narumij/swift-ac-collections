@@ -155,6 +155,39 @@ extension _BucketAllocator {
     return header
   }
 
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    @usableFromInline
+    package func initializeHeadBucket(
+      storage: UnsafeMutableRawPointer, capacity: Int, nullptr: _NodePtr
+    ) -> _BucketPointer {
+
+      let header = storage
+        .alignedUp(toMultipleOf: pairLayout.alignment)
+        .assumingMemoryBound(to: _Bucket.self)
+
+      let endNode = header.end_ptr
+      let beginPtr = header.begin_ptr
+
+      endNode.initialize(to: .create(tag: .end, nullptr: nullptr, ___has_payload_content: false))
+      beginPtr.initialize(to: endNode)
+      header.initialize(to: .init(capacity: capacity))
+      #if _TREE_ALLOCATION_COUNTER
+        nodeInitializedCount += 1
+      #endif
+
+      #if DEBUG
+        do {
+          var it = header._capacities(storage: header.primaryStorage(), pairLayout: pairLayout)
+          while let p = it.pop() {
+            p.pointee.___tracking_tag = .debug
+          }
+        }
+      #endif
+
+      return header
+    }
+  #endif
+
   @usableFromInline  // レジスタ圧を下げることにした
   package func createBucket(bucketCapacity: Int) -> _BucketPointer {
 
@@ -205,6 +238,13 @@ extension _BucketAllocator {
     guard capacity != 0 else { return prefix }
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    @inlinable
+    package func _pairedHeadAllocationSize(capacity: Int) -> Int {
+      _headAllocationSize(capacity: capacity) &+ (pairLayout.alignment &- 1)
+    }
+  #endif
 
   @inlinable
   @inline(__always)
@@ -279,6 +319,21 @@ extension _BucketAllocator {
       _deallocOtherBucket(h)
     }
   }
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    @inlinable
+    package func deallocateKeepingHead(bucket b: _BucketPointer?) {
+      var reserverHead = b
+      if let h = reserverHead {
+        reserverHead = h.pointee.next
+        _deinitializeHeadBucket(h)
+      }
+      while let h = reserverHead {
+        reserverHead = h.pointee.next
+        _deallocOtherBucket(h)
+      }
+    }
+  #endif
 }
 
 extension _BucketAllocator {
@@ -305,6 +360,16 @@ extension _BucketAllocator {
       _deinitializeBeginNode(b)
       b.deinitialize(count: 1)
       UnsafeMutableRawPointer(b)._deallocate()
+    }
+  #endif
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    @inlinable
+    func _deinitializeHeadBucket(_ b: _BucketPointer) {
+      _deinitializeNodeAndValues(storage: b.primaryStorage(), b)
+      _deinitializeEndNode(b)
+      _deinitializeBeginNode(b)
+      b.deinitialize(count: 1)
     }
   #endif
 

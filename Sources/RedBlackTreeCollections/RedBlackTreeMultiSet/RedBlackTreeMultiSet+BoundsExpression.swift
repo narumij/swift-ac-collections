@@ -49,7 +49,7 @@
     /// let r2 = tree[.lowerBound(5)...]
     ///
     /// // Elements less than 7
-    /// let r3 = tree[..< .lowerBound(7)]
+    /// let r3 = tree[..<lowerBound(7)]
     ///
     /// // Elements equal to 5
     /// let r4 = tree[equalRange(5)]
@@ -57,7 +57,7 @@
     ///
     /// - Note:
     ///   - Endpoints are evaluated in the tree's sort order.
-    ///   - Invalid ranges may trap at runtime.
+    ///   - Reversed or otherwise unusable ranges produce an empty view.
     ///
     /// - SeeAlso:
     ///   - `RedBlackTreeBoundRangeExpression`
@@ -67,6 +67,12 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Returns the signed distance between the two evaluated positions.
+    ///
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int

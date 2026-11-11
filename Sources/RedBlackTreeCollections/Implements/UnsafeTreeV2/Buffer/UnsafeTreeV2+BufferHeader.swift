@@ -54,6 +54,24 @@ package struct UnsafeTreeV2BufferHeader {
     assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
   }
 
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  @inlinable
+  internal init(
+    allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int,
+    headStorage: UnsafeMutableRawPointer
+  ) {
+    let head = allocator.initializeHeadBucket(
+      storage: headStorage, capacity: capacity, nullptr: nullptr)
+    self.recycleHead = nullptr
+    self.nullptr = nullptr
+    self.begin_ptr = head.begin_ptr
+    self.root_ptr = head.end_ptr.pointer(to: \.__left_)!
+    self.freshBucketAllocator = allocator
+    self.pushFreshBucket(head: head)
+    assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
+  }
+  #endif
+
   @usableFromInline var count: Int = 0
   @usableFromInline var recycleHead: _NodePtr
   @usableFromInline var freshPoolCapacity: Int = 0
@@ -74,7 +92,6 @@ package struct UnsafeTreeV2BufferHeader {
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
 
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
   @inlinable
   var _lazyDetach: _LazyTie? {
     @inline(__always)
@@ -95,7 +112,10 @@ package struct UnsafeTreeV2BufferHeader {
     }
   }
   #else
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
+  // AIがうるさいので補足
+  // 直接書き込みをする操作は、Header内部とシングルと生成に限定する。
+  // 読み込みもUnsafeTreeV2に限定する。
+  // それ以外の経路があれば違反となる。
   @usableFromInline var _lazyDetach: _LazyTie?
   #endif
 
@@ -340,6 +360,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
+
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    @usableFromInline
+    mutating func ___deallocFreshPoolKeepingHead() {
+      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
+    }
+    #endif
   }
 
   extension UnsafeTreeV2BufferHeader {

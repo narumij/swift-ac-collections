@@ -19,7 +19,7 @@ var defines: [String] = [
 //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし->メモリ効率が大事なケースがあるだろうから、活かそうかと
   //  "USE_PATH_BITMAP_64",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
+//    "ENABLE_OFFSET_OVERFLOW_GUARD", // TODO: DISABLE_OFFSET_OVERFLOW_GUARDにする検討をする
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
@@ -32,8 +32,10 @@ var defines: [String] = [
 //  "_TREE_ALLOCATION_COUNTER",
 //  "_TREE_INTERNAL_CHECKS",
     
-//    // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
+    // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
     // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
+    
+    "USE_HEAD_BUCKET_PAIRING"
 ]
 
 var _settings: [SwiftSetting] =
@@ -64,7 +66,7 @@ var _settings: [SwiftSetting] =
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
     .define(
       "ENABLE_OFFSET_OVERFLOW_GUARD",
-      .when(traits: ["ENABLE_OFFSET_OVERFLOW_GUARD"])
+      .when(traits: ["USE_PATH_BITMAP_64", "ENABLE_OFFSET_OVERFLOW_GUARD"])
     ),
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
@@ -90,10 +92,10 @@ var _settings: [SwiftSetting] =
     ),
     // 境界式の比較系(.lessThan / .greaterThan / .lessThanOrEqual / .greaterThanOrEqual)
     // 多重系の同値要素の扱いが未確定のため実験扱い（RBT-063）
-    .define(
-      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
-    ),
+    //    .define(
+    //      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+    //      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
+    //    ),
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
@@ -165,11 +167,11 @@ let package = Package(
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
-    .trait(
-      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-      description:
-        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
-    ),
+    //    .trait(
+    //      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
+    //      description:
+    //        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
+    //    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),

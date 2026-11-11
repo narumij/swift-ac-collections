@@ -20,34 +20,7 @@ final class ABC370DTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if !COMPATIBLE_ATCODER_2025 && ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-    func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
-      
-      let _g1 = RedBlackTreeSet<Int>(0..<W)
-      let _g2 = RedBlackTreeSet<Int>(0..<H)
-      
-      nonisolated(unsafe) var g1: [RedBlackTreeSet<Int>] = .init(repeating: _g1, count: H)
-      nonisolated(unsafe) var g2: [RedBlackTreeSet<Int>] = .init(repeating: _g2, count: W)
-
-      for (R, C) in Q {
-        
-        // 合ってるかどうかわからない。雰囲気で書いて動いている程度
-        
-        g2[C][.lessThan(R) ... .greaterThan(R)].erase {
-          g1[$0].remove(C)
-          return true
-        }
-
-        g1[R][.lessThan(C) ... .greaterThan(C)].erase {
-          g2[$0].remove(R)
-          return true
-        }
-        
-      }
-
-      print(g1.map(\.count).reduce(0, +))
-    }
-  #elseif !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025
     func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
       let _g1 = RedBlackTreeSet<Int>(0..<W)
       let _g2 = RedBlackTreeSet<Int>(0..<H)

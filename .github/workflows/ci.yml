@@ -234,7 +234,12 @@ jobs:
 
   performance:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    name: performance (${{ matrix.suite }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [collections, next-permutations]
     env:
       PERFORMANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.performance_base_ref }}
       PERFORMANCE_HEAD_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.performance_head_ref || github.sha }}
@@ -268,48 +273,95 @@ jobs:
             printf 'resolved head SHA: %s\n' "$(git -C head rev-parse HEAD)"
           } | tee head/benchmark-results/comparison-refs.txt
 
+      - name: Select benchmark executable and libraries from each revision
+        shell: bash
+        env:
+          BENCHMARK_SUITE: ${{ matrix.suite }}
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          permutations = os.environ["BENCHMARK_SUITE"] == "next-permutations"
+          for checkout in ['base', 'head']:
+              output = Path(checkout) / "benchmark-results"
+              output.mkdir(parents=True, exist_ok=True)
+              benchmarks = Path(checkout) / "Benchmarks"
+              split = (benchmarks / "Sources" / "permutation-benchmark").is_dir()
+              executable = "permutation-benchmark" if permutations and split else "benchmark"
+              (output / "executable.txt").write_text(executable + "\n")
+              print(f"{checkout}: {executable}")
+              for name in ("CI.json", "CI-Small.json"):
+                  library_name = "CI-NextPermutations.json" if permutations and split and name == "CI.json" else name
+                  source = benchmarks / "Libraries" / library_name
+                  library = json.loads(source.read_text())
+                  library["contents"] = [
+                      group for group in library["contents"]
+                      if (group["title"] == "NextPermutations") == permutations
+                  ]
+                  if library["contents"]:
+                      (output / name).write_text(json.dumps(library, indent=2) + "\n")
+          PYTHON
+
       - name: Run current benchmarks
         working-directory: head/Benchmarks
         run: |
           mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
 
-          swift run -c release benchmark library run \
-            --library ./Libraries/CI.json \
-            ../benchmark-results/current.json \
-            --max-size 64k \
-            --cycles 1 \
-            --mode replace-all
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/current.json \
+              --max-size 64k \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
 
           # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
-          swift run -c release benchmark library run \
-            --library ./Libraries/CI-Small.json \
-            ../benchmark-results/current.json \
-            --max-size 10 \
-            --cycles 1 \
-            --mode append
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/current.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
 
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
         run: |
           set -euo pipefail
           mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
 
           # Measure each revision using its own benchmark definitions.
           # Do not copy current task names into an older checkout or rename results.
-          swift run -c release benchmark library run \
-            --library ./Libraries/CI.json \
-            ../benchmark-results/base.json \
-            --max-size 64k \
-            --cycles 1 \
-            --mode replace-all
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/base.json \
+              --max-size 64k \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
 
           # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
-          swift run -c release benchmark library run \
-            --library ./Libraries/CI-Small.json \
-            ../benchmark-results/base.json \
-            --max-size 10 \
-            --cycles 1 \
-            --mode append
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/base.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
 
       - name: Check performance regression
         working-directory: head/Benchmarks
@@ -319,8 +371,9 @@ jobs:
 
           # results compare scores only tasks with measurements in both files.
           # Added, removed, or renamed tasks are reported but excluded from the gate.
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
           OUTPUT="$(
-            swift run -c release benchmark results compare \
+            swift run -c release "$BENCHMARK_EXECUTABLE" results compare \
               ../../base/benchmark-results/base.json \
               ../benchmark-results/current.json
           )"
@@ -359,10 +412,11 @@ jobs:
             OUTPUT="benchmark-binaries/$CHECKOUT"
             mkdir -p "$OUTPUT"
 
+            BENCHMARK_EXECUTABLE="$(cat "$CHECKOUT/benchmark-results/executable.txt")"
             BENCHMARK="$(
               find "$CHECKOUT/Benchmarks/.build" \
                 -type f \
-                -name benchmark \
+                -name "$BENCHMARK_EXECUTABLE" \
                 -perm -111 \
                 -print \
                 -quit
@@ -387,7 +441,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-performance-results
+          name: benchmark-performance-results-${{ matrix.suite }}
           path: |
             head/benchmark-results
             base/benchmark-results

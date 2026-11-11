@@ -331,34 +331,6 @@ final class RedBlackTreeSetBoundExpressionTests: RedBlackTreeTestCase {
     XCTAssertFalse(a.isValid(upperBound(10) ..< lowerBound(-10)))
   }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanAllKeys() throws {
-    let cases: [(key: Int, expected: Int?)] = [
-      (-1, nil), (0, nil), (1, 0), (2, 1), (3, 2), (4, 2),
-    ]
-
-    for (key, expected) in cases {
-      XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
-    }
-  }
-  #endif
-
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanOrEqualAllKeys() throws {
-    let cases: [(key: Int, expected: Int?)] = [
-      (-1, nil), (0, 0), (1, 1), (2, 2), (3, 2),
-    ]
-
-    for (key, expected) in cases {
-      XCTAssertEqual(
-        a.isValid(.lessThanOrEqual(key)),
-        expected != nil,
-        "key=\(key)"
-      )
-    }
-  }
-  #endif
-
   /// `.find(_:)`は等しい要素がある場合だけ有効な位置になること（解決した値はPublicBehavior側）
   func testFindAllKeys() throws {
     let cases: [(key: Int, expected: Int?)] = [
@@ -415,34 +387,6 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertNil(a[end()])
     XCTAssertEqual(a[last()], 2)
   }
-
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  /// `lessThan`・`lessThanOrEqual`・`find`は、各keyで対応する要素を返し、無ければ`nil`になること。
-  func testLessThanLessThanOrEqualAndFindAllKeys() throws {
-    let lessThan: [(key: Int, expected: Int?)] = [
-      (-1, nil), (0, nil), (1, 0), (2, 1), (3, 2), (4, 2),
-    ]
-    for (key, expected) in lessThan {
-      XCTAssertEqual(a[.lessThan(key)], expected, "lessThan key=\(key)")
-    }
-    let lessThanOrEqual: [(key: Int, expected: Int?)] = [
-      (-1, nil), (0, 0), (1, 1), (2, 2), (3, 2),
-    ]
-    for (key, expected) in lessThanOrEqual {
-      XCTAssertEqual(
-        a[.lessThanOrEqual(key)],
-        expected,
-        "lessThanOrEqual key=\(key)"
-      )
-    }
-    let find: [(key: Int, expected: Int?)] = [
-      (-1, nil), (0, 0), (1, 1), (2, 2), (3, nil),
-    ]
-    for (key, expected) in find {
-      XCTAssertEqual(a[.find(key)], expected, "find key=\(key)")
-    }
-  }
-  #endif
 
   /// 逆向きのBound範囲のviewは空になり、列挙しても要素を返さないこと。
   func testReversedBoundsViewIsEmpty() throws {
@@ -587,15 +531,6 @@ final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
   }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessGreaterHelpers() throws {
-    XCTAssertEqual(a[.lessThan(1)], 0)
-    XCTAssertEqual(a[.greaterThan(1)], 2)
-    XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
-    XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
-  }
-  #endif
-
   func testBoundRangeOperators() throws {
     let view1 = a[lowerBound(0) ..< upperBound(2)]
     XCTAssertEqual(Array(view1), [0, 1, 2])
@@ -664,6 +599,56 @@ final class RedBlackTreeSetBoundDistanceTests: RedBlackTreeTestCase {
       let set: RedBlackTreeSet<Int> = [1, 2, 3]
       XCTAssertNil(set[.start.advanced(by: 4)])
       XCTAssertNil(set[.start.advanced(by: Int.max)])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBoundPublicBehaviorTests {
+
+    /// `.first(k)`はkと等しい要素を指し、無い場合や空の木では解決できず`nil`になること。
+    func testFirstResolvesToTheEqualElement() throws {
+      XCTAssertEqual(a[.first(0)], 0)
+      XCTAssertEqual(a[.first(1)], 1)
+      XCTAssertEqual(a[.first(2)], 2)
+      XCTAssertNil(a[.first(-1)])
+      XCTAssertNil(a[.first(3)])
+      XCTAssertNil(RedBlackTreeSet<Int>()[.first(0)])
+    }
+
+    /// `.first(k)`は他の境界式と同じく、`before`・`after`や範囲の端に使えること。
+    func testFirstComposesWithOtherBounds() throws {
+      XCTAssertEqual(a[.first(1).before], 0)
+      XCTAssertEqual(a[.first(1).after], 2)
+      XCTAssertEqual(Array(a[.first(1)...]), [1, 2])
+      XCTAssertEqual(Array(a[.start ..< .first(2)]), [0, 1])
+      XCTAssertEqual(Array(a[.first(5)...]), [])
+      XCTAssertEqual(a[first(1)], a[.first(1)], "トップレベルの`first(_:)`も同じ位置を指すこと")
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBoundPublicBehaviorTests {
+
+    /// トップレベル関数の境界式は、同名のstaticメンバーと同じ位置を指すこと。
+    /// 位置は、木の先頭からその位置までの要素数で比べる（終端なら要素数全体）。
+    func testTopLevelBoundsMatchStaticMembers() throws {
+      let b = RedBlackTreeSet<Int>([0, 2, 4])
+      func position(_ bound: RedBlackTreeSet<Int>.Bound) -> Int {
+        b[.start ..< bound].count
+      }
+      XCTAssertEqual(position(start()), position(.start))
+      XCTAssertEqual(position(last()), position(.last))
+      XCTAssertEqual(position(end()), position(.end))
+      for k in -1 ... 5 {
+        XCTAssertEqual(position(lowerBound(k)), position(.lowerBound(k)), "lowerBound k=\(k)")
+        XCTAssertEqual(position(upperBound(k)), position(.upperBound(k)), "upperBound k=\(k)")
+        XCTAssertEqual(position(find(k)), position(.find(k)), "find k=\(k)")
+        XCTAssertEqual(position(first(k)), position(.first(k)), "first k=\(k)")
+      }
+      XCTAssertEqual(b[last()], 4)
+      XCTAssertNil(RedBlackTreeSet<Int>()[last()])
     }
   }
 #endif

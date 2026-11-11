@@ -48,7 +48,7 @@
     /// let r2 = tree[.lowerBound(5)...]
     ///
     /// // Elements less than 7
-    /// let r3 = tree[..< .lowerBound(7)]
+    /// let r3 = tree[..<lowerBound(7)]
     ///
     /// // Elements equal to 5
     /// let r4 = tree[equalRange(5)]
@@ -66,9 +66,12 @@
 
   extension RedBlackTreeSet {
 
-    /// Returns the distance between two evaluated position.
+    /// Returns the signed distance between the two evaluated positions.
     ///
-    /// - Complexity: O(log *n* + *k*)
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
     @inlinable
     public func distance(
       from start: RedBlackTreeBoundExpression<Element>,

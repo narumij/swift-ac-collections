@@ -25,7 +25,7 @@
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
-  internal init(_buffer: ManagedBufferPointer<Header, Void>) {
+  internal init(_buffer: ManagedBufferPointer<Header, Element>) {
     self._buffer = _buffer
   }
 
@@ -40,8 +40,9 @@ extension UnsafeTreeV2 {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
-  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
-  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
+  @usableFromInline typealias Element = UnsafeTreeV2BufferElement
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Element>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Element>
 }
 
 extension UnsafeTreeV2 {
@@ -194,36 +195,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-#if ALLOW_CROSS_TREE_INDEX
-  @inlinable
-  package func __deep_purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
-    #if USE_LAZY_DETACH
-      _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
-        ? index.sealed.deepPurified
-        : __retrieve_(index.sealed.purified.tag).deepPurified
-    #else
-      _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
-        ? index.sealed.deepPurified
-        : __retrieve_(index.tag).deepPurified
-    #endif
-  }
-#else
-  @inlinable
-  package func __deep_purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
-    _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
-      ? index.sealed.deepPurified
-      : .failure(.crossTree)
-  }
-#endif
-  
-  @inlinable
-  internal func __deep_purified_safe_(_ index: _LazyTiedPtrV2) -> _SafePtr {
-    __deep_purified_(index).map(\.pointer)
-  }
-}
-
-extension UnsafeTreeV2 {
-
   @inlinable
   internal func __purified_safe_(
     _ range: _RawRange<UnsafeIndexV3>
@@ -255,41 +226,5 @@ extension UnsafeTreeV2 {
     _ range: UnsafeIndexV3RangeExpression
   ) -> _SafeRangeExpression {
     __purified_safe_(range.rangeExpression)
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  internal func __deep_purified_safe_(
-    _ range: _RawRange<UnsafeIndexV3>
-  ) -> _SafeRange {
-    traverse(range) {
-      __deep_purified_safe_($0)
-    }
-  }
-
-  @inlinable
-  internal func __deep_purified_safe_(
-    _ range: UnsafeIndexV3Range
-  ) -> _SafeRange {
-    __deep_purified_safe_(range.range)
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  internal func __deep_purified_safe_(
-    _ range: _RawRangeExpression<UnsafeIndexV3>
-  ) -> _SafeRangeExpression {
-    traverse(range) { __deep_purified_safe_($0) }
-  }
-
-  @inlinable
-  internal func __deep_purified_safe_(
-    _ range: UnsafeIndexV3RangeExpression
-  ) -> _SafeRangeExpression {
-    __deep_purified_safe_(range.rangeExpression)
   }
 }

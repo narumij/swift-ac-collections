@@ -96,7 +96,7 @@
 ///
 /// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before` / `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan` / `.lessThanOrEqual` / `.greaterThan` / `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.first`, `.before` / `.after`, and `.advanced(by:limit:)`. `.first(k)` selects the first element in traversal order whose key equals `k`, or the end if no such element exists. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -423,7 +423,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given index of the set.
+    /// Removes the occurrence at the given index of the multiset.
     ///
     /// - Parameter index: A valid index of the multiset. The index must refer
     ///   to an element, not the multiset's `endIndex`.
@@ -468,7 +468,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the occurrence at the given position from the multiset and returns the index of the next element.
     ///
     /// - Parameter ptr: A valid index of the multiset. The index must refer to
     ///   an element, not the multiset's `endIndex`.

@@ -30,7 +30,7 @@
 /// - Note:
 ///   - Endpoints are specified by `BoundExpression`, not raw keys.
 ///   - Ranges are evaluated in the tree's sort order.
-///   - Invalid ranges (e.g., lower > upper) may trap at runtime.
+///   - Reversed or unusable bounds select an empty range in collection subscripts and erasure.
 ///
 /// - SeeAlso: `RedBlackTreeBoundExpression`
 @frozen
@@ -44,7 +44,7 @@ public enum RedBlackTreeBoundRangeExpression<Key> {
   ///   - to: Upper bound (exclusive)
   ///
   /// - Note:
-  ///   If `from >= to`, the range may be empty or invalid.
+  ///   Equal or reversed endpoints select an empty range.
   case range(from: Bound, to: Bound)
   /// A closed range `[from, through]`.
   ///
@@ -53,7 +53,7 @@ public enum RedBlackTreeBoundRangeExpression<Key> {
   ///   - through: Upper bound (inclusive)
   ///
   /// - Note:
-  ///   If `from > through`, the range is invalid.
+  ///   Reversed endpoints select an empty range.
   case closedRange(from: Bound, through: Bound)
   /// A range of elements strictly less than `bound` (`..< bound`).
   ///
@@ -63,7 +63,7 @@ public enum RedBlackTreeBoundRangeExpression<Key> {
   ///
   /// - Parameter bound: Upper bound (inclusive)
   case partialRangeThrough(Bound)
-  /// A range of elements greater than or equal to `bound` (`bound ..`).
+  /// A range of elements greater than or equal to `bound` (`bound...`).
   ///
   /// - Parameter bound: Lower bound (inclusive)
   case partialRangeFrom(Bound)

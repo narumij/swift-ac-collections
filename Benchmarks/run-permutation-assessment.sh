@@ -22,14 +22,14 @@ system_profiler SPHardwareDataType > "${ENVIRONMENT_DIR}/hardware.txt"
 xcrun swift --version > "${ENVIRONMENT_DIR}/swift.txt"
 xcrun clang++ --version > "${ENVIRONMENT_DIR}/clang.txt"
 
-swift run -c release benchmark library run \
+swift run -c release permutation-benchmark library run \
   --library ./Libraries/PermutationAssessment.json \
   "${RESULT_PATH}" \
   --sizes 8 12 16 20 24 28 32 \
   --cycles 5 \
   --mode replace-all
 
-swift run -c release benchmark library render \
+swift run -c release permutation-benchmark library render \
   --library ./Libraries/PermutationAssessment.json \
   "${RESULT_PATH}" \
   --amortized false \

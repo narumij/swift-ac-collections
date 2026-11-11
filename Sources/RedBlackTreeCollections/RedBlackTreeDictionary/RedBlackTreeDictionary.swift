@@ -97,7 +97,7 @@
 ///
 /// Index-range subscripting returns a pair view without copying elements into an array. The view has its own endpoint. Mutating directly through the subscript changes the base; mutating a view stored in a separate variable is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
 ///
-/// `Bound` provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.before`, `.after`, and `.advanced(by:limit:)`. The comparison bounds `.lessThan`, `.lessThanOrEqual`, `.greaterThan`, and `.greaterThanOrEqual` are experimental and require the `ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS` trait. A single bound resolving to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges produce empty views.
+/// `Bound` provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.first`, `.before`, `.after`, and `.advanced(by:limit:)`. `.first(k)` selects the first element in traversal order whose key equals `k`, or the end if no such element exists. A single bound resolving to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges produce empty views.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]

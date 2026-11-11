@@ -1,0 +1,22 @@
+{
+  "kind": "group",
+  "title": "NextPermutations CI Performance Regression",
+  "directory": "CI-NextPermutations",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "NextPermutations",
+      "directory": "permutations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "subscript access (batched)",
+          "tasks": [
+            "NextPermutations.Permutation subscript sequential access (batched)",
+            "NextPermutations.Permutation subscript shuffled access (batched)"
+          ]
+        }
+      ]
+    }
+  ]
+}

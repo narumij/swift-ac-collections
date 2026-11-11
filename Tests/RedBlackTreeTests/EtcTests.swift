@@ -22,23 +22,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
       // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
       // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
-      #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-      func testMultiBoundsOrEqualReachEndsOfEqualRun() {
-        let multiSet: RedBlackTreeMultiSet<Int> = [1, 5, 5, 5, 7]
-        XCTAssertEqual(Array(multiSet[...(.lessThanOrEqual(5))]), [1, 5, 5, 5])
-        XCTAssertEqual(Array(multiSet[(.greaterThanOrEqual(5))...]), [5, 5, 5, 7])
-        var erased = multiSet
-        _ = erased.erase(.lessThanOrEqual(5))
-        XCTAssertEqual(Array(erased), [1, 5, 5, 7])  // 最後の5を消す
-
-        var multiMap = RedBlackTreeMultiMap<Int, String>()
-        multiMap.insert(key: 5, value: "a")
-        multiMap.insert(key: 5, value: "b")
-        multiMap.insert(key: 5, value: "c")
-        XCTAssertEqual(multiMap[.lessThanOrEqual(5)]?.value, "c")
-        XCTAssertEqual(multiMap[.greaterThanOrEqual(5)]?.value, "a")
-      }
-      #endif
 
     #endif
 

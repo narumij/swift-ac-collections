@@ -28,17 +28,6 @@ final class RedBlackTreeDictionaryBoundExpressionTests: RedBlackTreeTestCase {
 
   func testLastIsValid() throws { XCTAssertTrue(a.isValid(.last)) }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanAllKeysIsValid() throws {
-    let cases: [(key: Int, valid: Bool)] = [
-      (-1, false), (0, false), (1, true), (2, true), (3, true), (4, true),
-    ]
-    for (key, valid) in cases {
-      XCTAssertEqual(a.isValid(.lessThan(key)), valid, "key=\(key)")
-    }
-  }
-  #endif
-
   #if _TREE_COPY_COUNTER
   /// 空のDictionaryに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
   /// バッファからの退避)を発生させないこと。
@@ -262,27 +251,6 @@ final class RedBlackTreeDictionaryBoundPublicBehaviorTests: RedBlackTreeTestCase
     XCTAssertEqual(pairs(b), ["1:b", "3:d"])
   }
 
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessThanAllKeys() throws {
-    let cases: [(key: Int, expected: String?)] = [
-      (-1, nil), (0, nil), (1, "a"), (2, "b"), (3, "c"), (4, "c"),
-    ]
-
-    for (key, expected) in cases {
-      XCTAssertEqual(a[.lessThan(key)]?.value, expected, "key=\(key)")
-    }
-  }
-  #endif
-
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
-  func testLessGreaterHelpers() throws {
-    XCTAssertEqual(a[.lessThan(1)]?.value, "a")
-    XCTAssertEqual(a[.greaterThan(1)]?.value, "c")
-    XCTAssertEqual(a[.lessThanOrEqual(1)]?.value, "b")
-    XCTAssertEqual(a[.greaterThanOrEqual(1)]?.value, "b")
-  }
-  #endif
-
   func testBoundRangeOperators() throws {
     XCTAssertEqual(
       pairs(a[lowerBound(0) ..< upperBound(2)]),
@@ -338,6 +306,45 @@ final class RedBlackTreeDictionaryBoundDistanceTests: RedBlackTreeTestCase {
       let c = RedBlackTreeDictionary(uniqueKeysWithValues: [(1, 1), (2, 2), (3, 3)])
       XCTAssertNil(c[.start.advanced(by: 4)])
       XCTAssertNil(c[.start.advanced(by: Int.max)])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryBoundPublicBehaviorTests {
+
+    /// `.first(k)`はkの要素を指し、無い場合や空の辞書では解決できず`nil`になること。
+    func testFirstResolvesToTheEqualKey() throws {
+      XCTAssertEqual(a[.first(0)]?.value, "a")
+      XCTAssertEqual(a[.first(1)]?.value, "b")
+      XCTAssertEqual(a[.first(2)]?.value, "c")
+      XCTAssertNil(a[.first(-1)])
+      XCTAssertNil(a[.first(3)])
+      XCTAssertNil(RedBlackTreeDictionary<Int, String>()[.first(0)])
+      XCTAssertEqual(a[.first(1).before]?.value, "a")
+      XCTAssertEqual(a[.first(1).after]?.value, "c")
+      XCTAssertEqual(a[first(1)]?.value, "b", "トップレベルの`first(_:)`も同じ位置を指すこと")
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryBoundPublicBehaviorTests {
+
+    /// トップレベル関数の境界式は、同名のstaticメンバーと同じ要素を指すこと。
+    func testTopLevelBoundsMatchStaticMembers() throws {
+      let b: RedBlackTreeDictionary = [0: "a", 2: "b", 4: "c"]
+      XCTAssertEqual(b[start()]?.value, b[.start]?.value)
+      XCTAssertEqual(b[last()]?.value, b[.last]?.value)
+      XCTAssertEqual(b[last()]?.value, "c")
+      XCTAssertNil(b[end()])
+      for k in -1 ... 5 {
+        XCTAssertEqual(b[lowerBound(k)]?.value, b[.lowerBound(k)]?.value, "lowerBound k=\(k)")
+        XCTAssertEqual(b[upperBound(k)]?.value, b[.upperBound(k)]?.value, "upperBound k=\(k)")
+        XCTAssertEqual(b[find(k)]?.value, b[.find(k)]?.value, "find k=\(k)")
+        XCTAssertEqual(b[first(k)]?.value, b[.first(k)]?.value, "first k=\(k)")
+      }
+      XCTAssertNil(RedBlackTreeDictionary<Int, String>()[last()])
     }
   }
 #endif

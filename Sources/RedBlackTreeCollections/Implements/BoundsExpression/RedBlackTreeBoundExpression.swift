@@ -34,10 +34,11 @@
 /// - `end` : The past-the-end element
 /// - `lowerBound(_:)` : The first element that is not less than the given value
 /// - `upperBound(_:)` : The first element that is greater than the given value
-/// - `find(_:)` : The element equal to the given value
-/// - `advanced(_:offset:limit:)` : The element advanced by `offset` from a base position
-/// - `before(_:)` : The previous element
-/// - `after(_:)` : The next element
+/// - `find(_:)` : An element equal to the given value
+/// - `first(_:)` : The first element in traversal order equal to the given value
+/// - `advanced(by:limit:)` : A position offset from the preceding position, with an optional limit
+/// - `before` : The previous position
+/// - `after` : The next position
 @frozen
 public struct RedBlackTreeBoundExpression<Key> {
 
@@ -99,10 +100,11 @@ extension RedBlackTreeBoundExpression {
     case lowerBound(Key)
     case upperBound(Key)
     case find(Key)
+    case first(Key)
     indirect case advanced(offset: Int, limit: Internal? = nil)
     case before
     case after
-    #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
+    #if false
     // MultiSetでは、挙動が期待通りじゃないが、それ以外に意味論的問題もはらむので半凍結
     // TODO: tatyam setの挙動調査
       case lessThan(Key)
@@ -184,8 +186,18 @@ extension RedBlackTreeBoundExpression {
     .init(_internal: .init(.find(k)))
   }
 
-  // 比較系の位置指定は実験実装（RBT-063）。traitで有効にした場合だけ提供する。
-  #if ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS
+  /// Represents the first element in traversal order whose key equals the given value.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  /// In multi collections, this selects the beginning of the equal-key group.
+  ///
+  /// - Complexity: O(log `count`) when evaluated.
+  @inlinable
+  public static func first(_ k: Key) -> Self {
+    .init(_internal: .init(.first(k)))
+  }
+
+  #if false
   /// Represents the greatest element that is less than the given value.
   @inlinable
   public static func lessThan(_ k: Key) -> Self {

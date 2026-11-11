@@ -74,7 +74,6 @@ package struct UnsafeTreeV2BufferHeader {
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
 
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
   @inlinable
   var _lazyDetach: _LazyTie? {
     @inline(__always)
@@ -95,7 +94,10 @@ package struct UnsafeTreeV2BufferHeader {
     }
   }
   #else
-  // TODO: 全削除の際にnilにする動作が追加されている。常に一意でないことに関して再考慮すること。
+  // AIがうるさいので補足
+  // 直接書き込みをする操作は、Header内部とシングルと生成に限定する。
+  // 読み込みもUnsafeTreeV2に限定する。
+  // それ以外の経路があれば違反となる。
   @usableFromInline var _lazyDetach: _LazyTie?
   #endif
 

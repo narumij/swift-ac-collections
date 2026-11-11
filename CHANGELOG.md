@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `USE_INT128` traitを、64bit幅を選ぶ`USE_PATH_BITMAP_64` traitに置き換え。`USE_PATH_BITMAP_64`を有効にすると、パス表現は64bit幅になり、確保可能な要素数の上限は2^32 − 1個となる
 
 ### Fixed
+- APIドキュメントの境界式のコード例・逆順範囲・距離計算の説明、Dictionary / MultiMapの`keys`・`values`、Dictionaryのデコード時の重複キー処理、MultiSetの削除説明を現行実装に合わせて訂正（動作変更なし）
 - `<`が全順序にならない要素で、下限が上限より後ろの位置になる範囲から作ったViewの`popFirst()`を続けて呼ぶと、終端ノードを要素として読み、木から外そうとする問題を修正（Release構成のAddress SanitizerでSEGV・heap-buffer-overflow）。開始が終端ノードに達したViewでは、`first`・`popFirst()`が`nil`を返す
 - 同じ条件で、境界式の`distance(from:to:)`がRelease構成で返らなくなる問題を修正
 - Viewの`erase(where:)`（KeyOnly・KeyValue・MappedValues）で、順序が壊れた範囲の削除が途中で止まった場合に、Debug構成だけ`assert`で停止していた問題を修正。Release構成と同じく停止せずに返る

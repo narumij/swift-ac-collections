@@ -423,7 +423,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given index of the set.
+    /// Removes the occurrence at the given index of the multiset.
     ///
     /// - Parameter index: A valid index of the multiset. The index must refer
     ///   to an element, not the multiset's `endIndex`.
@@ -468,7 +468,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the occurrence at the given position from the multiset and returns the index of the next element.
     ///
     /// - Parameter ptr: A valid index of the multiset. The index must refer to
     ///   an element, not the multiset's `endIndex`.

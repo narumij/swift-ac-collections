@@ -170,17 +170,14 @@ extension RedBlackTreeMultiMap {
       public typealias Keys = RedBlackTreeIterator.Keys<Base>
       //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-      /// A collection containing just the keys of the multimap.
+      /// A lazy sequence of keys in ascending order.
       ///
-      /// - Complexity: O(`count`)
+      /// - Complexity: O(1) to create the sequence; O(`count`) to traverse it.
       @inlinable
       public var keys: UnsafeIterator.KeyObverse<Base> {
         .init(start: _start, end: _end, tree: __tree_)
       }
 
-      /// A collection containing just the values of the multimap.
-      ///
-      /// - Complexity: O(`count`)
       //      @inlinable
       //      public var values: UnsafeIterator.MappedValueObverse<Base> {
       //        .init(start: _start, end: _end, tree: __tree_)
@@ -196,6 +193,12 @@ extension RedBlackTreeMultiMap {
           _end: range.upperBound.uncheckedSeal)
       }
 
+      /// A view of mapped values in ascending key order.
+      ///
+      /// Mutating this property modifies the collection. Mutating a separately
+      /// stored copy of the view leaves the collection unchanged.
+      ///
+      /// - Complexity: O(1) to create the view; O(`count`) to traverse it.
       @inlinable
       public var values: Values {
         @inline(__always) get {

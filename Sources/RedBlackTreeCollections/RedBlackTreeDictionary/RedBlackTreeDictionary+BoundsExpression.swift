@@ -24,7 +24,7 @@
 
   extension RedBlackTreeDictionary {
 
-    /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
+    /// A shorthand for `RedBlackTreeBoundExpression<Key>`.
     ///
     /// This type is used to describe element positions in the tree,
     /// such as the first element, bounds, or relative offsets.
@@ -36,6 +36,12 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the signed distance between the two evaluated positions.
+    ///
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int

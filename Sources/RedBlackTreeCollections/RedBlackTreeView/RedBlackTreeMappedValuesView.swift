@@ -76,11 +76,6 @@
 
   extension RedBlackTreeMappedValuesView {
 
-    /// Returns whether two views reference the same tree and the same range boundaries.
-    ///
-    /// - Parameter other: Another view to compare by identity.
-    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
-    /// - Complexity: O(1)
     @inlinable
     internal mutating func _ensureUnique() {
       // 異なる木のインデックスを無効扱いにするための準備措置

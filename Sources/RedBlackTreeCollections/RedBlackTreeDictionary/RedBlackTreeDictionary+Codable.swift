@@ -48,6 +48,7 @@
     /// Creates a new dictionary by decoding from the given decoder.
     ///
     /// Each entry in the unkeyed representation contains one key-value pair.
+    /// If a key occurs more than once, the first decoded value is retained.
     ///
     /// This initializer throws an error if reading from the decoder fails, or
     /// if the data read is corrupted or otherwise invalid.

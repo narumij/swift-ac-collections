@@ -34,10 +34,11 @@
 /// - `end` : The past-the-end element
 /// - `lowerBound(_:)` : The first element that is not less than the given value
 /// - `upperBound(_:)` : The first element that is greater than the given value
-/// - `find(_:)` : The element equal to the given value
-/// - `advanced(_:offset:limit:)` : The element advanced by `offset` from a base position
-/// - `before(_:)` : The previous element
-/// - `after(_:)` : The next element
+/// - `find(_:)` : An element equal to the given value
+/// - `first(_:)` : The first element in traversal order equal to the given value
+/// - `advanced(by:limit:)` : A position offset from the preceding position, with an optional limit
+/// - `before` : The previous position
+/// - `after` : The next position
 @frozen
 public struct RedBlackTreeBoundExpression<Key> {
 

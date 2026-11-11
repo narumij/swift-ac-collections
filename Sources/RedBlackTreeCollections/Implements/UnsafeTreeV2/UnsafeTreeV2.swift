@@ -25,7 +25,7 @@
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
-  internal init(_buffer: ManagedBufferPointer<Header, Void>) {
+  internal init(_buffer: ManagedBufferPointer<Header, Element>) {
     self._buffer = _buffer
   }
 
@@ -40,8 +40,9 @@ extension UnsafeTreeV2 {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
-  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
-  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
+  @usableFromInline typealias Element = UnsafeTreeV2BufferElement
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Element>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Element>
 }
 
 extension UnsafeTreeV2 {

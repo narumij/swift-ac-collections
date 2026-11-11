@@ -20,11 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if USE_HEAD_BUCKET_PAIRING && (COMPATIBLE_ATCODER_2025 || USE_LAZY_DETACH)
-#error("USE_HEAD_BUCKET_PAIRING cannot be combined with COMPATIBLE_ATCODER_2025 or USE_LAZY_DETACH")
-#endif
-
-#if USE_HEAD_BUCKET_PAIRING
+#if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
   @usableFromInline package typealias UnsafeTreeV2BufferElement = UInt8
 #else
   @usableFromInline package typealias UnsafeTreeV2BufferElement = Void
@@ -53,7 +49,7 @@ package final class UnsafeTreeV2Buffer:
         header.pointee._tied!.isValueAccessAllowed = false
       } else {
         // 内部バッファがぼっちになるので、解散
-        #if USE_HEAD_BUCKET_PAIRING
+        #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
         header.pointee.___deallocFreshPoolKeepingHead()
         #else
         header.pointee.___deallocFreshPool()
@@ -103,7 +99,7 @@ extension UnsafeTreeV2Buffer {
       allocator.pairLayout._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
     #endif
 
-    #if USE_HEAD_BUCKET_PAIRING
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
     let storage = UnsafeTreeV2Buffer.create(
       minimumCapacity: allocator._pairedHeadAllocationSize(capacity: nodeCapacity)
     ) { managedBuffer in

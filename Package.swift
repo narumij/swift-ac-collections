@@ -34,8 +34,6 @@ var defines: [String] = [
     
     // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
     // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
-    
-    "USE_HEAD_BUCKET_PAIRING"
 ]
 
 var _settings: [SwiftSetting] =
@@ -151,6 +149,7 @@ let package = Package(
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
+    .default(enabledTraits: ["USE_HEAD_BUCKET_PAIRING"]),
     .trait(
       name: "USE_COMPACT_NODE_METADATA",
       description:

@@ -54,7 +54,7 @@ package struct UnsafeTreeV2BufferHeader {
     assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
   }
 
-  #if USE_HEAD_BUCKET_PAIRING
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
   @inlinable
   internal init(
     allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int,
@@ -361,7 +361,7 @@ extension UnsafeTreeV2BufferHeader {
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
 
-    #if USE_HEAD_BUCKET_PAIRING
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
     @usableFromInline
     mutating func ___deallocFreshPoolKeepingHead() {
       assert(_tied == nil, "メモリ管理権が移行されていないこと")

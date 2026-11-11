@@ -54,6 +54,24 @@ package struct UnsafeTreeV2BufferHeader {
     assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
   }
 
+  #if USE_INTEGRATED_HEAD_BUCKET
+  @inlinable
+  internal init(
+    allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int,
+    headStorage: UnsafeMutableRawPointer
+  ) {
+    let head = allocator.initializeHeadBucket(
+      storage: headStorage, capacity: capacity, nullptr: nullptr)
+    self.recycleHead = nullptr
+    self.nullptr = nullptr
+    self.begin_ptr = head.begin_ptr
+    self.root_ptr = head.end_ptr.pointer(to: \.__left_)!
+    self.freshBucketAllocator = allocator
+    self.pushFreshBucket(head: head)
+    assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
+  }
+  #endif
+
   @usableFromInline var count: Int = 0
   @usableFromInline var recycleHead: _NodePtr
   @usableFromInline var freshPoolCapacity: Int = 0
@@ -342,6 +360,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
+
+    #if USE_INTEGRATED_HEAD_BUCKET
+    @usableFromInline
+    mutating func ___deallocFreshPoolKeepingHead() {
+      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
+    }
+    #endif
   }
 
   extension UnsafeTreeV2BufferHeader {

@@ -20,6 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if USE_INTEGRATED_HEAD_BUCKET && (COMPATIBLE_ATCODER_2025 || USE_LAZY_DETACH)
+#error("USE_INTEGRATED_HEAD_BUCKET cannot be combined with COMPATIBLE_ATCODER_2025 or USE_LAZY_DETACH")
+#endif
+
 @usableFromInline
 package final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
@@ -43,7 +47,11 @@ package final class UnsafeTreeV2Buffer:
         header.pointee._tied!.isValueAccessAllowed = false
       } else {
         // 内部バッファがぼっちになるので、解散
+        #if USE_INTEGRATED_HEAD_BUCKET
+        header.pointee.___deallocFreshPoolKeepingHead()
+        #else
         header.pointee.___deallocFreshPool()
+        #endif
       }
 
       #if ENABLE_EXPERIMENTAL_TSAN_SAFE
@@ -89,10 +97,23 @@ extension UnsafeTreeV2Buffer {
       allocator.pairLayout._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
     #endif
 
+    #if USE_INTEGRATED_HEAD_BUCKET
+    let storage = UnsafeTreeV2Buffer.create(
+      minimumCapacity: allocator._integratedHeadAllocationSize(capacity: nodeCapacity)
+    ) { managedBuffer in
+      let headStorage = managedBuffer.withUnsafeMutablePointerToElements {
+        UnsafeMutableRawPointer($0)
+      }
+      return .init(
+        allocator: allocator, nullptr: nullptr, capacity: nodeCapacity,
+        headStorage: headStorage)
+    }
+    #else
     // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       return .init(allocator: allocator, nullptr: nullptr, capacity: nodeCapacity)
     }
+    #endif
     assert(nodeCapacity <= storage.header.freshPoolCapacity, "必要最低容量を満たしていること")
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }

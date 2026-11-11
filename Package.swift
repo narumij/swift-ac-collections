@@ -34,6 +34,8 @@ var defines: [String] = [
     
     // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
     // "ENABLE_EXPERIMENTAL_TSAN_SAFE", // 実験用TSan安全を有効化する。まだ未完成
+    
+    "USE_INTEGRATED_HEAD_BUCKET"
 ]
 
 var _settings: [SwiftSetting] =
@@ -59,6 +61,7 @@ var _settings: [SwiftSetting] =
     // 64bit幅ではノード数の上限が2^32 - 1になる
     // 128bit幅ではメモリ計算の都合、Int.max / pair.strideが上限となる
     .define("USE_PATH_BITMAP_64", .when(traits: ["USE_PATH_BITMAP_64"])),
+    .define("USE_INTEGRATED_HEAD_BUCKET", .when(traits: ["USE_INTEGRATED_HEAD_BUCKET"])),
     // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる
     // そこまでのメモリを積んだマシンは現実的には無いとは思うが、もしも限界付近まで利用する場合には以下が必要になる
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
@@ -157,6 +160,11 @@ let package = Package(
       name: "USE_PATH_BITMAP_64",
       description:
         "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
+    ),
+    .trait(
+      name: "USE_INTEGRATED_HEAD_BUCKET",
+      description:
+        "Experimental: allocate the head bucket inside the tree storage object instead of separately (RBT-111)."
     ),
     .trait(name: "BENCHMARK"),
     .trait(

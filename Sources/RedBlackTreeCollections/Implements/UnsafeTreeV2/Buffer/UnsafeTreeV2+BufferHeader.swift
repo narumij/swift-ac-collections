@@ -372,7 +372,6 @@ extension UnsafeTreeV2BufferHeader {
     #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @usableFromInline
     mutating func ___deallocFreshPoolKeepingHead() {
-//      assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocateKeepingHead(bucket: freshBucketHead)
     }
     #endif

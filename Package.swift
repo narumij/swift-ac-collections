@@ -94,6 +94,11 @@ var _settings: [SwiftSetting] =
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
+    // 本来的に別の方法で定義するべきかもしれないが、警告がうっとうしいのでこの方法になっている
+    .define(
+      "USE_RECYCLE_COUNT_OVERWRAP",
+      .when(configuration: .release, traits: ["_O_UNCHECKED"])),
+    
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる

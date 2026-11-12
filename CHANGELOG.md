@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-11-12
+
+### Changed
+- 赤黒木への挿入時の容量確認を、空きがある場合の短い処理と、容量を拡張する処理に分離。Copy-on-Write時にバッファのヘッダを余分にコピーしないようにし、ヘッダのメモリ配置とバケットの解放処理も整理
+- MultiSet / MultiMapへ別の木の要素をまとめて挿入する経路で、必要量ぴったりではなく既存の成長方針に従って容量を拡張するよう変更。小さい木を繰り返し挿入したときの、細かいバケットの増加を抑える
+- 順列ベンチマーク専用の実行ファイルについて、Linuxでのリンカー設定と計測コードを調整
+
+### Removed
+- 非既定のコンパイル設定`USE_LAZY_DETACH`と、その専用実装を削除。従来の既定方式へ一本化し、AtCoder 2025互換モードのメモリ保持方式は維持
+
 ## [0.8.0] - 2026-11-12
 
 ### Added

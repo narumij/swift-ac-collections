@@ -49,7 +49,9 @@
   deinit {
     for i in 0..<count {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
     unsafe payload.deallocate()
@@ -66,10 +68,11 @@
   public func removeAll() {
     for i in 0..<count {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
-    unsafe hasPayload.update(repeating: false, count: count)
   }
 
 }
@@ -99,8 +102,11 @@ extension OptionalElementBuffer {
   @inlinable
   public func setElement(_ newValue: consuming Element?, at position: Int) {
     precondition(0 <= position && position < count)
+    let oldValue: Element?
     if unsafe hasPayload[position] {
-      unsafe (payload + position).deinitialize(count: 1)
+      oldValue = unsafe (payload + position).move()
+    } else {
+      oldValue = nil
     }
     if let newValue = consume newValue {
       unsafe (payload + position).initialize(to: newValue)
@@ -108,6 +114,7 @@ extension OptionalElementBuffer {
     } else {
       unsafe hasPayload[position] = false
     }
+    withExtendedLifetime(oldValue) {}
   }
 }
 
@@ -171,7 +178,9 @@ extension OptionalElementBuffer {
   deinit {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
     unsafe payload.deallocate()
@@ -188,10 +197,11 @@ extension OptionalElementBuffer {
   public func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
-    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
 }
@@ -225,8 +235,11 @@ extension OptionalElementBuffer2D {
     precondition(0 <= x && x < width)
     precondition(0 <= y && y < height)
     let offset = y * width + x
+    let oldValue: Element?
     if unsafe hasPayload[offset] {
-      unsafe (payload + offset).deinitialize(count: 1)
+      oldValue = unsafe (payload + offset).move()
+    } else {
+      oldValue = nil
     }
     if let newValue = consume newValue {
       unsafe (payload + offset).initialize(to: newValue)
@@ -234,6 +247,7 @@ extension OptionalElementBuffer2D {
     } else {
       unsafe hasPayload[offset] = false
     }
+    withExtendedLifetime(oldValue) {}
   }
 }
 
@@ -292,7 +306,9 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
   deinit {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
     unsafe payload.deallocate()
@@ -309,10 +325,11 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
   public func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
-    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
 }
@@ -353,8 +370,11 @@ extension OptionalElementBuffer3D {
     precondition(0 <= y && y < height)
     precondition(0 <= z && z < depth)
     let offset = (z * height + y) * width + x
+    let oldValue: Element?
     if unsafe hasPayload[offset] {
-      unsafe (payload + offset).deinitialize(count: 1)
+      oldValue = unsafe (payload + offset).move()
+    } else {
+      oldValue = nil
     }
     if let newValue = consume newValue {
       unsafe (payload + offset).initialize(to: newValue)
@@ -362,6 +382,7 @@ extension OptionalElementBuffer3D {
     } else {
       unsafe hasPayload[offset] = false
     }
+    withExtendedLifetime(oldValue) {}
   }
 }
 
@@ -425,7 +446,9 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
   deinit {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
     unsafe payload.deallocate()
@@ -442,10 +465,11 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
   public func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
-        unsafe (payload + i).deinitialize(count: 1)
+        let oldValue = unsafe (payload + i).move()
+        unsafe hasPayload[i] = false
+        withExtendedLifetime(oldValue) {}
       }
     }
-    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
 }
@@ -487,8 +511,11 @@ extension OptionalElementBuffer4D {
     precondition(0 <= z && z < size2)
     precondition(0 <= w && w < size3)
     let offset = ((w * size2 + z) * size1 + y) * size0 + x
+    let oldValue: Element?
     if unsafe hasPayload[offset] {
-      unsafe (payload + offset).deinitialize(count: 1)
+      oldValue = unsafe (payload + offset).move()
+    } else {
+      oldValue = nil
     }
     if let newValue = consume newValue {
       unsafe (payload + offset).initialize(to: newValue)
@@ -496,6 +523,7 @@ extension OptionalElementBuffer4D {
     } else {
       unsafe hasPayload[offset] = false
     }
+    withExtendedLifetime(oldValue) {}
   }
 }
 

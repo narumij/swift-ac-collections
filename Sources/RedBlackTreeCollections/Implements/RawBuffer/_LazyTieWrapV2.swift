@@ -50,6 +50,7 @@ extension _LazyTieWrapV2: Equatable {
 }
 
 #if DEBUG
+// 本体を経由しないとメモリ安全な比較ができず、それを不要にすると性能が落ちるので、本実装ではインデックスのComparableは提供できない
 extension _LazyTieWrapV2: Comparable {
 
   // swift-collections 1.7.0でContainerのIndexにComparable要求がある

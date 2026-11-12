@@ -96,7 +96,8 @@ extension UnsafeTreeV2 {
   @inlinable
   internal mutating func unsafeEnsureCapacity(to minimumCapacity: Int) {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-    withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+    guard capacity < minimumCapacity else { return }
+    withMutableHeader { $0._ensureCapacitySlow(to: growth(from: $0.count, to: minimumCapacity)) }
   }
 }
 

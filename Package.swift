@@ -95,11 +95,6 @@ var _settings: [SwiftSetting] =
       "USE_RECYCLE_COUNT_OVERWRAP",
       .when(configuration: .release, traits: ["_O_UNCHECKED"])),
     
-    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
-    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
-    // このため、リリース時はどちらにせよ無効になる
-    //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
-
     .define(
       "_TREE_ALLOCATION_COUNTER",
       .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
@@ -154,11 +149,6 @@ let package = Package(
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
-    //    .trait(
-    //      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-    //      description:
-    //        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
-    //    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(

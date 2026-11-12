@@ -302,7 +302,7 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     #endif
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
     /// MultiSetは同値要素を許容するため、`index(inserting:)`は常に新しいoccurrenceを
     /// 挿入し、`inserted`は`true`、`index`はその新しいoccurrenceを指すこと。
     func test_indexInserting_alwaysInsertsNewOccurrence() {

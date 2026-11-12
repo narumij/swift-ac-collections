@@ -39,7 +39,7 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX
   /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
   /// 解決できること(`index_stale_check.md`のF3)。
   func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {
@@ -119,7 +119,7 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
 
     XCTAssertFalse(b0.isValid)
     XCTAssertFalse(b.isElement(at: b0))
-    #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
+    #if !ALLOW_CROSS_TREE_INDEX
     XCTAssertFalse(a.isElement(at: b0))
     #else
     // Indexは受け取り側の木のnodeとだけ照合する(`Design-RuntimeChecks.md`の「状態ごとの結果」)。

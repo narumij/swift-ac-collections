@@ -288,7 +288,7 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   extension RedBlackTreeDictionary {
 
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする

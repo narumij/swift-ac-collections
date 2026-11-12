@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+#if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
   @usableFromInline package typealias UnsafeTreeV2BufferElement = UInt8
 #else
   @usableFromInline package typealias UnsafeTreeV2BufferElement = Void
@@ -36,25 +36,20 @@ package final class UnsafeTreeV2Buffer:
     withUnsafeMutablePointers { header, _ in
 
       if !header.pointee.isLazyDetachUniquelyOwned() {
-        #if USE_LAZY_DETACH
-          // ポインタを直接さわるほうが、境界内での最適化よりもいい場合がある
-          header.pointee._lazyDetach!.buffer = header.pointee.tiedRawBuffer
-        #else
-          header.pointee._lazyDetach?.isDetached = true
-        #endif
+        header.pointee._lazyDetach?.isDetached = true
       }
 
+      #if !COMPATIBLE_ATCODER_2025
+      header.pointee.___deallocFreshPool()
+      #else
       if !header.pointee.isRawBufferUniquelyOwned {
         // 内部バッファがぼっちじゃないので、続行
         header.pointee._tied!.isValueAccessAllowed = false
       } else {
         // 内部バッファがぼっちになるので、解散
-        #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
-        header.pointee.___deallocFreshPoolKeepingHead()
-        #else
         header.pointee.___deallocFreshPool()
-        #endif
       }
+      #endif
 
       #if ENABLE_EXPERIMENTAL_TSAN_SAFE
         if let p = header.pointee.lazyDetachPointer {
@@ -99,7 +94,7 @@ extension UnsafeTreeV2Buffer {
       allocator.pairLayout._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
     #endif
 
-    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     let storage = UnsafeTreeV2Buffer.create(
       minimumCapacity: allocator._pairedHeadAllocationSize(capacity: nodeCapacity)
     ) { managedBuffer in
@@ -130,7 +125,9 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       var header = UnsafeTreeV2BufferHeader(allocator: .create(), nullptr: .nullptr, capacity: 0)
 
+      #if COMPATIBLE_ATCODER_2025
       _ = header.tiedRawBuffer
+      #endif
 
       header._lazyDetach = _emptyLazyDetach
 

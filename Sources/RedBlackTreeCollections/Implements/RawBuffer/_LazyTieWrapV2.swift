@@ -62,9 +62,7 @@ extension _LazyTieWrapV2: Comparable {
     if lhs.lazyDetach !== rhs.lazyDetach {
       return lhs.lazyDetach < rhs.lazyDetach
     }
-    #if !USE_LAZY_DETACH
-      precondition(!lhs.lazyDetach.isDetached, .invalidIndex)
-    #endif
+    precondition(!lhs.lazyDetach.isDetached, .invalidIndex)
     return lhs.rawValue < rhs.rawValue
   }
 }

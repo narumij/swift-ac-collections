@@ -229,6 +229,8 @@ extension UnsafeTreeV2BufferHeader {
     assert(other.count == count, "コピー前後で有効ノード数が一致すること")
 
     assert(other.count <= other.freshPoolCapacity, "容量が有効ノー度数を下回らないこと")
+    #if COMPATIBLE_ATCODER_2025
     assert(other._tied == nil, "コピー後の木のメモリ管理権限が移行されていないこと")
+    #endif
   }
 }

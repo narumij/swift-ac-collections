@@ -88,7 +88,7 @@ final class RedBlackTreeMultiMapIndexValidityXCTests: RedBlackTreeTestCase {
     XCTAssertFalse(multiMap.isElement(at: stale))
   }
 
-  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX
   /// `RedBlackTreeMultiMap_3`のF3仕様テストの前提: 生き残ったCoWコピーがあっても、
   /// 発行元のバッファが解放されたIndexは本当にdetachedになっていること。
   /// これが崩れると、F3/F4の仕様テストはdetachedでない経路を通って成功してしまう。

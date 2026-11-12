@@ -155,7 +155,7 @@ extension _BucketAllocator {
     return header
   }
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @usableFromInline
     package func initializeHeadBucket(
       storage: UnsafeMutableRawPointer, capacity: Int, nullptr: _NodePtr
@@ -239,7 +239,7 @@ extension _BucketAllocator {
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @inlinable
     package func _pairedHeadAllocationSize(capacity: Int) -> Int {
       _headAllocationSize(capacity: capacity) &+ (pairLayout.alignment &- 1)
@@ -307,8 +307,9 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
+  #if DEBUG || !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   @inlinable
-  package func deallocate(bucket b: _BucketPointer?) {
+  package func deallocate_FreeingHead(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {
       reserverHead = h.pointee.next
@@ -319,20 +320,27 @@ extension _BucketAllocator {
       _deallocOtherBucket(h)
     }
   }
+  #endif
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
-    @inlinable
-    package func deallocateKeepingHead(bucket b: _BucketPointer?) {
-      var reserverHead = b
-      if let h = reserverHead {
-        reserverHead = h.pointee.next
-        _deinitializeHeadBucket(h)
-      }
-      while let h = reserverHead {
-        reserverHead = h.pointee.next
-        _deallocOtherBucket(h)
-      }
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+  @inlinable
+  package func deallocate(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    if let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deinitializeHeadBucket(h)
     }
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deallocOtherBucket(h)
+    }
+  }
+  #else
+  @inlinable
+  @inline(__always)
+  package func deallocate(bucket b: _BucketPointer?) {
+    deallocate_FreeingHead(bucket: b)
+  }
   #endif
 }
 
@@ -363,7 +371,7 @@ extension _BucketAllocator {
     }
   #endif
 
-  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025 && !USE_LAZY_DETACH
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
     @inlinable
     func _deinitializeHeadBucket(_ b: _BucketPointer) {
       _deinitializeNodeAndValues(storage: b.primaryStorage(), b)

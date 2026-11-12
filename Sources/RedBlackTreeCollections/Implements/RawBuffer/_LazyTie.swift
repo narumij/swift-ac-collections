@@ -42,44 +42,21 @@
 // コピーされた場合のインデックスは非互換
 // CoW発生時のインデックス互換はなるべく保証したい
 
-#if USE_LAZY_DETACH
-  @usableFromInline
-  package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
+@usableFromInline
+package final class _LazyTie: ManagedBuffer<Bool, Void> {
 
-    @inlinable
-    var buffer: _TiedRawBuffer? {
-      @inline(__always)
-      unsafeAddress {
-        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-      }
-      @inline(__always)
-      unsafeMutableAddress {
-        withUnsafeMutablePointerToHeader { $0 }
-      }
+  @inlinable
+  var isDetached: Bool {
+    @inline(__always)
+    unsafeAddress {
+      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
     }
-
-    @inlinable
-    var isDetached: Bool {
-      buffer != nil
+    @inline(__always)
+    unsafeMutableAddress {
+      withUnsafeMutablePointerToHeader { $0 }
     }
   }
-#else
-  @usableFromInline
-  package final class _LazyTie: ManagedBuffer<Bool, Void> {
-
-    @inlinable
-    var isDetached: Bool {
-      @inline(__always)
-      unsafeAddress {
-        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-      }
-      @inline(__always)
-      unsafeMutableAddress {
-        withUnsafeMutablePointerToHeader { $0 }
-      }
-    }
-  }
-#endif
+}
 
 #if DEBUG
   extension _LazyTie {
@@ -96,15 +73,9 @@ extension _LazyTie {
   @nonobjc
   @usableFromInline
   internal static func create() -> _LazyTie {
-    #if USE_LAZY_DETACH
-      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-        return nil
-      }
-    #else
-      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-        return false
-      }
-    #endif
+    let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+      return false
+    }
     return unsafeDowncast(storage, to: _LazyTie.self)
   }
 }
@@ -113,7 +84,6 @@ extension _LazyTie {
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
 
-#if !USE_LAZY_DETACH
 extension _LazyTie {
 
   @inlinable
@@ -124,4 +94,3 @@ extension _LazyTie {
     isDetached = true
   }
 }
-#endif

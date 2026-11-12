@@ -37,9 +37,7 @@ public struct _NodePtrSealing {
   // 封印
   @usableFromInline package var seal: UnsafeNode.Seal
 
-  #if !USE_LAZY_DETACH
-    @usableFromInline var trackingTag: _TrackingTag
-  #endif
+  @usableFromInline var trackingTag: _TrackingTag
 
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
@@ -51,9 +49,7 @@ public struct _NodePtrSealing {
     _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _p.pointee.___recycle_count
-    #if !USE_LAZY_DETACH
-      trackingTag = _p.trackingTag
-    #endif
+    trackingTag = _p.trackingTag
   }
 
   #if DEBUG
@@ -61,9 +57,7 @@ public struct _NodePtrSealing {
     init(unsafe _p: _NodePtr) {
       pointer = _p
       seal = _p.pointee.___recycle_count
-      #if !USE_LAZY_DETACH
-        trackingTag = _p.trackingTag
-      #endif
+      trackingTag = _p.trackingTag
     }
   #endif
 
@@ -73,9 +67,7 @@ public struct _NodePtrSealing {
     _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _seal
-    #if !USE_LAZY_DETACH
-      trackingTag = _p.trackingTag
-    #endif
+    trackingTag = _p.trackingTag
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
@@ -155,11 +147,7 @@ public struct _NodePtrSealing {
   // 引換券
   @inlinable
   var tag: _SealedTag {
-    #if USE_LAZY_DETACH
-      .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
-    #else
-      .success(.seal(raw: trackingTag, seal: seal))
-    #endif
+    .success(.seal(raw: trackingTag, seal: seal))
   }
 }
 
@@ -201,11 +189,7 @@ extension _NodePtrSealing: Hashable {}
 
 extension _NodePtrSealing: CustomStringConvertible {
   public var description: String {
-    #if USE_LAZY_DETACH
-      "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
-    #else
-      "_NodePtrSealing<\((tag: trackingTag, seal: seal, pointer))>"
-    #endif
+    "_NodePtrSealing<\((tag: trackingTag, seal: seal, pointer))>"
   }
 }
 

@@ -60,6 +60,11 @@ let package = Package(
       ],
       swiftSettings: [
         .enableExperimentalFeature("Lifetimes"),
+      ],
+      linkerSettings: [
+        .unsafeFlags(["-use-ld=lld", "-Xlinker", "-z", "-Xlinker", "nostart-stop-gc",
+                      "-Xlinker", "-z", "-Xlinker", "separate-code"],
+                     .when(platforms: [.linux]))
       ]
     ),
     .executableTarget(

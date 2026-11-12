@@ -60,6 +60,8 @@ package final class _LazyTie: ManagedBuffer<Bool, Void> {
 
 #if DEBUG
 // 本体を経由しないとメモリ安全な比較ができず、それを不要にすると性能が落ちるので、本実装ではインデックスのComparableは提供できない
+//
+// O(log N)を許容できるならpath bitmap方式で可能だが、遅いので嫌です。
   extension _LazyTie {
 
     @inlinable

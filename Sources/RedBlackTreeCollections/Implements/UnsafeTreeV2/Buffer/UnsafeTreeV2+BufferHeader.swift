@@ -72,6 +72,10 @@ package struct UnsafeTreeV2BufferHeader {
   }
   #endif
 
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline let begin_ptr: _NodeRef
+  @usableFromInline let root_ptr: _NodeRef
+  
   @usableFromInline var count: Int = 0
   @usableFromInline var recycleHead: _NodePtr
   @usableFromInline var freshPoolCapacity: Int = 0
@@ -79,10 +83,7 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var freshPoolUsedCount: Int = 0
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let begin_ptr: _NodeRef
-  @usableFromInline var root_ptr: _NodeRef
-  @usableFromInline var freshBucketAllocator: _BucketAllocator
+  @usableFromInline let freshBucketAllocator: _BucketAllocator
 
   #if COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ

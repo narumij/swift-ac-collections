@@ -91,8 +91,10 @@
 
     /// Accesses a view of the key-value pairs selected by a bound range expression.
     ///
-    /// Mutating the returned view modifies this dictionary. A range that evaluates
-    /// to no ordered positions produces an empty view.
+    /// Mutating through this subscript modifies this dictionary.
+    /// Mutating a view stored in a separate variable leaves this dictionary unchanged.
+    ///
+    /// A range that evaluates to no ordered positions produces an empty view.
     ///
     /// - Parameter bounds: A bound range expression evaluated against the
     ///   dictionary's keys.

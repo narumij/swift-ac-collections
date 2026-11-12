@@ -125,8 +125,10 @@
 
     /// Accesses a view of the elements selected by a bound range expression.
     ///
-    /// Mutating the returned view modifies this set. A range that evaluates to
-    /// no ordered positions produces an empty view.
+    /// Mutating through this subscript modifies this set.
+    /// Mutating a view stored in a separate variable leaves this set unchanged.
+    ///
+    /// A range that evaluates to no ordered positions produces an empty view.
     ///
     /// - Parameter bounds: A bound range expression evaluated in this set.
     /// - Returns: A view over the selected elements.

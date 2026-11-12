@@ -55,15 +55,15 @@ public enum RedBlackTreeBoundRangeExpression<Key> {
   /// - Note:
   ///   Reversed endpoints select an empty range.
   case closedRange(from: Bound, through: Bound)
-  /// A range of elements strictly less than `bound` (`..< bound`).
+  /// A range from the start up to, but excluding, the position selected by `bound` (`..<bound`).
   ///
   /// - Parameter bound: Upper bound (exclusive)
   case partialRangeTo(Bound)
-  /// A range of elements less than or equal to `bound` (`... bound`).
+  /// A range from the start through the position selected by `bound` (`...bound`).
   ///
   /// - Parameter bound: Upper bound (inclusive)
   case partialRangeThrough(Bound)
-  /// A range of elements greater than or equal to `bound` (`bound...`).
+  /// A range from the position selected by `bound`, inclusive, to the end (`bound...`).
   ///
   /// - Parameter bound: Lower bound (inclusive)
   case partialRangeFrom(Bound)

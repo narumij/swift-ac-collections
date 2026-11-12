@@ -116,7 +116,7 @@ package struct UnsafeTreeV2BufferHeader {
   }
   #else
   // AIがうるさいので補足
-  // 直接書き込みをする操作は、Header内部とシングルと生成に限定する。
+  // 直接書き込みをする操作は、Header内部とシングルトンと生成に限定する。
   // 読み込みもUnsafeTreeV2に限定する。
   // それ以外の経路があれば違反となる。
   @usableFromInline var _lazyDetach: _LazyTie?

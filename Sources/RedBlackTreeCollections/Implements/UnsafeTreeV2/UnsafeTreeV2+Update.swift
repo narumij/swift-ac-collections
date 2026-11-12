@@ -20,6 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
+// 思い出のこし。気が済んだら消す。
+// 目的の部分は、ベタ書きになってるからつかってないようす
 extension UnsafeTreeV2 where Base: _ScalarBaseType {
   
   @inlinable
@@ -49,3 +52,4 @@ extension UnsafeTreeV2 where Base: _PairBaseType {
       &Base.__mapped_value_ptr(__j).pointee)
   }
 }
+#endif

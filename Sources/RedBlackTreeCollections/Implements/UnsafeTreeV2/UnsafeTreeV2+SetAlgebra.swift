@@ -273,6 +273,7 @@ extension UnsafeTreeV2 {
     }
     return __first
   }
+  #endif
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
@@ -329,5 +330,4 @@ extension UnsafeTreeV2 {
     __result_.___copy_range(__first1, __last1, to: __parent, __child)
     return __result_
   }
-  #endif
 }

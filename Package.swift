@@ -137,7 +137,8 @@ let package = Package(
       name: "USE_COMPACT_NODE_METADATA",
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
-    ), .trait(name: "USE_C_MALLOC"),
+    ),
+      .trait(name: "USE_C_MALLOC"), // ジャッジ搭載時に再検討したいので残ってる
     .trait(
       name: "USE_PATH_BITMAP_64",
       description:

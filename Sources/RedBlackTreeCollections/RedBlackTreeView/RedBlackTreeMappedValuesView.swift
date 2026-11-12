@@ -20,8 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// swapAt可能にする
-
 // multimap, dictionary用のView, SubView
 
 #if !COMPATIBLE_ATCODER_2025

@@ -83,17 +83,13 @@ var _settings: [SwiftSetting] =
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
       .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
     ),
-    // 境界式の比較系(.lessThan / .greaterThan / .lessThanOrEqual / .greaterThanOrEqual)
-    // 多重系の同値要素の扱いが未確定のため実験扱い（RBT-063）
-    //    .define(
-    //      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-    //      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
-    //    ),
+    
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
+    
     // 本来的に別の方法で定義するべきかもしれないが、警告がうっとうしいのでこの方法になっている
     .define(
       "USE_RECYCLE_COUNT_OVERWRAP",

@@ -121,6 +121,7 @@ extension ___LRUMemoizeStorage {
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_.deinitialize()
+      (_rankHighest, _rankLowest) = (nullptr, nullptr)
     } else {
       self = .init()
     }

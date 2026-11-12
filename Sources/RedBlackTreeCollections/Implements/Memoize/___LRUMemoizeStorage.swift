@@ -63,6 +63,7 @@ extension ___LRUMemoizeStorage {
 
   @inlinable
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
+    precondition(maxCount > 0, "maxCount must be positive")
     nullptr = UnsafeNode.nullptr
     // enxureUniqueをしないため、シングルトンインスタンスを避けている
     __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: nullptr)

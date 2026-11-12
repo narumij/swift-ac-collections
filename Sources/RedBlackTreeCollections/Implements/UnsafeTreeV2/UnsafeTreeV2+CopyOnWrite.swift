@@ -70,7 +70,7 @@ extension UnsafeTreeV2 {
     if !isUnique() {
       self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
     } else {
-      withMutableHeader { $0._ensureCapacitySlow() }
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureCapacity() }
     }
   }
 }
@@ -83,14 +83,14 @@ extension UnsafeTreeV2 {
     if isReadOnly {
       self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
     } else {
-      withMutableHeader { $0._ensureCapacitySlow() }
+      withMutableHeader { $0._ensureCapacity() }
     }
   }
 
   @inlinable
   internal mutating func unsafeEnsureCapacity() {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-    withMutableHeader { $0._ensureCapacitySlow() }
+    withMutableHeader { $0._ensureCapacity() }
   }
 
   @inlinable

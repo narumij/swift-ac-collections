@@ -85,6 +85,19 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  @usableFromInline // コールドパス化
+  internal mutating func _ensureCapacitySlow() {
+    grow(_requestCapacity().request)
+  }
+
+  @inlinable
+  @inline(__always)
+  internal mutating func _ensureCapacity() {
+    if freshPoolCapacity == count { // ここはホットパス
+      _ensureCapacitySlow() // ここはコールドパス
+    }
+  }
+
   // reserveCapacity用
 
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
@@ -94,16 +107,6 @@ extension UnsafeTreeV2BufferHeader {
     }
     grow(minimumCapacity)
     //    grow(growth(from: freshPoolCapacity, to: minimumCapacity))
-  }
-
-  //  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  @inlinable  // 6.4でこっちの方が速い
-  internal mutating func _ensureCapacitySlow() {
-    let cap = _requestCapacity()
-    guard freshPoolCapacity < cap.require else {
-      return
-    }
-    grow(cap.request)
   }
 
   // LRU用

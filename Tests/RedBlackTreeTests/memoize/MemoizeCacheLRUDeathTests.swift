@@ -1,4 +1,4 @@
-#if DEATH_TEST && ENABLE_EXPERIMENTAL_LRU
+#if DEATH_TEST && COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import Testing
 

@@ -1,4 +1,4 @@
-#if DEBUG && ENABLE_EXPERIMENTAL_LRU
+#if DEBUG && COMPATIBLE_ATCODER_2025
   @testable import RedBlackTreeCollections
   import XCTest
 

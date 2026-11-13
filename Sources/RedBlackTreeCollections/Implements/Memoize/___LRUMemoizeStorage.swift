@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if ENABLE_EXPERIMENTAL_LRU
+#if COMPATIBLE_ATCODER_2025
 
 // メモ化用途向け、LRU (least recently used) cache 動作
 // https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)

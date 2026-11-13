@@ -32,7 +32,10 @@
       guard alignment <= MALLOC_ALIGN_MASK else {
         fatalError(.alignnment)
       }
-      return malloc(byteCount)
+      guard let pointer = malloc(byteCount) else {
+        fatalError("Memory allocation failed")
+      }
+      return pointer
     }
     func _unsafe_free() {
       free(self)
@@ -42,7 +45,10 @@
       guard alignment <= MALLOC_ALIGN_MASK else {
         fatalError(.alignnment)
       }
-      return malloc(byteCount)
+      guard let pointer = malloc(byteCount) else {
+        fatalError("Memory allocation failed")
+      }
+      return pointer
     }
     @inlinable
     func _deallocate() {

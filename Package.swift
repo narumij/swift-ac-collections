@@ -73,6 +73,10 @@ var _settings: [SwiftSetting] =
     .define(
       "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
+    ),
+    .define(
+      "ENABLE_EXPERIMENTAL_LRU",
+      .when(traits: ["ENABLE_EXPERIMENTAL_LRU"])
     ), .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
     .define("DEATH_TEST", .when(platforms: [.macOS])),
@@ -144,6 +148,11 @@ let package = Package(
       description:
         "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
     ), .trait(name: "BENCHMARK"),
+    .trait(
+      name: "ENABLE_EXPERIMENTAL_LRU",
+      description:
+        "Expose the experimental noncopyable LRUCache. Its API may change."
+    ),
     .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:

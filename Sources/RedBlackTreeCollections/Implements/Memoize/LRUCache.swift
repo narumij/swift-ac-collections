@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if ENABLE_EXPERIMENTAL_LRU
+#if !COMPATIBLE_ATCODER_2025 && ENABLE_EXPERIMENTAL_LRU
 
 @frozen
 public struct LRUCache<Key, Value>: ~Copyable

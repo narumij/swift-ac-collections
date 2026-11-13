@@ -1,4 +1,4 @@
-#if DEBUG && ENABLE_EXPERIMENTAL_LRU
+#if DEBUG && COMPATIBLE_ATCODER_2025
   @testable import RedBlackTreeCollections
   import XCTest
 
@@ -233,6 +233,58 @@
       }
       for i in 0..<10 {
         XCTAssertEqual(cache0[i], i)
+      }
+    }
+
+    // RBT-057: 容量保持クリアの後も、LRU順位が空から始まること
+    // 100を読んだので最古は101。102の挿入で101が追い出され、100は残る。
+    func testRemoveAllKeepingCapacityResetsRank() throws {
+      var cache = ___LRUMemoizeStorage<TestKey, Int>(maxCount: 2)
+      cache[0] = 0
+      cache[1] = 1
+      cache.removeAll(keepingCapacity: true)
+      XCTAssertEqual(cache.count, 0)
+      cache[100] = 100
+      cache[101] = 101
+      XCTAssertEqual(cache[100], 100)
+      cache[102] = 102
+      XCTAssertEqual(cache.count, 2)
+      XCTAssertNil(cache[101])
+      XCTAssertEqual(cache[100], 100)
+      XCTAssertEqual(cache[102], 102)
+    }
+
+    // 対照: クリアを挟まない同じ操作
+    func testEvictionWithoutRemoveAll() throws {
+      var cache = ___LRUMemoizeStorage<TestKey, Int>(maxCount: 2)
+      cache[100] = 100
+      cache[101] = 101
+      XCTAssertEqual(cache[100], 100)
+      cache[102] = 102
+      XCTAssertEqual(cache.count, 2)
+      XCTAssertNil(cache[101])
+      XCTAssertEqual(cache[100], 100)
+      XCTAssertEqual(cache[102], 102)
+    }
+
+    // 容量保持クリアを繰り返しても、get/set・追い出しが続けられ、maxCountと容量が保たれること
+    func testRemoveAllKeepingCapacityRepeatedly() throws {
+      var cache = ___LRUMemoizeStorage<TestKey, Int>(maxCount: 2)
+      for round in 0..<5 {
+        let base = round * 10
+        cache[base] = base
+        cache[base + 1] = base + 1
+        XCTAssertEqual(cache[base], base)
+        cache[base + 2] = base + 2  // 最古のbase + 1が追い出される
+        XCTAssertEqual(cache.count, 2)
+        XCTAssertNil(cache[base + 1])
+        XCTAssertEqual(cache[base], base)
+        XCTAssertEqual(cache[base + 2], base + 2)
+        let capacity = cache.capacity
+        cache.removeAll(keepingCapacity: true)
+        XCTAssertEqual(cache.count, 0)
+        XCTAssertEqual(cache.capacity, capacity)
+        XCTAssertEqual(cache.maxCount, 2)
       }
     }
   }

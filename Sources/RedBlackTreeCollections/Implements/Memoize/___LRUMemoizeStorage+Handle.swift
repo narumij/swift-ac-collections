@@ -20,8 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if ENABLE_EXPERIMENTAL_LRU
-
 // LRU用に特殊化されたハンドル
 //
 // `_Key`の取得に関して特殊化済みとなっている。
@@ -167,5 +165,3 @@ extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _Linking
     }
   }
 }
-
-#endif

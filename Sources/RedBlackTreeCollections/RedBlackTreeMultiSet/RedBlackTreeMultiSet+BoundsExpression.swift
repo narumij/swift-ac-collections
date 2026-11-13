@@ -127,9 +127,11 @@
 
     /// Accesses a view of the elements selected by a bound range expression.
     ///
-    /// Mutating the returned view modifies this multiset. The view retains every
-    /// selected occurrence, including equivalent elements. A range that evaluates
-    /// to no ordered positions produces an empty view.
+    /// Mutating through this subscript modifies this multiset.
+    /// Mutating a view stored in a separate variable leaves this multiset unchanged.
+    ///
+    /// The view retains every selected occurrence, including equivalent elements.
+    /// A range that evaluates to no ordered positions produces an empty view.
     ///
     /// - Parameter bounds: A bound range expression evaluated in this multiset.
     /// - Returns: A view over the selected occurrences.

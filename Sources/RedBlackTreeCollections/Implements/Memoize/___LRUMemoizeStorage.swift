@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if ENABLE_EXPERIMENTAL_LRU
+#if COMPATIBLE_ATCODER_2025
 
 // メモ化用途向け、LRU (least recently used) cache 動作
 // https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
@@ -63,6 +63,7 @@ extension ___LRUMemoizeStorage {
 
   @inlinable
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
+    precondition(maxCount > 0, "maxCount must be positive")
     nullptr = UnsafeNode.nullptr
     // enxureUniqueをしないため、シングルトンインスタンスを避けている
     __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: nullptr)
@@ -121,6 +122,7 @@ extension ___LRUMemoizeStorage {
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_.deinitialize()
+      (_rankHighest, _rankLowest) = (nullptr, nullptr)
     } else {
       self = .init()
     }

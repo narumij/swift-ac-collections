@@ -20,8 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if ENABLE_EXPERIMENTAL_LRU
-
 public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 
   @inlinable
@@ -75,7 +73,7 @@ public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: LinkPairValueTra
 {}
 
 @usableFromInline
-protocol ___LRULinkList: _KeyType & _MappedValueType & _UnsafeNodePtrType
+protocol ___LRULinkList: ~Copyable, _KeyType & _MappedValueType & _UnsafeNodePtrType
 where _Key: Comparable {
   associatedtype Value
   var __tree_: Tree { get set }
@@ -84,13 +82,13 @@ where _Key: Comparable {
   var nullptr: _NodePtr { get }
 }
 
-extension ___LRULinkList {
-  public typealias Base = ___LRULinkListBase<_Key, _MappedValue>
+extension ___LRULinkList where Self: ~Copyable {
+  @usableFromInline typealias Base = ___LRULinkListBase<_Key, _MappedValue>
 }
 
-extension ___LRULinkList {
+extension ___LRULinkList where Self: ~Copyable {
 
-  public typealias Tree = UnsafeTreeV2<Base>
+  @usableFromInline typealias Tree = UnsafeTreeV2<Base>
 
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
@@ -151,5 +149,3 @@ extension ___LRULinkList {
     return _rankLowest
   }
 }
-
-#endif

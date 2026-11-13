@@ -52,7 +52,7 @@ extension Collection where Element: Comparable {
 ///
 /// Advancing by one step mutates the owned buffer in place. It performs no per-result allocation or
 /// full-buffer copy.
-@safe
+@unsafe
 public struct BorrowedNextPermutations<Element: Comparable>: ~Copyable {
 
   @usableFromInline

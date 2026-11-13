@@ -26,14 +26,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     #endif
 
     #if false && ENABLE_EXPERIMENTAL_LRU // LRUはあとまわし
-      // LRUをmaxCount: 0で作って値を入れると、count == -1になる（ASanではheap-buffer-overflow）。
-      func testLRUZeroMaxCountStaysEmpty() {
-        var cache = ___LRUMemoizeStorage<Int, Int>(maxCount: 0)
-        cache[1] = 1
-        XCTAssertEqual(cache.count, 0)
-        XCTAssertNil(cache[1])
-      }
-
       // LRUのコピー側でgetしただけで、元の値の追い出し順が変わる。
       func testLRUGetOnCopyDoesNotAffectOriginal() {
         var original = ___LRUMemoizeStorage<Int, Int>(maxCount: 3)

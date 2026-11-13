@@ -178,7 +178,9 @@ extension RedBlackTreeKeyValueRangeView {
         public typealias Keys = UnsafeIterator.Trap.KeyObverse<Base>
         //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-        /// - Complexity: O(1)
+        /// A lazy sequence of the keys inside this range, in ascending order.
+        ///
+        /// - Complexity: O(1) to create the sequence; O(`count`) to traverse it.
         @inlinable
         public var keys: Keys {
           let (_start, _end) = _raw_range
@@ -201,8 +203,13 @@ extension RedBlackTreeKeyValueRangeView {
 
         /// A mutable view of the mapped values inside this key-value range.
         ///
+        /// Mutating through this property updates this range view. Mutating a
+        /// separately stored values view leaves this range view unchanged.
         /// Assigning a value doesn't change its key or the collection's key order.
-        /// Structural removal through this view removes the corresponding key-value pair.
+        /// Removing a value through this property removes the corresponding key-value
+        /// pair from this range view.
+        ///
+        /// - Complexity: O(1) to create the view; O(`count`) to traverse it.
         @inlinable
         public var values: Values {
           @inline(__always) get {

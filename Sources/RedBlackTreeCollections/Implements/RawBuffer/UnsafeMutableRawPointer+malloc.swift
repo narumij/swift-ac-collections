@@ -21,6 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 #if USE_C_MALLOC
+  // ジャッジ搭載時に再検討したいので残ってる
   import _malloc_free
   extension UnsafeMutableRawPointer {
     @inlinable

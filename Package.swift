@@ -73,6 +73,10 @@ var _settings: [SwiftSetting] =
     .define(
       "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
+    ),
+    .define(
+      "ENABLE_EXPERIMENTAL_LRU",
+      .when(traits: ["ENABLE_EXPERIMENTAL_LRU"])
     ), .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
     .define("DEATH_TEST", .when(platforms: [.macOS])),
@@ -83,22 +87,18 @@ var _settings: [SwiftSetting] =
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
       .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
     ),
-    // 境界式の比較系(.lessThan / .greaterThan / .lessThanOrEqual / .greaterThanOrEqual)
-    // 多重系の同値要素の扱いが未確定のため実験扱い（RBT-063）
-    //    .define(
-    //      "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-    //      .when(traits: ["ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS"])
-    //    ),
+    
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(
       ["-Ounchecked"],
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
-    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
-    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
-    // このため、リリース時はどちらにせよ無効になる
-    //    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
-
+    
+    // 本来的に別の方法で定義するべきかもしれないが、警告がうっとうしいのでこの方法になっている
+    .define(
+      "USE_RECYCLE_COUNT_OVERWRAP",
+      .when(configuration: .release, traits: ["_O_UNCHECKED"])),
+    
     .define(
       "_TREE_ALLOCATION_COUNTER",
       .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
@@ -141,23 +141,24 @@ let package = Package(
       name: "USE_COMPACT_NODE_METADATA",
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
-    ), .trait(name: "USE_C_MALLOC"),
+    ),
+      .trait(name: "USE_C_MALLOC"), // ジャッジ搭載時に再検討したいので残ってる
     .trait(
       name: "USE_PATH_BITMAP_64",
       description:
         "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
     ), .trait(name: "BENCHMARK"),
     .trait(
+      name: "ENABLE_EXPERIMENTAL_LRU",
+      description:
+        "Expose the experimental noncopyable LRUCache. Its API may change."
+    ),
+    .trait(
       name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:
         "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
     ), .trait(name: "GRAPHVIZ_DEBUG"),
     .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
-    //    .trait(
-    //      name: "ENABLE_EXPERIMENTAL_TREE_BOUND_COMPARISONS",
-    //      description:
-    //        "Expose the experimental comparison bound expressions (.lessThan, .greaterThan, .lessThanOrEqual, .greaterThanOrEqual). Their positions among equal elements in multi collections are not settled yet."
-    //    ),
     .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
     .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
     .trait(

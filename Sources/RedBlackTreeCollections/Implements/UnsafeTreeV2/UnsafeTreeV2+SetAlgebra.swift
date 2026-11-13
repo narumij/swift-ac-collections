@@ -150,6 +150,10 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
+  #if false
+  // AIによる移植コード。せっかくなので資料的に残す。
+  // 暇が出来たらチューニングして活かせるか再度検討してもいい。
+  
   /// libc++のforward iterator版`__set_intersection`と同じ手順の積集合（試作）。
   ///
   /// 片側の二分探索で読み飛ばすので、比較回数は`___intersection`より少なくなりうる。
@@ -269,6 +273,7 @@ extension UnsafeTreeV2 {
     }
     return __first
   }
+  #endif
 
   /// - Complexity: O(*n* + *m*)
   @inlinable

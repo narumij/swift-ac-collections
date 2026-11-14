@@ -140,7 +140,8 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline // コールドパス化
+  @inlinable
+  @inline(never) // コールドパス化。usableFromInlineか悩むポイント
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:

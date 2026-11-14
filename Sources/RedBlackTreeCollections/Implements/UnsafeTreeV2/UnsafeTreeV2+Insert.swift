@@ -85,7 +85,7 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   mutating func ___insert_unique_if_not_present(
     _ __k: _PayloadValue
   ) -> (__r: _NodePtr, __inserted: Bool) {
-    var (__parent, __child) = update { $0.__find_equal(__key(__k)) }
+    var (__parent, __child) = __find_equal(__k)
     if __child.pointee != nullptr { return (__child.pointee, false) }
     
     let __e = __end_node
@@ -107,7 +107,7 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
-    var (__parent, __child) = update { $0.__find_equal(__p, &__dummy, __key(__k)) }
+    var (__parent, __child) = __find_equal(__p, &__dummy, __k)
 
     if __child.pointee != nullptr {
       return (__child.pointee, false)
@@ -131,7 +131,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   mutating func ___insert_unique_if_not_present(
     _ __k: _PayloadValue
   ) -> (__r: _NodePtr, __inserted: Bool) {
-    var (__parent, __child) = update { $0.__find_equal(__key(__k)) }
+    var (__parent, __child) = __find_equal(__key(__k))
     if __child.pointee != nullptr { return (__child.pointee, false) }
     let __e = __end_node
     ensureUniqueAndCapacity()  // これが問題で全体をupdate内には移せない
@@ -152,7 +152,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
-    var (__parent, __child) = update { $0.__find_equal(__p, &__dummy, __key(__k)) }
+    var (__parent, __child) = __find_equal(__p, &__dummy, __key(__k))
 
     if __child.pointee != nullptr {
       return (__child.pointee, false)

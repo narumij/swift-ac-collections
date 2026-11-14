@@ -25,24 +25,22 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   @usableFromInline
   typealias Handle = UnsafeTreeV2KeyOnlyHandle<UnsafeTreeV2<Base>._PayloadValue>
 
-  #if false
-    @inlinable
-    @inline(__always)
-    internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
-      try _buffer.withUnsafeMutablePointers { header, elements in
-        let handle = Handle(
-          header: header, isMulti: isMulti)
-        return try body(handle)
-      }
+  @inlinable
+  @inline(__always)
+  internal func read<R>(_ body: (consuming Handle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = Handle(header: header, isMulti: isMulti)
+      return try body(handle)
     }
-  #endif
+  }
 
   @inlinable
   @inline(__always)
-  internal func update<R>(_ body: (borrowing Handle) throws -> R) rethrows -> R {
+  internal mutating func update<R>(
+    _ body: (consuming Handle) throws -> R
+  ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(
-        header: header, isMulti: isMulti)
+      let handle = Handle(header: header, isMulti: isMulti)
       return try body(handle)
     }
   }
@@ -53,20 +51,22 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @usableFromInline
   typealias KeyValueHandle = UnsafeTreeV2KeyValueHandle<_Key, Base._MappedValue>
 
-  #if false
-    @inlinable
-    @inline(__always)
-    internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
-      try _buffer.withUnsafeMutablePointers { header, elements in
-        let handle = KeyValueHandle(header: header, isMulti: isMulti)
-        return try body(handle)
-      }
+  @inlinable
+  @inline(__always)
+  internal func read<R>(
+    _ body: (consuming KeyValueHandle) throws -> R
+  ) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = KeyValueHandle(header: header, isMulti: isMulti)
+      return try body(handle)
     }
-  #endif
+  }
 
   @inlinable
   @inline(__always)
-  internal func update<R>(_ body: (borrowing KeyValueHandle) throws -> R) rethrows -> R {
+  internal mutating func update<R>(
+    _ body: (consuming KeyValueHandle) throws -> R
+  ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = KeyValueHandle(header: header, isMulti: isMulti)
       return try body(handle)

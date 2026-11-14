@@ -255,7 +255,7 @@
     /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ member: Element) -> Index {
-      ___index(__tree_.update { $0.find(member) })
+      ___index(__tree_.read { $0.find(member) })
     }
   }
 #endif

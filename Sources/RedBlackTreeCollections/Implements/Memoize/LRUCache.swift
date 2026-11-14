@@ -21,6 +21,8 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025 && ENABLE_EXPERIMENTAL_LRU
+// 素朴で速いほうを選ぶので、Sendableにはしない
+// 並列対応が必要なら、Actorにでも放り込んでくれたらいい
 
 @frozen
 public struct LRUCache<Key, Value>: ~Copyable

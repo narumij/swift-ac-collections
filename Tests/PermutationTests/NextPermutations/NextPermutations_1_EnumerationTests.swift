@@ -41,6 +41,27 @@ final class NextPermutations_1_EnumerationTests: XCTestCase {
       [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
   }
 
+  // 異なる要素の順列は、各結果の要素一致・重複なし・n!件で全件の網羅を確認できる。
+  func testEnumeratesEveryPermutationExactlyOnce() {
+    let factorials = [1, 1, 2, 6, 24, 120, 720, 5040]
+    for n in 0..<factorials.count {
+      let source = Array(0..<n)
+      let elements = Set(source)
+      var seen: Set<[Int]> = []
+      var count = 0
+      var permutations = source.nextPermutations()
+      while let permutation = permutations.next() {
+        let order = Array(permutation)
+        XCTAssertEqual(order.count, source.count, "n=\(n)")
+        XCTAssertEqual(Set(order), elements, "n=\(n), order=\(order)")
+        XCTAssertTrue(seen.insert(order).inserted, "重複: n=\(n), order=\(order)")
+        count += 1
+      }
+      XCTAssertEqual(count, factorials[n], "n=\(n)")
+      XCTAssertEqual(seen.count, factorials[n], "n=\(n)")
+    }
+  }
+
   func testStartsFromCurrentOrder() throws {
     XCTAssertEqual(
       orders([2, 1, 3]),

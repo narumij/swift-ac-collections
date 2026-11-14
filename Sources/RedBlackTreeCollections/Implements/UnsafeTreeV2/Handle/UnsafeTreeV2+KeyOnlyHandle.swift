@@ -40,59 +40,39 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
     self.isMulti = isMulti
   }
 
-  @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _PayloadValue = _Key
-  @usableFromInline typealias _Pointer = _NodePtr
+  @usableFromInline
+  typealias _Key = _Key
+  @usableFromInline
+  typealias _PayloadValue = _Key
+  @usableFromInline
+  typealias _Pointer = _NodePtr
 
-  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ref: _NodeRef
-  @usableFromInline let isMulti: Bool
+  @usableFromInline
+  let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
+  @usableFromInline
+  let nullptr: _NodePtr
+  @usableFromInline
+  let root_ref: _NodeRef
+  @usableFromInline
+  let isMulti: Bool
 }
 
 extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
-  func __key(_ __v: _PayloadValue) -> _Key {
-    __v
-  }
+  func __key(_ __v: _PayloadValue) -> _Key { __v }
 
   @inlinable
-  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-    __l < __r
-  }
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
 }
 
-#if compiler(<6.3)
-  extension UnsafeTreeV2KeyOnlyHandle {
+extension UnsafeTreeV2KeyOnlyHandle {
 
-    @inlinable
-    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-      if __lhs < __rhs {
-        -1
-      } else if __lhs > __rhs {
-        1
-      } else {
-        0
-      }
-    }
+  @inlinable
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+    if __lhs < __rhs { -1 } else if __lhs > __rhs { 1 } else { 0 }
   }
-#else
-  extension UnsafeTreeV2KeyOnlyHandle {
-
-    @specialized(where _Key == Int)
-    @inlinable
-    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-      if __lhs < __rhs {
-        -1
-      } else if __lhs > __rhs {
-        1
-      } else {
-        0
-      }
-    }
-  }
-#endif
+}
 
 // MARK: - TreeNodeValueProtocol
 
@@ -113,7 +93,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
     defer {
       p.__value_().initialize(to: k)
       #if _TREE_ALLOCATION_COUNTER
-        payloadInitializedCount += 1
+      payloadInitializedCount += 1
       #endif
     }
     return p
@@ -126,44 +106,30 @@ extension UnsafeTreeV2KeyOnlyHandle {
   var __begin_node_: _NodePtr {
     @inline(__always)
     @_transparent
-    unsafeAddress {
-      UnsafePointer(header.pointee.begin_ptr)
-    }
+    unsafeAddress { UnsafePointer(header.pointee.begin_ptr) }
     @inline(__always)
     @_transparent
-    nonmutating unsafeMutableAddress {
-      header.pointee.begin_ptr
-    }
+    nonmutating unsafeMutableAddress { header.pointee.begin_ptr }
   }
 
   @inlinable
   var __root: _NodePtr {
     @inline(__always)
     @_transparent
-    unsafeAddress {
-      UnsafePointer(root_ref)
-    }
+    unsafeAddress { UnsafePointer(root_ref) }
   }
 
   @inlinable
-  func __root_ptr() -> _NodeRef {
-    root_ref
-  }
+  func __root_ptr() -> _NodeRef { root_ref }
 
   @inlinable
-  var end: _NodePtr {
-    header.pointee.end_ptr
-  }
+  var end: _NodePtr { header.pointee.end_ptr }
 
   @inlinable
-  var __end_node: _NodePtr {
-    header.pointee.end_ptr
-  }
+  var __end_node: _NodePtr { header.pointee.end_ptr }
 
   @inlinable
-  func destroy(_ p: _NodePtr) {
-    header.pointee.___pushRecycle(p)
-  }
+  func destroy(_ p: _NodePtr) { header.pointee.___pushRecycle(p) }
 
   @inlinable
   var __size_: Int {
@@ -178,15 +144,17 @@ extension UnsafeTreeV2KeyOnlyHandle {
 }
 
 extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
-#if compiler(<6.3)
-  extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+#if compiler(<6.3) || true
+extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {
+}
 #else
-  extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
-    @inlinable
-    func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
-      _KeyOnly_FindEqual<_Key>(header: header).__find_equal(__v)
-    }
+// @specializedを使う経路は実行時分岐となるらしく、期待とことなるのでしばらくつかわないことにした
+extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
+  @inlinable
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
+    _KeyOnly_FindEqual<_Key>(header: header).__find_equal(__v)
   }
+}
 #endif
 extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr {}
 
@@ -206,4 +174,4 @@ extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}
 
-extension UnsafeTreeV2KeyOnlyHandle: FindHintEqualProtocol_ptr { }
+extension UnsafeTreeV2KeyOnlyHandle: FindHintEqualProtocol_ptr {}

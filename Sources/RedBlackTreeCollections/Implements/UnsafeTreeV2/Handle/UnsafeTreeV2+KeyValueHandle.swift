@@ -37,15 +37,24 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
     self.root_ref = header.pointee.root_ptr
     self.isMulti = isMulti
   }
-  @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _PayloadValue = RedBlackTreePair<_Key, _MappedValue>
-  @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline typealias _Pointer = _NodePtr
-  @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ref: _NodeRef
-  @usableFromInline var isMulti: Bool
+  @usableFromInline
+  typealias _Key = _Key
+  @usableFromInline
+  typealias _PayloadValue = RedBlackTreePair<_Key, _MappedValue>
+  @usableFromInline
+  typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline
+  typealias _Pointer = _NodePtr
+  @usableFromInline
+  typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+  @usableFromInline
+  let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
+  @usableFromInline
+  let nullptr: _NodePtr
+  @usableFromInline
+  let root_ref: _NodeRef
+  @usableFromInline
+  var isMulti: Bool
 }
 
 extension UnsafeTreeV2KeyValueHandle {
@@ -54,41 +63,16 @@ extension UnsafeTreeV2KeyValueHandle {
   func __key(_ __v: _PayloadValue) -> _Key { __v.tuple.key }
 
   @inlinable
-  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
-    __l < __r
-  }
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool { __l < __r }
 }
 
-#if compiler(<6.3)
-  extension UnsafeTreeV2KeyValueHandle {
+extension UnsafeTreeV2KeyValueHandle {
 
-    @inlinable
-    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-      if __lhs < __rhs {
-        -1
-      } else if __lhs > __rhs {
-        1
-      } else {
-        0
-      }
-    }
+  @inlinable
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+    if __lhs < __rhs { -1 } else if __lhs > __rhs { 1 } else { 0 }
   }
-#else
-  extension UnsafeTreeV2KeyValueHandle {
-
-    @specialized(where _Key == Int, _MappedValue == Int)
-    @inlinable
-    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-      if __lhs < __rhs {
-        -1
-      } else if __lhs > __rhs {
-        1
-      } else {
-        0
-      }
-    }
-  }
-#endif
+}
 
 // MARK: - TreeNodeValueProtocol
 
@@ -109,7 +93,7 @@ extension UnsafeTreeV2KeyValueHandle {
     defer {
       p.__value_().initialize(to: k)
       #if _TREE_ALLOCATION_COUNTER
-        payloadInitializedCount += 1
+      payloadInitializedCount += 1
       #endif
     }
     return p
@@ -122,44 +106,30 @@ extension UnsafeTreeV2KeyValueHandle {
   var __begin_node_: _NodePtr {
     @inline(__always)
     @_transparent
-    unsafeAddress {
-      UnsafePointer(header.pointee.begin_ptr)
-    }
+    unsafeAddress { UnsafePointer(header.pointee.begin_ptr) }
     @inline(__always)
     @_transparent
-    nonmutating unsafeMutableAddress {
-      header.pointee.begin_ptr
-    }
+    nonmutating unsafeMutableAddress { header.pointee.begin_ptr }
   }
 
   @inlinable
   var __root: _NodePtr {
     @inline(__always)
     @_transparent
-    unsafeAddress {
-      UnsafePointer(root_ref)
-    }
+    unsafeAddress { UnsafePointer(root_ref) }
   }
 
   @inlinable
-  func __root_ptr() -> _NodeRef {
-    root_ref
-  }
+  func __root_ptr() -> _NodeRef { root_ref }
 
   @inlinable
-  var end: _NodePtr {
-    header.pointee.end_ptr
-  }
+  var end: _NodePtr { header.pointee.end_ptr }
 
   @inlinable
-  var __end_node: _NodePtr {
-    header.pointee.end_ptr
-  }
+  var __end_node: _NodePtr { header.pointee.end_ptr }
 
   @inlinable
-  func destroy(_ p: _NodePtr) {
-    header.pointee.___pushRecycle(p)
-  }
+  func destroy(_ p: _NodePtr) { header.pointee.___pushRecycle(p) }
 
   @inlinable
   var __size_: Int {
@@ -192,4 +162,4 @@ extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}
 
-extension UnsafeTreeV2KeyValueHandle: FindHintEqualProtocol_ptr { }
+extension UnsafeTreeV2KeyValueHandle: FindHintEqualProtocol_ptr {}

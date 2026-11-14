@@ -5,26 +5,29 @@
   "contents": [
     {
       "kind": "chart",
-      "title": "01 cache hit (subscript, successful lookups)",
+      "title": "cache hit (subscript, successful lookups)",
       "tasks": [
         "Dictionary<Int, Int> subscript, successful lookups",
-        "RedBlackTreeDictionary<Int, Int> subscript, successful lookups"
+        "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+        "LRUCache<Int, Int> subscript, successful lookups"
       ]
     },
     {
       "kind": "chart",
-      "title": "02 cache miss (subscript, unsuccessful lookups)",
+      "title": "cache miss (subscript, unsuccessful lookups)",
       "tasks": [
         "Dictionary<Int, Int> subscript, unsuccessful lookups",
-        "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups"
+        "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups",
+        "LRUCache<Int, Int> subscript, unsuccessful lookups"
       ]
     },
     {
       "kind": "chart",
-      "title": "03 cache store (subscript, insert, unique)",
+      "title": "cache store (subscript, insert, unique)",
       "tasks": [
         "Dictionary<Int, Int> subscript, insert, unique",
-        "RedBlackTreeDictionary<Int, Int> subscript, insert, unique"
+        "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
+        "LRUCache<Int, Int> subscript, insert, unique"
       ]
     }
   ]

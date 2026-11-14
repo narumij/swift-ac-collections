@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2026-11-14
+
+### Added
+- 通常モードで`ENABLE_EXPERIMENTAL_LRU` traitを有効にすると使える、コピーできない実験用`LRUCache<Key, Value>`を追加。件数上限と最近の利用順に基づく追い出しに対応し、`removeAll(keepingCapacity:)`は`maxCount`を保持する。AtCoder 2025互換モードでは公開しない
+
+### Changed
+- 赤黒木のキー比較に付けていた`@specialized`と、Set / MultiSetの特殊化専用探索経路を無効化し、共通の探索経路を使うよう変更。Dictionary / MultiMapのlookup経路も整理
+- 既存の`___LRUMemoizeStorage`をAtCoder 2025互換モード（`COMPATIBLE_ATCODER_2025`）でのみ提供するよう変更。実験用LRUの利用には新しい`LRUCache`を使う
+- `NextPermutations`・`BorrowedNextPermutations`の型宣言を`@safe`から`@unsafe`へ変更。不整合な比較演算を実装した要素型に対してメモリ安全性を保証しないことを、厳格メモリ安全モードへ伝える。順列生成のアルゴリズムは変更なし
+- `_O_UNCHECKED` traitを有効にしたRelease構成で`USE_RECYCLE_COUNT_OVERWRAP`を有効化。ノードの世代番号を上限で止めず、周回する方式を使う。既定構成は従来どおり上限で止める
+
+### Fixed
+- `USE_C_MALLOC` traitを有効にした構成で、`malloc`の戻り値を検査し、メモリ確保に失敗した場合は`fatalError`で停止するよう変更
+- opt-inの`OptionalElementBuffer`（1D〜4D）で、要素の置換・全消去・バッファ破棄時に、旧要素の破棄より先にスロットの値・設定状態を更新するよう修正。要素の`deinit`から再入した際に、破棄中の旧要素が設定済みとして見える問題に対処。既存の重複アクセス・並行アクセスの制約は維持
+- 既存LRUの`removeAll(keepingCapacity: true)`で、順位リストの両端もリセットし、再利用後に誤った要素を追い出す問題を修正
+- 既存LRUの初期化で`maxCount`が0以下の場合を事前条件違反として拒否するよう修正
+- Viewを変数に保存して変更する場合と、コレクションの範囲添字を通して変更する場合の違い、および境界式と`find`・`firstIndex`等の関係をAPIドキュメントで明確化（動作変更なし）
+
 ## [0.8.1] - 2026-11-12
 
 ### Changed

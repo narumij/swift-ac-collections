@@ -78,7 +78,7 @@
 
     //
     //
-    @usableFromInline
+    @usableFromInline // このコールドパス化はまぐれ。再検討の価値あり
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
       recycleHead = p.pointee.__left_

@@ -128,6 +128,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // 基本形のようで実は実運用でつかわれていなさそう
   @inlinable
   package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
@@ -140,6 +141,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
+  @inline(never) // コールドパス化。usableFromInlineか悩むポイント
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:

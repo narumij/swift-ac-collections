@@ -311,7 +311,8 @@ let package = Package(
       dependencies: [],
       exclude: ["Documentation"],
       swiftSettings: _settings + [
-        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+        .enableExperimentalFeature("Lifetimes"),
+//        .strictMemorySafety(),
       ]
     ),
     .target(

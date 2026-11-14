@@ -531,7 +531,7 @@
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet([1, 2, 3])
         let shared = set
-        withExtendedLifetime(shared) {
+        _ = withExtendedLifetime(shared) {
           set.update(99, at: set.startIndex)
         }
       }
@@ -542,7 +542,7 @@
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet([1, 2, 3])
         let shared = set
-        withExtendedLifetime(shared) {
+        _ = withExtendedLifetime(shared) {
           set.update(1, at: set.endIndex)
         }
       }
@@ -639,7 +639,7 @@
     func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, _, staleRange) = multiSetAfterRemoveAllKeepingCapacity()
-        _ = t.erase(staleRange, where: { _ in true })
+        t.erase(staleRange, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }

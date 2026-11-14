@@ -479,7 +479,7 @@
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a")])
         let shared = map
-        withExtendedLifetime(shared) {
+        _ = withExtendedLifetime(shared) {
           map.updateValue("x", at: map.endIndex)
         }
       }
@@ -492,7 +492,7 @@
         let removed = map.startIndex
         map.remove(at: removed)
         let shared = map
-        withExtendedLifetime(shared) {
+        _ = withExtendedLifetime(shared) {
           map.updateValue("x", at: removed)
         }
       }
@@ -576,7 +576,7 @@
     func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, _, staleRange) = multiMapAfterRemoveAllKeepingCapacity()
-        _ = t.erase(staleRange, where: { _ in true })
+        t.erase(staleRange, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }
@@ -585,7 +585,7 @@
     func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, stale, _) = multiMapAfterRemoveAllKeepingCapacity()
-        _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        t.erase(stale..<t.endIndex, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }

@@ -195,10 +195,6 @@ let package = Package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.6.0",
     //      traits: []),
-    .package(
-      url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1"
-    ),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -321,7 +317,6 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         "NextPermutationModule", "PermutationModule",
       ],
       swiftSettings: _settings + [.enableExperimentalFeature("Lifetimes")]

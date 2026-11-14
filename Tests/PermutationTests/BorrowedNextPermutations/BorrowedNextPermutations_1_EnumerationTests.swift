@@ -43,6 +43,30 @@ private func orders<C: Collection>(_ source: C) -> [[C.Element]] where C.Element
 
 final class BorrowedNextPermutations_1_EnumerationTests: XCTestCase {
 
+  // 異なる要素の順列は、各結果の要素一致・重複なし・n!件で全件の網羅を確認できる。
+  func testEnumeratesEveryPermutationExactlyOnce() {
+    let factorials = [1, 1, 2, 6, 24, 120, 720, 5040]
+    for n in 0..<factorials.count {
+      let source = Array(0..<n)
+      let elements = Set(source)
+      var seen: Set<[Int]> = []
+      var count = 0
+      var permutations = source.borrowedNextPermutations()
+      while let permutation = permutations.next() {
+        var order: [Int] = []
+        for i in permutation.indices {
+          order.append(permutation[i])
+        }
+        XCTAssertEqual(order.count, source.count, "n=\(n)")
+        XCTAssertEqual(Set(order), elements, "n=\(n), order=\(order)")
+        XCTAssertTrue(seen.insert(order).inserted, "重複: n=\(n), order=\(order)")
+        count += 1
+      }
+      XCTAssertEqual(count, factorials[n], "n=\(n)")
+      XCTAssertEqual(seen.count, factorials[n], "n=\(n)")
+    }
+  }
+
   func testFromAscendingOrderEnumeratesAll() throws {
     XCTAssertEqual(
       orders([1, 2, 3]),

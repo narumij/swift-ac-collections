@@ -37,15 +37,15 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 }
 
 @_documentation(visibility: internal)
-public protocol LinkPairValueTrait: KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
+public protocol LinkPairValueTrait: ~Copyable, KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
 
-extension LinkPairValueTrait {
+extension LinkPairValueTrait where Self: ~Copyable {
   @inlinable
   public static var isMulti: Bool { true }
 }
 
-extension LinkPairValueTrait {
+extension LinkPairValueTrait where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }

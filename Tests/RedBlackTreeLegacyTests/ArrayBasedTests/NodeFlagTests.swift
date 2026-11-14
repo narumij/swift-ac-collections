@@ -1,4 +1,3 @@
-import Algorithms
 import XCTest
 
 #if DEBUG
@@ -32,19 +31,19 @@ import XCTest
 
     func testNodeFlag() {
       XCTAssertEqual(___ptr_bitmap(__root), 1 << (UInt.bitWidth - 1))
-      for (a, b) in (0...2).permutations(ofCount: 2).map({
-        (_TrackingTag($0[0]), _TrackingTag($0[1]))
-      }) {
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
-        XCTAssertEqual(
-          ___ptr_comp_multi(a, b),
-          uintCenteredToInt(___ptr_bitmap(a)) < uintCenteredToInt(___ptr_bitmap(b)))
-        XCTAssertEqual(
-          ___ptr_comp_multi(b, a),
-          uintCenteredToInt(___ptr_bitmap(b)) < uintCenteredToInt(___ptr_bitmap(a)))
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_comp_bitmap(a, b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_comp_bitmap(b, a))
+      for a in (0...2).map({ _TrackingTag($0) }) {
+        for b in (0...2).map({ _TrackingTag($0) }) where a != b {
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
+          XCTAssertEqual(
+            ___ptr_comp_multi(a, b),
+            uintCenteredToInt(___ptr_bitmap(a)) < uintCenteredToInt(___ptr_bitmap(b)))
+          XCTAssertEqual(
+            ___ptr_comp_multi(b, a),
+            uintCenteredToInt(___ptr_bitmap(b)) < uintCenteredToInt(___ptr_bitmap(a)))
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_comp_bitmap(a, b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_comp_bitmap(b, a))
+        }
       }
     }
 
@@ -52,9 +51,11 @@ import XCTest
     @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
-      for (a, b) in (0...2).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap_128(a) < ___ptr_bitmap_128(b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
+      for a in 0...2 {
+        for b in 0...2 where a != b {
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap_128(a) < ___ptr_bitmap_128(b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
+        }
       }
     }
     #endif
@@ -64,19 +65,19 @@ import XCTest
 
     func testNodeFlag() {
       XCTAssertEqual(___ptr_bitmap(__root), 1 << (UInt.bitWidth - 1))
-      for (a, b) in (0...6).permutations(ofCount: 2).map({
-        (_TrackingTag($0[0]), _TrackingTag($0[1]))
-      }) {
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
-        XCTAssertEqual(
-          ___ptr_comp_multi(a, b),
-          uintCenteredToInt(___ptr_bitmap(a)) < uintCenteredToInt(___ptr_bitmap(b)))
-        XCTAssertEqual(
-          ___ptr_comp_multi(b, a),
-          uintCenteredToInt(___ptr_bitmap(b)) < uintCenteredToInt(___ptr_bitmap(a)))
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_comp_bitmap(a, b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_comp_bitmap(b, a))
+      for a in (0...6).map({ _TrackingTag($0) }) {
+        for b in (0...6).map({ _TrackingTag($0) }) where a != b {
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
+          XCTAssertEqual(
+            ___ptr_comp_multi(a, b),
+            uintCenteredToInt(___ptr_bitmap(a)) < uintCenteredToInt(___ptr_bitmap(b)))
+          XCTAssertEqual(
+            ___ptr_comp_multi(b, a),
+            uintCenteredToInt(___ptr_bitmap(b)) < uintCenteredToInt(___ptr_bitmap(a)))
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_comp_bitmap(a, b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_comp_bitmap(b, a))
+        }
       }
     }
 
@@ -84,9 +85,11 @@ import XCTest
     @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
-      for (a, b) in (0...6).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
-        XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap_128(a) < ___ptr_bitmap_128(b))
-        XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
+      for a in 0...6 {
+        for b in 0...6 where a != b {
+          XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap_128(a) < ___ptr_bitmap_128(b))
+          XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap_128(b) < ___ptr_bitmap_128(a))
+        }
       }
     }
     #endif

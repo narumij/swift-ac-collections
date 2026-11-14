@@ -253,7 +253,6 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections", "RedBlackTreeFixture",
       ],
@@ -262,7 +261,6 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeLegacyTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
@@ -270,8 +268,7 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeCollections", "RedBlackTreeFixture",
+        "RedBlackTreeCollections", "RedBlackTreeFixture", "NextPermutationModule",
       ],
       swiftSettings: _settings
     ), .target(name: "CppBehaviorReference", publicHeadersPath: "include"),

@@ -25,6 +25,8 @@ swift-ac-collections is a Swift library that provides a variety of data structur
 ![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
 
 These sorted sets and dictionaries are not limited to competitive programming; they can also be used for general development.
+They provide value semantics through Copy-on-Write: modifying one copy does not affect another.
+They also handle element lifetimes and support mutation through range views.
 
 With them, you can solve [AtCoder][atcoder] problems that assume `std::set` / `std::multiset` with performance on par with C++.
 

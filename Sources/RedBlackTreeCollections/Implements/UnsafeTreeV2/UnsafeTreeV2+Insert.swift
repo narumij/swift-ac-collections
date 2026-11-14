@@ -1,32 +1,24 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnsafeTreeV2+Insert.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project.
 //
-//  Created by narumij on 2026/11/09.
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
-    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
-  }
-
-  @inlinable
-  func __simple_retrieve(
-    _ __parent: _NodePtr,
-    _ __child: _NodeRef
-  ) -> (__parent: _NodePtr, __child: _NodeRef) {
-    let __p = __simple_retrieve(__parent)
-    if __parent.__left_ref == __child {
-      return (__p, __p.__left_ref)
-    } else if __parent.__right_ref == __child {
-      return (__p, __p.__right_ref)
-    } else {
-      fatalError("Invalid parent child pair.")
-    }
-  }
-}
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
 
 #if true
 extension UnsafeTreeV2 {

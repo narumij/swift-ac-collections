@@ -29,6 +29,12 @@ They provide value semantics through Copy-on-Write, so you can use them as value
 Modifying one copy does not affect another.
 They also handle element lifetimes and support mutation through range views.
 
+An allocated sentinel node takes the place of a null pointer.
+By construction, moving forward or backward from a valid index cannot cause a memory access violation
+through a null pointer dereference, even when moving beyond the bounds.
+Access to values is subject to separate safety checks, and the structure ensures that these checks
+themselves access only allocated memory.
+
 With them, you can solve [AtCoder][atcoder] problems that assume `std::set` / `std::multiset` with performance on par with C++.
 
 ## Usage

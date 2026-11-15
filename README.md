@@ -36,6 +36,8 @@ This is because an allocated sentinel node takes the place of a null pointer.
 As a result, no null check is needed before each move; checking after the sentinel is reached is enough, which also helps performance.
 Access to values is subject to separate safety checks, which themselves access only allocated memory.
 
+See [Memory Safety Design](Documentation/MemorySafety.md) for details.
+
 ## Usage
 
 ### Using Swift Package Manager

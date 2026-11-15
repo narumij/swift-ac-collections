@@ -18,22 +18,22 @@ swift-ac-collections is a Swift library that provides a variety of data structur
 
 *Successful lookups: time per element (1 to 16M elements). Apple Silicon, macOS, Swift 6.4 Release. `std::set` was measured in the same environment.*
 
-![Lookup performance of std::set and RedBlackTreeSet (successful lookups, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+![Lookup performance of std::set and RedBlackTreeSet (successful lookups, up to 16M)](Benchmarks/versus%20STL%2016M/01%20successful%20lookups.png)
 
 *Removing elements in random order: time per element (1 to 16M elements). Same measurement conditions as above.*
 
-![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M/01%20random%20removals.png)
 
 With these sorted sets and dictionaries, you can solve [AtCoder][atcoder] problems that assume
 `std::set` / `std::multiset` with performance on par with C++.
 
 They are not limited to competitive programming; they can also be used for general development.
 Copy-on-write gives them value semantics, so you can use them as values just like Swift’s standard `Set` and `Dictionary`.
-They also handle element lifetimes and support mutation through range views.
+They also support mutation through range views.
 
 By construction, moving forward or backward from a valid index never dereferences a null pointer, even when moving beyond the bounds.
 This is because an allocated sentinel node takes the place of a null pointer.
-As a result, no check is needed before each move; checking after the sentinel is reached is enough, which also helps performance.
+As a result, no null check is needed before each move; checking after the sentinel is reached is enough, which also helps performance.
 Access to values is subject to separate safety checks, which themselves access only allocated memory.
 
 ## Usage

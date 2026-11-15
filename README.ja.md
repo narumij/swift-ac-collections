@@ -19,12 +19,12 @@ swift-ac-collections は、**C++ の `std::set` / `std::map` に匹敵する性�
 
 *検索ヒットするケース、1要素あたりの時間（1〜16M要素）。Apple Silicon・macOS、Swift 6.4 Release。`std::set`は同じ環境で計測。*
 
-![std::set と RedBlackTreeSet の検索性能比較（成功する検索、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+![std::set と RedBlackTreeSet の検索性能比較（成功する検索、16Mまで）](Benchmarks/versus%20STL%2016M/01%20successful%20lookups.png)
 
 
 *ランダムな順に要素を削除するケース、1要素あたりの時間（1〜16M要素）。測定条件は上と同じ。*
 
-![std::set と RedBlackTreeSet の削除性能比較（ランダム削除、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+![std::set と RedBlackTreeSet の削除性能比較（ランダム削除、16Mまで）](Benchmarks/versus%20STL%2016M/01%20random%20removals.png)
 
 
 
@@ -33,11 +33,11 @@ swift-ac-collections は、**C++ の `std::set` / `std::map` に匹敵する性�
 
 競技プログラミングに限らず、一般の開発にも利用できます。
 Copy-on-Writeによる値セマンティクスを備え、Swift標準の`Set`や`Dictionary`と同じように値として扱えます。
-要素の寿命管理や、範囲ビューを通した変更にも対応しています。
+範囲ビューを通した変更にも対応しています。
 
 有効なインデックスからの前後移動では、範囲を越えても、原理上ヌルポインタ参照によるメモリ違反は起きません。
 ヌルポインタの代わりに、実体のある番兵ノードを使用しているためです。
-このため、移動のたびに事前に検査する必要がなく、番兵に到達した後の検査で間に合います。これが速さにもつながっています。
+このため、移動のたびに事前にヌル検査をする必要がなく、番兵に到達した後の検査で間に合います。これが速さにもつながっています。
 値へのアクセスには別途安全性チェックが行われ、そのチェック自体も確保済み領域に対してのみ行われます。
 
 ## 利用方法

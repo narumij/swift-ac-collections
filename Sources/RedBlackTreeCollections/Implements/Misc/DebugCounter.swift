@@ -28,7 +28,7 @@ final class _DebugCounter: @unchecked Sendable {
 
 private let _allocatedCount = _DebugCounter()
 @usableFromInline
-var allocatedCount: Int {
+package var allocatedCount: Int {
   get { _allocatedCount.value }
   set { _allocatedCount.value = newValue }
   _modify { yield &_allocatedCount.value }
@@ -36,7 +36,7 @@ var allocatedCount: Int {
 
 private let _deallocatedCount = _DebugCounter()
 @usableFromInline
-var deallocatedCount: Int {
+package var deallocatedCount: Int {
   get { _deallocatedCount.value }
   set { _deallocatedCount.value = newValue }
   _modify { yield &_deallocatedCount.value }
@@ -44,7 +44,7 @@ var deallocatedCount: Int {
 
 private let _nodeInitializedCount = _DebugCounter()
 @usableFromInline
-var nodeInitializedCount: Int {
+package var nodeInitializedCount: Int {
   get { _nodeInitializedCount.value }
   set { _nodeInitializedCount.value = newValue }
   _modify { yield &_nodeInitializedCount.value }
@@ -52,7 +52,7 @@ var nodeInitializedCount: Int {
 
 private let _nodeDeinitializedCount = _DebugCounter()
 @usableFromInline
-var nodeDeinitializedCount: Int {
+package var nodeDeinitializedCount: Int {
   get { _nodeDeinitializedCount.value }
   set { _nodeDeinitializedCount.value = newValue }
   _modify { yield &_nodeDeinitializedCount.value }
@@ -60,7 +60,7 @@ var nodeDeinitializedCount: Int {
 
 private let _payloadInitializedCount = _DebugCounter()
 @usableFromInline
-var payloadInitializedCount: Int {
+package var payloadInitializedCount: Int {
   get { _payloadInitializedCount.value }
   set { _payloadInitializedCount.value = newValue }
   _modify { yield &_payloadInitializedCount.value }
@@ -68,7 +68,7 @@ var payloadInitializedCount: Int {
 
 private let _payloadDeinitializedCount = _DebugCounter()
 @usableFromInline
-var payloadDeinitializedCount: Int {
+package var payloadDeinitializedCount: Int {
   get { _payloadDeinitializedCount.value }
   set { _payloadDeinitializedCount.value = newValue }
   _modify { yield &_payloadDeinitializedCount.value }

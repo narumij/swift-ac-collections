@@ -1,6 +1,6 @@
 # Memory Safety Design
 
-[English](MemorySafety.md) | 日本語
+English | [日本語](MemorySafety.ja.md)
 
 In measured lookups and removals, the trees in this library perform on par with `std::set`. This document explains why that performance is not the result of leaving out safety checks.
 

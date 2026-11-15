@@ -29,7 +29,7 @@ With these sorted sets and dictionaries, you can solve [AtCoder][atcoder] proble
 
 They are not limited to competitive programming; they can also be used for general development.
 Copy-on-write gives them value semantics, so you can use them as values just like Swift’s standard `Set` and `Dictionary`.
-They also handle element lifetimes and support mutation through range views.
+They also support mutation through range views.
 
 By construction, moving forward or backward from a valid index never dereferences a null pointer, even when moving beyond the bounds.
 This is because an allocated sentinel node takes the place of a null pointer.

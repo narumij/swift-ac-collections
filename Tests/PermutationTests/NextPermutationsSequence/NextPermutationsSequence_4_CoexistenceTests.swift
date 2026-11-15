@@ -7,7 +7,7 @@
 // 全順列が欲しい場合はswift-algorithmsの`permutations()`を使う、という使い分けの前提を固定する。
 // 衝突すれば、このfileはcompileできない。
 
-#if !COMPATIBLE_ATCODER_2025
+#if false // swift-algorithmsとの共存試験は一旦無効化。
 import Algorithms
 import NextPermutationModule
 #if false

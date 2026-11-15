@@ -129,6 +129,30 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
+  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
+    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
+  }
+
+  @inlinable
+  func __simple_retrieve(
+    _ __parent: _NodePtr,
+    _ __child: _NodeRef
+  ) -> (__parent: _NodePtr, __child: _NodeRef) {
+    let __p = __simple_retrieve(__parent)
+    if __parent.__left_ref == __child {
+      return (__p, __p.__left_ref)
+    } else if __parent.__right_ref == __child {
+      return (__p, __p.__right_ref)
+    } else {
+      fatalError("Invalid parent child pair.")
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  // 基本形のようで実は実運用でつかわれていなさそう
+  @inlinable
   package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
     case .nullptr: .failure(.null)
@@ -140,6 +164,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
+  @inline(never) // コールドパス化。usableFromInlineか悩むポイント
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:

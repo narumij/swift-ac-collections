@@ -24,7 +24,7 @@
 // accessorはCoW境界を越えた場合のポインタ解決用っぽい
 @frozen
 @usableFromInline
-package struct _BucketAccessor: _UnsafeNodePtrType {
+package struct _BucketAccessor: ~Copyable, _UnsafeNodePtrType {
 
   @inlinable
   package init(

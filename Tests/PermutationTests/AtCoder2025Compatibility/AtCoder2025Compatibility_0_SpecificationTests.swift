@@ -6,6 +6,27 @@ import XCTest
 // 通常版の`NextPermutationsSequence`契約とは混ぜず、互換defineでだけ実行する。
 final class AtCoder2025Compatibility_0_SpecificationTests: XCTestCase {
 
+  // 異なる要素の順列は、各結果の要素一致・重複なし・n!件で全件の網羅を確認できる。
+  func testEnumeratesEveryPermutationExactlyOnce() {
+    let factorials = [1, 1, 2, 6, 24, 120, 720, 5040]
+    for n in 0..<factorials.count {
+      let source = Array(0..<n)
+      let elements = Set(source)
+      var seen: Set<[Int]> = []
+      var count = 0
+      var permutations = source.nextPermutations().makeIterator()
+      while let permutation = permutations.next() {
+        let order = Array(permutation)
+        XCTAssertEqual(order.count, source.count, "n=\(n)")
+        XCTAssertEqual(Set(order), elements, "n=\(n), order=\(order)")
+        XCTAssertTrue(seen.insert(order).inserted, "重複: n=\(n), order=\(order)")
+        count += 1
+      }
+      XCTAssertEqual(count, factorials[n], "n=\(n)")
+      XCTAssertEqual(seen.count, factorials[n], "n=\(n)")
+    }
+  }
+
   func testUnsafePermutationsEnumeratesEveryPositionOrder() {
     XCTAssertEqual(
       [1, 2, 3].unsafePermutations().map { Array($0) },

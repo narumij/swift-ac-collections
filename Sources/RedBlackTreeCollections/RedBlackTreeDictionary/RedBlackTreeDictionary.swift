@@ -206,7 +206,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
-    __tree_.update { $0.__count_unique(key) }
+    __tree_.read { $0.__count_unique(key) }
   }
 }
 
@@ -222,7 +222,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func contains(key: Key) -> Bool {
     // TODO: 冬休み頃にハンドルを使った特殊化実装を試し、生成された探索ループにwitness dispatch が残ってないことを確認する。
-    __tree_.update { $0.__count_unique(key) != 0 }
+    __tree_.read { $0.__count_unique(key) != 0 }
   }
 }
 

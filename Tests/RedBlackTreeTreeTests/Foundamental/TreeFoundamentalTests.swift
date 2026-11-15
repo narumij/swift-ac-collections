@@ -1,4 +1,4 @@
-import Algorithms
+import NextPermutationModule
 import XCTest
 
 #if DEBUG
@@ -484,7 +484,13 @@ final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
     let n = 6
     let base = Array(0..<n)
 
-    for insertOrder in base.permutations() {
+    #if COMPATIBLE_ATCODER_2025
+    var permutations = base.nextPermutations().makeIterator()
+    #else
+    var permutations = base.nextPermutations()
+    #endif
+    while let permutation = permutations.next() {
+      let insertOrder = Array(permutation)
       let removalOrders: [[Int]] = [
         Array(0..<n),
         Array((0..<n).reversed()),

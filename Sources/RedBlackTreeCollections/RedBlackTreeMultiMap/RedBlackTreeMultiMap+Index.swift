@@ -52,7 +52,7 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(log `count`)
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
-      ___index_or_nil(__tree_.update { $0.find_first(key) })
+      ___index_or_nil(__tree_.read { $0.find_first(key) })
     }
   }
 

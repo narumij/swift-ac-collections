@@ -16,7 +16,7 @@ let package = Package(
   dependencies: [
     .package(
       name: "swift-ac-collections", path: "..",
-      traits: ["BENCHMARK", "ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
+      traits: ["BENCHMARK", "ENABLE_OPTIONAL_ELEMENT_BUFFER", "ENABLE_EXPERIMENTAL_LRU"]),
     .package(
       url: "https://github.com/apple/swift-collections",
       from: "1.5.1",

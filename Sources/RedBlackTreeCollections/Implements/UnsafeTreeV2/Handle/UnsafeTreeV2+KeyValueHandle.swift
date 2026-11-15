@@ -26,7 +26,7 @@
 //
 @frozen
 @usableFromInline
-struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
+struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue>: ~Copyable where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,

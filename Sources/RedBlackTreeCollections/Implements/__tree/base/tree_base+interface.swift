@@ -100,7 +100,7 @@ public protocol _Base_MultiplicityHelperInterface: ~Copyable, _UnsafeNodePtrType
     & _BaseNode_KeyInterface
     & _Base_IsMultiInterface
 where _Key: Comparable {
-  associatedtype _MultiplicityHelper: MultiplicityHelper
+  associatedtype _MultiplicityHelper: MultiplicityHelper where _MultiplicityHelper: ~Copyable
 }
 
 @usableFromInline

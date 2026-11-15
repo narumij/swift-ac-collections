@@ -195,10 +195,6 @@ let package = Package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.6.0",
     //      traits: []),
-    .package(
-      url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1"
-    ),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -253,7 +249,6 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections", "RedBlackTreeFixture",
       ],
@@ -262,7 +257,6 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeLegacyTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
@@ -270,8 +264,7 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeCollections", "RedBlackTreeFixture",
+        "RedBlackTreeCollections", "RedBlackTreeFixture", "NextPermutationModule",
       ],
       swiftSettings: _settings
     ), .target(name: "CppBehaviorReference", publicHeadersPath: "include"),
@@ -311,7 +304,8 @@ let package = Package(
       dependencies: [],
       exclude: ["Documentation"],
       swiftSettings: _settings + [
-        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+        .enableExperimentalFeature("Lifetimes"),
+//        .strictMemorySafety(),
       ]
     ),
     .target(
@@ -323,7 +317,6 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         "NextPermutationModule", "PermutationModule",
       ],
       swiftSettings: _settings + [.enableExperimentalFeature("Lifetimes")]

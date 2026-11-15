@@ -1,32 +1,24 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnsafeTreeV2+Insert.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project.
 //
-//  Created by narumij on 2026/11/09.
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
-    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
-  }
-
-  @inlinable
-  func __simple_retrieve(
-    _ __parent: _NodePtr,
-    _ __child: _NodeRef
-  ) -> (__parent: _NodePtr, __child: _NodeRef) {
-    let __p = __simple_retrieve(__parent)
-    if __parent.__left_ref == __child {
-      return (__p, __p.__left_ref)
-    } else if __parent.__right_ref == __child {
-      return (__p, __p.__right_ref)
-    } else {
-      fatalError("Invalid parent child pair.")
-    }
-  }
-}
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
 
 #if true
 extension UnsafeTreeV2 {
@@ -85,7 +77,7 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   mutating func ___insert_unique_if_not_present(
     _ __k: _PayloadValue
   ) -> (__r: _NodePtr, __inserted: Bool) {
-    var (__parent, __child) = update { $0.__find_equal(__key(__k)) }
+    var (__parent, __child) = __find_equal(__k)
     if __child.pointee != nullptr { return (__child.pointee, false) }
     
     let __e = __end_node
@@ -107,7 +99,7 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
-    var (__parent, __child) = update { $0.__find_equal(__p, &__dummy, __key(__k)) }
+    var (__parent, __child) = __find_equal(__p, &__dummy, __k)
 
     if __child.pointee != nullptr {
       return (__child.pointee, false)
@@ -131,7 +123,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   mutating func ___insert_unique_if_not_present(
     _ __k: _PayloadValue
   ) -> (__r: _NodePtr, __inserted: Bool) {
-    var (__parent, __child) = update { $0.__find_equal(__key(__k)) }
+    var (__parent, __child) = __find_equal(__key(__k))
     if __child.pointee != nullptr { return (__child.pointee, false) }
     let __e = __end_node
     ensureUniqueAndCapacity()  // これが問題で全体をupdate内には移せない
@@ -152,7 +144,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __dummy = nullptr
 
     // 問題が起きる可能性がすこしある
-    var (__parent, __child) = update { $0.__find_equal(__p, &__dummy, __key(__k)) }
+    var (__parent, __child) = __find_equal(__p, &__dummy, __key(__k))
 
     if __child.pointee != nullptr {
       return (__child.pointee, false)

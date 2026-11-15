@@ -27,7 +27,7 @@
 //
 @frozen
 @usableFromInline
-struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
+struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: ~Copyable, _UnsafeNodePtrType {
 
   @inlinable
   internal init(

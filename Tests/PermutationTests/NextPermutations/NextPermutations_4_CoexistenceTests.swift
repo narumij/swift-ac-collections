@@ -9,7 +9,7 @@
 // 衝突すれば、このfileはcompileできない。
 // `AcCollections`からの再公開は`Tests/AcCollectionsTests/AcCollections_NextPermutationsReexportTests.swift`で扱う。
 
-#if !COMPATIBLE_ATCODER_2025
+#if false // swift-algorithmsとの共存試験は一旦無効化。
 import Algorithms
 import NextPermutationModule
 import XCTest

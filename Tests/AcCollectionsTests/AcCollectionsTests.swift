@@ -10,6 +10,31 @@ import XCTest
 /// other tests could not detect it, so this file performs minimal reachability checks.
 final class AcCollectionsTests: XCTestCase {
 
+  override func setUpWithError() throws {
+    try super.setUpWithError()
+    #if _TREE_ALLOCATION_COUNTER
+    // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
+    _ = RedBlackTreeSet<Int>()
+    allocatedCount = 0
+    deallocatedCount = 0
+    nodeInitializedCount = 0
+    nodeDeinitializedCount = 0
+    payloadInitializedCount = 0
+    payloadDeinitializedCount = 0
+    #endif
+  }
+
+  override func tearDownWithError() throws {
+    #if _TREE_ALLOCATION_COUNTER
+    allocatedCount = 0
+    deallocatedCount = 0
+    nodeInitializedCount = 0
+    nodeDeinitializedCount = 0
+    payloadInitializedCount = 0
+    payloadDeinitializedCount = 0
+    #endif
+  }
+  
   func test_importAcCollections_exposesRedBlackTreeSet() {
     var set = RedBlackTreeSet<Int>()
     set.insert(3)

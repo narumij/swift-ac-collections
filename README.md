@@ -18,11 +18,11 @@ swift-ac-collections is a Swift library that provides a variety of data structur
 
 *Successful lookups: time per element (1 to 16M elements). Apple Silicon, macOS, Swift 6.4 Release. `std::set` was measured in the same environment.*
 
-![Lookup performance of std::set and RedBlackTreeSet (successful lookups, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+![Lookup performance of std::set and RedBlackTreeSet (successful lookups, up to 16M)](Benchmarks/versus%20STL%2016M/01%20successful%20lookups.png)
 
 *Removing elements in random order: time per element (1 to 16M elements). Same measurement conditions as above.*
 
-![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M/01%20random%20removals.png)
 
 With these sorted sets and dictionaries, you can solve [AtCoder][atcoder] problems that assume
 `std::set` / `std::multiset` with performance on par with C++.

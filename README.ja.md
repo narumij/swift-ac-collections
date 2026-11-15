@@ -19,12 +19,12 @@ swift-ac-collections は、**C++ の `std::set` / `std::map` に匹敵する性�
 
 *検索ヒットするケース、1要素あたりの時間（1〜16M要素）。Apple Silicon・macOS、Swift 6.4 Release。`std::set`は同じ環境で計測。*
 
-![std::set と RedBlackTreeSet の検索性能比較（成功する検索、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20successful%20lookups.png)
+![std::set と RedBlackTreeSet の検索性能比較（成功する検索、16Mまで）](Benchmarks/versus%20STL%2016M/01%20successful%20lookups.png)
 
 
 *ランダムな順に要素を削除するケース、1要素あたりの時間（1〜16M要素）。測定条件は上と同じ。*
 
-![std::set と RedBlackTreeSet の削除性能比較（ランダム削除、16Mまで）](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
+![std::set と RedBlackTreeSet の削除性能比較（ランダム削除、16Mまで）](Benchmarks/versus%20STL%2016M/01%20random%20removals.png)
 
 
 

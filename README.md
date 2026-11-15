@@ -24,18 +24,16 @@ swift-ac-collections is a Swift library that provides a variety of data structur
 
 ![Removal performance of std::set and RedBlackTreeSet (random removals, up to 16M)](Benchmarks/versus%20STL%2016M%20TSan-safe/01%20random%20removals.png)
 
-These sorted sets and dictionaries are not limited to competitive programming; they can also be used for general development.
-They provide value semantics through Copy-on-Write, so you can use them as values just like Swift’s standard `Set` and `Dictionary`.
-Modifying one copy does not affect another.
+With these sorted sets and dictionaries, you can solve [AtCoder][atcoder] problems that assume
+`std::set` / `std::multiset` with performance on par with C++.
+
+They are not limited to competitive programming; they can also be used for general development.
+Copy-on-write gives them value semantics, so you can use them as values just like Swift’s standard `Set` and `Dictionary`.
 They also handle element lifetimes and support mutation through range views.
 
-An allocated sentinel node takes the place of a null pointer.
-By construction, moving forward or backward from a valid index cannot cause a memory access violation
-through a null pointer dereference, even when moving beyond the bounds.
-Access to values is subject to separate safety checks, and the structure ensures that these checks
-themselves access only allocated memory.
-
-With them, you can solve [AtCoder][atcoder] problems that assume `std::set` / `std::multiset` with performance on par with C++.
+By construction, moving forward or backward from a valid index never dereferences a null pointer, even when moving beyond the bounds.
+This is because an allocated sentinel node takes the place of a null pointer.
+Access to values is subject to separate safety checks, which themselves access only allocated memory.
 
 ## Usage
 

@@ -33,7 +33,7 @@ They also support mutation through range views.
 
 By construction, moving forward or backward from a valid index never dereferences a null pointer, even when moving beyond the bounds.
 This is because an allocated sentinel node takes the place of a null pointer.
-As a result, no check is needed before each move; checking after the sentinel is reached is enough, which also helps performance.
+As a result, no null check is needed before each move; checking after the sentinel is reached is enough, which also helps performance.
 Access to values is subject to separate safety checks, which themselves access only allocated memory.
 
 ## Usage

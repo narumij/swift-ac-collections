@@ -66,10 +66,3 @@ extension _LazyTie {
     isDetached = true
   }
 }
-
-/*
- reelase/AtCoder/2025では、インデックス自体にManagerBufferへの参照を持たせていた
- 次にManagedBuffer解放時に木のメモリ管理を移動する方式に変わった(_TieWrap)
- その後メモリ管理の移動タイミングに関する工夫がいくつかあり、
- 最後に、インデックスの挙動が定まったため、解放済みかどうかだけを確認する方式になった
- */

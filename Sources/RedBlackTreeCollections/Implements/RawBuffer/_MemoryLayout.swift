@@ -82,6 +82,15 @@ extension _MemoryLayout {
   }
 }
 
+extension MemoryLayout where T: ~Copyable {
+
+  @inlinable
+  static var _memoryLayout: _MemoryLayout { .init(stride: stride, alignment: alignment) }
+
+  @inlinable
+  static var _pairLayout: _MemoryLayout { .init(UnsafeNode.self, T.self) }
+}
+
 #if DEBUG
   extension _MemoryLayout {
     internal init<T: ~Copyable>(_ t: T.Type) {

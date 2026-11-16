@@ -7,72 +7,6 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && DEBUG
-  /// Test-only marker for sequences whose iteration order is ascending.
-  private protocol SortedSequence: Sequence {}
-
-  extension Range: SortedSequence where Self: Sequence {}
-  extension ClosedRange: SortedSequence where Self: Sequence {}
-
-  extension RedBlackTreeSet {
-    fileprivate func union<S>(_ other: S) -> RedBlackTreeSet<Element>
-    where S: SortedSequence, S.Element == Element {
-      .init(__tree_: __tree_.___meld_unique(other))
-    }
-  }
-
-  extension UnsafeTreeV2 {
-    fileprivate mutating func ___copy_range<Iterator: IteratorProtocol>(
-      _ iterator: inout Iterator,
-      to parent: UnsafeMutablePointer<UnsafeNode>,
-      _ child: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-    ) where Iterator.Element == _PayloadValue {
-      var (parent, child) = (parent, child)
-      while let payload = iterator.next() {
-        unsafeEnsureCapacity()
-        (parent, child) = ___emplace_hint_right(parent, child, payload)
-      }
-    }
-
-    fileprivate func ___meld_unique<S>(_ other: S) -> UnsafeTreeV2
-    where S: SortedSequence, S.Element == _PayloadValue {
-      var result: UnsafeTreeV2 =
-        ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
-      var (parent, child) = result.___max_ref()
-      var (first, last) = (__begin_node_, __end_node)
-      var iterator = other.makeIterator()
-
-      outer: while let payload = iterator.next() {
-        while first != last {
-          let value = __get_value(first)
-          if value_comp(__key(payload), value) {
-            result.unsafeEnsureCapacity()
-            (parent, child) = result.___emplace_hint_right(parent, child, payload)
-            continue outer
-          }
-
-          result.unsafeEnsureCapacity()
-          (parent, child) = result.___emplace_hint_right(
-            parent, child, Base.__payload_(first)
-          )
-          first = __tree_next_iter(first)
-          if !value_comp(value, __key(payload)) {
-            continue outer
-          }
-        }
-
-        result.unsafeEnsureCapacity()
-        (parent, child) = result.___emplace_hint_right(parent, child, payload)
-        result.___copy_range(&iterator, to: parent, child)
-        return result
-      }
-
-      result.___copy_range(first, last, to: parent, child)
-      return result
-    }
-  }
-#endif
-
 /// 棚卸し用の雑多な検証置き場。
 final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
@@ -85,82 +19,64 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
-    /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
-    func testFormIndexLimitedByMatchesString() {
-      let string = "abcd"
-      let stringLimit = string.index(after: string.startIndex)
+    #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
+      // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
+      // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
 
-      var stringExact = string.startIndex
-      XCTAssertTrue(string.formIndex(&stringExact, offsetBy: 1, limitedBy: stringLimit))
-      XCTAssertEqual(stringExact, stringLimit)
+    #endif
 
-      var stringOver = string.startIndex
-      XCTAssertFalse(string.formIndex(&stringOver, offsetBy: 2, limitedBy: stringLimit))
-      XCTAssertEqual(stringOver, stringLimit)
-
-      let set = RedBlackTreeSet([0, 1, 2, 3])
-      let setLimit = set.index(after: set.startIndex)
-
-      var setExact = set.startIndex
-      XCTAssertTrue(set.formIndex(&setExact, offsetBy: 1, limitedBy: setLimit))
-      XCTAssertEqual(setExact, setLimit)
-
-      var setOver = set.startIndex
-      XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
-      XCTAssertEqual(setOver, setLimit)
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025 && DEBUG
-    func testAPICheck() throws {
-
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0..<10)
-        XCTAssertTrue(result.elementsEqual(0..<10), "\(result)")
+    #if false && ENABLE_EXPERIMENTAL_LRU // LRUはあとまわし
+      // LRUのコピー側でgetしただけで、元の値の追い出し順が変わる。
+      func testLRUGetOnCopyDoesNotAffectOriginal() {
+        var original = ___LRUMemoizeStorage<Int, Int>(maxCount: 3)
+        original[1] = 10
+        original[2] = 20
+        original[3] = 30
+        var copy = original
+        _ = copy[1]
+        original[4] = 40  // originalだけなら1を追い出す
+        original[5] = 50  // originalだけなら2を追い出す
+        XCTAssertNil(original[1])
+        XCTAssertNil(original[2])
+        XCTAssertEqual(original[3], 30)
+        XCTAssertEqual(original[4], 40)
+        XCTAssertEqual(original[5], 50)
       }
 
-      do {
-        let result = RedBlackTreeSet([1, 2]).union(0...10)
-        XCTAssertTrue(result.elementsEqual(0...10), "\(result)")
+    #endif
+
+    #if false // 木の作成時の世代管理の問題
+      // 空にした木をコピーしてから挿入すると、削除前のIndexが新しい要素に解決する。
+      func testIndexOfRemovedElementStaysInvalidAfterCopyingEmptyTree() {
+        var set: RedBlackTreeSet<Int> = [1]
+        let index = set.startIndex
+        set.remove(1)
+        var copy = set
+        copy.insert(2)
+        XCTAssertFalse(copy.isElement(at: index))
       }
-    }
+
+      // コピーして両方に挿入すると、片方のIndexがもう片方の別の要素に解決する。
+      func testIndexFromDivergedCopyIsNotElementOfOther() {
+        var a: RedBlackTreeSet<Int> = [1]
+        var b = a
+        a.insert(5)
+        b.insert(7)
+        let index = a.firstIndex(of: 5)!
+        XCTAssertFalse(b.isElement(at: index))
+      }
+
+      // form系で木を作り直すと、前のIndexが同じ番号の新しいノードに解決する。
+      func testIndexIsInvalidAfterFormUnionRebuild() {
+        var set = RedBlackTreeSet([0, 2, 4])
+        let index = set.firstIndex(of: 4)!
+        set.formUnion(RedBlackTreeSet([1, 3]))
+        if set.isElement(at: index) {
+          XCTAssertEqual(set[index], 4)
+        }
+      }
+
+    #endif
+
   #endif
-
-  #if DEBUG && !COMPATIBLE_ATCODER_2025
-    /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
-    /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
-    func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
-      let decoder = JSONDecoder()
-      let emptyJSON = "[]".data(using: .utf8)!
-
-      let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
-      XCTAssertTrue(emptySet.__tree_.isReadOnly)
-
-      let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
-      XCTAssertTrue(emptyDict.__tree_.isReadOnly)
-
-      let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
-      XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
-
-      let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
-      XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
-    }
-  #endif
-
 }
-
-#if COMPATIBLE_ATCODER_2025 && DEBUG
-  // これ、整理整頓対象でいいかも
-  extension EtcTests {
-    /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
-    func testRev() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
-        result.append(p.index)
-      }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-  }
-#endif

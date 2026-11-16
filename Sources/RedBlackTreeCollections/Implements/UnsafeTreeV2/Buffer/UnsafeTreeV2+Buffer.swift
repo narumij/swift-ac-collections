@@ -20,9 +20,15 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+  @usableFromInline package typealias UnsafeTreeV2BufferElement = UInt8
+#else
+  @usableFromInline package typealias UnsafeTreeV2BufferElement = Void
+#endif
+
 @usableFromInline
 package final class UnsafeTreeV2Buffer:
-  ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
+  ManagedBuffer<UnsafeTreeV2BufferHeader, UnsafeTreeV2BufferElement>
 {
   // MARK: - 解放処理
   deinit {
@@ -30,14 +36,12 @@ package final class UnsafeTreeV2Buffer:
     withUnsafeMutablePointers { header, _ in
 
       if !header.pointee.isLazyDetachUniquelyOwned() {
-        #if USE_LAZY_DETACH
-          // ポインタを直接さわるほうが、境界内での最適化よりもいい場合がある
-          header.pointee._lazyDetach!.buffer = header.pointee.tiedRawBuffer
-        #else
-          header.pointee._lazyDetach?.isDetached = true
-        #endif
+        header.pointee._lazyDetach?.isDetached = true
       }
 
+      #if !COMPATIBLE_ATCODER_2025
+      header.pointee.___deallocFreshPool()
+      #else
       if !header.pointee.isRawBufferUniquelyOwned {
         // 内部バッファがぼっちじゃないので、続行
         header.pointee._tied!.isValueAccessAllowed = false
@@ -45,6 +49,14 @@ package final class UnsafeTreeV2Buffer:
         // 内部バッファがぼっちになるので、解散
         header.pointee.___deallocFreshPool()
       }
+      #endif
+
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+        if let p = header.pointee.lazyDetachPointer {
+          p.deinitialize(count: 1)
+          p.deallocate()
+        }
+      #endif
     }
   }
 }
@@ -82,10 +94,23 @@ extension UnsafeTreeV2Buffer {
       allocator.pairLayout._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
     #endif
 
+    #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+    let storage = UnsafeTreeV2Buffer.create(
+      minimumCapacity: allocator._pairedHeadAllocationSize(capacity: nodeCapacity)
+    ) { managedBuffer in
+      let headStorage = managedBuffer.withUnsafeMutablePointerToElements {
+        UnsafeMutableRawPointer($0)
+      }
+      return .init(
+        allocator: allocator, nullptr: nullptr, capacity: nodeCapacity,
+        headStorage: headStorage)
+    }
+    #else
     // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       return .init(allocator: allocator, nullptr: nullptr, capacity: nodeCapacity)
     }
+    #endif
     assert(nodeCapacity <= storage.header.freshPoolCapacity, "必要最低容量を満たしていること")
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }
@@ -100,7 +125,9 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       var header = UnsafeTreeV2BufferHeader(allocator: .create(), nullptr: .nullptr, capacity: 0)
 
+      #if COMPATIBLE_ATCODER_2025
       _ = header.tiedRawBuffer
+      #endif
 
       header._lazyDetach = _emptyLazyDetach
 

@@ -54,4 +54,74 @@ final class RedBlackTreeDictionaryUtilityTests: RedBlackTreeTestCase {
     XCTAssertEqual(copy[2], "changed")
     XCTAssertEqual(copy[3], "c")
   }
+  /// mapValues・compactMapValues・filterは、closureのエラーをそのまま投げ、投げた後はclosureを呼ばないこと。
+  /// 元の辞書のkey/valueは変わらず、途中まで作られた結果が参照値を保持し続けないこと（RBT-044 D2）
+  func test_transformations_rethrowClosureErrorWithoutKeepingPartialResults() {
+    final class Box { let id: Int; init(_ id: Int) { self.id = id } }
+    struct StopError: Error, Equatable {}
+    final class WeakBox { weak var box: Box? }
+
+    let source: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30]
+    var produced: [WeakBox] = []
+    func track(_ box: Box) -> Box {
+      let observer = WeakBox()
+      observer.box = box
+      produced.append(observer)
+      return box
+    }
+
+    var visited: [Int] = []
+    XCTAssertThrowsError(
+      try source.mapValues { value -> Box in
+        visited.append(value)
+        if value == 20 { throw StopError() }
+        return track(Box(value))
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [10, 20])
+
+    visited = []
+    XCTAssertThrowsError(
+      try source.compactMapValues { value -> Box? in
+        visited.append(value)
+        if value == 20 { throw StopError() }
+        return track(Box(value))
+      }
+    ) { error in
+      XCTAssertEqual(error as? StopError, StopError())
+    }
+    XCTAssertEqual(visited, [10, 20])
+
+    XCTAssertEqual(produced.count, 2)
+    XCTAssertTrue(produced.allSatisfy { $0.box == nil }, "途中まで作られた結果が変換後の値を保持していないこと")
+
+    var observers: [WeakBox] = []
+    do {
+      let boxes: RedBlackTreeDictionary<Int, Box> = [1: Box(1), 2: Box(2), 3: Box(3)]
+      observers = boxes.map { element in
+        let observer = WeakBox()
+        observer.box = element.value
+        return observer
+      }
+      var filtered: [Int] = []
+      XCTAssertThrowsError(
+        try boxes.filter { element in
+          filtered.append(element.key)
+          if element.key == 2 { throw StopError() }
+          return true
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(filtered, [1, 2])
+      XCTAssertEqual(boxes.map(\.key), [1, 2, 3])
+      XCTAssertTrue(zip(boxes.map(\.value), observers).allSatisfy { $0 === $1.box })
+    }
+    XCTAssertTrue(observers.allSatisfy { $0.box == nil }, "元の辞書を破棄した後、filterの途中結果が参照値を保持していないこと")
+
+    XCTAssertEqual(source.map(\.key), [1, 2, 3])
+    XCTAssertEqual(source.map(\.value), [10, 20, 30])
+  }
 }

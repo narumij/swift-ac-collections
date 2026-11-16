@@ -93,3 +93,18 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetRangeViewTests {
+    /// 同じキーの並びの中で前後が逆になった境界式は、空のビューになること。
+    /// 多重系だけが通る、同値キーを木の位置で比べ直す経路を確かめる。
+    func test_invertedBoundRangeWithinEqualKeys_isEmpty() {
+      typealias Bound = RedBlackTreeBoundExpression<Int>
+      let multiset: RedBlackTreeMultiSet = [0, 1, 1, 1, 2]
+      let view = multiset[Bound.lowerBound(1).advanced(by: 2) ..< Bound.lowerBound(1).advanced(by: 1)]
+      XCTAssertTrue(view.isEmpty)
+      XCTAssertEqual(Array(view), [])
+      XCTAssertEqual(Array(view.reversed()), [])
+    }
+  }
+#endif

@@ -21,6 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 #if USE_C_MALLOC
+  // ジャッジ搭載時に再検討したいので残ってる
   import _malloc_free
   extension UnsafeMutableRawPointer {
     @inlinable
@@ -31,7 +32,10 @@
       guard alignment <= MALLOC_ALIGN_MASK else {
         fatalError(.alignnment)
       }
-      return malloc(byteCount)
+      guard let pointer = malloc(byteCount) else {
+        fatalError("Memory allocation failed")
+      }
+      return pointer
     }
     func _unsafe_free() {
       free(self)
@@ -41,7 +45,10 @@
       guard alignment <= MALLOC_ALIGN_MASK else {
         fatalError(.alignnment)
       }
-      return malloc(byteCount)
+      guard let pointer = malloc(byteCount) else {
+        fatalError("Memory allocation failed")
+      }
+      return pointer
     }
     @inlinable
     func _deallocate() {
@@ -52,22 +59,17 @@
   extension UnsafeMutableRawPointer {
     @inlinable
     static func _allocate(byteCount: Int, alignment: Int) -> UnsafeMutableRawPointer {
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
       allocatedCount += 1
       #endif
       return self.allocate(byteCount: byteCount, alignment: alignment)
     }
     @inlinable
     func _deallocate() {
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
       deallocatedCount += 1
       #endif
       self.deallocate()
     }
   }
-#endif
-
-#if DEBUG
-@usableFromInline nonisolated(unsafe) var deallocatedCount = 0
-@usableFromInline nonisolated(unsafe) var allocatedCount = 0
 #endif

@@ -270,3 +270,341 @@
     }
   }
 #endif  // DEATH_TEST && !COMPATIBLE_ATCODER_2025
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import Testing
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
+
+  struct RedBlackTreeSetRangePredicatePropagationTests {
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRange() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeSet([1, 2, 3])
+        var receiver = original
+        let lo = receiver.startIndex
+        let hi = receiver.endIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..<hi, where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRangeExpression() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeSet([1, 2, 3])
+        var receiver = original
+        let lo = receiver.startIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..., where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeSet<Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 消したときに文字列の領域が解放されるよう、毎回新しく作る要素。
+  private func freshElement(_ c: Character) -> String {
+    String(repeating: c, count: 40)
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 容量を保ったまま全削除したSetと、削除前に取ったIndex・IndexRange。
+  private func setAfterRemoveAllKeepingCapacity()
+    -> (tree: RedBlackTreeSet<String>, stale: RedBlackTreeSet<String>.Index, staleRange: RedBlackTreeIndexRange)
+  {
+    var t = RedBlackTreeSet<String>()
+    for c in "abc" { t.insert(freshElement(c)) }
+    let stale = t.index(after: t.startIndex)
+    let staleRange = t.equalRange(freshElement("b"))
+    t.removeAll(keepingCapacity: true)
+    t.insert(freshElement("x"))
+    return (t, stale, staleRange)
+  }
+
+  // RBT-104: 容量保持の全削除より前に取ったIndex・IndexRangeを渡しても、破棄済みの中身や古いリンクを読む前に停止すること。
+  struct RedBlackTreeSetRemoveAllKeepingCapacityDeathTests {
+
+    @Test
+    func isElement_returnsFalse() {
+      let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+      #expect(!t.isElement(at: stale))
+    }
+
+    @Test
+    func containsSubrangeIndexRange_returnsFalse() {
+      let (t, _, staleRange) = setAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(staleRange))
+    }
+
+    @Test
+    func containsSubrangeExpression_returnsFalse() {
+      let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(stale..<t.endIndex))
+    }
+
+    @Test
+    func subscript_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t[stale]
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func distance_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.distance(from: t.startIndex, to: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexAfter_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.index(after: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexBefore_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.index(before: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func insertWithHint_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.insert(freshElement("y"), hint: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func updateWithHint_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.update(freshElement("y"), hint: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, _, staleRange) = setAfterRemoveAllKeepingCapacity()
+        _ = t[staleRange].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t[stale..<t.endIndex].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = setAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = setAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = setAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && USE_COMPACT_NODE_METADATA
+  /// 同じ場所を65536回使い回したあとに残る、最初に消した要素のIndex。
+  private func indexAfterSlotReused65536Times()
+    -> (set: RedBlackTreeSet<String>, stale: RedBlackTreeSet<String>.Index)
+  {
+    var set = RedBlackTreeSet<String>()
+    set.insert(freshElement("a"))
+    set.insert(freshElement("c"))
+    set.insert(freshElement("b"))
+    let stale = set.firstIndex(of: freshElement("b"))!
+    set.remove(freshElement("b"))
+    for _ in 0..<65535 {
+      set.insert(freshElement("b"))
+      set.remove(freshElement("b"))
+    }
+    return (set, stale)
+  }
+
+  // RBT-104: 同じ場所を何度使い回しても、消した要素のIndexは中身や古いリンクを読む前に停止すること。
+  struct RedBlackTreeSetHeavilyReusedSlotDeathTests {
+
+    @Test
+    func isElement_returnsFalse() {
+      let (set, stale) = indexAfterSlotReused65536Times()
+      #expect(!set.isElement(at: stale))
+    }
+
+    @Test
+    func containsSubrange_returnsFalse() {
+      let (set, stale) = indexAfterSlotReused65536Times()
+      #expect(!set.containsSubrange(stale..<set.endIndex))
+    }
+
+    @Test
+    func removeAllKeepingCapacity_succeeds() {
+      var (set, _) = indexAfterSlotReused65536Times()
+      set.insert(freshElement("b"))
+      set.removeAll(keepingCapacity: true)
+      #expect(set.isEmpty)
+    }
+
+    @Test
+    func subscript_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (set, stale) = indexAfterSlotReused65536Times()
+        _ = set[stale]
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func distance_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.distance(from: set.startIndex, to: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexAfter_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.index(after: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexBefore_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.index(before: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func insertWithHint_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.insert(freshElement("y"), hint: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func updateWithHint_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.update(freshElement("y"), hint: stale)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func viewFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (set, stale) = indexAfterSlotReused65536Times()
+        _ = set[stale..<set.endIndex].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseRange_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (set, stale) = indexAfterSlotReused65536Times()
+        _ = set.erase(stale..<set.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+  }
+#endif

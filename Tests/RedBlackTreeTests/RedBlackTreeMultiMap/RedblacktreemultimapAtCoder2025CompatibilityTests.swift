@@ -285,7 +285,7 @@ import XCTest
     }
   #endif
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
@@ -566,7 +566,7 @@ import XCTest
       XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
     }
   }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet3() throws {
         tree._copyCount = 0
@@ -631,7 +631,7 @@ import XCTest
     /// 互換モード専用のremoveFirst(forKey:)/removeFirst(_unsafeForKey:)/removeAll(forKey:)も、
     /// 見つからない場合はトラップしない以上、無駄なCoWを発生させないこと。
     func test_removeByKeyVariants_notFound_doNotTriggerCopyOnWrite() {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var map = RedBlackTreeMultiMap<Int, Int>()
         XCTAssertEqual(map._copyCount, 0)
 
@@ -669,5 +669,30 @@ import XCTest
   }
 
   extension RedBlackTreeMultiMapTests {
+  }
+
+  // meldは互換モードだけに残っている
+  extension RedBlackTreeMultiMapTransformingAndCombiningTests {
+
+    func test_meld_combinesEveryEntryInPlace() {
+      var lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
+      let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
+
+      lhs.meld(rhs)
+
+      XCTAssertEqual(lhs.map(\.key), [1, 1, 2, 2])
+      XCTAssertEqual(lhs.map(\.value), ["a", "b", "c", "d"])
+    }
+
+    func test_melding_returnsCombinedCopyAndPreservesOperands() {
+      let lhs: RedBlackTreeMultiMap = [(1, "a"), (2, "c")]
+      let rhs: RedBlackTreeMultiMap = [(1, "b"), (2, "d")]
+
+      let result = lhs.melding(rhs)
+
+      XCTAssertEqual(result.map(\.value), ["a", "b", "c", "d"])
+      XCTAssertEqual(lhs.map(\.value), ["a", "c"])
+      XCTAssertEqual(rhs.map(\.value), ["b", "d"])
+    }
   }
 #endif

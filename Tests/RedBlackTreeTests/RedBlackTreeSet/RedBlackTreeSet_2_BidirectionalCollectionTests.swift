@@ -363,3 +363,68 @@ extension RedBlackTreeSetBidirectionalCollectionTests {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBidirectionalCollectionTests {
+    /// 移動量0はlimit上（空のendIndexを含む）でも成功し、limitを越える移動は失敗すること。
+    func testIndexLimitedByZeroMovement() {
+      func check<I: Equatable>(
+        _ indices: [I],
+        index offset: (I, Int, I) -> I?,
+        formIndex: (inout I, Int, I) -> Bool
+      ) {
+        for index in indices {
+          XCTAssertEqual(offset(index, 0, index), index)
+          var current = index
+          XCTAssertTrue(formIndex(&current, 0, index))
+          XCTAssertEqual(current, index)
+          XCTAssertNil(offset(index, 1, index))
+          XCTAssertNil(offset(index, -1, index))
+        }
+      }
+      for values in [[], [0, 1, 2]] {
+        let c = RedBlackTreeSet(values)
+        check([c.startIndex, c.endIndex],
+          index: c.index(_:offsetBy:limitedBy:),
+          formIndex: c.formIndex(_:offsetBy:limitedBy:))
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetBidirectionalCollectionTests {
+    /// index(_:offsetBy:limitedBy:)に巨大な距離を渡しても、範囲の外に出たところで止まってnilを返すこと。
+    func testIndexOffsetByHugeDistanceTerminates() {
+      let set: RedBlackTreeSet<Int> = [1, 2, 3]
+      XCTAssertNil(set.index(set.startIndex, offsetBy: Int.max, limitedBy: set.endIndex))
+      XCTAssertNil(set.index(set.endIndex, offsetBy: Int.min, limitedBy: set.startIndex))
+    }
+
+    /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
+    /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
+    func testFormIndexLimitedByMatchesString() {
+      let string = "abcd"
+      let stringLimit = string.index(after: string.startIndex)
+
+      var stringExact = string.startIndex
+      XCTAssertTrue(string.formIndex(&stringExact, offsetBy: 1, limitedBy: stringLimit))
+      XCTAssertEqual(stringExact, stringLimit)
+
+      var stringOver = string.startIndex
+      XCTAssertFalse(string.formIndex(&stringOver, offsetBy: 2, limitedBy: stringLimit))
+      XCTAssertEqual(stringOver, stringLimit)
+
+      let set = RedBlackTreeSet([0, 1, 2, 3])
+      let setLimit = set.index(after: set.startIndex)
+
+      var setExact = set.startIndex
+      XCTAssertTrue(set.formIndex(&setExact, offsetBy: 1, limitedBy: setLimit))
+      XCTAssertEqual(setExact, setLimit)
+
+      var setOver = set.startIndex
+      XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
+      XCTAssertEqual(setOver, setLimit)
+    }
+  }
+#endif

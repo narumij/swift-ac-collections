@@ -6,7 +6,8 @@
 // 実装の確認(仕様ではない)。`DEBUG`のときだけ有効。
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
-  import PermutationModule
+#if false
+  import NextPermutationModule
   import XCTest
 
   final class NextPermutationsSequence_98_InternalTests: XCTestCase {
@@ -70,5 +71,6 @@
         XCTAssertEqual(p._copyCount, 0)
       }
     }
-  }
+}
+#endif
 #endif

@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
 extension UnsafeTreeV2 {
 
     // CoWの発火回数を観察するためのプロパティ

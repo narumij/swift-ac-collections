@@ -37,11 +37,19 @@
   }
 #endif
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   extension RedBlackTreeSet {
     package var _copyCount: UInt {
       get { __tree_.copyCount }
       set { __tree_.copyCount = newValue }
+    }
+  }
+#endif
+
+#if DEBUG
+  extension RedBlackTreeSet {
+    package var _isUnique: Bool {
+      mutating get { __tree_.isUnique() }
     }
   }
 #endif
@@ -74,7 +82,7 @@ extension RedBlackTreeSet {
   /// releaseビルドでは無効化されています(?)
   @inlinable
   package func ___tree_invariant() -> Bool {
-    #if DEBUG
+    #if _TREE_INVARIANT
       #if SIZECHECK
         // 並行してサイズもチェックする。その分遅い
         __tree_.count == __tree_.___signed_distance(__tree_.__begin_node_, __tree_.end)

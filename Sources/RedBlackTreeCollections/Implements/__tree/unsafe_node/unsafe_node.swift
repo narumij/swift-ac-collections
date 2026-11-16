@@ -175,6 +175,9 @@ public struct UnsafeNode {
   // 将来の実装課題
   // end nodeのrecycle countをsalt置き場にすればいい
   // 再利用された回数
+  //
+  // 一周して戻って未使用状態でインデックスから利用すると解放済みメモリアクセスとなる
+  // これを予防するため、カウントは上限値で止め、それ以降は常にタグ番号による解決を利用するようになっている
   public var ___recycle_count: Seal = 0
 
   // Indicates whether the payload stored after this node is currently loaded.
@@ -291,7 +294,7 @@ extension UnsafeNode {
     internal static func create() -> Template {
       let template = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
       template.initialize(to: .create(tag: 0, nullptr: nullptr))
-      assert(template.pointee.___has_payload_content == true)
+      _TREE_ASSERT_INTERNAL(template.pointee.___has_payload_content == true)
       return .init(template: template)
     }
   }

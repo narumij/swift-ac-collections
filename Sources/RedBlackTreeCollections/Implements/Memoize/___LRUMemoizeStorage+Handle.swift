@@ -26,7 +26,7 @@
 //
 @frozen
 @usableFromInline
-struct ___LRUHandle<_Key, _MappedValue> where _Key: Comparable {
+struct ___LRUHandle<_Key, _MappedValue>: ~Copyable where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
@@ -71,7 +71,7 @@ extension ___LRUHandle {
     // あえてのdefer
     defer {
       p.__value_().initialize(to: k)
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         payloadInitializedCount += 1
       #endif
     }
@@ -158,7 +158,7 @@ extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _Linking
   typealias _LRUHandle = ___LRUHandle<_Key, Base._MappedValue>
 
   @inlinable
-  internal func update<R>(_ body: (_LRUHandle) throws -> R) rethrows -> R {
+  internal func update<R>(_ body: (borrowing _LRUHandle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, _ in
       let handle = _LRUHandle(header: header)
       return try body(handle)

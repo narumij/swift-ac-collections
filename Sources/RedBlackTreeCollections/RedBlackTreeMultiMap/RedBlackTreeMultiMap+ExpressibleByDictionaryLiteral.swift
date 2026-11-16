@@ -23,6 +23,7 @@
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
+  // TODO: 分割配置
 
   #if COMPATIBLE_ATCODER_2025
     /// Creates a multimap from a dictionary literal, retaining pairs with duplicate keys.

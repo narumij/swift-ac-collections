@@ -36,6 +36,7 @@ extension RedBlackTreeSet {
   ///   was faster when 90% of `other` duplicated existing elements.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
+    guard !other.isEmpty else { return }
     __tree_.ensureUnique()
     __tree_.___insert_range_unique(
       other: other.__tree_,
@@ -50,6 +51,7 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
+    guard !other.isEmpty else { return }
     __tree_.ensureUnique()
     __tree_.___insert_range_unique(
       other: other.__tree_,
@@ -64,8 +66,11 @@ extension RedBlackTreeSet {
   ///   and *m* is the size of the current tree.
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
-    __tree_.ensureUnique()
-    __tree_.___insert_range_unique(other)
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
+    _ = __tree_.update { $0.__insert_unique(__first) }
+    __tree_.___insert_range_unique(IteratorSequence(it))
   }
 
   /// Returns a set containing the elements of this set and `other`.

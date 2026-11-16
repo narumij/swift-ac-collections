@@ -58,7 +58,7 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
 
     if !isUnique() {
-      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow(to: minimumCapacity) }
     } else {
       withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
     }
@@ -68,9 +68,9 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity() {
 
     if !isUnique() {
-      self = withMutableHeader { $0._ensureUniqueSlow() }
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
     } else {
-      withMutableHeader { $0._ensureCapacitySlow() }
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureCapacity() }
     }
   }
 }
@@ -81,22 +81,23 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow() }
+      self = _buffer.withUnsafeMutablePointerToHeader { $0.pointee._ensureUniqueSlow() }
     } else {
-      withMutableHeader { $0._ensureCapacitySlow() }
+      withMutableHeader { $0._ensureCapacity() }
     }
   }
 
   @inlinable
   internal mutating func unsafeEnsureCapacity() {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-    withMutableHeader { $0._ensureCapacitySlow() }
+    withMutableHeader { $0._ensureCapacity() }
   }
 
   @inlinable
   internal mutating func unsafeEnsureCapacity(to minimumCapacity: Int) {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-    withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+    guard capacity < minimumCapacity else { return }
+    withMutableHeader { $0._ensureCapacitySlow(to: growth(from: $0.count, to: minimumCapacity)) }
   }
 }
 

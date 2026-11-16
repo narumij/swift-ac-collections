@@ -11,7 +11,7 @@ import XCTest
   /// シングルトンバッファ(`_emptyTreeStorage`、型消去済みで容量0)の生成・コピー・detach・復帰条件
   /// をまとめて検証する。これらはpublicな保証ではなく内部のアロケーション契約であり、ポインタ同一性
   /// 自体を外部仕様として扱わない。詳細は`Design-CopyOnWrite.md`/`Design-NodeStorage.md`、
-  /// 要約は`Tests/TESTING.md`を参照。
+  /// 要約は`Maintanance/Testing/TESTING.md`を参照。
   final class RedBlackTreeInternal_EmptySingletonTests: RedBlackTreeTestCase {
 
     private func assertIsSingleton<Base: ___TreeBase>(
@@ -195,3 +195,26 @@ import XCTest
     #endif
   }
 #endif  // DEBUG
+
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeInternal_EmptySingletonTests {
+    /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
+    /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
+    func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
+      let decoder = JSONDecoder()
+      let emptyJSON = "[]".data(using: .utf8)!
+
+      let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptySet.__tree_.isReadOnly)
+
+      let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyDict.__tree_.isReadOnly)
+
+      let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
+
+      let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
+    }
+  }
+#endif

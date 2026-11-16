@@ -39,7 +39,7 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
       }
     #endif
 
-    #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    #if ALLOW_CROSS_TREE_INDEX
       /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
       /// 解決できること(`index_stale_check.md`のF3)。
       func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {
@@ -98,6 +98,27 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
       XCTAssertEqual(m[i], 2)
       XCTAssertFalse(m.formIndex(&i, offsetBy: 10, limitedBy: m.endIndex))
       XCTAssertEqual(i, m.endIndex)
+    }
+  }
+#endif
+
+// IndexのComparable準拠はDebugビルドだけにある。
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetIndexRangeTests {
+    /// 重複キーとendIndexを含む生きたIndexどうしの`<`が、並び順どおりになること。
+    func testLiveIndicesKeepTreeOrderIncludingDuplicatesAndEnd() {
+      let tree: RedBlackTreeMultiSet<Int> = [3, 1, 3, 2]
+      var indices = [tree.startIndex]
+      while indices.last! != tree.endIndex {
+        indices.append(tree.index(after: indices.last!))
+      }
+      withExtendedLifetime(tree) {
+        for i in indices.indices {
+          for j in indices.indices {
+            XCTAssertEqual(indices[i] < indices[j], i < j)
+          }
+        }
+      }
     }
   }
 #endif

@@ -8,7 +8,7 @@ import XCTest
 
 /// `Implements/__tree/unsafe_node/Seal/_NodePathBitmap.swift`と`_NodeKey.swift`のテスト。
 /// `TreeNodeOnlyFixture`で実ポインタの木を作り、`___recycle_count`をキー代わりに使う。
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 final class TreeFoundamentalSealTests: TreeTestCase, _UnsafeNodePtrType {
   
   typealias _SealTestBase = TreeNodeOnlyFixture.UniqueSealKey

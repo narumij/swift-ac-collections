@@ -1,0 +1,463 @@
+name: Release Candidate
+
+on:
+  issue_comment:
+    types: [created]
+  push:
+    tags:
+      - "candidate-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-${{ github.event.comment.id || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    if: >-
+      github.event_name == 'push' ||
+      github.event.issue.pull_request
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      sha: ${{ steps.target.outputs.sha }}
+    steps:
+      - name: Authorize request and pin candidate
+        id: target
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if (context.eventName === 'push') {
+              core.setOutput('sha', context.sha);
+              return;
+            }
+            if ((context.payload.comment.body ?? '').trim() !== '/test release') {
+              return;
+            }
+            const {owner, repo} = context.repo;
+            const username = context.payload.comment.user.login;
+            const {data: access} = await github.rest.repos.getCollaboratorPermissionLevel({owner, repo, username});
+            if (!['admin', 'maintain', 'write'].includes(access.permission)) {
+              core.setFailed('Only repository writers may request release tests.');
+              return;
+            }
+            const {data: pr} = await github.rest.pulls.get({owner, repo, pull_number: context.issue.number});
+            if (pr.state !== 'open' || pr.head.repo?.full_name !== `${owner}/${repo}`) {
+              core.setFailed('An open PR from this repository is required.');
+              return;
+            }
+            core.setOutput('sha', pr.head.sha);
+            await core.summary.addHeading('Release candidate target')
+              .addRaw(`PR #${pr.number}: ${pr.head.sha} (resolved at job start). Requested by ${username}.`)
+              .write();
+
+  debug-all-tests:
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run Debug tests excluding performance measurements
+        run: >-
+          swift test -c debug
+          --traits CANDIDATE_DEBUG_TEST,ENABLE_DEATH_TESTS
+
+  release-all-tests:
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      # 性能は専用ベンチマークで判定する。
+      - name: Run Release tests excluding performance measurements
+        run: >-
+          swift test -c release --traits CANDIDATE_RELEASE_TEST,ENABLE_DEATH_TESTS
+
+  atcoder-2025-compatibility:
+    name: AtCoder 2025 compatibility (${{ matrix.configuration }})
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - configuration: debug
+            test-options: --traits NORMAL_DEBUG_TEST
+          - configuration: release
+            test-options: ''
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run compatibility tests
+        run: >-
+          swift test -c ${{ matrix.configuration }}
+          ${{ matrix.test-options }} -Xswiftc -DCOMPATIBLE_ATCODER_2025
+
+  documentation:
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Build documentation
+        run: >-
+          swift package -c release --allow-writing-to-directory .build/documentation
+          generate-documentation
+          --target RedBlackTreeCollections
+          --output-path .build/documentation
+          --transform-for-static-hosting
+          --hosting-base-path swift-ac-collections
+          --warnings-as-errors
+
+      - name: Archive documentation
+        run: >-
+          tar -czf .build/candidate-documentation.tar.gz
+          -C .build/documentation .
+
+      - name: Upload documentation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-documentation-${{ needs.resolve.outputs.sha }}
+          path: .build/candidate-documentation.tar.gz
+          if-no-files-found: error
+
+  # ASan for exit tests (death tests) on Linux. The macOS strip_env issue (RBT-049) does not apply
+  # here; Linux ASan with exit tests has not been verified before this job.
+  address-sanitizer-death-tests:
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Record environment
+        run: |
+          cat /etc/os-release
+          uname -m
+          swift --version
+
+      - name: Run death tests with Address Sanitizer
+        env:
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan
+        shell: bash
+        run: |
+          mkdir -p asan-logs
+          set -o pipefail
+          swift test -c debug --sanitize address --build-system native \
+            --traits ENABLE_DEATH_TESTS \
+            --filter 'DeathTests|RedBlackTreeInternalCoverageTests' 2>&1 \
+            | tee asan-logs/full-console.log
+
+      - name: Upload Address Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-asan-death-tests-${{ needs.resolve.outputs.sha }}
+          path: asan-logs
+          if-no-files-found: warn
+
+  performance:
+    needs: resolve
+    if: needs.resolve.outputs.sha != ''
+    name: performance (${{ matrix.suite }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [collections, next-permutations]
+
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+        with:
+          path: candidate
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Resolve previous release tag
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASELINE_TAG=""
+          while IFS= read -r TAG; do
+            if [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              BASELINE_TAG="$TAG"
+              break
+            fi
+          done < <(git -C candidate tag --merged HEAD --sort=-version:refname)
+
+          test -n "$BASELINE_TAG"
+          echo "tag=$BASELINE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Baseline tag: $BASELINE_TAG"
+
+      - name: Checkout baseline
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.baseline.outputs.tag }}
+          path: baseline
+          persist-credentials: false
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Record runner environment
+        shell: bash
+        run: |
+          mkdir -p candidate/benchmark-results/environment
+          uname -a | tee candidate/benchmark-results/environment/uname.txt
+          lscpu | tee candidate/benchmark-results/environment/cpu.txt
+          swift --version | tee candidate/benchmark-results/environment/swift.txt
+          git -C baseline rev-parse HEAD \
+            | tee candidate/benchmark-results/environment/baseline-commit.txt
+          git -C candidate rev-parse HEAD \
+            | tee candidate/benchmark-results/environment/candidate-commit.txt
+
+      - name: Select benchmark executable and libraries from each revision
+        shell: bash
+        env:
+          BENCHMARK_SUITE: ${{ matrix.suite }}
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          permutations = os.environ["BENCHMARK_SUITE"] == "next-permutations"
+          for checkout in ['baseline', 'candidate']:
+              output = Path(checkout) / "benchmark-results"
+              output.mkdir(parents=True, exist_ok=True)
+              benchmarks = Path(checkout) / "Benchmarks"
+              split = (benchmarks / "Sources" / "permutation-benchmark").is_dir()
+              executable = "permutation-benchmark" if permutations and split else "benchmark"
+              (output / "executable.txt").write_text(executable + "\n")
+              print(f"{checkout}: {executable}")
+              for name in ("CI.json", "CI-Small.json"):
+                  library_name = "CI-NextPermutations.json" if permutations and split and name == "CI.json" else name
+                  source = benchmarks / "Libraries" / library_name
+                  library = json.loads(source.read_text())
+                  library["contents"] = [
+                      group for group in library["contents"]
+                      if (group["title"] == "NextPermutations") == permutations
+                  ]
+                  if library["contents"]:
+                      (output / name).write_text(json.dumps(library, indent=2) + "\n")
+          PYTHON
+
+      - name: Run candidate benchmarks
+        working-directory: candidate/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/candidate.json \
+              --max-size 2M \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/candidate.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+      - name: Run baseline benchmarks
+        working-directory: baseline/Benchmarks
+        run: |
+          set -euo pipefail
+          mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+
+          # Measure each revision using its own benchmark definitions.
+          # Do not copy current task names into an older checkout or rename results.
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/baseline.json \
+              --max-size 2M \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/baseline.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+      - name: Check performance regression
+        working-directory: candidate/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # results compare scores only tasks with measurements in both files.
+          # Added, removed, or renamed tasks are reported but excluded from the gate.
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+          OUTPUT="$(
+            swift run -c release "$BENCHMARK_EXECUTABLE" results compare \
+              ../../baseline/benchmark-results/baseline.json \
+              ../benchmark-results/candidate.json
+          )"
+
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison.txt
+
+          printf '%s\n' "$OUTPUT" |
+          awk '
+            /^[[:space:]]*[0-9]/ {
+              regression = $4
+              sub(/\(.*/, "", regression)
+
+              # 30% slower:
+              # candidate / baseline >= 1.30
+              # => baseline / candidate <= 1 / 1.30
+              if ((regression + 0) <= 0.769231) {
+                print ""
+                print "Performance regression >= 30%: " $0
+                failed = 1
+              }
+            }
+
+            END {
+              exit failed ? 1 : 0
+            }
+          '
+
+      - name: Collect benchmark binaries and symbols
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for CHECKOUT in baseline candidate; do
+            OUTPUT="benchmark-binaries/$CHECKOUT"
+            mkdir -p "$OUTPUT"
+
+            BENCHMARK_EXECUTABLE="$(cat "$CHECKOUT/benchmark-results/executable.txt")"
+            BENCHMARK="$(
+              find "$CHECKOUT/Benchmarks/.build" \
+                -type f \
+                -name "$BENCHMARK_EXECUTABLE" \
+                -perm -111 \
+                -print \
+                -quit
+            )"
+
+            if [ -z "$BENCHMARK" ]; then
+              echo "Benchmark binary not found for $CHECKOUT"
+              continue
+            fi
+
+            objdump -d "$BENCHMARK" > "$OUTPUT/benchmark.asm"
+            nm -n "$BENCHMARK" \
+              | swift demangle \
+              > "$OUTPUT/benchmark.nm"
+            file "$BENCHMARK" > "$OUTPUT/benchmark.file"
+            sha256sum "$BENCHMARK" > "$OUTPUT/benchmark.sha256"
+            cp "$BENCHMARK" "$OUTPUT/benchmark"
+          done
+
+      - name: Upload performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-performance-${{ needs.resolve.outputs.sha }}-${{ matrix.suite }}
+          path: |
+            candidate/benchmark-results
+            baseline/benchmark-results
+            benchmark-binaries
+          if-no-files-found: warn
+
+  report:
+    if: >-
+      always() && github.event_name == 'issue_comment' &&
+      needs.resolve.result == 'success' && needs.resolve.outputs.sha != ''
+    needs: [resolve, debug-all-tests, release-all-tests, atcoder-2025-compatibility, documentation, address-sanitizer-death-tests, performance]
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      # No candidate checkout: reporting runs separately from PR code.
+      - name: Report results on the PR
+        uses: actions/github-script@v7
+        env:
+          TARGET_SHA: ${{ needs.resolve.outputs.sha }}
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        with:
+          script: |
+            const results = JSON.parse(process.env.JOB_RESULTS);
+            const jobs = ['debug-all-tests', 'release-all-tests', 'atcoder-2025-compatibility', 'documentation', 'address-sanitizer-death-tests', 'performance'];
+            const passed = jobs.every(name => results[name].result === 'success');
+            const url = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              `Release candidate tests: **${passed ? 'PASS' : 'NOT PASSED'}**`,
+              `Tested commit: ${process.env.TARGET_SHA}`,
+              ...jobs.map(name => `- ${name}: ${results[name].result}`),
+              `[Run and evidence](${url}) (attempt ${process.env.GITHUB_RUN_ATTEMPT})`,
+              'This result applies only to the commit above; it does not publish or approve a release.'
+            ].join('\n');
+            await github.rest.issues.createComment({...context.repo, issue_number: context.issue.number, body});
+            if (!passed) core.setFailed('One or more candidate checks did not succeed.');

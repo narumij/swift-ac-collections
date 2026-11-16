@@ -25,7 +25,7 @@
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
-  internal init(_buffer: ManagedBufferPointer<Header, Void>) {
+  internal init(_buffer: ManagedBufferPointer<Header, Element>) {
     self._buffer = _buffer
   }
 
@@ -40,20 +40,23 @@ extension UnsafeTreeV2 {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
-  @usableFromInline typealias Buffer = ManagedBuffer<Header, Void>
-  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Void>
+  @usableFromInline typealias Element = UnsafeTreeV2BufferElement
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Element>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Element>
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
   package var nullptr: _NodePtr {
-    _read { yield withMutableHeader { $0.nullptr } }
+    _read {
+      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
+    }
   }
 
   @inlinable
   package var end: _NodePtr {
-    withMutableHeader { $0.end_ptr }
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
   }
 
   @inlinable
@@ -95,7 +98,9 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
+  var initializedCount: Int {
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -105,7 +110,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var freeCapacity: Int {
-    withMutableHeader { $0.freshPoolCapacity - $0.count }
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity - $0.pointee.count }
   }
 }
 
@@ -124,6 +129,30 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
+  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
+    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
+  }
+
+  @inlinable
+  func __simple_retrieve(
+    _ __parent: _NodePtr,
+    _ __child: _NodeRef
+  ) -> (__parent: _NodePtr, __child: _NodeRef) {
+    let __p = __simple_retrieve(__parent)
+    if __parent.__left_ref == __child {
+      return (__p, __p.__left_ref)
+    } else if __parent.__right_ref == __child {
+      return (__p, __p.__right_ref)
+    } else {
+      fatalError("Invalid parent child pair.")
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  // 基本形のようで実は実運用でつかわれていなさそう
+  @inlinable
   package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
     case .nullptr: .failure(.null)
@@ -135,6 +164,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
+  @inline(never) // コールドパス化。usableFromInlineか悩むポイント
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
@@ -160,30 +190,24 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  #if ALLOW_CROSS_TREE_INDEX
-    @inlinable
-    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
-      #if USE_LAZY_DETACH
-        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-          ? index.sealed.purified
-          : __retrieve_(index.sealed.purified.tag).deepPurified
-      #else
-        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-          ? index.sealed.purified
-          : __retrieve_(index.tag).deepPurified
-      #endif
-    }
-  #else
-    @inlinable
-    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
-      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-        ? index.sealed.purified
-        : .failure(.crossTree)
-    }
-  #endif
-
+#if ALLOW_CROSS_TREE_INDEX
   @inlinable
-  internal func __purified_safe_(_ index: _LazyTiedPtr) -> _SafePtr {
+  package func __purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
+    _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
+      ? index.sealed.purified
+      : __retrieve_(index.tag).deepPurified
+  }
+#else
+  @inlinable
+  package func __purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
+    _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
+      ? index.sealed.purified
+      : .failure(.crossTree)
+  }
+#endif
+  
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyTiedPtrV2) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

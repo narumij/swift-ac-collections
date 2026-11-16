@@ -6,11 +6,10 @@
   final class RedBlackTreeMultiMapCodableTests: RedBlackTreeTestCase {
 
     func test_codable_roundTripPreservesDuplicateKeysAndValues() throws {
-      let original = RedBlackTreeMultiMap<Int, Int>(
-        keysWithValues: (0..<10).flatMap { key in
-          repeatElement((key, key * 3), count: 3)
-        }
-      )
+      let pairs: [(Int, Int)] = (0..<10).flatMap { key in
+        repeatElement((key, key * 3), count: 3)
+      }
+      let original = RedBlackTreeMultiMap<Int, Int>(keysWithValues: pairs)
 
       let data = try JSONEncoder().encode(original)
       let decoded = try JSONDecoder().decode(RedBlackTreeMultiMap<Int, Int>.self, from: data)

@@ -61,17 +61,34 @@
     },
     {
       "kind": "group",
-      "title": "Permutations",
-      "directory": "permutations",
+      "title": "ElementBuffer",
+      "directory": "bare-array",
       "contents": [
         {
           "kind": "chart",
-          "title": "subscript access",
+          "title": "multidimensional sequential access",
           "tasks": [
-            "Permutations.SubSequenceN subscript sequential access",
-            "Permutations.SubSequenceN subscript shuffled access",
-            "Permutations.SubSequenceN subscript sequential access (batched)",
-            "Permutations.SubSequenceN subscript shuffled access (batched)"
+            "ElementBuffer2D<Int> element(at:) sequential read checksum",
+            "ElementBuffer2D<Int> setElement(_:at:) sequential write",
+            "ElementBuffer3D<Int> element(at:) sequential read checksum",
+            "ElementBuffer3D<Int> setElement(_:at:) sequential write"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "OptionalElementBuffer",
+      "directory": "optional-array",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "multidimensional memoization access",
+          "tasks": [
+            "OptionalElementBuffer2D<Int> direct methods cold memoization checksum",
+            "OptionalElementBuffer2D<Int> direct methods warm memoization checksum",
+            "OptionalElementBuffer3D<Int> direct methods cold memoization checksum",
+            "OptionalElementBuffer3D<Int> direct methods warm memoization checksum"
           ]
         }
       ]

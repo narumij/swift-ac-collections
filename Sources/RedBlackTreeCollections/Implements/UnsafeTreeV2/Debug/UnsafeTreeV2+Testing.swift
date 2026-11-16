@@ -90,7 +90,7 @@
   extension UnsafeTreeV2 {
 
     package func emptyCheck() -> Bool {
-      assert(__tree_invariant(__root))
+      _TREE_ASSERT_INTERNAL(__tree_invariant(__root))
       assert(end.pointee.__left_ == UnsafeNode.nullptr)
       assert(__begin_node_ == end)
       assert(end.pointee.___has_payload_content == false)
@@ -120,7 +120,7 @@
       assert(UnsafeNode.nullptr.pointee.nullCheck())
       assert(end.pointee.endCheck())
       assert(count == 0 ? emptyCheck() : true)
-      assert(__tree_invariant(__root))
+      _TREE_ASSERT_INTERNAL(__tree_invariant(__root))
       assert(count >= 0)
       assert(count <= initializedCount)
       assert(count <= capacity)

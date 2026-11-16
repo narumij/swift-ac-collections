@@ -24,10 +24,15 @@
 package func
   ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
 {
-  __x.___is_end
+  if __x.___is_end {
     // endへの操作は失敗
+    return .failure(.upperOutOfBounds)
+  }
+  let __x = __tree_next_iter(__x)
+  // nullptrの発生は失敗
+  return __x == .nullptr
     ? .failure(.upperOutOfBounds)
-    : .success(__tree_next_iter(__x))
+    : .success(__x)
 }
 
 /// Returns:  pointer to the previous in-order node before `__x`.
@@ -38,7 +43,7 @@ package func
 {
   let __x = __tree_prev_iter(__x)
   // nullptrの発生は失敗
-  return __x.___is_null
+  return __x == .nullptr
     ? .failure(.lowerOutOfBounds)
     : .success(__x)
 }
@@ -54,11 +59,13 @@ package func
   if __n < 0 {
     while __n != 0 {
       __x = __x.flatMap { ___tree_prev_iter($0) }
+      if case .failure = __x { return __x }
       __n &+= 1
     }
   } else {
     while __n != 0 {
       __x = __x.flatMap { ___tree_next_iter($0) }
+      if case .failure = __x { return __x }
       __n &-= 1
     }
   }
@@ -73,19 +80,19 @@ package func
 {
   var __x: _SafePtr = .success(__x)
 
-  guard __x != __l else { return .failure(.limit) }
-
   var __n = __n
   if __n < 0 {
     while __n != 0 {
       guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_prev_iter($0) }
+      if case .failure = __x { return __x }
       __n &+= 1
     }
   } else {
     while __n != 0 {
       guard __x != __l else { return .failure(.limit) }
       __x = __x.flatMap { ___tree_next_iter($0) }
+      if case .failure = __x { return __x }
       __n &-= 1
     }
   }

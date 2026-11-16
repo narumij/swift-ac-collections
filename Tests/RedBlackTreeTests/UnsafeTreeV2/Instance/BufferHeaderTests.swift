@@ -10,6 +10,17 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeCollections
 
+extension UnsafeTreeV2BufferHeader {
+  
+  @usableFromInline
+  mutating func ___deallocFreshPool_FreeingHead() {
+    #if COMPATIBLE_ATCODER_2025
+    assert(_tied == nil, "メモリ管理権が移行されていないこと")
+    #endif
+    freshBucketAllocator.deallocate_FreeingHead(bucket: freshBucketHead)
+  }
+}
+
   final class BufferHeaderTests: PointerRedBlackTreeTestCase {
 
     typealias Fixture = UnsafeTreeV2BufferHeader
@@ -31,7 +42,7 @@ import XCTest
       XCTAssertEqual(header.end_ptr.__left_, .nullptr)
       XCTAssertEqual(header.begin_ptr.pointee, header.end_ptr)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
 
     func testInitial() throws {
@@ -48,8 +59,10 @@ import XCTest
           p?.initialize(to: UnsafeNode.nullptr.pointee)
           p?.__value_().initialize(to: 0)
           p?.pointee.___has_payload_content = true
+          #if _TREE_ALLOCATION_COUNTER
           nodeInitializedCount += 1
           payloadInitializedCount += 1
+          #endif
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
         }
@@ -57,14 +70,14 @@ import XCTest
         XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
         // popしたポインタはユニーク個数で指定数あること
         XCTAssertEqual(pointers.count, i)
-        header.___deallocFreshPool()
+        header.___deallocFreshPool_FreeingHead()
       }
     }
 
     func testFromZero() throws {
-      let null_back = UnsafeNode.nullptr.pointee
+      let _ = UnsafeNode.nullptr.pointee
       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
-      let end_back = header.end_ptr.pointee
+      let _ = header.end_ptr.pointee
 
       for i in 1..<100 {
         let capa = header.freshPoolCapacity
@@ -103,13 +116,13 @@ import XCTest
         XCTAssertNotNil(p)
         p.__value_().initialize(to: 0)
         p.pointee.___has_payload_content = true
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadInitializedCount += 1
         #endif
       }
       XCTAssertEqual(header.recycleHead, .nullptr)
       XCTAssertEqual(header.___popRecycle(), .nullptr)
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
 
     /// `___popRecycle()` は速度を優先した内部プリミティブであり、空チェックを行わない。
@@ -141,7 +154,7 @@ import XCTest
       XCTAssertEqual(header.count, 1)
       XCTAssertEqual(nullBack, UnsafeNode.nullptr.pointee)
 
-      header.___deallocFreshPool()
+      header.___deallocFreshPool_FreeingHead()
     }
   }
 #endif

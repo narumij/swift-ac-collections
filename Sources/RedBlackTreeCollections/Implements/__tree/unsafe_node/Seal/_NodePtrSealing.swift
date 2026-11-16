@@ -37,22 +37,19 @@ public struct _NodePtrSealing {
   // 封印
   @usableFromInline package var seal: UnsafeNode.Seal
 
-  #if !USE_LAZY_DETACH
-    @usableFromInline var trackingTag: _TrackingTag
-  #endif
+  @usableFromInline var trackingTag: _TrackingTag
 
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
+  // (USE_COMPACT_NODE_METADATAではUInt16)
 
   // 現在の状態で封印する
   @inlinable
   init(_p: _NodePtr) {
-    assert(!_p.___is_null)
+    _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _p.pointee.___recycle_count
-    #if !USE_LAZY_DETACH
-      trackingTag = _p.trackingTag
-    #endif
+    trackingTag = _p.trackingTag
   }
 
   #if DEBUG
@@ -60,21 +57,17 @@ public struct _NodePtrSealing {
     init(unsafe _p: _NodePtr) {
       pointer = _p
       seal = _p.pointee.___recycle_count
-      #if !USE_LAZY_DETACH
-        trackingTag = _p.trackingTag
-      #endif
+      trackingTag = _p.trackingTag
     }
   #endif
 
   // 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
-    assert(!_p.___is_null)
+    _TREE_ASSERT_INTERNAL(!_p.___is_null)
     pointer = _p
     seal = _seal
-    #if !USE_LAZY_DETACH
-      trackingTag = _p.trackingTag
-    #endif
+    trackingTag = _p.trackingTag
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
@@ -109,6 +102,7 @@ public struct _NodePtrSealing {
   // お清め
   @inlinable
   var purified: _SealedPtr {
+    #if true
     // 基本的にここにnullは到達しない
     assert(!pointer.___is_null)
     // validなpointerがendやnullに変化することはない
@@ -120,6 +114,17 @@ public struct _NodePtrSealing {
     //      return .failure(.unsealed)
     //    }
     //    return .success(self)
+    #else
+    // 基本的にここにnullは到達しない
+    assert(!pointer.___is_null)
+    if isUnsealed {
+      return .failure(.unsealed)
+    } else if !pointer.___has_payload_content {
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+    #endif
   }
 
   #if ALLOW_CROSS_TREE_INDEX
@@ -142,11 +147,7 @@ public struct _NodePtrSealing {
   // 引換券
   @inlinable
   var tag: _SealedTag {
-    #if USE_LAZY_DETACH
-      .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
-    #else
-      .success(.seal(raw: trackingTag, seal: seal))
-    #endif
+    .success(.seal(raw: trackingTag, seal: seal))
   }
 }
 
@@ -188,7 +189,7 @@ extension _NodePtrSealing: Hashable {}
 
 extension _NodePtrSealing: CustomStringConvertible {
   public var description: String {
-    "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+    "_NodePtrSealing<\((tag: trackingTag, seal: seal, pointer))>"
   }
 }
 

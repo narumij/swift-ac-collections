@@ -3,7 +3,7 @@
 
   /// 原木のallocation/deallocation系プロトコルを、生木やRawBufferを経由せず検査するFixture。
   /// 各ノードは`UnsafeNode`とpayloadを同じ生メモリ領域へ構築し、所有権をFixtureに集約する。
-  @available(anyAppleOS 26.0, *)
+  @available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
   struct TreeOwnedNodeFixture<Payload>: ~Copyable, _UnsafeNodePtrType,
     _PayloadValueType, AllocationInterface, DellocationInterface
   {

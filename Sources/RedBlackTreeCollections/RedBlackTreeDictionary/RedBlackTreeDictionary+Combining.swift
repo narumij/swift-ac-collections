@@ -40,6 +40,7 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
+    guard !other.isEmpty else { return }
     __tree_.ensureUnique()
     try __tree_.___insert_range_unique(
       other: other.__tree_,
@@ -64,9 +65,12 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    __tree_.ensureUnique()
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
     try __tree_.___insert_range_unique(
-      other,
+      __first,
+      IteratorSequence(it),
       uniquingKeysWith: combine
     ) { Base.__payload_($0) }
   }

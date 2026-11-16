@@ -15,6 +15,11 @@
     import Glibc
   #endif
 
+  /// 子processのsetupが目的の状態に届かなかったときの終了status。
+  ///
+  /// `.failure`は0以外の終了も成功に数えるため、この値は親側で明示的に拒否する。
+  private let setupFailedExitStatus: Int32 = 86
+
   struct RedBlackTreeSetAdditionalDeathTests {
 
     /// 異常終了した理由が、不正なメモリアクセスではないことを確認する。
@@ -63,16 +68,44 @@
       expectNoInvalidMemoryAccess(result)
     }
 
+    private func expectSetupReached(_ result: ExitTest.Result?) {
+      guard let result else {
+        return
+      }
+      #expect(
+        result.exitStatus != .exitCode(setupFailedExitStatus),
+        "子processのsetupが目的の状態に届かず、期待した停止を確かめていない"
+      )
+    }
+
+    /// 下の`removed index cannot be subscripted`と同じsetupが、通常の実行で目的の状態に届くこと。
+    @Test func `removed index setup reaches the removed state`() {
+      var set: RedBlackTreeSet<Int> = [1, 2, 3]
+      let index = set.firstIndex(of: 2)
+      #expect(index != nil)
+      if let index {
+        set.remove(at: index)
+      }
+      #expect(Array(set) == [1, 3])
+    }
+
     @Test func `removed index cannot be subscripted`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
+        // setupの失敗を目的の停止と区別するため、trapではなく専用statusで終了させる（RBT-042 S4）
         var set: RedBlackTreeSet<Int> = [1, 2, 3]
-        let index = set.firstIndex(of: 2)!
+        guard let index = set.firstIndex(of: 2) else {
+          exit(setupFailedExitStatus)
+        }
         set.remove(at: index)
+        guard Array(set) == [1, 3] else {
+          exit(setupFailedExitStatus)
+        }
         _ = set[index]
       }
+      expectSetupReached(result)
       expectNoInvalidMemoryAccess(result)
     }
 

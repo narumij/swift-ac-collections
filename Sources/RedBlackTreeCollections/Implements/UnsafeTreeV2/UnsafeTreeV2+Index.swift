@@ -51,21 +51,32 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
 extension UnsafeTreeV2 {
 
-  // Result連鎖(`flatMap { index($0) }`)内で成功値を包む用途として残す
   @inlinable
-  func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+  func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
+    return withMutableHeader { $0.index(p) }
+  }
+
+  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
+    return _buffer.withUnsafeMutablePointerToHeader { $0.index_or_nil(p) }
+  }
+  #else
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
-  func index(_ p: _NodePtr) -> _LazyTiedPtr {
-    return withMutableHeader { $0.index(p) }
-  }
-
-  @inlinable
-  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
     return withMutableHeader { $0.index_or_nil(p) }
   }
+  #endif
 }
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
@@ -74,12 +85,21 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   internal func
     distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
   {
+    #if false
+    return try? liftM2(
+      __purified_(start).map(\.pointer),
+      __purified_(end).map(\.pointer),
+      Base.___signed_safe_distance
+    )
+    .get()
+    #else
     return try? liftA2(
       __purified_(start).map(\.pointer),
       __purified_(end).map(\.pointer),
-      Base.___signed_distance
+      Base.___signed_stable_distance
     )
     .get()
+    #endif
   }
 
   @inlinable
@@ -88,20 +108,29 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
     ) -> Int?
   {
+    #if false
+    return try? liftM2(
+      start.evaluate(self),
+      end.evaluate(self),
+      Base.___signed_safe_distance
+    )
+    .get()
+    #else
     return try? liftA2(
       start.evaluate(self),
       end.evaluate(self),
-      Base.___signed_distance
+      Base.___signed_stable_distance
     )
     .get()
+    #endif
   }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func prev_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -113,8 +142,8 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func next_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
     switch result {
@@ -126,8 +155,8 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
-    let result = __purified_(i)
+  func adv_iter(_ i: _LazyTiedPtrV2, offsetBy distance: Int) -> _LazyTiedPtrV2 {
+    let result: _LazyTieWrappedPtrV2 = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
     switch result {
@@ -140,9 +169,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func adv_iter(
-    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
-    -> _LazyTieWrappedPtr
+    -> _LazyTieWrappedPtrV2
   {
     __purified_(limit).flatMap { limit in
       __purified_(i)
@@ -153,9 +182,9 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func index_or_nil(
-    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
-    -> _LazyTiedPtr?
+    -> _LazyTiedPtrV2?
   {
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success(let index):
@@ -169,14 +198,10 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func form_index(
-    _ i: inout _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+    _ i: inout _LazyTiedPtrV2, offsetBy distance: Int, limitedBy limit: _LazyTiedPtrV2
   )
     -> Bool
   {
-    // The environment-provided nullptr lives in ManagedBufferHeader. The first
-    // traversal intentionally brings that header's cache line in before the
-    // decision traversal invokes the API again. Do not fold these calls
-    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:

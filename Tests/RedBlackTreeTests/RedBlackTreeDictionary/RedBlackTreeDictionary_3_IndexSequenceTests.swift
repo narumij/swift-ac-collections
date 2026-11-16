@@ -79,7 +79,7 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
       }
     #endif
 
-    #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    #if ALLOW_CROSS_TREE_INDEX
       /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
       /// 解決できること(`index_stale_check.md`のF3)。
       func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {
@@ -167,3 +167,57 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
     XCTAssertFalse(success)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryIndexRangeTests {
+    /// 移動量0はlimit上（空のendIndexを含む）でも成功し、limitを越える移動は失敗すること。
+    func testIndexLimitedByZeroMovement() {
+      func check<I: Equatable>(
+        _ indices: [I],
+        index offset: (I, Int, I) -> I?,
+        formIndex: (inout I, Int, I) -> Bool
+      ) {
+        for index in indices {
+          XCTAssertEqual(offset(index, 0, index), index)
+          var current = index
+          XCTAssertTrue(formIndex(&current, 0, index))
+          XCTAssertEqual(current, index)
+          XCTAssertNil(offset(index, 1, index))
+          XCTAssertNil(offset(index, -1, index))
+        }
+      }
+      for values in [[], [0, 1, 2]] {
+        let c = RedBlackTreeDictionary(keysWithValues: values.map { ($0, $0) })
+        check([c.startIndex, c.endIndex],
+          index: c.index(_:offsetBy:limitedBy:),
+          formIndex: c.formIndex(_:offsetBy:limitedBy:))
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionaryIndexRangeTests {
+    /// index(_:offsetBy:limitedBy:)に巨大な距離を渡しても、範囲の外に出たところで止まってnilを返すこと。
+    func testIndexOffsetByHugeDistanceTerminates() {
+      let c = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<4).map { ($0, $0) })
+      XCTAssertNil(c.index(c.startIndex, offsetBy: Int.max, limitedBy: c.endIndex))
+      XCTAssertNil(c.index(c.endIndex, offsetBy: Int.min, limitedBy: c.startIndex))
+    }
+
+    /// `formIndex(_:offsetBy:limitedBy:)`が`String`と同じく、limit到達時は成功し、
+    /// 超過時はlimitまで移動して失敗を返すこと。
+    func testFormIndexLimitedByMatchesString() {
+      let c = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<4).map { ($0, $0) })
+      let limit = c.index(after: c.startIndex)
+
+      var exact = c.startIndex
+      XCTAssertTrue(c.formIndex(&exact, offsetBy: 1, limitedBy: limit))
+      XCTAssertEqual(exact, limit)
+
+      var over = c.startIndex
+      XCTAssertFalse(c.formIndex(&over, offsetBy: 2, limitedBy: limit))
+      XCTAssertEqual(over, limit)
+    }
+  }
+#endif

@@ -34,13 +34,13 @@ extension UnsafeTreeV2 {
     @inline(__always)
     @_transparent
     unsafeAddress {
-      UnsafePointer(withMutableHeader { $0.begin_ptr })
+      UnsafePointer(_buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr })
     }
 
     @inline(__always)
     @_transparent
     nonmutating unsafeMutableAddress {
-      withMutableHeader { $0.begin_ptr }
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.begin_ptr }
     }
   }
 }
@@ -52,7 +52,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __end_node: _NodePtr {
     //    origin.pointee.end_ptr
-    withMutableHeader { $0.end_ptr }
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
   }
 }
 
@@ -63,7 +63,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __root: _NodePtr {
     @inline(__always) _read {
-      yield withMutableHeader { $0.root_ptr }.pointee
+      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }.pointee
     }
   }
 
@@ -71,7 +71,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package func __root_ptr() -> _NodeRef {
-    withMutableHeader { $0.root_ptr }
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.root_ptr }
   }
 }
 
@@ -82,7 +82,7 @@ extension UnsafeTreeV2 {
   @inlinable
   package var __size_: Int {
     get {
-      withMutableHeader { $0.count }
+      _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count }
     }
     nonmutating set {
       /* NOP */
@@ -184,3 +184,4 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2: FindFirstProtocol_ptr {}
+extension UnsafeTreeV2: TreeAdvanceProtocol_ptr {}

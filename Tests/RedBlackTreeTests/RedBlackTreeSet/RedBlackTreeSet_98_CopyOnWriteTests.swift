@@ -1,7 +1,7 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if _TREE_COPY_COUNTER
   final class RedBlackTreeSetCopyOnWriteTests: RedBlackTreeTestCase {
 
     let count = 2_000_000

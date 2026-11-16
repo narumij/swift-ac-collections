@@ -65,7 +65,7 @@
     /// - Complexity: O(log `count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___index_or_nil(__tree_.update { $0.find_first(member) })
+      ___index_or_nil(__tree_.read { $0.find_first(member) })
     }
   }
 
@@ -150,10 +150,13 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// Returns the index of the first element equal to `member`.
+    /// Returns an index of an element equal to `member`.
+    ///
+    /// When multiple elements match, the current implementation does not guarantee
+    /// the first matching position. Use `firstIndex(of:)` when that position is needed.
     ///
     /// - Parameter member: The element to find.
-    /// - Returns: The first matching index, or `endIndex` if the multiset doesn't contain `member`.
+    /// - Returns: A matching index, or `endIndex` if the multiset doesn't contain `member`.
     /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ member: Element) -> Index {
@@ -260,10 +263,9 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   extension RedBlackTreeMultiSet {
 
-    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
     /// Inserts the given element and returns the index of the new occurrence.
@@ -303,15 +305,11 @@
     @inlinable
     @discardableResult
     public mutating func erase(exactly index: Index) -> Index? {
-      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return nil }
-      __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).accessible.pointer else {
-        return nil
-      }
-      let __r = __tree_._unchecked_remove(at: __p).__r
-      return ___index(__r)
+        guard let __p = __tree_.__purified_(index).accessible.pointer else {
+          return nil
+        }
+        let __r = __tree_.___erase_with_many_care(__p)
+        return ___index(__r)
     }
   }
 #endif
@@ -321,12 +319,12 @@
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
       __tree_.index(p)
     }
 
     @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
       __tree_.index_or_nil(p)
     }
   }

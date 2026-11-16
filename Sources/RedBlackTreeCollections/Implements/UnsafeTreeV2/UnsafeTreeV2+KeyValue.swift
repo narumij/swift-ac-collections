@@ -25,9 +25,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inlinable
   @inline(__always)
   func lookup(_ key: Base._Key) -> Base._MappedValue? {
-    //    let __ptr = update { $0.find(key) }
-    //    return __ptr.___is_end ? nil : Base.__mapped_value_(__ptr)
-    let __ptr = update { $0.__find_equal(key).__child }
+    let __ptr = __find_equal(key).__child
     return __ptr.pointee == nullptr ? nil : Base.__mapped_value_(__ptr.pointee)
   }
 
@@ -40,37 +38,45 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     }
 
     _modify {
-      ensureUnique()
+      var (__parent, __child) = __find_equal(key)
+      var __node = __child.pointee
 
-      let (__parent, __child) = __find_equal(key)
+      if __node != nullptr {
+        let __e = __end_node
+        ensureUnique()
+        if __e != __end_node { __node = __simple_retrieve(__node) }
+      }
 
-      let found = __child.pointee != nullptr
-
-      // NOTE: ここで`.move()`すると、`value`がnilのまま(=キー削除)の分岐で
-      // `erase(_:)`がpayload全体を正しくdeinitializeする際に、既に所有権を失っている
-      // はずの値を再度destroyしてしまい、参照型Valueで二重解放になる(2026-10-03発見)。
-      // `_MappedValue`は常にCopyableなので、移動ではなく読み取り(コピー)で済ませる。
-      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).pointee : nil
+      // 一意化や領域確保の操作は、valueにあたえられるメモリがどういった状態なのかで分かれる
+      // 値があるケースでは、該当するノードが存在する
+      // 値がないケースでは、該当するノードを存在させない
+      // ノードが存在するケースでは事前に一意化が必要となる
+      // ノードが存在してないケースでは事後に一意化と領域確保が必要になる
+      // ノードが存在しないケースで不要なコピーを避けるために、一律での一意化を行っていない
+      var value: Base._MappedValue? =
+        __node != nullptr ? Base.__mapped_value_ptr(__node).move() : nil
 
       defer {
-        if let value {
-          if found {
-            // 既存の値を保持したままの代入(`.initialize`ではない)。
-            // ポインタの`.pointee`代入はdeinit-old→init-newを自動で行うため、
-            // 上の読み取りで複製されたぶんの解放漏れ(リーク)が起きない。
-            Base.__mapped_value_ptr(__child).pointee = value
+        if __node != nullptr {
+          if let value {
+            Base.__mapped_value_ptr(__node).initialize(to: value)
           } else {
-            unsafeEnsureCapacity()
-            update {
-              let __h = $0.__construct_node(Base.__payload_((key, value)))
-              $0.__insert_node_at(__parent, __child, __h)
+            _ = update {
+              let next = $0.__remove_node_pointer(__node)
+              Base.__key_ptr(__node).deinitialize(count: 1)
+              $0.header.pointee.___raw_pushRecycle(__node)
+              return next
             }
           }
-        } else {
-          if found {
-            _ = update { $0.erase(__child.pointee) }
-          } else {
-            /* NOP */
+        } else if let value {
+          let __e = __end_node
+          ensureUniqueAndCapacity()
+          if __e != __end_node {
+            (__parent, __child) = __simple_retrieve(__parent, __child)
+          }
+          update {
+            let __h = $0.__construct_node(Base.__payload_((key, value)))
+            $0.__insert_node_at(__parent, __child, __h)
           }
         }
       }
@@ -80,14 +86,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 
   @inlinable
-  public subscript(
-    key: Base._Key, default defaultValue: () -> Base._MappedValue
-  ) -> Base._MappedValue {
+  public subscript(key: Base._Key, default defaultValue: () -> Base._MappedValue)
+    -> Base._MappedValue
+  {
 
     @inline(__always)
-    get {
-      lookup(key) ?? defaultValue()
-    }
+    get { lookup(key) ?? defaultValue() }
 
     _modify {
 
@@ -99,7 +103,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       if __node == nullptr {
         unsafeEnsureCapacity()
-        assert(capacity > count)
+        _UNSAFE_TREE_ASSERT_INTERNAL(capacity > count)
         update {
           __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
           $0.__insert_node_at(__parent, __child, __node)
@@ -113,9 +117,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 
   @inlinable
-  mutating func mappedValuePtr(for key: Base._Key, default defaultValue: () -> Base._MappedValue)
-    -> Base._MappedValuePtr
-  {
+  mutating func mappedValuePtr(
+    for key: Base._Key,
+    default defaultValue: () -> Base._MappedValue
+  ) -> Base._MappedValuePtr {
     ensureUnique()
 
     let (__parent, __child) = __find_equal(key)
@@ -124,14 +129,14 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
     if __node == nullptr {
       unsafeEnsureCapacity()
-      assert(capacity > count)
+      _UNSAFE_TREE_ASSERT_INTERNAL(capacity > count)
       update {
         __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
         $0.__insert_node_at(__parent, __child, __node)
       }
     }
 
-//    defer { _fixLifetime(self) }
+    //    defer { _fixLifetime(self) }
 
     return Base.__mapped_value_ptr(__node)
   }
@@ -144,19 +149,18 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue
-  )
-    rethrows -> UnsafeTreeV2<Other>
-  where
-    Other: PairValueTrait,
-    Other._Key == Base._Key
-  {
+  ) rethrows -> UnsafeTreeV2<Other>
+  where Other: PairValueTrait, Other._Key == Base._Key {
     let other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       let __mapped_value = try transform(Base.__mapped_value_(__p))
       (__parent, __child) = other.___emplace_hint_right(
-        __parent, __child, Other.__payload_((__get_value(__p), __mapped_value)))
-      assert(other.__tree_invariant(other.__root))
+        __parent,
+        __child,
+        Other.__payload_((__get_value(__p), __mapped_value))
+      )
+      _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }
     return other
   }
@@ -166,20 +170,22 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     _ __first: _NodePtr,
     _ __last: _NodePtr,
     _ transform: (Base._MappedValue) throws -> Other._MappedValue?
-  )
-    rethrows -> UnsafeTreeV2<Other>
-  where
-    Other: PairValueTrait,
-    Other._Key == Base._Key
-  {
-    var other = UnsafeTreeV2<Other>._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
+  ) rethrows -> UnsafeTreeV2<Other>
+  where Other: PairValueTrait, Other._Key == Base._Key {
+    var other = UnsafeTreeV2<Other>
+      ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
-      guard let __mv = try transform(Base.__mapped_value_(__p)) else { continue }
+      guard let __mv = try transform(Base.__mapped_value_(__p)) else {
+        continue
+      }
       other.unsafeEnsureCapacity()
       (__parent, __child) = other.___emplace_hint_right(
-        __parent, __child, Other.__payload_((__get_value(__p), __mv)))
-      assert(other.__tree_invariant(other.__root))
+        __parent,
+        __child,
+        Other.__payload_((__get_value(__p), __mv))
+      )
+      _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }
     return other
   }

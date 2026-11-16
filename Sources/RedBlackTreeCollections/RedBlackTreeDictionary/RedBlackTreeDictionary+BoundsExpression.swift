@@ -24,7 +24,7 @@
 
   extension RedBlackTreeDictionary {
 
-    /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
+    /// A shorthand for `RedBlackTreeBoundExpression<Key>`.
     ///
     /// This type is used to describe element positions in the tree,
     /// such as the first element, bounds, or relative offsets.
@@ -36,6 +36,12 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the signed distance between the two evaluated positions.
+    ///
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -71,10 +77,13 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
-      __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
-      guard let p = p.accessible.pointer else { return nil }
-      return Base.__element_(__tree_._unchecked_remove(at: p).payload)
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).accessible.pointer else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return Base.__element_(__tree_._unchecked_remove(at: p).payload)
     }
   }
 
@@ -82,8 +91,10 @@
 
     /// Accesses a view of the key-value pairs selected by a bound range expression.
     ///
-    /// Mutating the returned view modifies this dictionary. A range that evaluates
-    /// to no ordered positions produces an empty view.
+    /// Mutating through this subscript modifies this dictionary.
+    /// Mutating a view stored in a separate variable leaves this dictionary unchanged.
+    ///
+    /// A range that evaluates to no ordered positions produces an empty view.
     ///
     /// - Parameter bounds: A bound range expression evaluated against the
     ///   dictionary's keys.
@@ -110,11 +121,8 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
+      _ = __tree_.___erase_sanitize_range_with_many_care(
+        _range: bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     /// Removes the key-value pairs in the selected range that satisfy a predicate.
@@ -128,11 +136,7 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = try __tree_.___erase_sanitize_range_if(
+      _ = try __tree_.___erase_sanitize_range_if_with_many_care(
         bounds.evaluate(__tree_).relative(to: __tree_)
       ) {
         try shouldBeRemoved($0.tuple)

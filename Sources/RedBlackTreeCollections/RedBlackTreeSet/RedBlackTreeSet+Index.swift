@@ -255,17 +255,16 @@
     /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ member: Element) -> Index {
-      ___index(__tree_.update { $0.find(member) })
+      ___index(__tree_.read { $0.find(member) })
     }
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   extension RedBlackTreeSet {
     
     // SetAlgebra都合でinsertの戻りが変えられない。
     // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
-    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
     // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
 
     /// Returns the index of the given element, inserting it if necessary.
@@ -280,9 +279,15 @@
     public mutating func index(inserting newMember: Element) -> (
       inserted: Bool, index: Index
     ) {
-      __tree_.ensureUniqueAndCapacity()
-      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-      return (__inserted, ___index(__r))
+      #if false
+      // 資料的にのこしてある
+        __tree_.ensureUniqueAndCapacity()
+        let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+        return (__inserted, ___index(__r))
+      #else
+        let (__r, __inserted) = __tree_.___insert_unique_if_not_present(newMember)
+        return (__inserted, ___index(__r))
+      #endif
     }
   }
 
@@ -302,15 +307,11 @@
     @inlinable
     @discardableResult
     public mutating func erase(exactly index: Index) -> Index? {
-      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return nil }
-      __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).accessible.pointer else {
-        return nil
-      }
-      let __r = __tree_._unchecked_remove(at: __p).__r
-      return ___index(__r)
+        guard let __p = __tree_.__purified_(index).accessible.pointer else {
+          return nil
+        }
+        let __r = __tree_.___erase_with_many_care(__p)
+        return ___index(__r)
     }
   }
 #endif
@@ -320,13 +321,21 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+      __tree_.index(p)
+      #else
       __tree_.withMutableHeader { $0.index(p) }
+      #endif
     }
-    
+
     @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
+      #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+      __tree_.index_or_nil(p)
+      #else
       __tree_.withMutableHeader { $0.index_or_nil(p) }
+      #endif
     }
   }
 #endif

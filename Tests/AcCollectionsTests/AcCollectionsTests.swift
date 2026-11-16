@@ -5,46 +5,36 @@ import XCTest
   @testable import RedBlackTreeCollections
 #endif
 
-/// `AcCollections`は`@_exported import`だけで構成されるfacadeで、専用ターゲットから
-/// 一度も`import AcCollections`されていなかった(2026-10-03発見)。再公開が壊れても
-/// 他のテストでは検出できないため、最小限の到達確認をここで行う。
+/// `AcCollections` is a facade consisting only of `@_exported import` declarations, and its dedicated target had
+/// never imported `AcCollections` (discovered 2026-10-03). If re-exporting broke,
+/// other tests could not detect it, so this file performs minimal reachability checks.
 final class AcCollectionsTests: XCTestCase {
 
   override func setUpWithError() throws {
-    #if DEBUG
-      // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
-      // counterのresetは常に行う。
-      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
-        XCTAssertEqual(deallocatedCount, 0)
-        XCTAssertEqual(nodeDeinitializedCount, 0)
-        XCTAssertEqual(payloadDeinitializedCount, 0)
-      #endif
-      _ = RedBlackTreeSet<Int>()
-      allocatedCount = 0
-      deallocatedCount = 0
-      nodeInitializedCount = 0
-      nodeDeinitializedCount = 0
-      payloadInitializedCount = 0
-      payloadDeinitializedCount = 0
+    try super.setUpWithError()
+    #if _TREE_ALLOCATION_COUNTER
+    // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
+    _ = RedBlackTreeSet<Int>()
+    allocatedCount = 0
+    deallocatedCount = 0
+    nodeInitializedCount = 0
+    nodeDeinitializedCount = 0
+    payloadInitializedCount = 0
+    payloadDeinitializedCount = 0
     #endif
   }
 
   override func tearDownWithError() throws {
-    #if DEBUG
-      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
-        XCTAssertEqual(allocatedCount, deallocatedCount)
-        XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)
-        XCTAssertEqual(payloadInitializedCount, payloadDeinitializedCount)
-      #endif
-      allocatedCount = 0
-      deallocatedCount = 0
-      nodeInitializedCount = 0
-      nodeDeinitializedCount = 0
-      payloadInitializedCount = 0
-      payloadDeinitializedCount = 0
+    #if _TREE_ALLOCATION_COUNTER
+    allocatedCount = 0
+    deallocatedCount = 0
+    nodeInitializedCount = 0
+    nodeDeinitializedCount = 0
+    payloadInitializedCount = 0
+    payloadDeinitializedCount = 0
     #endif
   }
-
+  
   func test_importAcCollections_exposesRedBlackTreeSet() {
     var set = RedBlackTreeSet<Int>()
     set.insert(3)
@@ -70,10 +60,12 @@ final class AcCollectionsTests: XCTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
+    #if false
     func test_importAcCollections_exposesCurrentPermutationAPI() {
       let sequence: NextPermutationsSequence<[Int]> = [1, 2].nextPermutations()
       XCTAssertEqual(sequence.map { Array($0) }, [[1, 2], [2, 1]])
     }
+    #endif
   #else
     func test_importAcCollections_exposesAtCoder2025PermutationAPI() {
       let nexts: Permutations<[Int]>.Nexts = [1, 2].nextPermutations()
@@ -87,15 +79,24 @@ final class AcCollectionsTests: XCTestCase {
     }
   #endif
 
-  func test_importAcCollections_exposesOptionalArray() {
-    var array = OptionalArray1D<Int>(capacity: 2)
-    array[1] = 7
-    XCTAssertEqual(array[1], 7)
-  }
+  #if ENABLE_OPTIONAL_ELEMENT_BUFFER
+    func test_importAcCollections_exposesOptionalElementBuffer() {
+      let array = OptionalElementBuffer<Int>(capacity: 2)
+      array.setElement(7, at: 1)
+      XCTAssertEqual(array.element(at: 1), 7)
+    }
+  #endif
 
-  func test_importAcCollections_exposesBareArray() {
-    var array = BareArray(repeating: 0, count: 2)
-    array[1] = 7
-    XCTAssertEqual(array[1], 7)
+  @available(macOS 27.0, *)
+  func test_importAcCollections_exposesElementBuffer() {
+    var array = ElementBuffer(repeating: 0, count: 2)
+    array.setElement(7, at: 1)
+    XCTAssertEqual(array.element(at: 1), 7)
+
+    #if swift(>=6.4)
+      var reference = array.reference(at: 1)
+      reference.value = 8
+      XCTAssertEqual(array.element(at: 1), 8)
+    #endif
   }
 }

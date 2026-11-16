@@ -10,7 +10,7 @@ import XCTest
 /// 既存の`SetBaseTests`/`MultiSetBaseTests`は`___ptr_range_comp`の成功ケースしか踏んでいなかったため、
 /// `TreeNodeOnlyFixture.UniqueSealKey`/`.MultiSealKey`(`___recycle_count`をキーに使う)で
 /// `___ptr_comp`本体・失敗分岐・重複キー時の木構造タイブレークを検証する。
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 final class TreeFoundamentalMultiplicityTests: TreeTestCase, _UnsafeNodePtrType {
 
   typealias UniqueSUT = TreeNodeOnlyFixture.UniqueSealKey
@@ -240,7 +240,7 @@ final class TreeFoundamentalMultiplicityTests: TreeTestCase, _UnsafeNodePtrType 
     XCTAssertFalse(MultiSUT.___ptr_range_comp(first, before, end))
   }
 
-  /// `USE_INT128`無効時の通常経路(`___ptr_bitmap_64`)で、閉区間の包含判定を検証する。
+  /// `USE_PATH_BITMAP_64`有効時の経路(`___ptr_bitmap_64`)で、閉区間の包含判定を検証する。
   func testMultiHelper_ptrRangeComp_closedRangeViaBitmap() {
     var fixture = makeFixture()
     let end = fixture.endPtr()

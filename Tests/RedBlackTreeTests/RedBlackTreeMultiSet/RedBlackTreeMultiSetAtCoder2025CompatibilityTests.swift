@@ -152,7 +152,7 @@ import XCTest
     }
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMultiSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
@@ -181,7 +181,7 @@ import XCTest
     /// 互換モード専用のremove(_:)/removeAll(_:)も、見つからない場合はトラップしない以上、
     /// 無駄なCoWを発生させないこと。
     func test_removeAndRemoveAll_notFound_doNotTriggerCopyOnWrite() {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         var multiset = RedBlackTreeMultiSet<Int>()
         XCTAssertEqual(multiset._copyCount, 0)
 
@@ -254,7 +254,7 @@ import XCTest
     #endif
   }
 
-  #if ENABLE_PERFORMANCE_TESTING
+  #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
     // firstIndex(where:) はMultiSetでは COMPATIBLE_ATCODER_2025 専用API(+Deprecated.swift参照)
     extension RedBlackTreeMultiSetPerformanceTests {
       func testPerformanceFirstIndex4() throws {
@@ -280,4 +280,43 @@ import XCTest
     }
   #endif
 
+  // 互換モードのunionは、各要素の個数の和（a + b）を保つ（通常モードは和集合でmax(a, b)）
+  extension RedBlackTreeMultiSetSetAlgebraTests {
+
+    func test_union_addsMultiplicities() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let rhs = RedBlackTreeMultiSet([2, 3, 3, 4])
+
+      XCTAssertEqual(Array(lhs.union(rhs)), [1, 2, 2, 2, 3, 3, 3, 4])
+    }
+
+    func test_formUnion_addsMultiplicitiesInPlaceAndChangesOnlyTheReceiver() {
+      let original = RedBlackTreeMultiSet([1, 2, 2, 3])
+      let other = RedBlackTreeMultiSet([2, 3, 3, 4])
+      var receiver = original
+
+      receiver.formUnion(other)
+
+      XCTAssertEqual(Array(receiver), [1, 2, 2, 2, 3, 3, 3, 4])
+      XCTAssertEqual(Array(original), [1, 2, 2, 3])
+      XCTAssertEqual(Array(other), [2, 3, 3, 4])
+    }
+  }
+
+  // meldは互換モードだけに残っている
+  extension RedBlackTreeMultiSetUtilityTests {
+
+    func test_meldAndMelding_preserveEveryMember() {
+      let lhs = RedBlackTreeMultiSet([1, 2, 2])
+      let rhs = RedBlackTreeMultiSet([2, 3])
+      var mutated = lhs
+
+      mutated.meld(rhs)
+      let copied = lhs.melding(rhs)
+
+      XCTAssertEqual(Array(mutated), [1, 2, 2, 2, 3])
+      XCTAssertEqual(Array(copied), [1, 2, 2, 2, 3])
+      XCTAssertEqual(Array(lhs), [1, 2, 2])
+    }
+  }
 #endif

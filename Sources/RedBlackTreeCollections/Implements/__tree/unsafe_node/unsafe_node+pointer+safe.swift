@@ -108,7 +108,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // 木側は無効な生ポインタを返さないようにできているので、これで足りる
   @inlinable
   package var unchecked: _SafePtr {
-    assert(!___is_null)
+    _TREE_ASSERT_INTERNAL(!___is_null)
     return .success(self)
   }
 
@@ -194,7 +194,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // 内部的に不正なポインタを返す場合、それは返す側のバグなので、ケアとしては最低限で足りる
   @inlinable
   package var uncheckedSeal: _SealedPtr {
-    assert(!___is_null)
+    _TREE_ASSERT_INTERNAL(!___is_null)
     return .success(.uncheckedSeal(self))
   }
 }

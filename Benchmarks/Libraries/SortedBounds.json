@@ -1,0 +1,39 @@
+{
+  "kind": "group",
+  "title": "SortedSet boundary APIs, Release",
+  "directory": "versus SortedSet bounds 2M",
+  "contents": [
+    {
+      "kind": "chart",
+      "title": "successor, at keys",
+      "tasks": [
+        "RedBlackTreeSet<Int> firstIndex(after:) at keys",
+        "SortedSet<Int> firstIndex(after:) at keys"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "successor, between keys",
+      "tasks": [
+        "RedBlackTreeSet<Int> firstIndex(after:) between keys",
+        "SortedSet<Int> firstIndex(after:) between keys"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "predecessor, at keys",
+      "tasks": [
+        "RedBlackTreeSet<Int> lastIndex(before:) at keys",
+        "SortedSet<Int> lastIndex(before:) at keys"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "predecessor, between keys",
+      "tasks": [
+        "RedBlackTreeSet<Int> lastIndex(before:) between keys",
+        "SortedSet<Int> lastIndex(before:) between keys"
+      ]
+    }
+  ]
+}

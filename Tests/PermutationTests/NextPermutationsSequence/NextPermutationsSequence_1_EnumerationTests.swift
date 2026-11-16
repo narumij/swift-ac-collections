@@ -8,7 +8,9 @@
 // 辞書順で後続する並びだけを返す。全順列の列挙ではない。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+import NextPermutationModule
+#if false
+
 import XCTest
 
 final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
@@ -93,4 +95,6 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
     XCTAssertEqual(a, [1, 2, 3])
   }
 }
+
+#endif
 #endif

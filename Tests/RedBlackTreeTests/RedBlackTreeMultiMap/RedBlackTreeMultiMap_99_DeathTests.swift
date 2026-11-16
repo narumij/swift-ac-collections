@@ -42,6 +42,26 @@
 
   struct RedBlackTreeMultiMapDeathTests {
 
+    // RBT-048: Index-based replacement requires a valid element index.
+    @Test
+    func updatingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        map.updateValue(100, at: map.endIndex)
+      }
+    }
+
+    @Test
+    func updatingRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        let index = map.startIndex
+        map.remove(at: index)
+        map.updateValue(100, at: index)
+      }
+    }
+
+
     #if !COMPATIBLE_ATCODER_2025
       /// 空のMultiMapでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
       /// (空のときにCoWを省いても、範囲の検査は省かない)。
@@ -365,3 +385,209 @@
     }
   }
 #endif  // DEATH_TEST && !COMPATIBLE_ATCODER_2025
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import Testing
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
+
+  struct RedBlackTreeMultiMapRangePredicatePropagationTests {
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRange() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        let hi = receiver.endIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..<hi, where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRangeExpression() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeMultiMap<Int, Int>(keysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..., where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeMultiMap<Int, Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // 同じキーの並びの中で前後が逆になったIndex範囲は、ビューを作らずに停止すること。
+    @Test func invertedIndexRangeWithinEqualKeys_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        let map: RedBlackTreeMultiMap = [(0, "z"), (1, "a"), (1, "b"), (1, "c"), (2, "x")]
+        let first = map.index(after: map.startIndex)
+        let second = map.index(after: first)
+        _ = map[second..<first]
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMapDeathTests {
+    // RBT-047/048: 共有中でも、無効なIndexによる値の更新は停止すること。
+    @Test
+    func updatingSharedEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a")])
+        let shared = map
+        _ = withExtendedLifetime(shared) {
+          map.updateValue("x", at: map.endIndex)
+        }
+      }
+    }
+
+    @Test
+    func updatingSharedRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        var map = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (1, "b")])
+        let removed = map.startIndex
+        map.remove(at: removed)
+        let shared = map
+        _ = withExtendedLifetime(shared) {
+          map.updateValue("x", at: removed)
+        }
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 消したときに文字列の領域が解放されるよう、毎回新しく作る要素。
+  private func freshElement(_ c: Character) -> String {
+    String(repeating: c, count: 40)
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 容量を保ったまま全削除したMultiMapと、削除前に取ったIndex・IndexRange。
+  private func multiMapAfterRemoveAllKeepingCapacity()
+    -> (tree: RedBlackTreeMultiMap<String, String>, stale: RedBlackTreeMultiMap<String, String>.Index, staleRange: RedBlackTreeIndexRange)
+  {
+    var t = RedBlackTreeMultiMap<String, String>()
+    for c in "abc" { t.insert(key: freshElement(c), value: freshElement(c)) }
+    let stale = t.index(after: t.startIndex)
+    let staleRange = t.equalRange(freshElement("b"))
+    t.removeAll(keepingCapacity: true)
+    t.insert(key: freshElement("x"), value: freshElement("x"))
+    return (t, stale, staleRange)
+  }
+
+  // RBT-104: 範囲を受け取るAPIに、容量保持の全削除より前に取ったIndex・IndexRangeを渡しても、破棄済みの中身を読む前に停止すること。
+  struct RedBlackTreeMultiMapRemoveAllKeepingCapacityDeathTests {
+
+    @Test
+    func containsSubrangeIndexRange_returnsFalse() {
+      let (t, _, staleRange) = multiMapAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(staleRange))
+    }
+
+    @Test
+    func containsSubrangeExpression_returnsFalse() {
+      let (t, stale, _) = multiMapAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(stale..<t.endIndex))
+    }
+
+    @Test
+    func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, _, staleRange) = multiMapAfterRemoveAllKeepingCapacity()
+        _ = t[staleRange].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = multiMapAfterRemoveAllKeepingCapacity()
+        _ = t[stale..<t.endIndex].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = multiMapAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = multiMapAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = multiMapAfterRemoveAllKeepingCapacity()
+        t.erase(staleRange, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = multiMapAfterRemoveAllKeepingCapacity()
+        t.erase(stale..<t.endIndex, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+  }
+#endif

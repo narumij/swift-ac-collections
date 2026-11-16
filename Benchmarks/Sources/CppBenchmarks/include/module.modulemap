@@ -2,5 +2,7 @@ module CppBenchmarks {
   header "Utils.h"
   header "SetBenchmarks.h"
   header "MapBenchmarks.h"
+  header "BareArrayBenchmarks.h"
+  header "OptionalArrayBenchmarks.h"
   export *
 }

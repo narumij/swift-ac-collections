@@ -315,7 +315,7 @@
           "[etc]",
           "__tree_invariant: \(__tree_invariant(__root))",
         ])
-        #if AC_COLLECTIONS_INTERNAL_CHECKS
+        #if _TREE_COPY_COUNTER
           ll.append("- copyCount: \(_buffer.header.copyCount)")
         #endif
 
@@ -331,12 +331,12 @@
       }
       let initializedCount = _buffer.header.freshPoolUsedCount
       let destroyNode = _buffer.header.recycleHead
-      let reds = (0..<initializedCount).map { try! __retrieve_($0).get() }.filter(isRed).map(nodeV)
-      let blacks = (0..<initializedCount).map { try! __retrieve_($0).get() }.filter(isBlack).map(
+      let reds = (0..<initializedCount).map { try! __retrieve_(_TrackingTag($0)).get() }.filter(isRed).map(nodeV)
+      let blacks = (0..<initializedCount).map { try! __retrieve_(_TrackingTag($0)).get() }.filter(isBlack).map(
         nodeV)
-      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_($0).get() }
+      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_(_TrackingTag($0)).get() }
         .filter(hasLeft).map(leftPair)
-      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_($0).get() }
+      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_(_TrackingTag($0)).get() }
         .filter(hasRight).map(rightPair)
       var digraph = Graphviz.Digraph()
       digraph.options.append(.splines(.line))

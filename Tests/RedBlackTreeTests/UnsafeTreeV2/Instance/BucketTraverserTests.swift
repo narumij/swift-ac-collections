@@ -20,9 +20,7 @@ import XCTest
         try checkAlignment(Int16.self, capacity: n, isHead: true)
         try checkAlignment(Int32.self, capacity: n, isHead: true)
         try checkAlignment(Int64.self, capacity: n, isHead: true)
-        if #available(macOS 15.0, *) {
-          try checkAlignment(Int128.self, capacity: n, isHead: true)
-        }
+        try checkAlignment(Int128.self, capacity: n, isHead: true)
         try checkAlignment(Int.self, capacity: n, isHead: true)
         try checkAlignment(SIMD2<Int>.self, capacity: n, isHead: true)
         try checkAlignment(SIMD3<Int>.self, capacity: n, isHead: true)
@@ -56,9 +54,7 @@ import XCTest
         try checkAlignment(Int16.self, capacity: n, isHead: false)
         try checkAlignment(Int32.self, capacity: n, isHead: false)
         try checkAlignment(Int64.self, capacity: n, isHead: false)
-        if #available(macOS 15.0, *) {
-          try checkAlignment(Int128.self, capacity: n, isHead: false)
-        }
+        try checkAlignment(Int128.self, capacity: n, isHead: false)
         try checkAlignment(Int.self, capacity: n, isHead: false)
         try checkAlignment(SIMD2<Int>.self, capacity: n, isHead: false)
         try checkAlignment(SIMD3<Int>.self, capacity: n, isHead: false)

@@ -352,6 +352,22 @@
         expectNoInvalidMemoryAccess(result)
       }
 
+      /// 同じ無効なIndexを2つ渡しても、同一位置として何もせずに返らず、事前条件違反で停止すること（RBT-099）。
+      @Test
+      func mappedValuesSwapWithSameErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values.swapAt(stale, stale)
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
       @Test
       func mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() async {
         let result = await #expect(
@@ -377,5 +393,180 @@
         #expect(!standardError.contains("AddressSanitizer"))
       }
     #endif
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import Testing
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
+
+  struct RedBlackTreeDictionaryRangePredicatePropagationTests {
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRange() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        let hi = receiver.endIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..<hi, where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+    // A subprocess keeps the pre-fix fatalError from terminating the test runner.
+    @Test func predicateErrorPropagatesFromIndexRangeExpression() async {
+      await #expect(processExitsWith: .exitCode(0)) {
+        struct PredicateFailure: Error {}
+        let original = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10), (2, 20), (3, 30)])
+        var receiver = original
+        let lo = receiver.startIndex
+        var calls = 0
+        do {
+          try receiver.erase(lo..., where: { _ in
+            calls += 1
+            if calls == 2 { throw PredicateFailure() }
+            return true
+          })
+          exit(81) // Returning normally would swallow the error.
+        } catch is PredicateFailure {
+          guard calls == 2, original.count == 3 else { exit(82) }
+          exit(0)
+        } catch {
+          exit(83) // The original error must not be replaced.
+        }
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && ENABLE_OFFSET_OVERFLOW_GUARD
+  extension RedBlackTreeDictionaryDeathTests {
+    // RBT-076: 確保サイズが桁あふれする容量は、確保前に停止すること。
+    @Test func extremeMinimumCapacity_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+        _ = RedBlackTreeDictionary<Int, Int>(minimumCapacity: Int.max)
+      }
+    }
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  /// 消したときに文字列の領域が解放されるよう、毎回新しく作る要素。
+  private func freshElement(_ c: Character) -> String {
+    String(repeating: c, count: 40)
+  }
+#endif
+
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+  private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {
+    guard let result else { return }
+
+    #if canImport(Darwin) || canImport(Glibc)
+      #expect(result.exitStatus != .signal(SIGSEGV))
+      #expect(result.exitStatus != .signal(SIGBUS))
+    #endif
+
+    let standardError = String(decoding: result.standardErrorContent, as: UTF8.self)
+    #expect(!standardError.contains("AddressSanitizer"))
+  }
+
+  /// 容量を保ったまま全削除したDictionaryと、削除前に取ったIndex・IndexRange。
+  private func dictionaryAfterRemoveAllKeepingCapacity()
+    -> (tree: RedBlackTreeDictionary<String, String>, stale: RedBlackTreeDictionary<String, String>.Index, staleRange: RedBlackTreeIndexRange)
+  {
+    var t = RedBlackTreeDictionary<String, String>()
+    for c in "abc" { t[freshElement(c)] = freshElement(c) }
+    let stale = t.index(after: t.startIndex)
+    let staleRange = t.equalRange(freshElement("b"))
+    t.removeAll(keepingCapacity: true)
+    t[freshElement("x")] = freshElement("x")
+    return (t, stale, staleRange)
+  }
+
+  // RBT-104: 範囲を受け取るAPIに、容量保持の全削除より前に取ったIndex・IndexRangeを渡しても、破棄済みの中身を読む前に停止すること。
+  struct RedBlackTreeDictionaryRemoveAllKeepingCapacityDeathTests {
+
+    @Test
+    func containsSubrangeIndexRange_returnsFalse() {
+      let (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(staleRange))
+    }
+
+    @Test
+    func containsSubrangeExpression_returnsFalse() {
+      let (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+      #expect(!t.containsSubrange(stale..<t.endIndex))
+    }
+
+    @Test
+    func subscriptIndexRangeFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t[staleRange].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func subscriptExpressionFirst_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        let (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t[stale..<t.endIndex].first
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRange_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(staleRange)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpression_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        _ = t.erase(stale..<t.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, _, staleRange) = dictionaryAfterRemoveAllKeepingCapacity()
+        t.erase(staleRange, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
+        var (t, stale, _) = dictionaryAfterRemoveAllKeepingCapacity()
+        t.erase(stale..<t.endIndex, where: { _ in true })
+      }
+      expectNoInvalidMemoryAccess(result)
+    }
   }
 #endif

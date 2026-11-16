@@ -23,7 +23,10 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 // プロトコルのthunk削減を意図し、なるべく隔離している
 // KeyValueタイプは`@specialized`を決めにくく、うまみがない
-#if !compiler(<6.3)
+//
+// (2026/11/14) @specializedはどうも実行時分岐となるようで、命令数や分岐が増える様子
+// このため、しばらく使わないことにした。
+#if !compiler(<6.3) && false
   @frozen
   @usableFromInline
   struct _KeyOnly_FindEqual<_Key: Comparable> {

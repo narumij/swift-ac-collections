@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// The following top-level functions provide type-inferred endpoints for range expressions.
 
 /// Represents the first element.
 ///
@@ -78,4 +77,14 @@ public func upperBound<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
 ///   (when evaluated)
 public func find<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
   .find(key)
+}
+
+/// Represents the first element in traversal order whose key equals the given value.
+///
+/// If no such element exists, it is substituted with the past-the-end element.
+/// In multi collections, this selects the beginning of the equal-key group.
+///
+/// - Complexity: O(log `count`) when evaluated.
+public func first<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
+  .first(key)
 }

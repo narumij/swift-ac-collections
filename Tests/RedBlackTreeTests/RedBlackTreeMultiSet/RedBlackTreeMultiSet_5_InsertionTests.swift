@@ -58,12 +58,122 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 2, 3, 3, 3])
   }
 
+  func test_insertContentsOf_emptyTreeIntoSharedMultiSetDoesNotCopy() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+
+    var fromSet = original
+    fromSet.insert(contentsOf: RedBlackTreeSet<Int>())
+    XCTAssertEqual(Array(fromSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromSet.isTriviallyIdentical(to: original), "空のSetのinsert(contentsOf:)で木がコピーされた")
+
+    var fromMultiSet = original
+    fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet<Int>())
+    XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 3])
+    XCTAssertTrue(fromMultiSet.isTriviallyIdentical(to: original), "空のMultiSetのinsert(contentsOf:)で木がコピーされた")
+  }
+
+  func test_insertContentsOf_emptySequenceIntoSharedMultiSetDoesNotCopy() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+    var shared = original
+
+    shared.insert(contentsOf: [Int]())
+
+    XCTAssertEqual(Array(shared), [1, 2, 2, 3])
+    XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のSequenceのinsert(contentsOf:)で木がコピーされた")
+  }
+
+  func test_insertContentsOf_singlePassSequenceConsumesEveryElementOnce() {
+    let original: RedBlackTreeMultiSet<Int> = [1, 3]
+    var multiset = original
+    let source = SinglePassSequence([0, 3, 3, 5])
+
+    multiset.insert(contentsOf: source)
+
+    XCTAssertEqual(Array(multiset), [0, 1, 3, 3, 3, 5])
+    XCTAssertEqual(Array(original), [1, 3])
+    XCTAssertEqual(source.makeIteratorCount, 1)
+    XCTAssertTrue(source.isExhausted)
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 
     multiset.insert(contentsOf: [2, 3, 3])
 
     XCTAssertEqual(Array(multiset), [1, 2, 2, 3, 3])
+  }
+
+  // MARK: - 同値要素の並び（RBT-074）
+
+  private func members(_ pairs: [(Int, String)]) -> [Member] {
+    pairs.map { Member(key: $0.0, label: $0.1) }
+  }
+
+  /// 通常挿入は、新しい要素を既存の同値要素の後ろに置くこと（RBT-074）
+  func test_insert_appendsAfterExistingEquivalentMembers() {
+    var multiset = RedBlackTreeMultiSet<Member>()
+
+    for member in members([(1, "a1"), (2, "x"), (1, "a2"), (0, "y"), (1, "a3")]) {
+      multiset.insert(member)
+    }
+
+    XCTAssertEqual(multiset.map(\.label), ["y", "a1", "a2", "a3", "x"])
+  }
+
+  /// 列からの初期化は、同値要素を入力の順に並べること（RBT-074）
+  func test_initFromSequence_keepsInputOrderOfEquivalentMembers() {
+    let input = members([(2, "b1"), (1, "a1"), (2, "b2"), (1, "a2"), (2, "b3")])
+    let expected = ["a1", "a2", "b1", "b2", "b3"]
+
+    XCTAssertEqual(RedBlackTreeMultiSet(input).map(\.label), expected)
+    XCTAssertEqual(RedBlackTreeMultiSet(AnySequence(input)).map(\.label), expected)
+  }
+
+  /// insert(contentsOf:)・inserting(contentsOf:)は、既存の同値要素の後ろに、
+  /// 入力側の同値要素を入力の順で置くこと（RBT-074）
+  func test_insertContentsOf_appendsEquivalentMembersAfterExistingOnes() {
+    let multiset = RedBlackTreeMultiSet(members([(1, "a0"), (5, "a1"), (5, "a2"), (9, "a9")]))
+    let other = members([(5, "b1"), (5, "b2"), (5, "b3"), (7, "b7")])
+    let expected = ["a0", "a1", "a2", "b1", "b2", "b3", "b7", "a9"]
+
+    var fromMultiSet = multiset
+    fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet(other))
+    XCTAssertEqual(fromMultiSet.map(\.label), expected)
+
+    var fromSequence = multiset
+    fromSequence.insert(contentsOf: other)
+    XCTAssertEqual(fromSequence.map(\.label), expected)
+
+    XCTAssertEqual(multiset.inserting(contentsOf: RedBlackTreeMultiSet(other)).map(\.label), expected)
+    XCTAssertEqual(multiset.inserting(contentsOf: other).map(\.label), expected)
+
+    var fromSet = multiset
+    fromSet.insert(contentsOf: RedBlackTreeSet(members([(5, "s5"), (9, "s9")])))
+    XCTAssertEqual(fromSet.map(\.label), ["a0", "a1", "a2", "s5", "a9", "s9"])
+  }
+
+  /// 固定シードの乱択入力でも、初期化とinsert(contentsOf:)の結果が、
+  /// キーごとに「既存の並び→入力の並び」（安定なmerge）と一致すること（RBT-074）
+  func test_insertContentsOf_matchesStableMergeForSeededInputs() {
+    var random = InsertionOrderRandom(seed: 0x5EED_0074)
+
+    for trial in 0..<200 {
+      let lhs = members(
+        (0..<Int.random(in: 0...40, using: &random)).map { (Int.random(in: 0...5, using: &random), "a\($0)") })
+      let rhs = members(
+        (0..<Int.random(in: 0...40, using: &random)).map { (Int.random(in: 0...5, using: &random), "b\($0)") })
+      let expected = (lhs + rhs).enumerated()
+        .sorted { ($0.element.key, $0.offset) < ($1.element.key, $1.offset) }
+        .map(\.element.label)
+
+      var fromMultiSet = RedBlackTreeMultiSet(lhs)
+      fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet(rhs))
+      XCTAssertEqual(fromMultiSet.map(\.label), expected, "trial \(trial)")
+
+      var fromSequence = RedBlackTreeMultiSet(lhs)
+      fromSequence.insert(contentsOf: rhs)
+      XCTAssertEqual(fromSequence.map(\.label), expected, "trial \(trial)")
+    }
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -143,6 +253,8 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(result[2] === members[2])
     }
 
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
     func test_update_rejectsEndIndexAndNonEquivalentMember() {
       let member = Member(key: 1, label: "member")
       var multiset = RedBlackTreeMultiSet([member])
@@ -151,6 +263,7 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertNil(multiset.update(Member(key: 2, label: "different"), at: multiset.startIndex))
       XCTAssertTrue(multiset[multiset.startIndex] === member)
     }
+    #endif
 
     func test_update_preservesValueSemanticsAfterCopy() {
       let oldMember = Member(key: 1, label: "old")
@@ -164,9 +277,32 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(multiset[multiset.startIndex] === newMember)
       XCTAssertTrue(copy[copy.startIndex] === oldMember)
     }
+
+    /// 削除済みのIndexへのupdateはnilを返し、残っている等価な要素とその個数を変えないこと（RBT-043 M1）
+    #if false
+    // RBT-048: Previous nil-returning contract; retained for API review.
+    func test_update_atRemovedIndexReturnsNilAndKeepsSurvivors() {
+      let members = [
+        Member(key: 1, label: "first"),
+        Member(key: 1, label: "middle"),
+        Member(key: 1, label: "last"),
+      ]
+      var multiset = RedBlackTreeMultiSet(members)
+      let removedIndex = multiset.index(after: multiset.startIndex)
+      XCTAssertTrue(multiset.remove(at: removedIndex) === members[1])
+      XCTAssertFalse(multiset.isElement(at: removedIndex), "削除した位置のIndexは無効になっていること")
+
+      XCTAssertNil(multiset.update(Member(key: 1, label: "new"), at: removedIndex))
+
+      let result = Array(multiset)
+      XCTAssertEqual(result.count, 2)
+      XCTAssertTrue(result[0] === members[0])
+      XCTAssertTrue(result[1] === members[2])
+    }
+    #endif
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
     /// MultiSetは同値要素を許容するため、`index(inserting:)`は常に新しいoccurrenceを
     /// 挿入し、`inserted`は`true`、`index`はその新しいoccurrenceを指すこと。
     func test_indexInserting_alwaysInsertsNewOccurrence() {
@@ -218,14 +354,37 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     func test_eraseExactly_onEmptyMultiSetReturnsNilWithoutCopy() {
       var multiset = RedBlackTreeMultiSet<Int>()
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(multiset._copyCount, 0)
       #endif
       XCTAssertNil(multiset.erase(exactly: multiset.startIndex))
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(multiset._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
       #endif
       XCTAssertNil(multiset.erase(exactly: multiset.endIndex))
+    }
+
+    /// 共有中の空でない木に`endIndex`で`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_endIndexKeepsSharedStorage() {
+      let original: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      var shared = original
+
+      XCTAssertNil(shared.erase(exactly: shared.endIndex))
+
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "endIndexのerase(exactly:)で木がコピーされた")
+    }
+
+    /// 共有中の空でない木に失効したIndexで`erase(exactly:)`しても、`nil`を返し木をコピーしないこと（RBT-081）。
+    func test_eraseExactly_staleIndexKeepsSharedStorage() {
+      var shared: RedBlackTreeMultiSet<Int> = [1, 2, 2, 3]
+      let i = shared.startIndex
+      XCTAssertNotNil(shared.erase(exactly: i))
+      let original = shared
+
+      XCTAssertNil(shared.erase(exactly: i))
+
+      XCTAssertEqual(Array(shared), [2, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "失効したIndexのerase(exactly:)で木がコピーされた")
     }
   #endif
 }
@@ -247,3 +406,16 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+/// SplitMix64. 並びのテストで、再現できる乱択入力を作る
+private struct InsertionOrderRandom: RandomNumberGenerator {
+  var state: UInt64
+  init(seed: UInt64) { state = seed }
+  mutating func next() -> UInt64 {
+    state &+= 0x9E37_79B9_7F4A_7C15
+    var z = state
+    z = (z ^ (z &>> 30)) &* 0xBF58_476D_1CE4_E5B9
+    z = (z ^ (z &>> 27)) &* 0x94D0_49BB_1331_11EB
+    return z ^ (z &>> 31)
+  }
+}

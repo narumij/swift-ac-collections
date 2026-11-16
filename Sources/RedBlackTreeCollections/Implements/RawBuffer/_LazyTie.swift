@@ -42,46 +42,28 @@
 // コピーされた場合のインデックスは非互換
 // CoW発生時のインデックス互換はなるべく保証したい
 
-#if USE_LAZY_DETACH
-  @usableFromInline
-  package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
+@usableFromInline
+package final class _LazyTie: ManagedBuffer<Bool, Void> {
 
-    @inlinable
-    var buffer: _TiedRawBuffer? {
-      @inline(__always)
-      unsafeAddress {
-        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-      }
-      @inline(__always)
-      unsafeMutableAddress {
-        withUnsafeMutablePointerToHeader { $0 }
-      }
+  @inlinable
+  var isDetached: Bool {
+    @inline(__always)
+    unsafeAddress {
+      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
     }
-
-    @inlinable
-    var isDetached: Bool {
-      buffer != nil
+    @inline(__always)
+    unsafeMutableAddress {
+      withUnsafeMutablePointerToHeader { $0 }
     }
   }
-#else
-  @usableFromInline
-  package final class _LazyTie: ManagedBuffer<Bool, Void> {
-
-    @inlinable
-    var isDetached: Bool {
-      @inline(__always)
-      unsafeAddress {
-        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-      }
-      @inline(__always)
-      unsafeMutableAddress {
-        withUnsafeMutablePointerToHeader { $0 }
-      }
-    }
-  }
-#endif
+}
 
 #if DEBUG
+// 本体を経由しないとメモリ安全な比較ができず、それを不要にすると性能が落ちるので、本実装ではインデックスのComparableは提供できない
+//
+// O(log N)を許容できるならpath bitmap方式で可能だが、遅いので嫌です。
+//
+// どうしても順序が知りたかったらdistance(from:to:)をつかえばいい
   extension _LazyTie {
 
     @inlinable
@@ -96,15 +78,9 @@ extension _LazyTie {
   @nonobjc
   @usableFromInline
   internal static func create() -> _LazyTie {
-    #if USE_LAZY_DETACH
-      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-        return nil
-      }
-    #else
-      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-        return false
-      }
-    #endif
+    let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+      return false
+    }
     return unsafeDowncast(storage, to: _LazyTie.self)
   }
 }
@@ -112,3 +88,14 @@ extension _LazyTie {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
+
+extension _LazyTie {
+
+  @inlinable
+  package func release() {
+    if self === _emptyLazyDetach {
+      return
+    }
+    isDetached = true
+  }
+}

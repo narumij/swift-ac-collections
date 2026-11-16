@@ -49,7 +49,7 @@
     /// let r2 = tree[.lowerBound(5)...]
     ///
     /// // Elements less than 7
-    /// let r3 = tree[..< .lowerBound(7)]
+    /// let r3 = tree[..<lowerBound(7)]
     ///
     /// // Elements equal to 5
     /// let r4 = tree[equalRange(5)]
@@ -57,7 +57,7 @@
     ///
     /// - Note:
     ///   - Endpoints are evaluated in the tree's sort order.
-    ///   - Invalid ranges may trap at runtime.
+    ///   - Reversed or otherwise unusable ranges produce an empty view.
     ///
     /// - SeeAlso:
     ///   - `RedBlackTreeBoundRangeExpression`
@@ -67,6 +67,12 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Returns the signed distance between the two evaluated positions.
+    ///
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -105,10 +111,13 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
-      __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
-      guard let p = p.accessible.pointer else { return nil }
-      return __tree_._unchecked_remove(at: p).payload
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).accessible.pointer else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return __tree_._unchecked_remove(at: p).payload
     }
   }
 
@@ -118,9 +127,11 @@
 
     /// Accesses a view of the elements selected by a bound range expression.
     ///
-    /// Mutating the returned view modifies this multiset. The view retains every
-    /// selected occurrence, including equivalent elements. A range that evaluates
-    /// to no ordered positions produces an empty view.
+    /// Mutating through this subscript modifies this multiset.
+    /// Mutating a view stored in a separate variable leaves this multiset unchanged.
+    ///
+    /// The view retains every selected occurrence, including equivalent elements.
+    /// A range that evaluates to no ordered positions produces an empty view.
     ///
     /// - Parameter bounds: A bound range expression evaluated in this multiset.
     /// - Returns: A view over the selected occurrences.
@@ -146,11 +157,8 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
+      _ = __tree_.___erase_sanitize_range_with_many_care(
+        _range: bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     /// Removes the elements in the selected range that satisfy a predicate.
@@ -164,11 +172,7 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
-      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      _ = try __tree_.___erase_sanitize_range_if(
+      _ = try __tree_.___erase_sanitize_range_if_with_many_care(
         bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }

@@ -8,7 +8,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-@available(anyAppleOS 26.0, *)
+@available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 final class TreeFoundamentalValueTests: TreeTestCase {
 
   private struct LazyIntComparator: IntThreeWayComparator {
@@ -88,7 +88,7 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     let payload = PairBase.__payload_(element)
 
     XCTAssertEqual(PairBase.__key(payload), element.key)
-    XCTAssertEqual(PairBase.___mapped_value(payload), element.value)
+    XCTAssertEqual(PairBase.__mapped_value(payload), element.value)
     XCTAssertEqual(PairBase.__element_(payload).key, element.key)
     XCTAssertEqual(PairBase.__element_(payload).value, element.value)
   }

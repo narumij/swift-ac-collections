@@ -55,7 +55,7 @@ public protocol _BasePayloadValue_MappedValueInterface: ~Copyable, _PayloadValue
     & _MappedValueType
 {
   //  @available(*, deprecated, renamed: "__mapped_value_")
-  @inlinable static func ___mapped_value(_: _PayloadValue) -> _MappedValue
+  @inlinable static func __mapped_value(_: _PayloadValue) -> _MappedValue
 }
 
 public protocol _BaseKey_LessThanInterface: ~Copyable, _KeyType {
@@ -100,7 +100,7 @@ public protocol _Base_MultiplicityHelperInterface: ~Copyable, _UnsafeNodePtrType
     & _BaseNode_KeyInterface
     & _Base_IsMultiInterface
 where _Key: Comparable {
-  associatedtype _MultiplicityHelper: MultiplicityHelper
+  associatedtype _MultiplicityHelper: MultiplicityHelper where _MultiplicityHelper: ~Copyable
 }
 
 @usableFromInline

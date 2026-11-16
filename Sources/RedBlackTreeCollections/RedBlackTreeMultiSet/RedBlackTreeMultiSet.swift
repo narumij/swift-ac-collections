@@ -24,9 +24,13 @@
 
 /// # RedBlackTreeMultiSet
 ///
-/// `RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
-/// implemented using a red-black tree.
-/// Elements are always kept in sorted order.
+/// ## Declaration
+///
+/// Use `RedBlackTreeMultiSet` with `import AcCollections`.
+///
+/// ## Overview
+///
+/// A red-black-tree multiset that stores elements in ascending order and retains duplicates. Equivalent elements have distinct positions and appear consecutively. Unlike `Set` or `RedBlackTreeSet`, it retains multiplicities; unlike an `Array`, it maintains order across updates. Use `RedBlackTreeSet` when duplicates are not needed.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = []
@@ -37,19 +41,24 @@
 /// set.insert(5) // -> [1, 1, 3, 4, 5]
 /// ```
 ///
-/// ## Removal
+/// ## Creating a Multiset
 ///
-/// Both single-element removal and range removal are supported.
+/// Create an empty instance, use a literal, or initialize from an input sequence. `init(minimumCapacity:)` sets initial capacity and `reserveCapacity(_:)` reserves storage. `capacity` is distinct from the element count. Array literals, sequences, collections, and ranges can supply the elements.
+///
+/// ## Searching and Accessing Elements
+///
+/// `contains(_:)` checks membership and `count(of:)` returns the number of matches. `first` / `last` and `min()` / `max()` access the endpoints. `firstIndex(of:)` returns `nil` when absent; `find(_:)` returns `endIndex`. `lowerBound(_:)` finds the first value greater than or equal to its argument, and `upperBound(_:)` the first strictly greater value; both return the end if none exists. `equalRange(_:)` returns the half-open range of all equivalent elements. Move forward or backward from search results within the endpoint preconditions; the end cannot be dereferenced as an element.
+///
+/// ## Insertion and Removal
+///
+/// Insertion adds an element without replacing equivalent elements. The hint passed to `insert(_:hint:)` must be a valid position and helps locate insertion when its ordering conditions fit. `update(_:at:)` replaces an element only when old and new values compare equal with `==`, returning the old value. The index must be valid and must not be `endIndex`; an invalid index or an unequal replacement violates a precondition.
+///
+/// `eraseUnique(_:)` removes one match; `eraseMulti(_:)` removes all matches. `popFirst()` / `popLast()` return `nil` when empty; `removeFirst()` / `removeLast()` require a nonempty multiset. Predicate removal with `erase(where:)`, range removal, and `removeAll(keepingCapacity:)` are also available. For sequential removal, continue with the index returned by `erase(_:) -> Index`, not a deleted index.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-/// set.remove(3) // -> [1, 1, 4, 5]
+/// set.eraseUnique(3) // -> [1, 1, 4, 5]
 /// ```
-///
-/// Avoid performing repeated removals via indices in a `for` loop.
-/// Since indices are tightly coupled with tree nodes, removing an element
-/// invalidates the operation that retrieves the next index.
-/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -61,9 +70,6 @@
 /// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
 /// ```
 ///
-/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-/// You can remove elements while receiving the next index.
-///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 /// var i = set.startIndex
@@ -72,24 +78,59 @@
 /// }
 /// ```
 ///
-/// ## Index Alternative Syntax
+/// ## Combining Multisets
 ///
-/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
-/// It allows specifying elements or boundaries without handling indices directly.
+/// `insert(contentsOf:)` inserts into this value; `inserting(contentsOf:)` returns the result. These operations insert elements into existing storage, copying it first when shared. The insertion APIs accept a set, multiset, or arbitrary sequence.
+///
+/// ## Multiset Algebra
+///
+/// For multiplicities a and b, `union` yields max(a,b), `intersection` min(a,b), `difference` max(a-b,0), and `symmetricDifference` abs(a-b). The corresponding `formUnion`, `formIntersection`, `formDifference`, and `formSymmetricDifference` methods mutate this value. These are multiset semantics; the type does not conform to the standard `SetAlgebra` protocol. To keep every occurrence from both operands (a+b), use `insert(contentsOf:)` or `inserting(contentsOf:)`.
+///
+/// ## Iterating over Elements
+///
+/// Normal iteration is ascending. `sorted()` and `reversed()` return ascending and descending arrays. `filter(_:)` returns a new multiset, retaining selected duplicates. Range views traverse in the same order.
+///
+/// ## Indices and Bound Expressions
+///
+/// An index represents an element position, not an integer offset. Indices support forward and backward movement within their endpoint preconditions. Inserting or deleting other elements preserves an index while its element exists. Deleting that element invalidates the index; reusing its slot does not revive it. In the normal configuration, corresponding positions can be shared across copy-on-write branches, but validity depends on the target’s generation and deletion state. Using an unrelated tree’s index violates a precondition and is not guaranteed to be detected.
+///
+/// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
+///
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.first`, `.before` / `.after`, and `.advanced(by:limit:)`. `.first(k)` selects the first element in traversal order whose key equals `k`, or the end if no such element exists. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-/// print(set[.start.advance(by: 1)]) // -> 1
+/// print(set[.start.advanced(by: 1)]) // Optional containing 1
 /// ```
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-/// print(set[.lowerBound(5)]) // -> 5
+/// print(set[.lowerBound(5)]) // Optional containing 5
 /// print(set[.upperBound(5)]) // -> nil (equivalent to end)
 /// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeMultiSet` is not thread-safe.
+/// ## Performance
+///
+/// These bounds assume constant-time comparisons and element operations, and exclude copying shared storage for copy-on-write. Copying retains deletion history and is not always bounded by the current count alone. Creating a view does not copy elements into an array, but a later mutation can require copy-on-write.
+///
+/// | Operation | Complexity |
+/// | --- | --- |
+/// | `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+/// | Lookup, lower/upper bound, insertion, lookup and removal of one element | O(log n) |
+/// | Removal at a known index; rebalancing | Amortized O(1) |
+/// | Lookup and removal/processing of K matching elements | O(log n + K) |
+/// | `insert(contentsOf:)`, `inserting(contentsOf:)` (n incoming, m existing) | O(n log(m+n)), plus storage-copy costs |
+/// | Union, intersection, difference, symmetric difference | O(n+m) |
+///
+///
+/// ## Red-Black Tree
+///
+/// A red-black tree is a self-balancing binary search tree that maintains logarithmic height through recoloring and rotations. Logical element order differs from physical memory layout. In duplicate-supporting types, each element still occupies its own node. Nodes are managed in grouped storage rather than requiring a separate allocation for every node.
+///
+/// ## Important
+///
+/// This type is not thread-safe and does not protect concurrent access to the same variable. This guide describes the normal configuration.
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
 
@@ -163,7 +204,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
-    __tree_.update { $0.__count_multi(element) }
+    __tree_.read { $0.__count_multi(element) }
   }
 }
 
@@ -178,7 +219,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(_ element: Element) -> Bool {
-    __tree_.update { $0.__count_unique(element) != 0 }
+    __tree_.read { $0.__count_unique(element) != 0 }
   }
 }
 
@@ -231,7 +272,7 @@ extension RedBlackTreeMultiSet {
   /// - Parameter newMember: An element to insert.
   /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
-  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
+  /// - SeeAlso: `index(inserting:)`, which returns the index of the newly inserted occurrence.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -246,29 +287,30 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Replaces the element at `i` when it is equivalent to `newMember`.
+    /// Replaces the element at `i` with an equal element under `==`.
     ///
     /// Requiring equivalence preserves the multiset's sorted order.
     ///
     /// - Parameters:
     ///   - newMember: The replacement element.
     ///   - i: The index of the element to replace.
-    /// - Returns: The replaced element, or `nil` if the index is invalid or the elements aren't equivalent.
+    /// - Returns: The replaced element.
+    /// - Precondition: `i` is valid for this multiset and is not `endIndex`.
+    ///   `newMember == self[i]` must hold; this operation does not reposition elements.
     @inlinable
-    public mutating func update(_ newMember: Element, at i: Index) -> Element? {
+    @discardableResult
+    public mutating func update(_ newMember: Element, at i: Index) -> Element {
       __tree_.ensureUnique()
       let __i = __tree_.__purified_(i)
       guard
         __i.accessible.error == nil,
         let i = __i.pointer
       else {
-        return nil
+        fatalError(.invalidIndex)
       }
 
       let oldMember = Base.__key_(i)
-      guard oldMember == newMember else {
-        return nil
-      }
+      precondition(oldMember == newMember, "Replacement must be equal to the existing element")
 
       Base.__key_ptr(i).pointee = newMember
       return oldMember
@@ -381,7 +423,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given index of the set.
+    /// Removes the occurrence at the given index of the multiset.
     ///
     /// - Parameter index: A valid index of the multiset. The index must refer
     ///   to an element, not the multiset's `endIndex`.
@@ -410,8 +452,11 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
+      if __tree_.isUnique() {
+        __tree_.deinitialize()
+      } else {
+        __tree_ = .create(minimumCapacity: __tree_.capacity)
+      }
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -423,7 +468,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the occurrence at the given position from the multiset and returns the index of the next element.
     ///
     /// - Parameter ptr: A valid index of the multiset. The index must refer to
     ///   an element, not the multiset's `endIndex`.
@@ -434,7 +479,8 @@ extension RedBlackTreeMultiSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -447,13 +493,11 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      let result = try __tree_.___erase_range_if(
-        __tree_.__begin_node_.unchecked,
-        __tree_.__end_node.unchecked,
-        shouldBeRemoved)
-      assert(result.error == nil)
+        let __first = __tree_.__begin_node_.unchecked
+        let __last = __tree_.__end_node.unchecked
+        let result = try __tree_.___erase_range_if_with_many_care(
+          __first, __last, shouldBeRemoved)
+        assert(result.error == nil)
     }
   }
 #endif
@@ -471,8 +515,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseUnique(_ member: Element) -> Bool {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(member)
+      __tree_.___erase_unique_if_present(member)
     }
   }
 
@@ -486,8 +529,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(member)
+      __tree_.___erase_multi_if_present(member)
     }
   }
 #endif

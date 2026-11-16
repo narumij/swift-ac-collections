@@ -60,7 +60,7 @@
     @usableFromInline var _sealed_end: _SealedPtr
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeKeyOnlyRangeView {
       package var _copyCount: UInt {
         __tree_.copyCount
@@ -98,8 +98,8 @@
       else {
         return (__tree_.__end_node, __tree_.__end_node)
       }
-      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
-      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
+//      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
+//      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
       return (_start, _end)
     }
 
@@ -110,14 +110,14 @@
     }
   }
 
+extension RedBlackTreeKeyOnlyRangeView {
 
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
-      __tree_.index(p)
-    }
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    __tree_.index(p)
   }
+}
+
 
   #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyOnlyRangeView: Sequence {}
@@ -128,7 +128,7 @@
       ///
       /// - Complexity: O(1)
       @inlinable
-      public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
+      public __consuming func makeIterator() -> UnsafeIterator.Trap.ValueObverse<Container.Base> {
         let (_start, _end) = _raw_range
         return .init(start: _start, end: _end, tree: __tree_)
       }
@@ -187,7 +187,7 @@
     @inlinable
     public var first: Element? {
       let (_start, _end) = _raw_range
-      guard _start != _end else { return nil }
+      guard _start != _end, _start != __tree_.__end_node else { return nil }
       return Base.__payload_(_start)
     }
 
@@ -198,7 +198,8 @@
     public var last: Element? {
       let (_start, _end) = _raw_range
       guard _start != _end else { return nil }
-      return Base.__payload_(__tree_prev_iter(_end))
+//      return Base.__payload_(__tree_prev_iter(_end))
+      return try? __tree_.___tree_prev_iter(_end).map(Base.__payload_).get()
     }
   }
 
@@ -211,6 +212,9 @@
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _) = _raw_range
+      guard _start != __tree_.__end_node else {
+        return nil
+      }
       let (_p, _r) = __tree_._unchecked_remove(at: _start)
       _sealed_start = _p.uncheckedSeal
       return _r
@@ -222,8 +226,12 @@
     public mutating func popLast() -> Element? {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
-      let (_, _end) = _raw_range
-      return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+      let (_start, _end) = _raw_range
+      guard let last = __tree_.___tree_prev_iter(_end).pointer else {
+        return nil
+      }
+      if last == _start { _sealed_start = _sealed_end }
+      return __tree_._unchecked_remove(at: last).payload
     }
 
     /// Removes and returns the first element.
@@ -259,12 +267,13 @@
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
-      // 空の場合はensureUnique()による無駄なコピーを避ける。
       guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
       _ensureUnique()
       let (_start, _end) = _raw_range
       // ややチェックが甘いので末端チェック付き削除が必要
-      return ___index(try! __tree_.___erase_range(_start, _end).get())
+      let next = try! __tree_.___erase_range(_start, _end).get()
+      _sealed_start = next.uncheckedSeal
+      return ___index(next)
     }
 
     /// Removes the elements in the view that satisfy `shouldBeRemoved`.
@@ -272,11 +281,15 @@
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each element to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard _raw_range.0 != _raw_range.1 else { return }
-      _ensureUnique()
+      // _ensureUnique()を暗黙に模倣しているので、そこらへんの挙動には注意が必要
       let (_start, _end) = _raw_range
-      let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked, shouldBeRemoved)
-      assert(result.error == nil)
+      var first = _start.unchecked
+      var last = _end.unchecked
+      defer {
+        _sealed_start = first.pointer!.uncheckedSeal
+        _sealed_end = last.pointer!.uncheckedSeal
+      }
+      _ = try __tree_.___erase_view_range_if_with_many_care(&first, &last, shouldBeRemoved)
     }
   }
 

@@ -23,7 +23,7 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
-package struct _Bucket {
+package struct _Bucket: ~Copyable {
 
   @usableFromInline
   package typealias _Next = UnsafeMutablePointer<_Bucket>
@@ -147,12 +147,6 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   //               ^-payload(0)
   //               ^-(payload alignment)
   // ```
-  //
-  // - Parameters:
-  //   - storage: Bucket固有のメタデータ直後にある、alignment調整前のslot領域先頭アドレス。
-  //   - payloadAlignment: Payload型に要求されるalignment。max(node, payload)で構わない。
-  //
-  // - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
   //
   // - WARNING: 確保数0の場合利用してはならない
   //

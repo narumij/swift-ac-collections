@@ -37,15 +37,15 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 }
 
 @_documentation(visibility: internal)
-public protocol LinkPairValueTrait: KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
+public protocol LinkPairValueTrait: ~Copyable, KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
 
-extension LinkPairValueTrait {
+extension LinkPairValueTrait where Self: ~Copyable {
   @inlinable
   public static var isMulti: Bool { true }
 }
 
-extension LinkPairValueTrait {
+extension LinkPairValueTrait where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
@@ -56,7 +56,7 @@ extension LinkPairValueTrait {
   }
 
   @inlinable
-  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
+  public static func __mapped_value(_ element: _PayloadValue) -> _MappedValue {
     element.value
   }
 
@@ -73,7 +73,7 @@ public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: LinkPairValueTra
 {}
 
 @usableFromInline
-protocol ___LRULinkList: _KeyType & _MappedValueType & _UnsafeNodePtrType
+protocol ___LRULinkList: ~Copyable, _KeyType & _MappedValueType & _UnsafeNodePtrType
 where _Key: Comparable {
   associatedtype Value
   var __tree_: Tree { get set }
@@ -82,13 +82,13 @@ where _Key: Comparable {
   var nullptr: _NodePtr { get }
 }
 
-extension ___LRULinkList {
-  public typealias Base = ___LRULinkListBase<_Key, _MappedValue>
+extension ___LRULinkList where Self: ~Copyable {
+  @usableFromInline typealias Base = ___LRULinkListBase<_Key, _MappedValue>
 }
 
-extension ___LRULinkList {
+extension ___LRULinkList where Self: ~Copyable {
 
-  public typealias Tree = UnsafeTreeV2<Base>
+  @usableFromInline typealias Tree = UnsafeTreeV2<Base>
 
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {

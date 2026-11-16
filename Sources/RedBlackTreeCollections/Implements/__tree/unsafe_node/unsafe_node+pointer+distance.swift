@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+//@available(*, deprecated, renamed: "___safe_distance") // 調査用
 @inlinable
 package func
   __distance(

@@ -41,10 +41,10 @@
     
     @Test func `_PairBasePayloadValue_MappedValueProtocolのカバレッジ確保`() async throws {
       typealias Base = _PairBasePayloadValue_MappedValueProtocol_Fixture
-      #expect(Base.___mapped_value(.init((0,0))) == 0)
-      #expect(Base.___mapped_value(.init((1,0))) == 0)
-      #expect(Base.___mapped_value(.init((0,2))) == 2)
-      #expect(Base.___mapped_value(.init((1,2))) == 2)
+      #expect(Base.__mapped_value(.init((0,0))) == 0)
+      #expect(Base.__mapped_value(.init((1,0))) == 0)
+      #expect(Base.__mapped_value(.init((0,2))) == 2)
+      #expect(Base.__mapped_value(.init((1,2))) == 2)
     }
 
     @Test func `___default_three_way_comparatorのカバレッジ確保`() async throws {

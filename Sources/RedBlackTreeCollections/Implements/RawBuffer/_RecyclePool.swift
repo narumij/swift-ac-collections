@@ -43,7 +43,7 @@
         p.pointee.___recycle_count &+= 1
       #endif
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
       #if GRAPHVIZ_DEBUG
@@ -55,13 +55,30 @@
       recycleHead = p
     }
 
-    // recycle poolの先頭ノードを取り出す。
+    @inlinable
+    mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
+      assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
+      assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
+      assert(recycleHead != p, "過剰リサイクル不可")
+      count -= 1
+      #if DEBUG || true
+        p.pointee.___recycle_count &+= 1
+      #endif
+      #if _TREE_ALLOCATION_COUNTER
+        payloadDeinitializedCount += 1
+      #endif
+      #if GRAPHVIZ_DEBUG
+        p.pointee.__right_ = nullptr
+        p.pointee.__parent_ = nullptr
+      #endif
+      p.pointee.___has_payload_content = false
+      p.pointee.__left_ = recycleHead
+      recycleHead = p
+    }
+
     //
-    // ノード生成側がfresh poolとの選択を済ませるため、
-    // 二重チェックを避けてここでは空判定を行わない。
     //
-    // - Precondition: `recycleHead != nullptr`
-    @usableFromInline
+    @usableFromInline // このコールドパス化はまぐれ。再検討の価値あり
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
       recycleHead = p.pointee.__left_

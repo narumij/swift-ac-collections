@@ -71,31 +71,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if false
-  // 調査用
-  extension RedBlackTreeDictionary {
-
-    /// Accesses the element at the specified position.
-    ///
-    /// - Parameter position: A valid element index of this dictionary.
-    /// - Precondition: `position` identifies an element in this dictionary and isn't `endIndex`.
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(_pair position: Index) -> RedBlackTreePair<Key, Value> {
-      __tree_._unsafeAddress(position).pointee
-    }
-
-    @inlinable
-    @inline(__always)
-    public subscript(_element position: Index) -> Element {
-      __tree_._unsafeAddress(position).pointee.tuple
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025 && false
-  // やっぱりTupleはバギー
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
@@ -104,42 +80,8 @@ extension RedBlackTreeDictionary {
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
-      _read {
-        yield __tree_._unsafeAddress(position).pointee.tuple
-      }
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025 && false
-  extension RedBlackTreeDictionary {
-
-    /// Accesses the element at the specified position.
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always)
-      @_transparent
       unsafeAddress {
-        withUnsafePointer(to: __tree_._unsafeAddress(position).pointee.tuple) { $0 }
-      }
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025 && true
-  extension RedBlackTreeDictionary {
-
-    /// Accesses the element at the specified position.
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always)
-      get {
-        // unsafeAddress, _read、双方バグるので、基本のget
-        __tree_._unsafeAddress(position).pointee.tuple
+        __tree_._unsafeAddress(position).pointer(to: \.tuple)!
       }
     }
   }

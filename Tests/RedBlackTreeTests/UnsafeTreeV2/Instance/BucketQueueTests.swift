@@ -21,9 +21,7 @@ import XCTest
         try checkQueueAlignment(Int16.self, capacity: n, isHead: true)
         try checkQueueAlignment(Int32.self, capacity: n, isHead: true)
         try checkQueueAlignment(Int64.self, capacity: n, isHead: true)
-        if #available(macOS 15.0, *) {
-          try checkQueueAlignment(Int128.self, capacity: n, isHead: true)
-        }
+        try checkQueueAlignment(Int128.self, capacity: n, isHead: true)
         try checkQueueAlignment(Int.self, capacity: n, isHead: true)
         try checkQueueAlignment(SIMD2<Int>.self, capacity: n, isHead: true)
         try checkQueueAlignment(SIMD3<Int>.self, capacity: n, isHead: true)
@@ -58,9 +56,7 @@ import XCTest
         try checkQueueAlignment(Int16.self, capacity: n, isHead: false)
         try checkQueueAlignment(Int32.self, capacity: n, isHead: false)
         try checkQueueAlignment(Int64.self, capacity: n, isHead: false)
-        if #available(macOS 15.0, *) {
-          try checkQueueAlignment(Int128.self, capacity: n, isHead: false)
-        }
+        try checkQueueAlignment(Int128.self, capacity: n, isHead: false)
         try checkQueueAlignment(Int.self, capacity: n, isHead: false)
         try checkQueueAlignment(SIMD2<Int>.self, capacity: n, isHead: false)
         try checkQueueAlignment(SIMD3<Int>.self, capacity: n, isHead: false)

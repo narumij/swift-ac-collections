@@ -24,8 +24,15 @@
 
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` is a **sorted unique set** implemented using a red-black tree.
-/// Elements are always kept in sorted order.
+/// ## Declaration
+///
+/// Use `RedBlackTreeSet` with `import AcCollections`.
+///
+/// ## Overview
+///
+/// A red-black-tree set that stores unique elements in ascending order. Insertion and removal preserve order, and inserting a duplicate does not add another copy. Unlike the standard `Set`, it supports ordered searches and traversal; unlike an `Array`, it maintains sorting across updates. Use `RedBlackTreeMultiSet` for duplicates. It suits changing sets that need ordered traversal or bound searches.
+///
+/// Create an empty set, use an array literal, or initialize from an input sequence. Reserve storage with `init(minimumCapacity:)` or `reserveCapacity(_:)`. Normal iteration is ascending; `sorted()` / `reversed()` return ascending / descending arrays.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = []
@@ -36,32 +43,28 @@
 /// set.insert(5) // -> [1, 3, 4, 5]
 /// ```
 ///
-/// ## Removal
+/// ## Searching and Accessing Elements
 ///
-/// Both single-element removal and range removal are supported.
+/// `contains(_:)` checks membership and `count(of:)` returns the number of matches. `first` / `last` and `min()` / `max()` access the endpoints. `firstIndex(of:)` returns `nil` when absent; `find(_:)` returns `endIndex`. `lowerBound(_:)` finds the first value greater than or equal to its argument, and `upperBound(_:)` the first strictly greater value; both return the end if none exists. `equalRange(_:)` returns the half-open range of all equivalent elements. Move forward or backward from search results within the endpoint preconditions; the end cannot be dereferenced as an element.
+///
+/// ## Insertion and Removal
+///
+/// `insert(_:)` preserves uniqueness and does not add duplicate elements. `remove(_:)` searches for and removes a value. Range removal and removal at a known index are also supported. Do not advance from a deleted index; use the next index returned by `erase(_:) -> Index` for sequential removal.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 /// set.remove(3) // -> [1, 4, 5]
 /// ```
 ///
-/// Avoid performing repeated removals via indices in a `for` loop.
-/// Since indices are tightly coupled with tree nodes, removing an element
-/// invalidates the operation that retrieves the next index.
-/// Use the range-removal APIs for consecutive deletions instead.
-///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set[.lowerBound(4) ..< .endIndex].erase() // -> [1, 3]
+/// set[.lowerBound(4) ..< .end].erase() // -> [1, 3]
 /// ```
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set.erase(.lowerBound(4) ..< .endIndex) // -> [1, 3]
+/// set.erase(.lowerBound(4) ..< .end) // -> [1, 3]
 /// ```
-///
-/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-/// You can remove elements while receiving the next index.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -71,24 +74,49 @@
 /// }
 /// ```
 ///
-/// ## Index Alternative Syntax
+/// ## Set Algebra
 ///
-/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
-/// It allows specifying elements or boundaries without handling indices directly.
+/// `union` / `formUnion`, `intersection` / `formIntersection`, `difference` / `formDifference`, and `symmetricDifference` / `formSymmetricDifference` compute the union, intersection, difference, and symmetric difference. The `form` variants mutate this set; their counterparts return results.
+///
+/// ## Indices and Bound Expressions
+///
+/// An index represents an element position, not an integer offset. Indices support forward and backward movement within their endpoint preconditions. Inserting or deleting other elements preserves an index while its element exists. Deleting that element invalidates the index; reusing its slot does not revive it. In the normal configuration, corresponding positions can be shared across copy-on-write branches, but validity depends on the target’s generation and deletion state. Using an unrelated tree’s index violates a precondition and is not guaranteed to be detected.
+///
+/// Index-range subscripting returns a view without copying elements into an array. It uses the base’s index type but has its own range and endpoint. A view endpoint can identify an element in the base. Mutation directly through a subscript changes the base; mutation of a view stored separately is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
+///
+/// `Bound` specifies positions without directly manipulating indices. It provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.first`, `.before` / `.after`, and `.advanced(by:limit:)`. `.first(k)` selects the first element in traversal order whose key equals `k`, or the end if no such element exists. A single bound that resolves to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges return empty views.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.start.advance(by: 1)]) // -> 3
+/// print(set[.start.advanced(by: 1)]) // Optional containing 3
 /// ```
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.lowerBound(5)]) // -> 5
+/// print(set[.lowerBound(5)]) // Optional containing 5
 /// print(set[.upperBound(5)]) // -> nil (equivalent to end)
 /// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeSet` is not thread-safe.
+/// ## Performance
+///
+/// These bounds assume constant-time comparisons and element operations, and exclude copying shared storage for copy-on-write. Copying retains deletion history and is not always bounded by the current count alone. Creating a view does not copy elements into an array, but a later mutation can require copy-on-write.
+///
+/// | Operation | Complexity |
+/// | --- | --- |
+/// | `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+/// | Lookup, lower/upper bound, insertion, lookup and removal of one element | O(log n) |
+/// | Removal at a known index; rebalancing | Amortized O(1) |
+/// | Union, intersection, difference, symmetric difference | O(n+m) |
+///
+///
+/// ## Red-Black Tree
+///
+/// A red-black tree is a self-balancing binary search tree that maintains logarithmic height through recoloring and rotations. Logical element order differs from physical memory layout. In duplicate-supporting types, each element still occupies its own node. Nodes are managed in grouped storage rather than requiring a separate allocation for every node.
+///
+/// ## Important
+///
+/// This type is not thread-safe and does not protect concurrent access to the same variable. This guide describes the normal configuration.
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -165,7 +193,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
-    __tree_.update { $0.__count_unique(element) }
+    __tree_.read { $0.__count_unique(element) }
   }
 }
 
@@ -180,7 +208,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ element: Element) -> Bool {
-    __tree_.update { $0.__count_unique(element) != 0 }
+    __tree_.read { $0.__count_unique(element) != 0 }
   }
 }
 
@@ -240,9 +268,15 @@ extension RedBlackTreeSet {
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-    return (__inserted, __inserted ? newMember : Base.__payload_(__r))
+    #if false
+    // 資料的にのこしてある
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+      return (__inserted, __inserted ? newMember : Base.__payload_(__r))
+    #else
+    let (__r, __inserted) = __tree_.___insert_unique_if_not_present(newMember)
+    return (__inserted, Base.__payload_(__r))
+    #endif
   }
 
   /// Inserts the given element, replacing an existing equivalent element if one is already present.
@@ -280,13 +314,10 @@ extension RedBlackTreeSet {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
-      guard let __p = p.pointer else {
+      guard let __p = __tree_.__purified_(hint).pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+      let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(newMember,__p)
       return (__inserted, ___index(__r))
     }
 
@@ -305,7 +336,6 @@ extension RedBlackTreeSet {
     public mutating func update(_ newMember: Element, hint: Index) -> Element? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -398,9 +428,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
-    guard __tree_.count > 0 else { return nil }
-    __tree_.ensureUnique()
-    return __tree_.update { $0.___erase_unique(member) } ? member : nil
+    __tree_.___remove_if_present(member)
   }
 }
 
@@ -436,8 +464,11 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
+      if __tree_.isUnique() {
+        __tree_.deinitialize()
+      } else {
+        __tree_ = .create(minimumCapacity: __tree_.capacity)
+      }
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -458,7 +489,8 @@ extension RedBlackTreeSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -471,13 +503,11 @@ extension RedBlackTreeSet {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      let result = try __tree_.___erase_range_if(
-        __tree_.__begin_node_.unchecked,
-        __tree_.__end_node.unchecked,
-        shouldBeRemoved)
-      assert(result.error == nil)
+        let __first = __tree_.__begin_node_.unchecked
+        let __last = __tree_.__end_node.unchecked
+        let result = try __tree_.___erase_range_if_with_many_care(
+          __first, __last, shouldBeRemoved)
+        assert(result.error == nil)
     }
   }
 #endif

@@ -5,14 +5,14 @@
   "contents": [
     {
       "kind": "group",
-      "title": "Permutations",
+      "title": "NextPermutations",
       "directory": "permutations",
       "contents": [
         {
           "kind": "chart",
           "title": "end-to-end",
           "tasks": [
-            "Permutations nextPermutations end-to-end checksum"
+            "NextPermutations nextPermutations end-to-end checksum"
           ]
         }
       ]

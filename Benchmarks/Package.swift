@@ -16,7 +16,7 @@ let package = Package(
   dependencies: [
     .package(
       name: "swift-ac-collections", path: "..",
-      traits: ["BENCHMARK"]),
+      traits: ["BENCHMARK", "ENABLE_OPTIONAL_ELEMENT_BUFFER", "ENABLE_EXPERIMENTAL_LRU"]),
     .package(
       url: "https://github.com/apple/swift-collections",
       from: "1.5.1",
@@ -26,6 +26,7 @@ let package = Package(
     //        url: "https://github.com/narumij/swift-ac-collections",
     //        branch: "release/AtCoder/2025"),
     .package(url: "https://github.com/apple/swift-collections-benchmark", from: "0.0.4"),
+    .package(url: "https://github.com/iShape-Swift/iTree", from: "0.5.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -34,13 +35,37 @@ let package = Package(
       name: "Benchmarks",
       dependencies: [
         .product(name: "AcCollections", package: "swift-ac-collections"),
+        .product(name: "BasicContainers", package: "swift-collections"),
         .product(name: "SortedCollections", package: "swift-collections"),
         .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "iTree", package: "iTree"),
         "CppBenchmarks",
+      ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
       ],
     ),
     .target(
       name: "CppBenchmarks",
+    ),
+    .target(
+      name: "CppPermutationBenchmarks"
+    ),
+    .executableTarget(
+      name: "permutation-benchmark",
+      dependencies: [
+        .product(name: "AcCollections", package: "swift-ac-collections"),
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        "CppPermutationBenchmarks",
+      ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+      ],
+      linkerSettings: [
+        .unsafeFlags(["-use-ld=lld", "-Xlinker", "-z", "-Xlinker", "nostart-stop-gc",
+                      "-Xlinker", "-z", "-Xlinker", "separate-code"],
+                     .when(platforms: [.linux]))
+      ]
     ),
     .executableTarget(
       name: "benchmark",
@@ -51,5 +76,6 @@ let package = Package(
     ),
 
   ],
-  swiftLanguageModes: [.v6]
+  swiftLanguageModes: [.v6],
+  cxxLanguageStandard: .cxx17
 )

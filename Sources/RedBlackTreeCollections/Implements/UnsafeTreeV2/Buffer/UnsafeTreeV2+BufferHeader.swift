@@ -20,6 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Synchronization
+
+@usableFromInline
+let _lazyDetachLock = Mutex<Void>(())
+
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
@@ -43,12 +48,34 @@ package struct UnsafeTreeV2BufferHeader {
     self.recycleHead = nullptr
     self.nullptr = nullptr
     self.begin_ptr = head.begin_ptr
-    self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
+    self.root_ptr = head.end_ptr.pointer(to: \.__left_)!
     self.freshBucketAllocator = allocator
     self.pushFreshBucket(head: head)
     assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
   }
 
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+  @inlinable
+  internal init(
+    allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int,
+    headStorage: UnsafeMutableRawPointer
+  ) {
+    let head = allocator.initializeHeadBucket(
+      storage: headStorage, capacity: capacity, nullptr: nullptr)
+    self.recycleHead = nullptr
+    self.nullptr = nullptr
+    self.begin_ptr = head.begin_ptr
+    self.root_ptr = head.end_ptr.pointer(to: \.__left_)!
+    self.freshBucketAllocator = allocator
+    self.pushFreshBucket(head: head)
+    assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
+  }
+  #endif
+
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline let begin_ptr: _NodeRef
+  @usableFromInline let root_ptr: _NodeRef
+  
   @usableFromInline var count: Int = 0
   @usableFromInline var recycleHead: _NodePtr
   @usableFromInline var freshPoolCapacity: Int = 0
@@ -56,23 +83,50 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var freshPoolUsedCount: Int = 0
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
-  @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let begin_ptr: _NodeRef
-  @usableFromInline var root_ptr: _NodeRef
-  @usableFromInline var freshBucketAllocator: _BucketAllocator
+  @usableFromInline let freshBucketAllocator: _BucketAllocator
 
+  #if COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
   //
   // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
+  #endif
 
+  #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+  @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
+
+  @inlinable
+  var _lazyDetach: _LazyTie? {
+    @inline(__always)
+    get { lazyDetachPointer?.pointee }
+    @inline(__always)
+    set {
+      guard let newValue else {
+        lazyDetachPointer = nil
+        return
+      }
+      if let p = lazyDetachPointer {
+        p.pointee = newValue
+      } else {
+        let p = UnsafeMutablePointer<_LazyTie>.allocate(capacity: 1)
+        p.initialize(to: newValue)
+        lazyDetachPointer = p
+      }
+    }
+  }
+  #else
+  // AIがうるさいので補足
+  // 直接書き込みをする操作は、Header内部とシングルトンと生成に限定する。
+  // 読み込みもUnsafeTreeV2に限定する。
+  // それ以外の経路があれば違反となる。
   @usableFromInline var _lazyDetach: _LazyTie?
+  #endif
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     // CoWの発火回数を観察するためのプロパティ
     @usableFromInline internal var copyCount: UInt = 0
   #endif
@@ -121,23 +175,26 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
+  #if COMPATIBLE_ATCODER_2025
   // IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
   }
+  #endif
 
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
+    #if ENABLE_EXPERIMENTAL_TSAN_SAFE
+    guard let p = lazyDetachPointer else { return true }
+    return isKnownUniquelyReferenced(&p.pointee)
+    #else
     guard let _ = _lazyDetach else { return true }
     return isKnownUniquelyReferenced(&_lazyDetach!)
+    #endif
   }
-  // TODO: `tiedRawBuffer`と`lazyDetach`の一度だけの初期化を、並行アクセス時にも保証するか検討する。
-  // 候補は`Synchronization.AtomicLazyReference`だが、値型ヘッダへの直接格納は
-  // メモリレイアウトやコピー方法へ影響し、専用の参照型へまとめる方式は常時1アロケーション増える。
-  // また、このヘッダ全体はスレッドセーフではないため、この2参照だけをatomic化する意義も要検討。
-  // 所有構造の再設計と、通常利用時の生成コスト・アクセス性能を測定できる段階で再検討すること。
 
+  #if COMPATIBLE_ATCODER_2025
   // IndexやIteratorを結ぶ共有メモリ
   //
   // ヘッダーにとっては解放責任のデタッチ先
@@ -154,44 +211,59 @@ extension UnsafeTreeV2BufferHeader {
       return _tied!
     }
   }
+  #endif
 
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
       if _lazyDetach == nil {
-        _lazyDetach = .create()
+        _createLazyDetachLocked()
       }
       return _lazyDetach!
     }
   }
+  
+  @usableFromInline
+  @inline(never)
+  mutating func _createLazyDetachLocked() {
+    _lazyDetachLock.withLock { _ in
+      if _lazyDetach == nil {
+        let t = _LazyTie.create()
+        atomicMemoryFence(ordering: .releasing)
+        _lazyDetach = t
+      }
+    }
+  }
 
-  // 確保済みメモリの内容を未初期化に戻し、木を空にする
   @usableFromInline
   internal mutating func deinitialize() {
     ___flushFreshPool()
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
+    if _lazyDetach != nil {
+      _lazyDetach?.release()
+      _lazyDetach = .create()
+    }
   }
 }
 
 extension UnsafeTreeV2BufferHeader {
 
-  // `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtr`から使われる
   @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-
-  @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTiedPtr {
+  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtrV2 {
     assert(p != .nullptr)
     return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
   }
   
   @inlinable
-  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+  mutating func index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+  
+  @inlinable
+  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtrV2? {
     assert(p != .nullptr)
     return p.___has_payload_content ? .some(index(p)) : .none
   }
@@ -282,16 +354,19 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
+    // TODO: 取り急ぎの修正なので、再度吟味すること
     @usableFromInline
     mutating func ___flushFreshPool() {
-      freshBucketAllocator.deinitialize(bucket: freshBucketHead)
+      freshBucketAllocator.flush(bucket: freshBucketHead)
       freshPoolUsedCount = 0
       freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
+      #if COMPATIBLE_ATCODER_2025
       assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      #endif
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
   }
@@ -317,6 +392,7 @@ extension UnsafeTreeV2BufferHeader {
 
   extension UnsafeTreeV2BufferHeader {
 
+    #if true
     @inlinable
     mutating func ___pushRecycle(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
@@ -324,10 +400,51 @@ extension UnsafeTreeV2BufferHeader {
       assert(recycleHead != p, "過剰リサイクル不可")
       count &-= 1
       assert(count >= 0)
+#if USE_RECYCLE_COUNT_OVERWRAP
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
+#else
+      if p.pointee.___recycle_count < UnsafeNode.Seal.max {
+        p.pointee.___recycle_count &+= 1
+      }
+#endif
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
+        payloadDeinitializedCount += 1
+      #endif
+      #if GRAPHVIZ_DEBUG
+        p.pointee.__right_ = nullptr
+        p.pointee.__parent_ = nullptr
+      #endif
+      p.pointee.___has_payload_content = false
+      p.pointee.__left_ = recycleHead
+      recycleHead = p
+    }
+    #else
+    // TODO: 性能確認
+    @inlinable
+    mutating func ___pushRecycle(_ p: _NodePtr) {
+      freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      ___raw_pushRecycle(p)
+    }
+    #endif
+
+    @inlinable
+    mutating func ___raw_pushRecycle(_ p: _NodePtr) {
+      assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
+      assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
+      assert(recycleHead != p, "過剰リサイクル不可")
+      count &-= 1
+      assert(count >= 0)
+#if USE_RECYCLE_COUNT_OVERWRAP
+      // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
+      p.pointee.___recycle_count &+= 1
+#else
+      if p.pointee.___recycle_count < .max {
+        p.pointee.___recycle_count &+= 1
+      }
+#endif
+      #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
       #if GRAPHVIZ_DEBUG
@@ -339,13 +456,7 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
-    // recycle poolの先頭ノードを取り出す。
-    //
-    // ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
-    // fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
-    //
-    // - Precondition: `recycleHead != nullptr`
-    @usableFromInline
+    @usableFromInline // このコールドパス化はまぐれ。再検討の価値あり
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
       recycleHead = p.pointee.__left_
@@ -390,7 +501,7 @@ extension UnsafeTreeV2BufferHeader {
           nullptr: nullptr))
     #endif
     assert(p.pointee.___has_payload_content == true)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeInitializedCount += 1
     #endif
     freshPoolUsedCount &+= 1
@@ -418,7 +529,7 @@ extension UnsafeTreeV2BufferHeader {
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       payloadInitializedCount += 1
     #endif
     assert(p.pointee.___tracking_tag >= 0, "特殊ノードではないこと")

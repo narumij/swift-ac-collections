@@ -271,7 +271,7 @@ import XCTest
       // 共有ストレージの木が差し替わらないので、双方Valid
       XCTAssertFalse(base.isValid(index: idx))  // 期待と逆
       XCTAssertTrue(slice.isValid(index: idx))  // 期待と逆
-      #if DEBUG
+      #if _TREE_COPY_COUNTER
         XCTAssertEqual(base._copyCount, 1)
         XCTAssertEqual(slice._copyCount, 0)
       #endif

@@ -38,29 +38,29 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
-    let tree = withMutableHeader { header in
-      UnsafeTreeV2._create(
-        unsafeBufferObject:
-          header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
-    }
-    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
-    assert(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
-    assert(__check(tree), "一括チェックに合格すること")
+      let tree = _buffer.withUnsafeMutablePointerToHeader { header in
+        UnsafeTreeV2._create(
+          unsafeBufferObject:
+            header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
+      }
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")
     return tree
   }
 
   @inlinable
   @inline(never)  // 呼び出し元ホットパスのレジスタ圧低下を狙っている
   internal func copy() -> UnsafeTreeV2 {
-    assert(__check(self), "一括チェックに合格すること")
-    let tree = withMutableHeader { header in
-      UnsafeTreeV2._create(
-        unsafeBufferObject:
-          header.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
-    }
-    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
-    assert(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
-    assert(__check(tree), "一括チェックに合格すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(self), "一括チェックに合格すること")
+      let tree = _buffer.withUnsafeMutablePointerToHeader { header in
+        UnsafeTreeV2._create(
+          unsafeBufferObject:
+            header.pointee.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
+      }
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(__check(tree), "一括チェックに合格すること")
     return tree
   }
 }
@@ -117,12 +117,12 @@ extension UnsafeTreeV2BufferHeader {
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
     #if DEBUG
-      assert(_newBuffer.header.freshBucketCount <= 1, "バケット数が単一またはなしであること")
+    _UNSAFE_TREE_ASSERT_INTERNAL(_newBuffer.header.freshBucketCount <= 1, "バケット数が単一またはなしであること")
     #endif
 
     _newBuffer.withUnsafeMutablePointerToHeader { newHeader in
 
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
+      #if _TREE_COPY_COUNTER
         newHeader.pointee.copyCount += 1
       #endif
 
@@ -133,7 +133,7 @@ extension UnsafeTreeV2BufferHeader {
 
       copyHeader(_PayloadValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
-      assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
+      _UNSAFE_TREE_ASSERT_INTERNAL(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
     }
 
     return _newBuffer
@@ -201,13 +201,13 @@ extension UnsafeTreeV2BufferHeader {
         d.pointee.___recycle_count = s.pointee.___recycle_count
       #endif
       
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
         nodeInitializedCount += 1
       #endif
       // 必要な場合、値を初期化する
       if s.pointee.___has_payload_content {
         d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadInitializedCount += 1
         #endif
       }
@@ -215,7 +215,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // ルートノードを設定
     other.__root = __ptr_(__root)
-    assert(__tree_invariant(other.__root), "木の不変条件検査に合格すること")
+    _TREE_ASSERT_INTERNAL(__tree_invariant(other.__root), "木の不変条件検査に合格すること")
 
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)
@@ -229,6 +229,8 @@ extension UnsafeTreeV2BufferHeader {
     assert(other.count == count, "コピー前後で有効ノード数が一致すること")
 
     assert(other.count <= other.freshPoolCapacity, "容量が有効ノー度数を下回らないこと")
+    #if COMPATIBLE_ATCODER_2025
     assert(other._tied == nil, "コピー後の木のメモリ管理権限が移行されていないこと")
+    #endif
   }
 }

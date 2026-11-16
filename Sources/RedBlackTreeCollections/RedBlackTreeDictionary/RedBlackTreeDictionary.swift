@@ -24,9 +24,13 @@
 
 /// # RedBlackTreeDictionary
 ///
-/// `RedBlackTreeDictionary` is a **sorted dictionary (unique keys)**
-/// implemented using a red-black tree.
-/// Keys are always kept in sorted order.
+/// ## Declaration
+///
+/// Use `RedBlackTreeDictionary<Key: Comparable, Value>` with `import AcCollections`.
+///
+/// ## Overview
+///
+/// A red-black-tree dictionary that stores unique keys in ascending order. Assigning to an existing key replaces its mapped value. Insertion, removal, and value updates preserve key order. Unlike the standard `Dictionary`, it supports ordered traversal and lower- and upper-bound searches. Use `RedBlackTreeMultiMap` when a key must retain multiple values.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [:]
@@ -36,19 +40,28 @@
 /// dict[1] = "aa"  // -> [1: "aa", 3: "c", 4: "d"] (updated)
 /// ```
 ///
-/// ## Removal
+/// ## Creating a Dictionary
 ///
-/// Both single-element removal and range removal are supported.
+/// Create an empty dictionary with `init()` or an empty dictionary literal. Supply unique keys to dictionary literals and `init(uniqueKeysWithValues:)`. For duplicate keys, use `init(_:uniquingKeysWith:)`; its closure receives the stored value followed by the incoming value. `init(grouping:by:)` associates each key with an array in source order.
+///
+/// Use `init(minimumCapacity:)` or `reserveCapacity(_:)` to reserve storage. `capacity` describes storage capacity rather than the number of elements.
+///
+/// ## Searching and Accessing Elements
+///
+/// Key subscripting returns `nil` when the key is absent. The default-value subscript returns its default without inserting it on a read. `contains(key:)` checks membership; `count(forKey:)` returns zero or one.
+///
+/// `first` / `last` and `min()` / `max()` access the endpoints in key order. `firstIndex(of:)` / `index(forKey:)` return `nil` for an absent key, while `find(_:)` returns `endIndex`. `lowerBound(_:)` finds the first key greater than or equal to its argument; `upperBound(_:)` finds the first strictly greater key. Both return the end when no such key exists. `equalRange(_:)` describes the matching half-open range. When moving with `index(after:)` or `index(before:)`, respect the endpoint preconditions.
+///
+/// ## Insertion, Updating, and Removal
+///
+/// Assign a value through key subscripting to insert or update; assign `nil` to remove. Mutation through the default-value subscript inserts the default first when the key is absent. `updateValue(_:forKey:)` returns the previous value, or `nil` for a new key. `removeValue(forKey:)` removes the matching element.
+///
+/// Use range removal for consecutive elements. Do not advance from an index after deleting its element. For sequential removal, use the next index returned by `erase(_:) -> Index`.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
 /// dict.removeValue(forKey: 3) // -> [1: "a", 4: "d", 5: "e"]
 /// ```
-///
-/// Avoid performing repeated removals via indices in a `for` loop.
-/// Since indices are tightly coupled with tree nodes, removing an element
-/// invalidates the operation that retrieves the next index.
-/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
@@ -60,9 +73,6 @@
 /// dict.erase(dict.lowerBound(4)..<dict.endIndex) // -> [1: "a", 3: "c"]
 /// ```
 ///
-/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
-/// You can remove elements while receiving the next index.
-///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
 /// var i = dict.startIndex
@@ -71,19 +81,53 @@
 /// }
 /// ```
 ///
-/// ## Index Alternative Syntax
+/// ## Transforming and Combining Dictionaries
 ///
-/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
-/// It allows specifying elements or boundaries without handling indices directly.
+/// `filter(_:)` returns a dictionary containing the selected pairs. `mapValues(_:)` transforms values without changing keys; `compactMapValues(_:)` omits pairs whose transformed value is `nil`. These operations retain key order.
+///
+/// `merge(_:uniquingKeysWith:)` modifies this dictionary; `merging(_:uniquingKeysWith:)` returns a result. For duplicate keys, the closure receives the existing value and then the incoming value; its result becomes the value for that key.
+///
+/// ## Iterating over Keys and Values
+///
+/// Elements are `(key: Key, value: Value)` pairs. Normal iteration follows ascending key order. `keys` traverses keys lazily, and `values` is a mapped-values view. `sorted()` returns an ascending array and `reversed()` a descending array. An index-range view also exposes pairs, keys, and values.
+///
+/// ## Indices and Bound Expressions
+///
+/// Indices represent element positions, not integer offsets. Inserting or removing other elements preserves them; deleting the indexed element invalidates its index, even if the slot is reused. In the normal configuration, corresponding positions can be shared across copy-on-write branches, but validity depends on the target’s generation and deletion state. Using an unrelated tree’s index violates a precondition and is not guaranteed to be detected.
+///
+/// Index-range subscripting returns a pair view without copying elements into an array. The view has its own endpoint. Mutating directly through the subscript changes the base; mutating a view stored in a separate variable is isolated through copy-on-write. `containsSubrange(_:)` checks a range, and `distance(from:to:)` accepts indices or bounds.
+///
+/// `Bound` provides `.start`, `.last`, `.end`, `.lowerBound`, `.upperBound`, `.find`, `.first`, `.before`, `.after`, and `.advanced(by:limit:)`. `.first(k)` selects the first element in traversal order whose key equals `k`, or the end if no such element exists. A single bound resolving to the end or no position returns `nil` through subscripting. Invalid or reversed bound ranges produce empty views.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
-/// print(dict[.lowerBound(4)]) // -> (4, "d")
+/// print(dict[.lowerBound(4)]) // Optional containing (4, "d")
 /// print(dict[.upperBound(5)]) // -> nil (equivalent to end)
 /// print(dict[.find(2)])       // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` is not thread-safe.
+/// ## Performance
+///
+/// The following assumes constant-time comparisons and element operations, and excludes copying shared storage for copy-on-write. Copying can retain deletion history, so its cost is not always determined by the current element count.
+///
+/// Creating a view does not copy elements into an array. Mutating a view stored in a separate variable can trigger copy-on-write.
+///
+/// | Operation | Complexity |
+/// | --- | --- |
+/// | `isEmpty`, `count`, `startIndex`, `endIndex` | O(1) |
+/// | Key lookup, lower/upper bound, insertion, key-based update/removal | O(log n) |
+/// | Removal at a known index; rebalancing | Amortized O(1) |
+/// | `filter`, `mapValues`, `compactMapValues` | O(n), plus closure costs |
+/// | `merge`, `merging` with m existing and n incoming pairs | O(n log(m+n)), plus closure and storage-copy costs |
+///
+///
+/// ## Red-Black Tree
+///
+/// The red-black tree orders elements by key and maintains logarithmic height through recoloring and rotations. Logical key order is distinct from physical memory layout.
+///
+/// ## Important
+///
+/// This type is not thread-safe and does not protect concurrent access to the same variable. This guide describes the normal configuration.
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
@@ -162,7 +206,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
-    __tree_.update { $0.__count_unique(key) }
+    __tree_.read { $0.__count_unique(key) }
   }
 }
 
@@ -178,7 +222,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func contains(key: Key) -> Bool {
     // TODO: 冬休み頃にハンドルを使った特殊化実装を試し、生成された探索ループにwitness dispatch が残ってないことを確認する。
-    __tree_.update { $0.__count_unique(key) != 0 }
+    __tree_.read { $0.__count_unique(key) != 0 }
   }
 }
 
@@ -253,9 +297,15 @@ extension RedBlackTreeDictionary {
   public mutating func insert(_ newMember: Element)
     -> (inserted: Bool, memberAfterInsert: Element)
   {
-    __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-    return (__inserted, __inserted ? newMember : Base.__element_(__r))
+    #if false
+    // 資料的にのこしてある
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
+      return (__inserted, __inserted ? newMember : Base.__element_(__r))
+    #else
+      let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
+      return (__inserted, Base.__element_(__r))
+    #endif
   }
 }
 
@@ -293,14 +343,12 @@ extension RedBlackTreeDictionary {
     public mutating func insert(_ newMember: Element, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      __tree_.ensureUniqueAndCapacity()
-      let p = __tree_.__purified_(hint)
-      guard let __p = p.pointer else {
-        fatalError(.invalidIndex)
-      }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(
-        __p, newMember.key, Base.__payload_(newMember))
-      return (__inserted, ___index(__r))
+        guard let __p = __tree_.__purified_(hint).pointer else {
+          fatalError(.invalidIndex)
+        }
+        let (__r, __inserted) = __tree_.__emplace_hint_unique_if_not_present(
+          Base.__payload_(newMember), __p)
+        return (__inserted, ___index(__r))
     }
 
     /// Inserts or replaces a key-value pair, using `hint` as a suggested insertion position.
@@ -317,7 +365,6 @@ extension RedBlackTreeDictionary {
     {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -375,7 +422,6 @@ extension RedBlackTreeDictionary {
     ) -> Value? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
-      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
@@ -492,17 +538,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey key: Key) -> Value? {
-    guard __tree_.count > 0 else { return nil }
-    __tree_.ensureUnique()
-    return __tree_.update {
-      let __i = $0.find(key)
-      if __i == $0.end {
-        return nil
-      }
-      let value = Base.__mapped_value_(__i)
-      _ = $0.erase(__i)
-      return value
-    }
+    __tree_.___remove_if_present(key)?.tuple.value
   }
 }
 
@@ -516,8 +552,11 @@ extension RedBlackTreeDictionary {
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
+      if __tree_.isUnique() {
+        __tree_.deinitialize()
+      } else {
+        __tree_ = .create(minimumCapacity: __tree_.capacity)
+      }
     } else if !keepCapacity {
       __tree_ = .create()
     }
@@ -538,7 +577,8 @@ extension RedBlackTreeDictionary {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
+      __tree_.ensureUnique()
+      return ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -551,13 +591,11 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard __tree_.count > 0 else { return }
-      __tree_.ensureUnique()
-      let result = try __tree_.___erase_range_if(
-        __tree_.__begin_node_.unchecked,
-        __tree_.__end_node.unchecked,
-        { try shouldBeRemoved(Base.__element_($0)) })
-      assert(result.error == nil)
+        let __first = __tree_.__begin_node_.unchecked
+        let __last = __tree_.__end_node.unchecked
+        let result = try __tree_.___erase_range_if_with_many_care(
+          __first, __last, { try shouldBeRemoved(Base.__element_($0)) })
+        assert(result.error == nil)
     }
   }
 #endif

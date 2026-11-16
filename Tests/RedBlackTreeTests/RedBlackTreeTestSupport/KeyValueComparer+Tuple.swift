@@ -18,7 +18,7 @@ extension KeyValueTrait where _PayloadValue == (key: _Key, value: _MappedValue) 
 
   @inlinable
   @inline(__always)
-  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue { element.value }
+  public static func __mapped_value(_ element: _PayloadValue) -> _MappedValue { element.value }
 
   @inlinable
   @inline(__always)

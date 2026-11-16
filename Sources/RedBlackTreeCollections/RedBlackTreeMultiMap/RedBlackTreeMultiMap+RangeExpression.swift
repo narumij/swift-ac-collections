@@ -82,7 +82,7 @@
 
     /// Accesses a view over the specified concrete index range.
     ///
-    /// An invalid or reversed range produces an empty view.
+    /// The index range must be valid and ordered; otherwise, a runtime error occurs.
     ///
     /// - Parameter bounds: The concrete index range to access.
     @inlinable
@@ -99,7 +99,7 @@
 
     /// Accesses a view over the specified range expression.
     ///
-    /// An expression that resolves to an invalid or reversed range produces an empty view.
+    /// The expression must resolve to a valid, ordered index range; otherwise, a runtime error occurs.
     ///
     /// - Parameter bounds: The range expression to resolve and access.
     @inlinable
@@ -124,9 +124,6 @@
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
       return erase(_range: ___safe_range)
     }
 
@@ -138,9 +135,6 @@
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
       let range = __tree_.__purified_safe_(bounds)
       return erase(_range: range)
     }
@@ -153,9 +147,6 @@
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return erase(_range: range)
     }
@@ -175,9 +166,6 @@
     )
       rethrows
     {
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
       let range = __tree_.__purified_safe_(bounds)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
@@ -194,9 +182,6 @@
     )
       rethrows
     {
-      // 空の場合は削除対象が存在し得ないため、ensureUnique()による無駄なコピー(共有される
-      // 空シングルトンバッファからの退避)を避ける。範囲の検査は続けて行う。
-      if __tree_.count > 0 { __tree_.ensureUnique() }
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
@@ -206,9 +191,9 @@
     
     @inlinable
     mutating func erase(_range range: _SafeRange) -> Index {
-      assert(__tree_.count == 0 || __tree_.isUnique())
       do {
-        return try __tree_.___erase_validate_range(range).get()
+        let __p = try __tree_.___erase_range_with_many_care(_range: range)
+        return ___index(__p)
       } catch {
         fatalError("\(error)")
       }
@@ -221,14 +206,12 @@
     )
       rethrows
     {
-      assert(__tree_.count == 0 || __tree_.isUnique())
-      do {
-        _ = try __tree_.___erase_validate_range_if(range) {
-          try shouldBeRemoved(Base.__element_($0))
-        }
-        .get()
-      } catch {
-        fatalError("\(error)")
+      let result = try __tree_.___erase_validate_range_if_with_many_care(range) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+      switch result {
+      case .success: break
+      case .failure(let error): fatalError("\(error)")
       }
     }
   }

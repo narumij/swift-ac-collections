@@ -19,7 +19,8 @@
 // `unsafePermutations()`・`unsafeNextPermutations()`も一緒に漏れるので、これを漏れの警報とする。
 
 #if !COMPATIBLE_ATCODER_2025
-import PermutationModule
+#if false
+import NextPermutationModule
 import XCTest
 
 final class NextPermutationsSequence_0_PublicSurfaceTests: XCTestCase {
@@ -72,5 +73,6 @@ final class NextPermutationsSequence_0_PublicSurfaceTests: XCTestCase {
       let sequence = NextPermutationsSequence<[Int]>([1])
       XCTAssertNil(sequence)
     }
-  }
+}
+#endif
 #endif

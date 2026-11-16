@@ -37,7 +37,7 @@ extension UnsafeTreeV2 {
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? _createWithEmptySingleton()
-      : _createWithNewBuffer(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
+      : _createWithNewBuffer(minimumCapacity: Swift.max(nodeCapacity, 1), nullptr: UnsafeNode.nullptr)
   }
 
   // シングルトンバッファを用いて高速に生成する
@@ -88,7 +88,6 @@ extension UnsafeTreeV2 {
   //
   // Rangeは重複も無いため、さらに簡略化したコードで足りる
   //
-  // - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
   where R: RangeExpression, R: Collection, R.Element == Base._PayloadValue {
@@ -100,7 +99,7 @@ extension UnsafeTreeV2 {
       // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
     }
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 }
@@ -109,11 +108,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 where _PayloadValue: Decodable {
 
-  // `___emplace_hint_right`は比較を一切行わず常に最右へ追加するだけなので、
-  // 非ソート・重複を含む外部JSONを与えると赤黒木の順序・一意性が壊れていた
-  // (2026-10-03発見)。`___insert_range_unique`/`___insert_range_multi`と同じ、
-  // 単調増加なら高速・そうでなくても`__find_equal`等で正しい位置へ挿入する
-  // 経路へ切り替える。
   @inlinable
   internal static func _decodedElements(from decoder: Decoder) throws -> [_PayloadValue] {
     var container = try decoder.unkeyedContainer()
@@ -132,7 +126,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
     var tree: Tree = .create()
     tree.___insert_range_unique(try _decodedElements(from: decoder))
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 
@@ -141,7 +135,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func createMulti(from decoder: Decoder) throws -> UnsafeTreeV2 {
     var tree: Tree = .create()
     tree.___insert_range_multi(try _decodedElements(from: decoder)) { $0 }
-    assert(tree.__tree_invariant(tree.__root))
+    _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     return tree
   }
 }

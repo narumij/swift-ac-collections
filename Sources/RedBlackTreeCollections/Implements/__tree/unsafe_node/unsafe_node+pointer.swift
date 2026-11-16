@@ -69,12 +69,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   package var __left_ref: _NodeRef {
-    _ref(to: &pointee.__left_)
+    pointer(to: \.__left_)!
   }
 
   @inlinable
   package var __right_ref: _NodeRef {
-    _ref(to: &pointee.__right_)
+    pointer(to: \.__right_)!
   }
 }
 
@@ -336,7 +336,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
+#if false
+// inout(&pointee)を経由すると、読取り専用の探索でも排他アクセス上は書込みとして扱われ、
+// 並行読取りでTSanがaccess raceを報告する。アドレス計算だけで参照を得る(RBT-070)。
 @inlinable
 package func _ref<T>(to a: inout T) -> UnsafeMutablePointer<T> {
   withUnsafeMutablePointer(to: &a) { $0 }
 }
+#endif

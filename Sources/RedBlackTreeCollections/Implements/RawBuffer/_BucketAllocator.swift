@@ -139,7 +139,7 @@ extension _BucketAllocator {
     endNode.initialize(to: .create(tag: .end, nullptr: nullptr, ___has_payload_content: false))
     beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeInitializedCount += 1
     #endif
 
@@ -154,6 +154,39 @@ extension _BucketAllocator {
 
     return header
   }
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+    @usableFromInline
+    package func initializeHeadBucket(
+      storage: UnsafeMutableRawPointer, capacity: Int, nullptr: _NodePtr
+    ) -> _BucketPointer {
+
+      let header = storage
+        .alignedUp(toMultipleOf: pairLayout.alignment)
+        .assumingMemoryBound(to: _Bucket.self)
+
+      let endNode = header.end_ptr
+      let beginPtr = header.begin_ptr
+
+      endNode.initialize(to: .create(tag: .end, nullptr: nullptr, ___has_payload_content: false))
+      beginPtr.initialize(to: endNode)
+      header.initialize(to: .init(capacity: capacity))
+      #if _TREE_ALLOCATION_COUNTER
+        nodeInitializedCount += 1
+      #endif
+
+      #if DEBUG
+        do {
+          var it = header._capacities(storage: header.primaryStorage(), pairLayout: pairLayout)
+          while let p = it.pop() {
+            p.pointee.___tracking_tag = .debug
+          }
+        }
+      #endif
+
+      return header
+    }
+  #endif
 
   @usableFromInline  // レジスタ圧を下げることにした
   package func createBucket(bucketCapacity: Int) -> _BucketPointer {
@@ -206,6 +239,13 @@ extension _BucketAllocator {
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
 
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+    @inlinable
+    package func _pairedHeadAllocationSize(capacity: Int) -> Int {
+      _headAllocationSize(capacity: capacity) &+ (pairLayout.alignment &- 1)
+    }
+  #endif
+
   @inlinable
   @inline(__always)
   package func _allocationSizeNonzero(capacity: Int) -> Int {
@@ -248,8 +288,28 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
+  // TODO: 取り急ぎの修正なので、再度吟味すること
+  @usableFromInline
+  package func flush(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    if let h = reserverHead {
+      _deinitializeNodeAndValues_flush(storage: h.primaryStorage(), h)
+      h.pointee.count = 0
+      reserverHead = h.pointee.next
+    }
+    while let h = reserverHead {
+      _deinitializeNodeAndValues_flush(storage: h.secondaryStorage(), h)
+      h.pointee.count = 0
+      reserverHead = h.pointee.next
+    }
+  }
+}
+
+extension _BucketAllocator {
+
+  #if DEBUG || !USE_HEAD_BUCKET_PAIRING || COMPATIBLE_ATCODER_2025
   @inlinable
-  package func deallocate(bucket b: _BucketPointer?) {
+  package func deallocate_FreeingHead(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {
       reserverHead = h.pointee.next
@@ -260,6 +320,28 @@ extension _BucketAllocator {
       _deallocOtherBucket(h)
     }
   }
+  #endif
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+  @inlinable
+  package func deallocate(bucket b: _BucketPointer?) {
+    var reserverHead = b
+    if let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deinitializeHeadBucket(h)
+    }
+    while let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deallocOtherBucket(h)
+    }
+  }
+  #else
+  @inlinable
+  @inline(__always)
+  package func deallocate(bucket b: _BucketPointer?) {
+    deallocate_FreeingHead(bucket: b)
+  }
+  #endif
 }
 
 extension _BucketAllocator {
@@ -286,6 +368,16 @@ extension _BucketAllocator {
       _deinitializeBeginNode(b)
       b.deinitialize(count: 1)
       UnsafeMutableRawPointer(b)._deallocate()
+    }
+  #endif
+
+  #if USE_HEAD_BUCKET_PAIRING && !COMPATIBLE_ATCODER_2025
+    @inlinable
+    func _deinitializeHeadBucket(_ b: _BucketPointer) {
+      _deinitializeNodeAndValues(storage: b.primaryStorage(), b)
+      _deinitializeEndNode(b)
+      _deinitializeBeginNode(b)
+      b.deinitialize(count: 1)
     }
   #endif
 
@@ -322,7 +414,7 @@ extension _BucketAllocator {
     UnsafeMutableRawPointer(b.end_ptr)
       .assumingMemoryBound(to: UnsafeNode.self)
       .deinitialize(count: 1)
-    #if DEBUG
+    #if _TREE_ALLOCATION_COUNTER
       nodeDeinitializedCount += 1
     #endif
   }
@@ -333,12 +425,46 @@ extension _BucketAllocator {
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
-        #if DEBUG
+        #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1
         #endif
       }
       p.deinitialize(count: 1)
-      #if DEBUG
+      #if _TREE_ALLOCATION_COUNTER
+        nodeDeinitializedCount += 1
+      #endif
+    }
+    #if DEBUG
+      do {
+        var it = b._capacities(storage: storage, pairLayout: pairLayout)
+        while let p = it.pop() {
+          p.pointee.___tracking_tag = .debug
+        }
+      }
+    #endif
+  }
+  
+  // TODO: 取り急ぎの修正なので、再度吟味すること
+  @inlinable
+  func _deinitializeNodeAndValues_flush(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
+    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
+    while let p = it.pop() {
+      if p.pointee.___has_payload_content {
+        deinitialize(p.advanced(by: 1))
+        #if _TREE_ALLOCATION_COUNTER
+          payloadDeinitializedCount += 1
+        #endif
+      }
+      p.pointee.___has_payload_content = false
+      #if USE_RECYCLE_COUNT_OVERWRAP // 単に中身がなんなのかわかるためのフラグ
+      p.pointee.___recycle_count &+= 1
+      #else
+      if p.pointee.___recycle_count < .max {
+        p.pointee.___recycle_count &+= 1
+      }
+      #endif
+      p.deinitialize(count: 1)
+      #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1
       #endif
     }

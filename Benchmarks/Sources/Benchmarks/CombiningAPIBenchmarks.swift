@@ -11,7 +11,7 @@
 
 // Added for Maintanance/CLAUDE_TASK.md Task 2 (Combining API evidence gap).
 // Compares the insertion-loop path (merge / insert(contentsOf:)) against the
-// linear meld path (formUnion / meld) across sorted vs shuffled other,
+// linear meld path (formUnion) across sorted vs shuffled other,
 // unique vs duplicate-heavy other, reserved vs unreserved destination
 // capacity, and unique vs shared destination storage.
 //
@@ -293,7 +293,7 @@ extension Benchmark {
       }
     }
 
-    // MARK: - RedBlackTreeMultiSet: insert(contentsOf:) vs meld
+    // MARK: - RedBlackTreeMultiSet: insert(contentsOf:)
 
     self.add(
       title: "RedBlackTreeMultiSet<Int> insert(contentsOf:) with sorted other",
@@ -326,36 +326,6 @@ extension Benchmark {
     }
 
     self.add(
-      title: "RedBlackTreeMultiSet<Int> meld with sorted other",
-      input: Int.self
-    ) { size in
-      let other = RedBlackTreeMultiSet(size..<(2 * size))
-      return { timer in
-        var a = RedBlackTreeMultiSet(0..<size)
-        timer.measure {
-          a.meld(identity(other))
-        }
-        validate(a, count: 2 * size, first: 0, last: 2 * size - 1)
-        blackHole(a)
-      }
-    }
-
-    self.add(
-      title: "RedBlackTreeMultiSet<Int> meld with shuffled other",
-      input: Int.self
-    ) { size in
-      let other = RedBlackTreeMultiSet(seededShuffled(size..<(2 * size)))
-      return { timer in
-        var a = RedBlackTreeMultiSet(0..<size)
-        timer.measure {
-          a.meld(identity(other))
-        }
-        validate(a, count: 2 * size, first: 0, last: 2 * size - 1)
-        blackHole(a)
-      }
-    }
-
-    self.add(
       title: "RedBlackTreeMultiSet<Int> insert(contentsOf:), unreserved capacity",
       input: Int.self
     ) { size in
@@ -380,37 +350,6 @@ extension Benchmark {
         a.reserveCapacity(2 * size)
         timer.measure {
           a.insert(contentsOf: other)
-        }
-        validate(a, count: 2 * size, first: 0, last: 2 * size - 1)
-        blackHole(a)
-      }
-    }
-
-    self.add(
-      title: "RedBlackTreeMultiSet<Int> meld, unreserved capacity",
-      input: Int.self
-    ) { size in
-      let other = RedBlackTreeMultiSet(size..<(2 * size))
-      return { timer in
-        var a = RedBlackTreeMultiSet(0..<size)
-        timer.measure {
-          a.meld(identity(other))
-        }
-        validate(a, count: 2 * size, first: 0, last: 2 * size - 1)
-        blackHole(a)
-      }
-    }
-
-    self.add(
-      title: "RedBlackTreeMultiSet<Int> meld, reserving capacity",
-      input: Int.self
-    ) { size in
-      let other = RedBlackTreeMultiSet(size..<(2 * size))
-      return { timer in
-        var a = RedBlackTreeMultiSet(0..<size)
-        a.reserveCapacity(2 * size)
-        timer.measure {
-          a.meld(identity(other))
         }
         validate(a, count: 2 * size, first: 0, last: 2 * size - 1)
         blackHole(a)

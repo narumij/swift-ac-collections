@@ -27,7 +27,7 @@
 @frozen
 @_documentation(visibility: internal)
 public struct RedBlackTreePair<Key, Value> {
-  
+
   public typealias Element = (key: Key, value: Value)
 
   @inlinable
@@ -88,6 +88,7 @@ extension RedBlackTreePair: Decodable where Key: Decodable, Value: Decodable {
       tuple: (
         key: try container.decode(Key.self),
         value: try container.decode(Value.self)
-      ))
+      )
+    )
   }
 }

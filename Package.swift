@@ -5,7 +5,6 @@ import Foundation
 import PackageDescription
 
 var defines: [String] = [
-  //  "TREE_INVARIANT_CHECKS",
   //  "USING_ALGORITHMS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
@@ -14,17 +13,22 @@ var defines: [String] = [
   //  "DEATH_TEST"
   //  "BENCHMARK",
   //  "USE_C_MALLOC",
-  //  "USE_INT128",
+  //  "USE_PATH_BITMAP_64",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
-  //    "USE_INT128",
+  //  "USE_COMPACT_NODE_METADATA",
+  //  "USE_PATH_BITMAP_64",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-  //  "ENABLE_OFFSET_OVERFLOW_GUARD",
 
-  "ALLOW_CROSS_TREE_INDEX"  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
+  "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
-  // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
+  //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
+  //  "_UNSAFE_TREE_ASSERT_INTERNAL",
+  //  "_TREE_COPY_COUNTER",
+  //  "_TREE_ALLOCATION_COUNTER",
+  //  "_TREE_INTERNAL_CHECKS",
+  // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
+  "USE_HEAD_BUCKET_PAIRING",  // 互換版では無効となる
 ]
 
 var _settings: [SwiftSetting] =
@@ -35,36 +39,28 @@ var _settings: [SwiftSetting] =
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     .define("COMPATIBLE_ATCODER_2025"),
 
-    // CoWの挙動チェックを可能にするマクロ定義
-    // アロケーション関連のテストを走らせるために必要
-    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
-
-    // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
-    // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
-    // このため、リリース時はどちらにせよ無効になる
-    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
-
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
     // オフにすることでいろいろスキップできる
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
-
+    .define(
+      "ENABLE_HEAVY_PERFORMANCE_TEST",
+      .when(configuration: .release, traits: ["NORMAL_RELEASE_TEST"])
+    ),
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
     // 利用可能な型アライメントが8に制限される
     .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
-
-    // 一部のポインタ比較で128bit幅のパス表現を用いる
-    // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
-    // 念のために用意してある
-    // メモリ計算の都合、Int.max / pair.strideが上限となる
-    // TODO: USE_UINT128_NODE_PATH_BITMAPにリネームする
-    .define("USE_INT128", .when(traits: ["USE_INT128"])),
-
+    // ノードの位置比較のパス表現を、既定の128bit幅から64bit幅に切り替える
+    // 64bit幅ではノード数の上限が2^32 - 1になる
+    // 128bit幅ではメモリ計算の都合、Int.max / pair.strideが上限となる
+    .define("USE_PATH_BITMAP_64", .when(traits: ["USE_PATH_BITMAP_64"])),
     // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる
     // そこまでのメモリを積んだマシンは現実的には無いとは思うが、もしも限界付近まで利用する場合には以下が必要になる
     // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
-    .define("ENABLE_OFFSET_OVERFLOW_GUARD", .when(traits: ["ENABLE_OFFSET_OVERFLOW_GUARD"])),
-
+    .define(
+      "ENABLE_OFFSET_OVERFLOW_GUARD",
+      .when(traits: ["USE_PATH_BITMAP_64", "ENABLE_OFFSET_OVERFLOW_GUARD"])
+    ),
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
     // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
@@ -74,50 +70,70 @@ var _settings: [SwiftSetting] =
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
     ),
-
-    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
-
+    .define(
+      "ENABLE_OPTIONAL_ELEMENT_BUFFER",
+      .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
+    ),
+    .define(
+      "ENABLE_EXPERIMENTAL_LRU",
+      .when(traits: ["ENABLE_EXPERIMENTAL_LRU"])
+    ), .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
-
     .define("DEATH_TEST", .when(platforms: [.macOS])),
     // macOS以外では明示的なtraitでDeath Testを有効化する。
     // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
     .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
-
-    // テスト専用: Debug XCTestのprocess-globalなallocation/node/payload検査を調整する
-    // 既定では検査は有効。SETUPは開始時の残留値検査だけ、BALANCEは開始時と終了時の
-    // 釣り合い検査を省略する。不利なスケジューリング等を調べる場合に限り選ぶ
-    // 省略時も各XCTestの開始時と終了時にcounterは無条件にresetされる
-    // 製品コードはこの条件を参照しない
-    .define(
-      "SKIP_DEBUG_LIFETIME_BALANCE_CHECKS",
-      .when(traits: ["SKIP_DEBUG_LIFETIME_BALANCE_CHECKS"])),
-    .define(
-      "SKIP_DEBUG_LIFETIME_SETUP_CHECKS",
-      .when(traits: ["SKIP_DEBUG_LIFETIME_SETUP_CHECKS"])),
-
     .define(
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
-      .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])),
-
+      .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
+    ),
+    
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
-    .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
-  ]
-  + defines.map { .define($0) }
+    .unsafeFlags(
+      ["-Ounchecked"],
+      .when(configuration: .release, traits: ["_O_UNCHECKED"])
+    ),
+    
+    // 本来的に別の方法で定義するべきかもしれないが、警告がうっとうしいのでこの方法になっている
+    .define(
+      "USE_RECYCLE_COUNT_OVERWRAP",
+      .when(configuration: .release, traits: ["_O_UNCHECKED"])),
+    
+    .define(
+      "_TREE_ALLOCATION_COUNTER",
+      .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
+    ),
+    // CoWの挙動チェックを可能にするマクロ定義
+    // アロケーション関連のテストを走らせるために必要
+    .define("_TREE_COPY_COUNTER", .when(traits: ["ENABLE_TREE_COPY_COUNTER"])),
+    .define(
+      "_TREE_ASSERT_INTERNAL",
+      .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])
+    ), .define("_TREE_INVARIANT", .when(traits: ["ENABLE_TREE_INVARIANT"])),
+    .define(
+      "_UNSAFE_TREE_ASSERT_INTERNAL",
+      .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
+    ), .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define(
+      "_UNSAFE_TREE_ASSERT_INTERNAL",
+      .when(traits: ["NORMAL_DEBUG_TEST"])
+    ),
+
+  ] + defines.map { .define($0) }
 
 let additionalDependencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC")
   ? ["_malloc_free"]
-  : [
-    .target(
-      name: "_malloc_free",
-      condition: .when(traits: ["USE_C_MALLOC"]))
-  ]
+  : [.target(name: "_malloc_free", condition: .when(traits: ["USE_C_MALLOC"]))]
 
 let package = Package(
   name: "swift-ac-collections",
   platforms: [
-    .macOS(.v15)
+    // UInt128 requires these minimum OS versions.
+    .macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .visionOS(.v2),
   ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
@@ -126,37 +142,44 @@ let package = Package(
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
     ),
+      .trait(name: "USE_C_MALLOC"), // ジャッジ搭載時に再検討したいので残ってる
     .trait(
-      name: "USE_C_MALLOC"
-    ),
-    .trait(
-      name: "USE_INT128"
-    ),
-    .trait(
-      name: "BENCHMARK"
-    ),
-    .trait(
-      name: "GRAPHVIZ_DEBUG"
-    ),
-    .trait(
-      name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
-    ),
-    .trait(
-      name: "ENABLE_OFFSET_OVERFLOW_GUARD"
-    ),
-    .trait(
-      name: "_O_UNCHECKED"
-    ),
-    .trait(
-      name: "SKIP_DEBUG_LIFETIME_BALANCE_CHECKS",
+      name: "USE_PATH_BITMAP_64",
       description:
-        "Test-only. Skip the Debug XCTest allocation/node/payload balance assertions while still resetting the counters around every case. Not the normal configuration."
+        "Use a 64-bit path bitmap instead of the default 128-bit one for node position comparison. This limits a single tree to 2^32 - 1 nodes."
+    ), .trait(name: "BENCHMARK"),
+    .trait(
+      name: "ENABLE_EXPERIMENTAL_LRU",
+      description:
+        "Expose the experimental noncopyable LRUCache. Its API may change."
     ),
     .trait(
-      name: "SKIP_DEBUG_LIFETIME_SETUP_CHECKS",
+      name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
       description:
-        "Test-only. Skip only the incoming Debug XCTest lifetime assertions; teardown balance assertions remain enabled."
+        "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
+    ), .trait(name: "GRAPHVIZ_DEBUG"),
+    .trait(name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"),
+    .trait(name: "ENABLE_OFFSET_OVERFLOW_GUARD"),
+    .trait(name: "NORMAL_RELEASE_TEST"), .trait(name: "NORMAL_DEBUG_TEST"),
+    .trait(
+      name: "CANDIDATE_DEBUG_TEST",
+      description: "Enable internal checks for release-candidate Debug tests.",
+      enabledTraits: [
+        "ENABLE_TREE_INVARIANT", "ENABLE_TREE_ALLOCATION_COUNTER",
+        "ENABLE_TREE_COPY_COUNTER", "ENABLE_TREE_ASSERT_INTERNAL",
+        "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL",
+      ]
     ),
+    .trait(
+      name: "CANDIDATE_RELEASE_TEST",
+      description:
+        "Run release-candidate Release tests without XCTest performance measurements."
+    ), .trait(name: "ENABLE_TREE_ALLOCATION_COUNTER"),
+    .trait(name: "ENABLE_TREE_COPY_COUNTER"),
+    .trait(name: "ENABLE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "ENABLE_TREE_INVARIANT"),
+    .trait(name: "ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"),
+    .trait(name: "_O_UNCHECKED"),
     .trait(
       name: "ENABLE_DEATH_TESTS",
       description:
@@ -164,18 +187,14 @@ let package = Package(
     ),
   ],
   dependencies: [
-
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin.git",
-      from: "1.4.1"),
-
+      from: "1.4.1"
+    ),
     //    .package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.6.0",
     //      traits: []),
-    .package(
-      url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -184,33 +203,28 @@ let package = Package(
     .target(
       name: "AcCollections",
       dependencies: [
-        "RedBlackTreeCollections",
-        "RedBlackTreeModule",
-        "PermutationModule",
-        "OptionalArrayModule",
-        "BareArrayModule",
+        "RedBlackTreeCollections", "RedBlackTreeModule",
+        "NextPermutationModule", "PermutationModule",
+        .target(
+          name: "OptionalElementBufferModule",
+          condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])
+        ), "ElementBufferModule",
       ],
-      swiftSettings: _settings + [
-        .strictMemorySafety()
-      ]
+      swiftSettings: _settings + [.strictMemorySafety()]
     ),
     .testTarget(
       name: "AcCollectionsTests",
-      dependencies: [
-        "AcCollections",
-        "RedBlackTreeCollections",
-      ],
+      dependencies: ["AcCollections", "RedBlackTreeCollections"],
       swiftSettings: _settings
     ),
-
     .target(
       name: "_malloc_free",
       publicHeadersPath: "include",
       cSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
-      ]),
-
+      ]
+    ),
     .target(
       name: "RedBlackTreeCollections",
       dependencies: additionalDependencies,
@@ -220,107 +234,94 @@ let package = Package(
       ],
       swiftSettings: _settings + [
         // .strictMemorySafety()
-      ]),
-
+      ]
+    ),
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
       path: "Sources/_RedBlackTreeModule",
-      swiftSettings: [
-        .strictMemorySafety()
-      ]
+      swiftSettings: [.strictMemorySafety()]
     ),
-
     .target(
       name: "RedBlackTreeFixture",
       dependencies: ["RedBlackTreeCollections"],
       path: "Tests/RedBlackTreeFixture",
-      exclude: [
-        "Fixtures.md"
-      ],
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
-        "RedBlackTreeCollections",
-        "RedBlackTreeFixture",
+        "RedBlackTreeCollections", "RedBlackTreeFixture",
       ],
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeLegacyTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),
-
     .testTarget(
       name: "RedBlackTreeTreeTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeCollections",
-        "RedBlackTreeFixture",
+        "RedBlackTreeCollections", "RedBlackTreeFixture", "NextPermutationModule",
       ],
       swiftSettings: _settings
-    ),
-
-    .target(
-      name: "CppBehaviorReference",
-      publicHeadersPath: "include"
-    ),
+    ), .target(name: "CppBehaviorReference", publicHeadersPath: "include"),
     .testTarget(
       name: "CppBehaviorReferenceTests",
       dependencies: [
-        "CppBehaviorReference",
-        "AcCollections",
-        "RedBlackTreeCollections",
+        "CppBehaviorReference", "AcCollections", "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),
-
     .target(
-      name: "OptionalArrayModule",
+      name: "OptionalElementBufferModule",
+      exclude: ["Documentation"],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+      ]
     ),
     .testTarget(
-      name: "OptionalArrayModuleTests",
-      dependencies: [
-        "OptionalArrayModule"
-      ],
+      name: "OptionalElementBufferModuleTests",
+      dependencies: ["OptionalElementBufferModule"],
       swiftSettings: _settings
     ),
-
     .target(
-      name: "BareArrayModule",
+      name: "ElementBufferModule",
+      exclude: ["Documentation"],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+      ]
     ),
     .testTarget(
-      name: "BareArrayModuleTests",
-      dependencies: [
-        "BareArrayModule"
-      ],
+      name: "ElementBufferModuleTests",
+      dependencies: ["ElementBufferModule"],
       swiftSettings: _settings
     ),
-
+    .target(
+      name: "NextPermutationModule",
+      dependencies: [],
+      exclude: ["Documentation"],
+      swiftSettings: _settings + [
+        .enableExperimentalFeature("Lifetimes"),
+//        .strictMemorySafety(),
+      ]
+    ),
     .target(
       name: "PermutationModule",
-      dependencies: [],
-      swiftSettings: _settings + [
-        .strictMemorySafety()
-      ]
+      dependencies: ["NextPermutationModule"],
+      path: "Sources/_PermutationModule",
+      swiftSettings: [.strictMemorySafety()]
     ),
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        "PermutationModule"
+        "NextPermutationModule", "PermutationModule",
       ],
-      swiftSettings: _settings
+      swiftSettings: _settings + [.enableExperimentalFeature("Lifetimes")]
     ),
   ]
 )

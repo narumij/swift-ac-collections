@@ -20,8 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// swapAt可能にする
-
 // multimap, dictionary用のView, SubView
 
 #if !COMPATIBLE_ATCODER_2025
@@ -66,7 +64,7 @@
     @usableFromInline var _sealed_end: _SealedPtr
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if _TREE_COPY_COUNTER
     extension RedBlackTreeMappedValuesView {
       package var _copyCount: UInt {
         __tree_.copyCount
@@ -76,11 +74,6 @@
 
   extension RedBlackTreeMappedValuesView {
 
-    /// Returns whether two views reference the same tree and the same range boundaries.
-    ///
-    /// - Parameter other: Another view to compare by identity.
-    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
-    /// - Complexity: O(1)
     @inlinable
     internal mutating func _ensureUnique() {
       // 異なる木のインデックスを無効扱いにするための準備措置
@@ -108,20 +101,21 @@
       else {
         return (__tree_.__end_node, __tree_.__end_node)
       }
-      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
-      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
+//      assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
+//      assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
       return (_start, _end)
     }
   }
 
 
-  extension RedBlackTreeMappedValuesView {
+extension RedBlackTreeMappedValuesView {
 
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
-      __tree_.index(p)
-    }
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
+    __tree_.index(p)
   }
+}
+
 
   #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeMappedValuesView: Sequence {}
@@ -132,7 +126,7 @@
       ///
       /// - Complexity: O(1)
       @inlinable
-      public __consuming func makeIterator() -> UnsafeIterator.MappedValueObverse<Base> {
+      public __consuming func makeIterator() -> UnsafeIterator.Trap.MappedValueObverse<Base> {
         let (_start, _end) = _raw_range
         return .init(start: _start, end: _end, tree: __tree_)
       }
@@ -151,13 +145,13 @@
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
-      get {
-        return __tree_._unsafeAddress(position).pointee.tuple.value
+      unsafeAddress {
+        __tree_._unsafeAddress(position).pointer(to: \.tuple.value)!
       }
-      set {
+      @inline(__always)
+      unsafeMutableAddress {
         _ensureUnique()
-        // TODO: unsafeMutableAddressにしたい
-        __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
+        return __tree_._unsafeMutableAddress(position).pointer(to: \.tuple.value)!
       }
     }
   }
@@ -173,6 +167,8 @@
     /// - Precondition: Both indices identify elements inside the view.
     /// - Complexity: O(1).
     public mutating func swapAt(_ i: Index, _ j: Index) {
+      #if false
+      // TODO: 理解できたら消す
       _ensureUnique()
 
       let __i = __tree_.__purified_(i)
@@ -186,6 +182,26 @@
         &Base.__mapped_value_ptr(i).pointee,
         &Base.__mapped_value_ptr(j).pointee
       )
+      #else
+      let __i = __tree_.__purified_(i)
+      let __j = __tree_.__purified_(j)
+      guard var i = __i.accessible.pointer,
+        var j = __j.accessible.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      guard i != j else { return }
+      let __e = __tree_.__end_node
+      _ensureUnique()
+      if __e != __tree_.__end_node {
+        i = __tree_.__simple_retrieve(i)
+        j = __tree_.__simple_retrieve(j)
+      }
+      swap(
+        &Base.__mapped_value_ptr(i).pointee,
+        &Base.__mapped_value_ptr(j).pointee
+      )
+      #endif
     }
   }
 
@@ -218,7 +234,7 @@
     @inlinable
     public var first: Element? {
       let (_start, _end) = _raw_range
-      guard _start != _end else { return nil }
+      guard _start != _end, _start != __tree_.__end_node else { return nil }
       return Base.__mapped_value_(_start)
     }
 
@@ -229,7 +245,8 @@
     public var last: Element? {
       let (_start, _end) = _raw_range
       guard _start != _end else { return nil }
-      return Base.__mapped_value_(__tree_prev_iter(_end))
+//      return Base.__mapped_value_(__tree_prev_iter(_end))
+      return try? __tree_.___tree_prev_iter(_end).map(Base.__mapped_value_).get()
     }
   }
 
@@ -239,14 +256,15 @@
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
-      // 空の場合はensureUnique()による無駄なコピーを避けるため、
-      // 範囲が空かどうかをコピー前に確認する。
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
       let (_start, _) = _raw_range
+      guard _start != __tree_.__end_node else {
+        return nil
+      }
       let (_p, _r) = __tree_._unchecked_remove(at: _start)
       _sealed_start = _p.uncheckedSeal
-      return Base.___mapped_value(_r)
+      return Base.__mapped_value(_r)
     }
 
     /// Removes the last pair and returns its mapped value, or returns `nil` if the view is empty.
@@ -255,9 +273,13 @@
     public mutating func popLast() -> Element? {
       guard _raw_range.0 != _raw_range.1 else { return nil }
       _ensureUnique()
-      let (_, _end) = _raw_range
-      return Base.___mapped_value(
-        __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+      let (_start, _end) = _raw_range
+      guard let last = __tree_.___tree_prev_iter(_end).pointer else {
+        return nil
+      }
+      if last == _start { _sealed_start = _sealed_end }
+      return Base.__mapped_value(
+        __tree_._unchecked_remove(at: last).payload)
     }
 
     /// Removes the first pair and returns its mapped value.
@@ -293,12 +315,13 @@
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
-      // 空の場合はensureUnique()による無駄なコピーを避ける。
       guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
       _ensureUnique()
       let (_start, _end) = _raw_range
       // ややチェックが甘いので末端チェック付き削除が必要
-      return ___index(try! __tree_.___erase_range(_start, _end).get())
+      let next = try! __tree_.___erase_range(_start, _end).get()
+      _sealed_start = next.uncheckedSeal
+      return ___index(next)
     }
 
     /// Removes pairs whose mapped values satisfy `shouldBeRemoved`.
@@ -306,13 +329,16 @@
     /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      guard _raw_range.0 != _raw_range.1 else { return }
-      _ensureUnique()
       let (_start, _end) = _raw_range
-      let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked) {
-        try shouldBeRemoved(Base.___mapped_value($0))
+      var first = _start.unchecked
+      var last = _end.unchecked
+      defer {
+        _sealed_start = first.pointer!.uncheckedSeal
+        _sealed_end = last.pointer!.uncheckedSeal
       }
-      assert(result.error == nil)
+      _ = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
+        try shouldBeRemoved(Base.__mapped_value($0))
+      }
     }
   }
 

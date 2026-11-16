@@ -199,6 +199,46 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(filtered, RedBlackTreeSet([1, 3, 5]))
     }
+
+    /// filter(_:) は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 元の集合は変わらず、途中まで作られた結果が要素を保持し続けないこと（RBT-042 S2）
+    func test_filterRethrowsPredicateErrorWithoutKeepingPartialResult() {
+      final class Member: Comparable {
+        let value: Int
+        init(_ value: Int) { self.value = value }
+        static func == (lhs: Member, rhs: Member) -> Bool { lhs.value == rhs.value }
+        static func < (lhs: Member, rhs: Member) -> Bool { lhs.value < rhs.value }
+      }
+      struct StopError: Error, Equatable { let value: Int }
+      final class WeakMember { weak var member: Member? }
+
+      var observers: [WeakMember] = []
+      do {
+        let set = RedBlackTreeSet((1...5).map(Member.init))
+        observers = set.map { member in
+          let observer = WeakMember()
+          observer.member = member
+          return observer
+        }
+        var visited: [Int] = []
+
+        // 1と2は結果に含めた後、3でエラーを投げる
+        XCTAssertThrowsError(
+          try set.filter { member in
+            visited.append(member.value)
+            if member.value == 3 { throw StopError(value: 3) }
+            return true
+          }
+        ) { error in
+          XCTAssertEqual(error as? StopError, StopError(value: 3))
+        }
+        XCTAssertEqual(visited, [1, 2, 3])
+        XCTAssertEqual(set.map(\.value), [1, 2, 3, 4, 5])
+      }
+      XCTAssertTrue(
+        observers.allSatisfy { $0.member == nil },
+        "元の集合を破棄した後、途中まで作られた結果が要素を保持していないこと")
+    }
   #endif
 
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること

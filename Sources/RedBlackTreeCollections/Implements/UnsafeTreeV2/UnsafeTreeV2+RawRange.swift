@@ -35,9 +35,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
   func validated(range: _NodeRange) -> Result<_NodeRange, SealError> {
-    isValid(range: range)
-      ? .success(range)
-      : .failure(.other)
+    isValid(range: range) ? .success(range) : .failure(.other)
   }
 
   @inlinable
@@ -64,9 +62,8 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrRangeCompInterface {
   }
 
   @inlinable
-  func contains(range: _SafeRange, pointer: _NodePtr) -> Result<Bool, SealError> {
-    range.map { contains(range: $0, pointer: pointer) }
-  }
+  func contains(range: _SafeRange, pointer: _NodePtr) -> Result<Bool, SealError>
+  { range.map { contains(range: $0, pointer: pointer) } }
 }
 
 extension UnsafeTreeV2 {
@@ -75,5 +72,21 @@ extension UnsafeTreeV2 {
   var ___empty_range: _NodeRange {
     let e = __end_node
     return .init(lowerBound: e, upperBound: e)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func __simple_retrieve(_ range: _RawRange<_NodePtr>) -> _RawRange<_NodePtr> {
+      .init(
+        lowerBound: __simple_retrieve(range.lowerBound),
+        upperBound: __simple_retrieve(range.upperBound)
+      )
+  }
+
+  @inlinable
+  func __simple_retrieve(_ range: _SafeRange) -> _SafeRange {
+    range.map { __simple_retrieve($0) }
   }
 }

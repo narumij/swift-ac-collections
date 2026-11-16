@@ -45,5 +45,28 @@ public enum UnsafeIterator {}
     where Base: ___TreeBase & PairValueTrait
     public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Reverse4>>
     where Base: ___TreeBase & PairValueTrait
+    
+    public enum Trap {
+      
+      public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Trap<_Obverse4>>>
+      where Base: ___TreeBase
+      public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Trap<_Reverse4>>>
+      where Base: ___TreeBase
+
+      public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Trap<_Obverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+      public typealias KeyReverse<Base> = _CopyOnWrite<_Key<Base, _Trap<_Reverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+      
+      public typealias MappedValueObverse<Base> = _CopyOnWrite<_MappedValue<Base, _Trap<_Obverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+      public typealias MappedValueReverse<Base> = _CopyOnWrite<_MappedValue<Base, _Trap<_Reverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+
+      public typealias KeyValueObverse<Base> = _CopyOnWrite<_KeyValue<Base, _Trap<_Obverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+      public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Trap<_Reverse4>>>
+      where Base: ___TreeBase & PairValueTrait
+    }
   }
 #endif

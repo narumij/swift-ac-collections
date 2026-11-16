@@ -77,44 +77,37 @@ var _settings: [SwiftSetting] =
     .define(
       "ENABLE_EXPERIMENTAL_LRU",
       .when(traits: ["ENABLE_EXPERIMENTAL_LRU"])
-    ), .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
+    ),
+    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
     .define("DEATH_TEST", .when(platforms: [.macOS])),
+    
     // macOS以外では明示的なtraitでDeath Testを有効化する。
     // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
-    .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
-    .define(
-      "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
-      .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])
-    ),
+    .define("DEATH_TEST",
+            .when(traits: ["ENABLE_DEATH_TESTS"])),
+    .define("ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
+            .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])),
     
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
-    .unsafeFlags(
-      ["-Ounchecked"],
-      .when(configuration: .release, traits: ["_O_UNCHECKED"])
-    ),
+    .unsafeFlags(["-Ounchecked"],
+                 .when(configuration: .release, traits: ["_O_UNCHECKED"])),
     
-    .define(
-      "_TREE_ALLOCATION_COUNTER",
-      .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])
-    ),
+    .define("_TREE_ALLOCATION_COUNTER",
+            .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])),
+    
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
     .define("_TREE_COPY_COUNTER", .when(traits: ["ENABLE_TREE_COPY_COUNTER"])),
-    .define(
-      "_TREE_ASSERT_INTERNAL",
-      .when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])
-    ), .define("_TREE_INVARIANT", .when(traits: ["ENABLE_TREE_INVARIANT"])),
-    .define(
-      "_UNSAFE_TREE_ASSERT_INTERNAL",
-      .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])
-    ), .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
+    .define("_TREE_ASSERT_INTERNAL",.when(traits: ["ENABLE_TREE_ASSERT_INTERNAL"])),
+    .define("_TREE_INVARIANT", .when(traits: ["ENABLE_TREE_INVARIANT"])),
+    .define("_UNSAFE_TREE_ASSERT_INTERNAL", .when(traits: ["ENABLE_UNSAFE_TREE_ASSERT_INTERNAL"])),
+    
+    .define("_TREE_INVARIANT", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ALLOCATION_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_COPY_COUNTER", .when(traits: ["NORMAL_DEBUG_TEST"])),
     .define("_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])),
-    .define(
-      "_UNSAFE_TREE_ASSERT_INTERNAL",
-      .when(traits: ["NORMAL_DEBUG_TEST"])
+    .define("_UNSAFE_TREE_ASSERT_INTERNAL", .when(traits: ["NORMAL_DEBUG_TEST"])
     ),
 
   ] + defines.map { .define($0) }

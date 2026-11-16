@@ -42,6 +42,11 @@ Copy-on-Writeによる値セマンティクスを備え、Swift標準の`Set`や
 
 詳しくは[メモリ安全性の設計](Documentation/MemorySafety.ja.md)を参照してください。
 
+## GAの対象
+
+通常モードの`RedBlackTreeSet`、`RedBlackTreeMultiSet`、`RedBlackTreeDictionary`、`RedBlackTreeMultiMap`の4型をGA（一般提供）の対象とします。
+順列・バッファ・実験用LRUなど、同梱するその他の機能やAtCoder 2025互換モードは、このGAの対象に含めません。
+
 ## 利用方法
 
 ### Swift Package Manager での利用
@@ -98,7 +103,8 @@ Swift Package Indexで公開している各モジュールのAPIドキュメン�
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 
 <!-- 英訳: Which branch should I use? -->
-通常は `main` を利用してください。現在は開発中で、APIや実装は変更される可能性があります。
+`main`では最新の開発を続けています。特定のリリースを継続して利用する場合は、ブランチではなくバージョンを指定してください。
+GAの対象は上記の赤黒木4型です。実験機能のAPIは変更される可能性があります。
 
 AtCoder 2025互換版は `compatible/AtCoder/2025`、搭載時の版は `release/AtCoder/2025` です。
 
@@ -127,6 +133,12 @@ dependencies: [
     traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"]),
 ]
 ```
+
+## 実験用LRU
+
+通常モードでは、`ENABLE_EXPERIMENTAL_LRU` traitを有効にすると、コピーできない`LRUCache<Key, Value>`を利用できます。
+実験機能のため、APIは変更される可能性があります。AtCoder 2025互換モードでは公開しません。
+旧`___LRUMemoizeStorage`はAtCoder 2025互換モードでのみ提供します。
 
 ## その他
 

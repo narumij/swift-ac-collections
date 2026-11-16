@@ -5,7 +5,6 @@ import Foundation
 import PackageDescription
 
 var defines: [String] = [
-  //  "USING_ALGORITHMS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
   //  "SIZECHECK",
@@ -22,21 +21,15 @@ var defines: [String] = [
 
   "ALLOW_CROSS_TREE_INDEX",  //木をまたいだインデックスの利用を許可するかどうか。無効化は実質deprecated(テスト全体が通らない)
 
-  //  "_TREE_ALLOCATION_COUNTER", "_TREE_INTERNAL_CHECKS", "_TREE_ASSERT_INTERNAL",
+  //  "_TREE_ALLOCATION_COUNTER", "_TREE_ASSERT_INTERNAL",
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
   //  "_TREE_COPY_COUNTER",
   //  "_TREE_ALLOCATION_COUNTER",
-  //  "_TREE_INTERNAL_CHECKS",
-  // "ENABLE_EXPERIMENTAL_LRU", // 実験用LRUを有効化する。既知の制約があり、既定では無効（Traitは提供しない）。
   "USE_HEAD_BUCKET_PAIRING",  // 互換版では無効となる
 ]
 
 var _settings: [SwiftSetting] =
   [
-    // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
-    // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
-    // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
-    // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     //         .define("COMPATIBLE_ATCODER_2025"),
 
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
@@ -64,8 +57,6 @@ var _settings: [SwiftSetting] =
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
     // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
-    // TODO: AtCoderジャッジ搭載時どちらがいいか、再度確認する
-    // GitHub Actionsのテスト実行時間をみると、あまり速くない事が気になる。
     .define(
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
@@ -130,7 +121,7 @@ let package = Package(
       description:
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
     ),
-      .trait(name: "USE_C_MALLOC"), // ジャッジ搭載時に再検討したいので残ってる
+      .trait(name: "USE_C_MALLOC"),
     .trait(
       name: "USE_PATH_BITMAP_64",
       description:
@@ -179,10 +170,6 @@ let package = Package(
       url: "https://github.com/swiftlang/swift-docc-plugin.git",
       from: "1.4.1"
     ),
-    //    .package(
-    //      url: "https://github.com/apple/swift-collections",
-    //      from: "1.6.0",
-    //      traits: []),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -237,7 +224,6 @@ let package = Package(
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
-        //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections", "RedBlackTreeFixture",
       ],
       swiftSettings: _settings

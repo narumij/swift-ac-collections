@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.4] - 2026-11-16
+
 ### Changed
 - 通常モードのノード世代番号を、上限で止める方式から周回する方式へ統一。`_O_UNCHECKED`構成専用だった`USE_RECYCLE_COUNT_OVERWRAP`の分岐を削除
 
 ### Fixed
+- AtCoder 2025互換モードと`USE_COMPACT_NODE_METADATA`を併用した際、内部タグを`Int`に固定していた互換テストがコンパイルできない問題を修正
 - Indexの直接利用前に、木との対応に加えてノードに要素が存在することを確認するよう変更。世代番号が一周して古いIndexと一致しても、回収済みノードを通常の内部操作へ通さず、再解決時の検査で拒否する。再利用済みの生きたノードと世代番号が一致した場合の、過去の要素との同一性は保証しない
 
 ## [0.8.2] - 2026-11-14

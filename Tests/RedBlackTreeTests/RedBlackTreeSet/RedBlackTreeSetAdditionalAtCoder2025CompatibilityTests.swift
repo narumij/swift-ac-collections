@@ -850,7 +850,7 @@ import XCTest
     /// 互換モード専用の内部逆順走査ヘルパー`___rev_for_each_`が、正しい順序でノードを列挙すること。
     func testRevForEachVisitsNodesInReverseOrder() throws {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
+      var result = [_TrackingTag]()
       a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
         result.append(p.index)
       }

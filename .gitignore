@@ -1,15 +1,33 @@
+# macOS and local credentials
 .DS_Store
+.netrc
+
+# SwiftPM and Xcode
 /.build
 /Packages
+.swiftpm/
+Package.resolved
+.swift-version
 xcuserdata/
 DerivedData/
-.swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
-Package.resolved
-.swiftpm/
-Tests/Executables/MarriedSource/RedBlackTree.swift_
-Tests/Executables/MarriedSource/main.swift
-.swift-version
+
+# Generated benchmark and review files
+/_Artifacts/
 Benchmarks/.build/
+/Benchmarks/_Artifacts/
 /.task-graphs/
+/Reviews/
+
+# Maintenance has its own local-only Git repository.
+/Maintanance/
+/Maintanance.zip
+/.studio-trials/
+
+# Python bytecode
+__pycache__/
+
+# Provisional local quality assessment data
+/Benchmarks/QualityAssessment/
+
+# Local-only SortedSet boundary comparison results
+/Benchmarks/Results/2M/SortedBounds/

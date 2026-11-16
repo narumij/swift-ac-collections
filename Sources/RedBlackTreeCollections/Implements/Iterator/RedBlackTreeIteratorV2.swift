@@ -28,5 +28,3 @@ extension RedBlackTreeIterator {
   public typealias KeyValues = UnsafeIterator.KeyValueObverse
   public typealias MappedValues = UnsafeIterator.MappedValueObverse
 }
-
-//public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2

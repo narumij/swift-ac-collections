@@ -103,17 +103,10 @@ extension _LazyTieWrapV2 {
   @inlinable
   package var sealed: _SealedPtr { rawValue.purified }
 
-  #if USE_RECYCLE_COUNT_OVERWRAP
-  @inlinable
-  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool { lazyDetach === rhs }
-  #else
-  // TODO: 名前変更の検討
-  // 実際にはそのポインタの直接利用可否となっている
   @inlinable
   func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
-    lazyDetach === rhs && rawValue.pointer.pointee.___recycle_count < .max
+    lazyDetach === rhs
   }
-  #endif
 
   @usableFromInline
   package var isValid: Bool {
@@ -147,3 +140,20 @@ extension _LazyTieWrapV2 {
   }
 }
 #endif
+
+extension _LazyTieWrapV2 {
+  
+  // TODO: 名前変更の検討
+  // 実際にはそのポインタの直接利用可否となっている
+#if USE_RECYCLE_COUNT_OVERWRAP
+  @inlinable
+  var isBlessed: Bool {
+    rawValue.pointer.pointee.___has_payload_content
+  }
+#else
+  @inlinable
+  var isBlessed: Bool {
+    rawValue.pointer.pointee.___recycle_count < .max
+  }
+#endif
+}

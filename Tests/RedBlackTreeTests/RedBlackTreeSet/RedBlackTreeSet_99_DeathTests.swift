@@ -113,7 +113,7 @@
 
       guard let result else { return }
       let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
-      #expect(stderr.contains("The pointer is being used as a different node"))
+      #expect(stderr.contains("Unexpected pointer to deallocated memory"))
     }
 
     @Test
@@ -132,7 +132,7 @@
 
       guard let result else { return }
       let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
-      #expect(stderr.contains("The pointer is being used as a different node"))
+      #expect(stderr.contains("Unexpected pointer to deallocated memory"))
     }
 
     @Test

@@ -189,19 +189,29 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
+  
+  @inlinable
+  func approves(_ index: _LazyTiedPtrV2) -> Bool {
+    _buffer.withUnsafeMutablePointerToHeader {
+      $0.pointee._lazyDetach === index.lazyDetach
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
 
 #if ALLOW_CROSS_TREE_INDEX
   @inlinable
-  package func __purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
-    _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
-      ? index.sealed.purified
-      : __retrieve_(index.tag).deepPurified
+  package func __purified_(_ arrival: _LazyTiedPtrV2) -> _SealedPtr {
+    approves(arrival) && arrival.isBlessed
+      ? arrival.sealed.purified
+      : __retrieve_(arrival.tag).deepPurified
   }
 #else
   @inlinable
-  package func __purified_(_ index: _LazyTiedPtrV2) -> _SealedPtr {
-    _buffer.withUnsafeMutablePointerToHeader { index.__isSameLazyDetach($0.pointee._lazyDetach) }
-      ? index.sealed.purified
+  package func __purified_(_ arrival: _LazyTiedPtrV2) -> _SealedPtr {
+    approves(arrival) && arrival.isBlessed
+      ? arrival.sealed.purified
       : .failure(.crossTree)
   }
 #endif

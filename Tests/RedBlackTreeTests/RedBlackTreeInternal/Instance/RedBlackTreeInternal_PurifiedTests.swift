@@ -51,7 +51,7 @@ final class PurifiedTests: RedBlackTreeTestCase {
     a.remove(5)
     XCTAssertEqual(i0.__recycle_count, 2)
     XCTAssertEqual(i0.seal, 0)
-    XCTAssertEqual(a.__tree_.__purified_(i0).error, .unsealed)
+    XCTAssertEqual(a.__tree_.__purified_(i0).error, .garbaged)
     var b = a
     b.insert(5)
     let i1 = b.find(5)

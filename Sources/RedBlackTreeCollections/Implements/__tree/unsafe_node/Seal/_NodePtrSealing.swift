@@ -27,7 +27,8 @@
 // 封が剥がされ、封印が解かれた場合、現世のノードではないことを表す
 //
 @frozen
-public struct _NodePtrSealing {
+@usableFromInline
+package struct _NodePtrSealing {
   // ご神体の御名
   //
   // 八百万な方々

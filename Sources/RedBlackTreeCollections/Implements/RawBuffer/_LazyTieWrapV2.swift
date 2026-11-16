@@ -23,7 +23,9 @@
 // （遅延）結束バンド
 @frozen
 public struct _LazyTieWrapV2 {
-  public typealias RawValue = _NodePtrSealing
+  
+  @usableFromInline
+  package typealias RawValue = _NodePtrSealing
 
   @usableFromInline
   package let rawValue: RawValue

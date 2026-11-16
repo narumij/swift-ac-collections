@@ -1,0 +1,114 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// MARK: - Combining MultiSet
+
+extension RedBlackTreeMultiSet {
+
+  /// Inserts every element of `other`, preserving this multiset's existing multiplicities.
+  ///
+  /// - Parameter other: A set whose elements to insert once each.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_multi(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node
+    )
+  }
+
+  /// Inserts every occurrence from `other` into this multiset.
+  ///
+  /// - Parameter other: A multiset whose occurrences to insert.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_multi(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node
+    )
+  }
+
+  /// Inserts every element produced by `other`, including duplicate occurrences.
+  ///
+  /// - Parameter other: A sequence whose elements to insert.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func insert<S>(contentsOf other: S)
+  where S: Sequence, S.Element == Element {
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
+    _ = __tree_.update { $0.__insert_multi(__first) }
+    __tree_.___insert_range_multi(IteratorSequence(it)) { $0 }
+  }
+
+  /// Returns a multiset containing this multiset plus each element of `other` once.
+  ///
+  /// - Parameter other: A set whose elements to insert into the result.
+  /// - Returns: The combined multiset without modifying either input.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting(contentsOf other: RedBlackTreeSet<Element>) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// Returns a multiset containing every occurrence from both multisets.
+  ///
+  /// - Parameter other: A multiset whose occurrences to insert into the result.
+  /// - Returns: The combined multiset without modifying either input.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self
+  {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// Returns a multiset containing this multiset and every element produced by `other`.
+  ///
+  /// - Parameter other: A sequence whose elements to insert into the result.
+  /// - Returns: The combined multiset without modifying this multiset.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self
+  where S: Sequence, S.Element == Element {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+}

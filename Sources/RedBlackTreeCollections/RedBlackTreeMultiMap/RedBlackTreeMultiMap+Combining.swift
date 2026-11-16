@@ -1,0 +1,88 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// MARK: - Combining MultiMap
+
+extension RedBlackTreeMultiMap {
+
+  /// Inserts every key-value pair from `other`, including duplicate keys.
+  ///
+  /// - Parameter other: A multimap whose pairs to insert.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func insert(
+    contentsOf other: RedBlackTreeMultiMap<Key, Value>
+  ) {
+    guard !other.isEmpty else { return }
+    __tree_.ensureUnique()
+    __tree_.___insert_range_multi(
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node
+    )
+  }
+
+  /// Inserts every key-value pair produced by `other`, including duplicate keys.
+  ///
+  /// - Parameter other: A sequence of key-value pairs to insert.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public mutating func insert<S>(contentsOf other: S)
+  where S: Sequence, S.Element == (Key, Value) {
+    var it = other.makeIterator()
+    guard let __first = it.next() else { return }
+    __tree_.ensureUniqueAndCapacity()
+    _ = __tree_.update { $0.__insert_multi(Base.__payload_(__first)) }
+    __tree_.___insert_range_multi(IteratorSequence(it)) { Base.__payload_($0) }
+  }
+
+  /// Returns a multimap containing every pair from this multimap and `other`.
+  ///
+  /// - Parameter other: A multimap whose pairs to insert into the result.
+  /// - Returns: The combined multimap without modifying either input.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting(
+    contentsOf other: RedBlackTreeMultiMap<Key, Value>
+  ) -> Self {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+
+  /// Returns a multimap containing this multimap and every pair produced by `other`.
+  ///
+  /// - Parameter other: A sequence of key-value pairs to insert into the result.
+  /// - Returns: The combined multimap without modifying this multimap.
+  /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
+  ///   and *m* is the size of the current tree.
+  @inlinable
+  public func inserting<S>(contentsOf other: __owned S) -> Self
+  where S: Sequence, S.Element == (Key, Value) {
+    var result = self
+    result.insert(contentsOf: other)
+    return result
+  }
+}

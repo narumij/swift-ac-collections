@@ -1,0 +1,542 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run performance comparison only, or the full CI suite
+        required: true
+        default: performance
+        type: choice
+        options:
+          - performance
+          - all
+      performance_base_ref:
+        description: Performance comparison base (branch, tag, or commit SHA)
+        required: true
+        default: main
+        type: string
+      performance_head_ref:
+        description: Commit, tag, or branch to test (also performance head; empty uses selected workflow branch)
+        required: false
+        type: string
+  push:
+    branches:
+      - compatible/AtCoder/2025
+  pull_request:
+    branches:
+      - main
+      - compatible/AtCoder/2025
+
+jobs:
+  documentation:
+    if: (github.ref == 'refs/heads/main' || github.base_ref == 'main') && (github.event_name != 'workflow_dispatch' || inputs.mode == 'all')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Build documentation
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p documentation-diagnostics
+
+          {
+            swift --version
+            uname -a
+            printf 'core limit: '
+            ulimit -c
+            printf 'core pattern: '
+            cat /proc/sys/kernel/core_pattern
+          } | tee documentation-diagnostics/environment.txt
+
+          ulimit -c unlimited
+          sudo sysctl -w \
+            "kernel.core_pattern=$PWD/documentation-diagnostics/core.%e.%p" \
+            | tee documentation-diagnostics/core-pattern.txt \
+            || true
+
+          swift package -c release --allow-writing-to-directory .build/documentation \
+            generate-documentation \
+            --target RedBlackTreeCollections \
+            --output-path .build/documentation \
+            --transform-for-static-hosting \
+            --hosting-base-path swift-ac-collections \
+            --warnings-as-errors \
+            2>&1 | tee documentation-diagnostics/full-console.log
+
+      - name: Upload documentation diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-diagnostics
+          path: documentation-diagnostics
+          if-no-files-found: warn
+
+  public-target-documentation:
+    if: (github.ref == 'refs/heads/main' || github.base_ref == 'main') && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'all'))
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - AcCollections
+          - RedBlackTreeModule
+          - NextPermutationModule
+          - PermutationModule
+          - OptionalElementBufferModule
+          - ElementBufferModule
+    env:
+      DOCUMENTATION_TARGET: ${{ matrix.target }}
+      DOCUMENTATION_OUTPUT: .build/public-target-documentation/${{ matrix.target }}
+      DOCUMENTATION_DIAGNOSTICS: documentation-diagnostics/${{ matrix.target }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Record documentation environment
+        shell: bash
+        run: |
+          mkdir -p "$DOCUMENTATION_DIAGNOSTICS"
+
+          {
+            swift --version
+            uname -a
+          } | tee "$DOCUMENTATION_DIAGNOSTICS/environment.txt"
+
+      - name: Build documentation for ${{ matrix.target }}
+        shell: bash
+        run: |
+          mkdir -p "$DOCUMENTATION_OUTPUT" "$DOCUMENTATION_DIAGNOSTICS"
+
+          printf '%s\n' \
+            "swift package -c release --allow-writing-to-directory $DOCUMENTATION_OUTPUT generate-documentation --target $DOCUMENTATION_TARGET --output-path $DOCUMENTATION_OUTPUT" \
+            | tee "$DOCUMENTATION_DIAGNOSTICS/command.txt"
+
+          set +e
+          set -o pipefail
+          swift package -c release \
+            --allow-writing-to-directory "$DOCUMENTATION_OUTPUT" \
+            generate-documentation \
+            --target "$DOCUMENTATION_TARGET" \
+            --output-path "$DOCUMENTATION_OUTPUT" \
+            2>&1 | tee "$DOCUMENTATION_DIAGNOSTICS/full-console.log"
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "$status" \
+            | tee "$DOCUMENTATION_DIAGNOSTICS/exit-status.txt"
+          exit "$status"
+
+      - name: Upload ${{ matrix.target }} documentation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-target-documentation-${{ matrix.target }}
+          path: documentation-diagnostics/${{ matrix.target }}
+          if-no-files-found: warn
+
+  debug:
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests
+        run: swift test -c debug --traits NORMAL_DEBUG_TEST
+
+  debug-compact-node-metadata:
+    name: Debug (compact node metadata)
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests
+        run: swift test -c debug --traits NORMAL_DEBUG_TEST,USE_COMPACT_NODE_METADATA,ENABLE_DEATH_TESTS
+
+  release:
+    name: Release (Swift ${{ matrix.swift }})
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swift:
+          # 一時停止: setup-swiftの鍵取得・Ubuntu配布先の名前解決失敗。復旧後に戻す。
+          # - "6.2.4"
+          # - "6.3.3"
+          - "latest"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: ${{ matrix.swift }}
+
+      - name: Record Swift version
+        run: swift --version
+
+      - name: Run tests
+        run: swift test -c release --traits NORMAL_RELEASE_TEST
+
+  performance:
+    if: (github.ref == 'refs/heads/main' || github.base_ref == 'main') && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+    name: performance (${{ matrix.suite }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [collections, next-permutations]
+    env:
+      PERFORMANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.performance_base_ref }}
+      PERFORMANCE_HEAD_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.performance_head_ref || github.sha }}
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PERFORMANCE_BASE_REF }}
+          path: base
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PERFORMANCE_HEAD_REF }}
+          path: head
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      # 配置差の影響（JCC erratumなど）はCPUに依存するため、runごとのCPUを結果と一緒に残す
+      - name: Record runner CPU
+        run: |
+          mkdir -p head/benchmark-results
+          lscpu | tee head/benchmark-results/cpu.txt
+
+          {
+            printf 'requested base ref: %s\n' "$PERFORMANCE_BASE_REF"
+            printf 'resolved base SHA: %s\n' "$(git -C base rev-parse HEAD)"
+            printf 'requested head ref: %s\n' "$PERFORMANCE_HEAD_REF"
+            printf 'resolved head SHA: %s\n' "$(git -C head rev-parse HEAD)"
+          } | tee head/benchmark-results/comparison-refs.txt
+
+      - name: Select benchmark executable and libraries from each revision
+        shell: bash
+        env:
+          BENCHMARK_SUITE: ${{ matrix.suite }}
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          permutations = os.environ["BENCHMARK_SUITE"] == "next-permutations"
+          for checkout in ['base', 'head']:
+              output = Path(checkout) / "benchmark-results"
+              output.mkdir(parents=True, exist_ok=True)
+              benchmarks = Path(checkout) / "Benchmarks"
+              split = (benchmarks / "Sources" / "permutation-benchmark").is_dir()
+              executable = "permutation-benchmark" if permutations and split else "benchmark"
+              (output / "executable.txt").write_text(executable + "\n")
+              print(f"{checkout}: {executable}")
+              for name in ("CI.json", "CI-Small.json"):
+                  library_name = "CI-NextPermutations.json" if permutations and split and name == "CI.json" else name
+                  source = benchmarks / "Libraries" / library_name
+                  library = json.loads(source.read_text())
+                  library["contents"] = [
+                      group for group in library["contents"]
+                      if (group["title"] == "NextPermutations") == permutations
+                  ]
+                  if library["contents"]:
+                      (output / name).write_text(json.dumps(library, indent=2) + "\n")
+          PYTHON
+
+      - name: Run current benchmarks
+        working-directory: head/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/current.json \
+              --max-size 64k \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+          # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/current.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+      - name: Run baseline benchmarks
+        working-directory: base/Benchmarks
+        run: |
+          set -euo pipefail
+          mkdir -p ../benchmark-results
+          MODE=replace-all
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+
+          # Measure each revision using its own benchmark definitions.
+          # Do not copy current task names into an older checkout or rename results.
+          if [ -f ../benchmark-results/CI.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI.json \
+              ../benchmark-results/base.json \
+              --max-size 64k \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+          # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
+          if [ -f ../benchmark-results/CI-Small.json ]; then
+            swift run -c release "$BENCHMARK_EXECUTABLE" library run \
+              --library ../benchmark-results/CI-Small.json \
+              ../benchmark-results/base.json \
+              --max-size 10 \
+              --cycles 1 \
+              --mode "$MODE"
+            MODE=append
+          fi
+
+      - name: Check performance regression
+        working-directory: head/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # results compare scores only tasks with measurements in both files.
+          # Added, removed, or renamed tasks are reported but excluded from the gate.
+          BENCHMARK_EXECUTABLE="$(cat ../benchmark-results/executable.txt)"
+          OUTPUT="$(
+            swift run -c release "$BENCHMARK_EXECUTABLE" results compare \
+              ../../base/benchmark-results/base.json \
+              ../benchmark-results/current.json
+          )"
+
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison.txt
+
+          printf '%s\n' "$OUTPUT" |
+          awk '
+            /^[[:space:]]*[0-9]/ {
+              regression = $4
+              sub(/\(.*/, "", regression)
+
+              # 30% slower:
+              # current / baseline >= 1.30
+              # => baseline / current <= 1 / 1.30
+              if ((regression + 0) <= 0.769231) {
+                print ""
+                print "Performance regression >= 30%: " $0
+                failed = 1
+              }
+            }
+
+            END {
+              exit failed ? 1 : 0
+            }
+          '
+
+      - name: Collect executed benchmark binaries
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for CHECKOUT in base head; do
+            OUTPUT="benchmark-binaries/$CHECKOUT"
+            mkdir -p "$OUTPUT"
+
+            BENCHMARK_EXECUTABLE="$(cat "$CHECKOUT/benchmark-results/executable.txt")"
+            BENCHMARK="$(
+              find "$CHECKOUT/Benchmarks/.build" \
+                -type f \
+                -name "$BENCHMARK_EXECUTABLE" \
+                -perm -111 \
+                -print \
+                -quit
+            )"
+
+            if [ -z "$BENCHMARK" ]; then
+              echo "Benchmark binary not found for $CHECKOUT"
+              continue
+            fi
+
+            echo "Benchmark binary for $CHECKOUT: $BENCHMARK"
+            objdump -d "$BENCHMARK" > "$OUTPUT/benchmark.asm"
+            nm -n "$BENCHMARK" \
+              | swift demangle \
+              > "$OUTPUT/benchmark.nm"
+            file "$BENCHMARK" > "$OUTPUT/benchmark.file"
+            sha256sum "$BENCHMARK" > "$OUTPUT/benchmark.sha256"
+            cp "$BENCHMARK" "$OUTPUT/benchmark"
+          done
+
+      - name: Upload benchmark performance artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-performance-results-${{ matrix.suite }}
+          path: |
+            head/benchmark-results
+            base/benchmark-results
+            benchmark-binaries
+          if-no-files-found: warn
+
+  address-sanitizer:
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests with Address Sanitizer
+        env:
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p asan-logs
+          set -o pipefail
+          swift --version | tee asan-logs/environment.log
+          uname -a | tee -a asan-logs/environment.log
+          swift test -c ${{ matrix.configuration }} --sanitize address --build-system native \
+            2>&1 | tee asan-logs/full-console.log
+
+      - name: Upload Address Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: address-sanitizer-${{ matrix.configuration }}-diagnostics
+          path: asan-logs
+          if-no-files-found: warn
+
+  thread-sanitizer:
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests with Thread Sanitizer
+        env:
+          TSAN_OPTIONS: halt_on_error=1:exitcode=66
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p tsan-logs
+          set -o pipefail
+          swift --version | tee tsan-logs/environment.log
+          uname -a | tee -a tsan-logs/environment.log
+          swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
+            2>&1 | tee tsan-logs/full-console.log
+
+      - name: Upload Thread Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thread-sanitizer-${{ matrix.configuration }}-diagnostics
+          path: tsan-logs
+          if-no-files-found: warn
+
+  thread-sanitizer-experimental:
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'all'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_head_ref || github.sha }}
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run experimental tree tests with Thread Sanitizer
+        env:
+          TSAN_OPTIONS: halt_on_error=1:exitcode=66
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p tsan-logs
+          set -o pipefail
+          swift --version | tee tsan-logs/environment.log
+          uname -a | tee -a tsan-logs/environment.log
+          swift test -c ${{ matrix.configuration }} --sanitize thread --build-system native \
+            -Xswiftc -DENABLE_EXPERIMENTAL_TSAN_SAFE \
+            2>&1 | tee tsan-logs/full-console.log
+
+      - name: Upload Thread Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thread-sanitizer-experimental-${{ matrix.configuration }}-diagnostics
+          path: tsan-logs
+          if-no-files-found: warn

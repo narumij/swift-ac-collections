@@ -1,0 +1,171 @@
+import RedBlackTreeCollections
+import XCTest
+
+#if _TREE_COPY_COUNTER
+  final class RedBlackTreeMultiSetCopyOnWriteTests: RedBlackTreeTestCase {
+
+    let count = 2_000_000
+
+    func testSet1() throws {
+      // UnsafeTreeの場合、capacity増加はバケット追加で行われるので、コピーしない
+      var multiset = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(multiset._copyCount, 0)
+      multiset.insert(0)
+      XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
+      while multiset.count < multiset.capacity {
+        multiset.insert(0)
+        XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // capacityを消費仕切るまで変わらない
+      }
+      multiset.insert(0)
+      XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
+      while multiset.count < multiset.capacity {
+        multiset.insert(0)
+        XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // capacityを消費仕切るまで変わらない
+      }
+      multiset.insert(0)
+      XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
+    }
+
+    func testSet2() throws {
+      var set = RedBlackTreeMultiSet<Int>(minimumCapacity: 1)
+      XCTAssertEqual(set._copyCount, 0)
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 0)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(0)
+      #else
+        set.eraseMulti(0)
+      #endif
+      XCTAssertEqual(set._copyCount, 0)
+      _ = set.lowerBound(0)
+      _ = set.upperBound(0)
+      for s in set {
+        blackHole(s)
+      }
+      set.forEach {
+        blackHole($0)
+      }
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != 0 })
+      blackHole(set.reduce(0, +))
+      blackHole(set.reduce(into: []) { $0.append($1) })
+      XCTAssertEqual(set._copyCount, 0)
+    }
+
+    func testSet3() throws {
+      var tree = RedBlackTreeMultiSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree {
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)  // strong ensure unique
+        #else
+          tree.eraseMulti(v)  // strong ensure unique
+        #endif
+      }
+      XCTAssertEqual(tree.count, 0)
+      #if COMPATIBLE_ATCODER_2025 || true
+        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      #else
+        XCTAssertEqual(tree._copyCount, 0)  // 強強度CoWの廃止により、コピー回数は増えない。
+      #endif
+    }
+
+    func testSet3_2() throws {
+      var tree = RedBlackTreeMultiSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree + [] {
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)  // strong ensure unique
+        #else
+          tree.eraseMulti(v)  // strong ensure unique
+        #endif
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
+    }
+
+    func testSet4() throws {
+      var tree = RedBlackTreeMultiSet<Int>(0..<20)
+      tree._copyCount = 0
+      tree.forEach { v in
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 1)
+    }
+
+    func testSet5() throws {
+      var tree = RedBlackTreeMultiSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree + [] {
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 0)
+    }
+
+    func testSet6() throws {
+      var tree = RedBlackTreeMultiSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree.filter({ _ in true }) {
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 0)
+    }
+
+    func testSet3000() throws {
+      let count = 1500
+      var loopCount = 0
+      var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
+      xy[1]?._copyCount = 0
+      let N = 100
+      for i in 0..<count / N {
+        loopCount += 1
+        if let lo = xy[1]?.lowerBound(i * N),
+          let hi = xy[1]?.upperBound(i * N + N)
+        {
+          #if COMPATIBLE_ATCODER_2025
+            xy[1]?.removeSubrange(lo..<hi)
+          #else
+          _ = xy[1]?.erase(lo..<hi)
+          #endif
+        }
+      }
+      XCTAssertEqual(xy[1]!.count, 0)
+      XCTAssertEqual(xy[1]!._copyCount, 0)
+      XCTAssertEqual(loopCount, count / N)
+    }
+
+  }
+#endif
+
+#if _TREE_COPY_COUNTER && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSetCopyOnWriteTests {
+    /// 共有中にupdate(_:at:)が成功すると、自分の側だけ1回複製し、共有元は変わらないこと（RBT-047）。
+    func test_multiSetUpdate_sharedSuccess_copiesAndKeepsOriginal() {
+      var a: RedBlackTreeMultiSet<Int> = [1, 2, 3]
+      let b = a
+      let before = a.__tree_.copyCount
+
+      XCTAssertEqual(a.update(1, at: a.startIndex), 1)
+
+      XCTAssertEqual(a.__tree_.copyCount, before + 1, "共有中の成功更新は1回複製する")
+      XCTAssertEqual(b.__tree_.copyCount, before, "共有元は複製されない")
+      XCTAssertEqual(Array(a), [1, 2, 3])
+      XCTAssertEqual(Array(b), [1, 2, 3])
+    }
+  }
+#endif

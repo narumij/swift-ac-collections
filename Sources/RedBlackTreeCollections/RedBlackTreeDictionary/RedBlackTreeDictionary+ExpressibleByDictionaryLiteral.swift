@@ -1,0 +1,36 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// MARK: - ExpressibleByDictionaryLiteral
+
+extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
+
+  /// Creates a dictionary from a dictionary literal.
+  ///
+  /// - Important: A runtime error occurs if the literal contains duplicate keys.
+  /// - Parameter elements: The key-value pairs of the literal.
+  /// - Complexity: O(*n* log *n*), where *n* is the number of literal pairs.
+  @inlinable
+  public init(dictionaryLiteral elements: (Key, Value)...) {
+    self.init(uniqueKeysWithValues: elements)
+  }
+}

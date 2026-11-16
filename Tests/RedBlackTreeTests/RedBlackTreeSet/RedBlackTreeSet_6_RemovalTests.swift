@@ -1,32 +1,71 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
+  /// Equivalent probes must return the stored object, retained beyond node destruction.
+  func test_removeReturnsStoredObjectAndRetainsItUntilReleased() {
+    final class Member: Comparable {
+      let key: Int
+      init(_ key: Int) { self.key = key }
+      static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+    }
+    var set = RedBlackTreeSet<Member>()
+    weak var stored: Member?
+    do {
+      let member = Member(1)
+      stored = member
+      set.insert(member)
+    }
+    let probe = Member(1)
+    var removed = set.remove(probe)
+    XCTAssertTrue(removed === stored)
+    XCTAssertFalse(removed === probe)
+    XCTAssertTrue(set.isEmpty)
+    XCTAssertNotNil(stored)
+    removed = nil
+    XCTAssertNil(stored)
+    XCTAssertNil(set.remove(probe))
+  }
+
   /// popFirst() が空セットの場合に nil を返すこと
   func test_popFirst_empty() {
     var set = RedBlackTreeSet<Int>()
-    #if COMPATIBLE_ATCODER_2025
-      let popped = set.popFirst()
-      XCTAssertNil(popped, "空セットの場合、popFirst() は nil を返すこと")
-    #else
-      let popped = set.popFirst()
-      XCTAssertNil(popped, "空セットの場合、popMin() は nil を返すこと")
-    #endif
+    let popped = set.popFirst()
+    XCTAssertNil(popped, "空セットの場合、popFirst() は nil を返すこと")
   }
 
   /// popFirst() が要素を正しく取り出し、セットが更新されること
   func test_popFirst_nonEmpty() {
     var set = RedBlackTreeSet([1, 2, 3])
-    #if COMPATIBLE_ATCODER_2025
-      let popped = set.popFirst()
-      XCTAssertNotNil(popped, "空でないセットでは popFirst() が要素を返すこと")
-    #else
-      let popped = set.popFirst()
-      XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
-    #endif
+    let popped = set.popFirst()
+    XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
     XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
     XCTAssertEqual(set.count, 2, "popFirst() 実行後、要素数が 1 減少すること")
+    XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    /// popFirst() が空セットの場合に nil を返すこと
+    func test_popLast_empty() {
+      var set = RedBlackTreeSet<Int>()
+      let popped = set.popLast()
+      XCTAssertNil(popped, "空セットの場合、popLast() は nil を返すこと")
+    }
+  #endif
+
+  /// popLast() / removeLast() が要素を正しく取り出し、セットが更新されること
+  func test_popLast_nonEmpty() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    #if COMPATIBLE_ATCODER_2025
+      let popped = Optional(set.removeLast())
+    #else
+      let popped = set.popLast()
+    #endif
+    XCTAssertNotNil(popped, "空でないセットでは末尾の要素を返すこと")
+    XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
+    XCTAssertEqual(set.count, 2, "実行後、要素数が 1 減少すること")
     XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
   }
 
@@ -64,15 +103,14 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(1), "削除後、最初の要素はセットに含まれないこと")
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// removeLast() が最後の要素を削除すること
-    func test_removeLast() {
-      var set = RedBlackTreeSet([1, 2, 3])
-      let removed = set.removeLast()
-      XCTAssertEqual(removed, 3, "最後の要素を削除すること")
-      XCTAssertFalse(set.contains(3), "削除後、最後の要素はセットに含まれないこと")
-    }
-  #endif
+  /// removeLast() が最後の要素を削除すること
+  func test_removeLast() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    let removed = set.removeLast()
+
+    XCTAssertEqual(removed, 3, "最後の要素を削除すること")
+    XCTAssertEqual(set + [], [1, 2], "削除後、最後の要素はセットに含まれないこと")
+  }
 
   /// removeSubrange() が指定範囲の要素を削除すること
   func test_removeSubrange() {
@@ -98,26 +136,159 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// remove(contentsOf:) が指定範囲の要素を削除すること（Range版）
-    func test_remove_contentsOf_Range() {
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      set.remove(contentsOf: 2..<5)
-      XCTAssertEqual(set.sorted(), [1, 5], "指定Range内の要素を削除すること")
+  #if !COMPATIBLE_ATCODER_2025
+    /// erase(_:) が空範囲と集合の境界を含むすべての半開範囲を正しく削除すること
+    func test_erase_eachBoundedRange() {
+      let source = [1, 3, 5, 7, 9]
+
+      for lowerBound in 0..<10 {
+        for upperBound in lowerBound...10 {
+          var set = RedBlackTreeSet(source)
+          set.erase(set.lowerBound(lowerBound)..<set.upperBound(upperBound))
+
+          XCTAssertEqual(set + [], source.filter { !(lowerBound...upperBound).contains($0) })
+        }
+      }
     }
 
-    /// remove(contentsOf:) が指定範囲の要素を削除すること（ClosedRange版）
-    func test_remove_contentsOf_ClosedRange() {
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      set.remove(contentsOf: 2...4)
-      XCTAssertEqual(set.sorted(), [1, 5], "指定ClosedRange内の要素を削除すること")
+    /// removeAll(keepingCapacity:) が要素を消しつつ、指定時には確保容量を維持すること
+    func test_removeAllKeepingCapacity() {
+      var set = RedBlackTreeSet(0..<8)
+      let capacity = set.capacity
+
+      set.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.capacity, capacity)
     }
   #endif
+
+  /// removeAll(keepingCapacity:) が保持していた参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_removeAllKeepingCapacity_releasesRetainedReferenceElements() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    set.removeAll(keepingCapacity: true)
+
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// popFirst/popLast/remove(_:)/remove(at:)/removeFirst/removeLastが、保持していた
+  /// 参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<6).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 6)
+
+    _ = set.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = set.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+    #endif
+
+    _ = set.remove(DeinitializeCounter(num: 2))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 4, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #endif
+
+    _ = set.removeFirst()
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #endif
+
+    set.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
+  /// バッファからの退避)も発生させないこと。
+  func test_removalMethods_onEmptySet_doNotTriggerCopyOnWrite() {
+    #if _TREE_COPY_COUNTER
+      var set = RedBlackTreeSet<Int>()
+      XCTAssertEqual(set._copyCount, 0)
+
+      XCTAssertNil(set.popFirst())
+      XCTAssertEqual(set._copyCount, 0)
+
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertNil(set.popLast())
+        XCTAssertEqual(set._copyCount, 0)
+      #endif
+
+      XCTAssertNil(set.remove(1))
+      XCTAssertEqual(set._copyCount, 0)
+
+      set.removeAll(keepingCapacity: true)
+      XCTAssertEqual(set._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        set.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空の集合へのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(set._copyCount, 0, "空の集合へのerase(where:)は退避コピーを発生させないはず")
+      #endif
+    #endif
+  }
+
+  /// remove(_:) が整数型の最小値と最大値も削除できること
+  func test_removeIntegerLimits() {
+    var set: RedBlackTreeSet = [Int.min, Int.max]
+
+    XCTAssertEqual(set.remove(Int.min), Int.min)
+    XCTAssertEqual(set.remove(Int.max), Int.max)
+    XCTAssertTrue(set.isEmpty)
+  }
+
 }
 
 extension RedBlackTreeSetRemoveTests {
 
   /// removeFirstが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingFirstFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeFirst_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({
@@ -142,6 +313,11 @@ extension RedBlackTreeSetRemoveTests {
   }
 
   /// removeLastが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingLastFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeLast_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({
@@ -171,10 +347,32 @@ extension RedBlackTreeSetRemoveTests {
 extension RedBlackTreeSetRemoveTests {
 
   #if !COMPATIBLE_ATCODER_2025
+    /// 共有状態で削除しても元を保ち、削除位置の次のIndexを返すこと（RBT-056）。
+    func test_eraseIndex_preservesSharedOriginalAndReturnsSuccessor() {
+      let expected = [1, 2, 3]
+      for offset in expected.indices {
+        let original = RedBlackTreeSet([1, 2, 3])
+        var copy = original
+        let index = copy.index(copy.startIndex, offsetBy: offset)
+
+        let next = copy.erase(index)
+
+        var remaining = expected
+        remaining.remove(at: offset)
+        XCTAssertEqual(Array(original), expected)
+        XCTAssertEqual(Array(copy), remaining)
+        if offset == remaining.count {
+          XCTAssertEqual(next, copy.endIndex)
+        } else {
+          XCTAssertEqual(copy[next], remaining[offset])
+        }
+      }
+    }
+
     /// erase(_:) が指定インデックスの要素を削除し、次のインデックスを返すこと
     func test_erase_index_returnsNext() {
       var set = RedBlackTreeSet([1, 2, 3])
-      let index = set.index(after: set.startIndex) // element 2
+      let index = set.index(after: set.startIndex)  // element 2
       let nextIndex = set.erase(index)
 
       XCTAssertEqual(set.sorted(), [1, 3])
@@ -187,6 +385,30 @@ extension RedBlackTreeSetRemoveTests {
       set.erase { $0 % 2 == 0 }
 
       XCTAssertEqual(set.sorted(), [1, 3, 5])
+    }
+
+    /// erase(where:) は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 変更前に共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、
+    /// 元の要素だけを昇順で持つ集合であることだけを確かめる（RBT-042 S2）
+    func test_erase_where_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original = RedBlackTreeSet([1, 2, 3, 4, 5])
+      var set = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set.erase { element in
+          visited.append(element)
+          if element == 3 { throw StopError() }
+          return element % 2 == 0
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
     }
   #endif
 
@@ -229,3 +451,315 @@ extension RedBlackTreeSetRemoveTests {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSetRemoveTests {
+    /// 何も消さない削除は、共有中のストレージをコピーしないこと（Swift.Setと同じ）。
+    func test_noOpRemoval_keepsSharedStorage() {
+      let set = RedBlackTreeSet(0..<100)
+      var copy = set
+      _ = copy.remove(-1)
+      XCTAssertTrue(set.isTriviallyIdentical(to: copy))
+    }
+
+    /// 空でない共有中の木から空のIndex範囲（`i ..< i`）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyIndexRange_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+      let i = shared.index(after: shared.startIndex)
+
+      shared.erase(i ..< i)
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndex範囲のeraseで木がコピーされた")
+    }
+
+    /// 空でない共有中の木から空の`equalRange`（IndexRange）を消しても、ストレージをコピーしないこと（RBT-081）。
+    func test_eraseEmptyEqualRange_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+
+      shared.erase(shared.equalRange(9))
+
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "空のIndexRangeのeraseで木がコピーされた")
+    }
+
+    /// 共有中の空でない木に、何も消さない述語で`erase(where:)`しても、木をコピーしないこと。述語は各要素に1回ずつ順に呼ばれること（RBT-081/RBT-088）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [1, 2, 3])
+      XCTAssertEqual(Array(shared), [1, 2, 3])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(where:)で木がコピーされた")
+    }
+
+    /// 共有中の木で`erase(where:)`が要素を消すときも、述語は各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-088）。
+    func test_eraseWhere_someMatch_callsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      var visited: [Int] = []
+
+      shared.erase { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（IndexRange）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseIndexRangeWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRange）が要素を消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-081）。
+    func test_eraseIndexRangeWhere_someMatch_callsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared.erase(lo ..< hi) { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// 共有中の空でない木で、範囲内に何も一致しない述語の`erase(_:where:)`（IndexRangeExpression）をしても、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseIndexRangeExpressionWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないerase(_:where:)で木がコピーされた")
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRangeExpression）が要素を消すときも、述語は範囲内の各要素に1回ずつ順に呼ばれ、共有元は変わらないこと（RBT-081）。
+    func test_eraseIndexRangeExpressionWhere_someMatch_callsPredicateOncePerElement() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      var visited: [Int] = []
+
+      shared.erase(lo...) { visited.append($0); return $0 % 2 == 0 }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(Array(shared), [1, 3, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// `erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseWhere_throwsBeforeFirstMatch_keepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var set = original
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set.erase { element in
+          visited.append(element)
+          if element == 2 { throw StopError() }
+          return false
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [1, 2])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
+    /// 共有中の木で`erase(where:)`の述語がすべての要素に一致するとき、述語は各要素に1回ずつ順に呼ばれ、
+    /// 集合は空になり、共有元は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatch_emptiesSetAndKeepsSharedOriginal() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var set = original
+      var visited: [Int] = []
+
+      set.erase { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [1, 2, 3, 4, 5])
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.startIndex, set.endIndex)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// `erase(_:where:)`（IndexRange）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+    /// 共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+      var set = original
+      let lo = set.index(after: set.startIndex)
+      let hi = set.index(set.startIndex, offsetBy: 5)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set.erase(lo ..< hi) { element in
+          visited.append(element)
+          if element == 4 { throw StopError() }
+          return element == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5, 6])
+      XCTAssertTrue(set.contains(1))
+      XCTAssertTrue(set.contains(6))
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRange）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var set = original
+      let lo = set.index(after: set.startIndex)
+      let hi = set.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      set.erase(lo ..< hi) { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(set), [1, 5])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// `erase(_:where:)`（IndexRangeExpression）は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+    /// 共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_rethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var set = original
+      let lo = set.index(after: set.startIndex)
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set.erase(lo...) { element in
+          visited.append(element)
+          if element == 4 { throw StopError() }
+          return element == 2
+        }
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+      XCTAssertTrue(set.contains(1))
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
+    /// 共有中の木で`erase(_:where:)`（IndexRangeExpression）の述語が範囲内のすべての要素に一致するとき、範囲だけが消え、共有元は変わらないこと（RBT-094）。
+    func test_eraseIndexRangeExpressionWhere_allMatch_removesOnlyTheRange() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var set = original
+      let lo = set.index(after: set.startIndex)
+      var visited: [Int] = []
+
+      set.erase(lo...) { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4, 5])
+      XCTAssertEqual(Array(set), [1])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    #if _TREE_COPY_COUNTER
+      /// 共有中の空でない木に`removeAll(keepingCapacity: true)`しても、木を全コピーせず、容量を保って空になり、共有元は変わらないこと（RBT-081 B2）。
+      func test_removeAllKeepingCapacity_fromSharedTree_doesNotCopy() {
+        let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+        var shared = original
+
+        shared.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(shared.isEmpty)
+        XCTAssertGreaterThanOrEqual(shared.capacity, original.count)
+        XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+        XCTAssertEqual(shared._copyCount, 0, "removeAll(keepingCapacity: true)で木が全コピーされた")
+      }
+    #endif
+
+    /// 容量の確認に使う木の形。予約した木・挿入で育った木・削除で疎になった木を、呼ぶたびに新しく作る。
+    private func removeAllKeepingCapacityShapes() -> [(String, () -> RedBlackTreeSet<Int>)] {
+      [
+        ("reserved", {
+          var set = RedBlackTreeSet<Int>(minimumCapacity: 100)
+          for i in 0 ..< 5 { set.insert(i) }
+          return set
+        }),
+        ("grown", {
+          var set = RedBlackTreeSet<Int>()
+          for i in 0 ..< 1000 { set.insert(i) }
+          return set
+        }),
+        ("sparse", {
+          var set = RedBlackTreeSet<Int>(0 ..< 1000)
+          set.erase { $0 % 10 != 0 }
+          return set
+        }),
+      ]
+    }
+
+    /// 共有中の木に`removeAll(keepingCapacity: true)`すると、空になり、容量は変更前を下回らないこと。
+    /// 共有元の中身と容量は変わらないこと（RBT-095/RBT-096）。
+    func test_removeAllKeepingCapacity_onSharedTree_keepsCapacityAndOriginal() {
+      for (name, make) in removeAllKeepingCapacityShapes() {
+        let original = make()
+        let contents = Array(original)
+        let capacity = original.capacity
+        var shared = original
+        #if DEBUG
+          XCTAssertFalse(shared._isUnique, "前提: \(name)は共有中")
+        #endif
+
+        shared.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(shared.isEmpty, name)
+        XCTAssertGreaterThanOrEqual(shared.capacity, capacity, name)
+        XCTAssertEqual(Array(original), contents, name)
+        XCTAssertEqual(original.capacity, capacity, name)
+      }
+    }
+
+    /// 他に参照のない木に`removeAll(keepingCapacity: true)`すると、空になり、容量は変更前と同じであること。
+    /// 一意性は、作った値をそのまま変数に受ける構成で担保する（RBT-095/RBT-096）。
+    func test_removeAllKeepingCapacity_onUniqueTree_keepsCapacity() {
+      for (name, make) in removeAllKeepingCapacityShapes() {
+        var unique = make()
+        #if DEBUG
+          XCTAssertTrue(unique._isUnique, "前提: \(name)は一意")
+        #endif
+        let capacity = unique.capacity
+
+        unique.removeAll(keepingCapacity: true)
+
+        XCTAssertTrue(unique.isEmpty, name)
+        XCTAssertEqual(unique.capacity, capacity, name)
+      }
+    }
+  }
+#endif

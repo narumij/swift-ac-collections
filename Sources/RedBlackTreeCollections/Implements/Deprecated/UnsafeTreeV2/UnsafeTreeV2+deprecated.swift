@@ -1,0 +1,48 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// MARK: - COMPATIBLE_ATCODER_2025用
+
+#if COMPATIBLE_ATCODER_2025
+extension UnsafeTreeV2 {
+  // 木に紐付いている生バッファ
+  //
+  // - WARNING: 触ると生成されてしまうため不用意に触らないこと
+  @usableFromInline
+  var tied: _TiedRawBuffer {
+    withMutableHeader { $0.tiedRawBuffer }
+  }
+}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
+
+    @inlinable
+    package func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
+    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+      tied === index.tied
+        ? index.sealed.purified
+        : __retrieve_(index.sealed.purified.tag).purified
+    }
+  }
+#endif

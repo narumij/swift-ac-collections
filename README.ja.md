@@ -1,3 +1,6 @@
+<!-- このREADME.ja.mdを正本とします。README.mdは、この文書の英訳コピーです。 -->
+<!-- 1.0になるまで多少のジョークを許容すること -->
+
 # swift-ac-collections
 
 `swift-ac-collections` は、[AtCoder][atcoder]での利用を想定したデータ構造等のオープソース・パッケージです。
@@ -338,6 +341,26 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 28!を2秒で用意できるかどうかはライブラリの問題では無く、そもそも論でした。
 
 勘違いの結果、オーバーヘッドが少ない実装を追い求め、結果としてとても軽量な実装を生み出すこととなりました。おまけでunsafePermutationsとunsafeNextPermutationsというものもありますが、コピーオンライトをキャンセルして行わない動作となっています。
+
+## ドキュメント
+
+生成済みのAPIドキュメントは
+[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
+
+Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
+
+```console
+swift package -c release generate-documentation \
+  --target RedBlackTreeCollections \
+  --warnings-as-errors
+```
+
+ブラウザでローカルプレビューするには、次を実行します。
+
+```console
+swift package -c release --disable-sandbox preview-documentation \
+  --target RedBlackTreeCollections
+```
 
 ## アンダースコア付き宣言について
 

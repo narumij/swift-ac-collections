@@ -1,0 +1,179 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+#if !COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeMultiSet {
+
+    /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
+    ///
+    /// This type is used to describe element positions in the tree,
+    /// such as the first element, bounds, or relative offsets.
+    ///
+    /// - SeeAlso: `RedBlackTreeBoundExpression`
+    public typealias Bound = RedBlackTreeBoundExpression<Element>
+
+    /// A shorthand for `RedBlackTreeBoundRangeExpression<Element>`.
+    ///
+    /// This type represents ranges over the tree using `Bound` expressions
+    /// as endpoints.
+    ///
+    /// ## Example
+    ///
+    /// ```
+    /// let tree: RedBlackTreeMultiSet<Int> = [1, 3, 5, 7, 9]
+    ///
+    /// // Elements in [3, 9)
+    /// let r1 = tree[.lowerBound(3) ..< .lowerBound(9)]
+    ///
+    /// // Elements in [5, ...]
+    /// let r2 = tree[.lowerBound(5)...]
+    ///
+    /// // Elements less than 7
+    /// let r3 = tree[..<lowerBound(7)]
+    ///
+    /// // Elements equal to 5
+    /// let r4 = tree[equalRange(5)]
+    /// ```
+    ///
+    /// - Note:
+    ///   - Endpoints are evaluated in the tree's sort order.
+    ///   - Reversed or otherwise unusable ranges produce an empty view.
+    ///
+    /// - SeeAlso:
+    ///   - `RedBlackTreeBoundRangeExpression`
+    ///   - `RedBlackTreeBoundExpression`
+    public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Element>
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// Returns the signed distance between the two evaluated positions.
+    ///
+    /// The result is negative when `end` precedes `start`. The past-the-end
+    /// position is valid. Evaluation failure, such as moving before the start
+    /// or past the end, causes a runtime error.
+    ///
+    @inlinable
+    public func distance(from start: Bound, to end: Bound)
+      -> Int
+    {
+      guard let d = __tree_.distance(from: start, to: end)
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// Returns the element at the evaluated position.
+    ///
+    /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.
+    ///
+    @inlinable
+    public subscript(bound: Bound) -> Element? {
+
+      let p = bound.evaluate(__tree_)
+      guard let p = p.accessible.pointer else { return nil }
+      return Base.__payload_(p)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// Removes and returns the element at the position selected by a bound expression.
+    ///
+    /// When equivalent elements exist, the expression determines which position
+    /// is removed.
+    ///
+    /// - Parameter bound: A bound expression that selects a position in the multiset.
+    /// - Returns: The removed element, or `nil` if the expression selects
+    ///   `endIndex` or can't be evaluated.
+    @inlinable
+    public mutating func erase(_ bound: Bound) -> Element? {
+
+        let __e = __tree_.__end_node
+        guard var p = bound.evaluate(__tree_).accessible.pointer else { return nil }
+        __tree_.ensureUnique()
+        if __e != __tree_.__end_node {
+          p = __tree_.__simple_retrieve(p)
+        }
+        return __tree_._unchecked_remove(at: p).payload
+    }
+  }
+
+  // MARK: -
+
+  extension RedBlackTreeMultiSet {
+
+    /// Accesses a view of the elements selected by a bound range expression.
+    ///
+    /// Mutating through this subscript modifies this multiset.
+    /// Mutating a view stored in a separate variable leaves this multiset unchanged.
+    ///
+    /// The view retains every selected occurrence, including equivalent elements.
+    /// A range that evaluates to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated in this multiset.
+    /// - Returns: A view over the selected occurrences.
+    @inlinable
+    public subscript(bounds: BoundRangeExpression) -> View {
+
+      @inline(__always) get {
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
+      }
+
+      @inline(__always) _modify {
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// Removes the elements in the range selected by a bound range expression.
+    ///
+    /// - Parameter bounds: A bound range expression that selects the elements
+    ///   to remove.
+    @inlinable
+    public mutating func erase(_ bounds: BoundRangeExpression) {
+
+      _ = __tree_.___erase_sanitize_range_with_many_care(
+        _range: bounds.evaluate(__tree_).relative(to: __tree_))
+    }
+
+    /// Removes the elements in the selected range that satisfy a predicate.
+    ///
+    /// - Parameters:
+    ///   - bounds: A bound range expression that selects the elements to examine.
+    ///   - shouldBeRemoved: A closure that returns `true` for an element that
+    ///     should be removed.
+    @inlinable
+    public mutating func erase(
+      _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
+    ) rethrows {
+
+      _ = try __tree_.___erase_sanitize_range_if_with_many_care(
+        bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
+    }
+  }
+#endif

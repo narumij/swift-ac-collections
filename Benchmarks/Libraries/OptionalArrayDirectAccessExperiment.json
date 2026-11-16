@@ -1,0 +1,61 @@
+{
+  "kind": "group",
+  "title": "OptionalElementBuffer Direct Access Experiment",
+  "directory": "OptionalArrayDirectAccessExperiment",
+  "contents": [
+    {
+      "kind": "chart",
+      "title": "1D cold memoization checksum",
+      "tasks": [
+        "std::vector sentinel 1D cold memoization checksum",
+        "OptionalElementBuffer<Int> direct methods cold memoization checksum",
+        "Array<Int?> 1D cold memoization checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "1D warm memoization checksum",
+      "tasks": [
+        "std::vector sentinel 1D warm memoization checksum",
+        "OptionalElementBuffer<Int> direct methods warm memoization checksum",
+        "Array<Int?> 1D warm memoization checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "2D cold memoization checksum",
+      "tasks": [
+        "std::vector sentinel 2D cold memoization checksum",
+        "OptionalElementBuffer2D<Int> direct methods cold memoization checksum",
+        "Array<Array<Int?>> 2D cold memoization checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "2D warm memoization checksum",
+      "tasks": [
+        "std::vector sentinel 2D warm memoization checksum",
+        "OptionalElementBuffer2D<Int> direct methods warm memoization checksum",
+        "Array<Array<Int?>> 2D warm memoization checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "3D cold memoization checksum",
+      "tasks": [
+        "std::vector sentinel 3D cold memoization checksum",
+        "OptionalElementBuffer3D<Int> direct methods cold memoization checksum",
+        "Array<Array<Array<Int?>>> 3D cold memoization checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "3D warm memoization checksum",
+      "tasks": [
+        "std::vector sentinel 3D warm memoization checksum",
+        "OptionalElementBuffer3D<Int> direct methods warm memoization checksum",
+        "Array<Array<Array<Int?>>> 3D warm memoization checksum"
+      ]
+    }
+  ]
+}

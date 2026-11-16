@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetSetAlgebraTests: RedBlackTreeTestCase {
@@ -219,3 +219,49 @@ extension RedBlackTreeSetSetAlgebraTests {
     XCTAssertEqual(a.sorted(), [1, 2])
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeSetDifferenceTests: RedBlackTreeTestCase {
+
+    /// `difference(_:)`は相手に無い要素だけの新しい集合を返し、どちらの入力も変えないこと。
+    func testDifferenceReturnsElementsOnlyInSelf() {
+      let a = RedBlackTreeSet<Int>([1, 2, 3, 4])
+      let b = RedBlackTreeSet<Int>([2, 4, 6])
+      XCTAssertEqual(Array(a.difference(b)), [1, 3])
+      XCTAssertEqual(Array(a), [1, 2, 3, 4])
+      XCTAssertEqual(Array(b), [2, 4, 6])
+      XCTAssertEqual(Array(a.difference(RedBlackTreeSet<Int>())), [1, 2, 3, 4])
+    }
+
+    /// `formDifference(_:)`は相手に含まれる要素を自分から取り除くこと。
+    func testFormDifferenceRemovesElementsInOther() {
+      var a = RedBlackTreeSet<Int>([1, 2, 3, 4])
+      a.formDifference(RedBlackTreeSet<Int>([2, 4, 6]))
+      XCTAssertEqual(Array(a), [1, 3])
+    }
+
+    /// form系の集合演算は変更するコピーだけを変え、バッファを共有していた元の集合と相手の集合を
+    /// 変えないこと。どの演算も受け手の内容が実際に変わる入力を使う（RBT-042 S3）
+    func testFormOperationsChangeOnlyTheReceiver() {
+      let original = RedBlackTreeSet<Int>([1, 2, 3, 4])
+      let other = RedBlackTreeSet<Int>([3, 4, 5])
+      let cases: [(name: String, operation: (inout RedBlackTreeSet<Int>, RedBlackTreeSet<Int>) -> Void, expected: [Int])] = [
+        ("formUnion", { $0.formUnion($1) }, [1, 2, 3, 4, 5]),
+        ("formIntersection", { $0.formIntersection($1) }, [3, 4]),
+        ("formSymmetricDifference", { $0.formSymmetricDifference($1) }, [1, 2, 5]),
+        ("formDifference", { $0.formDifference($1) }, [1, 2]),
+      ]
+
+      for (name, operation, expected) in cases {
+        var receiver = original
+        operation(&receiver, other)
+        XCTAssertEqual(Array(receiver), expected, name)
+        XCTAssertEqual(Array(original), [1, 2, 3, 4], name)
+        XCTAssertEqual(Array(other), [3, 4, 5], name)
+      }
+    }
+  }
+#endif

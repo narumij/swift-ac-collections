@@ -1,5 +1,5 @@
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
 
@@ -187,3 +187,122 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(element, 22, "合計値であること")
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
+  /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
+  final class RedBlackTreeMultiSetTraversalComparisonCountTests: RedBlackTreeTestCase {
+
+    private struct CountingKey: Comparable {
+      nonisolated(unsafe) static var count = 0
+      let value: Int
+      static func < (lhs: Self, rhs: Self) -> Bool {
+        count += 1
+        return lhs.value < rhs.value
+      }
+    }
+
+    func testFullAndRangeTraversalDoNotCompareKeys() {
+      let c = RedBlackTreeMultiSet((0..<64).map(CountingKey.init(value:)))
+      let lower = c.index(c.startIndex, offsetBy: 8)
+      let upper = c.index(c.startIndex, offsetBy: 56)
+      CountingKey.count = 0
+
+      var visited = 0
+      for _ in c { visited += 1 }
+      XCTAssertEqual(visited, 64)
+      XCTAssertEqual(CountingKey.count, 0, "全走査はキー比較を行わないはず")
+
+      var i = c.startIndex
+      while i != c.endIndex { c.formIndex(after: &i) }
+      while i != c.startIndex { c.formIndex(before: &i) }
+      XCTAssertEqual(CountingKey.count, 0, "Indexによる前後の走査はキー比較を行わないはず")
+
+      let view = c[lower..<upper]
+      let afterViewCreation = CountingKey.count
+      XCTAssertLessThanOrEqual(afterViewCreation, 1, "範囲の作成は定数回の比較に収まるはず")
+
+      visited = 0
+      for _ in view { visited += 1 }
+      XCTAssertEqual(visited, 48)
+      XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`は要素を降順に並べた配列を返し、元のコレクションを変えないこと。
+    func testReversedReturnsDescendingArray() {
+      let c = RedBlackTreeMultiSet<Int>([2, 1, 2, 3])
+      let r: [Int] = c.reversed()
+      XCTAssertEqual(r, [3, 2, 2, 1])
+      XCTAssertEqual(Array(c), r.reversed())
+      XCTAssertEqual(RedBlackTreeMultiSet<Int>().reversed() as [Int], [])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetFilterTests: RedBlackTreeTestCase {
+
+    /// `filter(_:)`は条件を満たす出現だけを含む新しいmultisetを返し、元を変えないこと。
+    func testFilterKeepsIncludedOccurrences() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 3, 3])
+      let f: RedBlackTreeMultiSet<Int> = m.filter { $0 != 2 }
+      XCTAssertEqual(Array(f), [1, 3, 3, 3])
+      XCTAssertEqual(Array(m), [1, 2, 2, 3, 3, 3])
+    }
+
+    /// `filter(_:)`は述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばないこと。
+    /// 等価な別個体を含む元のmultisetは変わらず、途中まで作られた結果が要素を保持し続けないこと（RBT-043 M4）
+    func testFilterRethrowsPredicateErrorWithoutKeepingPartialResult() {
+      final class Member: Comparable {
+        let key: Int
+        init(_ key: Int) { self.key = key }
+        static func == (lhs: Member, rhs: Member) -> Bool { lhs.key == rhs.key }
+        static func < (lhs: Member, rhs: Member) -> Bool { lhs.key < rhs.key }
+      }
+      struct StopError: Error, Equatable {}
+      final class WeakMember { weak var member: Member? }
+
+      var observers: [WeakMember] = []
+      do {
+        let members = [Member(1), Member(2), Member(2), Member(3)]
+        let m = RedBlackTreeMultiSet(members)
+        observers = members.map { member in
+          let observer = WeakMember()
+          observer.member = member
+          return observer
+        }
+        var visited: [Member] = []
+
+        // 1と最初の2を結果に含めた後、2つ目の2でエラーを投げる
+        XCTAssertThrowsError(
+          try m.filter { member in
+            visited.append(member)
+            if member === members[2] { throw StopError() }
+            return true
+          }
+        ) { error in
+          XCTAssertEqual(error as? StopError, StopError())
+        }
+        XCTAssertEqual(visited.count, 3, "エラーの後は述語を呼ばないこと")
+        XCTAssertTrue(zip(visited, members).allSatisfy { $0 === $1 })
+        let preserved = Array(m)
+        XCTAssertEqual(preserved.count, 4)
+        XCTAssertTrue(zip(preserved, members).allSatisfy { $0 === $1 })
+      }
+      XCTAssertTrue(
+        observers.allSatisfy { $0.member == nil },
+        "元のmultisetを破棄した後、途中まで作られた結果が要素を保持していないこと")
+    }
+  }
+#endif

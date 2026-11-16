@@ -1,0 +1,290 @@
+import RedBlackTreeCollections
+import XCTest
+
+/// `RedBlackTreeKeyOnlyRangeView`(`Set`/`MultiSet`のRangeViewが返す型)の仕様。
+/// ジェネリックな共有Viewのため、代表としてSetのインスタンスで検証する。
+#if !COMPATIBLE_ATCODER_2025
+  final class RedBlackTreeKeyOnlyRangeViewTests: RedBlackTreeTestCase {
+
+    func test_sorted_returnsElementsAlreadyInOrder() {
+      let set: RedBlackTreeSet = [3, 1, 2]
+      let view = set[...]
+
+      XCTAssertEqual(view.sorted(), [1, 2, 3])
+    }
+
+    func test_reversed_returnsElementsInDescendingOrder() {
+      let set: RedBlackTreeSet = [1, 2, 3]
+      let view = set[...]
+
+      XCTAssertEqual(view.reversed(), [3, 2, 1])
+    }
+
+    func test_removeFirstAndRemoveLast_removeEndpointsAndReturnRemovedElement() {
+      var set: RedBlackTreeSet = [1, 2, 3]
+
+      XCTAssertEqual(set[...].removeFirst(), 1)
+      XCTAssertEqual(Array(set), [2, 3])
+
+      XCTAssertEqual(set[...].removeLast(), 3)
+      XCTAssertEqual(Array(set), [2])
+    }
+
+    /// 空のビューに対する削除系操作は、トラップしない以上、無駄なCoW
+    /// (共有される空シングルトンバッファからの退避)も発生させないこと。
+    func test_removalMethods_onEmptyView_doNotTriggerCopyOnWrite() {
+      #if _TREE_COPY_COUNTER
+        var empty = RedBlackTreeSet<Int>()
+        XCTAssertEqual(empty._copyCount, 0)
+
+        XCTAssertNil(empty[...].popFirst())
+        XCTAssertEqual(empty._copyCount, 0)
+
+        XCTAssertNil(empty[...].popLast())
+        XCTAssertEqual(empty._copyCount, 0)
+
+        empty[...].erase()
+        XCTAssertEqual(empty._copyCount, 0)
+
+        empty[...].erase(where: { _ in true })
+        XCTAssertEqual(empty._copyCount, 0)
+      #endif
+    }
+
+    func test_eraseWhere_onStandaloneViewRemovesOnlyMatchingElements() {
+      var set: RedBlackTreeSet = [1, 2, 3, 4]
+
+      set[...].erase(where: { $0.isMultiple(of: 2) })
+
+      XCTAssertEqual(Array(set), [1, 3])
+    }
+
+    /// 部分範囲のViewの`erase(where:)`は、述語のエラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、
+    /// 範囲外の要素に触れないこと。共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、
+    /// 範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-046 X2）
+    func test_eraseWhere_onPartialViewRethrowsPredicateErrorAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      var set: RedBlackTreeSet = [1, 2, 3, 4, 5, 6]
+      let lower = set.index(after: set.startIndex)
+      let upper = set.index(set.startIndex, offsetBy: 5)
+      let original = set
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set[lower..<upper].erase(where: { element in
+          visited.append(element)
+          if element == 4 { throw StopError() }
+          return element == 2
+        })
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3, 4], "範囲内の先頭から順に呼ばれ、エラーの後は呼ばれないこと")
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5, 6])
+      XCTAssertTrue(set.contains(1), "範囲より前の要素は残ること")
+      XCTAssertTrue(set.contains(6), "範囲より後の要素は残ること")
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
+    func test_isElementAndIsEnd_describeIndexValidity() {
+      let set: RedBlackTreeSet = [1, 2, 3]
+      let view = set[...]
+      let middle = set.firstIndex(of: 2)!
+
+      XCTAssertTrue(view.isElement(at: middle))
+      XCTAssertFalse(view.isElement(at: view.endIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(middle))
+    }
+
+    func test_isElementAndIsEnd_respectViewBounds() {
+      let set = RedBlackTreeSet(0..<5)
+      let lower = set.index(after: set.startIndex)
+      let inside = set.index(after: lower)
+      let upper = set.index(before: set.endIndex)
+      let view = set[lower..<upper]
+
+      XCTAssertFalse(view.isElement(at: set.startIndex))
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: inside))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: set.endIndex))
+
+      XCTAssertFalse(view.isEnd(lower))
+      XCTAssertTrue(view.isEnd(upper))
+      XCTAssertFalse(view.isEnd(set.endIndex))
+    }
+
+    func test_elementsEqual_trueForSameElementsInOrder() {
+      let set: RedBlackTreeSet = [1, 2, 3]
+      let view = set[...]
+
+      XCTAssertTrue(view.elementsEqual([1, 2, 3]))
+    }
+
+    func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+      let shorter = (RedBlackTreeSet([1, 2]))[...]
+      let longer = (RedBlackTreeSet([1, 2, 3]))[...]
+
+      XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+      XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
+    }
+
+    /// popFirst/popLast/erase()/erase(where:)が、保持していた参照型要素を
+    /// 正しく解放すること(二重解放やリークがないこと)
+    func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+      final class DeinitializeCounter: Comparable {
+        static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+          lhs.num < rhs.num
+        }
+        static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+          lhs.num == rhs.num
+        }
+        nonisolated(unsafe) static var count = 0
+        let num: Int
+        init(num: Int) {
+          self.num = num
+          Self.count += 1
+        }
+        deinit { Self.count -= 1 }
+      }
+
+      var set = RedBlackTreeSet<DeinitializeCounter>((0..<4).map { DeinitializeCounter(num: $0) })
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+
+      _ = set[...].popFirst()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+
+      _ = set[...].popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+
+      set[...].erase(where: { $0.num == 1 })
+      XCTAssertEqual(DeinitializeCounter.count, 1)
+
+      _ = set[...].erase()
+      XCTAssertEqual(DeinitializeCounter.count, 0)
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeViewTests {
+    /// 範囲ビューのerase(where:)でビューの先頭要素を消しても、残りの要素はビューに残ること。
+    func test_eraseWhere_removingFirstElement_keepsRest() {
+      let set = RedBlackTreeSet(0..<10)
+      var view = set[set.lowerBound(3)..<set.lowerBound(8)]
+      view.erase(where: { $0 == 3 })
+      XCTAssertEqual(Array(view), [4, 5, 6, 7])
+      XCTAssertEqual(view.count, 4)
+
+      let multiSet = RedBlackTreeMultiSet(0..<10)
+      var multiView = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(8)]
+      multiView.erase(where: { $0 == 3 })
+      XCTAssertEqual(Array(multiView), [4, 5, 6, 7])
+    }
+
+    /// 共有中の空でない木で、範囲ビューの`erase(where:)`が何も消さないとき、木をコピーしないこと。述語は範囲内の各要素に1回ずつ順に呼ばれること（RBT-081）。
+    func test_eraseWhere_nothingMatches_keepsSharedStorage() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var shared = original
+      let lo = shared.index(after: shared.startIndex)
+      let hi = shared.index(lo, offsetBy: 3)
+      var visited: [Int] = []
+
+      shared[lo ..< hi].erase { visited.append($0); return false }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(shared), [1, 2, 3, 4, 5])
+      XCTAssertTrue(shared.isTriviallyIdentical(to: original), "何も消さないViewのerase(where:)で木がコピーされた")
+    }
+
+    /// 部分範囲のViewの`erase(where:)`が最初の一致より前で投げても、エラーをそのまま呼出元へ投げ、投げた後は述語を呼ばず、範囲外の要素に触れないこと。
+    /// 共有していた元の集合は変わらないこと。変更側の途中状態は契約がないため、範囲外の要素が残り、元の要素だけを昇順で持つことだけを確かめる（RBT-094）。
+    func test_eraseWhere_onPartialViewThrowsBeforeFirstMatchAndKeepsSharedOriginal() {
+      struct StopError: Error, Equatable {}
+      var set: RedBlackTreeSet = [1, 2, 3, 4, 5, 6]
+      let lower = set.index(after: set.startIndex)
+      let upper = set.index(set.startIndex, offsetBy: 5)
+      let original = set
+      var visited: [Int] = []
+
+      XCTAssertThrowsError(
+        try set[lower..<upper].erase(where: { element in
+          visited.append(element)
+          if element == 3 { throw StopError() }
+          return false
+        })
+      ) { error in
+        XCTAssertEqual(error as? StopError, StopError())
+      }
+      XCTAssertEqual(visited, [2, 3])
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5, 6])
+      XCTAssertTrue(set.contains(1))
+      XCTAssertTrue(set.contains(6))
+      XCTAssertEqual(Array(set), Array(set).sorted())
+      XCTAssertTrue(set.isSubset(of: original))
+    }
+
+    /// 共有中の木から取り出した範囲ビューで、`erase(where:)`がビューの先頭を含めて要素を消すとき、
+    /// 述語は範囲内の各要素に1回ずつ順に呼ばれ、ビューには残りの要素が残り、元の集合は変わらないこと（RBT-094）。
+    func test_eraseWhere_onStandaloneViewOfSharedTree_keepsRestAndOriginal() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var view = original[original.lowerBound(2)..<original.lowerBound(5)]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return $0 != 3 }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertEqual(Array(view), [3])
+      XCTAssertEqual(view.count, 1)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// 共有中の木から取り出した範囲ビューで、`erase(where:)`の述語がすべての要素に一致するとき、
+    /// ビューは空になってstartIndexとendIndexが一致し、元の集合は変わらないこと（RBT-094）。
+    func test_eraseWhere_allMatchOnStandaloneViewOfSharedTree_emptiesView() {
+      let original: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var view = original[original.lowerBound(2)..<original.lowerBound(5)]
+      var visited: [Int] = []
+
+      view.erase { visited.append($0); return true }
+
+      XCTAssertEqual(visited, [2, 3, 4])
+      XCTAssertTrue(view.isEmpty)
+      XCTAssertEqual(view.startIndex, view.endIndex)
+      XCTAssertEqual(Array(original), [1, 2, 3, 4, 5])
+    }
+
+    /// erase()やpopLast()で空にした範囲ビューは、startIndexとendIndexが一致すること。
+    func test_viewEmptiedByEraseOrPopLast_hasEqualBounds() {
+      let set = RedBlackTreeSet(0..<10)
+      var erased = set[set.lowerBound(3)..<set.lowerBound(8)]
+      _ = erased.erase()
+      XCTAssertTrue(erased.isEmpty)
+      XCTAssertEqual(erased.startIndex, erased.endIndex)
+
+      var popped = set[set.lowerBound(3)..<set.lowerBound(4)]
+      _ = popped.popLast()
+      XCTAssertTrue(popped.isEmpty)
+      XCTAssertEqual(popped.startIndex, popped.endIndex)
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeViewTests {
+    /// MultiSetでも、erase()やpopLast()で空にした範囲ビューはstartIndexとendIndexが一致すること。
+    func test_viewEmptiedByEraseOrPopLast_hasEqualBounds_multiSet() {
+      let multiSet = RedBlackTreeMultiSet(0..<10)
+      var erased = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(8)]
+      _ = erased.erase()
+      XCTAssertTrue(erased.isEmpty)
+      XCTAssertEqual(erased.startIndex, erased.endIndex)
+      var popped = multiSet[multiSet.lowerBound(3)..<multiSet.lowerBound(4)]
+      _ = popped.popLast()
+      XCTAssertTrue(popped.isEmpty)
+      XCTAssertEqual(popped.startIndex, popped.endIndex)
+    }
+  }
+#endif

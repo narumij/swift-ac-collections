@@ -1,0 +1,21 @@
+{
+  "kind": "group",
+  "title": "CI Performance Regression (small sizes)",
+  "directory": "CI-Small",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "NextPermutations",
+      "directory": "permutations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "end-to-end",
+          "tasks": [
+            "NextPermutations nextPermutations end-to-end checksum"
+          ]
+        }
+      ]
+    }
+  ]
+}

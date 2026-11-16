@@ -1,0 +1,250 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@frozen
+@_documentation(visibility: internal)
+public struct UnsafeTreeV2<Base: ___TreeBase> {
+
+  @inlinable
+  internal init(_buffer: ManagedBufferPointer<Header, Element>) {
+    self._buffer = _buffer
+  }
+
+  @usableFromInline var _buffer: BufferPointer
+}
+
+extension UnsafeTreeV2 {
+  public typealias Base = Base
+  public typealias Tree = UnsafeTreeV2<Base>
+  public typealias _Key = Base._Key
+  public typealias _PayloadValue = Base._PayloadValue
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+  @usableFromInline typealias Header = UnsafeTreeV2BufferHeader
+  @usableFromInline typealias Element = UnsafeTreeV2BufferElement
+  @usableFromInline typealias Buffer = ManagedBuffer<Header, Element>
+  @usableFromInline typealias BufferPointer = ManagedBufferPointer<Header, Element>
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  package var nullptr: _NodePtr {
+    _read {
+      yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.nullptr }
+    }
+  }
+
+  @inlinable
+  package var end: _NodePtr {
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.end_ptr }
+  }
+
+  @inlinable
+  var isReadOnly: Bool {
+    _buffer.buffer === _emptyTreeStorage
+  }
+
+}
+
+extension UnsafeTreeV2: CustomStringConvertible {
+  public var description: String {
+    "UnsafeTreeV2<\(Base._PayloadValue.self)>._Storage\(_buffer.header)"
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  var count: Int {
+    @inline(__always)
+    //    get { withMutableHeader { $0.count } }
+    _read { yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count } }
+  }
+
+  @inlinable
+  var capacity: Int {
+    @inline(__always)
+    //    get { withMutableHeader { $0.freshPoolCapacity } }
+    _read { yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity } }
+  }
+
+  @inlinable
+  var initializedCount: Int {
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolUsedCount }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  public var underestimatedCount: Int { count }
+
+  @inlinable
+  var freeCapacity: Int {
+    _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity - $0.pointee.count }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func deinitialize() {
+    withMutableHeader { header in
+      header.deinitialize()
+    }
+  }
+}
+
+// MARK: Index Resolver
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
+    __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
+  }
+
+  @inlinable
+  func __simple_retrieve(
+    _ __parent: _NodePtr,
+    _ __child: _NodeRef
+  ) -> (__parent: _NodePtr, __child: _NodeRef) {
+    let __p = __simple_retrieve(__parent)
+    if __parent.__left_ref == __child {
+      return (__p, __p.__left_ref)
+    } else if __parent.__right_ref == __child {
+      return (__p, __p.__right_ref)
+    } else {
+      fatalError("Invalid parent child pair.")
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  // 基本形のようで実は実運用でつかわれていなさそう
+  @inlinable
+  package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
+    switch tag {
+    case .nullptr: .failure(.null)
+    case .end: .success(end)
+    // capacityでは未初期化範囲を含む
+    // 少なからずノードが初期化されているのはinitializedCount
+    default: tag < initializedCount ? .success(_buffer.header[tag]) : .failure(.unknown)
+    }
+  }
+
+  @inlinable
+  @inline(never) // コールドパス化。usableFromInlineか悩むポイント
+  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
+    switch tag {
+    case .end:
+      return end.uncheckedSeal
+    case .tag(let raw, let seal):
+      // capacityでは未初期化範囲を含む
+      // 少なからずノードが初期化されているのはinitializedCount
+      guard raw < initializedCount else {
+        return .failure(.unknown)
+      }
+      return .success(.uncheckedSeal(_buffer.header[raw], seal))
+    }
+  }
+
+  // つながりをたぐりよせる
+  //
+  // 日本人的にはお祭りなどによくある千本引きのイメージ
+  @inlinable
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
+    tag.flatMap { ___retrieve(tag: $0) }
+  }
+}
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  func approves(_ index: _LazyTiedPtrV2) -> Bool {
+    _buffer.withUnsafeMutablePointerToHeader {
+      $0.pointee._lazyDetach === index.lazyDetach
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+#if ALLOW_CROSS_TREE_INDEX
+  @inlinable
+  package func __purified_(_ arrival: _LazyTiedPtrV2) -> _SealedPtr {
+    approves(arrival) && arrival.isBlessed
+      ? arrival.sealed.purified
+      : __retrieve_(arrival.tag).deepPurified
+  }
+#else
+  @inlinable
+  package func __purified_(_ arrival: _LazyTiedPtrV2) -> _SealedPtr {
+    approves(arrival) && arrival.isBlessed
+      ? arrival.sealed.purified
+      : .failure(.crossTree)
+  }
+#endif
+  
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyTiedPtrV2) -> _SafePtr {
+    __purified_(index).map(\.pointer)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func __purified_safe_(
+    _ range: _RawRange<UnsafeIndexV3>
+  ) -> _SafeRange {
+    traverse(range) {
+      __purified_safe_($0)
+    }
+  }
+
+  @inlinable
+  internal func __purified_safe_(
+    _ range: UnsafeIndexV3Range
+  ) -> _SafeRange {
+    __purified_safe_(range.range)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func __purified_safe_(
+    _ range: _RawRangeExpression<UnsafeIndexV3>
+  ) -> _SafeRangeExpression {
+    traverse(range) { __purified_safe_($0) }
+  }
+
+  @inlinable
+  internal func __purified_safe_(
+    _ range: UnsafeIndexV3RangeExpression
+  ) -> _SafeRangeExpression {
+    __purified_safe_(range.rangeExpression)
+  }
+}

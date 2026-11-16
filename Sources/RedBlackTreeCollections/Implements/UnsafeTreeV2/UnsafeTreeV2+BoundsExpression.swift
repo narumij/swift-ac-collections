@@ -1,0 +1,229 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func evaluate(
+    _ expression: RedBlackTreeBoundExpression<_Key>.Internal
+  ) -> _SafePtr {
+
+    // ベンチマーク的にずるをしている
+
+    if expression.count == 1 {
+      switch expression[0] {
+      case .find(let key):
+        return find(key).unchecked
+      case .lowerBound(let key):
+        return lower_bound(key).unchecked
+      case .upperBound(let key):
+        return upper_bound(key).unchecked
+      case .start:
+        return __begin_node_.unchecked
+      case .end:
+        return __end_node.unchecked
+      default:
+        break
+      }
+    }
+
+    return evaluateSlow(expression)
+  }
+
+  @inlinable
+  func evaluateSlow(
+    _ expression: RedBlackTreeBoundExpression<_Key>.Internal
+  ) -> _SafePtr {
+    var ptr = _SafePtr.failure(.null)
+
+    for i in 0..<expression.count {
+      switch expression[i] {
+
+      case .start:
+        ptr = __begin_node_.unchecked
+
+      case .last:
+        ptr = __begin_node_ == __end_node
+          ? __end_node.unchecked
+          : ___tree_prev_iter(__end_node)
+
+      case .end:
+        ptr = __end_node.unchecked
+
+      case .lowerBound(let __v):
+        ptr = lower_bound(__v).unchecked
+
+      case .upperBound(let __v):
+        ptr = upper_bound(__v).unchecked
+
+      case .find(let __v):
+        ptr = find(__v).unchecked
+
+      case .first(let __v):
+        ptr = find_first(__v).unchecked
+
+      case .advanced(let offset, let limit):
+        switch limit {
+        case .none:
+          ptr = ptr.flatMap {
+            ___tree_adv_iter($0, offset)
+          }
+
+        case .some(let __l):
+          ptr = evaluate(__l).flatMap { limit in
+            let result = ptr.flatMap {
+              ___tree_adv_iter($0, offset, .success(limit))
+            }
+            return switch result {
+            case .failure(.limit): .success(limit)
+            default: result
+            }
+          }
+        }
+
+      case .before:
+        ptr = ptr.flatMap {
+          ___tree_adv_iter($0, -1)
+        }
+
+      case .after:
+        ptr = ptr.flatMap {
+          ___tree_adv_iter($0, 1)
+        }
+
+      #if false
+      case .lessThan(let __v):
+        ptr = ___tree_prev_iter(lower_bound(__v))
+
+      case .greaterThan(let __v):
+        ptr = upper_bound(__v).unchecked
+
+      // 検討メモ: 以下の包含比較2種は、一致時にfindの結果をそのまま使う。
+      // 現行の__find_equal版は同値列の先頭・末尾を保証しない。
+      // 旧find（lower_bound版）と同じ動作のfind_firstが既にあり、
+      // 同値列の先頭を選ぶ場合はこのfind_firstを利用できる。これを使えば、
+      // lessThanOrEqual / greaterThanOrEqualともに一致時は同値列の先頭になる。
+      // tatyamのSortedMultisetはleが同値列の末尾、geが先頭を選ぶため、
+      // 旧findへの置換だけではleの位置選択とは一致しない。
+      // 参考: https://github.com/tatyam-prime/SortedSet/blob/main/SortedMultiset.py
+      // どの位置を採用するかは未決。旧findへの置換を決定したものではない。
+      case .lessThanOrEqual(let __v):
+        let __f = find(__v).unchecked
+        ptr =
+          __f.___has_payload_content
+          ? __f
+          : ___tree_prev_iter(lower_bound(__v))
+
+      case .greaterThanOrEqual(let __v):
+        let __f = find(__v).unchecked
+        ptr =
+          __f.___has_payload_content
+          ? __f
+          : upper_bound(__v).unchecked
+      #endif
+
+      #if DEBUG
+        case .index(let i):
+          switch __purified_(i) {
+          case .success(let s):
+            ptr = s.pointer.unchecked
+          case .failure:
+            ptr = .failure(.null)
+          }
+
+        case .debug(let e):
+          return .failure(e)
+      #endif
+      }
+    }
+
+    return ptr
+  }
+}
+
+extension RedBlackTreeBoundExpression {
+
+  @inlinable
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> _SafePtr
+  where
+    Base: ___TreeBase,
+    Base._Key == Key
+  {
+    return __tree_.evaluate(_internal)
+  }
+}
+
+extension RedBlackTreeBoundRangeExpression {
+
+  @inlinable
+  func __evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> _RawRangeExpression<_SafePtr>
+  where
+    Base: ___TreeBase,
+    Base._Key == Key
+  {
+    switch self {
+
+    case .range(let from, let to):
+      return .range(
+        from: from.evaluate(__tree_),
+        to: to.evaluate(__tree_))
+
+    case .closedRange(let from, let through):
+      return .closedRange(
+        from: from.evaluate(__tree_),
+        through: through.evaluate(__tree_))
+
+    case .partialRangeTo(let to):
+      return .partialRangeTo(to.evaluate(__tree_))
+
+    case .partialRangeThrough(let through):
+      return .partialRangeThrough(through.evaluate(__tree_))
+
+    case .partialRangeFrom(let from):
+      return .partialRangeFrom(from.evaluate(__tree_))
+
+    case .equalRange(let __v):
+      let (lower, upper) =
+        __tree_.isMulti
+        ? __tree_.__equal_range_multi(__v)
+        : __tree_.__equal_range_unique(__v)
+
+      return .range(
+        from: lower.unchecked,
+        to: upper.unchecked)
+    }
+  }
+}
+
+extension RedBlackTreeBoundRangeExpression {
+  
+  @inlinable
+  func evaluate<Base>(_ tree: UnsafeTreeV2<Base>) -> _SafeRangeExpression
+  where
+  Base: ___TreeBase,
+  Base._Key == Key
+  {
+    sequence(__evaluate(tree))
+  }
+}

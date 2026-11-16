@@ -1,0 +1,288 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+#if !COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeDictionary {
+
+    /// A mutable view over a contiguous range of this dictionary.
+    public typealias View = RedBlackTreeKeyValueRangeView<Self>
+    /// A concrete half-open range of red-black-tree indices.
+    public typealias IndexRange = RedBlackTreeIndexRange
+    /// A range expression whose bounds are resolved against a red-black tree.
+    public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// Returns whether the whole collection forms a valid subrange.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: `true` when this dictionary's complete index range is valid.
+    @inlinable
+    public func containsSubrange(_ bounds: UnboundedRange) -> Bool {
+      return __tree_.isValid(range: ___safe_range)
+    }
+
+    /// Returns whether `bounds` identifies a valid subrange of this dictionary.
+    ///
+    /// - Parameter bounds: The concrete index range to validate.
+    /// - Returns: `true` if both bounds belong to this dictionary and are in ascending order; otherwise, `false`.
+    @inlinable
+    public func containsSubrange(_ bounds: IndexRange) -> Bool {
+      let range = __tree_.__purified_safe_(bounds)
+      return __tree_.isValid(range: range)
+    }
+
+    /// Returns whether `bounds` resolves to a valid subrange of this dictionary.
+    ///
+    /// - Parameter bounds: The range expression to resolve and validate.
+    /// - Returns: `true` if the resolved bounds belong to this dictionary and are in ascending order; otherwise, `false`.
+    @inlinable
+    public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      return __tree_.isValid(range: range)
+    }
+
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// Accesses a view spanning the whole dictionary.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    @inlinable
+    public subscript(bounds: UnboundedRange) -> View {
+      @inline(__always) get {
+        self[_safeRange: ___safe_range]
+      }
+      @inline(__always) _modify {
+        yield &self[_safeRange: ___safe_range]
+      }
+    }
+
+    /// Accesses a view over the specified concrete index range.
+    ///
+    /// The index range must be valid and ordered; otherwise, a runtime error occurs.
+    ///
+    /// - Parameter bounds: The concrete index range to access.
+    @inlinable
+    public subscript(bounds: IndexRange) -> View {
+      @inline(__always) get {
+        let range = __tree_.__purified_safe_(bounds)
+        return self[_safeRange: range]
+      }
+      @inline(__always) _modify {
+        let range = __tree_.__purified_safe_(bounds)
+        yield &self[_safeRange: range]
+      }
+    }
+
+    /// Accesses a view over the specified range expression.
+    ///
+    /// The expression must resolve to a valid, ordered index range; otherwise, a runtime error occurs.
+    ///
+    /// - Parameter bounds: The range expression to resolve and access.
+    @inlinable
+    public subscript(bounds: IndexRangeExpression) -> View {
+      @inline(__always) get {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        return self[_safeRange: range]
+      }
+      @inline(__always) _modify {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        yield &self[_safeRange: range]
+      }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// Removes every key-value pair from the dictionary.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: The resulting `endIndex`.
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: UnboundedRange) -> Index {
+      return erase(_range: ___safe_range)
+    }
+
+    /// Removes the key-value pairs in the specified concrete index range.
+    ///
+    /// - Parameter bounds: A valid range of this dictionary.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: IndexRange) -> Index {
+      let range = __tree_.__purified_safe_(bounds)
+      return erase(_range: range)
+    }
+
+    /// Removes the key-value pairs selected by the specified range expression.
+    ///
+    /// - Parameter bounds: A range expression that resolves to a valid subrange of this dictionary.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      return erase(_range: range)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// Removes key-value pairs in `bounds` that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A valid range of this dictionary.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this dictionary.
+    @inlinable
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      try erase(_safeRange: __tree_.__purified_safe_(bounds),
+                where: shouldBeRemoved)
+    }
+
+    /// Removes key-value pairs in the resolved range that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A range expression that resolves to a valid subrange of this dictionary.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this dictionary.
+    @inlinable
+    public mutating func erase(
+      _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      try erase(_safeRange: __tree_.__purified_safe_(bounds).relative(to: __tree_),
+                where: shouldBeRemoved)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    mutating func erase(_range range: _SafeRange) -> Index {
+      do {
+        let __p = try __tree_.___erase_range_with_many_care(_range: range)
+        return ___index(__p)
+      } catch {
+        fatalError("\(error)")
+      }
+    }
+
+    @inlinable
+    mutating func erase(
+      _safeRange range: _SafeRange,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      let result = try __tree_.___erase_validate_range_if_with_many_care(range) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+      switch result {
+      case .success: break
+      case .failure(let error): fatalError("\(error)")
+      }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    func makeView(range: _NodeRange) -> View {
+      View(
+        __tree_: __tree_,
+        _start: range.lowerBound.uncheckedSeal,
+        _end: range.upperBound.uncheckedSeal)
+    }
+
+    @inlinable
+    func makeView(range: _SafeRange) -> Result<View, SealError> {
+      range
+        .flatMap(__tree_.validated(range:))
+        .map(makeView(range:))
+    }
+
+    @inlinable
+    func makeViewWithSanitize(range: _SafeRange) -> Result<View, SealError> {
+      __tree_.sanitize(range)
+        .map(makeView(range:))
+    }
+
+    @inlinable
+    subscript(_safeRange range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        do {
+          return try makeView(range: range).get()
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+
+      @inline(__always) _modify {
+        do {
+          var view = try makeView(range: range).get()
+          self = Self() // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+    }
+    
+    @inlinable
+    subscript(_sanitize range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        do {
+          return try makeViewWithSanitize(range: range).get()
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+
+      @inline(__always) _modify {
+        do {
+          var view = try makeViewWithSanitize(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+    }
+  }
+#endif

@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/06/01.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class ABC370DTests: RedBlackTreeTestCase {
@@ -21,33 +21,6 @@ final class ABC370DTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
-      
-      let _g1 = RedBlackTreeSet<Int>(0..<W)
-      let _g2 = RedBlackTreeSet<Int>(0..<H)
-      
-      nonisolated(unsafe) var g1: [RedBlackTreeSet<Int>] = .init(repeating: _g1, count: H)
-      nonisolated(unsafe) var g2: [RedBlackTreeSet<Int>] = .init(repeating: _g2, count: W)
-
-      for (R, C) in Q {
-        
-        // 合ってるかどうかわからない。雰囲気で書いて動いている程度
-        
-        g2[C][lt(R)...gt(R)].erase {
-          g1[$0].remove(C)
-          return true
-        }
-
-        g1[R][lt(C)...gt(C)].erase {
-          g2[$0].remove(R)
-          return true
-        }
-        
-      }
-
-      print(g1.map(\.count).reduce(0, +))
-    }
-  #elseif !COMPATIBLE_ATCODER_2025
     func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
       let _g1 = RedBlackTreeSet<Int>(0..<W)
       let _g2 = RedBlackTreeSet<Int>(0..<H)
@@ -197,6 +170,7 @@ final class ABC370DTests: RedBlackTreeTestCase {
       ].map { ($0 - 1, $1 - 1) })
   }
 
+  #if ENABLE_PERFORMANCE_TESTING && ENABLE_HEAVY_PERFORMANCE_TEST
   func testPerformanceExample3() throws {
     // This is an example of a performance test case.
     _ = 3
@@ -206,4 +180,5 @@ final class ABC370DTests: RedBlackTreeTestCase {
       try! testExample3()
     }
   }
+  #endif
 }

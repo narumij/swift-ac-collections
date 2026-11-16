@@ -42,7 +42,8 @@
         self._safe_current = _end.unchecked
       }
 
-      public var _safe_start, _safe_end, _safe_current: _SafePtr
+      @usableFromInline
+      package var _safe_start, _safe_end, _safe_current: _SafePtr
 
       @inlinable
       public mutating func next() -> _NodePtr? {

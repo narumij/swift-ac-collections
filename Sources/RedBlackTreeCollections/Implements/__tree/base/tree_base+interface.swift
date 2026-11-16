@@ -47,15 +47,13 @@ public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _Payl
 
 public protocol _BasePayloadValue_KeyInterface: ~Copyable, _KeyType & _PayloadValueType {
   // 要素から比較キー値がとれること
-  //  @available(*, deprecated, renamed: "__key_")
   @inlinable static func __key(_: _PayloadValue) -> _Key
 }
 
 public protocol _BasePayloadValue_MappedValueInterface: ~Copyable, _PayloadValueType
     & _MappedValueType
 {
-  //  @available(*, deprecated, renamed: "__mapped_value_")
-  @inlinable static func __mapped_value(_: _PayloadValue) -> _MappedValue
+  @inlinable static func __mapped_value_(_: _PayloadValue) -> _MappedValue
 }
 
 public protocol _BaseKey_LessThanInterface: ~Copyable, _KeyType {

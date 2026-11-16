@@ -88,8 +88,7 @@ extension Result where Success == _NodeRangeExpression, Failure == SealError {
         start: tree.__begin_node_.unchecked,
         end: tree.__end_node.unchecked,
         bound: \.unchecked,
-        through: ___tree_next_iter)
-)
+        through: ___tree_next_iter))
     }
   }
 }

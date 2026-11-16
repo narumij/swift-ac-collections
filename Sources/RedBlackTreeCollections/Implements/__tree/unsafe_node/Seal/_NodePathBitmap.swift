@@ -27,10 +27,10 @@ package enum _NodePathBitmap {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-  #if !USE_PATH_BITMAP_64
-    public typealias NodePathBitmap = UInt128
-  #else
+  #if USE_PATH_BITMAP_64
     public typealias NodePathBitmap = UInt64
+  #else
+    public typealias NodePathBitmap = UInt128
   #endif
 
   case path(NodePathBitmap)
@@ -65,16 +65,16 @@ extension _NodePathBitmap {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  #if !USE_PATH_BITMAP_64
+  #if USE_PATH_BITMAP_64
+    @inlinable
+    internal func ___ptr_bitmap() -> UInt64 {
+      ___ptr_bitmap_64()
+    }
+  #else
     @available(macOS 15.0, *)
     @inlinable
     internal func ___ptr_bitmap() -> UInt128 {
       ___ptr_bitmap_128()
-    }
-  #else
-    @inlinable
-    internal func ___ptr_bitmap() -> UInt64 {
-      ___ptr_bitmap_64()
     }
   #endif
 }

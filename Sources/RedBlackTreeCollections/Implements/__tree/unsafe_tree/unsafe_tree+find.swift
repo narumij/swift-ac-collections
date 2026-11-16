@@ -155,7 +155,6 @@ protocol FindEqualProtocol_ptr: ~Copyable,
 extension FindEqualProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  // @inline(never)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {

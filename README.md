@@ -38,6 +38,11 @@ Access to values is subject to separate safety checks, which themselves access o
 
 See [Memory Safety Design](Documentation/MemorySafety.md) for details.
 
+## GA scope
+
+General availability (GA) covers four types in normal mode: `RedBlackTreeSet`, `RedBlackTreeMultiSet`, `RedBlackTreeDictionary`, and `RedBlackTreeMultiMap`.
+Other bundled features, including permutations, buffers, and the experimental LRU cache, as well as AtCoder 2025 compatibility mode, are outside this GA scope.
+
 ## Usage
 
 ### Using Swift Package Manager
@@ -93,7 +98,8 @@ API documentation hosted by Swift Package Index:
 | `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
 | `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
 
-Use `main` for general use. The library is under development; APIs and implementations may change.
+Development continues on `main`. To stay on a particular release, specify a version rather than a branch.
+GA covers the four red-black tree types listed above. Experimental APIs may change.
 
 Use `compatible/AtCoder/2025` for AtCoder 2025 compatibility, or `release/AtCoder/2025` for the version deployed on AtCoder.
 
@@ -133,13 +139,11 @@ dependencies: [
 ]
 ```
 
-## Experimental LRU storage
+## Experimental LRU cache
 
-The low-level `___LRUMemoizeStorage` and its supporting types are disabled by default.
-For local experiments, uncomment `"ENABLE_EXPERIMENTAL_LRU"` in the `defines` array in
-`Package.swift`. This is a compile-time flag, not a package trait.
-The implementation still has known limitations around clearing, capacity limits, and copying;
-enabling it does not resolve those limitations.
+In normal mode, enable the `ENABLE_EXPERIMENTAL_LRU` trait to use the noncopyable `LRUCache<Key, Value>`.
+This is an experimental feature, and its API may change. It is not exposed in AtCoder 2025 compatibility mode.
+The older `___LRUMemoizeStorage` is provided only in AtCoder 2025 compatibility mode.
 
 ## Other Notes
 

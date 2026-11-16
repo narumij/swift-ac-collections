@@ -264,7 +264,7 @@ extension RedBlackTreeMappedValuesView {
       }
       let (_p, _r) = __tree_._unchecked_remove(at: _start)
       _sealed_start = _p.uncheckedSeal
-      return Base.__mapped_value(_r)
+      return Base.__mapped_value_(_r)
     }
 
     /// Removes the last pair and returns its mapped value, or returns `nil` if the view is empty.
@@ -278,7 +278,7 @@ extension RedBlackTreeMappedValuesView {
         return nil
       }
       if last == _start { _sealed_start = _sealed_end }
-      return Base.__mapped_value(
+      return Base.__mapped_value_(
         __tree_._unchecked_remove(at: last).payload)
     }
 
@@ -337,7 +337,7 @@ extension RedBlackTreeMappedValuesView {
         _sealed_end = last.pointer!.uncheckedSeal
       }
       _ = try __tree_.___erase_view_range_if_with_many_care(&first, &last) {
-        try shouldBeRemoved(Base.__mapped_value($0))
+        try shouldBeRemoved(Base.__mapped_value_($0))
       }
     }
   }

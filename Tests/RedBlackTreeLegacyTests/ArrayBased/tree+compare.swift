@@ -219,11 +219,11 @@
     @inlinable
     @inline(__always)
     package func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-      #if !USE_PATH_BITMAP_64
+      #if USE_PATH_BITMAP_64
+      return ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
+      #else
           // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
           return ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
-      #else
-      return ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
       #endif
     }
   }

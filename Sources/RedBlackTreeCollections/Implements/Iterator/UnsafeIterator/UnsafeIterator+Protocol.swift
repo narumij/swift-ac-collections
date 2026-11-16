@@ -20,22 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if COMPATIBLE_ATCODER_2025
-@_documentation(visibility: internal)
-public protocol ObverseIterator: IteratorProtocol
-where Element == ReversedIterator.Element {
-  associatedtype ReversedIterator: IteratorProtocol
-  func reversed() -> ReversedIterator
-}
-
-extension ObverseIterator {
-  public typealias Reversed = ReversedIterator
-}
-
-@_documentation(visibility: internal)
-public protocol ReverseIterator: IteratorProtocol {}
-#endif
-
 #if !COMPATIBLE_ATCODER_2025
   @_documentation(visibility: internal)
   public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol

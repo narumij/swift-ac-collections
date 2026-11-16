@@ -23,7 +23,7 @@
 @usableFromInline
 package protocol TreeAlgorithmBaseInterface: ~Copyable, _NodePtrType {
   @inlinable func __tree_is_left_child(_ __x: _NodePtr) -> Bool
-//  func __tree_sub_invariant(_ __x: _NodePtr) -> UInt
+  @inlinable func __tree_sub_invariant(_ __x: _NodePtr) -> UInt
   @inlinable func __tree_invariant(_ __root: _NodePtr) -> Bool
   @inlinable func __tree_min(_ __x: _NodePtr) -> _NodePtr
   @inlinable func __tree_max(_ __x: _NodePtr) -> _NodePtr

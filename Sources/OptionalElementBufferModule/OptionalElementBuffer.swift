@@ -24,7 +24,7 @@
 /// The array is `Sendable` when `Element` is `Sendable`, but its storage is not synchronized.
 /// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
-@safe public struct OptionalElementBuffer<Element>: ~Copyable {
+@unsafe public struct OptionalElementBuffer<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -145,7 +145,7 @@ extension OptionalElementBuffer {
 /// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
-@safe public struct OptionalElementBuffer2D<Element>: ~Copyable {
+@unsafe public struct OptionalElementBuffer2D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -264,7 +264,7 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
 /// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
-@safe public struct OptionalElementBuffer3D<Element>: ~Copyable {
+@unsafe public struct OptionalElementBuffer3D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -400,7 +400,7 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
 /// Prevent overlapping reads and writes, including calls to `removeAll()`.
 /// With `-Ounchecked`, runtime checks for the documented preconditions may be omitted.
 @frozen
-@safe public struct OptionalElementBuffer4D<Element>: ~Copyable {
+@unsafe public struct OptionalElementBuffer4D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>

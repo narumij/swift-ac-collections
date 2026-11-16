@@ -25,7 +25,7 @@
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct ElementBuffer<Element>: ~Copyable {
+@unsafe public struct ElementBuffer<Element>: ~Copyable {
 
   /// Initializes `count` elements to `value`.
   ///
@@ -108,7 +108,7 @@ extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct ElementBuffer2D<Element>: ~Copyable {
+@unsafe public struct ElementBuffer2D<Element>: ~Copyable {
 
   /// Initializes `width * height` elements to `value`.
   ///
@@ -205,7 +205,7 @@ extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct ElementBuffer3D<Element>: ~Copyable {
+@unsafe public struct ElementBuffer3D<Element>: ~Copyable {
 
   /// Initializes `width * height * depth` elements to `value`.
   ///
@@ -317,7 +317,7 @@ extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct ElementBuffer4D<Element>: ~Copyable {
+@unsafe public struct ElementBuffer4D<Element>: ~Copyable {
 
   /// Initializes every element to `value`.
   ///

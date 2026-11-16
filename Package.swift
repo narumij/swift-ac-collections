@@ -253,7 +253,7 @@ let package = Package(
       name: "OptionalElementBufferModule",
       exclude: ["Documentation"],
       swiftSettings: [
-        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+        .enableExperimentalFeature("Lifetimes"),
       ]
     ),
     .testTarget(
@@ -265,7 +265,7 @@ let package = Package(
       name: "ElementBufferModule",
       exclude: ["Documentation"],
       swiftSettings: [
-        .enableExperimentalFeature("Lifetimes"), .strictMemorySafety(),
+        .enableExperimentalFeature("Lifetimes"),
       ]
     ),
     .testTarget(

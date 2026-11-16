@@ -63,7 +63,7 @@ import XCTest
         XCTAssertEqual(
           dict.updateValue(
             0,
-            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
+            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: .nullptr))?.value,
           nil)
       #endif
       XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)

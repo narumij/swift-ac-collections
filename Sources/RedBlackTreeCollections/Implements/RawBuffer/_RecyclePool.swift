@@ -39,17 +39,27 @@
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
       count -= 1
-      #if DEBUG || true
+      
+      #if USE_RECYCLE_COUNT_OVERWRAP
+      // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
+      p.pointee.___recycle_count &+= 1
+      #else
+      if p.pointee.___recycle_count < UnsafeNode.Seal.max {
         p.pointee.___recycle_count &+= 1
+      }
       #endif
+      
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
+      
       #if GRAPHVIZ_DEBUG
         p.pointee.__right_ = nullptr
         p.pointee.__parent_ = nullptr
       #endif
+      
       p.pointee.___has_payload_content = false
       p.pointee.__left_ = recycleHead
       recycleHead = p
@@ -61,16 +71,25 @@
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
       count -= 1
-      #if DEBUG || true
+      
+      #if USE_RECYCLE_COUNT_OVERWRAP
+      // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
+      p.pointee.___recycle_count &+= 1
+      #else
+      if p.pointee.___recycle_count < UnsafeNode.Seal.max {
         p.pointee.___recycle_count &+= 1
+      }
       #endif
+      
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
       #endif
+      
       #if GRAPHVIZ_DEBUG
         p.pointee.__right_ = nullptr
         p.pointee.__parent_ = nullptr
       #endif
+      
       p.pointee.___has_payload_content = false
       p.pointee.__left_ = recycleHead
       recycleHead = p

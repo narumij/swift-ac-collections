@@ -451,23 +451,28 @@ extension _BucketAllocator {
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
+        
         #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1
         #endif
       }
       p.pointee.___has_payload_content = false
-      #if USE_RECYCLE_COUNT_OVERWRAP // 単に中身がなんなのかわかるためのフラグ
+      
+      #if USE_RECYCLE_COUNT_OVERWRAP
       p.pointee.___recycle_count &+= 1
       #else
       if p.pointee.___recycle_count < .max {
         p.pointee.___recycle_count &+= 1
       }
       #endif
+      
       p.deinitialize(count: 1)
+      
       #if _TREE_ALLOCATION_COUNTER
         nodeDeinitializedCount += 1
       #endif
     }
+    
     #if DEBUG
       do {
         var it = b._capacities(storage: storage, pairLayout: pairLayout)

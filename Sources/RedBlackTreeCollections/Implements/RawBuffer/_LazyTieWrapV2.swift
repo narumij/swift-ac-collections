@@ -103,11 +103,6 @@ extension _LazyTieWrapV2 {
   @inlinable
   package var sealed: _SealedPtr { rawValue.purified }
 
-  @inlinable
-  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
-    lazyDetach === rhs
-  }
-
   @usableFromInline
   package var isValid: Bool {
     switch purified {

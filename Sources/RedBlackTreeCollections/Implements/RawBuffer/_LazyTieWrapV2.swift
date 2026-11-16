@@ -143,17 +143,8 @@ extension _LazyTieWrapV2 {
 
 extension _LazyTieWrapV2 {
   
-  // TODO: 名前変更の検討
-  // 実際にはそのポインタの直接利用可否となっている
-#if USE_RECYCLE_COUNT_OVERWRAP
   @inlinable
   var isBlessed: Bool {
     rawValue.pointer.pointee.___has_payload_content
   }
-#else
-  @inlinable
-  var isBlessed: Bool {
-    rawValue.pointer.pointee.___recycle_count < .max
-  }
-#endif
 }

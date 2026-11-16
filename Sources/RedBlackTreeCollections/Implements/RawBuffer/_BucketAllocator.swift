@@ -458,13 +458,7 @@ extension _BucketAllocator {
       }
       p.pointee.___has_payload_content = false
       
-      #if USE_RECYCLE_COUNT_OVERWRAP
       p.pointee.___recycle_count &+= 1
-      #else
-      if p.pointee.___recycle_count < .max {
-        p.pointee.___recycle_count &+= 1
-      }
-      #endif
       
       p.deinitialize(count: 1)
       

@@ -94,11 +94,6 @@ var _settings: [SwiftSetting] =
       .when(configuration: .release, traits: ["_O_UNCHECKED"])
     ),
     
-    // 本来的に別の方法で定義するべきかもしれないが、警告がうっとうしいのでこの方法になっている
-    .define(
-      "USE_RECYCLE_COUNT_OVERWRAP",
-      .when(configuration: .release, traits: ["_O_UNCHECKED"])),
-    
     .define(
       "_TREE_ALLOCATION_COUNTER",
       .when(traits: ["ENABLE_TREE_ALLOCATION_COUNTER"])

@@ -11,7 +11,6 @@ protocol TreeAdvanceProtocol_ptr:
   _UnsafeNodePtrType
     & NullPtrInterface
     & EndNodeInterface
-//    & TreeAlgorithmBaseInterface
 {}
 
 extension TreeAdvanceProtocol_ptr where Self: ~Copyable {

@@ -23,6 +23,18 @@
 // MARK: - COMPATIBLE_ATCODER_2025用
 
 #if COMPATIBLE_ATCODER_2025
+extension UnsafeTreeV2 {
+  // 木に紐付いている生バッファ
+  //
+  // - WARNING: 触ると生成されてしまうため不用意に触らないこと
+  @usableFromInline
+  var tied: _TiedRawBuffer {
+    withMutableHeader { $0.tiedRawBuffer }
+  }
+}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @inlinable

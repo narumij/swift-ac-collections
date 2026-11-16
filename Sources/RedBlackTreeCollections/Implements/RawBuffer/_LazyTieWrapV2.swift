@@ -65,6 +65,14 @@ extension _LazyTieWrapV2 {
 }
 
 extension _LazyTieWrapV2 {
+  
+  @inlinable
+  var isBlessed: Bool {
+    rawValue.pointer.pointee.___has_payload_content
+  }
+}
+
+extension _LazyTieWrapV2 {
 
   @usableFromInline
   package typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -112,11 +120,3 @@ extension _LazyTieWrapV2 {
   }
 }
 #endif
-
-extension _LazyTieWrapV2 {
-  
-  @inlinable
-  var isBlessed: Bool {
-    rawValue.pointer.pointee.___has_payload_content
-  }
-}

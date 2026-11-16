@@ -175,14 +175,6 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  #if COMPATIBLE_ATCODER_2025
-  // IndexやIteratorとのメモリ共有が発生してないことを示す
-  @usableFromInline
-  var isRawBufferUniquelyOwned: Bool {
-    _tied == nil
-  }
-  #endif
-
   @inlinable
   mutating func isLazyDetachUniquelyOwned() -> Bool {
     #if ENABLE_EXPERIMENTAL_TSAN_SAFE
@@ -193,25 +185,6 @@ extension UnsafeTreeV2BufferHeader {
     return isKnownUniquelyReferenced(&_lazyDetach!)
     #endif
   }
-
-  #if COMPATIBLE_ATCODER_2025
-  // IndexやIteratorを結ぶ共有メモリ
-  //
-  // ヘッダーにとっては解放責任のデタッチ先
-  //
-  // - WARNING: 触ると生成されるので不必要に触らないこと
-  @usableFromInline
-  var tiedRawBuffer: _TiedRawBuffer {
-    mutating get {
-      if _tied == nil {
-        _tied = .create(
-          bucket: freshBucketHead,
-          deallocator: freshBucketAllocator)
-      }
-      return _tied!
-    }
-  }
-  #endif
 
   @inlinable
   var lazyDetach: _LazyTie {

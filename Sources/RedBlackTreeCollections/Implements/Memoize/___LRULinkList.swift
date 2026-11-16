@@ -56,7 +56,7 @@ extension LinkPairValueTrait where Self: ~Copyable {
   }
 
   @inlinable
-  public static func __mapped_value(_ element: _PayloadValue) -> _MappedValue {
+  public static func __mapped_value_(_ element: _PayloadValue) -> _MappedValue {
     element.value
   }
 

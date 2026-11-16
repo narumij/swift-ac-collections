@@ -36,7 +36,6 @@ protocol InsertNodeAtProtocol_ptr: ~Copyable,
 extension InsertNodeAtProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  //  @inline(never)
   internal func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -72,7 +71,6 @@ protocol InsertUniqueProtocol_ptr: ~Copyable,
 extension InsertUniqueProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  //  @inline(never)
   internal func
     __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -80,7 +78,6 @@ extension InsertUniqueProtocol_ptr where Self: ~Copyable {
   }
 
   @inlinable
-  //  @inline(never)
   internal func
     __emplace_unique_key_args(_ __k: _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)

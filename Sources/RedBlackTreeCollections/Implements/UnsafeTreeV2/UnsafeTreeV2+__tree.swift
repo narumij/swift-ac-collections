@@ -119,10 +119,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
-#endif
-
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable

@@ -108,28 +108,3 @@ extension _RawRange where Bound: Equatable {
   @inlinable
   var isEmpty: Bool { lowerBound == upperBound }
 }
-
-//extension Result where Success == _RawRange<_NodePtr> {
-//  
-//  @inlinable
-//  var isEmpty: Bool {
-//    switch self {
-//    case .success(let success):
-//      return success.isEmpty
-//    case .failure:
-//      return true
-//    }
-//  }
-//}
-
-//extension Result {
-//  
-//  @inlinable
-//  func unsafeGet() -> Success {
-//    do {
-//      return try get()
-//    } catch {
-//      fatalError("\(error)")
-//    }
-//  }
-//}

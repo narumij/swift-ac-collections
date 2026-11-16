@@ -179,7 +179,7 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run tests
-        run: swift test -c debug --traits NORMAL_DEBUG_TEST,USE_COMPACT_NODE_METADATA
+        run: swift test -c debug --traits NORMAL_DEBUG_TEST,USE_COMPACT_NODE_METADATA,ENABLE_DEATH_TESTS
 
   release:
     name: Release (Swift ${{ matrix.swift }})

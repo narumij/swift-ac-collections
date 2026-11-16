@@ -69,10 +69,10 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     XCTAssertEqual(_TrackingTag.nullptr, -2)
     XCTAssertEqual(_TrackingTag.end, -1)
     XCTAssertEqual(_TrackingTag.debug, -999)
-    XCTAssertEqual(_TrackingTag.retire, .min)
 
-    let tags: Set<_TrackingTag> = [.nullptr, .end, .debug, .retire]
-    XCTAssertEqual(tags.count, 4)
+    // なんだこの自作自演的テスト？
+    let tags: Set<_TrackingTag> = [.nullptr, .end, .debug]
+    XCTAssertEqual(tags.count, 3)
     XCTAssertTrue(tags.allSatisfy { $0 < 0 })
   }
 
@@ -88,7 +88,7 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     let payload = PairBase.__payload_(element)
 
     XCTAssertEqual(PairBase.__key(payload), element.key)
-    XCTAssertEqual(PairBase.__mapped_value(payload), element.value)
+    XCTAssertEqual(PairBase.__mapped_value_(payload), element.value)
     XCTAssertEqual(PairBase.__element_(payload).key, element.key)
     XCTAssertEqual(PairBase.__element_(payload).value, element.value)
   }

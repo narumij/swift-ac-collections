@@ -47,15 +47,15 @@ extension _MemoryLayout {
   // 比較方式の見直しができるまで、これが上限値となる
   @inlinable
   var maximumCountByPathBitmap: Int {
-    // 2 ^ 64 ノードまで使える
-    #if !USE_PATH_BITMAP_64
-    // (1 << (UInt128.bitWidth >> 1)) - 1
-    // TODO: マージンを取るかどうかを検討すること
-    Int.max // 計算出来ないので代替値
-    #else
+    #if USE_PATH_BITMAP_64
     // 64bit環境ながら、2 ^ 32 ノードが上限となる
     // TODO: マージンを取るかどうかを検討すること
     (1 << (UInt64.bitWidth >> 1)) - 1
+    #else
+    // 2 ^ 64 ノードまで使える
+    // (1 << (UInt128.bitWidth >> 1)) - 1
+    // TODO: マージンを取るかどうかを検討すること
+    Int.max // 計算出来ないので代替値
     #endif
   }
 

@@ -81,7 +81,7 @@
 
     associatedtype _Key
 
-    associatedtype Index: Equatable
+    associatedtype Index: Equatable // IndexのComparableは対応しない方針
     associatedtype IndexRange = UnsafeIndexV3Range
     associatedtype IndexRangeExpression = UnsafeIndexV3RangeExpression
 

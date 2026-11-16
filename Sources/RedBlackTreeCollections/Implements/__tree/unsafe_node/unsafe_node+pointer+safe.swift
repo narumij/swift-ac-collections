@@ -81,7 +81,8 @@
 //
 
 // エラー補足付きポインタ
-public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
+@usableFromInline
+package typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 

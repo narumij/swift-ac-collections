@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
 // 木に紐付いている生バッファ
 //
 // インデックスやイテレータを利用した際に生成され、それ以後メモリの解放責任を負う
@@ -96,3 +97,4 @@ extension _TiedRawBuffer {
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
   }
 }
+#endif

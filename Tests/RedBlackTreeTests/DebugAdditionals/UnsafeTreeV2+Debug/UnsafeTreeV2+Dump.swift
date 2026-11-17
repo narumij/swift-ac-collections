@@ -351,7 +351,7 @@
 
 // MARK: - TiedRawBuffer Dump
 
-#if DEBUG
+#if DEBUG && COMPATIBLE_ATCODER_2025
 
   extension _TiedRawBuffer {
 

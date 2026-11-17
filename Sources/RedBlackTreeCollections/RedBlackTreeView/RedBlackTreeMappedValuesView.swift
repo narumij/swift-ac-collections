@@ -159,20 +159,6 @@ where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
   /// - Precondition: Both indices identify elements inside the view.
   /// - Complexity: O(1).
   public mutating func swapAt(_ i: Index, _ j: Index) {
-    #if false
-    // TODO: 理解できたら消す
-    _ensureUnique()
-
-    let __i = __tree_.__purified_(i)
-    let __j = __tree_.__purified_(j)
-    guard let i = __i.accessible.pointer, let j = __j.accessible.pointer else {
-      fatalError(.invalidIndex)
-    }
-    swap(
-      &Base.__mapped_value_ptr(i).pointee,
-      &Base.__mapped_value_ptr(j).pointee
-    )
-    #else
     let __i = __tree_.__purified_(i)
     let __j = __tree_.__purified_(j)
     guard var i = __i.accessible.pointer, var j = __j.accessible.pointer else {
@@ -181,15 +167,11 @@ where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
     guard i != j else { return }
     let __e = __tree_.__end_node
     _ensureUnique()
-    if __e != __tree_.__end_node {
-      i = __tree_.__simple_retrieve(i)
-      j = __tree_.__simple_retrieve(j)
-    }
+    if __e != __tree_.__end_node { (i, j) = __tree_.__simple_retrieve(i, j) }
     swap(
       &Base.__mapped_value_ptr(i).pointee,
       &Base.__mapped_value_ptr(j).pointee
     )
-    #endif
   }
 }
 

@@ -74,10 +74,7 @@ extension UnsafeTreeV2Buffer {
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
     return create(
-      allocator: .init(valueType: _PayloadValue.self) {
-        $0.assumingMemoryBound(to: _PayloadValue.self)
-          .deinitialize(count: 1)
-      },
+      allocator: .init(valueType: _PayloadValue.self),
       minimumCapacity: nodeCapacity,
       nullptr: nullptr)
   }

@@ -362,7 +362,7 @@ extension RedBlackTreeMultiSet {
   public mutating func popFirst() -> Element? {
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
-    return __tree_.___unchecked_remove_first()
+    return __tree_.___remove_first()
   }
 }
 
@@ -379,7 +379,7 @@ extension RedBlackTreeMultiSet {
     public mutating func popLast() -> Element? {
       guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
-      return __tree_.___unchecked_remove_last()
+      return __tree_.___remove_last()
     }
   }
 #endif
@@ -437,7 +437,7 @@ extension RedBlackTreeMultiSet {
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
         fatalError(.invalidIndex)
       }
-      return __tree_._unchecked_remove(at: __p).payload
+      return __tree_.___unchecked_remove(at: __p).payload
     }
   }
 #endif

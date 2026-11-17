@@ -24,7 +24,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
   func testPerformanceExample() throws {
     typealias _PayloadValue = Int
     let capacity = 1_000_000
-    let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
+    let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _,_ in }
     let (byteSize, alignment) = (
       allocator._allocationSize(capacity: capacity),
       allocator.pairLayout.alignment

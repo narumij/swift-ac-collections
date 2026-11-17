@@ -115,7 +115,7 @@
         if __e != __tree_.__end_node {
           p = __tree_.__simple_retrieve(p)
         }
-        return __tree_._unchecked_remove(at: p).payload
+        return __tree_.___unchecked_remove(at: p).payload
     }
   }
 

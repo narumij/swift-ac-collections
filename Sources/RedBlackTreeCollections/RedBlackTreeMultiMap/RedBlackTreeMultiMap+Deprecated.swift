@@ -164,7 +164,7 @@
     @discardableResult
     public mutating func removeLast() -> Element {
       __tree_.ensureUnique()
-      guard let element = __tree_.___unchecked_remove_last().map(__element_) else {
+      guard let element = __tree_.___remove_last().map(__element_) else {
         preconditionFailure(.emptyLast)
       }
       return element

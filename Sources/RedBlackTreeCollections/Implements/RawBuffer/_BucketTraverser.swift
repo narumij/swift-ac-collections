@@ -65,6 +65,17 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
+  @inlinable
+  func _start(
+    storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout
+  ) -> UnsafeMutablePointer<UnsafeNode> {
+    start(storage: storage,
+          nodeLayout: nodeLayout,
+          payloadOrPairAlignment: pairLayout.alignment)
+  }
+}
+
+extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   func _counts(

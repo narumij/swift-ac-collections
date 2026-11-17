@@ -399,7 +399,7 @@ extension RedBlackTreeMultiMap {
   public mutating func popFirst() -> Element? {
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
-    return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
+    return __tree_.___remove_first().map { Base.__element_($0) }
   }
 }
 
@@ -416,7 +416,7 @@ extension RedBlackTreeMultiMap {
     public mutating func popLast() -> Element? {
       guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
-      return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
+      return __tree_.___remove_last().map { Base.__element_($0) }
     }
   }
 #endif
@@ -473,7 +473,7 @@ extension RedBlackTreeMultiMap {
     guard case .success(let __p) = __tree_.__purified_(index).accessible else {
       fatalError(.invalidIndex)
     }
-    return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
+    return Base.__element_(__tree_.___unchecked_remove(at: __p.pointer).payload)
   }
 }
 

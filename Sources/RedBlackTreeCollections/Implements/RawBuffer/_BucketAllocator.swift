@@ -76,22 +76,90 @@ import Foundation
 @frozen
 @usableFromInline
 package struct _BucketAllocator {
-
+  
+  #if false
+  // 第1引数を_PayloadValueとみなして初期化解除する
+  public typealias Deinitializer = (UnsafeMutableRawPointer) -> Void
+  
+  @inlinable
+  static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer) -> Void {
+    {
+      $0.assumingMemoryBound(to: _PayloadValue.self)
+        .deinitialize(count: 1)
+    }
+  }
+  
   @usableFromInline
   static func create() -> Self {
     .init(valueType: Void.self, deinitialize: { _ in })
   }
+  #else
+  // 第2引数が負の場合、第1引数を_PayloadValueとみなして初期化解除する
+  // 第2引数がゼロ又は正の場合、第1引数をUnsafeNodeと_PayloadValueのペアとみなして第2引数の個数分初期化解除する
+  //
+  // 第2引数をenumにして意味を鮮明にしたかったが、パフォーマンスが落ちるので泣く泣く断念
+  public typealias Deinitializer = (UnsafeMutableRawPointer, Int) -> Void
+  
+  @inlinable
+  static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer, Int) -> Void {
+    
+    let stride = _MemoryLayout(UnsafeNode.self, _PayloadValue.self).stride
+    
+    return { p, c in
+      
+      if c < 0 {
+        p.assumingMemoryBound(to: _PayloadValue.self)
+          .deinitialize(count: 1)
+      }
+      
+      var (p,c) = (p.assumingMemoryBound(to: UnsafeNode.self),c)
+      while c > 0 {
+        
+          if p.pointee.___has_payload_content {
+            UnsafeMutableRawPointer(p.advanced(by: 1))
+              .assumingMemoryBound(to: _PayloadValue.self)
+              .deinitialize(count: 1)
+            #if _TREE_ALLOCATION_COUNTER
+              payloadDeinitializedCount += 1
+            #endif
+          }
+          p.deinitialize(count: 1)
+          #if _TREE_ALLOCATION_COUNTER
+            nodeDeinitializedCount += 1
+          #endif
+          
+        c &-= 1
+        p = UnsafeMutableRawPointer(p)
+          .advanced(by: stride)
+          .assumingMemoryBound(to: UnsafeNode.self)
+      }
+    }
+  }
+  
+  @usableFromInline
+  static func create() -> Self {
+    .init(valueType: Void.self, deinitialize: { _,_ in })
+  }
+  #endif
 
-  //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @inlinable
   public init<_PayloadValue: ~Copyable>(
     valueType: _PayloadValue.Type,
-    deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
+    deinitialize: @escaping Deinitializer
   ) {
     self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
     self.nodeLayout = MemoryLayout<UnsafeNode>._memoryLayout
     self.payloadLayout = MemoryLayout<_PayloadValue>._memoryLayout
     self.deinitialize = deinitialize
+  }
+  
+  @inlinable
+  public init<_PayloadValue: ~Copyable>(
+    valueType: _PayloadValue.Type) {
+    self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
+    self.nodeLayout = MemoryLayout<UnsafeNode>._memoryLayout
+    self.payloadLayout = MemoryLayout<_PayloadValue>._memoryLayout
+    self.deinitialize = Self.deinitializer(_PayloadValue.self)
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
@@ -116,7 +184,7 @@ package struct _BucketAllocator {
   // 普段からその方についてよく知ってるケースでは軽減されるのだが、解放処理専門といった時々しか型に触れないインスタンスで高コストになりがち
   //
   @usableFromInline
-  let deinitialize: (UnsafeMutableRawPointer) -> Void
+  let deinitialize: Deinitializer
 }
 
 extension _BucketAllocator {
@@ -268,6 +336,7 @@ extension _BucketAllocator {
   }
 }
 
+#if false
 extension _BucketAllocator {
 
   @usableFromInline
@@ -285,6 +354,7 @@ extension _BucketAllocator {
     }
   }
 }
+#endif
 
 extension _BucketAllocator {
 
@@ -421,10 +491,12 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
-    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
+    
+    #if false
+    let it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
-        deinitialize(p.advanced(by: 1))
+        deinitialize(p.advanced(by: 1), -1)
         #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1
         #endif
@@ -434,6 +506,10 @@ extension _BucketAllocator {
         nodeDeinitializedCount += 1
       #endif
     }
+    #else
+    deinitialize(b._start(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout), b.count)
+    #endif
+    
     #if DEBUG
       do {
         var it = b._capacities(storage: storage, pairLayout: pairLayout)
@@ -450,7 +526,7 @@ extension _BucketAllocator {
     var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
-        deinitialize(p.advanced(by: 1))
+        deinitialize(p.advanced(by: 1), -1)
         
         #if _TREE_ALLOCATION_COUNTER
           payloadDeinitializedCount += 1

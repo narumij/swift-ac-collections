@@ -19,7 +19,7 @@
 
     init(capacity: Int) {
       precondition(capacity > 0)
-      allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      allocator = _BucketAllocator(valueType: Payload.self) { _,_ in }
       let byteSize = allocator._headAllocationSize(capacity: capacity)
       storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,

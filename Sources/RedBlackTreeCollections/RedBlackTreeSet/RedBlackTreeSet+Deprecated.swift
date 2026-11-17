@@ -321,7 +321,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return __tree_._unchecked_remove(at: __p).payload
+      return __tree_.___unchecked_remove(at: __p).payload
     }
   }
 

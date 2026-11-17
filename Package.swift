@@ -25,6 +25,8 @@ var defines: [String] = [
   //  "_UNSAFE_TREE_ASSERT_INTERNAL",
   //  "_TREE_COPY_COUNTER",
   //  "_TREE_ALLOCATION_COUNTER",
+  //  "ENABLE_PERFORMANCE_TESTING",
+  
   "USE_HEAD_BUCKET_PAIRING",  // 互換版では無効となる
 ]
 

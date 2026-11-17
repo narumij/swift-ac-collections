@@ -35,10 +35,7 @@ package struct UnsafeTreeV2BufferHeader {
   @inlinable
   internal init<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int)
   {
-    let allocator = _BucketAllocator(valueType: _PayloadValue.self) {
-      $0.assumingMemoryBound(to: _PayloadValue.self)
-        .deinitialize(count: 1)
-    }
+    let allocator = _BucketAllocator(valueType: _PayloadValue.self)
     self.init(allocator: allocator, nullptr: nullptr, capacity: capacity)
   }
 
@@ -378,7 +375,7 @@ extension UnsafeTreeV2BufferHeader {
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
       
-      freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      freshBucketAllocator.deinitialize(p.advanced(by: 1), -1)
       
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1

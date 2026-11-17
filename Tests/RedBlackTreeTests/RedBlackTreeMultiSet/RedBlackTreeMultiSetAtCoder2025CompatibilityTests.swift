@@ -227,13 +227,13 @@ import XCTest
       func testUncheckedRemovalViaNodePositionsEmptiesMultiSet() throws {
         var forward = RedBlackTreeMultiSet<Int>(0..<10)
         for i in forward.___node_positions() {
-          forward.__tree_._unchecked_remove(at: i)
+          forward.__tree_.___unchecked_remove(at: i)
         }
         XCTAssertEqual(forward + [], [])
 
         var reversed = RedBlackTreeMultiSet<Int>(0..<10)
         for i in reversed.___node_positions().reversed() {
-          reversed.__tree_._unchecked_remove(at: i)
+          reversed.__tree_.___unchecked_remove(at: i)
         }
         XCTAssertEqual(reversed + [], [])
       }
@@ -241,13 +241,13 @@ import XCTest
       func testUncheckedRemovalViaNodePositionsInSubrangeRemovesOnlyThatPortion() throws {
         var forward = RedBlackTreeMultiSet<Int>(0..<10)
         for i in forward.elements(in: 2..<8).___node_positions() {
-          forward.__tree_._unchecked_remove(at: i)
+          forward.__tree_.___unchecked_remove(at: i)
         }
         XCTAssertEqual(forward + [], [0, 1, 8, 9])
 
         var reversed = RedBlackTreeMultiSet<Int>(0..<10)
         for i in reversed.elements(in: 2..<8).___node_positions().reversed() {
-          reversed.__tree_._unchecked_remove(at: i)
+          reversed.__tree_.___unchecked_remove(at: i)
         }
         XCTAssertEqual(reversed + [], [0, 1, 8, 9])
       }

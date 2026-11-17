@@ -100,41 +100,26 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func prev_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
-    switch result {
-    case .success(let index):
-      return index
-    case .failure(let error):
-      fatalError(errorMessage(error))
-    }
+      .unsafeGet()
   }
 
   @inlinable
   func next_iter(_ i: _LazyTiedPtrV2) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
-    switch result {
-    case .success(let index):
-      return index
-    case .failure(let error):
-      fatalError(errorMessage(error))
-    }
+      .unsafeGet()
   }
 
   @inlinable
   func adv_iter(_ i: _LazyTiedPtrV2, offsetBy distance: Int) -> _LazyTiedPtrV2 {
-    let result: _LazyTieWrappedPtrV2 = __purified_(i)
+    __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
-    switch result {
-    case .success(let index):
-      return index
-    case .failure(let error):
-      fatalError(errorMessage(error))
-    }
+      .unsafeGet()
   }
 
   @inlinable

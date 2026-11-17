@@ -110,6 +110,7 @@ package struct _BucketAllocator {
       if c < 0 {
         p.assumingMemoryBound(to: _PayloadValue.self)
           .deinitialize(count: 1)
+        return
       }
       
       var (p,c) = (p.assumingMemoryBound(to: UnsafeNode.self),c)

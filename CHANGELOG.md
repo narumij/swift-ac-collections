@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.5] - 2026-11-17
+
+### Changed
+- 赤黒木のバッファ破棄時、要素ごとに型消去クロージャを呼び出していた処理を、バケット単位の一括処理へ変更。型が分かるクロージャ内でノードと値を破棄し、間接呼び出しの回数を削減
+- 互換モード用の内部型`_TiedRawBuffer`とそのデバッグ表示を、AtCoder 2025互換モード（`COMPATIBLE_ATCODER_2025`）でのみコンパイルするよう整理
+
+### Fixed
+- 内部設定`USE_RECYCLE_POOL_PROTOCOL`を有効にした際、破棄クロージャの引数と回収用関数名の追従漏れによりコンパイルできない問題を修正
+
 ## [0.8.4] - 2026-11-16
 
 ### Changed

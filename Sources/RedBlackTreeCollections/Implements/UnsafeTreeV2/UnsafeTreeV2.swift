@@ -123,6 +123,11 @@ extension UnsafeTreeV2 {
   func __simple_retrieve(_ __p: _NodePtr) -> _NodePtr {
     __p.___is_end ? __end_node : _buffer.header[__p.trackingTag]
   }
+  
+  @inlinable
+  func __simple_retrieve(_ p1: _NodePtr,_ p2: _NodePtr) -> (_NodePtr,_NodePtr) {
+    (__simple_retrieve(p1), __simple_retrieve(p2))
+  }
 
   @inlinable
   func __simple_retrieve(

@@ -85,13 +85,13 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let freshBucketAllocator: _BucketAllocator
 
-  #if COMPATIBLE_ATCODER_2025
-  // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
-  //
-  // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
-  @usableFromInline var _tied: _TiedRawBuffer?
+  #if !ENABLE_EXPERIMENTAL_TSAN_SAFE
+  // 直接書き込みをする操作は、Header内部とシングルトンと生成に限定する。
+  // 読み込みもUnsafeTreeV2に限定する。
+  // それ以外の経路があれば違反となる。
+  @usableFromInline var _lazyDetach: _LazyTie?
   #endif
-
+  
   #if ENABLE_EXPERIMENTAL_TSAN_SAFE
   @usableFromInline var lazyDetachPointer: UnsafeMutablePointer<_LazyTie>?
 
@@ -114,21 +114,22 @@ package struct UnsafeTreeV2BufferHeader {
       }
     }
   }
-  #else
-  // AIがうるさいので補足
-  // 直接書き込みをする操作は、Header内部とシングルトンと生成に限定する。
-  // 読み込みもUnsafeTreeV2に限定する。
-  // それ以外の経路があれば違反となる。
-  @usableFromInline var _lazyDetach: _LazyTie?
+  #endif
+
+  #if COMPATIBLE_ATCODER_2025
+  // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
+  //
+  // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
+  @usableFromInline var _tied: _TiedRawBuffer?
   #endif
 
   #if DEBUG
-    @usableFromInline var freshBucketCount: Int = 0
+  @usableFromInline var freshBucketCount: Int = 0
   #endif
 
   #if _TREE_COPY_COUNTER
-    // CoWの発火回数を観察するためのプロパティ
-    @usableFromInline internal var copyCount: UInt = 0
+  // CoWの発火回数を観察するためのプロパティ
+  @usableFromInline internal var copyCount: UInt = 0
   #endif
 }
 

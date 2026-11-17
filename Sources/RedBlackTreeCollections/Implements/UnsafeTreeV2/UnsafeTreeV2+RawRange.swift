@@ -49,6 +49,8 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 }
 
+#if false
+// _NodeKeyにくわれてつかっていない
 extension UnsafeTreeV2 where Base: _BaseNode_PtrRangeCompInterface {
 
   @inlinable
@@ -65,6 +67,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrRangeCompInterface {
   func contains(range: _SafeRange, pointer: _NodePtr) -> Result<Bool, SealError>
   { range.map { contains(range: $0, pointer: pointer) } }
 }
+#endif
 
 extension UnsafeTreeV2 {
 
@@ -76,17 +79,22 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
+  
   @inlinable
   func __simple_retrieve(_ range: _RawRange<_NodePtr>) -> _RawRange<_NodePtr> {
-      .init(
-        lowerBound: __simple_retrieve(range.lowerBound),
-        upperBound: __simple_retrieve(range.upperBound)
-      )
+    .init(
+      lowerBound: __simple_retrieve(range.lowerBound),
+      upperBound: __simple_retrieve(range.upperBound)
+    )
   }
+}
+
+#if false
+extension UnsafeTreeV2 {
 
   @inlinable
   func __simple_retrieve(_ range: _SafeRange) -> _SafeRange {
     range.map { __simple_retrieve($0) }
   }
 }
+#endif

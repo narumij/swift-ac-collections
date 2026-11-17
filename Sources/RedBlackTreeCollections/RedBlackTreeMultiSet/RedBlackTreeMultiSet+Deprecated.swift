@@ -96,7 +96,7 @@
     @discardableResult
     public mutating func removeLast() -> Element {
       __tree_.ensureUnique()
-      guard let element = __tree_.___unchecked_remove_last() else {
+      guard let element = __tree_.___remove_last() else {
         preconditionFailure(.emptyLast)
       }
       return element
@@ -302,7 +302,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return __tree_._unchecked_remove(at: __p).payload
+      return __tree_.___unchecked_remove(at: __p).payload
     }
   }
 

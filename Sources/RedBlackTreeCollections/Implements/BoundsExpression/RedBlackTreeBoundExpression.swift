@@ -59,20 +59,23 @@ extension RedBlackTreeBoundExpression {
     @usableFromInline
     var first: Op
 
-    // 2個目以降だけを保持する。
-    // 1要素式では空Arrayなのでヒープ確保なし。
+    // 2要素式までは直接保持し、3個目以降だけを配列に置く。
     @usableFromInline
-    var rest: [Op]
+    var second: Op?
+
+    @usableFromInline
+    var rest: ContiguousArray<Op>
 
     @inlinable
     init(_ first: Op) {
       self.first = first
+      self.second = nil
       self.rest = []
     }
 
     @inlinable
     var count: Int {
-      1 + rest.count
+      second == nil ? 1 : 2 + rest.count
     }
 
     @inlinable
@@ -80,17 +83,24 @@ extension RedBlackTreeBoundExpression {
       _read {
         if index == 0 {
           yield first
+        } else if index == 1 {
+          yield second!
         } else {
-          yield rest[index - 1]
+          yield rest[index - 2]
         }
       }
     }
 
     @inlinable
     mutating func append(_ op: Op) {
-      rest.append(op)
+      if second == nil {
+        second = op
+      } else {
+        rest.append(op)
+      }
     }
   }
+
 
   @usableFromInline
   enum Op {

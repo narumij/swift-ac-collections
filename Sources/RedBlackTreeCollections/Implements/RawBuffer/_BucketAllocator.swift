@@ -505,7 +505,7 @@ extension _BucketAllocator {
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
     
     #if DISABLE_BULK_DEINITIALIZE
-    let it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
+    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1), -1)

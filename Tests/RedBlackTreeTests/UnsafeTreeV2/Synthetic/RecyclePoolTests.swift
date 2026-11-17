@@ -20,7 +20,7 @@ final class RecyclePoolTests: RedBlackTreeTestCase {
     var end_ptr: _NodePtr { .nullptr }
     var freshBucketAllocator: _BucketAllocator = .init(
       valueType: Bool.self,
-      deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false }
+      deinitialize: { p, _ in p.assumingMemoryBound(to: Bool.self).pointee = false }
     )
   }
 

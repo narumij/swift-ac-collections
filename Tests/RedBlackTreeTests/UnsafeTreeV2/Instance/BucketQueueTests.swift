@@ -90,7 +90,7 @@ import XCTest
       file: StaticString = #filePath,
       line: UInt = #line
     ) throws {
-      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let allocator = _BucketAllocator(valueType: Payload.self) { _,_ in }
 
       let byteSize =
         isHead

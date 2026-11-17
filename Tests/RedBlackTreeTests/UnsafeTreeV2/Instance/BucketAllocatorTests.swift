@@ -53,7 +53,7 @@ import XCTest
     }
 
     func checkHeadAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
-      let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
+      let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _,_  in }
       let (byteSize, alignment) = (
         allocator._headAllocationSize(capacity: capacity), allocator.pairLayout.alignment
       )
@@ -189,7 +189,7 @@ import XCTest
     func testPayloadAlignmentIsPreservedAcrossElements() throws {
       typealias Payload = SIMD4<Float>
 
-      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let allocator = _BucketAllocator(valueType: Payload.self) { _,_ in }
       let capacity = 4
       let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
@@ -280,7 +280,7 @@ import XCTest
       file: StaticString = #filePath,
       line: UInt = #line
     ) {
-      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let allocator = _BucketAllocator(valueType: Payload.self) { _,_  in }
       let byteSize = allocator._headAllocationSize(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
@@ -312,7 +312,7 @@ import XCTest
       file: StaticString = #filePath,
       line: UInt = #line
     ) {
-      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let allocator = _BucketAllocator(valueType: Payload.self) { _,_  in }
       let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
@@ -339,7 +339,7 @@ import XCTest
     }
 
     func checkOtherAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
-      let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
+      let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _,_  in }
       let (byteSize, alignment) = (
         allocator._allocationSize(capacity: capacity), allocator.pairLayout.alignment
       )
@@ -438,9 +438,9 @@ import XCTest
         alignment: MemoryLayout<Int>.alignment)
       let buf = memory.bindMemory(to: Int.self, capacity: 1)
       buf.initialize(to: .zero)
-      emptyAllocator.deinitialize(memory)
+      emptyAllocator.deinitialize(memory,-1)
       XCTAssertEqual(buf.pointee, .zero)
-      emptyAllocator.deinitialize(memory)
+      emptyAllocator.deinitialize(memory,-1)
       buf.deinitialize(count: 1)
       memory.deallocate()
     }

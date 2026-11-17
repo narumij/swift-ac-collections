@@ -14,7 +14,7 @@ import XCTest
     }
 
     private func check<Payload>(_ payload: Payload.Type) {
-      let allocator = _BucketAllocator(valueType: payload) { _ in }
+      let allocator = _BucketAllocator(valueType: payload) { _,_ in }
       XCTAssertEqual(UnsafeNode._referenceAlignment(with: payload), allocator.pairLayout.alignment)
       XCTAssertEqual(UnsafeNode._referenceStride(with: payload), allocator.pairLayout.stride)
 

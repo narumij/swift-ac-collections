@@ -77,6 +77,9 @@ import Foundation
 @usableFromInline
 package struct _BucketAllocator {
   
+  #if false
+  public typealias Deinitializer = (UnsafeMutableRawPointer) -> Void
+  
   @inlinable
   static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer) -> Void {
     {
@@ -85,12 +88,20 @@ package struct _BucketAllocator {
     }
   }
   
+  @usableFromInline
+  static func create() -> Self {
+    .init(valueType: Void.self, deinitialize: { _ in })
+  }
+  #else
+  public typealias Deinitializer = (UnsafeMutableRawPointer, Int) -> Void
+  
   @inlinable
-  static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer,Int) -> Void {
+  static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer, Int) -> Void {
     
     let stride = _MemoryLayout(UnsafeNode.self, _PayloadValue.self).stride
     
     return { p, c in
+      
       if c < 0 {
         p.assumingMemoryBound(to: _PayloadValue.self)
           .deinitialize(count: 1)
@@ -119,16 +130,17 @@ package struct _BucketAllocator {
       }
     }
   }
-
+  
   @usableFromInline
   static func create() -> Self {
     .init(valueType: Void.self, deinitialize: { _,_ in })
   }
+  #endif
 
   @inlinable
   public init<_PayloadValue: ~Copyable>(
     valueType: _PayloadValue.Type,
-    deinitialize: @escaping (UnsafeMutableRawPointer, Int) -> Void
+    deinitialize: @escaping Deinitializer
   ) {
     self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
     self.nodeLayout = MemoryLayout<UnsafeNode>._memoryLayout
@@ -167,7 +179,7 @@ package struct _BucketAllocator {
   // 普段からその方についてよく知ってるケースでは軽減されるのだが、解放処理専門といった時々しか型に触れないインスタンスで高コストになりがち
   //
   @usableFromInline
-  let deinitialize: (UnsafeMutableRawPointer,Int) -> Void
+  let deinitialize: Deinitializer
 }
 
 extension _BucketAllocator {
@@ -474,20 +486,25 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
+    
+    #if false
     let it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
-//    while let p = it.pop() {
-//      if p.pointee.___has_payload_content {
-//        deinitialize(p.advanced(by: 1), -1)
-//        #if _TREE_ALLOCATION_COUNTER
-//          payloadDeinitializedCount += 1
-//        #endif
-//      }
-//      p.deinitialize(count: 1)
-//      #if _TREE_ALLOCATION_COUNTER
-//        nodeDeinitializedCount += 1
-//      #endif
-//    }
-    deinitialize(it.startNode, b.count)
+    while let p = it.pop() {
+      if p.pointee.___has_payload_content {
+        deinitialize(p.advanced(by: 1), -1)
+        #if _TREE_ALLOCATION_COUNTER
+          payloadDeinitializedCount += 1
+        #endif
+      }
+      p.deinitialize(count: 1)
+      #if _TREE_ALLOCATION_COUNTER
+        nodeDeinitializedCount += 1
+      #endif
+    }
+    #else
+    deinitialize(b._start(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout), b.count)
+    #endif
+    
     #if DEBUG
       do {
         var it = b._capacities(storage: storage, pairLayout: pairLayout)

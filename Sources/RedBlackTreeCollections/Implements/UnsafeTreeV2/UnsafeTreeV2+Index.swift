@@ -73,46 +73,26 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 
   @inlinable
   internal func
-    distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
+    distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Result<Int, SealError>
   {
-    #if false
-    return try? liftM2(
-      __purified_(start).map(\.pointer),
-      __purified_(end).map(\.pointer),
-      Base.___signed_safe_distance
-    )
-    .get()
-    #else
-    return try? liftA2(
+    liftA2(
       __purified_(start).map(\.pointer),
       __purified_(end).map(\.pointer),
       Base.___signed_stable_distance
     )
-    .get()
-    #endif
   }
 
   @inlinable
   internal func
     distance(
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
-    ) -> Int?
+    ) -> Result<Int, SealError>
   {
-    #if false
-    return try? liftM2(
-      start.evaluate(self),
-      end.evaluate(self),
-      Base.___signed_safe_distance
-    )
-    .get()
-    #else
-    return try? liftA2(
+    liftA2(
       start.evaluate(self),
       end.evaluate(self),
       Base.___signed_stable_distance
     )
-    .get()
-    #endif
   }
 }
 

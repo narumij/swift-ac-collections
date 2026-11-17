@@ -78,6 +78,7 @@ import Foundation
 package struct _BucketAllocator {
   
   #if false
+  // 第1引数を_PayloadValueとみなして初期化解除する
   public typealias Deinitializer = (UnsafeMutableRawPointer) -> Void
   
   @inlinable
@@ -93,6 +94,10 @@ package struct _BucketAllocator {
     .init(valueType: Void.self, deinitialize: { _ in })
   }
   #else
+  // 第2引数が負の場合、第1引数を_PayloadValueとみなして初期化解除する
+  // 第2引数がゼロ又は正の場合、第1引数をUnsafeNodeと_PayloadValueのペアとみなして第2引数の個数分初期化解除する
+  //
+  // 第2引数をenumにして意味を鮮明にしたかったが、パフォーマンスが落ちるので泣く泣く断念
   public typealias Deinitializer = (UnsafeMutableRawPointer, Int) -> Void
   
   @inlinable

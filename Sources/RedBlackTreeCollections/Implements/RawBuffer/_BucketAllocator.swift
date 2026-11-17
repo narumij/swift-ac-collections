@@ -82,7 +82,6 @@ package struct _BucketAllocator {
     .init(valueType: Void.self, deinitialize: { _ in })
   }
 
-  //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @inlinable
   public init<_PayloadValue: ~Copyable>(
     valueType: _PayloadValue.Type,

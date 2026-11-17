@@ -437,7 +437,7 @@ extension RedBlackTreeMultiSet {
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
         fatalError(.invalidIndex)
       }
-      return __tree_._unchecked_remove(at: __p).payload
+      return __tree_.___unchecked_remove(at: __p).payload
     }
   }
 #endif

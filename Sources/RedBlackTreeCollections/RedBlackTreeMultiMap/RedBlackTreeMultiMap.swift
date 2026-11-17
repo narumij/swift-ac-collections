@@ -473,7 +473,7 @@ extension RedBlackTreeMultiMap {
     guard case .success(let __p) = __tree_.__purified_(index).accessible else {
       fatalError(.invalidIndex)
     }
-    return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
+    return Base.__element_(__tree_.___unchecked_remove(at: __p.pointer).payload)
   }
 }
 

@@ -205,7 +205,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     _ensureUnique()
     let (_start, _) = _raw_range
     guard _start != __tree_.__end_node else { return nil }
-    let (_p, _r) = __tree_._unchecked_remove(at: _start)
+    let (_p, _r) = __tree_.___unchecked_remove(at: _start)
     _sealed_start = _p.uncheckedSeal
     return _r
   }
@@ -219,7 +219,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _raw_range
     guard let last = __tree_.___tree_prev_iter(_end).pointer else { return nil }
     if last == _start { _sealed_start = _sealed_end }
-    return __tree_._unchecked_remove(at: last).payload
+    return __tree_.___unchecked_remove(at: last).payload
   }
 
   /// Removes and returns the first element.

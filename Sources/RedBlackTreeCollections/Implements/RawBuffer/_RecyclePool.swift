@@ -43,7 +43,7 @@
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
       
-      freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      freshBucketAllocator.deinitialize(p.advanced(by: 1), -1)
       
       #if _TREE_ALLOCATION_COUNTER
         payloadDeinitializedCount += 1
@@ -60,7 +60,7 @@
     }
 
     @inlinable
-    mutating func ___pushRecycleWithoutDeinitialize(_ p: _NodePtr) {
+    mutating func ___raw_pushRecycle(_ p: _NodePtr) {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")

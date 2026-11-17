@@ -45,6 +45,7 @@ var _settings: [SwiftSetting] =
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
     // 利用可能な型アライメントが8に制限される
     .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
+    .define("DISABLE_BULK_DEINITIALIZE", .when(traits: ["DISABLE_BULK_DEINITIALIZE"])),
     // ノードの位置比較のパス表現を、既定の128bit幅から64bit幅に切り替える
     // 64bit幅ではノード数の上限が2^32 - 1になる
     // 128bit幅ではメモリ計算の都合、Int.max / pair.strideが上限となる
@@ -124,6 +125,11 @@ let package = Package(
         "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
     ),
       .trait(name: "USE_C_MALLOC"),
+    .trait(
+      name: "DISABLE_BULK_DEINITIALIZE",
+      description:
+        "Disable bulk node and value deinitialization to favor individual removal performance over buffer destruction performance."
+    ),
     .trait(
       name: "USE_PATH_BITMAP_64",
       description:

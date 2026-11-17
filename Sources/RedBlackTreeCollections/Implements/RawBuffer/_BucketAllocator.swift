@@ -268,6 +268,7 @@ extension _BucketAllocator {
   }
 }
 
+#if false
 extension _BucketAllocator {
 
   @usableFromInline
@@ -285,6 +286,7 @@ extension _BucketAllocator {
     }
   }
 }
+#endif
 
 extension _BucketAllocator {
 

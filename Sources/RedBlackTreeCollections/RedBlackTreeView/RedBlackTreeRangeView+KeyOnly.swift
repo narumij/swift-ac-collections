@@ -21,405 +21,395 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-  @frozen
-  /// A mutable view over a contiguous range of a red-black-tree set or multiset.
-  ///
-  /// The view preserves sorted order. Mutating it applies copy-on-write and
-  /// affects only elements inside the view's bounds.
-  public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
-  where
-    Container: ___Root,
-    Container.Base: ___TreeBase & ScalarValueTrait
-  {
+@frozen
+/// A mutable view over a contiguous range of a red-black-tree set or multiset.
+///
+/// The view preserves sorted order. Mutating it applies copy-on-write and
+/// affects only elements inside the view's bounds.
+public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
+where Container: ___Root, Container.Base: ___TreeBase & ScalarValueTrait {
 
-    @inlinable
-    internal init(__tree_: UnsafeTreeV2<Container.Base>, _start: _SealedPtr, _end: _SealedPtr) {
-      self.__tree_ = __tree_
-      self._sealed_start = _start
-      self._sealed_end = _end
-    }
-
-    public typealias Base = Container.Base
-    public typealias Index = RedBlackTreeIndex
-    public typealias Element = Container.Base._PayloadValue
-
-    @usableFromInline
-    internal var __tree_: Tree
-
-    /// The position of the first element in a nonempty view.
-    public var startIndex: Index {
-      ___index(_sealed_start.pointer!)
-    }
-
-    /// The view's “past the end” position.
-    public var endIndex: Index {
-      ___index(_sealed_end.pointer!)
-    }
-
-    @usableFromInline var _sealed_start: _SealedPtr
-    @usableFromInline var _sealed_end: _SealedPtr
+  @inlinable
+  internal init(
+    __tree_: UnsafeTreeV2<Container.Base>,
+    _start: _SealedPtr,
+    _end: _SealedPtr
+  ) {
+    self.__tree_ = __tree_
+    self._sealed_start = _start
+    self._sealed_end = _end
   }
 
-  #if _TREE_COPY_COUNTER
-    extension RedBlackTreeKeyOnlyRangeView {
-      package var _copyCount: UInt {
-        __tree_.copyCount
-      }
-    }
-  #endif
+  public typealias Base = Container.Base
+  public typealias Index = RedBlackTreeIndex
+  public typealias Element = Container.Base._PayloadValue
 
-  extension RedBlackTreeKeyOnlyRangeView {
+  @usableFromInline
+  internal var __tree_: Tree
 
-    @inlinable
-    internal mutating func _ensureUnique() {
-      // 異なる木のインデックスを無効扱いにするための準備措置
-      // Viewだけはインデックス引き継ぎが必要
+  /// The position of the first element in a nonempty view.
+  public var startIndex: Index { ___index(_sealed_start.pointer!) }
 
-      // 元の木がユニーク参照では無かった場合、コピーが発生する
-      let copied = __tree_.__ensureUnique()
+  /// The view's “past the end” position.
+  public var endIndex: Index { ___index(_sealed_end.pointer!) }
 
-      // コピーが発生した場合インデックス引き継ぎを行う
-      if copied {
-        // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
-        _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
-        _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
-      }
-    }
-  }
+  @usableFromInline
+  var _sealed_start: _SealedPtr
+  @usableFromInline
+  var _sealed_end: _SealedPtr
+}
 
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    @inlinable
-    var _raw_range: (_NodePtr, _NodePtr) {
-      // TODO: cross tree indexingが正しく効いてるか確認すること
-      guard
-        let _start = _sealed_start.purified.pointer,
-        let _end = _sealed_end.purified.pointer
-      else {
-        return (__tree_.__end_node, __tree_.__end_node)
-      }
-      return (_start, _end)
-    }
-
-    @inlinable
-    var _raw_range_: _NodeRange {
-      let (lo, up) = _raw_range
-      return .init(lowerBound: lo, upperBound: up)
-    }
-  }
+#if _TREE_COPY_COUNTER
+extension RedBlackTreeKeyOnlyRangeView {
+  package var _copyCount: UInt { __tree_.copyCount }
+}
+#endif
 
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 {
-    __tree_.index(p)
+  internal mutating func _ensureUnique() {
+    // 異なる木のインデックスを無効扱いにするための準備措置
+    // Viewだけはインデックス引き継ぎが必要
+
+    // 元の木がユニーク参照では無かった場合、コピーが発生する
+    let copied = __tree_.__ensureUnique()
+
+    // コピーが発生した場合インデックス引き継ぎを行う
+    if copied {
+      // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
+      _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
+      _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
+    }
   }
 }
 
+extension RedBlackTreeKeyOnlyRangeView {
 
-  #if !COMPATIBLE_ATCODER_2025
-    extension RedBlackTreeKeyOnlyRangeView: Sequence {}
-
-    extension RedBlackTreeKeyOnlyRangeView {
-
-      /// Returns an iterator over the elements in ascending order.
-      ///
-      /// - Complexity: O(1)
-      @inlinable
-      public __consuming func makeIterator() -> UnsafeIterator.Trap.ValueObverse<Container.Base> {
-        let (_start, _end) = _raw_range
-        return .init(start: _start, end: _end, tree: __tree_)
-      }
-    }
-  #endif
-
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    /// Returns the view's elements in ascending order.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public __consuming func sorted() -> [Element] {
-      let (_start, _end) = _raw_range
-      return __tree_.___copy_to_array(_start, _end)
-    }
-
-    /// Returns the view's elements in descending order.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public __consuming func reversed() -> [Element] {
-      let (_start, _end) = _raw_range
-      return __tree_.___rev_copy_to_array(_start, _end)
-    }
+  @inlinable
+  var _raw_range: (_NodePtr, _NodePtr) {
+    // TODO: cross tree indexingが正しく効いてるか確認すること
+    guard let _start = _sealed_start.purified.pointer,
+      let _end = _sealed_end.purified.pointer
+    else { return (__tree_.__end_node, __tree_.__end_node) }
+    return (_start, _end)
   }
 
-  // MARK: -
+  @inlinable
+  var _raw_range_: _NodeRange {
+    let (lo, up) = _raw_range
+    return .init(lowerBound: lo, upperBound: up)
+  }
+}
 
-  extension RedBlackTreeKeyOnlyRangeView {
+extension RedBlackTreeKeyOnlyRangeView {
 
-    /// A Boolean value indicating whether the view contains no elements.
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    public var isEmpty: Bool {
-      let (l, u) = _raw_range
-      return l == u
-    }
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtrV2 { __tree_.index(p) }
+}
 
-    /// The number of elements in the view.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public var count: Int {
-      let (l, u) = _raw_range
-      return (try? ___safe_distance(l, u).get()) ?? 0
-    }
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeKeyOnlyRangeView: Sequence {}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// Returns an iterator over the elements in ascending order.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public __consuming func makeIterator()
+    -> UnsafeIterator.Trap.ValueObverse<Container.Base>
+  {
+    let (_start, _end) = _raw_range
+    return .init(start: _start, end: _end, tree: __tree_)
+  }
+}
+#endif
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// Returns the view's elements in ascending order.
+  ///
+  /// - Complexity: O(`count`)
+  @inlinable
+  public __consuming func sorted() -> [Element] {
+    let (_start, _end) = _raw_range
+    return __tree_.___copy_to_array(_start, _end)
   }
 
-  extension RedBlackTreeKeyOnlyRangeView {
+  /// Returns the view's elements in descending order.
+  ///
+  /// - Complexity: O(`count`)
+  @inlinable
+  public __consuming func reversed() -> [Element] {
+    let (_start, _end) = _raw_range
+    return __tree_.___rev_copy_to_array(_start, _end)
+  }
+}
 
-    /// The first element of the view, or `nil` if the view is empty.
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    public var first: Element? {
-      let (_start, _end) = _raw_range
-      guard _start != _end, _start != __tree_.__end_node else { return nil }
-      return Base.__payload_(_start)
-    }
+// MARK: -
 
-    /// The last element of the view, or `nil` if the view is empty.
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    public var last: Element? {
-      let (_start, _end) = _raw_range
-      guard _start != _end else { return nil }
-//      return Base.__payload_(__tree_prev_iter(_end))
-      return try? __tree_.___tree_prev_iter(_end).map(Base.__payload_).get()
-    }
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// A Boolean value indicating whether the view contains no elements.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public var isEmpty: Bool {
+    let (l, u) = _raw_range
+    return l == u
   }
 
-  extension RedBlackTreeKeyOnlyRangeView {
+  /// The number of elements in the view.
+  ///
+  /// - Complexity: O(`count`)
+  @inlinable
+  public var count: Int {
+    let (l, u) = _raw_range
+    return (try? ___safe_distance(l, u).get()) ?? 0
+  }
+}
 
-    /// Removes and returns the first element, or returns `nil` if the view is empty.
-    @inlinable
-    @discardableResult
-    public mutating func popFirst() -> Element? {
-      guard _raw_range.0 != _raw_range.1 else { return nil }
-      _ensureUnique()
-      let (_start, _) = _raw_range
-      guard _start != __tree_.__end_node else {
-        return nil
-      }
-      let (_p, _r) = __tree_._unchecked_remove(at: _start)
-      _sealed_start = _p.uncheckedSeal
-      return _r
-    }
+extension RedBlackTreeKeyOnlyRangeView {
 
-    /// Removes and returns the last element, or returns `nil` if the view is empty.
-    @inlinable
-    @discardableResult
-    public mutating func popLast() -> Element? {
-      guard _raw_range.0 != _raw_range.1 else { return nil }
-      _ensureUnique()
-      let (_start, _end) = _raw_range
-      guard let last = __tree_.___tree_prev_iter(_end).pointer else {
-        return nil
-      }
-      if last == _start { _sealed_start = _sealed_end }
-      return __tree_._unchecked_remove(at: last).payload
-    }
-
-    /// Removes and returns the first element.
-    ///
-    /// - Precondition: The view isn't empty.
-    @inlinable
-    @discardableResult
-    public mutating func removeFirst() -> Element {
-      guard let element = popFirst() else {
-        preconditionFailure(.emptyFirst)
-      }
-      return element
-    }
-
-    /// Removes and returns the last element.
-    ///
-    /// - Precondition: The view isn't empty.
-    @inlinable
-    @discardableResult
-    public mutating func removeLast() -> Element {
-      guard let element = popLast() else {
-        preconditionFailure(.emptyLast)
-      }
-      return element
-    }
+  /// The first element of the view, or `nil` if the view is empty.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public var first: Element? {
+    let (_start, _end) = _raw_range
+    guard _start != _end, _start != __tree_.__end_node else { return nil }
+    return Base.__payload_(_start)
   }
 
-  extension RedBlackTreeKeyOnlyRangeView {
+  /// The last element of the view, or `nil` if the view is empty.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public var last: Element? {
+    let (_start, _end) = _raw_range
+    guard _start != _end else { return nil }
+    //      return Base.__payload_(__tree_prev_iter(_end))
+    return try? __tree_.___tree_prev_iter(_end).map(Base.__payload_).get()
+  }
+}
 
-    /// Removes every element in the view.
-    ///
-    /// - Returns: The index immediately following the removed range.
-    @inlinable
-    @discardableResult
-    public mutating func erase() -> Index {
-      guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
-      _ensureUnique()
-      let (_start, _end) = _raw_range
-      // ややチェックが甘いので末端チェック付き削除が必要
-      let next = try! __tree_.___erase_range(_start, _end).get()
-      _sealed_start = next.uncheckedSeal
-      return ___index(next)
-    }
+extension RedBlackTreeKeyOnlyRangeView {
 
-    /// Removes the elements in the view that satisfy `shouldBeRemoved`.
-    ///
-    /// - Parameter shouldBeRemoved: A predicate that returns `true` for each element to remove.
-    @inlinable
-    public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      // _ensureUnique()を暗黙に模倣しているので、そこらへんの挙動には注意が必要
-      let (_start, _end) = _raw_range
-      var first = _start.unchecked
-      var last = _end.unchecked
-      defer {
-        _sealed_start = first.pointer!.uncheckedSeal
-        _sealed_end = last.pointer!.uncheckedSeal
-      }
-      _ = try __tree_.___erase_view_range_if_with_many_care(&first, &last, shouldBeRemoved)
-    }
+  /// Removes and returns the first element, or returns `nil` if the view is empty.
+  @inlinable
+  @discardableResult
+  public mutating func popFirst() -> Element? {
+    guard _raw_range.0 != _raw_range.1 else { return nil }
+    _ensureUnique()
+    let (_start, _) = _raw_range
+    guard _start != __tree_.__end_node else { return nil }
+    let (_p, _r) = __tree_._unchecked_remove(at: _start)
+    _sealed_start = _p.uncheckedSeal
+    return _r
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
-
-      /// Returns whether this view and `other` contain equal elements in the same order.
-      ///
-      /// - Parameter other: A sequence to compare with this view.
-      /// - Returns: `true` if both sequences contain the same elements in the same order.
-      /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-      ///   sequence and the length of `other`.
-      @inlinable
-      public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-      where OtherSequence: Sequence, Element == OtherSequence.Element {
-        elementsEqual(other, by: ==)
-      }
-    }
-
-    extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
-
-      /// Returns whether this view precedes `other` in lexicographical order.
-      ///
-      /// - Parameter other: A sequence to compare with this view.
-      /// - Returns: `true` if this view lexicographically precedes `other`.
-      /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-      ///   sequence and the length of `other`.
-      @inlinable
-      public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-      where OtherSequence: Sequence, Element == OtherSequence.Element {
-        lexicographicallyPrecedes(other, by: <)
-      }
-    }
-
-    extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable {
-
-      /// Returns whether both views contain equal elements in the same order.
-      /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-      @inlinable
-      public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
-      }
-    }
-
-    extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparable {
-
-      /// Returns whether `lhs` lexicographically precedes `rhs`.
-      /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-      @inlinable
-      public static func < (lhs: Self, rhs: Self) -> Bool {
-        !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
-      }
-    }
-  #endif
-
-  #if swift(>=5.5)
-    extension RedBlackTreeKeyOnlyRangeView: @unchecked Sendable
-    where Element: Sendable {}
-  #endif
-
-  // MARK: - Is Identical To
-
-  extension RedBlackTreeKeyOnlyRangeView {
-
-    /// Returns whether two views reference the same tree and the same range boundaries.
-    ///
-    /// Identity is stronger than element equality and can be checked without traversing the range.
-    ///
-    /// - Parameter other: Another view to compare by identity.
-    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
-    /// - Complexity: O(1)
-    @inlinable
-    internal func _isIdentical(to other: Self) -> Bool {
-      let (_start, _end) = _raw_range
-      let (_other_start, _other_end) = other._raw_range
-      return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
-        && _end == _other_end
-    }
+  /// Removes and returns the last element, or returns `nil` if the view is empty.
+  @inlinable
+  @discardableResult
+  public mutating func popLast() -> Element? {
+    guard _raw_range.0 != _raw_range.1 else { return nil }
+    _ensureUnique()
+    let (_start, _end) = _raw_range
+    guard let last = __tree_.___tree_prev_iter(_end).pointer else { return nil }
+    if last == _start { _sealed_start = _sealed_end }
+    return __tree_._unchecked_remove(at: last).payload
   }
 
-  // MARK: -
+  /// Removes and returns the first element.
+  ///
+  /// - Precondition: The view isn't empty.
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    guard let element = popFirst() else { preconditionFailure(.emptyFirst) }
+    return element
+  }
 
-  extension RedBlackTreeKeyOnlyRangeView
-  where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
+  /// Removes and returns the last element.
+  ///
+  /// - Precondition: The view isn't empty.
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    guard let element = popLast() else { preconditionFailure(.emptyLast) }
+    return element
+  }
+}
 
-    /// Returns whether the given index refers to an element in this view.
-    ///
-    /// The view's end position is not an element. An index outside the view,
-    /// or an invalid or stale index, returns `false`.
-    ///
-    /// - Parameter index: The index to validate.
-    /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
-    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
-    ///   elements in the base collection.
-    @inlinable
-    public func isElement(at index: Index) -> Bool {
-      guard
-        let index = __tree_.__purified_(index).accessible.pointer,
-        let start = _sealed_start.purified.pointer,
-        let end = _sealed_end.purified.pointer
-      else {
-        return false
-      }
+extension RedBlackTreeKeyOnlyRangeView {
 
-      let result = _NodeKey<Base>.isInHalfOpenRange(
+  /// Removes every element in the view.
+  ///
+  /// - Returns: The index immediately following the removed range.
+  @inlinable
+  @discardableResult
+  public mutating func erase() -> Index {
+    guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
+    _ensureUnique()
+    let (_start, _end) = _raw_range
+    // ややチェックが甘いので末端チェック付き削除が必要
+    let next = try! __tree_.___erase_range(_start, _end).get()
+    _sealed_start = next.uncheckedSeal
+    return ___index(next)
+  }
+
+  /// Removes the elements in the view that satisfy `shouldBeRemoved`.
+  ///
+  /// - Parameter shouldBeRemoved: A predicate that returns `true` for each element to remove.
+  @inlinable
+  public mutating func erase(
+    where shouldBeRemoved: (Element) throws -> Bool
+  ) rethrows {
+    // _ensureUnique()を暗黙に模倣しているので、そこらへんの挙動には注意が必要
+    let (_start, _end) = _raw_range
+    var first = _start.unchecked
+    var last = _end.unchecked
+    defer {
+      _sealed_start = first.pointer!.uncheckedSeal
+      _sealed_end = last.pointer!.uncheckedSeal
+    }
+    _ = try __tree_.___erase_view_range_if_with_many_care(
+      &first,
+      &last,
+      shouldBeRemoved
+    )
+  }
+}
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
+
+  /// Returns whether this view and `other` contain equal elements in the same order.
+  ///
+  /// - Parameter other: A sequence to compare with this view.
+  /// - Returns: `true` if both sequences contain the same elements in the same order.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: ==)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
+
+  /// Returns whether this view precedes `other` in lexicographical order.
+  ///
+  /// - Parameter other: A sequence to compare with this view.
+  /// - Returns: `true` if this view lexicographically precedes `other`.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence
+  ) -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: <)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView: Equatable
+where _PayloadValue: Equatable {
+
+  /// Returns whether both views contain equal elements in the same order.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView: Comparable
+where _PayloadValue: Comparable {
+
+  /// Returns whether `lhs` lexicographically precedes `rhs`.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+#endif
+
+#if swift(>=5.5)
+extension RedBlackTreeKeyOnlyRangeView: @unchecked Sendable
+where Element: Sendable {}
+#endif
+
+// MARK: - Is Identical To
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  /// Returns whether two views reference the same tree and the same range boundaries.
+  ///
+  /// Identity is stronger than element equality and can be checked without traversing the range.
+  ///
+  /// - Parameter other: Another view to compare by identity.
+  /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
+  /// - Complexity: O(1)
+  @inlinable
+  internal func _isIdentical(to other: Self) -> Bool {
+    let (_start, _end) = _raw_range
+    let (_other_start, _other_end) = other._raw_range
+    return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
+      && _end == _other_end
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeKeyOnlyRangeView
+where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
+
+  /// Returns whether the given index refers to an element in this view.
+  ///
+  /// The view's end position is not an element. An index outside the view,
+  /// or an invalid or stale index, returns `false`.
+  ///
+  /// - Parameter index: The index to validate.
+  /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
+  /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+  ///   elements in the base collection.
+  @inlinable
+  public func isElement(at index: Index) -> Bool {
+    guard let index = __tree_.__purified_(index).accessible.pointer,
+      let start = _sealed_start.purified.pointer,
+      let end = _sealed_end.purified.pointer
+    else { return false }
+
+    let result = _NodeKey<Base>
+      .isInHalfOpenRange(
         first: (start, nil),
         position: (index, nil),
         last: (end, nil)
       )
-      return result.result
-    }
+    return result.result
   }
+}
 
-  extension RedBlackTreeKeyOnlyRangeView {
+extension RedBlackTreeKeyOnlyRangeView {
 
-    /// Returns whether the given index is this view's valid end position.
-    ///
-    /// A view's end position may refer to an element in its base collection.
-    /// An invalid or stale index returns `false`.
-    ///
-    /// - Parameter index: The index to validate.
-    /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
-    /// - Complexity: O(1)
-    @inlinable
-    public func isEnd(_ index: Index) -> Bool {
-      guard
-        let index = __tree_.__purified_(index).pointer,
-        let end = _sealed_end.purified.pointer
-      else {
-        return false
-      }
-      return index == end
-    }
+  /// Returns whether the given index is this view's valid end position.
+  ///
+  /// A view's end position may refer to an element in its base collection.
+  /// An invalid or stale index returns `false`.
+  ///
+  /// - Parameter index: The index to validate.
+  /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
+  /// - Complexity: O(1)
+  @inlinable
+  public func isEnd(_ index: Index) -> Bool {
+    guard let index = __tree_.__purified_(index).pointer,
+      let end = _sealed_end.purified.pointer
+    else { return false }
+    return index == end
   }
+}
 #endif

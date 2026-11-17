@@ -79,9 +79,7 @@
     public func distance(from start: Index, to end: Index)
       -> Int
     {
-      guard let d = __tree_.distance(from: start, to: end)
-      else { fatalError(.invalidIndex) }
-      return d
+      __tree_.distance(from: start, to: end).unsafeGet()
     }
   }
 #endif

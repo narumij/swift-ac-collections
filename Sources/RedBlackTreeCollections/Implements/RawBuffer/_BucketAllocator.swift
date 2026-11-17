@@ -99,7 +99,23 @@ package struct _BucketAllocator {
   //
   // 第2引数をenumにして意味を鮮明にしたかったが、パフォーマンスが落ちるので泣く泣く断念
   public typealias Deinitializer = (UnsafeMutableRawPointer, Int) -> Void
+
+  @usableFromInline
+  static func create() -> Self {
+    .init(valueType: Void.self, deinitialize: { _,_ in })
+  }
+  #endif
   
+  #if DISABLE_BULK_DEINITIALIZE // remove性能が解放性能より大事な場合に用いる
+  @inlinable
+  static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer, Int) -> Void {
+    return { p, c in
+      assert(c < 0)
+        p.assumingMemoryBound(to: _PayloadValue.self)
+          .deinitialize(count: 1)
+    }
+  }
+  #else
   @inlinable
   static func deinitializer<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type) -> (UnsafeMutableRawPointer, Int) -> Void {
     
@@ -135,11 +151,6 @@ package struct _BucketAllocator {
           .assumingMemoryBound(to: UnsafeNode.self)
       }
     }
-  }
-  
-  @usableFromInline
-  static func create() -> Self {
-    .init(valueType: Void.self, deinitialize: { _,_ in })
   }
   #endif
 
@@ -493,7 +504,7 @@ extension _BucketAllocator {
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
     
-    #if false
+    #if DISABLE_BULK_DEINITIALIZE
     let it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {

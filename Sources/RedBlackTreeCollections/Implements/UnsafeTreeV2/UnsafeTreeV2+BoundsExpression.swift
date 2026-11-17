@@ -55,8 +55,8 @@ extension UnsafeTreeV2 {
   ) -> _SafePtr {
     var ptr = _SafePtr.failure(.null)
 
-    for i in 0..<expression.count {
-      switch expression[i] {
+    func apply(_ op: RedBlackTreeBoundExpression<_Key>.Op) -> _SafePtr? {
+      switch op {
 
       case .start:
         ptr = __begin_node_.unchecked
@@ -154,8 +154,17 @@ extension UnsafeTreeV2 {
           return .failure(e)
       #endif
       }
+      return nil
     }
 
+    if let failure = apply(expression.first) { return failure }
+    if let second = expression.second {
+      if let failure = apply(second) { return failure }
+    }
+    let rest = expression.rest.span
+    for i in rest.indices {
+      if let failure = apply(rest[i]) { return failure }
+    }
     return ptr
   }
 }

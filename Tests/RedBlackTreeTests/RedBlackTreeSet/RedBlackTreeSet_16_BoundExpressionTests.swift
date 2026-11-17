@@ -372,6 +372,43 @@ import RedBlackTreeCollections
 /// Boundの公開動作。公開APIの結果だけで確かめるので、Releaseでも実行する（RBT-046 X1）。
 final class RedBlackTreeSetBoundPublicBehaviorTests: RedBlackTreeTestCase {
 
+  func testBoundReleasesReferenceKeysAfterLastCopy() {
+    final class Key {
+      let value: Int
+      init(_ value: Int) { self.value = value }
+    }
+    weak var observed: Key?
+    var expression: RedBlackTreeBoundExpression<Key>?
+    do {
+      let key = Key(3)
+      observed = key
+      expression = .lowerBound(key).before.after.before.after
+    }
+    var copy = expression
+    expression = nil
+    XCTAssertNotNil(observed)
+    withExtendedLifetime(copy) {}
+    copy = nil
+    XCTAssertNil(observed)
+  }
+
+  func testBoundCopiesAcrossInlineAndArrayStorage() {
+    let tree = RedBlackTreeSet<Int>(0..<8)
+    let first = RedBlackTreeBoundExpression<Int>.lowerBound(3)
+    let second = first.before
+    let third = second.after
+    let fourth = third.after
+    let alternate = third.before
+    XCTAssertEqual(tree[first], 3)
+    XCTAssertEqual(tree[second], 2)
+    XCTAssertEqual(tree[third], 3)
+    XCTAssertEqual(tree[fourth], 4)
+    XCTAssertEqual(tree[alternate], 2)
+    XCTAssertEqual(tree[first.advanced(by: 4, limit: fourth)], 4)
+    XCTAssertNil(tree[RedBlackTreeBoundExpression<Int>.start.before.after])
+  }
+
+
   let a = RedBlackTreeSet<Int>(0 ..< 3)
 
   /// 解決できる`after`は要素を返し、末尾以降の`after`は解決できず`nil`になること。

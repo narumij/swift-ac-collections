@@ -233,7 +233,6 @@ extension RedBlackTreeMappedValuesView {
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    //      return Base.__mapped_value_(__tree_prev_iter(_end))
     return try? __tree_.___tree_prev_iter(_end).map(Base.__mapped_value_).get()
   }
 }

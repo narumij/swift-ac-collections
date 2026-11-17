@@ -147,32 +147,11 @@ extension RedBlackTreeKeyValueRangeView {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-#if false
-// 標準に倣うと、Collections適合が必要なのでこちらになる
-extension RedBlackTreeKeyValueRangeView {
-
-  /// A sequence containing the keys in this view, in ascending order.
-  ///
-  /// - Complexity: O(1) to create the sequence.
-  @inlinable
-  public var keys: [Key] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var values: [Value] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
-  }
-}
-#else
 // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
 extension RedBlackTreeKeyValueRangeView {
 
   public typealias Keys = UnsafeIterator.Trap.KeyObverse<Base>
-  //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+  public typealias Values = RedBlackTreeMappedValuesView<Container>
 
   /// A lazy sequence of the keys inside this range, in ascending order.
   ///
@@ -182,15 +161,6 @@ extension RedBlackTreeKeyValueRangeView {
     let (_start, _end) = _raw_range
     return .init(start: _start, end: _end, tree: __tree_)
   }
-
-  /// - Complexity: O(1)
-  //      @inlinable
-  //      public var values: Values {
-  //        let (_start, _end) = _raw_range
-  //        return .init(start: _start, end: _end, tree: __tree_)
-  //      }
-
-  public typealias Values = RedBlackTreeMappedValuesView<Container>
 
   @inlinable
   func makeValuesView() -> Values {
@@ -224,7 +194,6 @@ extension RedBlackTreeKeyValueRangeView {
     }
   }
 }
-#endif
 #endif
 
 // MARK: -
@@ -269,7 +238,6 @@ extension RedBlackTreeKeyValueRangeView {
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    //      return Base.__element_(__tree_prev_iter(_end))
     return try? __tree_.___tree_prev_iter(_end).map(Base.__element_).get()
   }
 }

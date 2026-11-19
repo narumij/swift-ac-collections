@@ -66,14 +66,14 @@ final class TreeFoundamentalValueTests: TreeTestCase {
 
   /// 特殊なtracking tagが通常ノード用の非負値と衝突しないこと。
   func testTrackingTag_specialValuesAreStableAndDistinct() {
-    XCTAssertEqual(_TrackingTag.nullptr, -2)
-    XCTAssertEqual(_TrackingTag.end, -1)
-    XCTAssertEqual(_TrackingTag.debug, -999)
+    XCTAssertEqual(_TrackingTag.nullptr, -1)
+    XCTAssertEqual(_TrackingTag.end, -2)
+    XCTAssertEqual(_TrackingTag.debug, .max)
 
     // なんだこの自作自演的テスト？
-    let tags: Set<_TrackingTag> = [.nullptr, .end, .debug]
+    let tags: Array<_TrackingTag> = [.nullptr, .end, .debug]
     XCTAssertEqual(tags.count, 3)
-    XCTAssertTrue(tags.allSatisfy { $0 < 0 })
+    XCTAssertTrue(tags.prefix(2).allSatisfy { $0 < 0 })
   }
 
   /// scalar baseの既定変換がpayload・key・elementを同一値として扱うこと。

@@ -39,9 +39,9 @@
 //
 // ### 特殊値
 //
-// - `-2` : nullptr（ヌルノード）
-// - `-1` : end（終端ノード）
-// - `-999` : デバッグ用途のダミー値
+// - `-1` : nullptr（ヌルノード）
+// - `-2` : end（終端ノード）
+// - .max : デバッグ用途のダミー値
 //
 #if USE_COMPACT_NODE_METADATA
 public typealias _TrackingTag = Int32
@@ -54,18 +54,34 @@ extension _TrackingTag {
   // 赤黒木の`_TrackingTag`で、nullを表す
   @inlinable
   package static var nullptr: Self {
-    -2
+    -1
   }
 
   // 赤黒木の`_TrackingTag`で、終端を表す
   @inlinable
   package static var end: Self {
-    -1
+    -2
+    // _Versionを埋め込める可能性に着目し、準備として数字を入れ替え
+    //
+    // is end -> tag < -1
+    //
+    // しばらく考察する
+    //
+    // ┌─┬────────────────────────────────────────────┐
+    // │1│ Global version ?                           │
+    // └─┴────────────────────────────────────────────┘
+    //
+    //
+    // ┌─┬────────────────────────────────────────────┬─────────────────┐
+    // │1│ Global version ?                           │ Local version ? │
+    // └─┴────────────────────────────────────────────┴─────────────────┘
+    //
   }
 
   // メモリデバッグのための`_TrackingTag`のダミー値
   @inlinable
   package static var debug: Self {
-    -999
+    .max
+    // ノードサイズ都合で絶対に使えないサイズ
   }
 }

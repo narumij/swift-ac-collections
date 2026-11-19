@@ -19,12 +19,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false  // RBT-063: 意味論の検討が必要なため、対応は後で行う。
-      // 多重系の.lessThanOrEqual/.greaterThanOrEqualが同値の端ではなく途中の要素を指す。
-      // findを__find_equal版にしている（unsafe_tree+find.swiftで保留中）ことの影響なので、findの扱いと合わせて判断する。
-
-    #endif
-
+  
     #if false && ENABLE_EXPERIMENTAL_LRU // LRUはあとまわし
       // LRUのコピー側でgetしただけで、元の値の追い出し順が変わる。
       func testLRUGetOnCopyDoesNotAffectOriginal() {

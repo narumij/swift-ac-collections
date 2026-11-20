@@ -42,7 +42,7 @@ extension _BaseNode_NodeCompareProtocol {
 
 // MARK: -
 
-public struct __UniqueHelper<Base: ~Copyable>: ~Copyable, MultiplicityHelper, _UnsafeNodePtrType
+public struct __UniqueHelper<Base: ~Copyable>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
@@ -93,7 +93,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
   }
 }
 
-public struct __MultiHelper<Base: ~Copyable>: ~Copyable, MultiplicityHelper, _UnsafeNodePtrType
+public struct __MultiHelper<Base: ~Copyable>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable

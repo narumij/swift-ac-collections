@@ -44,7 +44,7 @@ where Base: _BasePayloadValue_KeyInterface {}
 extension _PayloadValueBridge_Key {
 
   @inlinable
-  public func __key(_ e: borrowing _PayloadValue) -> _Key {
+  public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
   

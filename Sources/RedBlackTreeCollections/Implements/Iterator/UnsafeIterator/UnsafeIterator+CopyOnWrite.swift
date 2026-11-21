@@ -29,8 +29,7 @@
       IteratorProtocol,
       Sequence
     where
-      Source: UnsafeAssosiatedIterator,
-      Source.Base._PayloadValue: Copyable
+      Source: UnsafeAssosiatedIterator
     {
       public typealias Base = Source.Base
       public typealias Tree = UnsafeTreeV2<Source.Base>

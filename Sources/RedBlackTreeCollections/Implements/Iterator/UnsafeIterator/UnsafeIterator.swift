@@ -27,9 +27,9 @@ public enum UnsafeIterator {}
   extension UnsafeIterator {
 
     public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Obverse4>>
-    where Base: ___TreeBase, Base._PayloadValue: Copyable
+    where Base: ___TreeBase
     public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Reverse4>>
-    where Base: ___TreeBase, Base._PayloadValue: Copyable
+    where Base: ___TreeBase
 
     public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Obverse4>>
     where Base: ___TreeBase & PairValueTrait
@@ -49,9 +49,9 @@ public enum UnsafeIterator {}
     public enum Trap {
       
       public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Trap<_Obverse4>>>
-      where Base: ___TreeBase, Base._PayloadValue: Copyable
+      where Base: ___TreeBase
       public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Trap<_Reverse4>>>
-      where Base: ___TreeBase, Base._PayloadValue: Copyable
+      where Base: ___TreeBase
 
       public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Trap<_Obverse4>>>
       where Base: ___TreeBase & PairValueTrait

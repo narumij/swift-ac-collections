@@ -43,7 +43,7 @@ public protocol ___Root: _BaseBridge {
 // 木にどれを使うのかしっている
 @_documentation(visibility: internal)
 public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
-where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase, Base._PayloadValue: Copyable {}
+where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
 // 共通生木メンバー
 @usableFromInline

@@ -47,8 +47,8 @@ extension _ElementType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _ElementValuePtr = UnsafeMutablePointer<Element>
 }
 
-extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType, _PayloadValue: Copyable {
-  
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
+
   // ペイロードのポインタ
   //
   // ```
@@ -64,7 +64,7 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType, _Pa
   static func __payload_ptr(_ p: _NodeRef) -> _PayloadPtr {
     p.pointee.__value_()
   }
-  
+
   @inlinable
   @inline(__always)
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {

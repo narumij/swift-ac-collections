@@ -31,8 +31,7 @@
     where
       Base: _UnsafeNodePtrType,
       Source.Element == UnsafeMutablePointer<UnsafeNode>,
-      Source: IteratorProtocol,
-      Base._PayloadValue: Copyable
+      Source: IteratorProtocol
     {
       public var _source: Source
 

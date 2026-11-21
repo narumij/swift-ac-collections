@@ -35,9 +35,11 @@ package final class UnsafeTreeV2Buffer:
 
     withUnsafeMutablePointers { header, _ in
 
+      if !header.pointee.isLazyDetachUniquelyOwned() {
+        header.pointee._lazyDetach?.isDetached = true
+      }
 
       #if !COMPATIBLE_ATCODER_2025
-      header.pointee._lazyDetach?.isDetached = true
       header.pointee.___deallocFreshPool()
       #else
       if !header.pointee.isLazyDetachUniquelyOwned() {

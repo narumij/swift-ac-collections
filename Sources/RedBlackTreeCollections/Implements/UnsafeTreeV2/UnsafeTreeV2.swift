@@ -22,7 +22,7 @@
 
 @frozen
 @_documentation(visibility: internal)
-public struct UnsafeTreeV2<Base: ___TreeBase> {
+public struct UnsafeTreeV2<Base: ___TreeBase> where Base._PayloadValue: Copyable {
 
   @inlinable
   internal init(_buffer: ManagedBufferPointer<Header, Element>) {

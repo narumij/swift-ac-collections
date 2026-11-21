@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol _SequenceV2: UnsafeTreeHostV2, _PayloadValueBride, _KeyBride {}
+protocol _SequenceV2: UnsafeTreeHostV2, _PayloadValueBride, _KeyBride where _PayloadValue: Copyable {}
 
 extension _SequenceV2 {
 

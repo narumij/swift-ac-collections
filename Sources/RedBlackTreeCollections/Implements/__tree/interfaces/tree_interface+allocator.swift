@@ -23,7 +23,7 @@
 @usableFromInline
 protocol AllocationInterface:  ~Copyable, _NodePtrType & _PayloadValueType {
   // ノードを構築する
-  @inlinable func __construct_node(_ k: _PayloadValue) -> _NodePtr
+  @inlinable func __construct_node(_ k: consuming _PayloadValue) -> _NodePtr
 }
 
 @usableFromInline

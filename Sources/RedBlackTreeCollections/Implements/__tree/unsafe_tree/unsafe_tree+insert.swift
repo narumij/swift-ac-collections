@@ -72,14 +72,14 @@ extension InsertUniqueProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
-    __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
+    __insert_unique(_ x: consuming _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
     __emplace_unique_key_args(x)
   }
 
   @inlinable
   internal func
-    __emplace_unique_key_args(_ __k: _PayloadValue)
+    __emplace_unique_key_args(_ __k: consuming _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)
   {
     let (__parent, __child) = __find_equal(__key(__k))
@@ -106,17 +106,17 @@ protocol InsertMultiProtocol: ~Copyable, AllocationInterface & _TreePayloadValue
 extension InsertMultiProtocol where Self: ~Copyable {
 
   @inlinable
-  internal func __insert_multi(_ x: _PayloadValue) -> _NodePtr {
+  internal func __insert_multi(_ x: consuming _PayloadValue) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
   internal func
-    __emplace_multi(_ __k: _PayloadValue) -> _NodePtr
+    __emplace_multi(_ __k: consuming _PayloadValue) -> _NodePtr
   {
-    let __h = __construct_node(__k)
     var __parent = nullptr
     let __child = __find_leaf_high(&__parent, __key(__k))
+    let __h = __construct_node(__k)
     __insert_node_at(__parent, __child, __h)
     return __h
   }
@@ -147,7 +147,7 @@ extension InsertLastProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
-    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: consuming _PayloadValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)

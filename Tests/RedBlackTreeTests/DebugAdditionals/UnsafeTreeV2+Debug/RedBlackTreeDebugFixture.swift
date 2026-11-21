@@ -10,7 +10,7 @@ import XCTest
 /// `RedBlackTreeTestSupport`側のBound/Index相当のヘルパーとは対象が異なる(常に生木側)。
 #if DEBUG
   protocol RedBlackTreeDebugFixture: _UnsafeNodePtrType {
-    associatedtype Base: ___TreeBase
+    associatedtype Base: ___TreeBase where Base._PayloadValue: Copyable
     var __tree_: UnsafeTreeV2<Base> { get set }
   }
 

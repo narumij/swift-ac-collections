@@ -48,14 +48,14 @@ public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _Payl
 
 public protocol _BasePayloadValue_KeyInterface: ~Copyable, _KeyType & _PayloadValueType {
   // 要素から比較キー値がとれること
-  @inlinable static func __key(_: _PayloadValue) -> _Key
+  @inlinable static func __key(_: borrowing _PayloadValue) -> _Key
   @inlinable static func __key(_: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key>
 }
 
 public protocol _BasePayloadValue_MappedValueInterface: ~Copyable, _PayloadValueType
     & _MappedValueType
 {
-  @inlinable static func __mapped_value_(_: _PayloadValue) -> _MappedValue
+  @inlinable static func __mapped_value_(_: borrowing _PayloadValue) -> _MappedValue
 }
 
 public protocol _BaseKey_LessThanInterface: ~Copyable, _KeyType {

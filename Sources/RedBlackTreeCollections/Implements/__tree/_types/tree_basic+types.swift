@@ -77,7 +77,7 @@ public protocol _PayloadValueType: ~Copyable {
   //    |    ^--_PayloadValue
   //    ^_NodePtr
   // ```
-  associatedtype _PayloadValue
+  associatedtype _PayloadValue: ~Copyable
 }
 
 // 比較値型の定義
@@ -100,28 +100,6 @@ public protocol _KeyType: ~Copyable {
   //    ^_NodePtr
   // ```
   associatedtype _Key
-}
-
-// 比較値ポインタ型の定義
-public protocol _KeyPtrType: ~Copyable {
-  // 比較値型
-  //
-  // set, multiset
-  // ```
-  // ...|Node|Payload|Node...
-  //    |    |Key    |
-  //    |     ^--_Key
-  //    ^_NodePtr
-  // ```
-  //
-  // dictionary, multimap, etc
-  // ```
-  // ...|Node|     Payload      |Node...
-  //    |    |(Key, MappedValue)|
-  //    |      ^--_Key
-  //    ^_NodePtr
-  // ```
-  associatedtype _KeyPtr
 }
 
 // キーバリュー積載時の対応値型の定義
@@ -184,7 +162,7 @@ where Element == (key: _Key, value: _MappedValue) {}
 // 積載型からコレクション要素型への変換方法を示すこと
 public protocol _BasePaylodValue_ElementInterface: ~Copyable, _PayloadValueType, _ElementType {
   @inlinable
-  static func __element_(_ __value: _PayloadValue) -> Element
+  static func __element_(_ __value: borrowing _PayloadValue) -> Element
 }
 
 // DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる

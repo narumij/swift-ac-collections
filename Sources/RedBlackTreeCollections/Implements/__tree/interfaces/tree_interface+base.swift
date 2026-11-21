@@ -74,7 +74,7 @@ protocol RootPtrInterface: ~Copyable, _NodePtrType {
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   @usableFromInline
-  protocol _TreeNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType & _KeyPtrType {
+  protocol _TreeNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType {
     // ノードから比較用の値を取り出す。
     // SetやMultisetではElementに該当する
     // DictionaryやMultiMapではKeyに該当する
@@ -101,14 +101,14 @@ protocol _TreeNode_PayloadValueInterface: ~Copyable, NullPtrInterface & _Payload
 @usableFromInline
 protocol _TreePayloadValue_KeyInterface: ~Copyable, _KeyType, _PayloadValueType {
   // 要素から比較用のキー値を取り出す。
-  @inlinable func __key(_ e: _PayloadValue) -> _Key
+  @inlinable func __key(_ e: borrowing _PayloadValue) -> _Key
   @inlinable func __key(_ e: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key>
 }
 
 @usableFromInline
 protocol _TreeRawValue_MappedValueInteface: ~Copyable, _KeyValueBaseType {
 
-  @inlinable func __mapped_value(_ element: _PayloadValue) -> _MappedValue
+  @inlinable func __mapped_value(_ element: borrowing _PayloadValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意

@@ -78,8 +78,6 @@ protocol RootPtrInterface: ~Copyable, _NodePtrType {
     // ノードから比較用の値を取り出す。
     // SetやMultisetではElementに該当する
     // DictionaryやMultiMapではKeyに該当する
-    @inlinable func __get_value(_: _NodePtr) -> _Key
-    
     @inlinable func __get_value(_: _NodePtr) -> UnsafePointer<_Key>
   }
 #else
@@ -97,7 +95,6 @@ protocol RootPtrInterface: ~Copyable, _NodePtrType {
 @usableFromInline
 protocol _TreeNode_PayloadValueInterface: ~Copyable, NullPtrInterface & _PayloadValueType & __value_type {
   // ノードの値要素を取得する
-  @inlinable func __value_(_ p: _NodePtr) -> __value_type
   @inlinable func __value_(_ p: _NodePtr) -> UnsafePointer<__value_type>
 }
 

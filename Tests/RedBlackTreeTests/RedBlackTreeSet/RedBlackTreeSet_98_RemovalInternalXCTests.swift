@@ -26,7 +26,7 @@
       do {
         let (h, inserted) = set.__tree_.__emplace_hint_unique(hint, nil, -1)
         XCTAssertTrue(inserted)
-        XCTAssertEqual(set.__tree_.__get_value(h), -1)
+        XCTAssertEqual(set.__tree_.__get_value(h).pointee, -1)
         XCTAssertEqual(set.count, 11)
         XCTAssertTrue(set.contains(-1))
       }
@@ -35,7 +35,7 @@
       do {
         let (h, inserted) = set.__tree_.__emplace_hint_unique(hint, nil, -1)
         XCTAssertFalse(inserted)
-        XCTAssertEqual(set.__tree_.__get_value(h), -1)
+        XCTAssertEqual(set.__tree_.__get_value(h).pointee, -1)
         XCTAssertEqual(set.count, 11)
       }
 
@@ -43,7 +43,7 @@
       do {
         let (h, inserted) = set.__tree_.__emplace_hint_unique(hint, nil, -2)
         XCTAssertTrue(inserted)
-        XCTAssertEqual(set.__tree_.__get_value(h), -2)
+        XCTAssertEqual(set.__tree_.__get_value(h).pointee, -2)
         XCTAssertEqual(set.count, 12)
         XCTAssertTrue(set.contains(-2))
       }
@@ -94,7 +94,7 @@
           .map(node)
           .first { $0.__left_ != tree.nullptr }!
         let prior = tree.__tree_prev_iter(hint)
-        let value = (tree.__get_value(prior) + tree.__get_value(hint)) / 2
+        let value = (tree.__get_value(prior).pointee + tree.__get_value(hint).pointee) / 2
 
         let (parent, child, _) = find(hint, value)
         XCTAssertEqual(parent, prior)
@@ -121,7 +121,7 @@
           .map(node)
           .first { $0.__right_ != tree.nullptr }!
         let next = tree.__tree_next_iter(hint)
-        let value = (tree.__get_value(hint) + tree.__get_value(next)) / 2
+        let value = (tree.__get_value(hint).pointee + tree.__get_value(next).pointee) / 2
 
         let (parent, child, _) = find(hint, value)
         XCTAssertEqual(parent, next)

@@ -126,7 +126,7 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     }
 
     XCTAssertEqual(NodeKeyBase.__get_value(fixture.firstNode), "key")
-    XCTAssertEqual(TreeNodeKeyFixture().__get_value(fixture.firstNode), "key")
+    XCTAssertEqual(TreeNodeKeyFixture().__get_value(fixture.firstNode).pointee, "key")
   }
 #endif
 

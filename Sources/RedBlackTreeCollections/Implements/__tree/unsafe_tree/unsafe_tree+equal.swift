@@ -47,7 +47,7 @@ extension EqualProtocol_ptr {
     var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
-      let __comp_res = __comp(__k, __get_value(__rt))
+      let __comp_res = __comp(__k, __get_value(__rt).pointee)
       if __comp_res.__less() {
         __result = __rt
         __rt = __rt.__left_
@@ -73,7 +73,7 @@ extension EqualProtocol_ptr {
     var __rt = __root
     let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
-      let __comp_res = __comp(__k, __get_value(__rt))
+      let __comp_res = __comp(__k, __get_value(__rt).pointee)
       if __comp_res.__less() {
         __result = __rt
         __rt = __rt.__left_

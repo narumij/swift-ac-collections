@@ -75,7 +75,7 @@ extension BoundAlgorithmProtocol_ptr where Self: ~Copyable {
     var __result = __end_node
     // let __comp = __lazy_synth_three_way_comparator
     while __rt != nullptr {
-      let __comp_res = __comp(__v, __get_value(__rt))
+      let __comp_res = __comp(__v, __get_value(__rt).pointee)
       if __comp_res.__less() {
         __result = __rt
         __rt = __rt.__left_
@@ -130,7 +130,7 @@ extension BoundAlgorithmProtocol_common_ptr where Self: ~Copyable {
     var (__root, __result) = (__root, __result)
 
     while __root != nullptr {
-      if !value_comp(__get_value(__root), __v) {
+      if !value_comp(__get_value(__root).pointee, __v) {
         __result = __root
         __root = __root.__left_
       } else {
@@ -147,7 +147,7 @@ extension BoundAlgorithmProtocol_common_ptr where Self: ~Copyable {
     var (__root, __result) = (__root, __result)
 
     while __root != nullptr {
-      if value_comp(__v, __get_value(__root)) {
+      if value_comp(__v, __get_value(__root).pointee) {
         __result = __root
         __root = __root.__left_
       } else {

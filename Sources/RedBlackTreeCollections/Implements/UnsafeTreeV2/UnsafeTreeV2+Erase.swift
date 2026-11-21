@@ -65,7 +65,7 @@ extension UnsafeTreeV2 {
       guard __first.___has_payload_content else {
         return .failure(.other)
       }
-      if try shouldBeRemoved(__value_(__first.pointer!)) {
+      if try shouldBeRemoved(__value_(__first.pointer!).pointee) {
         __first = erase(__first.accessible.pointer!).unchecked
       } else {
         __first = ___tree_next_iter(__first.accessible.pointer!)
@@ -86,7 +86,7 @@ extension UnsafeTreeV2 {
       guard current.___has_payload_content else {
         return .failure(.other)
       }
-      if try shouldBeRemoved(__value_(current.pointer!)) {
+      if try shouldBeRemoved(__value_(current.pointer!).pointee) {
         let next = erase(current.accessible.pointer!).unchecked
         if current == __first { __first = next }
         current = next
@@ -114,7 +114,7 @@ extension UnsafeTreeV2 {
       guard current.___has_payload_content else {
         return .failure(.other)
       }
-      if try shouldBeRemoved(__value_(current.pointer!)) {
+      if try shouldBeRemoved(__value_(current.pointer!).pointee) {
         break
       }
       current = ___tree_next_iter(current.accessible.pointer!)
@@ -193,7 +193,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       guard __first.___has_payload_content else {
         return .failure(.other)
       }
-      if try shouldBeRemoved(__value_(__first.pointer!)) {
+      if try shouldBeRemoved(__value_(__first.pointer!).pointee) {
         break
       }
       __first = ___tree_next_iter(__first.accessible.pointer!)

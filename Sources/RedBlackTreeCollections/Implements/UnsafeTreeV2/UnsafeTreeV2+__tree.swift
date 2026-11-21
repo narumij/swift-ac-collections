@@ -110,11 +110,6 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
-  @inlinable
-  package func __value_(_ p: _NodePtr) -> _PayloadValue {
-    p.__value_().pointee
-  }
   
   @inlinable
   package func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {

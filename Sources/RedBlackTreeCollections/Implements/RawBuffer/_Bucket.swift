@@ -172,14 +172,9 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   package func start(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, payloadOrPairAlignment payloadAlignment: Int) -> UnsafeMutablePointer<
     UnsafeNode
   > {
-    let nodeAlignment = nodeLayout.alignment
-    if payloadAlignment <= nodeAlignment {
-      return
-        storage
-        .assumingMemoryBound(to: UnsafeNode.self)
-    }
-    return
-      storage
+    assert(Int(bitPattern: storage) % nodeLayout.alignment == 0,
+      "storage must satisfy node alignment")
+    return storage
       .advanced(by: nodeLayout.stride)
       .alignedUp(toMultipleOf: payloadAlignment)
       .advanced(by: -nodeLayout.stride)

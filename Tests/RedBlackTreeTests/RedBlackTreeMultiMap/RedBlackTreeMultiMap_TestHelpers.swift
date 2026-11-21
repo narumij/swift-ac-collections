@@ -14,5 +14,5 @@ where
   A: Sequence, B: Sequence, A.Element == (key: C, value: D), A.Element == B.Element,
   C: Equatable, D: Equatable
 {
-  XCTAssertTrue(lhs.elementsEqual(rhs, by: ==), file: file, line: line)
+  XCTAssertTrue(lhs.elementsEqual(rhs, by: ==), file: (file), line: line)
 }

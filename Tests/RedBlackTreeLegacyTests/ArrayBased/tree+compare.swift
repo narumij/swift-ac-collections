@@ -21,7 +21,6 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 #if DEBUG
-  @testable import RedBlackTreeCollections
 
   import Foundation
 

@@ -131,7 +131,7 @@ import XCTest
     }
 
     func test_subrangeValuesSingleIndexOperations_doNotCompareKeys() {
-      var dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
+      let dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
         uniqueKeysWithValues: (0..<5).map { (ComparisonCountingKey(value: $0), "\($0)") })
       let lower = dictionary.index(after: dictionary.startIndex)
       // Keep the View end on a live base-tree element so an old range check must compare keys.

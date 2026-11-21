@@ -33,7 +33,7 @@ where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
 
   @inlinable
   package init(_ p: _NodePtr) {
-    self = p.___is_end ? .end : .key(Base.__get_value(p))
+    self = p.___is_end ? .end : .key(Base.__get_value(p).pointee)
   }
 }
 

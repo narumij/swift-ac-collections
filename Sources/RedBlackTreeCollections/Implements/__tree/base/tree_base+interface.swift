@@ -27,7 +27,7 @@
     // ノードから比較用の値を取り出す。
     // SetやMultisetではElementに該当する
     // DictionaryやMultiMapではKeyに該当する
-    @inlinable static func __get_value(_: _NodePtr) -> _Key
+    @inlinable static func __get_value(_: _NodePtr) -> UnsafePointer<_Key>
   }
 #else
   // 型の名前にねじれがあるので注意
@@ -43,11 +43,13 @@
 // 配列インデックス方式ではこれを経由する必要があるが、ポインタ方式では縛りがない
 public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _PayloadValueType {
   @inlinable static func __value_(_ p: _NodePtr) -> _PayloadValue
+  @inlinable static func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue>
 }
 
 public protocol _BasePayloadValue_KeyInterface: ~Copyable, _KeyType & _PayloadValueType {
   // 要素から比較キー値がとれること
   @inlinable static func __key(_: _PayloadValue) -> _Key
+  @inlinable static func __key(_: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key>
 }
 
 public protocol _BasePayloadValue_MappedValueInterface: ~Copyable, _PayloadValueType

@@ -70,8 +70,16 @@ import XCTest
         value
       }
 
+      func __key(_ value: UnsafePointer<Int>) -> UnsafePointer<Int> {
+        value
+      }
+
       func __get_value(_ node: _NodePtr) -> Int {
         node.__value_(as: Int.self).pointee
+      }
+
+      func __get_value(_ node: _NodePtr) -> UnsafePointer<Int> {
+        UnsafePointer(node.__value_(as: Int.self))
       }
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
@@ -105,6 +113,10 @@ import XCTest
 
       func __get_value(_ node: _NodePtr) -> Int {
         node.__value_(as: Int.self).pointee
+      }
+
+      func __get_value(_ node: _NodePtr) -> UnsafePointer<Int> {
+        UnsafePointer(node.__value_(as: Int.self))
       }
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {

@@ -67,7 +67,10 @@
     ///
     /// - Parameter position: A valid element index of this multimap.
     /// - Precondition: `position` identifies an element in this multimap and isn't `endIndex`.
-    /// - Complexity: O(1)
+    ///
+    /// - Complexity: O(1) when the index directly references the current storage;
+    ///   O(b) when resolving the index by its tracking tag, where b is the number
+    ///   of internal storage buckets.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
@@ -87,7 +90,10 @@
     ///
     /// - Parameter position: A valid element index of this multimap.
     /// - Precondition: `position` identifies an element in this multimap and isn't `endIndex`.
-    /// - Complexity: O(1)
+    ///
+    /// - Complexity: O(1) when the index directly references the current storage;
+    ///   O(b) when resolving the index by its tracking tag, where b is the number
+    ///   of internal storage buckets.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)

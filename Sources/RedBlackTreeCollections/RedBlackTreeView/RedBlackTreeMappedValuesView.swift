@@ -133,7 +133,11 @@ where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
   /// - Parameter position: A valid element index within this view.
   /// - Precondition: `position` identifies an element inside the view.
   ///
-  /// - Complexity: O(1).
+  /// - Complexity: O(1) when the index directly references the current storage;
+  ///   O(b) when resolving the index by its tracking tag, where b is the number
+  ///   of internal storage buckets.
+  ///   Mutation additionally takes O(n) if copy-on-write requires copying the
+  ///   backing storage, where n is the number of elements in the backing tree.
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always)

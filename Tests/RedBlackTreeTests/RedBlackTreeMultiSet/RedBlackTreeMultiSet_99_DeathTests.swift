@@ -555,7 +555,7 @@
         let removed = set.index(after: set.startIndex)
         set.remove(at: removed)
         let shared = set
-        withExtendedLifetime(shared) {
+        _ = withExtendedLifetime(shared) {
           set.update(1, at: removed)
         }
       }
@@ -648,7 +648,7 @@
     func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, stale, _) = multiSetAfterRemoveAllKeepingCapacity()
-        _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        t.erase(stale..<t.endIndex, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }

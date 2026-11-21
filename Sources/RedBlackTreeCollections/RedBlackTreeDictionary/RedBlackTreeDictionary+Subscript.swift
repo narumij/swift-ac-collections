@@ -76,7 +76,9 @@ extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
     ///
-    /// - Complexity: O(1)
+    /// - Complexity: O(1) when the index directly references the current storage;
+    ///   O(b) when resolving the index by its tracking tag, where b is the number
+    ///   of internal storage buckets.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)

@@ -27,7 +27,10 @@
     ///
     /// - Parameter position: A valid element index of this set.
     /// - Precondition: `position` identifies an element in this set and isn't `endIndex`.
-    /// - Complexity: O(1)
+    ///
+    /// - Complexity: O(1) when the index directly references the current storage;
+    ///   O(b) when resolving the index by its tracking tag, where b is the number
+    ///   of internal storage buckets.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)

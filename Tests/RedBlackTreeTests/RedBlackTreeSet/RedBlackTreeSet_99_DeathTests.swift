@@ -478,7 +478,7 @@
     func eraseIndexRangeWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, _, staleRange) = setAfterRemoveAllKeepingCapacity()
-        _ = t.erase(staleRange, where: { _ in true })
+        t.erase(staleRange, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }
@@ -487,7 +487,7 @@
     func eraseExpressionWhere_terminatesWithoutInvalidMemoryAccess() async {
       let result = await #expect(processExitsWith: .failure, observing: [\.standardErrorContent]) {
         var (t, stale, _) = setAfterRemoveAllKeepingCapacity()
-        _ = t.erase(stale..<t.endIndex, where: { _ in true })
+        t.erase(stale..<t.endIndex, where: { _ in true })
       }
       expectNoInvalidMemoryAccess(result)
     }

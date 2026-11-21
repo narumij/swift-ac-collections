@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if DEBUG
 // 資料的に残されている
 //
 // 実際には特殊化されたものをつかっている
@@ -45,6 +46,7 @@ extension _BaseNode_KeyProtocol where Self: ~Copyable {
     __key(__value_(p))
   }
 }
+#endif
 
 public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessThanInterface
 where _Key: Comparable {}

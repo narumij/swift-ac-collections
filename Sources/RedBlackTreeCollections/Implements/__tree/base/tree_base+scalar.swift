@@ -26,4 +26,9 @@ extension _ScalarBasePayloadValue_KeyProtocol where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ __v: _PayloadValue) -> _Key { __v }
+  
+  @inlinable
+  public static func __key(_ __v: UnsafePointer<_PayloadValue>)
+  -> UnsafePointer<_Key>
+  { __v }
 }

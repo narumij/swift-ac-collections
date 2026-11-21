@@ -58,8 +58,8 @@ extension ___LRUHandle {
 extension ___LRUHandle {
 
   @inlinable
-  func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_(as: _PayloadValue.self).pointee.key
+  func __get_value(_ p: _NodePtr) -> UnsafePointer<_Key> {
+    UnsafePointer(p.__value_(as: _PayloadValue.self)).pointer(to: \.key)!
   }
 }
 

@@ -42,6 +42,10 @@
         fatalError()
       }
 
+      static func __get_value(_: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<Int> {
+        fatalError()
+      }
+
       typealias _Key = Int
     }
 

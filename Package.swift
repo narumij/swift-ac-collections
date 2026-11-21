@@ -238,9 +238,7 @@ let package = Package(
     ),
     .testTarget(
       name: "RedBlackTreeLegacyTests",
-      dependencies: [
-        "RedBlackTreeCollections",
-      ],
+      dependencies: [],
       swiftSettings: _settings
     ),
     .testTarget(

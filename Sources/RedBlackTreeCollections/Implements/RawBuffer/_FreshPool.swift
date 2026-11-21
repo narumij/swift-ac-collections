@@ -131,7 +131,7 @@
 
     @usableFromInline
     mutating func ___flushFreshPool() {
-      freshBucketAllocator.deinitialize(bucket: freshBucketHead)
+      freshBucketAllocator.flush(bucket: freshBucketHead)
       freshPoolUsedCount = 0
       freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }

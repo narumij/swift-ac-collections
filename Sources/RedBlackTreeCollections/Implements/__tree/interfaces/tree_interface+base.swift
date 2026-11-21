@@ -95,7 +95,7 @@ protocol RootPtrInterface: ~Copyable, _NodePtrType {
 @usableFromInline
 protocol _TreeNode_PayloadValueInterface: ~Copyable, NullPtrInterface & _PayloadValueType & __value_type {
   // ノードの値要素を取得する
-  @inlinable func __value_(_ p: _NodePtr) -> UnsafePointer<__value_type>
+  @inlinable func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue>
 }
 
 @usableFromInline
@@ -103,12 +103,6 @@ protocol _TreePayloadValue_KeyInterface: ~Copyable, _KeyType, _PayloadValueType 
   // 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _PayloadValue) -> _Key
   @inlinable func __key(_ e: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key>
-}
-
-@usableFromInline
-protocol _TreeRawValue_MappedValueInteface: ~Copyable, _KeyValueBaseType {
-
-  @inlinable func __mapped_value(_ element: _PayloadValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意

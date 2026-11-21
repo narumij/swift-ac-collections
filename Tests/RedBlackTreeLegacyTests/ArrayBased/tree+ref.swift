@@ -6,7 +6,6 @@
 //
 
 #if DEBUG
-  @testable import RedBlackTreeCollections
 
 extension TreeAlgorithmProtocol_legacy where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
 

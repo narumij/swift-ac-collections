@@ -67,7 +67,7 @@
 
     @usableFromInline
     package func __value_(_ p: _TrackingTag) -> _PayloadValue {
-      __value_(try! __retrieve_(p).get())
+      __value_(try! __retrieve_(p).get()).pointee
     }
 
     @usableFromInline

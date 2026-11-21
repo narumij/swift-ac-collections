@@ -21,6 +21,15 @@
     struct _BaseNode_KeyProtocol_Fixture: _BaseNode_KeyProtocol {
       static func __key(_ i: Int) -> Int { i * 2 }
       static func __value_(_ p: Int) -> Int { p * 10 }
+      static func __get_value(_ p: Int) -> UnsafePointer<Int> {
+        fatalError("This fixture only exercises value conversion")
+      }
+      static func __value_(_ p: Int) -> UnsafePointer<Int> {
+        fatalError("This fixture has no payload storage")
+      }
+      static func __key(_ value: UnsafePointer<Int>) -> UnsafePointer<Int> {
+        fatalError("This fixture only exercises value conversion")
+      }
       typealias _NodePtr = Int
       typealias _NodeRef = Int
       typealias _Key = Int

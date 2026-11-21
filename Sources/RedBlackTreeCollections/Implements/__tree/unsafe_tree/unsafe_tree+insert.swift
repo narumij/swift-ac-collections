@@ -226,7 +226,7 @@ extension EmplaceHintUniqueProtocol_ptr where Self: ~Copyable {
       let __h = __construct_node(__v())
       var __dummy = nullptr
       let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
-        __find_equal(__p, __dummy, __get_value(__h))
+        __find_equal(__p, __dummy, __get_value(__h).pointee)
       }
       var __r = __child.pointee
       var __inserted = false
@@ -315,7 +315,7 @@ extension EmplaceHintMultiProtocol_ptr where Self: ~Copyable {
   {
     let __h = __construct_node(value())
     var parent = nullptr
-    let __child = __find_leaf(__p, &parent, __get_value(__h))
+    let __child = __find_leaf(__p, &parent, __get_value(__h).pointee)
     __insert_node_at(parent, __child, __h)
     return __h
   }

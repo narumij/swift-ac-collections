@@ -158,7 +158,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       (__parent, __child) = other.___emplace_hint_right(
         __parent,
         __child,
-        Other.__payload_((__get_value(__p), __mapped_value))
+        Other.__payload_((__get_value(__p).pointee, __mapped_value))
       )
       _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }
@@ -183,7 +183,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       (__parent, __child) = other.___emplace_hint_right(
         __parent,
         __child,
-        Other.__payload_((__get_value(__p), __mv))
+        Other.__payload_((__get_value(__p).pointee, __mv))
       )
       _TREE_ASSERT_INTERNAL(other.__tree_invariant(other.__root))
     }

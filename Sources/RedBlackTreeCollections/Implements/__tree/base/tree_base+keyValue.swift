@@ -29,6 +29,13 @@ extension _PairBasePayloadValue_KeyProtocol where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ __v: _PayloadValue) -> _Key { __v.tuple.key }
+  
+  @inlinable
+  public static func __key(_ __v: UnsafePointer<_PayloadValue>)
+  -> UnsafePointer<_Key>
+  {
+    __v.pointer(to: \.tuple.key)!
+  }
 }
 
 public protocol _PairBasePayloadValue_MappedValueProtocol: ~Copyable,
@@ -40,7 +47,4 @@ extension _PairBasePayloadValue_MappedValueProtocol where Self: ~Copyable {
 
   @inlinable
   public static func __mapped_value_(_ __v: _PayloadValue) -> _MappedValue { __v.tuple.value }
-  
-  @inlinable
-  public static func __mapped_value(_ __v: _PayloadValue.Element) -> _MappedValue { __v.value }
 }

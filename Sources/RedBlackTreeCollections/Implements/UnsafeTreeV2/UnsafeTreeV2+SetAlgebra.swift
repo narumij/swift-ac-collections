@@ -53,14 +53,14 @@ extension UnsafeTreeV2 {
         return __result_
       }
 
-      if value_comp(other.__get_value(__first2), __get_value(__first1)) {
+      if value_comp(other.__get_value(__first2).pointee, __get_value(__first1).pointee) {
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, Base.__payload_(__first2))
         __first2 = other.__tree_next_iter(__first2)
       } else {
-        if !value_comp(__get_value(__first1), other.__get_value(__first2)) {
+        if !value_comp(__get_value(__first1).pointee, other.__get_value(__first2).pointee) {
           __first2 = other.__tree_next_iter(__first2)
         }
 
@@ -93,8 +93,8 @@ extension UnsafeTreeV2 {
       }
 
       if value_comp(
-        self.__get_value(__first1),
-        other.__get_value(__first2))
+        self.__get_value(__first1).pointee,
+        other.__get_value(__first2).pointee)
       {
 
         __result_.unsafeEnsureCapacity()
@@ -102,8 +102,8 @@ extension UnsafeTreeV2 {
           __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(
-        other.__get_value(__first2),
-        self.__get_value(__first1))
+        other.__get_value(__first2).pointee,
+        self.__get_value(__first1).pointee)
       {
 
         __result_.unsafeEnsureCapacity()
@@ -135,10 +135,10 @@ extension UnsafeTreeV2 {
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
     while __first1 != __last1, __first2 != __last2 {
-      if value_comp(__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(__get_value(__first1).pointee, other.__get_value(__first2).pointee) {
         __first1 = __tree_next_iter(__first1)
       } else {
-        if !value_comp(other.__get_value(__first2), __get_value(__first1)) {
+        if !value_comp(other.__get_value(__first2).pointee, __get_value(__first1).pointee) {
           __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
             __parent, __child, Base.__payload_(__first1))
@@ -287,13 +287,13 @@ extension UnsafeTreeV2 {
         __result_.___copy_range(__first1, __last1, to: __parent, __child)
         return __result_
       }
-      if value_comp(__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(__get_value(__first1).pointee, other.__get_value(__first2).pointee) {
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       } else {
-        if value_comp(other.__get_value(__first2), __get_value(__first1)) {
+        if value_comp(other.__get_value(__first2).pointee, __get_value(__first1).pointee) {
           __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
             __parent, __child, Base.__payload_(__first2))
@@ -315,12 +315,12 @@ extension UnsafeTreeV2 {
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
     while __first1 != __last1, __first2 != __last2 {
-      if value_comp(__get_value(__first1), other.__get_value(__first2)) {
+      if value_comp(__get_value(__first1).pointee, other.__get_value(__first2).pointee) {
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
-      } else if value_comp(other.__get_value(__first2), __get_value(__first1)) {
+      } else if value_comp(other.__get_value(__first2).pointee, __get_value(__first1).pointee) {
         __first2 = other.__tree_next_iter(__first2)
       } else {
         __first1 = __tree_next_iter(__first1)

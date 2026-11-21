@@ -18,6 +18,14 @@ final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueTrait, UniqueMu
     fatalError()
   }
 
+  static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<_Key> {
+    __key(UnsafePointer(p.__value_(as: _PayloadValue.self)))
+  }
+
+  static func __key(_ value: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key> {
+    value.pointer(to: \.key)!
+  }
+
   static func value_comp(_ l: _Key, _ r: _Key) -> Bool {
     l.internalKey < r.internalKey
   }

@@ -131,7 +131,7 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
 
   /// formIndex(after:)/(before:) がindex(after:)/(before:)と同じ順序で全要素を辿り、境界で正しく停止すること
   func testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal() {
-    var set = RedBlackTreeSet<Int>(0 ..< 5)
+    let set = RedBlackTreeSet<Int>(0 ..< 5)
 
     var forward: [Int] = []
     var i = set.startIndex

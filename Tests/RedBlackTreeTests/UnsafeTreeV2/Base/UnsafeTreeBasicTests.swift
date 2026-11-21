@@ -18,6 +18,9 @@ import XCTest
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
+      static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<Int> {
+        UnsafePointer(p.__value_(as: _PayloadValue.self))
+      }
       static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
         fatalError()
       }
@@ -48,7 +51,7 @@ import XCTest
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
-      XCTAssertEqual(storage.__value_(ptr), 100)
+      XCTAssertEqual(storage.__value_(ptr).pointee, 100)
       //      storage.___element(ptr, 20)
       //      XCTAssertEqual(storage.__value_(ptr), 20)
       //      storage.___element(ptr, 50)
@@ -89,9 +92,9 @@ import XCTest
     func testDestroy0() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       let ptr = storage.__construct_node(100)
-      XCTAssertEqual(storage.__value_(ptr), 100)
+      XCTAssertEqual(storage.__value_(ptr).pointee, 100)
       storage.destroy(ptr)
-      XCTAssertEqual(storage.__value_(ptr), 100)
+      XCTAssertEqual(storage.__value_(ptr).pointee, 100)
     }
 
     #if _TREE_ALLOCATION_COUNTER

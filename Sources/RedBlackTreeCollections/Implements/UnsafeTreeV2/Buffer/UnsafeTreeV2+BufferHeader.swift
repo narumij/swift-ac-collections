@@ -180,9 +180,16 @@ extension UnsafeTreeV2BufferHeader {
     return isKnownUniquelyReferenced(&p.pointee)
     #else
     guard let _ = _lazyDetach else { return true }
-    return isKnownUniquelyReferenced(&_lazyDetach!)
+    return _isLazyDetachUniquelyOwned()
     #endif
   }
+  
+  #if !ENABLE_EXPERIMENTAL_TSAN_SAFE
+  @usableFromInline // コールドパス分割
+  mutating func _isLazyDetachUniquelyOwned() -> Bool {
+    return isKnownUniquelyReferenced(&_lazyDetach!)
+  }
+  #endif
 
   @inlinable
   var lazyDetach: _LazyTie {

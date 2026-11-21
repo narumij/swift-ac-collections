@@ -1,11 +1,5 @@
 import XCTest
 
-#if DEBUG
-  @testable import RedBlackTreeCollections
-#else
-  import RedBlackTreeCollections
-#endif
-
 extension Array {
   public subscript(int32: Int32) -> Element {
     get { self[Int(int32)] }

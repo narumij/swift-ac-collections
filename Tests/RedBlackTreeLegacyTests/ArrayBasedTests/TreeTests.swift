@@ -1,12 +1,6 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeCollections
-#else
-  import RedBlackTreeCollections
-#endif
-
-#if DEBUG
   final class TreeBaseTests_EmptyNode: TreeFixtureBase<Void> {
 
     func testEmpty() throws {

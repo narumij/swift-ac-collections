@@ -41,7 +41,7 @@ extension FindLeafProtocol_ptr where Self: ~Copyable {
     var __nd: _NodePtr = __root
     if __nd != nullptr {
       while true {
-        if value_comp(__get_value(__nd), __v) {
+        if value_comp(__get_value(__nd).pointee, __v) {
           if __nd.__right_ != nullptr {
             __nd = __nd.__right_
           } else {
@@ -69,7 +69,7 @@ extension FindLeafProtocol_ptr where Self: ~Copyable {
     var __nd: _NodePtr = __root
     if __nd != nullptr {
       while true {
-        if value_comp(__v, __get_value(__nd)) {
+        if value_comp(__v, __get_value(__nd).pointee) {
           if __nd.__left_ != nullptr {
             __nd = __nd.__left_
           } else {
@@ -114,7 +114,7 @@ extension FindHintLeafProtocol_ptr where Self: ~Copyable {
   internal func __find_leaf(
     _ __hint: _NodePtr, _ __parent: inout _NodePtr, _ __v: _Key
   ) -> _NodeRef {
-    if __hint == end || !value_comp(__get_value(__hint), __v)  // check before
+    if __hint == end || !value_comp(__get_value(__hint).pointee, __v)  // check before
     {
       var __prior = __hint
       // __v <= *__hint
@@ -122,7 +122,7 @@ extension FindHintLeafProtocol_ptr where Self: ~Copyable {
         __prior = __tree_prev_iter(__prior)
         return __prior
       }
-      if __prior == __begin_node_ || !value_comp(__v, __get_value(prefixDecrement())) {
+      if __prior == __begin_node_ || !value_comp(__v, __get_value(prefixDecrement()).pointee) {
         // *prev(__hint) <= __v <= *__hint
         if __hint.__left_ == nullptr {
           __parent = __hint
@@ -168,7 +168,7 @@ extension FindEqualProtocol_ptr where Self: ~Copyable {
 
     while true {
 
-      let __comp_res = __comp(__v, __get_value(__nd))
+      let __comp_res = __comp(__v, __get_value(__nd).pointee)
 
       if __comp_res.__less() {
         if __nd.__left_ == nullptr {
@@ -214,7 +214,7 @@ extension FindEqualProtocol_ptr_old where Self: ~Copyable {
     var __nd_ptr = __root_ptr()
     if __nd != nullptr {
       while true {
-        if value_comp(__v, __get_value(__nd)) {
+        if value_comp(__v, __get_value(__nd).pointee) {
           if __nd.__left_ != nullptr {
             __nd_ptr = __nd.__left_ref
             __nd = __nd.__left_
@@ -222,7 +222,7 @@ extension FindEqualProtocol_ptr_old where Self: ~Copyable {
             __parent = __nd
             return (__parent, __parent.__left_ref)
           }
-        } else if value_comp(__get_value(__nd), __v) {
+        } else if value_comp(__get_value(__nd).pointee, __v) {
           if __nd.__right_ != nullptr {
             __nd_ptr = __nd.__right_ref
             __nd = __nd.__right_
@@ -308,14 +308,14 @@ extension FindHintEqualProtocol_ptr where Self: ~Copyable {
   internal func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
-    if __hint == end || value_comp(__v, __get_value(__hint)) {  // check before
+    if __hint == end || value_comp(__v, __get_value(__hint).pointee) {  // check before
       // __v < *__hint
       var __prior = __hint
       let prefixDecrement = {
         __prior = __tree_prev_iter(__prior)
         return __prior
       }
-      if __prior == __begin_node_ || value_comp(__get_value(prefixDecrement()), __v) {
+      if __prior == __begin_node_ || value_comp(__get_value(prefixDecrement()).pointee, __v) {
         // *prev(__hint) < __v < *__hint
         if __hint.__left_ == nullptr {
           return (__hint, __hint.__left_ref)
@@ -326,10 +326,10 @@ extension FindHintEqualProtocol_ptr where Self: ~Copyable {
       return __find_equal(__v)
     }
 
-    if value_comp(__get_value(__hint), __v) {  // check after
+    if value_comp(__get_value(__hint).pointee, __v) {  // check after
       // *__hint < __v
       let __next = __tree_next_iter(__hint)
-      if __next == end || value_comp(__v, __get_value(__next)) {
+      if __next == end || value_comp(__v, __get_value(__next).pointee) {
         // *__hint < __v < *std::next(__hint)
         if __hint.__right_ == nullptr {
           return (__hint, __hint.__right_ref)
@@ -361,7 +361,7 @@ extension FindProtocol_lower_bound_ptr where Self: ~Copyable {
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
     let __p = lower_bound(__v)
-    if __p != end, !value_comp(__v, __get_value(__p)) {
+    if __p != end, !value_comp(__v, __get_value(__p).pointee) {
       return __p
     }
     return end
@@ -390,7 +390,7 @@ extension FindFirstProtocol_ptr where Self: ~Copyable {
   @inlinable
   internal func find_first(_ __v: _Key) -> _NodePtr {
     let __p = lower_bound(__v)
-    if __p != end, !value_comp(__v, __get_value(__p)) {
+    if __p != end, !value_comp(__v, __get_value(__p).pointee) {
       return __p
     }
     return end

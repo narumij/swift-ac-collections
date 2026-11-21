@@ -192,9 +192,9 @@ extension UnsafeTreeV2 {
     var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = tree.___max_ref()
     for __p in unsafeSequence(__first, __last)
-    where try isIncluded(__value_(__p)) {
+          where try isIncluded(__value_(__p).pointee) {
       tree.unsafeEnsureCapacity()
-      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p).pointee)
       _TREE_ASSERT_INTERNAL(tree.__tree_invariant(tree.__root))
     }
     return tree

@@ -102,6 +102,28 @@ public protocol _KeyType: ~Copyable {
   associatedtype _Key
 }
 
+// 比較値ポインタ型の定義
+public protocol _KeyPtrType: ~Copyable {
+  // 比較値型
+  //
+  // set, multiset
+  // ```
+  // ...|Node|Payload|Node...
+  //    |    |Key    |
+  //    |     ^--_Key
+  //    ^_NodePtr
+  // ```
+  //
+  // dictionary, multimap, etc
+  // ```
+  // ...|Node|     Payload      |Node...
+  //    |    |(Key, MappedValue)|
+  //    |      ^--_Key
+  //    ^_NodePtr
+  // ```
+  associatedtype _KeyPtr
+}
+
 // キーバリュー積載時の対応値型の定義
 public protocol _MappedValueType: ~Copyable {
   // キーバリュー積載時の対応値型

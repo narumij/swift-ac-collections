@@ -51,8 +51,16 @@ extension LinkPairValueTrait where Self: ~Copyable {
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
 
   @inlinable
+  public static func __key(_ __v: UnsafeMutablePointer<_PayloadValue>) -> UnsafeMutablePointer<_Key> { __v.pointer(to: \.key)! }
+
+  @inlinable
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
+  }
+  
+  @inlinable
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<_Key> {
+    p.__value_(as: _PayloadValue.self).pointer(to: \.key)!
   }
 
   @inlinable

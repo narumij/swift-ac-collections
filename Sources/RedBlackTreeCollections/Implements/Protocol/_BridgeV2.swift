@@ -47,6 +47,11 @@ extension _PayloadValueBridge_Key {
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
+  
+  @inlinable
+  public func __key(_ e: UnsafeMutablePointer<_PayloadValue>) -> UnsafeMutablePointer<_Key> {
+    Base.__key(e)
+  }
 }
 
 // ツリー使用条件をインジェクションされる側の実装プロトコル

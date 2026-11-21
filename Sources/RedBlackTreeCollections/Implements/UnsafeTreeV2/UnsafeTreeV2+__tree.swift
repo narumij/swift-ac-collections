@@ -115,6 +115,11 @@ extension UnsafeTreeV2 {
   package func __value_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
+  
+  @inlinable
+  package func __value_(_ p: _NodePtr) -> UnsafeMutablePointer<_PayloadValue> {
+    p.__value_()
+  }
 }
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}

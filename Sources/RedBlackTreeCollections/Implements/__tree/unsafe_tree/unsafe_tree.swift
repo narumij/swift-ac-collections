@@ -40,6 +40,11 @@ extension _TreeNode_KeyProtocol where Self: ~Copyable {
       __key(__value_(p))
     }
   #endif
+  
+  @inlinable
+  internal func __get_value(_ p: _NodePtr) -> UnsafeMutablePointer<_Key> {
+    __key(__value_(p))
+  }
 }
 
 @usableFromInline

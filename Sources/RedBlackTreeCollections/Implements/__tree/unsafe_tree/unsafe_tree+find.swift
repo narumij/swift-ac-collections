@@ -168,7 +168,7 @@ extension FindEqualProtocol_ptr where Self: ~Copyable {
 
     while true {
 
-      let __comp_res = __comp(__v, __get_value(__nd))
+      let __comp_res = __comp(__v, __get_value(__nd).pointee)
 
       if __comp_res.__less() {
         if __nd.__left_ == nullptr {
@@ -214,7 +214,7 @@ extension FindEqualProtocol_ptr_old where Self: ~Copyable {
     var __nd_ptr = __root_ptr()
     if __nd != nullptr {
       while true {
-        if value_comp(__v, __get_value(__nd)) {
+        if value_comp(__v, __get_value(__nd).pointee) {
           if __nd.__left_ != nullptr {
             __nd_ptr = __nd.__left_ref
             __nd = __nd.__left_
@@ -222,7 +222,7 @@ extension FindEqualProtocol_ptr_old where Self: ~Copyable {
             __parent = __nd
             return (__parent, __parent.__left_ref)
           }
-        } else if value_comp(__get_value(__nd), __v) {
+        } else if value_comp(__get_value(__nd).pointee, __v) {
           if __nd.__right_ != nullptr {
             __nd_ptr = __nd.__right_ref
             __nd = __nd.__right_

@@ -124,6 +124,11 @@ extension _ScalarBasePayload_KeyProtocol_ptr {
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee
   }
+  
+  @inlinable
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<_Key> {
+    p.__value_(as: _PayloadValue.self)
+  }
 }
 
 @usableFromInline
@@ -134,5 +139,10 @@ extension _PairBasePayload_KeyProtocol_ptr {
   @inlinable
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.tuple.key
+  }
+  
+  @inlinable
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<_Key> {
+    p.__value_(as: _PayloadValue.self).pointer(to: \.tuple.key)!
   }
 }

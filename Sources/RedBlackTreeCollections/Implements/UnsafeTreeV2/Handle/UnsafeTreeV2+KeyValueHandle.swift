@@ -82,6 +82,16 @@ extension UnsafeTreeV2KeyValueHandle {
   func __get_value(_ p: _NodePtr) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.tuple.key
   }
+  
+  @inlinable
+  func __get_value(_ p: _NodePtr) -> UnsafeMutablePointer<_Key> {
+    p.__value_(as: _PayloadValue.self).pointer(to: \.tuple.key)!
+  }
+  
+  @inlinable
+  func __key(_ p: UnsafeMutablePointer<_PayloadValue>) -> UnsafeMutablePointer<_Key> {
+    p.pointer(to: \.tuple.key)!
+  }
 }
 
 extension UnsafeTreeV2KeyValueHandle {

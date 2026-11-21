@@ -117,8 +117,8 @@ extension UnsafeTreeV2 {
   }
   
   @inlinable
-  package func __value_(_ p: _NodePtr) -> UnsafeMutablePointer<_PayloadValue> {
-    p.__value_()
+  package func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
+    UnsafePointer(p.__value_())
   }
 }
 

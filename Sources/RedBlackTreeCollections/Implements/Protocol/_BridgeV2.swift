@@ -49,7 +49,7 @@ extension _PayloadValueBridge_Key {
   }
   
   @inlinable
-  public func __key(_ e: UnsafeMutablePointer<_PayloadValue>) -> UnsafeMutablePointer<_Key> {
+  public func __key(_ e: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key> {
     Base.__key(e)
   }
 }

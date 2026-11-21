@@ -31,11 +31,13 @@ where
 // 以下はヘルパー類
 
 extension _KeyType where Self: ~Copyable,  Self: _UnsafeNodePtrType {
-  public typealias _KeyPtr = UnsafeMutablePointer<_Key>
+  public typealias _KeyPtr = UnsafePointer<_Key>
+  public typealias _MutableKeyPtr = UnsafeMutablePointer<_Key>
 }
 
 extension _PayloadValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
-  public typealias _PayloadPtr = UnsafeMutablePointer<_PayloadValue>
+  public typealias _PayloadPtr = UnsafePointer<_PayloadValue>
+  public typealias _MutablePayloadPtr = UnsafeMutablePointer<_PayloadValue>
   public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
 }
 
@@ -57,11 +59,11 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
   //    ^-- UnsafeMutablePointer<UnsafeNode>
   // ```
   @inlinable
-  static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
+  static func __payload_ptr(_ p: _NodePtr) -> _MutablePayloadPtr {
     p.__value_()
   }
   @inlinable
-  static func __payload_ptr(_ p: _NodeRef) -> _PayloadPtr {
+  static func __payload_ptr(_ p: _NodeRef) -> _MutablePayloadPtr {
     p.pointee.__value_()
   }
 
@@ -70,6 +72,7 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
+  
   @inlinable
   @inline(__always)
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
@@ -96,11 +99,11 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _ScalarBaseType {
   //    ^-- UnsafeMutablePointer<UnsafeNode>
   // ```
   @inlinable
-  static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
+  static func __key_ptr(_ p: _NodePtr) -> _MutableKeyPtr {
     __payload_ptr(p)
   }
   @inlinable
-  static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
+  static func __key_ptr(_ p: _NodeRef) -> _MutableKeyPtr {
     __payload_ptr(p)
   }
 
@@ -124,11 +127,11 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   //    ^-- UnsafeMutablePointer<UnsafeNode>
   // ```
   @inlinable
-  static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
+  static func __key_ptr(_ p: _NodePtr) -> _MutableKeyPtr {
     __payload_ptr(p).pointer(to: \.tuple.key)!
   }
   @inlinable
-  static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
+  static func __key_ptr(_ p: _NodeRef) -> _MutableKeyPtr {
     __payload_ptr(p.pointee).pointer(to: \.tuple.key)!
   }
   

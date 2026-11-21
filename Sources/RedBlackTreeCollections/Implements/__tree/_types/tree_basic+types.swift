@@ -121,7 +121,7 @@ public protocol _KeyPtrType: ~Copyable {
   //    |      ^--_Key
   //    ^_NodePtr
   // ```
-  associatedtype _KeyPtr
+  associatedtype _MutableKeyPtr
 }
 
 // キーバリュー積載時の対応値型の定義

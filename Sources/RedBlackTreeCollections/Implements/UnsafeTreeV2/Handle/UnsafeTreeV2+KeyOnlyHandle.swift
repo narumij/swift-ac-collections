@@ -79,11 +79,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
 extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
-  func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_(as: _PayloadValue.self).pointee
-  }
-  
-  @inlinable
   func __get_value(_ p: _NodePtr) -> UnsafePointer<_Key> {
     UnsafePointer(p.__value_(as: _PayloadValue.self))
   }

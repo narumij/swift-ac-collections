@@ -27,8 +27,6 @@
     // ノードから比較用の値を取り出す。
     // SetやMultisetではElementに該当する
     // DictionaryやMultiMapではKeyに該当する
-    @inlinable static func __get_value(_: _NodePtr) -> _Key
-    
     @inlinable static func __get_value(_: _NodePtr) -> UnsafePointer<_Key>
   }
 #else

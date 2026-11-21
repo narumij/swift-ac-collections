@@ -1,12 +1,6 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeCollections
-#else
-  import RedBlackTreeCollections
-#endif
-
-#if DEBUG
 
   @inlinable
   func uintCenteredToInt(_ u: UInt) -> Int {

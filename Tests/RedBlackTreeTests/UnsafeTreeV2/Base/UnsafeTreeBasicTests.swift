@@ -18,6 +18,9 @@ import XCTest
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
+      static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<Int> {
+        UnsafePointer(p.__value_(as: _PayloadValue.self))
+      }
       static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
         fatalError()
       }

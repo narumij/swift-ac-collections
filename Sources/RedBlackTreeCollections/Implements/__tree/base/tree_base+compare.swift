@@ -47,7 +47,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
   static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    return Base.__get_value(l) < Base.__get_value(r)
+    return Base.__get_value(l).pointee < Base.__get_value(r).pointee
   }
 
   @inlinable
@@ -98,7 +98,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
   static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    return Base.__get_value(l) < Base.__get_value(r)
+    return Base.__get_value(l).pointee < Base.__get_value(r).pointee
   }
 
   @inlinable

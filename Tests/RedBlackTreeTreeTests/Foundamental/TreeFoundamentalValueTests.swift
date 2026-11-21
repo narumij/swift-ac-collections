@@ -39,12 +39,24 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     typealias _PayloadValue = RedBlackTreePair<String, Int>
     typealias _Key = String
 
+    static func __get_value(_ p: _NodePtr) -> UnsafePointer<_Key> {
+      __key(__value_(p))
+    }
+
     static func __value_(_ p: _NodePtr) -> _PayloadValue {
       p.__value_(as: _PayloadValue.self).pointee
     }
 
+    static func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
+      UnsafePointer(p.__value_(as: _PayloadValue.self))
+    }
+
     static func __key(_ value: _PayloadValue) -> _Key {
       value.tuple.key
+    }
+
+    static func __key(_ value: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key> {
+      value.pointer(to: \.tuple.key)!
     }
   }
 
@@ -58,8 +70,16 @@ final class TreeFoundamentalValueTests: TreeTestCase {
       p.__value_(as: _PayloadValue.self).pointee
     }
 
+    func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
+      UnsafePointer(p.__value_(as: _PayloadValue.self))
+    }
+
     func __key(_ value: _PayloadValue) -> _Key {
       value.tuple.key
+    }
+
+    func __key(_ value: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key> {
+      value.pointer(to: \.tuple.key)!
     }
   }
 #endif

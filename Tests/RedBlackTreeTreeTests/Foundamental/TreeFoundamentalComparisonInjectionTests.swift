@@ -10,15 +10,19 @@ import XCTest
     private enum StaticBase: _UnsafeNodePtrType, ScalarValueTrait, UniqueMultiplicity,
       _ScalarBasePayload_KeyProtocol_ptr
     {
-      typealias _PayloadValue = Int
-      typealias _Key = Int
-      typealias Element = Int
+      typealias _PayloadValue = _TrackingTag
+      typealias _Key = _TrackingTag
+      typealias Element = _TrackingTag
 
-      static func __get_value(_ p: _NodePtr) -> Int {
-        Int(p.pointee.___tracking_tag)
+      static func __get_value(_ p: _NodePtr) -> _TrackingTag {
+        _TrackingTag(p.pointee.___tracking_tag)
       }
 
-      static func compare(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+      static func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      static func compare(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> __int_compare_result {
         __default_three_way_comparator(lhs, rhs)
       }
     }
@@ -30,8 +34,8 @@ import XCTest
       TreeAlgorithmBaseProtocol_ptr, FindHintLeafProtocol_ptr, FindHintEqualProtocol_ptr
     {
       typealias Base = StaticBase
-      typealias _Key = Int
-      typealias __node_value_type = Int
+      typealias _Key = _TrackingTag
+      typealias __node_value_type = _TrackingTag
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
@@ -49,19 +53,23 @@ import XCTest
         endNode.__left_ref
       }
 
-      func __get_value(_ p: _NodePtr) -> Int {
+      func __get_value(_ p: _NodePtr) -> _TrackingTag {
         Base.__get_value(p)
       }
 
-      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+      func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      func __comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> __int_compare_result {
         Base.compare(lhs, rhs)
       }
 
-      func lower_bound(_ value: Int) -> _NodePtr {
+      func lower_bound(_ value: _TrackingTag) -> _NodePtr {
         __lower_bound_unique(value)
       }
 
-      func upper_bound(_ value: Int) -> _NodePtr {
+      func upper_bound(_ value: _TrackingTag) -> _NodePtr {
         __upper_bound_unique(value)
       }
     }
@@ -76,8 +84,8 @@ import XCTest
       BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr, TreeAlgorithmBaseProtocol_ptr,
       FindHintLeafProtocol_ptr, FindHintEqualProtocol_ptr
     {
-      typealias _Key = Int
-      typealias __node_value_type = Int
+      typealias _Key = _TrackingTag
+      typealias __node_value_type = _TrackingTag
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
@@ -97,27 +105,31 @@ import XCTest
         endNode.__left_ref
       }
 
-      func __get_value(_ p: _NodePtr) -> Int {
-        Int(p.pointee.___tracking_tag)
+      func __get_value(_ p: _NodePtr) -> _TrackingTag {
+        _TrackingTag(p.pointee.___tracking_tag)
       }
 
-      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+      func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      func value_comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> Bool {
         probe.callCount += 1
         return descending ? lhs > rhs : lhs < rhs
       }
 
-      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+      func __comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> __int_compare_result {
         probe.callCount += 1
         return descending
           ? __default_three_way_comparator(rhs, lhs)
           : __default_three_way_comparator(lhs, rhs)
       }
 
-      func lower_bound(_ value: Int) -> _NodePtr {
+      func lower_bound(_ value: _TrackingTag) -> _NodePtr {
         __lower_bound_unique(value)
       }
 
-      func upper_bound(_ value: Int) -> _NodePtr {
+      func upper_bound(_ value: _TrackingTag) -> _NodePtr {
         __upper_bound_unique(value)
       }
     }
@@ -129,8 +141,8 @@ import XCTest
       FindFirstProtocol_ptr, EqualProtocol_ptr
     {
       typealias Base = StaticBase
-      typealias _Key = Int
-      typealias __node_value_type = Int
+      typealias _Key = _TrackingTag
+      typealias __node_value_type = _TrackingTag
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
@@ -150,17 +162,21 @@ import XCTest
         endNode.__left_ref
       }
 
-      func __get_value(_ p: _NodePtr) -> Int {
+      func __get_value(_ p: _NodePtr) -> _TrackingTag {
         Base.__get_value(p)
       }
 
-      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+      func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      func __comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> __int_compare_result {
         Base.compare(lhs, rhs)
       }
 
       func __lazy_synth_three_way_comparator(
-        _ lhs: borrowing Int,
-        _ rhs: borrowing Int
+        _ lhs: borrowing _TrackingTag,
+        _ rhs: borrowing _TrackingTag
       ) -> __int_compare_result {
         Base.compare(lhs, rhs)
       }
@@ -172,8 +188,8 @@ import XCTest
     private struct InstanceEqualInjectedTree: _UnsafeNodePtrType, TreeAlgorithmBaseProtocol_ptr,
       BoundAlgorithmProtocol_legacy_ptr, EqualProtocol_ptr
     {
-      typealias _Key = Int
-      typealias __node_value_type = Int
+      typealias _Key = _TrackingTag
+      typealias __node_value_type = _TrackingTag
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
@@ -183,18 +199,22 @@ import XCTest
       var __end_node: _NodePtr { endNode }
       var __root: _NodePtr { endNode.__left_ }
 
-      func __get_value(_ p: _NodePtr) -> Int {
-        Int(p.pointee.___tracking_tag)
+      func __get_value(_ p: _NodePtr) -> _TrackingTag {
+        _TrackingTag(p.pointee.___tracking_tag)
       }
 
-      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+      func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      func value_comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> Bool {
         probe.callCount += 1
         return lhs < rhs
       }
 
       func __lazy_synth_three_way_comparator(
-        _ lhs: borrowing Int,
-        _ rhs: borrowing Int
+        _ lhs: borrowing _TrackingTag,
+        _ rhs: borrowing _TrackingTag
       ) -> __int_compare_result {
         probe.callCount += 1
         return __default_three_way_comparator(lhs, rhs)
@@ -206,8 +226,8 @@ import XCTest
       TreeAlgorithmBaseProtocol_ptr, FindEqualProtocol_ptr, BoundAlgorithmProtocol_ptr,
       BoundBothProtocol, FindProtocol_lower_bound_ptr, FindFirstProtocol_ptr
     {
-      typealias _Key = Int
-      typealias __node_value_type = Int
+      typealias _Key = _TrackingTag
+      typealias __node_value_type = _TrackingTag
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
@@ -236,16 +256,20 @@ import XCTest
         endNode.__left_ref
       }
 
-      func __get_value(_ p: _NodePtr) -> Int {
-        Int(p.pointee.___tracking_tag)
+      func __get_value(_ p: _NodePtr) -> _TrackingTag {
+        _TrackingTag(p.pointee.___tracking_tag)
       }
 
-      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+      func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+        UnsafePointer(p.pointer(to: \.___tracking_tag)!)
+      }
+
+      func value_comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> Bool {
         probe.callCount += 1
         return descending ? lhs > rhs : lhs < rhs
       }
 
-      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+      func __comp(_ lhs: _TrackingTag, _ rhs: _TrackingTag) -> __int_compare_result {
         probe.callCount += 1
         return descending
           ? __default_three_way_comparator(rhs, lhs)
@@ -284,7 +308,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      for key in [5, 20, 25, 35] {
+      for key in [5, 20, 25, 35] as [_TrackingTag] {
         var staticLowParent = UnsafeMutablePointer<UnsafeNode>.nullptr
         var instanceLowParent = UnsafeMutablePointer<UnsafeNode>.nullptr
         let staticLow = staticTree.__find_leaf_low(&staticLowParent, key)
@@ -370,7 +394,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      for key in [5, 10, 20, 25, 30, 35] {
+      for key in [5, 10, 20, 25, 30, 35] as [_TrackingTag] {
         let staticResult = staticTree.__find_equal(key)
         let instanceResult = instanceTree.__find_equal(key)
         XCTAssertEqual(staticResult.__parent, instanceResult.__parent)
@@ -404,14 +428,14 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      for key in [10, 20, 30] {
+      for key in [10, 20, 30] as [_TrackingTag] {
         let staticResult = staticTree.find(key)
         let instanceResult = instanceTree.find(key)
         XCTAssertEqual(staticResult, instanceResult)
-        XCTAssertEqual(Int(staticResult.pointee.___tracking_tag), key)
+        XCTAssertEqual(_TrackingTag(staticResult.pointee.___tracking_tag), key)
       }
 
-      for key in [5, 25, 35] {
+      for key in [5, 25, 35] as [_TrackingTag] {
         XCTAssertEqual(staticTree.find(key), end)
         XCTAssertEqual(instanceTree.find(key), end)
       }
@@ -427,7 +451,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      let cases: [(key: Int, lower: Int?, upper: Int?)] = [
+      let cases: [(key: _TrackingTag, lower: _TrackingTag?, upper: _TrackingTag?)] = [
         (5, 10, 10),
         (10, 10, 20),
         (15, 20, 20),
@@ -445,8 +469,8 @@ import XCTest
 
         XCTAssertEqual(staticLower, instanceLower)
         XCTAssertEqual(staticUpper, instanceUpper)
-        XCTAssertEqual(staticLower == end ? nil : Int(staticLower.pointee.___tracking_tag), item.lower)
-        XCTAssertEqual(staticUpper == end ? nil : Int(staticUpper.pointee.___tracking_tag), item.upper)
+        XCTAssertEqual(staticLower == end ? nil : _TrackingTag(staticLower.pointee.___tracking_tag), item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : _TrackingTag(staticUpper.pointee.___tracking_tag), item.upper)
 
         XCTAssertEqual(staticTree.__lower_bound_unique(item.key), staticLower)
         XCTAssertEqual(instanceTree.__lower_bound_unique(item.key), instanceLower)
@@ -464,7 +488,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      for key in [5, 10, 20, 30, 35] {
+      for key in [5, 10, 20, 30, 35] as [_TrackingTag] {
         let expected = [10, 20, 30].contains(key) ? 1 : 0
         XCTAssertEqual(staticTree.__count_unique(key), expected)
         XCTAssertEqual(instanceTree.__count_unique(key), expected)
@@ -494,7 +518,7 @@ import XCTest
         probe: probe,
         descending: false)
 
-      let cases: [(key: Int, lower: Int?, upper: Int?)] = [
+      let cases: [(key: _TrackingTag, lower: _TrackingTag?, upper: _TrackingTag?)] = [
         (5, 10, 10),
         (10, 10, 20),
         (15, 20, 20),
@@ -518,14 +542,14 @@ import XCTest
         XCTAssertEqual(staticUpper, instanceUpper)
         XCTAssertEqual(staticTree.upper_bound(item.key), staticUpper)
         XCTAssertEqual(instanceTree.upper_bound(item.key), instanceUpper)
-        XCTAssertEqual(staticLower == end ? nil : Int(staticLower.pointee.___tracking_tag), item.lower)
-        XCTAssertEqual(staticUpper == end ? nil : Int(staticUpper.pointee.___tracking_tag), item.upper)
+        XCTAssertEqual(staticLower == end ? nil : _TrackingTag(staticLower.pointee.___tracking_tag), item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : _TrackingTag(staticUpper.pointee.___tracking_tag), item.upper)
 
         let expectedFind = [10, 20, 30].contains(item.key) ? item.key : nil
         let staticFound = staticTree.find(item.key)
         let instanceFound = instanceTree.find(item.key)
         XCTAssertEqual(staticFound, instanceFound)
-        XCTAssertEqual(staticFound == end ? nil : Int(staticFound.pointee.___tracking_tag), expectedFind)
+        XCTAssertEqual(staticFound == end ? nil : _TrackingTag(staticFound.pointee.___tracking_tag), expectedFind)
         XCTAssertEqual(staticTree.find_first(item.key), staticFound)
         XCTAssertEqual(instanceTree.find_first(item.key), instanceFound)
       }
@@ -573,7 +597,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
 
-      let leafCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: Int)] = [
+      let leafCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: _TrackingTag)] = [
         (end, 35),
         (left, 5),
         (root, 15),
@@ -589,7 +613,7 @@ import XCTest
         XCTAssertEqual(staticLeaf, instanceLeaf)
       }
 
-      let equalCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: Int)] = [
+      let equalCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: _TrackingTag)] = [
         (end, 35),
         (left, 10),
         (left, 15),
@@ -627,7 +651,7 @@ import XCTest
       let probe = ComparisonProbe()
       let instanceTree = InstanceEqualInjectedTree(endNode: end, probe: probe)
 
-      for key in [5, 10, 20, 25, 30, 35] {
+      for key in [5, 10, 20, 25, 30, 35] as [_TrackingTag] {
         let staticUnique = staticTree.__equal_range_unique(key)
         let instanceUnique = instanceTree.__equal_range_unique(key)
         XCTAssertEqual(staticUnique.0, instanceUnique.0)

@@ -75,17 +75,23 @@ extension TreeNodeOnlyFixture: TreeAlgorithmProtocol_ptr {}
 @available(macOS 26.0, iOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
 extension TreeNodeOnlyFixture {
   
-  enum PointerKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
-    typealias _Key = _NodePtr
-    static func __get_value(_ p: _NodePtr) -> _NodePtr {
-      p
-    }
-  }
+//  enum PointerKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
+//    typealias _Key = _NodePtr
+//    static func __get_value(_ p: _NodePtr) -> _NodePtr {
+//      p
+//    }
+//    static func __get_value(_ p: _NodePtr) -> UnsafePointer<_NodePtr> {
+//      UnsafeRawPointer(p).assumingMemoryBound(to: _NodePtr.self)
+//    }
+//  }
   
   enum TrackingTagKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
     typealias _Key = _TrackingTag
     static func __get_value(_ p: _NodePtr) -> _TrackingTag {
       p.pointee.___tracking_tag
+    }
+    static func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+      p.pointer(to: \.___tracking_tag)!
     }
   }
   
@@ -96,6 +102,9 @@ extension TreeNodeOnlyFixture {
     static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
       p.pointee.___recycle_count
     }
+    static func __get_value(_ p: _NodePtr) -> UnsafePointer<UnsafeNode.Seal> {
+      p.pointer(to: \.___recycle_count)!
+    }
   }
 
   enum MultiSealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & MultiMultiplicity
@@ -104,6 +113,9 @@ extension TreeNodeOnlyFixture {
     typealias _Key = UnsafeNode.Seal
     static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
       p.pointee.___recycle_count
+    }
+    static func __get_value(_ p: _NodePtr) -> UnsafePointer<UnsafeNode.Seal> {
+      p.pointer(to: \.___recycle_count)!
     }
   }
 
@@ -119,6 +131,9 @@ extension TreeNodeOnlyFixture {
 
     static func __get_value(_ p: _NodePtr) -> _TrackingTag {
       p.pointee.___tracking_tag
+    }
+    static func __get_value(_ p: _NodePtr) -> UnsafePointer<_TrackingTag> {
+      p.pointer(to: \.___tracking_tag)!
     }
   }
 }

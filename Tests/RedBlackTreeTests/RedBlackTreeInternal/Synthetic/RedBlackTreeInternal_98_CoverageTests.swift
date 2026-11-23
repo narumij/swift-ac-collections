@@ -38,8 +38,8 @@
 
     @Test func `_BaseNode_KeyProtocolのカバレッジ確保`() async throws {
       typealias Base = _BaseNode_KeyProtocol_Fixture
-      #expect(Base.__get_value(0) == 0)
-      #expect(Base.__get_value(1) == 20)
+      #expect(Base.__get_value(0).pointee == 0)
+      #expect(Base.__get_value(1).pointee == 20)
     }
     
     struct _PairBasePayloadValue_MappedValueProtocol_Fixture: _PairBasePayloadValue_MappedValueProtocol {

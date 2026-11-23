@@ -42,7 +42,6 @@
 
 // 配列インデックス方式ではこれを経由する必要があるが、ポインタ方式では縛りがない
 public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _PayloadValueType {
-  @inlinable static func __value_(_ p: _NodePtr) -> _PayloadValue
   @inlinable static func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue>
 }
 

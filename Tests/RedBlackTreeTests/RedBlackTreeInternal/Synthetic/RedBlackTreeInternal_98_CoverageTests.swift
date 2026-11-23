@@ -19,29 +19,47 @@
     }
     
     struct _BaseNode_KeyProtocol_Fixture: _BaseNode_KeyProtocol {
-      static func __key(_ i: Int) -> Int { i * 2 }
-      static func __value_(_ p: Int) -> Int { p * 10 }
-      static func __get_value(_ p: Int) -> UnsafePointer<Int> {
-        fatalError("This fixture only exercises value conversion")
+      struct Payload {
+        let key: UnsafePointer<Int>
       }
-      static func __value_(_ p: Int) -> UnsafePointer<Int> {
-        fatalError("This fixture has no payload storage")
+
+      struct Node {
+        let payload: UnsafePointer<Payload>
       }
-      static func __key(_ value: UnsafePointer<Int>) -> UnsafePointer<Int> {
-        fatalError("This fixture only exercises value conversion")
+
+      static func __value_(_ p: UnsafePointer<Node>) -> UnsafePointer<Payload> {
+        p.pointee.payload
       }
-      typealias _NodePtr = Int
-      typealias _NodeRef = Int
+
+      static func __key(_ value: Payload) -> Int {
+        value.key.pointee
+      }
+
+      static func __key(_ value: UnsafePointer<Payload>) -> UnsafePointer<Int> {
+        value.pointee.key
+      }
+
+      typealias _NodePtr = UnsafePointer<Node>
+      typealias _NodeRef = UnsafeMutablePointer<_NodePtr>
       typealias _Key = Int
-      typealias _PayloadValue = Int
+      typealias _PayloadValue = Payload
     }
 
     @Test func `_BaseNode_KeyProtocolのカバレッジ確保`() async throws {
       typealias Base = _BaseNode_KeyProtocol_Fixture
-      #expect(Base.__get_value(0) == 0)
-      #expect(Base.__get_value(1) == 20)
+      for expected in [0, 20] {
+        withUnsafePointer(to: expected) { key in
+          withUnsafePointer(to: Base.Payload(key: key)) { payload in
+            withUnsafePointer(to: Base.Node(payload: payload)) { node in
+              let result = Base.__get_value(node)
+              #expect(result == key)
+              #expect(result.pointee == expected)
+            }
+          }
+        }
+      }
     }
-    
+
     struct _PairBasePayloadValue_MappedValueProtocol_Fixture: _PairBasePayloadValue_MappedValueProtocol {
       typealias _PayloadValue = RedBlackTreePair<Int,Int>
       typealias _MappedValue = Int

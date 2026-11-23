@@ -20,33 +20,34 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if DEBUG
-// 資料的に残されている
-//
-// 実際には特殊化されたものをつかっている
-@usableFromInline
-package protocol _BaseNode_KeyProtocol:
+public protocol _BaseNode_PayloadValueProtocol:
+  ~Copyable, _UnsafeNodePtrType & _PayloadValueType & _BaseNode_PayloadValueInterface
+where _NodePtr == UnsafeMutablePointer<UnsafeNode> {}
+
+extension _BaseNode_PayloadValueProtocol where Self: ~Copyable {
+
+  @inlinable
+  public static func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
+    UnsafeRawPointer(p.advanced(by: 1))
+      .assumingMemoryBound(to: _PayloadValue.self)
+  }
+}
+
+public protocol _BaseNode_KeyProtocol:
   ~Copyable,
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_PayloadValueInterface
-{
-  static func __get_value(_: _NodePtr) -> _Key
-}
+{}
 
 extension _BaseNode_KeyProtocol where Self: ~Copyable {
 
-  // 資料的に残されている
-  //
-  // 実際には特殊化されたものをつかっている
-  //
   // `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   @inlinable
-  package static func __get_value(_ p: _NodePtr) -> _Key {
+  public static func __get_value(_ p: _NodePtr) -> UnsafePointer<_Key> {
     __key(__value_(p))
   }
 }
-#endif
 
 public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessThanInterface
 where _Key: Comparable {}

@@ -10,6 +10,130 @@ import XCTest
 /// 棚卸し用の雑多な検証置き場。
 final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
+  #if ENABLE_PERFORMANCE_TESTING
+    func testRemovingMillionElementsInRandomOrderMatchesRecordedCounts() throws {
+      let count = 1_000_000
+      var set = RedBlackTreeSet<Int>(0..<count)
+      var expectedCounts: [Int: Int] = [:]
+      for value in 0..<count {
+        expectedCounts[value, default: 0] += 1
+      }
+
+      var rng = SplitMix64(seed: 0)
+      let removalOrder = (0..<count).shuffled(using: &rng)
+      var removedCounts: [Int: Int] = [:]
+      var remainingCount = count
+      XCTAssertEqual(set.count, count)
+
+      for value in removalOrder {
+        let removed = try XCTUnwrap(set.remove(value))
+        XCTAssertEqual(removed, value)
+        removedCounts[removed, default: 0] += 1
+        remainingCount -= 1
+        XCTAssertEqual(set.count, remainingCount)
+        XCTAssertFalse(set.contains(value))
+      }
+
+      XCTAssertEqual(removedCounts, expectedCounts)
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(Array(set), [])
+    }
+
+    func testRemovingMillionDictionaryElementsInRandomOrderMatchesRecordedCounts() throws {
+      let count = 1_000_000
+      var dictionary = RedBlackTreeDictionary<Int, Int>(
+        uniqueKeysWithValues: (0..<count).map { ($0, $0) })
+      var expectedCounts: [Int: Int] = [:]
+      for value in 0..<count {
+        expectedCounts[value, default: 0] += 1
+      }
+
+      var rng = SplitMix64(seed: 0)
+      let removalOrder = (0..<count).shuffled(using: &rng)
+      var removedCounts: [Int: Int] = [:]
+      var remainingCount = count
+      XCTAssertEqual(dictionary.count, count)
+
+      for key in removalOrder {
+        let removed = try XCTUnwrap(dictionary.removeValue(forKey: key))
+        XCTAssertEqual(removed, key)
+        removedCounts[removed, default: 0] += 1
+        remainingCount -= 1
+        XCTAssertEqual(dictionary.count, remainingCount)
+        XCTAssertNil(dictionary[key])
+      }
+
+      XCTAssertEqual(removedCounts, expectedCounts)
+      XCTAssertTrue(dictionary.isEmpty)
+      XCTAssertEqual(Array(dictionary).count, 0)
+    }
+
+    func testRemovingMillionMultiSetElementsInRandomOrderMatchesRecordedCounts() throws {
+      let count = 1_000_000
+      var set = RedBlackTreeMultiSet<Int>(0..<count)
+      var expectedCounts: [Int: Int] = [:]
+      for value in 0..<count {
+        expectedCounts[value, default: 0] += 1
+      }
+
+      var rng = SplitMix64(seed: 0)
+      let removalOrder = (0..<count).shuffled(using: &rng)
+      var removedCounts: [Int: Int] = [:]
+      var remainingCount = count
+      XCTAssertEqual(set.count, count)
+
+      for value in removalOrder {
+        let index = try XCTUnwrap(set.firstIndex(of: value))
+        let removed = set.remove(at: index)
+        XCTAssertEqual(removed, value)
+        removedCounts[removed, default: 0] += 1
+        remainingCount -= 1
+        XCTAssertEqual(set.count, remainingCount)
+        XCTAssertFalse(set.contains(value))
+      }
+
+      XCTAssertEqual(removedCounts, expectedCounts)
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(Array(set), [])
+    }
+
+    func testRemovingMillionMultiMapElementsInRandomOrderMatchesRecordedCounts() throws {
+      let count = 1_000_000
+      #if COMPATIBLE_ATCODER_2025
+        var map = RedBlackTreeMultiMap<Int, Int>(
+          multiKeysWithValues: (0..<count).map { ($0, $0) })
+      #else
+        var map = RedBlackTreeMultiMap<Int, Int>(
+          keysWithValues: (0..<count).map { ($0, $0) })
+      #endif
+      var expectedCounts: [Int: Int] = [:]
+      for value in 0..<count {
+        expectedCounts[value, default: 0] += 1
+      }
+
+      var rng = SplitMix64(seed: 0)
+      let removalOrder = (0..<count).shuffled(using: &rng)
+      var removedCounts: [Int: Int] = [:]
+      var remainingCount = count
+      XCTAssertEqual(map.count, count)
+
+      for key in removalOrder {
+        let index = try XCTUnwrap(map.firstIndex(of: key))
+        let removed = map.remove(at: index)
+        XCTAssertEqual(removed.key, key)
+        XCTAssertEqual(removed.value, key)
+        removedCounts[removed.value, default: 0] += 1
+        remainingCount -= 1
+        XCTAssertEqual(map.count, remainingCount)
+        XCTAssertNil(map.firstIndex(of: key))
+      }
+
+      XCTAssertEqual(removedCounts, expectedCounts)
+      XCTAssertTrue(map.isEmpty)
+      XCTAssertEqual(Array(map).count, 0)
+    }
+  #endif
+
   override func setUpWithError() throws {
     try super.setUpWithError()
   }

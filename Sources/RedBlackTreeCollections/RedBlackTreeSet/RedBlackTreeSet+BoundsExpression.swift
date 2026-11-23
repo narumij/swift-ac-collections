@@ -96,7 +96,7 @@
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return p.__value_(as: Element.self).pointee
+      return Base.__payload_(p)
     }
   }
 

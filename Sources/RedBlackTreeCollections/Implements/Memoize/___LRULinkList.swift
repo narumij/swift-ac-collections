@@ -37,7 +37,7 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 }
 
 @_documentation(visibility: internal)
-public protocol LinkPairValueTrait: ~Copyable, KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
+public protocol LinkPairValueTrait: ~Copyable, _BaseNode_KeyProtocol & KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
 
 extension LinkPairValueTrait where Self: ~Copyable {
@@ -52,11 +52,6 @@ extension LinkPairValueTrait where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ __v: UnsafePointer<_PayloadValue>) -> UnsafePointer<_Key> { __v.pointer(to: \.key)! }
-
-  @inlinable
-  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<_Key> {
-    p.__value_(as: _PayloadValue.self).pointer(to: \.key)!
-  }
 
   @inlinable
   public static func __mapped_value_(_ element: _PayloadValue) -> _MappedValue {

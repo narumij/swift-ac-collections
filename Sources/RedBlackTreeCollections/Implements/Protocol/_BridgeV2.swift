@@ -44,6 +44,11 @@ where Base: _BasePayloadValue_KeyInterface {}
 extension _PayloadValueBridge_Key {
 
   @inlinable
+  func __value_(_ p: Base._NodePtr) -> UnsafePointer<_PayloadValue> {
+    Base.__value_(p)
+  }
+
+  @inlinable
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }

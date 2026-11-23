@@ -27,6 +27,7 @@
 @_documentation(visibility: internal)
 public protocol ValueComparer: ~Copyable,
   _BaseKey_LessThanInterface
+    & _BaseNode_PayloadValueInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_KeyInterface
 {}
@@ -40,6 +41,7 @@ public protocol ValueComparer: ~Copyable,
 @_documentation(visibility: internal)
 public protocol ComparableKeyTrait: ~Copyable,
   ValueComparer
+    & _BaseNode_PayloadValueProtocol
     & _BaseComparableKey_LessThanProtocol
 where
   _Key: Comparable

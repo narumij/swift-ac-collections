@@ -28,7 +28,8 @@ extension _BaseNode_PayloadValueProtocol where Self: ~Copyable {
 
   @inlinable
   public static func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
-    UnsafePointer(p.__value_(as: _PayloadValue.self))
+    UnsafeRawPointer(p.advanced(by: 1))
+      .assumingMemoryBound(to: _PayloadValue.self)
   }
 }
 

@@ -109,13 +109,14 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
-  
-  @inlinable
-  package func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
-    UnsafePointer(p.__value_())
-  }
-}
+//extension UnsafeTreeV2 {
+//  
+//  @inlinable
+//  package func __value_(_ p: _NodePtr) -> UnsafePointer<_PayloadValue> {
+////    UnsafePointer(p.__value_())
+//    Base.__value_(p)
+//  }
+//}
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 

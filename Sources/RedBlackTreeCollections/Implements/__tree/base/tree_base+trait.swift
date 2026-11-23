@@ -50,7 +50,7 @@ where
 public protocol ScalarValueTrait: ~Copyable,
   ComparableKeyTrait
     & _ScalarBaseType
-    & _BasePayloadValue_KeyInterface
+    & _ScalarBasePayloadValue_KeyProtocol
     & _ScalarBase_ElementProtocol
 {}
 

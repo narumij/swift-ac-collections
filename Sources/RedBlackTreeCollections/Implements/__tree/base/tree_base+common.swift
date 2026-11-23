@@ -32,10 +32,6 @@ extension _BaseNode_PayloadValueProtocol where Self: ~Copyable {
   }
 }
 
-#if DEBUG || true
-// 資料的に残されている
-//
-// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_KeyProtocol:
   ~Copyable,
   _BaseNode_KeyInterface
@@ -45,17 +41,12 @@ public protocol _BaseNode_KeyProtocol:
 
 extension _BaseNode_KeyProtocol where Self: ~Copyable {
 
-  // 資料的に残されている
-  //
-  // 実際には特殊化されたものをつかっている
-  //
   // `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   @inlinable
   public static func __get_value(_ p: _NodePtr) -> UnsafePointer<_Key> {
     __key(__value_(p))
   }
 }
-#endif
 
 public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessThanInterface
 where _Key: Comparable {}

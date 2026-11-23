@@ -108,7 +108,6 @@ protocol _RedBlackTreeKeyValuesV2: UnsafeTreeRangeBaseInterfaceV2 & _MapBridge
 @usableFromInline
 protocol _ScalarBasePayload_KeyProtocol_ptr: _ScalarBaseType
     & _ScalarBase_ElementProtocol
-    & _ScalarBasePayloadValue_KeyProtocol
     & _BaseNode_PayloadValueProtocol
     & _BaseNode_KeyProtocol
 {}

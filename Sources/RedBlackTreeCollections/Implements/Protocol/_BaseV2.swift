@@ -21,10 +21,11 @@
 //===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-  public typealias CompareTrait = _Base_IsMultiInterface
+public typealias CompareTrait = _Base_IsMultiInterface
 #endif
 
-public typealias ___TreeBase = _UnsafeNodePtrType & ComparableKeyTrait & _Base_IsMultiInterface
+public typealias ___TreeBase = _UnsafeNodePtrType & ComparableKeyTrait
+  & _Base_IsMultiInterface
 
 public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
   & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
@@ -47,9 +48,7 @@ where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
 // 共通生木メンバー
 @usableFromInline
-protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 {
-  var __tree_: Tree { get }
-}
+protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 { var __tree_: Tree { get } }
 
 // 変更可能共通生木メンバー
 @usableFromInline
@@ -95,44 +94,32 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride
 // MARK: -
 
 @usableFromInline
-protocol _RedBlackTreeKeyOnlyV2:
-  UnsafeTreeRangeBaseInterfaceV2
-    & _SetBridge
+protocol _RedBlackTreeKeyOnlyV2: UnsafeTreeRangeBaseInterfaceV2 & _SetBridge
     & _SequenceV2
 {}
 
 @usableFromInline
-protocol _RedBlackTreeKeyValuesV2:
-  UnsafeTreeRangeBaseInterfaceV2
-    & _MapBridge
-    & _SequenceV2
-    & _PaylodValueBridge_Element
+protocol _RedBlackTreeKeyValuesV2: UnsafeTreeRangeBaseInterfaceV2 & _MapBridge
+    & _SequenceV2 & _PaylodValueBridge_Element
 {}
 
 // MARK: -
 
 @usableFromInline
-protocol _ScalarBasePayload_KeyProtocol_ptr:
-  _ScalarBaseType
+protocol _ScalarBasePayload_KeyProtocol_ptr: _ScalarBaseType
     & _ScalarBase_ElementProtocol
     & _ScalarBasePayloadValue_KeyProtocol
+    & _BaseNode_PayloadValueProtocol
+    & _BaseNode_KeyProtocol
 {}
 
-extension _ScalarBasePayload_KeyProtocol_ptr {
-
-  @inlinable
-  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<_Key> {
-    UnsafePointer(p.__value_(as: _PayloadValue.self))
-  }
-}
+extension _ScalarBasePayload_KeyProtocol_ptr {}
 
 @usableFromInline
-protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType & _PairBase_ElementProtocol {}
+protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType
+    & _PairBase_ElementProtocol
+    & _BaseNode_PayloadValueProtocol
+    & _BaseNode_KeyProtocol
+{}
 
-extension _PairBasePayload_KeyProtocol_ptr {
-
-  @inlinable
-  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> UnsafePointer<_Key> {
-   UnsafePointer(p.__value_(as: _PayloadValue.self)).pointer(to: \.tuple.key)!
-  }
-}
+extension _PairBasePayload_KeyProtocol_ptr {}

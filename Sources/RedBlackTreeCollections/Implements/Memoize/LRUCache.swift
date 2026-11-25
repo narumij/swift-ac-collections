@@ -40,16 +40,8 @@ where Key: Comparable {
   public
     typealias _PayloadValue = KeyValue
 
-  public let maxCount: Int
-
   @usableFromInline
-  let nullptr: _NodePtr
-
-  @usableFromInline
-  var _rankHighest: _NodePtr
-
-  @usableFromInline
-  var _rankLowest: _NodePtr
+  let linkList: UnsafeMutablePointer<LinkList>
 
   @usableFromInline
   var __tree_: Tree
@@ -62,21 +54,25 @@ extension LRUCache {
   @inlinable
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
     precondition(maxCount > 0, "maxCount must be positive")
-    nullptr = UnsafeNode.nullptr
-    __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: nullptr)
-    self.maxCount = maxCount
-    (_rankHighest, _rankLowest) = (nullptr, nullptr)
+    __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: .nullptr)
+    linkList = .allocate(capacity: 1)
+    linkList.initialize(to: .init(maxCount: maxCount))
   }
+
+  @inlinable
+  package var maxCount: Int { linkList.pointee.maxCount }
 
   @inlinable
   public subscript(key: _Key) -> Value? {
 
     @inline(__always) mutating get {
 
-      let __ptr = __tree_.update { $0.find(key) }
-      guard !__ptr.___is_end else { return nil }
-      ___prepend(___pop(__ptr))
-      return Base.__payload_(__ptr).value
+      return update {
+        let __ptr = $0.find(key)
+        guard !__ptr.___is_end else { return nil }
+        $1.prepend($1.pop(__ptr))
+        return Base.__payload_(__ptr).value
+      }
     }
 
     @inline(__always) set {
@@ -86,13 +82,13 @@ extension LRUCache {
       }
 
       __tree_.ensureCapacity(limit: maxCount)
-
-      if __tree_.count == maxCount {
-        _ = __tree_.erase(___popRankLowest())
-      }
       
-      let __h = __tree_.update { __tree_ in
+      update { __tree_, linkList in
 
+        if __tree_.count == linkList.maxCount {
+          _ = __tree_.erase(linkList.popRankLowest())
+        }
+        
         let (__parent, __child) = __tree_.__find_equal(key)
 
         precondition(__child.pointee == __tree_.nullptr)
@@ -102,15 +98,17 @@ extension LRUCache {
         let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
         __tree_.__insert_node_at(__parent, __child, __h)
 
-        return __h
+        linkList.prepend(__h)
       }
-      
-      ___prepend(__h)
     }
   }
 }
 
-extension LRUCache: ___LRULinkList {}
+extension LRUCache: LinkPairValueTrait & IntThreeWayComparator {
+  @usableFromInline typealias Base = ___LRULinkListBase<_Key, _MappedValue>
+  @usableFromInline typealias Tree = UnsafeTreeV2<Base>
+  @usableFromInline typealias LinkList = _LinkList<Key, Value>
+}
 
 extension LRUCache {
 
@@ -118,7 +116,7 @@ extension LRUCache {
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_.deinitialize()
-      (_rankHighest, _rankLowest) = (nullptr, nullptr)
+      linkList.pointee.reset()
     } else {
       self = .init(maxCount: maxCount)
     }
@@ -132,6 +130,20 @@ extension LRUCache {
 
   @inlinable
   public var capacity: Int { __tree_.capacity }
+}
+
+extension LRUCache {
+
+  @usableFromInline
+  typealias _LRUHandle = ___LRUHandle<_Key, Base._MappedValue>
+
+  @inlinable
+  internal mutating func update<R>(_ body: (inout _LRUHandle, inout LinkList) throws -> R) rethrows -> R {
+    try __tree_._buffer.withUnsafeMutablePointers { header, _ in
+      var handle = _LRUHandle(header: header)
+      return try body(&handle, &linkList.pointee)
+    }
+  }
 }
 
 #endif

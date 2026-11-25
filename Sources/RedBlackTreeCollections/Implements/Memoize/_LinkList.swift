@@ -27,13 +27,17 @@ package struct _LinkList<_Key: Comparable, _MappedValue>: _UnsafeNodePtrType
  {
    @usableFromInline enum Base: LinkPairValueTrait & IntThreeWayComparator {}
 
-  @usableFromInline var _rankHighest: _NodePtr = .nullptr
-  @usableFromInline var _rankLowest: _NodePtr = .nullptr
+  @usableFromInline var nullptr: _NodePtr = .nullptr
+  @usableFromInline var _rankHighest: _NodePtr
+  @usableFromInline var _rankLowest: _NodePtr
   @usableFromInline let maxCount: Int
 
   @inlinable
   package init(maxCount: Int) {
     self.maxCount = maxCount
+    self.nullptr = .nullptr
+    self._rankHighest = nullptr
+    self._rankLowest = nullptr
   }
 }
 
@@ -41,15 +45,15 @@ extension _LinkList {
   
   @inlinable
   package mutating func prepend(_ __p: _NodePtr)  {
-    if _rankHighest == .nullptr {
-      Base.__payload_ptr(__p).pointee.next = .nullptr
-      Base.__payload_ptr(__p).pointee.prev = .nullptr
+    if _rankHighest == nullptr {
+      Base.__payload_ptr(__p).pointee.next = nullptr
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
       Base.__payload_ptr(_rankHighest).pointee.prev = __p
       Base.__payload_ptr(__p).pointee.next = _rankHighest
-      Base.__payload_ptr(__p).pointee.prev = .nullptr
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankHighest = __p
     }
   }
@@ -58,19 +62,19 @@ extension _LinkList {
   package mutating func pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || Base.__payload_ptr(__p).pointee.next != .nullptr
-      || Base.__payload_ptr(__p).pointee.prev != .nullptr,
+      __p == _rankHighest || Base.__payload_ptr(__p).pointee.next != nullptr
+      || Base.__payload_ptr(__p).pointee.prev != nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
       let prev = Base.__payload_ptr(__p).pointee.prev
       let next = Base.__payload_ptr(__p).pointee.next
-      if prev != .nullptr {
+      if prev != nullptr {
         Base.__payload_ptr(prev).pointee.next = next
       } else {
         _rankHighest = next
       }
-      if next != .nullptr {
+      if next != nullptr {
         Base.__payload_ptr(next).pointee.prev = prev
       } else {
         _rankLowest = prev
@@ -84,13 +88,13 @@ extension _LinkList {
   package mutating func popRankLowest() -> _NodePtr {
 
     defer {
-      if _rankLowest != .nullptr {
+      if _rankLowest != nullptr {
         _rankLowest = Base.__payload_ptr(_rankLowest).pointee.prev
       }
-      if _rankLowest != .nullptr {
-        Base.__payload_ptr(_rankLowest).pointee.next = .nullptr
+      if _rankLowest != nullptr {
+        Base.__payload_ptr(_rankLowest).pointee.next = nullptr
       } else {
-        _rankHighest = .nullptr
+        _rankHighest = nullptr
       }
     }
 

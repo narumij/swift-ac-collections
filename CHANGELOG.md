@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- 実験用`LRUCache`の利用順リストを木の操作から分離し、専用の`_LinkList`で管理する構成へ変更。木とリストの更新を一つの`update`内にまとめ、番兵ポインタはリスト内に保持
+- 実験用`LRUCache.maxCount`のアクセス範囲を`public`から`package`へ変更
+
 ## [0.8.8] - 2026-11-24
 
 ### Added

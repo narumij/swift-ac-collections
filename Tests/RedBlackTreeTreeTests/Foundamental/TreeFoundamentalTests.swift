@@ -33,9 +33,12 @@ final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
   /// 廃止予定の`begin()`も、現存する間は`__begin_node_`をそのまま返すこと。
   @available(*, deprecated)
   func testDeprecatedBegin_delegatesToBeginNode() {
-    #if DEBUG && USE_TEMPLATE_INITIALIZE
-      let fixture = TreeFoundamentalBeginFixture(__begin_node_: UnsafeNode.template)
-      XCTAssertEqual(fixture.begin(), UnsafeNode.template)
+    #if DEBUG
+    var node = UnsafeNode.create(tag: 0, nullptr: .nullptr)
+    withUnsafeMutablePointer(to: &node) { node in
+      let fixture = TreeFoundamentalBeginFixture(__begin_node_: node)
+      XCTAssertEqual(fixture.begin(), node)
+    }
     #endif
   }
 

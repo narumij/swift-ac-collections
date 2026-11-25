@@ -45,6 +45,11 @@ where Key: Comparable {
 
   @usableFromInline
   var __tree_: Tree
+  
+  deinit {
+    linkList.deinitialize(count: 1)
+    linkList.deallocate()
+  }
 }
 
 extension LRUCache {

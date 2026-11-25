@@ -119,7 +119,7 @@ protocol SizeInterface: ~Copyable {
   // 木のノードの数を返す
   //
   // 終端ノードは含まないはず
-  @inlinable var __size_: Int { get nonmutating set }
+  @inlinable var __size_: Int { get set }
 }
 
 // MARK: -

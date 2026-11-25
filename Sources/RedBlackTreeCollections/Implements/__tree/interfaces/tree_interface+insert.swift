@@ -22,7 +22,7 @@
 
 @usableFromInline
 protocol InsertNodeAtInterface: ~Copyable, _NodePtrType {
-  @inlinable func __insert_node_at(
+  @inlinable mutating func __insert_node_at(
     _ __parent: _NodePtr,
     _ __child: _NodeRef,
     _ __new_node: _NodePtr
@@ -31,8 +31,8 @@ protocol InsertNodeAtInterface: ~Copyable, _NodePtrType {
 
 @usableFromInline
 protocol InsertUniqueInterface: ~Copyable, _NodePtrType & _PayloadValueType {
-  @inlinable func __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
-  @inlinable func __emplace_unique_key_args(_ __k: _PayloadValue) -> (
+  @inlinable mutating func __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
+  @inlinable mutating func __emplace_unique_key_args(_ __k: _PayloadValue) -> (
     __r: _NodePtr, __inserted: Bool
   )
 }
@@ -42,7 +42,7 @@ protocol InsertLastInterface: ~Copyable, _NodePtrType & _PayloadValueType {
   
   @inlinable func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef)
   
-  @inlinable func ___emplace_hint_right(
+  @inlinable mutating func ___emplace_hint_right(
     _ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue
   )
     -> (__parent: _NodePtr, __child: _NodeRef)

@@ -83,7 +83,7 @@ final class UnsafeNodeTests: PointerRedBlackTreeTestCase {
 
     nodes.withUnsafeMutableBufferPointer { nodes in
 
-      let fixture = Fixture(&end)
+      var fixture = Fixture(&end)
 
       XCTAssertEqual(fixture.__end_node.__left_, .nullptr)
       XCTAssertTrue(__tree_invariant(fixture.__end_node.__left_))
@@ -122,7 +122,7 @@ final class UnsafeNodeTests: PointerRedBlackTreeTestCase {
   /// `__begin_node_`まで漏れなく辿れること。
   func testTreeEndToPrev() throws {
     nodes.withUnsafeMutableBufferPointer { nodes in
-      let fixture = Fixture(&end)
+      var fixture = Fixture(&end)
       XCTAssertEqual(fixture.__end_node.__left_, .nullptr)
       XCTAssertTrue(__tree_invariant(fixture.__end_node.__left_))
       fixture.__insert_node_at(

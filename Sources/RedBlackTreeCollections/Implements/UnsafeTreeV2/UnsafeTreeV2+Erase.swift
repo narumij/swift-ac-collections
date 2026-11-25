@@ -40,7 +40,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @discardableResult
-  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
+  mutating func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
 
     var __first = __first
     while __first != __last {
@@ -54,7 +54,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @discardableResult
-  func ___erase_range_if(
+  mutating func ___erase_range_if(
     _ __first: _SafePtr,
     _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
@@ -76,7 +76,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @discardableResult
-  func ___erase_view_range_if(
+  mutating func ___erase_view_range_if(
     _ __first: inout _SafePtr,
     _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool

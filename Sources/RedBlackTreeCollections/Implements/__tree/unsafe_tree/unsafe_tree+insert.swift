@@ -36,7 +36,7 @@ protocol InsertNodeAtProtocol_ptr: ~Copyable,
 extension InsertNodeAtProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  internal func
+  internal mutating func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
       _ __new_node: _NodePtr
@@ -71,14 +71,14 @@ protocol InsertUniqueProtocol_ptr: ~Copyable,
 extension InsertUniqueProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  internal func
+  internal mutating func
     __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
     __emplace_unique_key_args(x)
   }
 
   @inlinable
-  internal func
+  internal mutating func
     __emplace_unique_key_args(_ __k: _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -106,12 +106,12 @@ protocol InsertMultiProtocol: ~Copyable, AllocationInterface & _TreePayloadValue
 extension InsertMultiProtocol where Self: ~Copyable {
 
   @inlinable
-  internal func __insert_multi(_ x: _PayloadValue) -> _NodePtr {
+  internal mutating func __insert_multi(_ x: _PayloadValue) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
-  internal func
+  internal mutating func
     __emplace_multi(_ __k: _PayloadValue) -> _NodePtr
   {
     let __h = __construct_node(__k)
@@ -146,7 +146,7 @@ extension InsertLastProtocol_ptr where Self: ~Copyable {
   }
 
   @inlinable
-  internal func
+  internal mutating func
     ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
     -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -201,7 +201,7 @@ extension EmplaceHintUniqueProtocol_ptr where Self: ~Copyable {
   // キー無しのケースはC++の事情によるもので、Comparable割り切りのSwift版では不要
   // 以下は資料として残して、分割版を使うこととする
   @inlinable
-  internal func __emplace_hint_unique(
+  internal mutating func __emplace_hint_unique(
     _ __p: _NodePtr, _ __k: @autoclosure () -> _Key?, _ __v: @autoclosure () -> _PayloadValue
   )
     -> (__r: _NodePtr, __inserted: Bool)
@@ -243,7 +243,7 @@ extension EmplaceHintUniqueProtocol_ptr where Self: ~Copyable {
 
   // 実際に使う分割前半バージョン
   @inlinable
-  internal func ___emplace_hint_unique_(
+  internal mutating func ___emplace_hint_unique_(
     _ __p: _NodePtr, _ __key: @autoclosure () -> _Key, _ __v: @autoclosure () -> _PayloadValue
   )
     -> (__r: _NodePtr, __inserted: Bool)
@@ -310,7 +310,7 @@ protocol EmplaceHintMultiProtocol_ptr: ~Copyable,
 extension EmplaceHintMultiProtocol_ptr where Self: ~Copyable {
 
   @inlinable
-  internal func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)
+  internal mutating func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)
     -> _NodePtr
   {
     let __h = __construct_node(value())

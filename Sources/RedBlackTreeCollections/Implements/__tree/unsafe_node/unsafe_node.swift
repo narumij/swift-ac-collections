@@ -272,6 +272,8 @@ extension UnsafeNode {
 }
 
 #if USE_TEMPLATE_INITIALIZE
+// TODO: 削除検討
+// Claudeがしつこくごり押ししてきただけだった記憶
 extension UnsafeNode {
   @usableFromInline nonisolated(unsafe)
     package static var template: UnsafeMutablePointer<UnsafeNode>

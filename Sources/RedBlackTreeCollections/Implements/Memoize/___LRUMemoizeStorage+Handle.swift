@@ -158,10 +158,10 @@ extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _Linking
   typealias _LRUHandle = ___LRUHandle<_Key, Base._MappedValue>
 
   @inlinable
-  internal func update<R>(_ body: (borrowing _LRUHandle) throws -> R) rethrows -> R {
+  internal mutating func update<R>(_ body: (inout _LRUHandle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, _ in
-      let handle = _LRUHandle(header: header)
-      return try body(handle)
+      var handle = _LRUHandle(header: header)
+      return try body(&handle)
     }
   }
 }

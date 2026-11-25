@@ -87,11 +87,11 @@ extension LRUCache {
 
       __tree_.ensureCapacity(limit: maxCount)
 
-      __tree_.update { __tree_ in
-
-        if __tree_.count == maxCount {
-          _ = __tree_.erase(___popRankLowest())
-        }
+      if __tree_.count == maxCount {
+        _ = __tree_.erase(___popRankLowest())
+      }
+      
+      let __h = __tree_.update { __tree_ in
 
         let (__parent, __child) = __tree_.__find_equal(key)
 
@@ -102,8 +102,10 @@ extension LRUCache {
         let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
         __tree_.__insert_node_at(__parent, __child, __h)
 
-        ___prepend(__h)
+        return __h
       }
+      
+      ___prepend(__h)
     }
   }
 }

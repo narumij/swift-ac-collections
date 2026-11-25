@@ -37,11 +37,11 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   @inlinable
   @inline(__always)
   internal mutating func update<R>(
-    _ body: (consuming Handle) throws -> R
+    _ body: (inout Handle) throws -> R
   ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = Handle(header: header, isMulti: isMulti)
-      return try body(handle)
+      var handle = Handle(header: header, isMulti: isMulti)
+      return try body(&handle)
     }
   }
 }
@@ -65,11 +65,11 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inlinable
   @inline(__always)
   internal mutating func update<R>(
-    _ body: (consuming KeyValueHandle) throws -> R
+    _ body: (inout KeyValueHandle) throws -> R
   ) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = KeyValueHandle(header: header, isMulti: isMulti)
-      return try body(handle)
+      var handle = KeyValueHandle(header: header, isMulti: isMulti)
+      return try body(&handle)
     }
   }
 }

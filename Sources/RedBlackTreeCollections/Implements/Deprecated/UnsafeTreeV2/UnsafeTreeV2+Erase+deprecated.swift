@@ -11,7 +11,7 @@
 
     @inlinable
     @discardableResult
-    func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+    mutating func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
 
       var __first = __first
       while __first != __last {

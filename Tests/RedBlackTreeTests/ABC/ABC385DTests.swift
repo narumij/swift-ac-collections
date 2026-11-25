@@ -8,7 +8,7 @@
 import RedBlackTreeCollections
 import XCTest
 
-final class ABC385DTests: RedBlackTreeTestCase {
+final class ABC385DTests: ABCTestCase {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.

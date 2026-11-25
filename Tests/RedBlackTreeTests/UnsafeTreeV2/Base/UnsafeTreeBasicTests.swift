@@ -267,7 +267,7 @@ import XCTest
     /// `__insert_unique`で0..<5を挿入した木が`__tree_invariant`を満たし、
     /// `lower_bound`と前進走査(`__tree_next_iter`)で昇順に正しく値を返すこと。
     func testInsert() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))
@@ -290,7 +290,7 @@ import XCTest
     /// `.copy()`した木が、元の木と同じ構造(root/begin_nodeのindexと左右の子)を持ち、
     /// 走査結果も一致すること(CoWコピーの構造的忠実性)。
     func testInsert2() async throws {
-      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
         XCTAssertTrue(storage.__tree_invariant(storage.__root))

@@ -151,7 +151,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     _ transform: (Base._MappedValue) throws -> Other._MappedValue
   ) rethrows -> UnsafeTreeV2<Other>
   where Other: PairValueTrait, Other._Key == Base._Key {
-    let other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
+    var other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       let __mapped_value = try transform(Base.__mapped_value_(__p))

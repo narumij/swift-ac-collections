@@ -31,7 +31,7 @@ extension EraseProtocol where Self: ~Copyable {
 
   // - WARNING: メモリ破壊の可能性がある。
   @inlinable
-  internal func
+  internal mutating func
     erase(_ __p: _NodePtr) -> _NodePtr
   {
     let __r = __remove_node_pointer(__p)
@@ -41,7 +41,7 @@ extension EraseProtocol where Self: ~Copyable {
 
   // - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
   @inlinable
-  internal func
+  internal mutating func
     erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
   {
     var __f = __f
@@ -64,7 +64,7 @@ extension EraseUniqueProtocol where Self: ~Copyable {
 
   // メモリ破壊できない
   @inlinable
-  internal func ___erase_unique(_ __k: _Key) -> Bool {
+  internal mutating func ___erase_unique(_ __k: _Key) -> Bool {
     let __i = find(__k)
     if __i == end {
       return false
@@ -85,7 +85,7 @@ extension EraseMultiProtocol where Self: ~Copyable {
 
   // メモリ破壊できない
   @inlinable
-  internal func ___erase_multi(_ __k: _Key) -> Int {
+  internal mutating func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0
     while __p.0 != __p.1 {

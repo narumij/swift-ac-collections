@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- 赤黒木内部の挿入・削除と件数更新を`mutating`操作として整理し、`update`で操作用Handleを`inout`で渡す形へ変更
+- `LRUCache`の利用順リストを専用の`_LinkList`へ分離し、木とリストの更新を一つの`update`内に集約
+- `LRUCache.maxCount`のアクセス範囲を`public`から`package`へ変更
+- ABC問題を使う5つのテストクラスで、`print`出力を`blackHole`へ渡すよう変更し、標準出力への書き込みを抑制
+
 ## [0.8.8] - 2026-11-24
 
 ### Added

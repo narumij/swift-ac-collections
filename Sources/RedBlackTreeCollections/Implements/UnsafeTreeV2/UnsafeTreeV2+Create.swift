@@ -92,7 +92,7 @@ extension UnsafeTreeV2 {
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
   where R: RangeExpression, R: Collection, R.Element == Base._PayloadValue {
 
-    let tree: Tree = .create(minimumCapacity: range.count)
+    var tree: Tree = .create(minimumCapacity: range.count)
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in range {

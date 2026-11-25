@@ -34,7 +34,7 @@
     where Base._Key: Comparable {
 
       let count = elements.count
-      let tree: Tree = .create(minimumCapacity: count)
+      var tree: Tree = .create(minimumCapacity: count)
       // 初期化直後はO(1)
       var (__parent, __child) = tree.___max_ref()
       for __k in elements {
@@ -63,7 +63,7 @@
     where Base._Key: Comparable {
 
       let count = elements.count
-      let tree: Tree = .create(minimumCapacity: count)
+      var tree: Tree = .create(minimumCapacity: count)
       // 初期化直後はO(1)
       var (__parent, __child) = tree.___max_ref()
       for __k in elements {
@@ -108,7 +108,7 @@
     where Base._Key: Comparable {
 
       let count = elements.count
-      let tree: Tree = .create(minimumCapacity: count)
+      var tree: Tree = .create(minimumCapacity: count)
       // 初期化直後はO(1)
       var (__parent, __child) = tree.___max_ref()
       for __k in elements {

@@ -148,7 +148,7 @@ import XCTest
     /// unique挿入がroot/begin/sizeを更新し、重複時には余分なallocationを作らないこと。
     func testUniqueInsertion_buildsValidTreeAndRejectsDuplicate() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
 
       for value in [20, 10, 30, 5, 15, 25, 35] {
         let result = tree.__insert_unique(value)
@@ -173,7 +173,7 @@ import XCTest
     /// multi挿入が同値要素を保持し、単体eraseと範囲eraseがpayloadを一度ずつ破棄すること。
     func testMultiInsertionAndErasure_preserveOrderAndOwnership() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
 
       for value in [20, 10, 30, 20, 5, 25, 35, 20] {
         _ = tree.__insert_multi(value)
@@ -199,7 +199,7 @@ import XCTest
     /// key削除が欠落時に何も変更せず、存在時には次ノードを保ったまま木を再平衡すること。
     func testEraseUnique_handlesMissingAndEachStructuralPosition() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
       for value in [4, 2, 6, 1, 3, 5, 7] {
         _ = tree.__insert_unique(value)
       }
@@ -220,7 +220,7 @@ import XCTest
     /// 末尾挿入位置の計算が空木と非空木で正しいparent/child参照を返すこと。
     func testMaximumReference_handlesEmptyAndNonEmptyTree() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
 
       let emptyMaximum = tree.___max_ref()
       XCTAssertEqual(emptyMaximum.__parent, tree.end)
@@ -240,7 +240,7 @@ import XCTest
     /// nodeとそのright参照を次の挿入位置へ返し続けること。
     func testEmplaceHintRight_buildsAscendingRangeFromReturnedInsertionPosition() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
       var position = tree.___max_ref()
 
       for value in 0..<8 {
@@ -262,7 +262,7 @@ import XCTest
     /// 重複時の一時allocation破棄を正しく扱うこと。
     func testHintedUniqueInsertion_handlesKeyedDerivedAndDuplicatePaths() {
       let state = State()
-      let tree = MutationTree(state: state)
+      var tree = MutationTree(state: state)
       _ = tree.__insert_unique(10)
       _ = tree.__insert_unique(30)
 
@@ -297,11 +297,11 @@ import XCTest
     /// multi key削除が同値範囲だけを破棄し、削除数と残存順序を保つこと。
     func testEraseMulti_removesEntireEquivalentRange() {
       let state = State()
-      let mutation = MutationTree(state: state)
+      var mutation = MutationTree(state: state)
       for value in [20, 10, 20, 30, 20, 25] {
         _ = mutation.__insert_multi(value)
       }
-      let eraser = CopyableMultiEraseTree(state: state)
+      var eraser = CopyableMultiEraseTree(state: state)
 
       XCTAssertEqual(eraser.___erase_multi(99), 0)
       XCTAssertEqual(eraser.___erase_multi(20), 3)

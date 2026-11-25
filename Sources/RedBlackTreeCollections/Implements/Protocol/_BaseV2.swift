@@ -48,7 +48,7 @@ where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
 // 共通生木メンバー
 @usableFromInline
-protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 { var __tree_: Tree { get } }
+protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 { var __tree_: Tree { get set } }
 
 // 変更可能共通生木メンバー
 @usableFromInline

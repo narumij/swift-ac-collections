@@ -45,7 +45,7 @@
       public typealias SubSequence = Self
 
       @usableFromInline
-      internal let __tree_: Tree
+      internal var __tree_: Tree
 
       @usableFromInline
       internal var _sealed_start, _sealed_end: _SealedPtr

@@ -22,20 +22,20 @@
 
 @usableFromInline
 protocol EraseInterface: ~Copyable, _NodePtrType {
-  @inlinable func erase(_ __p: _NodePtr) -> _NodePtr
-  @inlinable func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+  @inlinable mutating func erase(_ __p: _NodePtr) -> _NodePtr
+  @inlinable mutating func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
 }
 
 @usableFromInline
 protocol EraseUniqueInteface: ~Copyable, _KeyType {
   // llvmにも同じものがいるので、3本アンスコは間違い
   // こっちはまだ戻りが違うのでわかる
-  @inlinable func ___erase_unique(_ __k: _Key) -> Bool
+  @inlinable mutating func ___erase_unique(_ __k: _Key) -> Bool
 }
 
 @usableFromInline
 protocol EraseMultiInteface: ~Copyable, _KeyType {
   // llvmにも同じものがいるので、3本アンスコは間違い
   // 特にこっち。なんで3本にしたのか謎
-  @inlinable func ___erase_multi(_ __k: _Key) -> Int
+  @inlinable mutating func ___erase_multi(_ __k: _Key) -> Int
 }

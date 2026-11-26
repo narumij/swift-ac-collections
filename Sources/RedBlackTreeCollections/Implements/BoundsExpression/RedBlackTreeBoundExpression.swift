@@ -53,77 +53,6 @@ public struct RedBlackTreeBoundExpression<Key> {
 
 extension RedBlackTreeBoundExpression {
 
-  @usableFromInline
-  struct Internal {
-
-    @usableFromInline
-    var first: Op
-
-    // 2要素式までは直接保持し、3個目以降だけを配列に置く。
-    @usableFromInline
-    var second: Op?
-
-    @usableFromInline
-    var rest: ContiguousArray<Op>
-
-    @inlinable
-    init(_ first: Op) {
-      self.first = first
-      self.second = nil
-      self.rest = []
-    }
-
-    @inlinable
-    var count: Int {
-      second == nil ? 1 : 2 + rest.count
-    }
-
-    @inlinable
-    subscript(_ index: Int) -> Op {
-      _read {
-        if index == 0 {
-          yield first
-        } else if index == 1 {
-          yield second!
-        } else {
-          yield rest[index - 2]
-        }
-      }
-    }
-
-    @inlinable
-    mutating func append(_ op: Op) {
-      if second == nil {
-        second = op
-      } else {
-        rest.append(op)
-      }
-    }
-  }
-
-
-  @usableFromInline
-  enum Op {
-    case start
-    case last
-    case end
-    case lowerBound(Key)
-    case upperBound(Key)
-    case find(Key)
-    case first(Key)
-    indirect case advanced(offset: Int, limit: Internal? = nil)
-    case before
-    case after
-    #if DEBUG
-      // 性能問題が発生したので、デバッグ便利ケース落ち
-      case index(UnsafeIndexV3)
-      case debug(SealError)
-    #endif
-  }
-}
-
-extension RedBlackTreeBoundExpression {
-
   /// Represents the first element.
   ///
   /// If no such element exists, it is substituted with the past-the-end element.
@@ -251,5 +180,219 @@ extension RedBlackTreeBoundExpression {
     var result = self
     result._internal.append(.advanced(offset: offset, limit: limit?._internal))
     return result
+  }
+}
+
+// MARK: -
+
+extension RedBlackTreeBoundExpression {
+
+  @usableFromInline
+  struct Internal {
+
+    @usableFromInline
+    var body: (Op?, Op?, Op?)
+
+    @usableFromInline
+    var rest: ContiguousArray<Op>?
+
+    @inlinable
+    @inline(__always)
+    init(_ first: Op) {
+      self.body = (first,nil,nil)
+      count = 1
+    }
+
+    @usableFromInline
+    var count: Int
+    
+    @inlinable
+    @inline(__always)
+    var single: Op? { count == 1 ? body.0 : nil }
+
+    @inlinable
+    subscript(_ index: Int) -> Op {
+      @inline(__always)
+      get {
+        switch index {
+        case 0:
+          body.0!
+        case 1:
+          body.1!
+        case 2:
+          body.2!
+        default:
+          rest![index - 3]
+        }
+      }
+    }
+
+    @inlinable
+    @inline(__always)
+    mutating func append(_ op: Op) {
+      switch count {
+      case 1:
+        body.1 = op
+      case 2:
+        body.2 = op
+      default:
+        if rest == nil {
+          rest = [op]
+        } else {
+          rest?.append(op)
+        }
+      }
+      count &+= 1
+    }
+  }
+
+  @usableFromInline
+  enum Op {
+    case start
+    case last
+    case end
+    case lowerBound(Key)
+    case upperBound(Key)
+    case find(Key)
+    case first(Key)
+    indirect case advanced(offset: Int, limit: Internal? = nil)
+    case before
+    case after
+    #if DEBUG
+      // 性能問題が発生したので、デバッグ便利ケース落ち
+      case index(UnsafeIndexV3)
+      case debug(SealError)
+    #endif
+  }
+}
+
+extension RedBlackTreeBoundExpression.Internal {
+
+  @inlinable
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> _SafePtr
+  where
+    Base: ___TreeBase,
+    Base._Key == Key
+  {
+    if let op = single {
+      switch op {
+      case .first(let key):
+        return __tree_.find_first(key).unchecked
+      case .find(let key):
+        return __tree_.find(key).unchecked
+      case .lowerBound(let key):
+        return __tree_.lower_bound(key).unchecked
+      case .upperBound(let key):
+        return __tree_.upper_bound(key).unchecked
+      case .start:
+        return __tree_.__begin_node_.unchecked
+      case .end:
+        return __tree_.__end_node.unchecked
+      default:
+        break
+      }
+    }
+
+    return evaluateSlow(__tree_)
+  }
+  
+  @inlinable
+  func evaluateSlow<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> _SafePtr
+  where
+    Base: ___TreeBase,
+    Base._Key == Key
+  {
+    var ptr = _SafePtr.failure(.null)
+
+    func apply(_ op: RedBlackTreeBoundExpression<Base._Key>.Op) -> _SafePtr? {
+      switch op {
+
+      case .start:
+        ptr = __tree_.__begin_node_.unchecked
+
+      case .last:
+        ptr = __tree_.__begin_node_ == __tree_.__end_node
+        ? __tree_.__end_node.unchecked
+        : __tree_.___tree_prev_iter(__tree_.__end_node)
+
+      case .end:
+        ptr = __tree_.__end_node.unchecked
+
+      case .lowerBound(let __v):
+        ptr = __tree_.lower_bound(__v).unchecked
+
+      case .upperBound(let __v):
+        ptr = __tree_.upper_bound(__v).unchecked
+
+      case .find(let __v):
+        ptr = __tree_.find(__v).unchecked
+
+      case .first(let __v):
+        ptr = __tree_.find_first(__v).unchecked
+
+      case .advanced(let offset, let limit):
+        switch limit {
+        case .none:
+          ptr = ptr.flatMap {
+            __tree_.___tree_adv_iter($0, offset)
+          }
+
+        case .some(let __l):
+          ptr = __l.evaluate(__tree_).flatMap { limit in
+            let result = ptr.flatMap {
+              __tree_.___tree_adv_iter($0, offset, .success(limit))
+            }
+            return switch result {
+            case .failure(.limit): .success(limit)
+            default: result
+            }
+          }
+        }
+
+      case .before:
+        ptr = ptr.flatMap {
+          __tree_.___tree_adv_iter($0, -1)
+        }
+
+      case .after:
+        ptr = ptr.flatMap {
+          __tree_.___tree_adv_iter($0, 1)
+        }
+
+      #if DEBUG
+        case .index(let i):
+        switch __tree_.__purified_(i) {
+          case .success(let s):
+            ptr = s.pointer.unchecked
+          case .failure:
+            ptr = .failure(.null)
+          }
+
+        case .debug(let e):
+          return .failure(e)
+      #endif
+      }
+      return nil
+    }
+    
+    switch count {
+    case 1:
+      if let failure = apply(body.0!) { return failure }
+    case 2:
+      if let failure = apply(body.0!) { return failure }
+      if let failure = apply(body.1!) { return failure }
+    case 3:
+      if let failure = apply(body.0!) { return failure }
+      if let failure = apply(body.1!) { return failure }
+      if let failure = apply(body.2!) { return failure }
+    default:
+      for i in 0..<count {
+        if let failure = apply(self[i]) { return failure }
+      }
+    }
+
+    return ptr
   }
 }

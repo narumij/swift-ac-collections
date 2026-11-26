@@ -61,9 +61,16 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
-      let p = bound.evaluate(__tree_)
-      guard let p = p.accessible.pointer else { return nil }
-      return Base.__element_(p)
+      @inline(__always)
+      get {
+        let p = bound.evaluate(__tree_)
+        switch p.accessible.pointer {
+        case .some(let p):
+          return Base.__element__ptr(p).pointee
+        case .none:
+          return nil
+        }
+      }
     }
   }
 

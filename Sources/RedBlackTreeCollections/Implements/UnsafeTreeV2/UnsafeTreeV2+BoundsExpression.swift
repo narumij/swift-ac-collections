@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if false
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -29,8 +30,8 @@ extension UnsafeTreeV2 {
 
     // ベンチマーク的にずるをしている
 
-    if expression.count == 1 {
-      switch expression[0] {
+    if let op = expression.single {
+      switch op {
       case .find(let key):
         return find(key).unchecked
       case .lowerBound(let key):
@@ -157,17 +158,25 @@ extension UnsafeTreeV2 {
       return nil
     }
 
-    if let failure = apply(expression.first) { return failure }
-    if let second = expression.second {
-      if let failure = apply(second) { return failure }
-    }
-    let rest = expression.rest.span
-    for i in rest.indices {
-      if let failure = apply(rest[i]) { return failure }
+//    if let failure = apply(expression.body.0!) { return failure }
+//    if let second = expression.body.1 {
+//      if let failure = apply(second) { return failure }
+//    }
+//    if let third = expression.body.2 {
+//      if let failure = apply(third) { return failure }
+//    }
+//    if let rest = expression.rest?.span {
+//      for i in rest.indices {
+//        if let failure = apply(rest[i]) { return failure }
+//      }
+//    }
+    for i in 0..<expression.count {
+      if let failure = apply(expression[i]) { return failure }
     }
     return ptr
   }
 }
+#endif
 
 extension RedBlackTreeBoundExpression {
 
@@ -178,7 +187,11 @@ extension RedBlackTreeBoundExpression {
     Base: ___TreeBase,
     Base._Key == Key
   {
+    #if false
     return __tree_.evaluate(_internal)
+    #else
+    return _internal.evaluate(__tree_)
+    #endif
   }
 }
 

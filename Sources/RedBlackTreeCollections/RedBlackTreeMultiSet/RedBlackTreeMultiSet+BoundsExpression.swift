@@ -90,9 +90,13 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
-      let p = bound.evaluate(__tree_)
-      guard let p = p.accessible.pointer else { return nil }
-      return Base.__payload_(p)
+      @inline(__always)
+      get {
+        guard case .success(let p) = bound.evaluate(__tree_),
+          p != __tree_.__end_node
+        else { return nil }
+        return Base.__payload_ptr(p).pointee
+      }
     }
   }
 

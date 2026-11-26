@@ -23,19 +23,6 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-//    /// - Complexity: O(log *n*)
-//    @inlinable
-//    public subscript(key: Key) -> View {
-//      @inline(__always) get {
-//        let (lower, upper) = __tree_.__equal_range_multi(key)
-//        return self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
-//      }
-//      @inline(__always) _modify {
-//        let (lower, upper) = __tree_.__equal_range_multi(key)
-//        yield &self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
-//      }
-//    }
-
     /// Accesses a mutable view of all mapped values associated with `key`.
     ///
     /// Values appear in their order within the equivalent-key group. Removing
@@ -60,29 +47,6 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && false
-  extension RedBlackTreeMultiMap {
-
-    /// Accesses the element at the specified position.
-    ///
-    /// - Parameter position: A valid element index of this multimap.
-    /// - Precondition: `position` identifies an element in this multimap and isn't `endIndex`.
-    ///
-    /// - Complexity: O(1) when the index directly references the current storage;
-    ///   O(b) when resolving the index by its tracking tag, where b is the number
-    ///   of internal storage buckets.
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always)
-      get {
-        // unsafeAddress, _read、双方バグるので、基本のget。しくしく
-        // TODO: またいつか試す
-        __tree_._unsafeAddress(position).pointee.tuple
-      }
-    }
-  }
-#endif
-
 #if !COMPATIBLE_ATCODER_2025 && true
   extension RedBlackTreeMultiMap {
 
@@ -98,7 +62,7 @@
     public subscript(position: Index) -> Element {
       @inline(__always)
       unsafeAddress {
-        __tree_._unsafeAddress(position).pointer(to: \.tuple)!
+        Base.__element_ptr(__tree_._unsafeAddress(position))
       }
     }
   }

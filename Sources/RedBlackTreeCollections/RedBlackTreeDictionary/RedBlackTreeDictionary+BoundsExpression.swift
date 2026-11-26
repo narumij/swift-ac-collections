@@ -137,7 +137,7 @@
       _ = try __tree_.___erase_sanitize_range_if_with_many_care(
         bounds.evaluate(__tree_).relative(to: __tree_)
       ) {
-        try shouldBeRemoved($0.tuple)
+        try shouldBeRemoved(Base.__element_($0))
       }
     }
   }

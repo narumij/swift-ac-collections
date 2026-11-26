@@ -34,8 +34,11 @@ final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
   @available(*, deprecated)
   func testDeprecatedBegin_delegatesToBeginNode() {
     #if DEBUG
-      let fixture = TreeFoundamentalBeginFixture(__begin_node_: UnsafeNode.template)
-      XCTAssertEqual(fixture.begin(), UnsafeNode.template)
+    var node = UnsafeNode.create(tag: 0, nullptr: .nullptr)
+    withUnsafeMutablePointer(to: &node) { node in
+      let fixture = TreeFoundamentalBeginFixture(__begin_node_: node)
+      XCTAssertEqual(fixture.begin(), node)
+    }
     #endif
   }
 

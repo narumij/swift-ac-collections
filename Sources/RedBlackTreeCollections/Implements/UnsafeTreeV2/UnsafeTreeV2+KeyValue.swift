@@ -120,7 +120,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   mutating func mappedValuePtr(
     for key: Base._Key,
     default defaultValue: () -> Base._MappedValue
-  ) -> Base._MappedValuePtr {
+  ) -> Base._MutableMappedValuePtr {
     ensureUnique()
 
     let (__parent, __child) = __find_equal(key)

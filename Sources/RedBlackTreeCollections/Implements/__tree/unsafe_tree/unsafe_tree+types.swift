@@ -38,19 +38,20 @@ extension _KeyType where Self: ~Copyable,  Self: _UnsafeNodePtrType {
 extension _PayloadValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _PayloadPtr = UnsafePointer<_PayloadValue>
   public typealias _MutablePayloadPtr = UnsafeMutablePointer<_PayloadValue>
-  public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
 }
 
 extension _MappedValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
-  public typealias _MappedValuePtr = UnsafeMutablePointer<_MappedValue>
+  public typealias _MutableMappedValuePtr = UnsafeMutablePointer<_MappedValue>
+  public typealias _MappedValuePtr = UnsafePointer<_MappedValue>
 }
 
 extension _ElementType where Self: ~Copyable, Self: _UnsafeNodePtrType {
-  public typealias _ElementValuePtr = UnsafeMutablePointer<Element>
+  public typealias _MutableElementValuePtr = UnsafeMutablePointer<Element>
+  public typealias _ElementValuePtr = UnsafePointer<Element>
 }
 
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
-
+  
   // ペイロードのポインタ
   //
   // ```
@@ -66,7 +67,7 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
   static func __payload_ptr(_ p: _NodeRef) -> _MutablePayloadPtr {
     p.pointee.__value_()
   }
-
+  
   @inlinable
   @inline(__always)
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
@@ -78,7 +79,13 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
     p.pointee.__value_().pointee
   }
+}
+
+// Fixture行きが妥当そう
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
   
+  public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
+
   @inlinable
   static func __payload_buffer(_ p: _NodePtr) -> _PayloadBuffer {
     .init(start: __payload_ptr(p), count: 1)
@@ -152,14 +159,24 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   //    ^-- UnsafeMutablePointer<UnsafeNode>
   // ```
   @inlinable
-  static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
+  static func __mapped_value_ptr(_ p: _NodePtr) -> _MutableMappedValuePtr {
     __payload_ptr(p).pointer(to: \.tuple.value)!
   }
   @inlinable
-  static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
+  static func __mapped_value_ptr(_ p: _NodeRef) -> _MutableMappedValuePtr {
     __payload_ptr(p.pointee).pointer(to: \.tuple.value)!
   }
   
+  @inlinable
+  static func __mapped_value_ptr(_ p: _PayloadPtr) -> _MappedValuePtr {
+    p.pointer(to: \.tuple.value)!
+  }
+
+  @inlinable
+  static func __mapped_value_ptr(_ p: _MutablePayloadPtr) -> _MutableMappedValuePtr {
+    p.pointer(to: \.tuple.value)!
+  }
+
   @inlinable
   static func __mapped_value_(_ p: _NodePtr) -> _MappedValue {
     __payload_(p).tuple.value
@@ -173,10 +190,15 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType & _KeyValueElementType {
   
   @inlinable
-  static func __element__ptr(_ p: _NodePtr) -> _ElementValuePtr {
+  static func __element__ptr(_ p: _NodePtr) -> _MutableElementValuePtr {
     __payload_ptr(p).pointer(to: \.tuple)!
   }
   
+  @inlinable
+  public static func __element_ptr(_ __value: _PayloadPtr) -> _ElementValuePtr {
+    __value.pointer(to: \.tuple)!
+  }
+
   @inlinable
   @inline(__always)
   static func __element_(_ p: _NodePtr) -> Element {

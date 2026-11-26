@@ -229,7 +229,9 @@ public struct UnsafeNode {
   //
   // 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
+}
 
+extension UnsafeNode {
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // (comp, beqより、cbzやcbnzの方が速い説)
@@ -240,17 +242,10 @@ public struct UnsafeNode {
   @usableFromInline nonisolated(unsafe)
     package static var nullptr: UnsafeMutablePointer<UnsafeNode>
   { _singletonNull.nullptr }
-
-  @usableFromInline nonisolated(unsafe)
-    package static var template: UnsafeMutablePointer<UnsafeNode>
-  { _singletonTemplate.template }
 }
 
 @usableFromInline
 nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
-
-@usableFromInline
-nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
 
 extension UnsafeNode {
 
@@ -276,6 +271,18 @@ extension UnsafeNode {
   }
 }
 
+#if USE_TEMPLATE_INITIALIZE
+// TODO: 削除検討
+// Claudeがしつこくごり押ししてきただけだった記憶
+extension UnsafeNode {
+  @usableFromInline nonisolated(unsafe)
+    package static var template: UnsafeMutablePointer<UnsafeNode>
+  { _singletonTemplate.template }
+}
+
+@usableFromInline
+nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
+
 extension UnsafeNode {
 
   @frozen
@@ -299,6 +306,7 @@ extension UnsafeNode {
     }
   }
 }
+#endif
 
 extension UnsafeNode {
 

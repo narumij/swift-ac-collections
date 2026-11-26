@@ -66,7 +66,7 @@
         let p = bound.evaluate(__tree_)
         switch p.accessible.pointer {
         case .some(let p):
-          return Base.__element__ptr(p).pointee
+          return Base.__element_ptr(p).pointee
         case .none:
           return nil
         }

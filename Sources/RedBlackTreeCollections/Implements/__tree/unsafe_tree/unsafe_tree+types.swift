@@ -190,7 +190,7 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType & _KeyValueElementType {
   
   @inlinable
-  static func __element__ptr(_ p: _NodePtr) -> _MutableElementValuePtr {
+  static func __element_ptr(_ p: _NodePtr) -> _MutableElementValuePtr {
     __payload_ptr(p).pointer(to: \.tuple)!
   }
   

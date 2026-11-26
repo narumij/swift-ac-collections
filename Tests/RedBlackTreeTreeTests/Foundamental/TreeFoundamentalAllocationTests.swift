@@ -118,7 +118,7 @@ import XCTest
       XCTAssertEqual(PairLayout.__key_(node), "answer")
       XCTAssertEqual(PairLayout.__mapped_value_ptr(node).pointee, 42)
       XCTAssertEqual(PairLayout.__mapped_value_(node), 42)
-      XCTAssertEqual(PairLayout.__element__ptr(node).pointee.key, "answer")
+      XCTAssertEqual(PairLayout.__element_ptr(node).pointee.key, "answer")
       XCTAssertEqual(PairLayout.__element_(node).value, 42)
 
       var nodeRef = node

@@ -92,13 +92,10 @@
 
       @inline(__always)
       get {
-        let p = bound.evaluate(__tree_)
-        switch p.accessible.pointer {
-        case .some(let p):
-          return Base.__payload_ptr(p).pointee
-        case .none:
-          return nil
-        }
+        guard case .success(let p) = bound.evaluate(__tree_),
+          p != __tree_.__end_node
+        else { return nil }
+        return Base.__payload_ptr(p).pointee
       }
     }
   }

@@ -7,7 +7,7 @@ import Testing
 /// 原木のポインタ前提条件と、不正なtracking tagの停止契約を検証する。
 ///
 /// exit testの本体は別プロセスで実行されるため、外側で作った生ポインタを
-/// captureしない。各ケースは原木が提供するsingletonだけを子プロセス内で参照する。
+/// captureしない。各ケースで必要なノードは子プロセス内で作成する。
 struct TreeFoundamentalDeathTests {
 
   private struct AlgorithmHarness: TreeAlgorithmBaseProtocol_ptr,
@@ -47,14 +47,18 @@ struct TreeFoundamentalDeathTests {
   @Test
   func comparingMultiWithNullLeftPointer_terminatesProcess() async {
     await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-      _ = ___ptr_comp_multi(.nullptr, UnsafeNode.template)
+      let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+      _ = ___ptr_comp_multi(.nullptr, node)
     }
   }
 
   @Test
   func comparingMultiWithNullRightPointer_terminatesProcess() async {
     await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-      _ = ___ptr_comp_multi(UnsafeNode.template, .nullptr)
+      let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+      _ = ___ptr_comp_multi(node, .nullptr)
     }
   }
 
@@ -75,14 +79,18 @@ struct TreeFoundamentalDeathTests {
   @Test
   func comparingBitmapWithNullLeftPointer_terminatesProcess() async {
     await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-      _ = ___ptr_comp_bitmap(.nullptr, UnsafeNode.template)
+      let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+      _ = ___ptr_comp_bitmap(.nullptr, node)
     }
   }
 
   @Test
   func comparingBitmapWithNullRightPointer_terminatesProcess() async {
     await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-      _ = ___ptr_comp_bitmap(UnsafeNode.template, .nullptr)
+      let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+      _ = ___ptr_comp_bitmap(node, .nullptr)
     }
   }
 
@@ -180,7 +188,9 @@ struct TreeFoundamentalDeathTests {
     case .balanceInsertedNode:
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let harness = AlgorithmHarness()
-        harness._ptr__tree_balance_after_insert(UnsafeNode.template, .nullptr)
+        let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+        node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+        harness._ptr__tree_balance_after_insert(node, .nullptr)
       }
     case .removeRoot:
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
@@ -190,12 +200,16 @@ struct TreeFoundamentalDeathTests {
     case .removeNode:
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let harness = AlgorithmHarness()
-        harness._ptr__tree_remove(UnsafeNode.template, .nullptr)
+        let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+        node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+        harness._ptr__tree_remove(node, .nullptr)
       }
     case .removeMalformedTree:
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let harness = AlgorithmHarness()
-        harness._ptr__tree_remove(UnsafeNode.template, UnsafeNode.template)
+        let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+        node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+        harness._ptr__tree_remove(node, node)
       }
     }
   }

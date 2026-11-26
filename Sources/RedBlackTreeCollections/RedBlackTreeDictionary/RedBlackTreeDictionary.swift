@@ -295,19 +295,29 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element)
-    -> (inserted: Bool, memberAfterInsert: Element)
+  -> (inserted: Bool, memberAfterInsert: Element)
   {
-    #if false
-    // 資料的にのこしてある
-      __tree_.ensureUniqueAndCapacity()
-      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-      return (__inserted, __inserted ? newMember : Base.__element_(__r))
-    #else
-      let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
-      return (__inserted, Base.__element_(__r))
-    #endif
+    let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
+    return (__inserted, Base.__element_(__r))
   }
 }
+
+#if DEBUG
+// なんかバランス悪くて気になるので試作
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  @discardableResult
+  public mutating func update(_ newMember: Element) -> Value? {
+    __tree_.ensureUniqueAndCapacity()
+    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_(newMember))
+    guard !__inserted else { return nil }
+    let oldMember = Base.__mapped_value_(__r)
+    Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
+    return oldMember
+  }
+}
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {

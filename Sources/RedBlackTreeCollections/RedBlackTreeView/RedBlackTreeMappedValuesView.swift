@@ -142,12 +142,12 @@ where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
   public subscript(position: Index) -> Element {
     @inline(__always)
     unsafeAddress {
-      __tree_._unsafeAddress(position).pointer(to: \.tuple.value)!
+      Base.__mapped_value_ptr(__tree_._unsafeAddress(position))
     }
     @inline(__always)
     unsafeMutableAddress {
       _ensureUnique()
-      return __tree_._unsafeMutableAddress(position).pointer(to: \.tuple.value)!
+      return Base.__mapped_value_ptr(__tree_._unsafeMutableAddress(position))
     }
   }
 }

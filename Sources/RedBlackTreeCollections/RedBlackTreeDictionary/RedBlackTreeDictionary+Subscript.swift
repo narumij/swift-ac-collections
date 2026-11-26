@@ -83,7 +83,7 @@ extension RedBlackTreeDictionary {
     public subscript(position: Index) -> Element {
       @inline(__always)
       unsafeAddress {
-        __tree_._unsafeAddress(position).pointer(to: \.tuple)!
+        Base.__element_ptr(__tree_._unsafeAddress(position))
       }
     }
   }

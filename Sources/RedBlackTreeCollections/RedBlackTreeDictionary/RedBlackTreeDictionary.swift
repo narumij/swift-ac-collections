@@ -312,18 +312,19 @@ extension RedBlackTreeDictionary {
   /// Replacing an existing pair does not change the number of elements.
   ///
   /// - Parameter newMember: The key-value pair to store.
-  /// - Returns: The previous value if an equivalent key existed, or `nil` if a new pair was inserted.
-  ///   When `Value` is optional, replacing a stored `nil` returns `.some(nil)`.
+  /// - Returns: The previous key-value pair if an equivalent key existed, or `nil` if a new pair was inserted.
+  ///   The returned pair contains the original stored key. An optional `Value` of `nil`
+  ///   remains a value in the returned pair; it does not indicate insertion.
   /// - Note: Available only in Debug builds.
   @inlinable
   @discardableResult
-  public mutating func update(_ newMember: Element) -> Value? {
+  public mutating func update(_ newMember: Element) -> Element? {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_(newMember))
     guard !__inserted else { return nil }
-    let oldMember = Base.__mapped_value_(__r)
+    let old = Base.__element_(__r)
     Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
-    return oldMember
+    return old
   }
 }
 #endif
@@ -390,9 +391,9 @@ extension RedBlackTreeDictionary {
       let (__r, __inserted) = __tree_.___emplace_hint_unique_(
         __p, newMember.key, Base.__payload_(newMember))
       guard !__inserted else { return nil }
-      let oldMember = Base.__payload_(__r)
+      let old = Base.__element_(__r)
       Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
-      return Base.__element_(oldMember)
+      return old
     }
   }
 #endif

@@ -283,7 +283,7 @@ extension RedBlackTreeDictionary {
   public mutating func insert(key: Key, value: Value)
     -> (inserted: Bool, memberAfterInsert: Element)
   {
-    insert((key, value))
+    insert((key: key, value: value))
   }
 
   /// Inserts the given key-value pair into the dictionary if its key is not already present.
@@ -344,7 +344,7 @@ extension RedBlackTreeDictionary {
     public mutating func insert(key: Key, value: Value, hint: Index)
       -> (inserted: Bool, indexAfterInsert: Index)
     {
-      insert((key, value), hint: hint)
+      insert((key: key, value: value), hint: hint)
     }
 
     /// Inserts a key-value pair, using `hint` as a suggested insertion position.
@@ -410,7 +410,7 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_((key, value)))
+    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_((key: key, value: value)))
     guard !__inserted else { return nil }
     let oldMember = Base.__mapped_value_(__r)
     Base.__mapped_value_ptr(__r).pointee = value
@@ -442,7 +442,7 @@ extension RedBlackTreeDictionary {
         fatalError(.invalidIndex)
       }
       let (__r, __inserted) = __tree_.___emplace_hint_unique_(
-        __p, key, Base.__payload_((key, value)))
+        __p, key, Base.__payload_((key: key, value: value)))
       guard !__inserted else { return nil }
       let oldMember = Base.__mapped_value_(__r)
       Base.__mapped_value_ptr(__r).pointee = value

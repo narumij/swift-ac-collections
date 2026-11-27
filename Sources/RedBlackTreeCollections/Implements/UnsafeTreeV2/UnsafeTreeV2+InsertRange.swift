@@ -323,7 +323,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var it = values.makeIterator()
 
     func __payload(_ e: S.Element) throws -> _PayloadValue {
-      Base.__payload_((try keyForValue(e), [e]))
+      Base.__payload_((key: try keyForValue(e), value: [e]))
     }
 
     if __root == nullptr, let __element = it.next() {  // Make sure we always have a root node

@@ -96,7 +96,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows where Value == S.Element {
     var tree = Tree.create()
     try tree.___insert_range_multi(values) {
-      Base.__payload_((try keyForValue($0), $0))
+      Base.__payload_((key: try keyForValue($0), value: $0))
     }
     self.init(__tree_: tree)
   }

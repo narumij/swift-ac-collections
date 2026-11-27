@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- `RedBlackTreeDictionary.update(_:)`を追加。キーと値のペアを挿入し、同値なキーが存在する場合は保存済みのキーごと置換して旧ペアを返す。新規挿入時は`nil`を返す
+- `RedBlackTreeMappedValuesView`に、値型の制約に応じた`Equatable`・`Comparable`適合と、比較クロージャ不要の`elementsEqual(_:)`・`lexicographicallyPrecedes(_:)`を追加。キー自体ではなく、キー順に並んだ値の列を比較する（通常モード）
+- 辞書の`update(_:)`について、同値キーの置換・CoW・Optional値・旧値の寿命を検証するテストを追加。値ビューの比較には、Equatableのみの値型・空範囲・共通接頭辞・同じストレージの異なる範囲・CoW後の変更・MultiMapの重複値を検証するテストを追加
+
+### Changed
+- 境界式の操作を3個まで直接保持し、4個目以降を`ContiguousArray`に格納するよう変更。評価処理を境界式側へ集約し、1〜3操作の評価を個別に処理するとともに、単独の`.first(_:)`も直接検索する経路へ追加
+- 赤黒木4型の境界式サブスクリプトで、評価結果と終端ポインタの比較から値の有無を判定するよう整理。ノードのメタデータを読む判定を省き、要素をポインタ経由で取得
+- 新規ノードの初期化を、テンプレートノードのコピーから直接初期化へ変更。従来の経路は`USE_TEMPLATE_INITIALIZE`指定時に限定
+- Dictionary・MultiMap・値ビューの要素／値取得を共通のポインタ取得処理へ整理し、読み取り専用と変更可能なポインタ型を区別
+- テスト専用のペイロードバッファ取得ヘルパーを製品ソースからFixtureへ移動し、API一覧に辞書の`update(_:)`と値ビューの比較機能を反映
+- ベンチマーク結果・比較グラフを更新し、計測用スクリプトを追加。保存済みの古い計測結果を整理
+
+### Fixed
+- テンプレート初期化の無効化とポインタ取得メソッドの改名に伴う、内部テストの追従漏れを修正。停止条件のテストでは、テンプレートの代わりに子プロセス内で作成したノードを使用
+
 ## [0.8.9] - 2026-11-25
 
 ### Changed

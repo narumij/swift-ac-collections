@@ -412,3 +412,104 @@ import XCTest
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMappedValuesViewTests {
+
+  func test_equality_requiresOnlyEquatableValues() {
+    struct Value: Equatable {
+      let text: String
+    }
+
+    let lhs: RedBlackTreeDictionary<Int, Value> = [1: Value(text: "a"), 2: Value(text: "b")]
+    let equal: RedBlackTreeDictionary<Int, Value> = [3: Value(text: "a"), 4: Value(text: "b")]
+    let different: RedBlackTreeDictionary<Int, Value> = [1: Value(text: "a"), 2: Value(text: "c")]
+
+    XCTAssertEqual(lhs.values, equal.values)
+    XCTAssertNotEqual(lhs.values, different.values)
+    XCTAssertTrue(lhs.values.elementsEqual([Value(text: "a"), Value(text: "b")]))
+    XCTAssertFalse(lhs.values.elementsEqual([Value(text: "a"), Value(text: "c")]))
+  }
+
+  func test_comparison_usesValuesInKeyOrderRatherThanKeys() {
+    let lhs: RedBlackTreeDictionary<Int, Int> = [1: 30, 2: 10]
+    let rhs: RedBlackTreeDictionary<Int, Int> = [7: 30, 9: 10]
+    let reversed: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 30]
+
+    XCTAssertEqual(lhs.values, rhs.values)
+    XCTAssertFalse(lhs.values < rhs.values)
+    XCTAssertFalse(rhs.values < lhs.values)
+    XCTAssertTrue(lhs.values.elementsEqual([30, 10]))
+    XCTAssertFalse(lhs.values.elementsEqual([10, 30]))
+    XCTAssertNotEqual(lhs.values, reversed.values)
+    XCTAssertTrue(reversed.values < lhs.values)
+    XCTAssertTrue(reversed.values.lexicographicallyPrecedes([30, 10]))
+    XCTAssertFalse(lhs.values.lexicographicallyPrecedes([10, 30]))
+  }
+
+  func test_comparison_handlesEmptyViewsAndCommonPrefixes() {
+    let empty = RedBlackTreeDictionary<Int, Int>().values
+    let short = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10)]).values
+    let long = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 10), (2, 20)]).values
+
+    XCTAssertEqual(empty, empty)
+    XCTAssertTrue(empty.elementsEqual([Int]()))
+    XCTAssertFalse(empty < empty)
+    XCTAssertFalse(empty.lexicographicallyPrecedes([Int]()))
+    XCTAssertTrue(empty < short)
+    XCTAssertFalse(short < empty)
+    XCTAssertNotEqual(short, long)
+    XCTAssertTrue(short < long)
+    XCTAssertFalse(long < short)
+    XCTAssertTrue(short.lexicographicallyPrecedes([10, 20]))
+    XCTAssertFalse(long.lexicographicallyPrecedes([10]))
+    XCTAssertFalse(short.elementsEqual([10, 20]))
+    XCTAssertFalse(long.elementsEqual([10]))
+  }
+
+  func test_comparison_checksBothBoundsOfViewsSharingStorage() {
+    let dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30]
+    let start = dictionary.startIndex
+    let middle = dictionary.index(after: start)
+    let end = dictionary.endIndex
+    let full = dictionary[start..<end].values
+    let prefix = dictionary[start..<middle].values
+    let suffix = dictionary[middle..<end].values
+
+    XCTAssertEqual(full, dictionary[start..<end].values)
+    XCTAssertFalse(full < dictionary[start..<end].values)
+    XCTAssertNotEqual(full, prefix)
+    XCTAssertTrue(prefix < full)
+    XCTAssertNotEqual(full, suffix)
+    XCTAssertTrue(full < suffix)
+  }
+
+  func test_comparison_observesCopyOnWriteMutation() {
+    let dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20]
+    let original = dictionary.values
+    var copy = original
+    XCTAssertEqual(original, copy)
+
+    copy[copy.startIndex] = 30
+
+    XCTAssertTrue(original.elementsEqual([10, 20]))
+    XCTAssertTrue(copy.elementsEqual([30, 20]))
+    XCTAssertNotEqual(original, copy)
+    XCTAssertTrue(original < copy)
+    XCTAssertFalse(copy < original)
+  }
+
+  func test_comparison_multiMapPreservesDuplicateValuesAndTheirOrder() {
+    let lhs = RedBlackTreeMultiMap(keysWithValues: [(1, 10), (1, 10), (2, 20)]).values
+    let rhs = RedBlackTreeMultiMap(keysWithValues: [(3, 10), (3, 10), (4, 20)]).values
+    let shorter = RedBlackTreeMultiMap(keysWithValues: [(1, 10), (2, 20)]).values
+
+    XCTAssertEqual(lhs, rhs)
+    XCTAssertFalse(lhs < rhs)
+    XCTAssertTrue(lhs.elementsEqual([10, 10, 20]))
+    XCTAssertNotEqual(lhs, shorter)
+    XCTAssertTrue(lhs < shorter)
+    XCTAssertTrue(lhs.lexicographicallyPrecedes([10, 20]))
+  }
+}
+#endif

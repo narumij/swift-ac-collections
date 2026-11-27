@@ -295,17 +295,33 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element)
-    -> (inserted: Bool, memberAfterInsert: Element)
+  -> (inserted: Bool, memberAfterInsert: Element)
   {
-    #if false
-    // 資料的にのこしてある
-      __tree_.ensureUniqueAndCapacity()
-      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-      return (__inserted, __inserted ? newMember : Base.__element_(__r))
-    #else
-      let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
-      return (__inserted, Base.__element_(__r))
-    #endif
+    let (__r, __inserted) = __tree_.___insert_unique_if_not_present(Base.__payload_(newMember))
+    return (__inserted, Base.__element_(__r))
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// Inserts the given key-value pair, replacing the entire pair if an equivalent key already exists.
+  ///
+  /// Unlike `updateValue(_:forKey:)`, this method replaces the stored key as well as its value.
+  /// Replacing an existing pair does not change the number of elements.
+  ///
+  /// - Parameter newMember: The key-value pair to store.
+  /// - Returns: The previous key-value pair if an equivalent key existed, or `nil` if a new pair was inserted.
+  ///   The returned pair contains the original stored key. An optional `Value` of `nil`
+  ///   remains a value in the returned pair; it does not indicate insertion.
+  @inlinable
+  @discardableResult
+  public mutating func update(_ newMember: Element) -> Element? {
+    __tree_.ensureUniqueAndCapacity()
+    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_(newMember))
+    guard !__inserted else { return nil }
+    let old = Base.__element_(__r)
+    Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
+    return old
   }
 }
 
@@ -371,9 +387,9 @@ extension RedBlackTreeDictionary {
       let (__r, __inserted) = __tree_.___emplace_hint_unique_(
         __p, newMember.key, Base.__payload_(newMember))
       guard !__inserted else { return nil }
-      let oldMember = Base.__payload_(__r)
+      let old = Base.__element_(__r)
       Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
-      return Base.__element_(oldMember)
+      return old
     }
   }
 #endif

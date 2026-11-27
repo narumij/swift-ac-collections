@@ -328,7 +328,6 @@ extension RedBlackTreeKeyValueRangeView {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
 
   /// Returns whether this view and `other` contain equal key-value pairs in the same order.
@@ -381,7 +380,6 @@ where _PayloadValue: Comparable {
     !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
-#endif
 
 #if swift(>=5.5)
 extension RedBlackTreeKeyValueRangeView: @unchecked Sendable

@@ -308,6 +308,59 @@ extension RedBlackTreeMappedValuesView {
   }
 }
 
+extension RedBlackTreeMappedValuesView where Element: Equatable {
+
+  /// Returns whether this view and `other` contain equal elements in the same order.
+  ///
+  /// - Parameter other: A sequence to compare with this view.
+  /// - Returns: `true` if both sequences contain the same elements in the same order.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+  where OtherSequence: Sequence, Element == OtherSequence.Element {
+    elementsEqual(other, by: ==)
+  }
+}
+
+extension RedBlackTreeMappedValuesView where Element: Comparable {
+
+  /// Returns whether this view precedes `other` in lexicographical order.
+  ///
+  /// - Parameter other: A sequence to compare with this view.
+  /// - Returns: `true` if this view lexicographically precedes `other`.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+  ///   sequence and the length of `other`.
+  @inlinable
+  public func lexicographicallyPrecedes<OtherSequence>(
+    _ other: OtherSequence
+  ) -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
+    lexicographicallyPrecedes(other, by: <)
+  }
+}
+
+extension RedBlackTreeMappedValuesView: Equatable
+where Element: Equatable {
+
+  /// Returns whether both views contain equal elements in the same order.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+  }
+}
+
+extension RedBlackTreeMappedValuesView: Comparable
+where Element: Comparable {
+
+  /// Returns whether `lhs` lexicographically precedes `rhs`.
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+  }
+}
+
 #if swift(>=5.5)
 extension RedBlackTreeMappedValuesView: @unchecked Sendable
 where Element: Sendable {}

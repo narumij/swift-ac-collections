@@ -1,4 +1,3 @@
-#if DEBUG
 import RedBlackTreeCollections
 import XCTest
 
@@ -121,4 +120,3 @@ final class RedBlackTreeDictionaryUpdateMemberTests: RedBlackTreeTestCase {
     XCTAssertNil(observedOld)
   }
 }
-#endif

@@ -302,8 +302,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if DEBUG
-// なんかバランス悪くて気になるので試作
 extension RedBlackTreeDictionary {
 
   /// Inserts the given key-value pair, replacing the entire pair if an equivalent key already exists.
@@ -315,7 +313,6 @@ extension RedBlackTreeDictionary {
   /// - Returns: The previous key-value pair if an equivalent key existed, or `nil` if a new pair was inserted.
   ///   The returned pair contains the original stored key. An optional `Value` of `nil`
   ///   remains a value in the returned pair; it does not indicate insertion.
-  /// - Note: Available only in Debug builds.
   @inlinable
   @discardableResult
   public mutating func update(_ newMember: Element) -> Element? {
@@ -327,7 +324,6 @@ extension RedBlackTreeDictionary {
     return old
   }
 }
-#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {

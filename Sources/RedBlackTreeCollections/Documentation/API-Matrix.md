@@ -120,6 +120,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(_:hint:)` | ✅ | ✅ | ✅ | ✅ | ヒントを用いて要素を挿入する。Set/Dictionaryは `(inserted:, indexAfterInsert:)`、Multi系は挿入位置のIndexを返す |
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
 | `insert(key:value:hint:)` | — | — | 検討 | ✅ | ヒントを用いてキーと値を挿入する |
+| `update(_:)` | — | — | — | ✅ | ペアを挿入、または同値なキーの既存ペアをキーごと置換し、旧ペアを返す。新規挿入時は `nil` |
 | `update(_:hint:)` | ✅ | — | — | ✅ | ヒントを用いて挿入、または既存要素を置換し、旧要素を返す。新規挿入時は `nil` |
 | `update(with:)` | ✅ | — | — | — | Set要素を挿入または置換し、旧要素を返す |
 | `update(_:at:)` | — | ✅ | — | — | Index位置の要素を `==` で等しい要素に置換し、旧要素を返す。無効Index・endIndex・非等価な置換は事前条件違反 |

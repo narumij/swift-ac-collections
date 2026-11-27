@@ -73,10 +73,12 @@ MappedValues Viewの削除APIは、mapped valueを条件や返却値として扱
 | `makeIterator()` | ✅ | ✅ | ✅ | View内を昇順に走査するIteratorを生成する |
 | `sorted()` | ✅ | ✅ | — | Viewの要素を昇順配列として返す |
 | `reversed()` | ✅ | ✅ | — | Viewの要素を逆順配列として返す |
-| `elementsEqual(_:)` | ✅ | ✅ | — | 別Sequenceと同じ順序の要素列か比較する |
-| `lexicographicallyPrecedes(_:)` | ✅ | ✅ | — | 別Sequenceと辞書式順序を比較する |
-| `==` | ✅ | ✅ | — | View同士の内容が等しいか比較する |
-| `<` | ✅ | ✅ | — | View同士を辞書式比較する |
+| `elementsEqual(_:)` | ✅ | ✅ | ✅ | 別Sequenceと同じ順序の要素列か比較する |
+| `lexicographicallyPrecedes(_:)` | ✅ | ✅ | ✅ | 別Sequenceと辞書式順序を比較する |
+| `==` | ✅ | ✅ | ✅ | View同士の内容が等しいか比較する |
+| `<` | ✅ | ✅ | ✅ | View同士を辞書式比較する |
+
+MappedValuesの比較対象はキー順に並んだ値の列であり、キー自体は比較しない。
 
 ## 標準プロトコル適合
 
@@ -85,8 +87,8 @@ MappedValues Viewの削除APIは、mapped valueを条件や返却値として扱
 | `Sequence` | ✅ | ✅ | ✅ | View内を昇順に走査する |
 | `Collection` | — | — | — | 独自Index APIを用いる |
 | `BidirectionalCollection` | — | — | — | 同上 |
-| `Equatable` | ✅ | ✅ | — | Elementが `Equatable` の場合 |
-| `Comparable` | ✅ | ✅ | — | Elementが `Comparable` の場合 |
+| `Equatable` | ✅ | ✅ | ✅ | Elementが `Equatable` の場合 |
+| `Comparable` | ✅ | ✅ | ✅ | Elementが `Comparable` の場合 |
 | `Sendable` | ✅ | ✅ | ✅ | Elementが `Sendable` の場合の `@unchecked Sendable` 適合 |
 
 ## 更新ルール

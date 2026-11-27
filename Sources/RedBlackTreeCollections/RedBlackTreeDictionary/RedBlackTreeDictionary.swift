@@ -306,6 +306,15 @@ extension RedBlackTreeDictionary {
 // なんかバランス悪くて気になるので試作
 extension RedBlackTreeDictionary {
 
+  /// Inserts the given key-value pair, replacing the entire pair if an equivalent key already exists.
+  ///
+  /// Unlike `updateValue(_:forKey:)`, this method replaces the stored key as well as its value.
+  /// Replacing an existing pair does not change the number of elements.
+  ///
+  /// - Parameter newMember: The key-value pair to store.
+  /// - Returns: The previous value if an equivalent key existed, or `nil` if a new pair was inserted.
+  ///   When `Value` is optional, replacing a stored `nil` returns `.some(nil)`.
+  /// - Note: Available only in Debug builds.
   @inlinable
   @discardableResult
   public mutating func update(_ newMember: Element) -> Value? {

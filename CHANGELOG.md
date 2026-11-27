@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.10] - 2026-11-27
 
 ### Added
 - `RedBlackTreeDictionary.update(_:)`を追加。キーと値のペアを挿入し、同値なキーが存在する場合は保存済みのキーごと置換して旧ペアを返す。新規挿入時は`nil`を返す

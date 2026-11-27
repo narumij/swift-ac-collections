@@ -308,7 +308,7 @@ extension RedBlackTreeMultiMap {
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
-    insert((key, value))
+    insert((key: key, value: value))
   }
 
   /// Inserts the given key-value pair into the multimap.

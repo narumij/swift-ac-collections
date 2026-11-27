@@ -131,7 +131,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       unsafeEnsureCapacity()
       _UNSAFE_TREE_ASSERT_INTERNAL(capacity > count)
       update {
-        __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
+        __node = $0.__construct_node(Base.__payload_((key: key, value: defaultValue())))
         $0.__insert_node_at(__parent, __child, __node)
       }
     }

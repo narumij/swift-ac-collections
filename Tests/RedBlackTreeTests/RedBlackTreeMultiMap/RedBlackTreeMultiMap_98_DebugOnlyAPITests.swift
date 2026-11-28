@@ -16,13 +16,17 @@
       var firstMap: RedBlackTreeMultiMap = [
         (0, "before"), (1, "a"), (1, "b"), (1, "c"), (2, "after"),
       ]
-      XCTAssertEqual(firstMap[firstMap.equalRange(1)].popFirst(2), 2)
+      let firstElements = firstMap[firstMap.equalRange(1)].popFirst(2)
+      XCTAssertEqual(firstElements.map(\.key), [1, 1])
+      XCTAssertEqual(firstElements.map(\.value), ["a", "b"])
       XCTAssertEqual(firstMap.map(\.value), ["before", "c", "after"])
 
       var lastMap: RedBlackTreeMultiMap = [
         (0, "before"), (1, "a"), (1, "b"), (1, "c"), (2, "after"),
       ]
-      XCTAssertEqual(lastMap[lastMap.equalRange(1)].popLast(10), 3)
+      let lastElements = lastMap[lastMap.equalRange(1)].popLast(10)
+      XCTAssertEqual(lastElements.map(\.key), [1, 1, 1])
+      XCTAssertEqual(lastElements.map(\.value), ["c", "b", "a"])
       XCTAssertEqual(lastMap.map(\.value), ["before", "after"])
     }
   }

@@ -29,6 +29,8 @@
 // Sequenceではなく将来の他の何かに適合するのが妥当
 //
 #if DEBUG
+  @testable import RedBlackTreeCollections
+
   public protocol BalancedSequence: Sequence {
 
     var first: Element? { get }
@@ -46,32 +48,26 @@
 
   extension BalancedSequence {
 
-    // そもそも間違ってる
-    // TODO: Elementを返すようにすること
-    @discardableResult
-    public mutating func popFirst(_ k: Int) -> Int {
-      var i = 0
-      while i < k {
-        guard let _ = popFirst() else {
-          return i
+    public mutating func popFirst(_ k: Int) -> [Element] {
+      var result: [Element] = []
+      while result.count < k {
+        guard let e = popFirst() else {
+          return result
         }
-        i += 1
+        result.append(e)
       }
-      return i
+      return result
     }
 
-    // そもそも間違ってる
-    // TODO: Elementを返すようにすること
-    @discardableResult
-    public mutating func popLast(_ k: Int) -> Int {
-      var i = 0
-      while i < k {
-        guard let _ = popLast() else {
-          return i
+    public mutating func popLast(_ k: Int) -> [Element] {
+      var result: [Element] = []
+      while result.count < k {
+        guard let e = popLast() else {
+          return result
         }
-        i += 1
+        result.append(e)
       }
-      return i
+      return result
     }
   }
 
@@ -99,8 +95,6 @@
     var startIndex: Index { get }
     var endIndex: Index { get }
 
-    // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
-
     func index(after: Index) -> Index
     func index(before: Index) -> Index
     func index(_: Index, offsetBy: Int) -> Index
@@ -115,16 +109,12 @@
 
     mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
+    func distance(from: Index, to: Index) -> Int
+
     // MARK: -
 
-    // func isValid(_: Index) -> Bool
-    // func isValid(_: IndexRange) -> Bool
-    // func isValid(_: IndexRangeExpression) -> Bool
-    // func isValid(_: Bound) -> Bool
-    // func isValid(_: BoundRangeExpression) -> Bool
-
-    // 必須では無くなった
-    //    func distance(from: Bound, to: Bound) -> Int
+    // 必須では無くなった（？）
+    func distance(from: Bound, to: Bound) -> Int
 
     subscript(range: IndexRange) -> View { get }
     subscript(range: IndexRangeExpression) -> View { get }
